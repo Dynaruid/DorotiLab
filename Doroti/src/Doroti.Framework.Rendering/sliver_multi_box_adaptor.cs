@@ -518,41 +518,41 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         {
             return;
         }
-        global::Doroti.Ui.Offset mainAxisUnit = default!;
-        global::Doroti.Ui.Offset crossAxisUnit = default!;
-        global::Doroti.Ui.Offset originOffset = default!;
+        Offset mainAxisUnit = default!;
+        Offset crossAxisUnit = default!;
+        Offset originOffset = default!;
         bool addExtent = default!;
         switch (SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection))
         {
             case AxisDirection.up:
                 {
-                    mainAxisUnit = new global::Doroti.Ui.Offset(0.0, -1.0);
-                    crossAxisUnit = new global::Doroti.Ui.Offset(1.0, 0.0);
-                    originOffset = offset + new global::Doroti.Ui.Offset(0.0, geometry!.paintExtent);
+                    mainAxisUnit = new Offset(0.0, -1.0);
+                    crossAxisUnit = new Offset(1.0, 0.0);
+                    originOffset = offset + new Offset(0.0, geometry!.paintExtent);
                     addExtent = true;
                     break;
                 }
             case AxisDirection.right:
                 {
-                    mainAxisUnit = new global::Doroti.Ui.Offset(1.0, 0.0);
-                    crossAxisUnit = new global::Doroti.Ui.Offset(0.0, 1.0);
+                    mainAxisUnit = new Offset(1.0, 0.0);
+                    crossAxisUnit = new Offset(0.0, 1.0);
                     originOffset = offset;
                     addExtent = false;
                     break;
                 }
             case AxisDirection.down:
                 {
-                    mainAxisUnit = new global::Doroti.Ui.Offset(0.0, 1.0);
-                    crossAxisUnit = new global::Doroti.Ui.Offset(1.0, 0.0);
+                    mainAxisUnit = new Offset(0.0, 1.0);
+                    crossAxisUnit = new Offset(1.0, 0.0);
                     originOffset = offset;
                     addExtent = false;
                     break;
                 }
             case AxisDirection.left:
                 {
-                    mainAxisUnit = new global::Doroti.Ui.Offset(-1.0, 0.0);
-                    crossAxisUnit = new global::Doroti.Ui.Offset(0.0, 1.0);
-                    originOffset = offset + new global::Doroti.Ui.Offset(geometry!.paintExtent, 0.0);
+                    mainAxisUnit = new Offset(-1.0, 0.0);
+                    crossAxisUnit = new Offset(0.0, 1.0);
+                    originOffset = offset + new Offset(geometry!.paintExtent, 0.0);
                     addExtent = true;
                     break;
                 }
@@ -562,7 +562,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         {
             double mainAxisDelta = childMainAxisPosition(child);
             double crossAxisDelta = childCrossAxisPosition(child);
-            var childOffset = new global::Doroti.Ui.Offset(originOffset.dx + (mainAxisUnit.dx * mainAxisDelta) + (crossAxisUnit.dx * crossAxisDelta), originOffset.dy + (mainAxisUnit.dy * mainAxisDelta) + (crossAxisUnit.dy * crossAxisDelta));
+            var childOffset = new Offset(originOffset.dx + (mainAxisUnit.dx * mainAxisDelta) + (crossAxisUnit.dx * crossAxisDelta), originOffset.dy + (mainAxisUnit.dy * mainAxisDelta) + (crossAxisUnit.dy * crossAxisDelta));
             if (addExtent)
             {
                 childOffset += mainAxisUnit * paintExtentOf(child);
@@ -793,8 +793,8 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         double crossAxisDelta = childCrossAxisPosition(child);
         double absolutePosition = mainAxisPosition - delta;
         double absoluteCrossAxisPosition = crossAxisPosition - crossAxisDelta;
-        global::Doroti.Ui.Offset paintOffsetLocal = default!;
-        global::Doroti.Ui.Offset transformedPosition = default!;
+        Offset paintOffsetLocal = default!;
+        Offset transformedPosition = default!;
         switch (constraints.axis)
         {
             case Axis.horizontal:
@@ -804,8 +804,8 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                         absolutePosition = child.size.width - absolutePosition;
                         delta = geometry!.paintExtent - child.size.width - delta;
                     }
-                    paintOffsetLocal = new global::Doroti.Ui.Offset(delta, crossAxisDelta);
-                    transformedPosition = new global::Doroti.Ui.Offset(absolutePosition, absoluteCrossAxisPosition);
+                    paintOffsetLocal = new Offset(delta, crossAxisDelta);
+                    transformedPosition = new Offset(absolutePosition, absoluteCrossAxisPosition);
                     break;
                 }
             case Axis.vertical:
@@ -815,8 +815,8 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                         absolutePosition = child.size.height - absolutePosition;
                         delta = geometry!.paintExtent - child.size.height - delta;
                     }
-                    paintOffsetLocal = new global::Doroti.Ui.Offset(crossAxisDelta, delta);
-                    transformedPosition = new global::Doroti.Ui.Offset(absoluteCrossAxisPosition, absolutePosition);
+                    paintOffsetLocal = new Offset(crossAxisDelta, delta);
+                    transformedPosition = new Offset(absoluteCrossAxisPosition, absolutePosition);
                     break;
                 }
         }

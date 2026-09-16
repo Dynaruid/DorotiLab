@@ -13,16 +13,16 @@ public static partial class Ink_highlightLibrary
 
 public class InkHighlight : InteractiveInkFeature
 {
-    internal virtual global::Doroti.Framework.Painting.BoxShape _shape { get; private set; } = default!;
+    internal virtual BoxShape _shape { get; private set; } = default!;
     internal virtual double? _radius { get; private set; }
-    internal virtual global::Doroti.Framework.Painting.BorderRadius _borderRadius { get; private set; } = default!;
-    internal virtual global::System.Func<Rect>? _rectCallback { get; private set; }
+    internal virtual BorderRadius _borderRadius { get; private set; } = default!;
+    internal virtual Func<Rect>? _rectCallback { get; private set; }
     internal virtual TextDirection _textDirection { get; private set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<long> _alpha { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.AnimationController _alphaController { get; set; } = default!;
+    internal virtual Animation<long> _alpha { get; set; } = default!;
+    internal virtual AnimationController _alphaController { get; set; } = default!;
     internal virtual bool _active { get; set; } = true;
 
-    public InkHighlight(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Color color, TextDirection textDirection, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::System.Func<Rect>? rectCallback = null, global::System.Action? onRemoved = null, Duration? fadeDuration = null) : base(controller: controller, referenceBox: referenceBox, color: color, customBorder: customBorder, onRemoved: onRemoved)
+    public InkHighlight(MaterialInkController controller, RenderBox referenceBox, Color color, TextDirection textDirection, BoxShape shape = BoxShape.rectangle, double? radius = null, BorderRadius? borderRadius = null, ShapeBorder? customBorder = null, Func<Rect>? rectCallback = null, Action? onRemoved = null, Duration? fadeDuration = null) : base(controller: controller, referenceBox: referenceBox, color: color, customBorder: customBorder, onRemoved: onRemoved)
     {
         Duration __fadeDuration = fadeDuration ?? Ink_highlightLibrary._kDefaultHighlightFadeDuration;
         _shape = shape;
@@ -30,15 +30,15 @@ public class InkHighlight : InteractiveInkFeature
         _borderRadius = borderRadius ?? BorderRadius.zero;
         _textDirection = textDirection;
         _rectCallback = rectCallback;
-        _alphaController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        _alphaController = ((Func<AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: this.controller.vsync);
+    var __cascade = new AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: this.controller.vsync);
     __cascade.addListener(this.controller.markNeedsPaint);
     __cascade.addStatusListener(_handleAlphaStatusChanged);
     __cascade.forward();
     return __cascade;
 }))();
-        _alpha = _alphaController.drive(new global::Doroti.Framework.Animation.IntTween(begin: 0L, end: this.color.alpha));
+        _alpha = _alphaController.drive(new IntTween(begin: 0L, end: this.color.alpha));
         this.controller.addInkFeature(this);
     }
 
@@ -55,7 +55,7 @@ public class InkHighlight : InteractiveInkFeature
         _alphaController.reverse();
     }
 
-    internal virtual void _handleAlphaStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal virtual void _handleAlphaStatusChanged(AnimationStatus status)
     {
         if (AnimationStatusMembers.isDismissed(status) && !_active)
         {
@@ -104,12 +104,12 @@ public class InkHighlight : InteractiveInkFeature
     {
         var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color.withAlpha(_alpha.value);
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset? originOffset = MatrixUtils.getAsTranslation(transform);
-        global::Doroti.Ui.Rect rect = (_rectCallback is not null) ? _rectCallback() : (Offset.zero & referenceBox.size);
+        Offset? originOffset = MatrixUtils.getAsTranslation(transform);
+        Rect rect = (_rectCallback is not null) ? _rectCallback() : (Offset.zero & referenceBox.size);
         if (originOffset is null)
         {
             canvas.save();

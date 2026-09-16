@@ -61,7 +61,7 @@ public abstract class TextEditingDelta : Diagnosticable
         var replacementSourceStart = 0L;
         long replacementSourceEnd = replacementSource.Length;
         bool isNonTextUpdate = (replacementDestinationStart == -1L) && (replacementDestinationStart == replacementDestinationEnd);
-        var newComposing = new global::Doroti.Ui.TextRange(start: ((long?)encoded.GetValueOrDefault("composingBase")) ?? -1L, end: ((long?)encoded.GetValueOrDefault("composingExtent")) ?? -1L);
+        var newComposing = new TextRange(start: ((long?)encoded.GetValueOrDefault("composingBase")) ?? -1L, end: ((long?)encoded.GetValueOrDefault("composingExtent")) ?? -1L);
         var newSelection = new TextSelection(baseOffset: ((long?)encoded.GetValueOrDefault("selectionBase")) ?? -1L, extentOffset: ((long?)encoded.GetValueOrDefault("selectionExtent")) ?? -1L, affinity: Text_editing_deltaLibrary._toTextAffinity(((string?)encoded.GetValueOrDefault("selectionAffinity"))!) ?? TextAffinity.downstream, isDirectional: ((bool?)encoded.GetValueOrDefault("selectionIsDirectional")) ?? false);
         if (isNonTextUpdate)
         {
@@ -69,8 +69,8 @@ public abstract class TextEditingDelta : Diagnosticable
             DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(newComposing, oldText));
             return new TextEditingDeltaNonTextUpdate(oldText: oldText, selection: newSelection, composing: newComposing);
         }
-        DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(new global::Doroti.Ui.TextRange(start: replacementDestinationStart, end: replacementDestinationEnd), oldText));
-        string newText = Text_editing_deltaLibrary._replace(oldText, replacementSource, new global::Doroti.Ui.TextRange(start: replacementDestinationStart, end: replacementDestinationEnd));
+        DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(new TextRange(start: replacementDestinationStart, end: replacementDestinationEnd), oldText));
+        string newText = Text_editing_deltaLibrary._replace(oldText, replacementSource, new TextRange(start: replacementDestinationStart, end: replacementDestinationEnd));
         DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(newSelection, newText));
         DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(newComposing, newText));
         var isEqual = oldText == newText;
@@ -108,7 +108,7 @@ public abstract class TextEditingDelta : Diagnosticable
                 {
                     actualStart = replacementDestinationEnd - 1L;
                 }
-                return new TextEditingDeltaDeletion(oldText: oldText, deletedRange: new global::Doroti.Ui.TextRange(start: actualStart, end: replacementDestinationEnd), selection: newSelection, composing: newComposing);
+                return new TextEditingDeltaDeletion(oldText: oldText, deletedRange: new TextRange(start: actualStart, end: replacementDestinationEnd), selection: newSelection, composing: newComposing);
             }
             else
             {
@@ -120,7 +120,7 @@ public abstract class TextEditingDelta : Diagnosticable
                 {
                     if (isReplaced)
                     {
-                        return new TextEditingDeltaReplacement(oldText: oldText, replacementText: replacementSource, replacedRange: new global::Doroti.Ui.TextRange(start: replacementDestinationStart, end: replacementDestinationEnd), selection: newSelection, composing: newComposing);
+                        return new TextEditingDeltaReplacement(oldText: oldText, replacementText: replacementSource, replacedRange: new TextRange(start: replacementDestinationStart, end: replacementDestinationEnd), selection: newSelection, composing: newComposing);
                     }
                 }
             }
@@ -146,8 +146,8 @@ public class TextEditingDeltaInsertion : TextEditingDelta
     public override TextEditingValue apply(TextEditingValue value)
     {
         string newText = oldText;
-        DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(new global::Doroti.Ui.TextRange(insertionOffset), newText));
-        newText = Text_editing_deltaLibrary._replace(newText, textInserted, new global::Doroti.Ui.TextRange(insertionOffset));
+        DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(new TextRange(insertionOffset), newText));
+        newText = Text_editing_deltaLibrary._replace(newText, textInserted, new TextRange(insertionOffset));
         DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(selection, newText));
         DartRuntimePrimitives.Assert(() => Text_editing_deltaLibrary._debugTextRangeIsValid(composing, newText));
         return value.copyWith(text: newText, selection: selection, composing: composing);
@@ -161,7 +161,7 @@ public class TextEditingDeltaInsertion : TextEditingDelta
         properties.Add(new DiagnosticsProperty<string>("textInserted", textInserted));
         properties.Add(new DiagnosticsProperty<long>("insertionOffset", insertionOffset));
         properties.Add(new DiagnosticsProperty<TextSelection>("selection", selection));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.TextRange>("composing", composing));
+        properties.Add(new DiagnosticsProperty<TextRange>("composing", composing));
     }
 
 }
@@ -192,9 +192,9 @@ public class TextEditingDeltaDeletion : TextEditingDelta
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.Add(new DiagnosticsProperty<string>("oldText", oldText));
         properties.Add(new DiagnosticsProperty<string>("textDeleted", textDeleted));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.TextRange>("deletedRange", deletedRange));
+        properties.Add(new DiagnosticsProperty<TextRange>("deletedRange", deletedRange));
         properties.Add(new DiagnosticsProperty<TextSelection>("selection", selection));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.TextRange>("composing", composing));
+        properties.Add(new DiagnosticsProperty<TextRange>("composing", composing));
     }
 
 }
@@ -228,9 +228,9 @@ public class TextEditingDeltaReplacement : TextEditingDelta
         properties.Add(new DiagnosticsProperty<string>("oldText", oldText));
         properties.Add(new DiagnosticsProperty<string>("textReplaced", textReplaced));
         properties.Add(new DiagnosticsProperty<string>("replacementText", replacementText));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.TextRange>("replacedRange", replacedRange));
+        properties.Add(new DiagnosticsProperty<TextRange>("replacedRange", replacedRange));
         properties.Add(new DiagnosticsProperty<TextSelection>("selection", selection));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.TextRange>("composing", composing));
+        properties.Add(new DiagnosticsProperty<TextRange>("composing", composing));
     }
 
 }
@@ -254,7 +254,7 @@ public class TextEditingDeltaNonTextUpdate : TextEditingDelta
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.Add(new DiagnosticsProperty<string>("oldText", oldText));
         properties.Add(new DiagnosticsProperty<TextSelection>("selection", selection));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.TextRange>("composing", composing));
+        properties.Add(new DiagnosticsProperty<TextRange>("composing", composing));
     }
 
 }

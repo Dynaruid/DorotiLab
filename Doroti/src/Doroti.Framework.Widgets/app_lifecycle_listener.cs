@@ -7,22 +7,22 @@ namespace Doroti.Framework.Widgets;
 
 public delegate Future<AppExitResponse> AppExitRequestCallback();
 
-public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Framework.Foundation.Diagnosticable
+public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
 {
     internal virtual AppLifecycleState? _lifecycleState { get; set; } = default;
     public virtual WidgetsBinding binding { get; private set; } = default!;
-    public virtual global::System.Action<AppLifecycleState>? onStateChange { get; private set; }
-    public virtual global::System.Action? onInactive { get; private set; }
-    public virtual global::System.Action? onResume { get; private set; }
-    public virtual global::System.Action? onHide { get; private set; }
-    public virtual global::System.Action? onShow { get; private set; }
-    public virtual global::System.Action? onPause { get; private set; }
-    public virtual global::System.Action? onRestart { get; private set; }
-    public virtual global::System.Func<Future<AppExitResponse>>? onExitRequested { get; private set; }
-    public virtual global::System.Action? onDetach { get; private set; }
+    public virtual System.Action<AppLifecycleState>? onStateChange { get; private set; }
+    public virtual Action? onInactive { get; private set; }
+    public virtual Action? onResume { get; private set; }
+    public virtual Action? onHide { get; private set; }
+    public virtual Action? onShow { get; private set; }
+    public virtual Action? onPause { get; private set; }
+    public virtual Action? onRestart { get; private set; }
+    public virtual Func<Future<AppExitResponse>>? onExitRequested { get; private set; }
+    public virtual Action? onDetach { get; private set; }
     internal virtual bool _debugDisposed { get; set; } = false;
 
-    public AppLifecycleListener(WidgetsBinding? binding = null, global::System.Action? onResume = null, global::System.Action? onInactive = null, global::System.Action? onHide = null, global::System.Action? onShow = null, global::System.Action? onPause = null, global::System.Action? onRestart = null, global::System.Action? onDetach = null, global::System.Func<Future<AppExitResponse>>? onExitRequested = null, global::System.Action<AppLifecycleState>? onStateChange = null)
+    public AppLifecycleListener(WidgetsBinding? binding = null, Action? onResume = null, Action? onInactive = null, Action? onHide = null, Action? onShow = null, Action? onPause = null, Action? onRestart = null, Action? onDetach = null, Func<Future<AppExitResponse>>? onExitRequested = null, System.Action<AppLifecycleState>? onStateChange = null)
     {
         this.onResume = onResume;
         this.onInactive = onInactive;
@@ -79,7 +79,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
     public virtual void didChangeAppLifecycleState(AppLifecycleState state)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        global::Doroti.Ui.AppLifecycleState? previousState = _lifecycleState;
+        AppLifecycleState? previousState = _lifecycleState;
         if (Equals(state, previousState))
         {
             return;
@@ -144,18 +144,18 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
         onStateChange?.Invoke(DartRuntimePrimitives.RequireValue(_lifecycleState));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<WidgetsBinding>("binding", binding));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onStateChange", value: onStateChange is not null, ifTrue: "onStateChange"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onInactive", value: onInactive is not null, ifTrue: "onInactive"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onResume", value: onResume is not null, ifTrue: "onResume"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onHide", value: onHide is not null, ifTrue: "onHide"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onShow", value: onShow is not null, ifTrue: "onShow"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onPause", value: onPause is not null, ifTrue: "onPause"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onRestart", value: onRestart is not null, ifTrue: "onRestart"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onExitRequested", value: onExitRequested is not null, ifTrue: "onExitRequested"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onDetach", value: onDetach is not null, ifTrue: "onDetach"));
+        properties.add(new DiagnosticsProperty<WidgetsBinding>("binding", binding));
+        properties.add(new FlagProperty("onStateChange", value: onStateChange is not null, ifTrue: "onStateChange"));
+        properties.add(new FlagProperty("onInactive", value: onInactive is not null, ifTrue: "onInactive"));
+        properties.add(new FlagProperty("onResume", value: onResume is not null, ifTrue: "onResume"));
+        properties.add(new FlagProperty("onHide", value: onHide is not null, ifTrue: "onHide"));
+        properties.add(new FlagProperty("onShow", value: onShow is not null, ifTrue: "onShow"));
+        properties.add(new FlagProperty("onPause", value: onPause is not null, ifTrue: "onPause"));
+        properties.add(new FlagProperty("onRestart", value: onRestart is not null, ifTrue: "onRestart"));
+        properties.add(new FlagProperty("onExitRequested", value: onExitRequested is not null, ifTrue: "onExitRequested"));
+        properties.add(new FlagProperty("onDetach", value: onDetach is not null, ifTrue: "onDetach"));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);

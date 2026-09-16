@@ -43,7 +43,7 @@ public class TextSelection : TextRange
     {
         get
         {
-            global::Doroti.Ui.TextAffinity affinity = default!;
+            TextAffinity affinity = default!;
             if (!isValid || (baseOffset == extentOffset))
             {
                 affinity = this.affinity;
@@ -59,14 +59,14 @@ public class TextSelection : TextRange
                     affinity = TextAffinity.upstream;
                 }
             }
-            return new global::Doroti.Ui.TextPosition(offset: baseOffset, affinity: affinity);
+            return new TextPosition(offset: baseOffset, affinity: affinity);
         }
     }
     public virtual TextPosition extent
     {
         get
         {
-            global::Doroti.Ui.TextAffinity affinity = default!;
+            TextAffinity affinity = default!;
             if (!isValid || (baseOffset == extentOffset))
             {
                 affinity = this.affinity;
@@ -82,7 +82,7 @@ public class TextSelection : TextRange
                     affinity = TextAffinity.downstream;
                 }
             }
-            return new global::Doroti.Ui.TextPosition(offset: extentOffset, affinity: affinity);
+            return new TextPosition(offset: extentOffset, affinity: affinity);
         }
     }
     public override string ToString()

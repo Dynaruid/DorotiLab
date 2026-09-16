@@ -328,7 +328,7 @@ public sealed class PictureRecorder
 public sealed record TargetImageSize(long? width, long? height);
 public delegate TargetImageSize TargetImageSizeCallback(long intrinsicWidth, long intrinsicHeight);
 
-public sealed record FrameInfo(Image image, global::Doroti.Runtime.Duration duration);
+public sealed record FrameInfo(Image image, Duration duration);
 
 public sealed class Codec : IDisposable
 {

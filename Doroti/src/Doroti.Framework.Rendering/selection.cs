@@ -83,8 +83,8 @@ public class SelectedContent : Diagnosticable
 public interface Selectable : SelectionHandler
 {
     public Matrix4 getTransformTo(RenderObject? ancestor);
-    public global::Doroti.Ui.Size size { get; }
-    public List<global::Doroti.Ui.Rect> boundingBoxes { get; }
+    public Size size { get; }
+    public List<Rect> boundingBoxes { get; }
     public void dispose();
 }
 
@@ -113,7 +113,7 @@ public abstract class SelectionUtils
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Offset adjustDragOffset(Rect targetRect, Offset point, TextDirection direction = TextDirection.ltr)
+    public static Offset adjustDragOffset(Rect targetRect, Offset point, TextDirection direction = TextDirection.ltr)
     {
         if (targetRect.contains(point))
         {
@@ -332,7 +332,7 @@ public class SelectionGeometry : Diagnosticable
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<SelectionPoint>("startSelectionPoint", startSelectionPoint));
         properties.add(new DiagnosticsProperty<SelectionPoint>("endSelectionPoint", endSelectionPoint));
-        properties.add(new IterableProperty<global::Doroti.Ui.Rect>("selectionRects", selectionRects));
+        properties.add(new IterableProperty<Rect>("selectionRects", selectionRects));
         properties.add(new EnumProperty<SelectionStatus>("status", status));
         properties.add(new DiagnosticsProperty<bool>("hasContent", hasContent));
     }
@@ -374,7 +374,7 @@ public class SelectionPoint : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new DoubleProperty("lineHeight", lineHeight));
         properties.add(new EnumProperty<TextSelectionHandleType>("handleType", handleType));
     }

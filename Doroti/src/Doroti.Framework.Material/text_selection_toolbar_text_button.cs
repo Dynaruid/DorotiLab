@@ -14,19 +14,19 @@ internal enum _TextSelectionToolbarItemPosition__text_selection_toolbar_text_but
     only
 }
 
-public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.StatelessWidget
+public class TextSelectionToolbarTextButton : StatelessWidget
 {
     internal const double _kMiddlePadding = 9.5;
     internal const double _kEndPadding = 14.5;
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::System.Action? onPressed { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
-    internal static Color _defaultForegroundColorLight = new global::Doroti.Ui.Color(4278190080L);
-    internal static Color _defaultForegroundColorDark = new global::Doroti.Ui.Color(4294967295L);
-    internal static Color _defaultBackgroundColorTransparent = new global::Doroti.Ui.Color(0L);
+    public virtual Widget child { get; private set; } = default!;
+    public virtual Action? onPressed { get; private set; }
+    public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual AlignmentGeometry? alignment { get; private set; }
+    internal static Color _defaultForegroundColorLight = new Color(4278190080L);
+    internal static Color _defaultForegroundColorDark = new Color(4294967295L);
+    internal static Color _defaultBackgroundColorTransparent = new Color(0L);
 
-    public TextSelectionToolbarTextButton(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget child = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, global::System.Action? onPressed = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null) : base(key: key)
+    public TextSelectionToolbarTextButton(Key? key = null, Widget child = default!, EdgeInsetsGeometry padding = default!, Action? onPressed = null, AlignmentGeometry? alignment = null) : base(key: key)
     {
         this.child = child;
         this.padding = padding;
@@ -34,7 +34,7 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
         this.alignment = alignment;
     }
 
-    public static global::Doroti.Framework.Painting.EdgeInsetsGeometry getPadding(long index, long total)
+    public static EdgeInsetsGeometry getPadding(long index, long total)
     {
         DartRuntimePrimitives.Assert(() => (total > 0L) && (index >= 0L) && (index < total));
         _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button position = _getPosition(index, total);
@@ -76,13 +76,13 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual TextSelectionToolbarTextButton copyWith(global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onPressed = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null)
+    public virtual TextSelectionToolbarTextButton copyWith(Widget? child = null, Action? onPressed = null, EdgeInsetsGeometry? padding = null, AlignmentGeometry? alignment = null)
     {
         return new TextSelectionToolbarTextButton(onPressed: onPressed ?? this.onPressed, padding: padding ?? this.padding, alignment: alignment ?? this.alignment, child: child ?? this.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Color _getForegroundColor(ColorScheme colorScheme)
+    internal static Color _getForegroundColor(ColorScheme colorScheme)
     {
         bool isDefaultOnSurface = colorScheme.brightness switch { Brightness.light => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.onSurface, colorScheme.onSurface), Brightness.dark => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.onSurface, colorScheme.onSurface), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         if (!isDefaultOnSurface)
@@ -93,10 +93,10 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         ColorScheme colorSchemeLocal = Theme.of(context).colorScheme;
-        return new TextButton(style: TextButton.styleFrom(backgroundColor: _defaultBackgroundColorTransparent, foregroundColor: _getForegroundColor(colorSchemeLocal), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(Widgets.ConstantsLibrary.kMinInteractiveDimension, Widgets.ConstantsLibrary.kMinInteractiveDimension), padding: padding, alignment: alignment, textStyle: new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.w400)), onPressed: onPressed, child: child);
+        return new TextButton(style: TextButton.styleFrom(backgroundColor: _defaultBackgroundColorTransparent, foregroundColor: _getForegroundColor(colorSchemeLocal), shape: new RoundedRectangleBorder(), minimumSize: new Size(Widgets.ConstantsLibrary.kMinInteractiveDimension, Widgets.ConstantsLibrary.kMinInteractiveDimension), padding: padding, alignment: alignment, textStyle: new TextStyle(fontWeight: FontWeight.w400)), onPressed: onPressed, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

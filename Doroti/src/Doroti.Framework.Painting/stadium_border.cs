@@ -64,10 +64,10 @@ public class StadiumBorder : OutlinedBorder
     {
         var radius = Radius.circular(rect.shortestSide / 2.0);
         var borderRect = RRect.fromRectAndRadius(rect, radius);
-        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(side.strokeInset);
+        RRect adjustedRect = borderRect.deflate(side.strokeInset);
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(adjustedRect);
     return __cascade;
 }))();
@@ -79,7 +79,7 @@ public class StadiumBorder : OutlinedBorder
         var radius = Radius.circular(rect.shortestSide / 2.0);
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(RRect.fromRectAndRadius(rect, radius));
     return __cascade;
 }))();
@@ -197,7 +197,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Rect _adjustRect(Rect rect)
+    internal virtual Rect _adjustRect(Rect rect)
     {
         if ((circularity == 0.0) || (rect.width == rect.height))
         {
@@ -240,7 +240,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
     {
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(_adjustBorderRadius(rect).toRRect(_adjustRect(rect)).deflate(side.strokeInset));
     return __cascade;
 }))();
@@ -251,7 +251,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
     {
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(_adjustBorderRadius(rect).toRRect(_adjustRect(rect)));
     return __cascade;
 }))();
@@ -286,7 +286,7 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
                 }
             case BorderStyle.solid:
                 {
-                    global::Doroti.Ui.RRect borderRect = _adjustBorderRadius(rect).toRRect(_adjustRect(rect));
+                    RRect borderRect = _adjustBorderRadius(rect).toRRect(_adjustRect(rect));
                     canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2L), side.toPaint());
                     break;
                 }
@@ -385,11 +385,11 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.RRect borderRect = _adjustBorderRadius(rect).resolve(textDirection).toRRect(rect);
-        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)));
+        RRect borderRect = _adjustBorderRadius(rect).resolve(textDirection).toRRect(rect);
+        RRect adjustedRect = borderRect.deflate(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)));
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(adjustedRect);
     return __cascade;
 }))();
@@ -400,7 +400,7 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
     {
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(_adjustBorderRadius(rect).resolve(textDirection).toRRect(rect));
     return __cascade;
 }))();
@@ -449,7 +449,7 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
             case BorderStyle.solid:
                 {
                     BorderRadiusGeometry adjustedBorderRadius = _adjustBorderRadius(rect);
-                    global::Doroti.Ui.RRect borderRect = adjustedBorderRadius.resolve(textDirection).toRRect(rect);
+                    RRect borderRect = adjustedBorderRadius.resolve(textDirection).toRRect(rect);
                     canvas.drawRRect(borderRect.inflate(side.strokeOffset / 2L), side.toPaint());
                     break;
                 }

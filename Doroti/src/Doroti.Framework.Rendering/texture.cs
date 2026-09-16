@@ -43,7 +43,7 @@ public class TextureBox : RenderBox
             }
         }
     }
-    public virtual global::Doroti.Ui.FilterQuality filterQuality
+    public virtual FilterQuality filterQuality
     {
         get => _filterQuality;
         set

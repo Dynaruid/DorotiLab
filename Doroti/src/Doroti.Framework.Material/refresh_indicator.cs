@@ -51,16 +51,16 @@ internal enum _IndicatorType__refresh_indicator
     noSpinner
 }
 
-public class RefreshIndicator : global::Doroti.Framework.Widgets.StatefulWidget
+public class RefreshIndicator : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
     public virtual double displacement { get; private set; } = default!;
     public virtual double edgeOffset { get; private set; } = default!;
-    public virtual global::System.Func<Future> onRefresh { get; private set; } = default!;
-    public virtual global::System.Action<RefreshIndicatorStatus?>? onStatusChange { get; private set; }
+    public virtual Func<Future> onRefresh { get; private set; } = default!;
+    public virtual System.Action<RefreshIndicatorStatus?>? onStatusChange { get; private set; }
     public virtual Color? color { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
+    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
     public virtual string? semanticsLabel { get; private set; }
     public virtual string? semanticsValue { get; private set; }
     public virtual double strokeWidth { get; private set; } = default!;
@@ -68,9 +68,9 @@ public class RefreshIndicator : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual RefreshIndicatorTriggerMode triggerMode { get; private set; } = default!;
     public virtual double elevation { get; private set; } = default!;
 
-    public RefreshIndicator(global::Doroti.Framework.Foundation.Key? key = null, double displacement = 40.0, double edgeOffset = 0.0, global::System.Func<Future> onRefresh = default!, Color? color = null, Color? backgroundColor = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, double? strokeWidth = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key)
+    public RefreshIndicator(Key? key = null, double displacement = 40.0, double edgeOffset = 0.0, Func<Future> onRefresh = default!, Color? color = null, Color? backgroundColor = null, Func<ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, double? strokeWidth = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, Widget child = default!) : base(key: key)
     {
-        global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
+        Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
         double __strokeWidth = strokeWidth ?? RefreshProgressIndicator.defaultStrokeWidth;
         this.displacement = displacement;
         this.edgeOffset = edgeOffset;
@@ -89,10 +89,10 @@ public class RefreshIndicator : global::Doroti.Framework.Widgets.StatefulWidget
         System.Diagnostics.Debug.Assert(elevation >= 0.0);
     }
 
-    public static RefreshIndicator CreateAdaptive(global::Doroti.Framework.Foundation.Key? key = null, double displacement = 40.0, double edgeOffset = 0.0, global::System.Func<Future> onRefresh = default!, Color? color = null, Color? backgroundColor = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, double? strokeWidth = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, global::Doroti.Framework.Widgets.Widget child = default!)
+    public static RefreshIndicator CreateAdaptive(Key? key = null, double displacement = 40.0, double edgeOffset = 0.0, Func<Future> onRefresh = default!, Color? color = null, Color? backgroundColor = null, Func<ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, double? strokeWidth = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, Widget child = default!)
     {
         var __instance = new RefreshIndicator(key: key, displacement: displacement, edgeOffset: edgeOffset, onRefresh: onRefresh, color: color, backgroundColor: backgroundColor, notificationPredicate: notificationPredicate, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue, strokeWidth: strokeWidth, triggerMode: triggerMode, elevation: elevation, child: child);
-        global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
+        Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
         double __strokeWidth = strokeWidth ?? RefreshProgressIndicator.defaultStrokeWidth;
         __instance.displacement = displacement;
         __instance.edgeOffset = edgeOffset;
@@ -111,10 +111,10 @@ public class RefreshIndicator : global::Doroti.Framework.Widgets.StatefulWidget
         return __instance;
     }
 
-    public static RefreshIndicator CreateNoSpinner(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<Future> onRefresh = default!, global::System.Action<RefreshIndicatorStatus?>? onStatusChange = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, global::Doroti.Framework.Widgets.Widget child = default!)
+    public static RefreshIndicator CreateNoSpinner(Key? key = null, Func<Future> onRefresh = default!, System.Action<RefreshIndicatorStatus?>? onStatusChange = null, Func<ScrollNotification, bool> notificationPredicate = default!, string? semanticsLabel = null, string? semanticsValue = null, RefreshIndicatorTriggerMode triggerMode = RefreshIndicatorTriggerMode.onEdge, double elevation = 2.0, Widget child = default!)
     {
         var __instance = new RefreshIndicator(key: key, onRefresh: onRefresh, notificationPredicate: notificationPredicate, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue, strokeWidth: RefreshProgressIndicator.defaultStrokeWidth, triggerMode: triggerMode, elevation: elevation, child: child);
-        global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
+        Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
         __instance.onRefresh = onRefresh;
         __instance.onStatusChange = onStatusChange;
         __instance.notificationPredicate = __notificationPredicate;
@@ -135,14 +135,14 @@ public class RefreshIndicator : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new RefreshIndicatorState());
 }
 
-public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<RefreshIndicator>, global::Doroti.Framework.Widgets.TickerProviderStateMixin<RefreshIndicator>
+public class RefreshIndicatorState : State<RefreshIndicator>, TickerProviderStateMixin<RefreshIndicator>
 {
-    internal virtual global::Doroti.Framework.Animation.AnimationController _positionController { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.AnimationController _scaleController { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _positionFactor { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _scaleFactor { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _value { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<Color?> _valueColor { get; set; } = default!;
+    internal virtual AnimationController _positionController { get; set; } = default!;
+    internal virtual AnimationController _scaleController { get; set; } = default!;
+    internal virtual Animation<double> _positionFactor { get; set; } = default!;
+    internal virtual Animation<double> _scaleFactor { get; set; } = default!;
+    internal virtual Animation<double> _value { get; set; } = default!;
+    internal virtual Animation<Color?> _valueColor { get; set; } = default!;
     internal virtual RefreshIndicatorStatus? _status { get; set; } = default;
     internal virtual Future _pendingRefreshFuture { get; set; } = default!;
     internal virtual bool? _isIndicatorAtTop { get; set; } = default;
@@ -162,19 +162,19 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         }
         set { __late__effectiveValueColor = value; __late__effectiveValueColor_initialized = true; }
     }
-    internal static global::Doroti.Framework.Animation.Animatable<double> _threeQuarterTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.75);
-    internal static global::Doroti.Framework.Animation.Animatable<double> _kDragSizeFactorLimitTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: Refresh_indicatorLibrary._kDragSizeFactorLimit);
-    internal static global::Doroti.Framework.Animation.Animatable<double> _oneToZeroTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0);
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal static Animatable<double> _threeQuarterTween = new Tween<double>(begin: 0.0, end: 0.75);
+    internal static Animatable<double> _kDragSizeFactorLimitTween = new Tween<double>(begin: 0.0, end: Refresh_indicatorLibrary._kDragSizeFactorLimit);
+    internal static Animatable<double> _oneToZeroTween = new Tween<double>(begin: 1.0, end: 0.0);
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _positionController = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
+        _positionController = new AnimationController(vsync: this);
         _positionFactor = _positionController.drive(_kDragSizeFactorLimitTween);
         _value = _positionController.drive(_threeQuarterTween);
-        _scaleController = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
+        _scaleController = new AnimationController(vsync: this);
         _scaleFactor = _scaleController.drive(_oneToZeroTween);
     }
 
@@ -201,11 +201,11 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -219,24 +219,24 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
     internal virtual void _setupColorTween()
     {
         _effectiveValueColor = widget.color ?? Theme.of(context).colorScheme.primary;
-        global::Doroti.Ui.Color colorLocal = _effectiveValueColor;
+        Color colorLocal = _effectiveValueColor;
         if (colorLocal.alpha == 0L)
         {
-            _valueColor = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<Color?>>(new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<global::Doroti.Ui.Color>(colorLocal));
+            _valueColor = DartRuntimePrimitives.ConvertValue<Animation<Color?>>(new AlwaysStoppedAnimation<Color>(colorLocal));
         }
         else
         {
-            _valueColor = _positionController.drive(new global::Doroti.Framework.Animation.ColorTween(begin: colorLocal.withAlpha(0L), end: colorLocal.withAlpha(colorLocal.alpha)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, 1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit))));
+            _valueColor = _positionController.drive(new ColorTween(begin: colorLocal.withAlpha(0L), end: colorLocal.withAlpha(colorLocal.alpha)).chain(new CurveTween(curve: new Interval(0.0, 1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit))));
         }
     }
 
-    internal virtual bool _shouldStart(global::Doroti.Framework.Widgets.ScrollNotification notification)
+    internal virtual bool _shouldStart(ScrollNotification notification)
     {
-        return ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification) && (((global::Doroti.Framework.Widgets.ScrollStartNotification)notification).dragDetails is not null) || (notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification) && (((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification).dragDetails is not null) && Equals(widget.triggerMode, RefreshIndicatorTriggerMode.anywhere)) && (Equals(notification.metrics.axisDirection, AxisDirection.up) && (notification.metrics.extentAfter == 0.0) || Equals(notification.metrics.axisDirection, AxisDirection.down) && (notification.metrics.extentBefore == 0.0)) && (_status is null) && _start(notification.metrics.axisDirection);
+        return ((notification is ScrollStartNotification) && (((ScrollStartNotification)notification).dragDetails is not null) || (notification is ScrollUpdateNotification) && (((ScrollUpdateNotification)notification).dragDetails is not null) && Equals(widget.triggerMode, RefreshIndicatorTriggerMode.anywhere)) && (Equals(notification.metrics.axisDirection, AxisDirection.up) && (notification.metrics.extentAfter == 0.0) || Equals(notification.metrics.axisDirection, AxisDirection.down) && (notification.metrics.extentBefore == 0.0)) && (_status is null) && _start(notification.metrics.axisDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _handleScrollNotification(global::Doroti.Framework.Widgets.ScrollNotification notification)
+    internal virtual bool _handleScrollNotification(ScrollNotification notification)
     {
         if (!widget.notificationPredicate(notification))
         {
@@ -261,9 +261,9 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         }
         else
         {
-            if (notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification)
+            if (notification is ScrollUpdateNotification)
             {
-                global::Doroti.Framework.Widgets.ScrollUpdateNotification notification__as16986 = (global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification;
+                ScrollUpdateNotification notification__as16986 = (ScrollUpdateNotification)notification;
                 if (Equals(_status, RefreshIndicatorStatus.drag) || Equals(_status, RefreshIndicatorStatus.armed))
                 {
                     if (Equals(notification__as16986.metrics.axisDirection, AxisDirection.down))
@@ -286,9 +286,9 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
             }
             else
             {
-                if (notification is global::Doroti.Framework.Widgets.OverscrollNotification)
+                if (notification is OverscrollNotification)
                 {
-                    global::Doroti.Framework.Widgets.OverscrollNotification notification__as17855 = (global::Doroti.Framework.Widgets.OverscrollNotification)notification;
+                    OverscrollNotification notification__as17855 = (OverscrollNotification)notification;
                     if (Equals(_status, RefreshIndicatorStatus.drag) || Equals(_status, RefreshIndicatorStatus.armed))
                     {
                         if (Equals(notification__as17855.metrics.axisDirection, AxisDirection.down))
@@ -307,9 +307,9 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                 }
                 else
                 {
-                    if (notification is global::Doroti.Framework.Widgets.ScrollEndNotification)
+                    if (notification is ScrollEndNotification)
                     {
-                        global::Doroti.Framework.Widgets.ScrollEndNotification notification__as18368 = (global::Doroti.Framework.Widgets.ScrollEndNotification)notification;
+                        ScrollEndNotification notification__as18368 = (ScrollEndNotification)notification;
                         switch (_status)
                         {
                             case RefreshIndicatorStatus.armed:
@@ -346,7 +346,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _handleIndicatorNotification(global::Doroti.Framework.Widgets.OverscrollIndicatorNotification notification)
+    internal virtual bool _handleIndicatorNotification(OverscrollIndicatorNotification notification)
     {
         if ((notification.depth != 0L) || !notification.leading)
         {
@@ -361,7 +361,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _start(global::Doroti.Framework.Painting.AxisDirection direction)
+    internal virtual bool _start(AxisDirection direction)
     {
         DartRuntimePrimitives.Assert(() => _status is null);
         DartRuntimePrimitives.Assert(() => _isIndicatorAtTop is null);
@@ -489,10 +489,10 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.Widget childLocal = new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: _handleScrollNotification, child: new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.OverscrollIndicatorNotification>(onNotification: _handleIndicatorNotification, child: widget.child));
+        Widget childLocal = new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new NotificationListener<OverscrollIndicatorNotification>(onNotification: _handleIndicatorNotification, child: widget.child));
         DartRuntimePrimitives.Assert(() =>
             {
                 if (_status is null)
@@ -508,14 +508,14 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                 return true;
             });
         bool showIndeterminateIndicator = Equals(_status, RefreshIndicatorStatus.refresh) || Equals(_status, RefreshIndicatorStatus.done);
-        return new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        return new Stack(children: ((Func<List<Widget>>)(() =>
         {
-            var __collection24667 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(childLocal)); if (_status is not null)
+            var __collection24667 = new List<Widget>(); __collection24667.Add(DartRuntimePrimitives.ConvertValue<Widget>(childLocal)); if (_status is not null)
             {
-                __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? widget.edgeOffset : null, bottom: !DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? widget.edgeOffset : null, left: 0.0, right: 0.0, child: new global::Doroti.Framework.Widgets.SizeTransition(alignment: new global::Doroti.Framework.Painting.AlignmentDirectional(-1.0, DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? 1.0 : -1.0), sizeFactor: _positionFactor, child: new global::Doroti.Framework.Widgets.Padding(padding: DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? EdgeInsets.CreateOnly(top: widget.displacement) : EdgeInsets.CreateOnly(bottom: widget.displacement), child: new global::Doroti.Framework.Widgets.Align(alignment: DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? Alignment.topCenter : Alignment.bottomCenter, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: _scaleFactor, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: _positionController, builder: (context, child) =>
+                __collection24667.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Positioned(top: DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? widget.edgeOffset : null, bottom: !DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? widget.edgeOffset : null, left: 0.0, right: 0.0, child: new SizeTransition(alignment: new AlignmentDirectional(-1.0, DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? 1.0 : -1.0), sizeFactor: _positionFactor, child: new Padding(padding: DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? EdgeInsets.CreateOnly(top: widget.displacement) : EdgeInsets.CreateOnly(bottom: widget.displacement), child: new Align(alignment: DartRuntimePrimitives.RequireValue(_isIndicatorAtTop) ? Alignment.topCenter : Alignment.bottomCenter, child: new ScaleTransition(scale: _scaleFactor, child: new AnimatedBuilder(animation: _positionController, builder: (context, child) =>
                 {
-                    global::Doroti.Framework.Widgets.Widget materialIndicator = new RefreshProgressIndicator(semanticsLabel: widget.semanticsLabel ?? MaterialLocalizations.of(context).refreshIndicatorSemanticLabel, semanticsValue: widget.semanticsValue, value: showIndeterminateIndicator ? null : _value.value, valueColor: _valueColor, backgroundColor: widget.backgroundColor, strokeWidth: widget.strokeWidth, elevation: widget.elevation);
-                    global::Doroti.Framework.Widgets.Widget cupertinoIndicator = new CupertinoActivityIndicator(color: widget.color);
+                    Widget materialIndicator = new RefreshProgressIndicator(semanticsLabel: widget.semanticsLabel ?? MaterialLocalizations.of(context).refreshIndicatorSemanticLabel, semanticsValue: widget.semanticsValue, value: showIndeterminateIndicator ? null : _value.value, valueColor: _valueColor, backgroundColor: widget.backgroundColor, strokeWidth: widget.strokeWidth, elevation: widget.elevation);
+                    Widget cupertinoIndicator = new CupertinoActivityIndicator(color: widget.color);
                     switch (widget._indicatorType)
                     {
                         case _IndicatorType__refresh_indicator.material:
@@ -545,7 +545,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                             }
                         case _IndicatorType__refresh_indicator.noSpinner:
                             {
-                                return new global::Doroti.Framework.Widgets.Container();
+                                return new Container();
                             }
                     }
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -556,16 +556,16 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
     __cascade.muted = !values.enabled;
@@ -577,7 +577,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
+    public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
         DartRuntimePrimitives.Assert(() => _tickers is not null);
         DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
@@ -597,7 +597,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -607,7 +607,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -617,10 +617,10 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }

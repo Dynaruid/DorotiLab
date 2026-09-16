@@ -8,12 +8,12 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
 {
     public virtual Widget prototypeItem { get; private set; } = default!;
 
-    public SliverPrototypeExtentList(global::Doroti.Framework.Foundation.Key? key = null, SliverChildDelegate @delegate = default!, Widget prototypeItem = default!) : base(key: key, @delegate: @delegate)
+    public SliverPrototypeExtentList(Key? key = null, SliverChildDelegate @delegate = default!, Widget prototypeItem = default!) : base(key: key, @delegate: @delegate)
     {
         this.prototypeItem = prototypeItem;
     }
 
-    public static SliverPrototypeExtentList CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, Widget prototypeItem = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
+    public static SliverPrototypeExtentList CreateBuilder(Key? key = null, Func<BuildContext, long, Widget?> itemBuilder = default!, Widget prototypeItem = default!, Func<Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
         return new SliverPrototypeExtentList(key, new SliverChildBuilderDelegate(
             itemBuilder,
@@ -24,7 +24,7 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
             addSemanticIndexes), prototypeItem);
     }
 
-    public static SliverPrototypeExtentList CreateList(global::Doroti.Framework.Foundation.Key? key = null, List<Widget> children = default!, Widget prototypeItem = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
+    public static SliverPrototypeExtentList CreateList(Key? key = null, List<Widget> children = default!, Widget prototypeItem = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
         return new SliverPrototypeExtentList(key, new SliverChildListDelegate(
             children ?? [],
@@ -33,7 +33,7 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
             addSemanticIndexes: addSemanticIndexes), prototypeItem);
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         var element = ((_SliverPrototypeExtentListElement__sliver_prototype_extent_list?)context)!;
         return new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element);
@@ -53,12 +53,12 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
     }
 
     public override _RenderSliverPrototypeExtentList__sliver_prototype_extent_list renderObject => (_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)base.renderObject;
-    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
         if (Equals(slot, _prototypeSlot))
         {
-            DartRuntimePrimitives.Assert(() => child is global::Doroti.Framework.Rendering.RenderBox);
-            renderObject.child = ((global::Doroti.Framework.Rendering.RenderBox?)child)!;
+            DartRuntimePrimitives.Assert(() => child is RenderBox);
+            renderObject.child = ((RenderBox?)child)!;
         }
         else
         {
@@ -66,7 +66,7 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
     }
 
-    public override void didAdoptChild(global::Doroti.Framework.Rendering.RenderBox child)
+    public override void didAdoptChild(RenderBox child)
     {
         if (!Equals(child, renderObject.child))
         {
@@ -74,9 +74,9 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(RenderObject child, object? oldSlot, object? newSlot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         if (Equals(newSlot, _prototypeSlot))
         {
             DartRuntimePrimitives.Assert(() => false);
@@ -87,9 +87,9 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(RenderObject child, object? slot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         if (Equals(renderObject.child, __child))
         {
             renderObject.child = null;
@@ -100,7 +100,7 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
         }
     }
 
-    public override void visitChildren(global::System.Action<Element> visitor)
+    public override void visitChildren(System.Action<Element> visitor)
     {
         if (_prototype is not null)
         {
@@ -125,15 +125,15 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
 
 }
 
-public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : global::Doroti.Framework.Rendering.RenderSliverFixedExtentBoxAdaptor
+public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : RenderSliverFixedExtentBoxAdaptor
 {
-    internal virtual global::Doroti.Framework.Rendering.RenderBox? _child { get; set; } = default;
+    internal virtual RenderBox? _child { get; set; } = default;
 
     internal _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(_SliverPrototypeExtentListElement__sliver_prototype_extent_list childManager) : base(childManager: childManager)
     {
     }
 
-    public virtual global::Doroti.Framework.Rendering.RenderBox? child
+    public virtual RenderBox? child
     {
         get => _child;
         set
@@ -157,7 +157,7 @@ public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : gl
         base.performLayout();
     }
 
-    public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
+    public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
         _child?.attach(owner);
@@ -178,7 +178,7 @@ public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : gl
         base.redepthChildren();
     }
 
-    public override void visitChildren(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
+    public override void visitChildren(System.Action<RenderObject> visitor)
     {
         if (_child is not null)
         {

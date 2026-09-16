@@ -99,7 +99,7 @@ public class BoxConstraints : Constraints
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual BoxConstraints deflate(global::Doroti.Framework.Painting.EdgeInsetsGeometry edges)
+    public virtual BoxConstraints deflate(EdgeInsetsGeometry edges)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         double horizontalLocal = edges.horizontal;
@@ -152,7 +152,7 @@ public class BoxConstraints : Constraints
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Size _debugPropagateDebugSize(Size size, Size result)
+    internal virtual Size _debugPropagateDebugSize(Size size, Size result)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -167,9 +167,9 @@ public class BoxConstraints : Constraints
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size constrain(Size size)
+    public virtual Size constrain(Size size)
     {
-        var result = new global::Doroti.Ui.Size(constrainWidth(DartRuntimePrimitives.RequireValue(size.width)), constrainHeight(DartRuntimePrimitives.RequireValue(size.height)));
+        var result = new Size(constrainWidth(DartRuntimePrimitives.RequireValue(size.width)), constrainHeight(DartRuntimePrimitives.RequireValue(size.height)));
         DartRuntimePrimitives.Assert(() =>
             {
                 result = _debugPropagateDebugSize(size, result);
@@ -179,17 +179,17 @@ public class BoxConstraints : Constraints
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size constrainDimensions(double width, double height)
+    public virtual Size constrainDimensions(double width, double height)
     {
-        return new global::Doroti.Ui.Size(constrainWidth(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(width))), constrainHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(height))));
+        return new Size(constrainWidth(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(width))), constrainHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(height))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size constrainSizeAndAttemptToPreserveAspectRatio(Size size)
+    public virtual Size constrainSizeAndAttemptToPreserveAspectRatio(Size size)
     {
         if (isTight)
         {
-            global::Doroti.Ui.Size result = smallest;
+            Size result = smallest;
             DartRuntimePrimitives.Assert(() =>
                 {
                     result = _debugPropagateDebugSize(size, result);
@@ -224,7 +224,7 @@ public class BoxConstraints : Constraints
             heightLocal = minHeight;
             widthLocal = DartRuntimePrimitives.RequireValue(heightLocal) * aspectRatio;
         }
-        var resultLocal = new global::Doroti.Ui.Size(constrainWidth(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal))), constrainHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(heightLocal))));
+        var resultLocal = new Size(constrainWidth(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal))), constrainHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(heightLocal))));
         DartRuntimePrimitives.Assert(() =>
             {
                 resultLocal = _debugPropagateDebugSize(size, resultLocal);
@@ -234,8 +234,8 @@ public class BoxConstraints : Constraints
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size biggest => new global::Doroti.Ui.Size(constrainWidth(), constrainHeight());
-    public virtual global::Doroti.Ui.Size smallest => new global::Doroti.Ui.Size(constrainWidth(0.0), constrainHeight(0.0));
+    public virtual Size biggest => new Size(constrainWidth(), constrainHeight());
+    public virtual Size smallest => new Size(constrainWidth(0.0), constrainHeight(0.0));
     public virtual bool hasTightWidth => minWidth >= maxWidth;
     public virtual bool hasTightHeight => minHeight >= maxHeight;
     public override bool isTight => hasTightWidth && hasTightHeight;
@@ -467,7 +467,7 @@ public class BoxHitTestResult : HitTestResult
 
     public virtual bool addWithPaintOffset(Offset? offset, Offset position, Func<BoxHitTestResult, Offset, bool> hitTest)
     {
-        global::Doroti.Ui.Offset transformedPosition = (offset is null) ? position : (position - DartRuntimePrimitives.RequireValue(offset));
+        Offset transformedPosition = (offset is null) ? position : (position - DartRuntimePrimitives.RequireValue(offset));
         if (offset is not null)
         {
             Offset offset__value30995 = DartRuntimePrimitives.RequireValue(offset);
@@ -485,7 +485,7 @@ public class BoxHitTestResult : HitTestResult
 
     public virtual bool addWithRawTransform(Matrix4? transform, Offset position, Func<BoxHitTestResult, Offset, bool> hitTest)
     {
-        global::Doroti.Ui.Offset transformedPosition = (transform is null) ? position : MatrixUtils.transformPoint(transform, position);
+        Offset transformedPosition = (transform is null) ? position : MatrixUtils.transformPoint(transform, position);
         if (transform is not null)
         {
             pushTransform(transform);
@@ -607,7 +607,7 @@ public class _DryLayout__box : _CachedLayoutCalculation__box<BoxConstraints, Siz
     {
     }
 
-    public virtual global::Doroti.Ui.Size memoize(_LayoutCacheStorage__box cacheStorage, BoxConstraints input, Func<BoxConstraints, Size> computer)
+    public virtual Size memoize(_LayoutCacheStorage__box cacheStorage, BoxConstraints input, Func<BoxConstraints, Size> computer)
     {
         using var profile = FrameworkComponentProfile.Begin(FrameworkComponentProfile.Kind.DryCache);
         return (cacheStorage._cachedDryLayoutSizes ??= new DartMap<BoxConstraints, Size>()).putIfAbsent(input, () => computer(input));
@@ -866,13 +866,13 @@ public abstract class RenderBox : RenderObject
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size getDryLayout(BoxConstraints constraints)
+    public virtual Size getDryLayout(BoxConstraints constraints)
     {
         return _computeIntrinsics(_CachedLayoutCalculation__box<object, object>.dryLayout, constraints, (BoxConstraints __constraints) => _computeDryLayout(__constraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
+    internal virtual Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -880,7 +880,7 @@ public abstract class RenderBox : RenderObject
                 _computingThisDryLayout = true;
                 return true;
             });
-        global::Doroti.Ui.Size result = computeDryLayout(constraints);
+        Size result = computeDryLayout(constraints);
         DartRuntimePrimitives.Assert(() =>
             {
                 DartRuntimePrimitives.Assert(() => _computingThisDryLayout);
@@ -891,7 +891,7 @@ public abstract class RenderBox : RenderObject
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size computeDryLayout(BoxConstraints constraints)
+    public virtual Size computeDryLayout(BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(error: new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox")} class does not implement \"computeDryLayout\"."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") })));
         return Size.zero;
@@ -955,14 +955,14 @@ public abstract class RenderBox : RenderObject
     }
 
     public virtual bool hasSize => _size is not null;
-    public virtual global::Doroti.Ui.Size size
+    public virtual Size size
     {
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    global::Doroti.Ui.Size? size = _size;
+                    Size? size = _size;
                     if (size is _DebugSize__box)
                     {
                         _DebugSize__box size__93552__as93576 = (_DebugSize__box)size;
@@ -1030,7 +1030,7 @@ public abstract class RenderBox : RenderObject
                 });
         }
     }
-    public virtual global::Doroti.Ui.Size debugAdoptSize(Size value)
+    public virtual Size debugAdoptSize(Size value)
     {
         var result = value;
         DartRuntimePrimitives.Assert(() =>
@@ -1146,11 +1146,11 @@ public abstract class RenderBox : RenderObject
                         }
                         information.Add(nodeLocal.describeForError("The nearest ancestor providing an unbounded height constraint is"));
                     }
-                    throw new FlutterError(new List<DiagnosticsNode> { new DiagnosticsProperty<BoxConstraints>($"The constraints that applied to the {GetType()} were", constraints, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<global::Doroti.Ui.Size>("The exact size it was given was", _size, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("See https://flutter.dev/to/unbounded-constraints for more information.") });
+                    throw new FlutterError(new List<DiagnosticsNode> { new DiagnosticsProperty<BoxConstraints>($"The constraints that applied to the {GetType()} were", constraints, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<Size>("The exact size it was given was", _size, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("See https://flutter.dev/to/unbounded-constraints for more information.") });
                 }
                 if (!constraints.isSatisfiedBy(DartRuntimePrimitives.RequireValue(_size)))
                 {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} does not meet its constraints."), new DiagnosticsProperty<BoxConstraints>("Constraints", constraints, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<global::Doroti.Ui.Size>("Size", _size, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not " + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") });
+                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} does not meet its constraints."), new DiagnosticsProperty<BoxConstraints>("Constraints", constraints, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<Size>("Size", _size, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not " + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") });
                 }
                 if (DebugLibrary.debugCheckIntrinsicSizes)
                 {
@@ -1203,7 +1203,7 @@ public abstract class RenderBox : RenderObject
                     }
                     _debugDryLayoutCalculationValid = true;
                     debugCheckingIntrinsics = true;
-                    global::Doroti.Ui.Size dryLayoutSize = default!;
+                    Size dryLayoutSize = default!;
                     try
                     {
                         dryLayoutSize = getDryLayout(constraints);
@@ -1226,7 +1226,7 @@ public abstract class RenderBox : RenderObject
         DartRuntimePrimitives.Assert(() =>
             {
                 var messages = new List<DiagnosticsNode> { new ErrorDescription($"The constraints used were {constraints}."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") };
-                foreach (global::Doroti.Ui.TextBaseline baseline in Enum.GetValues<TextBaseline>().ToList())
+                foreach (TextBaseline baseline in Enum.GetValues<TextBaseline>().ToList())
                 {
                     DartRuntimePrimitives.Assert(() => !debugCheckingIntrinsics);
                     debugCheckingIntrinsics = true;
@@ -1329,11 +1329,11 @@ public abstract class RenderBox : RenderObject
                 return true;
             });
         var childParentData = ((BoxParentData?)(object?)child.parentData!)!;
-        global::Doroti.Ui.Offset offsetLocal = childParentData.offset;
+        Offset offsetLocal = childParentData.offset;
         transform.translateByDouble(offsetLocal.dx, offsetLocal.dy, 0, 1);
     }
 
-    public virtual global::Doroti.Ui.Offset globalToLocal(Offset point, RenderObject? ancestor = null)
+    public virtual Offset globalToLocal(Offset point, RenderObject? ancestor = null)
     {
         Matrix4 transform = getTransformTo(ancestor);
         double det = transform.invert();
@@ -1349,36 +1349,36 @@ public abstract class RenderBox : RenderObject
         }
         Vector3 localScreenPoint = transform.perspectiveTransform(new Vector3(point.dx, point.dy, 0.0));
         Vector3 localPoint = localScreenPoint - (localViewDirection * (localScreenPoint.z / localViewDirection.z));
-        return new global::Doroti.Ui.Offset(localPoint.x, localPoint.y);
+        return new Offset(localPoint.x, localPoint.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Offset localToGlobal(Offset point, RenderObject? ancestor = null)
+    public virtual Offset localToGlobal(Offset point, RenderObject? ancestor = null)
     {
         return MatrixUtils.transformPoint(getTransformTo(ancestor), point);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Rect paintBounds => Offset.zero & size;
-    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
+    public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         base.handleEvent(@event, entry);
     }
 
-    public virtual bool debugHandleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
+    public virtual bool debugHandleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() =>
             {
                 if (DebugLibrary.debugPaintPointersEnabled)
                 {
-                    if (@event is global::Doroti.Framework.Gestures.PointerDownEvent)
+                    if (@event is Gestures.PointerDownEvent)
                     {
-                        global::Doroti.Framework.Gestures.PointerDownEvent @event__as133711 = (global::Doroti.Framework.Gestures.PointerDownEvent)@event;
+                        Gestures.PointerDownEvent @event__as133711 = (Gestures.PointerDownEvent)@event;
                         _debugActivePointers += 1L;
                     }
                     else
                     {
-                        if ((@event is global::Doroti.Framework.Gestures.PointerUpEvent) || (@event is global::Doroti.Framework.Gestures.PointerCancelEvent))
+                        if ((@event is Gestures.PointerUpEvent) || (@event is Gestures.PointerCancelEvent))
                         {
                             _debugActivePointers -= 1L;
                         }
@@ -1421,10 +1421,10 @@ public abstract class RenderBox : RenderObject
             {
                 var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = 1.0;
-    __cascade.color = new global::Doroti.Ui.Color(4278255615L);
+    __cascade.color = new Color(4278255615L);
     return __cascade;
 }))();
                 context.canvas.drawRect((offset & size).deflate(0.5), paint);
@@ -1438,18 +1438,18 @@ public abstract class RenderBox : RenderObject
             {
                 var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = 0.25;
     return __cascade;
 }))();
-                global::Doroti.Ui.Path path = default!;
+                Path path = default!;
                 double? baselineI = getDistanceToBaseline(TextBaseline.ideographic, onlyReal: true);
                 if (baselineI is not null)
                 {
                     double baselineI__136228__value136315 = DartRuntimePrimitives.RequireValue(baselineI);
-                    paint.color = new global::Doroti.Ui.Color(4294955008L);
-                    path = new global::Doroti.Ui.Path();
+                    paint.color = new Color(4294955008L);
+                    path = new Path();
                     path.moveTo(offset.dx, offset.dy + DartRuntimePrimitives.RequireValue(baselineI__136228__value136315));
                     path.lineTo(offset.dx + size.width, offset.dy + DartRuntimePrimitives.RequireValue(baselineI__136228__value136315));
                     context.canvas.drawPath(path, paint);
@@ -1458,8 +1458,8 @@ public abstract class RenderBox : RenderObject
                 if (baselineA is not null)
                 {
                     double baselineA__136632__value136718 = DartRuntimePrimitives.RequireValue(baselineA);
-                    paint.color = new global::Doroti.Ui.Color(4278255360L);
-                    path = new global::Doroti.Ui.Path();
+                    paint.color = new Color(4278255360L);
+                    path = new Path();
                     path.moveTo(offset.dx, offset.dy + DartRuntimePrimitives.RequireValue(baselineA__136632__value136718));
                     path.lineTo(offset.dx + size.width, offset.dy + DartRuntimePrimitives.RequireValue(baselineA__136632__value136718));
                     context.canvas.drawPath(path, paint);
@@ -1476,8 +1476,8 @@ public abstract class RenderBox : RenderObject
                 {
                     var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = new global::Doroti.Ui.Color(48059L | 67108864L * depth & 4278190080L);
+    var __cascade = new Paint();
+    __cascade.color = new Color(48059L | 67108864L * depth & 4278190080L);
     return __cascade;
 }))();
                     context.canvas.drawRect(offset & size, paint);
@@ -1489,7 +1489,7 @@ public abstract class RenderBox : RenderObject
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("size", _size, missingIfNull: true));
+        properties.add(new DiagnosticsProperty<Size>("size", _size, missingIfNull: true));
     }
 
 }

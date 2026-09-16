@@ -6,16 +6,16 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class DividerThemeData : Diagnosticable
 {
     public virtual Color? color { get; private set; }
     public virtual double? space { get; private set; }
     public virtual double? thickness { get; private set; }
     public virtual double? indent { get; private set; }
     public virtual double? endIndent { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderRadiusGeometry? radius { get; private set; }
+    public virtual BorderRadiusGeometry? radius { get; private set; }
 
-    public DividerThemeData(Color? color = null, double? space = null, double? thickness = null, double? indent = null, double? endIndent = null, global::Doroti.Framework.Painting.BorderRadiusGeometry? radius = null)
+    public DividerThemeData(Color? color = null, double? space = null, double? thickness = null, double? indent = null, double? endIndent = null, BorderRadiusGeometry? radius = null)
     {
         this.color = color;
         this.space = space;
@@ -25,7 +25,7 @@ public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticab
         this.radius = radius;
     }
 
-    public virtual DividerThemeData copyWith(Color? color = null, double? space = null, double? thickness = null, double? indent = null, double? endIndent = null, global::Doroti.Framework.Painting.BorderRadiusGeometry? radius = null)
+    public virtual DividerThemeData copyWith(Color? color = null, double? space = null, double? thickness = null, double? indent = null, double? endIndent = null, BorderRadiusGeometry? radius = null)
     {
         return new DividerThemeData(color: color ?? this.color, space: space ?? this.space, thickness: thickness ?? this.thickness, indent: indent ?? this.indent, endIndent: endIndent ?? this.endIndent, radius: radius ?? this.radius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -57,14 +57,14 @@ public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticab
         return (__other is DividerThemeData) && Equals(__other.color, color) && (__other.space == space) && (__other.thickness == thickness) && (__other.indent == indent) && (__other.endIndent == endIndent) && Equals(__other.radius, radius);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("space", space, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("thickness", thickness, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("indent", indent, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("endIndent", endIndent, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadiusGeometry>("radius", radius, defaultValue: null));
+        properties.add(new ColorProperty("color", color, defaultValue: null));
+        properties.add(new DoubleProperty("space", space, defaultValue: null));
+        properties.add(new DoubleProperty("thickness", thickness, defaultValue: null));
+        properties.add(new DoubleProperty("indent", indent, defaultValue: null));
+        properties.add(new DoubleProperty("endIndent", endIndent, defaultValue: null));
+        properties.add(new DiagnosticsProperty<BorderRadiusGeometry>("radius", radius, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -90,27 +90,27 @@ public class DividerThemeData : global::Doroti.Framework.Foundation.Diagnosticab
 
 }
 
-public class DividerTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class DividerTheme : InheritedTheme
 {
     public virtual DividerThemeData data { get; private set; } = default!;
 
-    public DividerTheme(global::Doroti.Framework.Foundation.Key? key = null, DividerThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public DividerTheme(Key? key = null, DividerThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static DividerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static DividerThemeData of(BuildContext context)
     {
         DividerTheme? dividerThemeLocal = context.dependOnInheritedWidgetOfExactType<DividerTheme>();
         return dividerThemeLocal?.data ?? Theme.of(context).dividerTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new DividerTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((DividerTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((DividerTheme)oldWidget).data));
 }

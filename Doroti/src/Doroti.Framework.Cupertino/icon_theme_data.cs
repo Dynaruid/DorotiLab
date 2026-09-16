@@ -6,16 +6,16 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Cupertino;
 
-public class CupertinoIconThemeData : global::Doroti.Framework.Widgets.IconThemeData, global::Doroti.Framework.Foundation.Diagnosticable
+public class CupertinoIconThemeData : IconThemeData, Diagnosticable
 {
 
     public CupertinoIconThemeData(double? size = null, double? fill = null, double? weight = null, double? grade = null, double? opticalSize = null, Color? color = null, double? opacity = null, List<Shadow>? shadows = null, bool? applyTextScaling = null) : base(size: size, fill: fill, weight: weight, grade: grade, opticalSize: opticalSize, color: color, opacity: opacity, shadows: shadows, applyTextScaling: applyTextScaling)
     {
     }
 
-    public override global::Doroti.Framework.Widgets.IconThemeData resolve(global::Doroti.Framework.Widgets.BuildContext context)
+    public override IconThemeData resolve(BuildContext context)
     {
-        global::Doroti.Ui.Color? resolvedColor = CupertinoDynamicColor.maybeResolve(color, context);
+        Color? resolvedColor = CupertinoDynamicColor.maybeResolve(color, context);
         return Equals(resolvedColor, color) ? this : copyWith(color: resolvedColor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -26,7 +26,7 @@ public class CupertinoIconThemeData : global::Doroti.Framework.Widgets.IconTheme
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         properties.add(ColorsLibrary.createCupertinoColorProperty("color", color, defaultValue: null));
     }

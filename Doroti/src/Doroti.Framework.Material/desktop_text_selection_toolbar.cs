@@ -16,30 +16,30 @@ public static partial class Desktop_text_selection_toolbarLibrary
     internal static double _kToolbarWidth = 222.0;
 }
 
-public class DesktopTextSelectionToolbar : global::Doroti.Framework.Widgets.StatelessWidget
+public class DesktopTextSelectionToolbar : StatelessWidget
 {
     public virtual Offset anchor { get; private set; } = default!;
-    public virtual List<global::Doroti.Framework.Widgets.Widget> children { get; private set; } = default!;
+    public virtual List<Widget> children { get; private set; } = default!;
 
-    public DesktopTextSelectionToolbar(global::Doroti.Framework.Foundation.Key? key = null, Offset anchor = default!, List<global::Doroti.Framework.Widgets.Widget> children = default!) : base(key: key)
+    public DesktopTextSelectionToolbar(Key? key = null, Offset anchor = default!, List<Widget> children = default!) : base(key: key)
     {
         this.anchor = anchor;
         this.children = children;
         System.Diagnostics.Debug.Assert(checked(children.Count) > 0L);
     }
 
-    internal static global::Doroti.Framework.Widgets.Widget _defaultToolbarBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    internal static Widget _defaultToolbarBuilder(BuildContext context, Widget child)
     {
-        return new global::Doroti.Framework.Widgets.SizedBox(width: Desktop_text_selection_toolbarLibrary._kToolbarWidth, child: new Material(borderRadius: BorderRadius.CreateAll(Radius.circular(7.0)), clipBehavior: Clip.antiAlias, elevation: 1.0, type: MaterialType.card, child: child));
+        return new SizedBox(width: Desktop_text_selection_toolbarLibrary._kToolbarWidth, child: new Material(borderRadius: BorderRadius.CreateAll(Radius.circular(7.0)), clipBehavior: Clip.antiAlias, elevation: 1.0, type: MaterialType.card, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         double paddingAbove = MediaQuery.paddingOf(context).top + Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding;
-        var localAdjustment = new global::Doroti.Ui.Offset(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove);
-        return new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.DesktopTextSelectionToolbarLayoutDelegate(anchor: anchor - localAdjustment), child: _defaultToolbarBuilder(context, new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, children: children))));
+        var localAdjustment = new Offset(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove);
+        return new Padding(padding: new EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new CustomSingleChildLayout(@delegate: new DesktopTextSelectionToolbarLayoutDelegate(anchor: anchor - localAdjustment), child: _defaultToolbarBuilder(context, new Column(mainAxisSize: MainAxisSize.min, children: children))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

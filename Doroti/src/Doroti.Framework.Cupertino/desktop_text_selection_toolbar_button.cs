@@ -8,22 +8,22 @@ namespace Doroti.Framework.Cupertino;
 
 public static partial class Desktop_text_selection_toolbar_buttonLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextStyle _kToolbarButtonFontStyle = new global::Doroti.Framework.Painting.TextStyle(inherit: false, fontSize: 14.0, letterSpacing: -0.15, fontWeight: FontWeight.w400);
+    internal static TextStyle _kToolbarButtonFontStyle = new TextStyle(inherit: false, fontSize: 14.0, letterSpacing: -0.15, fontWeight: FontWeight.w400);
 }
 
 public static partial class Desktop_text_selection_toolbar_buttonLibrary
 {
-    internal static global::Doroti.Framework.Painting.EdgeInsets _kToolbarButtonPadding = new global::Doroti.Framework.Painting.EdgeInsets(8.0, 2.0, 8.0, 5.0);
+    internal static EdgeInsets _kToolbarButtonPadding = new EdgeInsets(8.0, 2.0, 8.0, 5.0);
 }
 
-public class CupertinoDesktopTextSelectionToolbarButton : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoDesktopTextSelectionToolbarButton : StatefulWidget
 {
-    public virtual global::System.Action? onPressed { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.ContextMenuButtonItem? buttonItem { get; private set; }
+    public virtual Action? onPressed { get; private set; }
+    public virtual Widget? child { get; private set; }
+    public virtual ContextMenuButtonItem? buttonItem { get; private set; }
     public virtual string? text { get; private set; }
 
-    public CupertinoDesktopTextSelectionToolbarButton(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key)
+    public CupertinoDesktopTextSelectionToolbarButton(Key? key = null, Action? onPressed = default!, Widget child = default!) : base(key: key)
     {
         this.onPressed = onPressed;
         this.child = child;
@@ -31,7 +31,7 @@ public class CupertinoDesktopTextSelectionToolbarButton : global::Doroti.Framewo
         text = null;
     }
 
-    public static CupertinoDesktopTextSelectionToolbarButton CreateText(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = default!, string? text = default!)
+    public static CupertinoDesktopTextSelectionToolbarButton CreateText(Key? key = null, Action? onPressed = default!, string? text = default!)
     {
         var __instance = new CupertinoDesktopTextSelectionToolbarButton(key: key, onPressed: onPressed, child: default!);
         __instance.onPressed = onPressed;
@@ -41,7 +41,7 @@ public class CupertinoDesktopTextSelectionToolbarButton : global::Doroti.Framewo
         return __instance;
     }
 
-    public static CupertinoDesktopTextSelectionToolbarButton CreateButtonItem(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.ContextMenuButtonItem buttonItem = default!)
+    public static CupertinoDesktopTextSelectionToolbarButton CreateButtonItem(Key? key = null, ContextMenuButtonItem buttonItem = default!)
     {
         var __instance = new CupertinoDesktopTextSelectionToolbarButton(key: key, onPressed: default!, child: default!);
         __instance.buttonItem = buttonItem;
@@ -54,11 +54,11 @@ public class CupertinoDesktopTextSelectionToolbarButton : global::Doroti.Framewo
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_selection_toolbar_button());
 }
 
-internal class _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_selection_toolbar_button : global::Doroti.Framework.Widgets.State<CupertinoDesktopTextSelectionToolbarButton>
+internal class _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_selection_toolbar_button : State<CupertinoDesktopTextSelectionToolbarButton>
 {
     internal virtual bool _isHovered { get; set; } = false;
 
-    internal virtual void _onEnter(global::Doroti.Framework.Gestures.PointerEnterEvent @event)
+    internal virtual void _onEnter(Gestures.PointerEnterEvent @event)
     {
         setState(() =>
         {
@@ -66,7 +66,7 @@ internal class _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_se
         });
     }
 
-    internal virtual void _onExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
+    internal virtual void _onExit(Gestures.PointerExitEvent @event)
     {
         setState(() =>
         {
@@ -74,10 +74,10 @@ internal class _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_se
         });
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = widget.child ?? new global::Doroti.Framework.Widgets.Text(widget.text ?? CupertinoTextSelectionToolbarButton.getButtonLabel(context, widget.buttonItem!), overflow: TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: _isHovered ? CupertinoTheme.of(context).primaryContrastingColor : new CupertinoDynamicColor(color: CupertinoColors.black, darkColor: CupertinoColors.white).resolveFrom(context)));
-        return new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new global::Doroti.Framework.Widgets.MouseRegion(onEnter: _onEnter, onExit: _onExit, child: new CupertinoButton(alignment: Alignment.centerLeft, borderRadius: BorderRadius.CreateAll(Radius.circular(4.0)), color: _isHovered ? CupertinoTheme.of(context).primaryColor : null, minSize: 0.0, onPressed: widget.onPressed, padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 0.7, child: childLocal)));
+        Widget childLocal = widget.child ?? new Text(widget.text ?? CupertinoTextSelectionToolbarButton.getButtonLabel(context, widget.buttonItem!), overflow: TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: _isHovered ? CupertinoTheme.of(context).primaryContrastingColor : new CupertinoDynamicColor(color: CupertinoColors.black, darkColor: CupertinoColors.white).resolveFrom(context)));
+        return new SizedBox(width: double.PositiveInfinity, child: new MouseRegion(onEnter: _onEnter, onExit: _onExit, child: new CupertinoButton(alignment: Alignment.centerLeft, borderRadius: BorderRadius.CreateAll(Radius.circular(4.0)), color: _isHovered ? CupertinoTheme.of(context).primaryColor : null, minSize: 0.0, onPressed: widget.onPressed, padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 0.7, child: childLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

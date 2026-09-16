@@ -55,9 +55,9 @@ public delegate Widget RawMenuAnchorOverlayBuilder(BuildContext context, RawMenu
 
 public delegate Widget RawMenuAnchorChildBuilder(BuildContext context, MenuController controller, Widget? child);
 
-public delegate void RawMenuAnchorOpenRequestedCallback(Offset? position, global::System.Action showOverlay);
+public delegate void RawMenuAnchorOpenRequestedCallback(Offset? position, Action showOverlay);
 
-public delegate void RawMenuAnchorCloseRequestedCallback(global::System.Action hideOverlay);
+public delegate void RawMenuAnchorCloseRequestedCallback(Action hideOverlay);
 
 internal class _MenuControllerScope__raw_menu_anchor : InheritedWidget
 {
@@ -81,22 +81,22 @@ internal class _MenuControllerScope__raw_menu_anchor : InheritedWidget
 
 public class RawMenuAnchor : StatefulWidget
 {
-    public virtual global::System.Action? onOpen { get; private set; }
-    public virtual global::System.Action? onClose { get; private set; }
-    public virtual global::System.Action<Offset?, global::System.Action> onOpenRequested { get; private set; } = default!;
-    public virtual global::System.Action<global::System.Action> onCloseRequested { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, MenuController, Widget?, Widget>? builder { get; private set; }
+    public virtual Action? onOpen { get; private set; }
+    public virtual Action? onClose { get; private set; }
+    public virtual Action<Offset?, Action> onOpenRequested { get; private set; } = default!;
+    public virtual System.Action<Action> onCloseRequested { get; private set; } = default!;
+    public virtual Func<BuildContext, MenuController, Widget?, Widget>? builder { get; private set; }
     public virtual Widget? child { get; private set; }
-    public virtual global::System.Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder { get; private set; } = default!;
     public virtual bool useRootOverlay { get; private set; } = default!;
     public virtual FocusNode? childFocusNode { get; private set; }
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    public RawMenuAnchor(global::Doroti.Framework.Foundation.Key? key = null, FocusNode? childFocusNode = null, bool consumeOutsideTaps = false, global::System.Action? onOpen = null, global::System.Action? onClose = null, global::System.Action<Offset?, global::System.Action> onOpenRequested = default!, global::System.Action<global::System.Action> onCloseRequested = default!, bool useRootOverlay = false, global::System.Func<BuildContext, MenuController, Widget?, Widget>? builder = null, MenuController controller = default!, global::System.Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!, Widget? child = null) : base(key: key)
+    public RawMenuAnchor(Key? key = null, FocusNode? childFocusNode = null, bool consumeOutsideTaps = false, Action? onOpen = null, Action? onClose = null, Action<Offset?, Action> onOpenRequested = default!, System.Action<Action> onCloseRequested = default!, bool useRootOverlay = false, Func<BuildContext, MenuController, Widget?, Widget>? builder = null, MenuController controller = default!, Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!, Widget? child = null) : base(key: key)
     {
-        global::System.Action<Offset?, global::System.Action> __onOpenRequested = onOpenRequested ?? _defaultOnOpenRequested;
-        global::System.Action<global::System.Action> __onCloseRequested = onCloseRequested ?? _defaultOnCloseRequested;
+        Action<Offset?, Action> __onOpenRequested = onOpenRequested ?? _defaultOnOpenRequested;
+        System.Action<Action> __onCloseRequested = onCloseRequested ?? _defaultOnCloseRequested;
         this.childFocusNode = childFocusNode;
         this.consumeOutsideTaps = consumeOutsideTaps;
         this.onOpen = onOpen;
@@ -110,22 +110,22 @@ public class RawMenuAnchor : StatefulWidget
         this.child = child;
     }
 
-    internal static void _defaultOnOpenRequested(Offset? position, global::System.Action showOverlay)
+    internal static void _defaultOnOpenRequested(Offset? position, Action showOverlay)
     {
         showOverlay();
     }
 
-    internal static void _defaultOnCloseRequested(global::System.Action hideOverlay)
+    internal static void _defaultOnCloseRequested(Action hideOverlay)
     {
         hideOverlay();
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorState__raw_menu_anchor());
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(ObjectFlagProperty<FocusNode>.CreateHas("focusNode", childFocusNode));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("useRootOverlay", value: useRootOverlay, ifFalse: "use nearest overlay", ifTrue: "use root overlay"));
+        properties.add(new FlagProperty("useRootOverlay", value: useRootOverlay, ifFalse: "use nearest overlay", ifTrue: "use root overlay"));
     }
 
 }
@@ -154,10 +154,10 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor : IState
     public void handleCloseRequest();
     public void closeChildren(bool inDispose = false);
     public void requestChildrenClose();
-    public void handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent);
+    public void handleOutsideTap(Gestures.PointerDownEvent pointerDownEvent);
     public Widget buildAnchor(BuildContext context);
     public new Widget build(BuildContext context);
-    public string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!);
+    public string ToString(DiagnosticLevel minLevel = default!);
 }
 
 internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _RawMenuAnchorBaseMixin__raw_menu_anchor
@@ -286,8 +286,8 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     internal virtual Widget _buildOverlay(BuildContext context, OverlayChildLayoutInfo layoutInfo)
     {
         Matrix4 transform = layoutInfo.childPaintTransform;
-        global::Doroti.Ui.Size anchorSize = layoutInfo.childSize;
-        global::Doroti.Ui.Rect anchorRectLocal = MatrixUtils.transformRect(transform, Offset.zero & anchorSize);
+        Size anchorSize = layoutInfo.childSize;
+        Rect anchorRectLocal = MatrixUtils.transformRect(transform, Offset.zero & anchorSize);
         var info = new RawMenuOverlayInfo(anchorRect: anchorRectLocal, overlaySize: layoutInfo.overlaySize, position: _menuPosition, tapRegionGroupId: root.menuController);
         return widget.overlayBuilder(context, info);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -304,7 +304,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!)
+    public override string ToString(DiagnosticLevel minLevel = default!)
     {
         return DiagnosticsLibrary.describeIdentity(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -345,7 +345,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             _scrollPosition?.isScrollingNotifier.removeListener(_handleScroll);
             _scrollPosition = Scrollable.maybeOf(context)?.position;
             _scrollPosition?.isScrollingNotifier.addListener(_handleScroll);
-            global::Doroti.Ui.Size newSize = MediaQuery.sizeOf(context);
+            Size newSize = MediaQuery.sizeOf(context);
             if ((_viewSize is not null) && (!Equals(newSize, _viewSize)) && isOpen)
             {
                 handleCloseRequest();
@@ -439,7 +439,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         }
     }
 
-    public virtual void handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent)
+    public virtual void handleOutsideTap(Gestures.PointerDownEvent pointerDownEvent)
     {
         DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {menuController}"));
         if (isOpen)
@@ -461,13 +461,13 @@ public class RawMenuAnchorGroup : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    public RawMenuAnchorGroup(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, MenuController controller = default!) : base(key: key)
+    public RawMenuAnchorGroup(Key? key = null, Widget child = default!, MenuController controller = default!) : base(key: key)
     {
         this.child = child;
         this.controller = controller;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(ObjectFlagProperty<MenuController>.CreateHas("controller", controller));
@@ -584,7 +584,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
             _scrollPosition?.isScrollingNotifier.removeListener(_handleScroll);
             _scrollPosition = Scrollable.maybeOf(context)?.position;
             _scrollPosition?.isScrollingNotifier.addListener(_handleScroll);
-            global::Doroti.Ui.Size newSize = MediaQuery.sizeOf(context);
+            Size newSize = MediaQuery.sizeOf(context);
             if ((_viewSize is not null) && (!Equals(newSize, _viewSize)) && isOpen)
             {
                 handleCloseRequest();
@@ -678,7 +678,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         }
     }
 
-    public virtual void handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent)
+    public virtual void handleOutsideTap(Gestures.PointerDownEvent pointerDownEvent)
     {
         DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {menuController}"));
         if (isOpen)
@@ -693,7 +693,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!) => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString(DiagnosticLevel minLevel = default!) => DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class MenuController

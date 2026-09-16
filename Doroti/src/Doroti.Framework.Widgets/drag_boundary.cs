@@ -50,27 +50,27 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
 
 public class DragBoundary : InheritedWidget
 {
-    public DragBoundary(Widget child, global::Doroti.Framework.Foundation.Key? key = null) : base(child: child, key: key)
+    public DragBoundary(Widget child, Key? key = null) : base(child: child, key: key)
     {
     }
 
-    public static DragBoundaryDelegate<global::Doroti.Ui.Rect> forRectOf(BuildContext context, bool useGlobalPosition = true)
+    public static DragBoundaryDelegate<Rect> forRectOf(BuildContext context, bool useGlobalPosition = true)
     {
         return forRectMaybeOf(context, useGlobalPosition: useGlobalPosition) ?? new _DragBoundaryDelegateForRect__drag_boundary(null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static DragBoundaryDelegate<global::Doroti.Ui.Rect>? forRectMaybeOf(BuildContext context, bool useGlobalPosition = true)
+    public static DragBoundaryDelegate<Rect>? forRectMaybeOf(BuildContext context, bool useGlobalPosition = true)
     {
         InheritedElement? element = context.getElementForInheritedWidgetOfExactType<DragBoundary>();
         if (element is null)
         {
             return null;
         }
-        var rb = ((global::Doroti.Framework.Rendering.RenderBox?)element.findRenderObject())!;
+        var rb = ((RenderBox?)element.findRenderObject())!;
         DartRuntimePrimitives.Assert(() => (rb is not null) && rb.hasSize, () => (object?)"DragBoundary is not available");
-        global::Doroti.Ui.Rect boundary = useGlobalPosition ? Rect.fromPoints(rb!.localToGlobal(Offset.zero), rb.localToGlobal(rb.size.bottomRight(Offset.zero))) : (Offset.zero & rb!.size);
-        return (DragBoundaryDelegate<global::Doroti.Ui.Rect>?)new _DragBoundaryDelegateForRect__drag_boundary(boundary);
+        Rect boundary = useGlobalPosition ? Rect.fromPoints(rb!.localToGlobal(Offset.zero), rb.localToGlobal(rb.size.bottomRight(Offset.zero))) : (Offset.zero & rb!.size);
+        return (DragBoundaryDelegate<Rect>?)new _DragBoundaryDelegateForRect__drag_boundary(boundary);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

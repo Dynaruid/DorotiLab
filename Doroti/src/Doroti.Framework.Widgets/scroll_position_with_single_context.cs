@@ -7,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDelegate
 {
     internal virtual double _heldPreviousVelocity { get; set; } = 0.0;
-    internal virtual global::Doroti.Framework.Rendering.ScrollDirection _userScrollDirection { get; set; } = ScrollDirection.idle;
+    internal virtual ScrollDirection _userScrollDirection { get; set; } = ScrollDirection.idle;
     internal virtual ScrollDragController? _currentDrag { get; set; } = default;
 
     public ScrollPositionWithSingleContext(ScrollPhysics physics, ScrollContext context, double? initialPixels = 0.0, bool keepScrollOffset = true, ScrollPosition? oldPosition = null, string? debugLabel = null) : base(physics: physics, context: context, keepScrollOffset: keepScrollOffset, oldPosition: oldPosition, debugLabel: debugLabel)
@@ -22,7 +22,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         }
     }
 
-    public override global::Doroti.Framework.Painting.AxisDirection axisDirection => context.axisDirection;
+    public override AxisDirection axisDirection => context.axisDirection;
     public override double setPixels(double newPixels)
     {
         DartRuntimePrimitives.Assert(() => activity!.isScrolling);
@@ -86,7 +86,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public virtual void goBallistic(double velocity)
     {
         DartRuntimePrimitives.Assert(() => hasPixels);
-        global::Doroti.Framework.Physics.Simulation? simulation = physics.createBallisticSimulation(this, velocity);
+        Physics.Simulation? simulation = physics.createBallisticSimulation(this, velocity);
         if (simulation is not null)
         {
             beginActivity(new BallisticScrollActivity(this, simulation, context.vsync, shouldIgnorePointer));
@@ -97,8 +97,8 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         }
     }
 
-    public override global::Doroti.Framework.Rendering.ScrollDirection userScrollDirection => _userScrollDirection;
-    public virtual void updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection value)
+    public override ScrollDirection userScrollDirection => _userScrollDirection;
+    public virtual void updateUserScrollDirection(ScrollDirection value)
     {
         if (Equals(userScrollDirection, value))
         {
@@ -108,7 +108,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         didUpdateScrollDirection(value);
     }
 
-    public override Future animateTo(double to, Duration duration, global::Doroti.Framework.Animation.Curve curve)
+    public override Future animateTo(double to, Duration duration, Curve curve)
     {
         if (Physics.UtilsLibrary.nearEqual(to, pixels, physics.toleranceFor(this).distance))
         {
@@ -170,7 +170,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         }
     }
 
-    public override ScrollHoldController hold(global::System.Action holdCancelCallback)
+    public override ScrollHoldController hold(Action holdCancelCallback)
     {
         double previousVelocity = activity!.velocity;
         var holdActivity = new HoldScrollActivity(@delegate: this, onHoldCanceled: () => holdCancelCallback());
@@ -180,7 +180,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Gestures.Drag drag(global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action dragCancelCallback)
+    public override Drag drag(DragStartDetails details, Action dragCancelCallback)
     {
         var dragLocal = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback(), carriedVelocity: physics.carriedMomentum(_heldPreviousVelocity), motionStartDistanceThreshold: physics.dragStartDistanceMotionThreshold);
         beginActivity(new DragScrollActivity(this, dragLocal));

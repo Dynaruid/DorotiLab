@@ -125,7 +125,7 @@ public class ShapeDecoration : Decoration
         {
             return false;
         }
-        return (__other is ShapeDecoration) && Equals(__other.color, color) && Equals(__other.gradient, gradient) && Equals(__other.image, image) && CollectionsLibrary.listEquals<BoxShadow>(__other.shadows, shadows) && Equals(__other.shape, shape);
+        return (__other is ShapeDecoration) && Equals(__other.color, color) && Equals(__other.gradient, gradient) && Equals(__other.image, image) && CollectionsLibrary.listEquals(__other.shadows, shadows) && Equals(__other.shape, shape);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(color, gradient, image, shape, (shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(shadows!));
@@ -183,7 +183,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         }
         if ((_interiorPaint is null) && ((_decoration.color is not null) || (_decoration.gradient is not null)))
         {
-            _interiorPaint = new global::Doroti.Ui.Paint();
+            _interiorPaint = new Paint();
             if (_decoration.color is not null)
             {
                 _interiorPaint!.color = _decoration.color!;
@@ -236,7 +236,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
             if (DebugLibrary.debugDisableShadows && Equals(boxShadow.blurStyle, BlurStyle.outer))
             {
                 canvas.save();
-                var clipPathLocal = new global::Doroti.Ui.Path();
+                var clipPathLocal = new Path();
                 clipPathLocal.fillType = PathFillType.evenOdd;
                 clipPathLocal.addRect(Rect.largest);
                 clipPathLocal.addPath(path, Offset.zero);
@@ -283,7 +283,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         {
             if (_decoration.shape.preferPaintInterior)
             {
-                global::Doroti.Ui.Rect adjustedRect = _adjustedRectOnOutlinedBorder(rect);
+                Rect adjustedRect = _adjustedRectOnOutlinedBorder(rect);
                 _decoration.shape.paintInterior(canvas, adjustedRect, _interiorPaint!, textDirection: textDirection);
             }
             else
@@ -293,7 +293,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         }
     }
 
-    internal virtual global::Doroti.Ui.Rect _adjustedRectOnOutlinedBorder(Rect rect)
+    internal virtual Rect _adjustedRectOnOutlinedBorder(Rect rect)
     {
         if ((_decoration.shape is OutlinedBorder) && (_decoration.color is not null))
         {
@@ -326,8 +326,8 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => configuration.size is not null);
-        global::Doroti.Ui.Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
-        global::Doroti.Ui.TextDirection? textDirectionLocal = configuration.textDirection;
+        Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
+        TextDirection? textDirectionLocal = configuration.textDirection;
         _precache(rect, textDirectionLocal);
         _paintShadows(canvas, rect, textDirectionLocal);
         _paintInterior(canvas, rect, textDirectionLocal);

@@ -87,7 +87,7 @@ public class TextStyle : Diagnosticable
         System.Diagnostics.Debug.Assert((height is null) || (DartRuntimePrimitives.RequireValue(height) == DartRuntimePrimitives.RequireValue(height)));
     }
 
-    public virtual List<string>? fontFamilyFallback => (_package is null) ? _fontFamilyFallback : _fontFamilyFallback?.map<string, string>((str) => $"packages/{_package}/{str}").ToList();
+    public virtual List<string>? fontFamilyFallback => (_package is null) ? _fontFamilyFallback : _fontFamilyFallback?.map((str) => $"packages/{_package}/{str}").ToList();
     internal virtual string? _fontFamily
     {
         get
@@ -199,43 +199,43 @@ public class TextStyle : Diagnosticable
                 {
                     return true;
                 }
-                throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Failed to interpolate TextStyles with different inherit values."), new ErrorSpacer(), new ErrorDescription("The TextStyles being interpolated were:"), ((Diagnosticable)a).toDiagnosticsNode(name: "from", style: DiagnosticsTreeStyle.singleLine), ((Diagnosticable)b).toDiagnosticsNode(name: "to", style: DiagnosticsTreeStyle.singleLine), new ErrorDescription("The following fields are unspecified in both TextStyles:\n" + $"{string.Join(", ", nullFields.map<string, string>((name) => $"\"{name}\""))}.\n" + "When \"inherit\" changes during the transition, these fields may " + "observe abrupt value changes as a result, causing \"jump\"s in the " + "transition."), new ErrorSpacer(), new ErrorHint("In general, TextStyle.lerp only works well when both TextStyles have " + "the same \"inherit\" value, and specify the same fields."), new ErrorHint("If the TextStyles were directly created by you, consider bringing " + "them to parity to ensure a smooth transition."), new ErrorSpacer(), new ErrorHint("If one of the TextStyles being lerped is significantly more elaborate " + "than the other, and has \"inherited\" set to false, it is often because " + "it is merged with another TextStyle before being lerped. Comparing " + "the \"debugLabel\"s of the two TextStyles may help identify if that was " + "the case."), new ErrorHint("For example, you may see this error message when trying to lerp " + "between \"ThemeData()\" and \"Theme.of(context)\". This is because " + "TextStyles from \"Theme.of(context)\" are merged with TextStyles from " + "another theme and thus are more elaborate than the TextStyles from " + "\"ThemeData()\" (which is reflected in their \"debugLabel\"s -- " + "TextStyles from \"Theme.of(context)\" should have labels in the form of " + "\"(<A TextStyle>).merge(<Another TextStyle>)\"). It is recommended to " + "only lerp ThemeData with matching TextStyles.") });
+                throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Failed to interpolate TextStyles with different inherit values."), new ErrorSpacer(), new ErrorDescription("The TextStyles being interpolated were:"), ((Diagnosticable)a).toDiagnosticsNode(name: "from", style: DiagnosticsTreeStyle.singleLine), ((Diagnosticable)b).toDiagnosticsNode(name: "to", style: DiagnosticsTreeStyle.singleLine), new ErrorDescription("The following fields are unspecified in both TextStyles:\n" + $"{string.Join(", ", nullFields.map((name) => $"\"{name}\""))}.\n" + "When \"inherit\" changes during the transition, these fields may " + "observe abrupt value changes as a result, causing \"jump\"s in the " + "transition."), new ErrorSpacer(), new ErrorHint("In general, TextStyle.lerp only works well when both TextStyles have " + "the same \"inherit\" value, and specify the same fields."), new ErrorHint("If the TextStyles were directly created by you, consider bringing " + "them to parity to ensure a smooth transition."), new ErrorSpacer(), new ErrorHint("If one of the TextStyles being lerped is significantly more elaborate " + "than the other, and has \"inherited\" set to false, it is often because " + "it is merged with another TextStyle before being lerped. Comparing " + "the \"debugLabel\"s of the two TextStyles may help identify if that was " + "the case."), new ErrorHint("For example, you may see this error message when trying to lerp " + "between \"ThemeData()\" and \"Theme.of(context)\". This is because " + "TextStyles from \"Theme.of(context)\" are merged with TextStyles from " + "another theme and thus are more elaborate than the TextStyles from " + "\"ThemeData()\" (which is reflected in their \"debugLabel\"s -- " + "TextStyles from \"Theme.of(context)\" should have labels in the form of " + "\"(<A TextStyle>).merge(<Another TextStyle>)\"). It is recommended to " + "only lerp ThemeData with matching TextStyles.") });
             });
         return new TextStyle(inherit: (t < 0.5) ? a.inherit : b.inherit, color: ((a.foreground is null) && (b.foreground is null)) ? Dart_uiLibrary.Color.lerp(a.color, b.color, t) : null, backgroundColor: ((a.background is null) && (b.background is null)) ? Dart_uiLibrary.Color.lerp(a.backgroundColor, b.backgroundColor, t) : null, fontSize: Dart_uiLibrary.lerpDouble(a.fontSize ?? b.fontSize, b.fontSize ?? a.fontSize, t), fontWeight: Dart_uiLibrary.FontWeight.lerp(a.fontWeight, b.fontWeight, t), fontStyle: (t < 0.5) ? a.fontStyle : b.fontStyle, letterSpacing: Dart_uiLibrary.lerpDouble(a.letterSpacing ?? b.letterSpacing, b.letterSpacing ?? a.letterSpacing, t), wordSpacing: Dart_uiLibrary.lerpDouble(a.wordSpacing ?? b.wordSpacing, b.wordSpacing ?? a.wordSpacing, t), textBaseline: (t < 0.5) ? a.textBaseline : b.textBaseline, height: Dart_uiLibrary.lerpDouble(a.height ?? b.height, b.height ?? a.height, t), leadingDistribution: (t < 0.5) ? a.leadingDistribution : b.leadingDistribution, locale: (t < 0.5) ? a.locale : b.locale, foreground: ((a.foreground is not null) || (b.foreground is not null)) ? ((t < 0.5) ? (a.foreground ?? ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = a.color!;
     return __cascade;
 }))()) : (b.foreground ?? ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = b.color!;
     return __cascade;
 }))())) : null, background: ((a.background is not null) || (b.background is not null)) ? ((t < 0.5) ? (a.background ?? ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = a.backgroundColor!;
     return __cascade;
 }))()) : (b.background ?? ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = b.backgroundColor!;
     return __cascade;
 }))())) : null, shadows: Dart_uiLibrary.Shadow.lerpList(a.shadows, b.shadows, t), fontFeatures: (t < 0.5) ? a.fontFeatures : b.fontFeatures, fontVariations: Text_styleLibrary.lerpFontVariations(a.fontVariations, b.fontVariations, t), decoration: (t < 0.5) ? a.decoration : b.decoration, decorationColor: Dart_uiLibrary.Color.lerp(a.decorationColor, b.decorationColor, t), decorationStyle: (t < 0.5) ? a.decorationStyle : b.decorationStyle, decorationThickness: Dart_uiLibrary.lerpDouble(a.decorationThickness ?? b.decorationThickness, b.decorationThickness ?? a.decorationThickness, t), debugLabel: lerpDebugLabel, fontFamily: (t < 0.5) ? a._fontFamily : b._fontFamily, fontFamilyFallback: (t < 0.5) ? a._fontFamilyFallback : b._fontFamilyFallback, package: (t < 0.5) ? a._package : b._package, overflow: (t < 0.5) ? a.overflow : b.overflow);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.TextStyle getTextStyle(double textScaleFactor = 1.0, TextScaler textScaler = default!)
+    public virtual Ui.TextStyle getTextStyle(double textScaleFactor = 1.0, TextScaler textScaler = default!)
     {
         textScaler ??= TextScaler.noScaling;
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling) || (textScaleFactor == 1.0));
         double? fontSizeLocal = fontSize switch { null => null, double size when Equals(textScaler, TextScaler.noScaling) => size * textScaleFactor, double sizeLocal => textScaler.scale(sizeLocal) };
-        return new global::Doroti.Ui.TextStyle(color: color, decoration: decoration, decorationColor: decorationColor, decorationStyle: decorationStyle, decorationThickness: decorationThickness, fontWeight: fontWeight, fontStyle: fontStyle, textBaseline: textBaseline, leadingDistribution: leadingDistribution, fontFamily: fontFamily, fontFamilyFallback: fontFamilyFallback, fontSize: fontSizeLocal, letterSpacing: letterSpacing, wordSpacing: wordSpacing, height: height, locale: locale, foreground: foreground, background: (background, backgroundColor) switch
+        return new Ui.TextStyle(color: color, decoration: decoration, decorationColor: decorationColor, decorationStyle: decorationStyle, decorationThickness: decorationThickness, fontWeight: fontWeight, fontStyle: fontStyle, textBaseline: textBaseline, leadingDistribution: leadingDistribution, fontFamily: fontFamily, fontFamilyFallback: fontFamilyFallback, fontSize: fontSizeLocal, letterSpacing: letterSpacing, wordSpacing: wordSpacing, height: height, locale: locale, foreground: foreground, background: (background, backgroundColor) switch
         {
-            (global::Doroti.Ui.Paint paint, _) => paint,
-            (_, global::Doroti.Ui.Color colorLocal) => ((Func<Paint>)(() =>
+            (Paint paint, _) => paint,
+            (_, Color colorLocal) => ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = colorLocal;
     return __cascade;
 }))(),
@@ -244,14 +244,14 @@ public class TextStyle : Diagnosticable
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.ParagraphStyle getParagraphStyle(TextAlign? textAlign = null, TextDirection? textDirection = null, TextScaler textScaler = default!, string? ellipsis = null, long? maxLines = null, TextHeightBehavior? textHeightBehavior = null, Locale? locale = null, string? fontFamily = null, double? fontSize = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, double? height = null, StrutStyle? strutStyle = null)
+    public virtual ParagraphStyle getParagraphStyle(TextAlign? textAlign = null, TextDirection? textDirection = null, TextScaler textScaler = default!, string? ellipsis = null, long? maxLines = null, TextHeightBehavior? textHeightBehavior = null, Locale? locale = null, string? fontFamily = null, double? fontSize = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, double? height = null, StrutStyle? strutStyle = null)
     {
         textScaler ??= TextScaler.noScaling;
         DartRuntimePrimitives.Assert(() => (maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L));
         DartRuntimePrimitives.Assert(() => (height is null) || !double.IsNaN(DartRuntimePrimitives.RequireValue(height)));
-        global::Doroti.Ui.TextLeadingDistribution? leadingDistributionLocal = leadingDistribution;
-        global::Doroti.Ui.TextHeightBehavior? effectiveTextHeightBehavior = textHeightBehavior ?? ((leadingDistributionLocal is null) ? null : new global::Doroti.Ui.TextHeightBehavior(leadingDistribution: DartRuntimePrimitives.RequireValue(leadingDistributionLocal)));
-        return new global::Doroti.Ui.ParagraphStyle(textAlign: textAlign, textDirection: textDirection, fontWeight: fontWeight ?? this.fontWeight, fontStyle: fontStyle ?? this.fontStyle, fontFamily: fontFamily ?? this.fontFamily, fontSize: textScaler.scale((fontSize ?? this.fontSize) ?? Text_painterLibrary.kDefaultFontSize), height: height ?? this.height, textHeightBehavior: effectiveTextHeightBehavior, strutStyle: (strutStyle is null) ? null : new global::Doroti.Ui.StrutStyle(fontFamily: strutStyle.fontFamily, fontFamilyFallback: strutStyle.fontFamilyFallback, fontSize: strutStyle.fontSize switch { null => null, double unscaled => textScaler.scale(unscaled) }, height: strutStyle.height, leading: strutStyle.leading, leadingDistribution: strutStyle.leadingDistribution, fontWeight: strutStyle.fontWeight, fontStyle: strutStyle.fontStyle, forceStrutHeight: strutStyle.forceStrutHeight), maxLines: maxLines, ellipsis: ellipsis, locale: locale);
+        TextLeadingDistribution? leadingDistributionLocal = leadingDistribution;
+        TextHeightBehavior? effectiveTextHeightBehavior = textHeightBehavior ?? ((leadingDistributionLocal is null) ? null : new TextHeightBehavior(leadingDistribution: DartRuntimePrimitives.RequireValue(leadingDistributionLocal)));
+        return new ParagraphStyle(textAlign: textAlign, textDirection: textDirection, fontWeight: fontWeight ?? this.fontWeight, fontStyle: fontStyle ?? this.fontStyle, fontFamily: fontFamily ?? this.fontFamily, fontSize: textScaler.scale((fontSize ?? this.fontSize) ?? Text_painterLibrary.kDefaultFontSize), height: height ?? this.height, textHeightBehavior: effectiveTextHeightBehavior, strutStyle: (strutStyle is null) ? null : new Ui.StrutStyle(fontFamily: strutStyle.fontFamily, fontFamilyFallback: strutStyle.fontFamilyFallback, fontSize: strutStyle.fontSize switch { null => null, double unscaled => textScaler.scale(unscaled) }, height: strutStyle.height, leading: strutStyle.leading, leadingDistribution: strutStyle.leadingDistribution, fontWeight: strutStyle.fontWeight, fontStyle: strutStyle.fontStyle, forceStrutHeight: strutStyle.forceStrutHeight), maxLines: maxLines, ellipsis: ellipsis, locale: locale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -292,9 +292,9 @@ public class TextStyle : Diagnosticable
     {
         List<string>? fontFamilyFallbackLocal = fontFamilyFallback;
         long fontHash = FoundationRuntimePorts.ObjectHash(decorationStyle, decorationThickness, fontFamily, (fontFamilyFallbackLocal is null) ? null : FoundationRuntimePorts.ObjectHashAll(fontFamilyFallbackLocal), _package, overflow);
-        List<global::Doroti.Ui.Shadow>? shadowsLocal = shadows;
-        List<global::Doroti.Ui.FontFeature>? fontFeaturesLocal = fontFeatures;
-        List<global::Doroti.Ui.FontVariation>? fontVariationsLocal = fontVariations;
+        List<Shadow>? shadowsLocal = shadows;
+        List<FontFeature>? fontFeaturesLocal = fontFeatures;
+        List<FontVariation>? fontVariationsLocal = fontVariations;
         return FoundationRuntimePorts.ObjectHash(inherit, color, backgroundColor, fontSize, fontWeight, fontStyle, letterSpacing, wordSpacing, textBaseline, height, leadingDistribution, locale, foreground, background, (shadowsLocal is null) ? null : FoundationRuntimePorts.ObjectHashAll(shadowsLocal), (fontFeaturesLocal is null) ? null : FoundationRuntimePorts.ObjectHashAll(fontFeaturesLocal), (fontVariationsLocal is null) ? null : FoundationRuntimePorts.ObjectHashAll(fontVariationsLocal), decoration, decorationColor, fontHash);
     }
     public virtual string toStringShort() => objectRuntimeTypeFunctions.objectRuntimeType(this, "TextStyle");
@@ -311,16 +311,16 @@ public class TextStyle : Diagnosticable
         {
             weightDescription = $"{FoundationRuntimePorts.EnumIndex(fontWeight!) + 1L}00";
         }
-        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.FontWeight>($"{prefix}weight", fontWeight, description: weightDescription, defaultValue: null));
-        styles.Add(new EnumProperty<global::Doroti.Ui.FontStyle>($"{prefix}style", fontStyle, defaultValue: null));
+        styles.Add(new DiagnosticsProperty<FontWeight>($"{prefix}weight", fontWeight, description: weightDescription, defaultValue: null));
+        styles.Add(new EnumProperty<FontStyle>($"{prefix}style", fontStyle, defaultValue: null));
         styles.Add(new DoubleProperty($"{prefix}letterSpacing", letterSpacing, defaultValue: null));
         styles.Add(new DoubleProperty($"{prefix}wordSpacing", wordSpacing, defaultValue: null));
-        styles.Add(new EnumProperty<global::Doroti.Ui.TextBaseline>($"{prefix}baseline", textBaseline, defaultValue: null));
+        styles.Add(new EnumProperty<TextBaseline>($"{prefix}baseline", textBaseline, defaultValue: null));
         styles.Add(new DoubleProperty($"{prefix}height", height, unit: "x", defaultValue: null));
-        styles.Add(new EnumProperty<global::Doroti.Ui.TextLeadingDistribution>($"{prefix}leadingDistribution", leadingDistribution, defaultValue: null));
-        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.Locale>($"{prefix}locale", locale, defaultValue: null));
-        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.Paint>($"{prefix}foreground", foreground, defaultValue: null));
-        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.Paint>($"{prefix}background", background, defaultValue: null));
+        styles.Add(new EnumProperty<TextLeadingDistribution>($"{prefix}leadingDistribution", leadingDistribution, defaultValue: null));
+        styles.Add(new DiagnosticsProperty<Locale>($"{prefix}locale", locale, defaultValue: null));
+        styles.Add(new DiagnosticsProperty<Paint>($"{prefix}foreground", foreground, defaultValue: null));
+        styles.Add(new DiagnosticsProperty<Paint>($"{prefix}background", background, defaultValue: null));
         if ((decoration is not null) || (decorationColor is not null) || (decorationStyle is not null) || (decorationThickness is not null))
         {
             var decorationDescription = new List<string>();
@@ -334,7 +334,7 @@ public class TextStyle : Diagnosticable
             {
                 decorationDescription.Add($"{decorationColor}");
             }
-            styles.Add(new DiagnosticsProperty<global::Doroti.Ui.TextDecoration>($"{prefix}decoration", decoration, defaultValue: null, level: DiagnosticLevel.hidden));
+            styles.Add(new DiagnosticsProperty<TextDecoration>($"{prefix}decoration", decoration, defaultValue: null, level: DiagnosticLevel.hidden));
             if (decoration is not null)
             {
                 decorationDescription.Add($"{decoration}");
@@ -372,7 +372,7 @@ public static partial class Text_styleLibrary
             return (t < 0.5) ? a : b;
         }
         DartRuntimePrimitives.Assert(() => (checked((long)a.Count) != 0) && (checked((long)b.Count) != 0));
-        var result = new List<global::Doroti.Ui.FontVariation>();
+        var result = new List<FontVariation>();
         var index = 0L;
         long minLength = (checked(a.Count) < checked((long)b.Count)) ? checked(a.Count) : checked((long)b.Count);
         for (; index < minLength; index += 1L)
@@ -387,13 +387,13 @@ public static partial class Text_styleLibrary
         if (index < maxLength)
         {
             HashSet<string> axes = new HashSet<string>();
-            DartMap<string, global::Doroti.Ui.FontVariation> aVariations = new DartMap<string, global::Doroti.Ui.FontVariation>().cast<string, global::Doroti.Ui.FontVariation>();
+            DartMap<string, FontVariation> aVariations = new DartMap<string, FontVariation>().cast<string, FontVariation>();
             for (var indexA = index; indexA < checked(a.Count); indexA += 1L)
             {
                 aVariations[a[(int)indexA].axis] = a[(int)indexA];
                 axes.Add(a[(int)indexA].axis);
             }
-            DartMap<string, global::Doroti.Ui.FontVariation> bVariations = new DartMap<string, global::Doroti.Ui.FontVariation>().cast<string, global::Doroti.Ui.FontVariation>();
+            DartMap<string, FontVariation> bVariations = new DartMap<string, FontVariation>().cast<string, FontVariation>();
             for (var indexB = index; indexB < checked(b.Count); indexB += 1L)
             {
                 bVariations[b[(int)indexB].axis] = b[(int)indexB];
@@ -401,7 +401,7 @@ public static partial class Text_styleLibrary
             }
             foreach (var axisLocal in axes)
             {
-                global::Doroti.Ui.FontVariation? variation = Dart_uiLibrary.FontVariation.lerp(aVariations.GetValueOrDefault(axisLocal), bVariations.GetValueOrDefault(axisLocal), t);
+                FontVariation? variation = Dart_uiLibrary.FontVariation.lerp(aVariations.GetValueOrDefault(axisLocal), bVariations.GetValueOrDefault(axisLocal), t);
                 if (variation is not null)
                 {
                     result.Add(variation);

@@ -12,7 +12,7 @@ internal interface IInheritedModelAspect
 
 public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect where T : notnull
 {
-    protected InheritedModel(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    protected InheritedModel(Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 

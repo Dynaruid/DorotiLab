@@ -11,7 +11,7 @@ public class Title : StatefulWidget
     public virtual Color color { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public Title(global::Doroti.Framework.Foundation.Key? key = null, string title = "", Color color = default!, Widget child = default!) : base(key: key)
+    public Title(Key? key = null, string title = "", Color color = default!, Widget child = default!) : base(key: key)
     {
         this.title = title;
         this.color = color;
@@ -41,7 +41,7 @@ internal class _TitleState__title : State<Title>
 
     internal virtual void _updateChrome()
     {
-        DartRuntimePrimitives.Ignore(SystemChrome.setApplicationSwitcherDescription(new global::Doroti.Framework.Services.ApplicationSwitcherDescription(label: widget.title, primaryColor: widget.color.value)));
+        DartRuntimePrimitives.Ignore(SystemChrome.setApplicationSwitcherDescription(new ApplicationSwitcherDescription(label: widget.title, primaryColor: widget.color.value)));
     }
 
     public override Widget build(BuildContext context)
@@ -50,11 +50,11 @@ internal class _TitleState__title : State<Title>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("title", widget.title, defaultValue: ""));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", widget.color, defaultValue: null));
+        properties.add(new StringProperty("title", widget.title, defaultValue: ""));
+        properties.add(new ColorProperty("color", widget.color, defaultValue: null));
     }
 
 }

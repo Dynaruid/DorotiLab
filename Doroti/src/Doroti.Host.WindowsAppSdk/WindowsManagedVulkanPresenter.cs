@@ -117,7 +117,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         return raster;
     }
 
-    internal Task<Doroti.Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
+    internal Task<Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
         (_graphiteFrame ?? throw new NotSupportedException("Windows HWND interleaving currently requires Graphite/Vulkan."))
             .RequestReadback(surface, info);
     private bool _backdropTargetAdded;
@@ -2220,14 +2220,14 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         if (_stockObserver != null && !_stockObserver.Journal.Buffers.ContainsKey(_commandBuffer.Handle))
             _stockObserver.Journal.Allocate(_commandBuffer.Handle, _commandPool.Handle);
         Check(_stockObserver == null ? _vk.ResetCommandBuffer(_commandBuffer, 0) :
-            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.ResetCommandBufferDelegate>("vkResetCommandBuffer")(_commandBuffer, 0), "vkResetCommandBuffer");
+            _stockObserver.Call<Skia.Vulkan.VulkanObserver.ResetCommandBufferDelegate>("vkResetCommandBuffer")(_commandBuffer, 0), "vkResetCommandBuffer");
         var beginInfo = new CommandBufferBeginInfo
         {
             SType = StructureType.CommandBufferBeginInfo,
             Flags = CommandBufferUsageFlags.OneTimeSubmitBit,
         };
         Check(_stockObserver == null ? _vk.BeginCommandBuffer(_commandBuffer, &beginInfo) :
-            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.BeginCommandBufferDelegate>("vkBeginCommandBuffer")(_commandBuffer, &beginInfo), "vkBeginCommandBuffer");
+            _stockObserver.Call<Skia.Vulkan.VulkanObserver.BeginCommandBufferDelegate>("vkBeginCommandBuffer")(_commandBuffer, &beginInfo), "vkBeginCommandBuffer");
     }
 
     private void SubmitCommands(
@@ -2240,7 +2240,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             throw new InvalidOperationException(
                 "The Vulkan copy command buffer cannot be reused before its fence completes.");
         Check(_stockObserver == null ? _vk.EndCommandBuffer(_commandBuffer) :
-            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.EndCommandBufferDelegate>("vkEndCommandBuffer")(_commandBuffer), "vkEndCommandBuffer");
+            _stockObserver.Call<Skia.Vulkan.VulkanObserver.EndCommandBufferDelegate>("vkEndCommandBuffer")(_commandBuffer), "vkEndCommandBuffer");
         _stockObserver?.Check();
         ResetFence();
         var commandBuffer = _commandBuffer;
@@ -2270,7 +2270,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         };
         if (signalValue != 0) submitInfo.PNext = &timeline;
         _lastSubmitResult = _stockObserver == null ? _vk.QueueSubmit(_queue, 1, &submitInfo, _fence) :
-            _stockObserver.Call<Doroti.Skia.Vulkan.VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(_queue, 1, &submitInfo, _fence);
+            _stockObserver.Call<Skia.Vulkan.VulkanObserver.QueueSubmitDelegate>("vkQueueSubmit")(_queue, 1, &submitInfo, _fence);
         Check(_lastSubmitResult, "vkQueueSubmit");
         _stockObserver?.Check();
         GpuSubmitCount++;

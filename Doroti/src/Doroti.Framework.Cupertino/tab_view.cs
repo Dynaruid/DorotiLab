@@ -5,20 +5,20 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Cupertino;
 
-public class CupertinoTabView : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoTabView : StatefulWidget
 {
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? builder { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>? navigatorKey { get; private set; }
+    public virtual Func<BuildContext, Widget>? builder { get; private set; }
+    public virtual GlobalKey<NavigatorState>? navigatorKey { get; private set; }
     public virtual string? defaultTitle { get; private set; }
-    public virtual DartMap<string, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>? routes { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic?>? onGenerateRoute { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic?>? onUnknownRoute { get; private set; }
-    public virtual List<global::Doroti.Framework.Widgets.NavigatorObserver> navigatorObservers { get; private set; } = default!;
+    public virtual DartMap<string, Func<BuildContext, Widget>>? routes { get; private set; }
+    public virtual Func<RouteSettings, dynamic?>? onGenerateRoute { get; private set; }
+    public virtual Func<RouteSettings, dynamic?>? onUnknownRoute { get; private set; }
+    public virtual List<NavigatorObserver> navigatorObservers { get; private set; } = default!;
     public virtual string? restorationScopeId { get; private set; }
 
-    public CupertinoTabView(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? builder = null, global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>? navigatorKey = null, string? defaultTitle = null, DartMap<string, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>? routes = null, global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic?>? onGenerateRoute = null, global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic?>? onUnknownRoute = null, List<global::Doroti.Framework.Widgets.NavigatorObserver> navigatorObservers = default!, string? restorationScopeId = null) : base(key: key)
+    public CupertinoTabView(Key? key = null, Func<BuildContext, Widget>? builder = null, GlobalKey<NavigatorState>? navigatorKey = null, string? defaultTitle = null, DartMap<string, Func<BuildContext, Widget>>? routes = null, Func<RouteSettings, dynamic?>? onGenerateRoute = null, Func<RouteSettings, dynamic?>? onUnknownRoute = null, List<NavigatorObserver> navigatorObservers = default!, string? restorationScopeId = null) : base(key: key)
     {
-        List<global::Doroti.Framework.Widgets.NavigatorObserver> __navigatorObservers = navigatorObservers ?? new List<global::Doroti.Framework.Widgets.NavigatorObserver>();
+        List<NavigatorObserver> __navigatorObservers = navigatorObservers ?? new List<NavigatorObserver>();
         this.builder = builder;
         this.navigatorKey = navigatorKey;
         this.defaultTitle = defaultTitle;
@@ -32,11 +32,11 @@ public class CupertinoTabView : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTabViewState__tab_view());
 }
 
-internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widgets.State<CupertinoTabView>
+internal class _CupertinoTabViewState__tab_view : State<CupertinoTabView>
 {
-    internal virtual global::Doroti.Framework.Widgets.HeroController _heroController { get; set; } = default!;
-    internal virtual List<global::Doroti.Framework.Widgets.NavigatorObserver> _navigatorObservers { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>? _ownedNavigatorKey { get; set; } = default;
+    internal virtual HeroController _heroController { get; set; } = default!;
+    internal virtual List<NavigatorObserver> _navigatorObservers { get; set; } = default!;
+    internal virtual GlobalKey<NavigatorState>? _ownedNavigatorKey { get; set; } = default;
 
     public override void initState()
     {
@@ -62,15 +62,15 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
 
     internal virtual void _updateObservers()
     {
-        _navigatorObservers = ((Func<List<global::Doroti.Framework.Widgets.NavigatorObserver>>)(() =>
+        _navigatorObservers = ((Func<List<NavigatorObserver>>)(() =>
 {
-    var __cascade = new List<global::Doroti.Framework.Widgets.NavigatorObserver>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Framework.Widgets.NavigatorObserver>(widget.navigatorObservers));
+    var __cascade = new List<NavigatorObserver>(DartRuntimePrimitives.ConvertEnumerable<NavigatorObserver>(widget.navigatorObservers));
     __cascade.Add(_heroController);
     return __cascade;
 }))();
     }
 
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState> _navigatorKey
+    internal virtual GlobalKey<NavigatorState> _navigatorKey
     {
         get
         {
@@ -83,10 +83,10 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
         }
     }
     internal virtual bool _isActive => TickerMode.of(context);
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = new global::Doroti.Framework.Widgets.Navigator(key: _navigatorKey, onGenerateRoute: _onGenerateRoute, onUnknownRoute: _onUnknownRoute, observers: _navigatorObservers, restorationScopeId: widget.restorationScopeId);
-        return new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(enabled: _isActive, onPop: () =>
+        Widget childLocal = new Navigator(key: _navigatorKey, onGenerateRoute: _onGenerateRoute, onUnknownRoute: _onUnknownRoute, observers: _navigatorObservers, restorationScopeId: widget.restorationScopeId);
+        return new NavigatorPopHandler<object>(enabled: _isActive, onPop: () =>
         {
             if (!_isActive)
             {
@@ -97,10 +97,10 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual dynamic? _onGenerateRoute(global::Doroti.Framework.Widgets.RouteSettings settings)
+    internal virtual dynamic? _onGenerateRoute(RouteSettings settings)
     {
         string? nameLocal = settings.name;
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? routeBuilder = default!;
+        Func<BuildContext, Widget>? routeBuilder = default!;
         string? titleLocal = default!;
         if ((nameLocal == Navigator.defaultRouteName) && (widget.builder is not null))
         {
@@ -119,7 +119,7 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual dynamic _onUnknownRoute(global::Doroti.Framework.Widgets.RouteSettings settings)
+    internal virtual dynamic _onUnknownRoute(RouteSettings settings)
     {
         DartRuntimePrimitives.Assert(() =>
             {

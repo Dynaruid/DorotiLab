@@ -148,7 +148,7 @@ public class HitTestResult
 
     public virtual void pushTransform(Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => _debugVectorMoreOrLessEquals(transform.getRow(2L), new global::System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))) && _debugVectorMoreOrLessEquals(transform.getColumn(2L), new global::System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))));
+        DartRuntimePrimitives.Assert(() => _debugVectorMoreOrLessEquals(transform.getRow(2L), new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))) && _debugVectorMoreOrLessEquals(transform.getColumn(2L), new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0))));
         _localTransforms.Add(new _MatrixTransformPart__hit_test(transform));
     }
 
@@ -170,12 +170,12 @@ public class HitTestResult
         DartRuntimePrimitives.Assert(() => checked((long)_transforms.Count) != 0);
     }
 
-    internal virtual bool _debugVectorMoreOrLessEquals(global::System.Numerics.Vector4 a, global::System.Numerics.Vector4 b, double epsilon = 1e-10)
+    internal virtual bool _debugVectorMoreOrLessEquals(System.Numerics.Vector4 a, System.Numerics.Vector4 b, double epsilon = 1e-10)
     {
         var result = true;
         DartRuntimePrimitives.Assert(() =>
             {
-                global::System.Numerics.Vector4 difference = a - b;
+                System.Numerics.Vector4 difference = a - b;
                 result = new double[] { difference.X, difference.Y, difference.Z, difference.W }.All((component) => component.abs() < epsilon);
                 return true;
             });

@@ -5,9 +5,9 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Painting;
 
-internal delegate void _KeyAndErrorHandlerCallback__image_provider<T>(T key, Action<object, global::System.Diagnostics.StackTrace?> handleError);
+internal delegate void _KeyAndErrorHandlerCallback__image_provider<T>(T key, Action<object, System.Diagnostics.StackTrace?> handleError);
 
-internal delegate Future _AsyncKeyErrorHandler__image_provider<T>(T key, object exception, global::System.Diagnostics.StackTrace? stack);
+internal delegate Future _AsyncKeyErrorHandler__image_provider<T>(T key, object exception, System.Diagnostics.StackTrace? stack);
 
 public class ImageConfiguration
 {
@@ -124,10 +124,10 @@ public interface IImageProvider
 {
     ImageStream resolve(ImageConfiguration configuration);
     ImageStream createStream(ImageConfiguration configuration);
-    Future<ImageCacheStatus?> obtainCacheStatus(ImageConfiguration configuration, Action<object, global::System.Diagnostics.StackTrace?>? handleError = null);
+    Future<ImageCacheStatus?> obtainCacheStatus(ImageConfiguration configuration, Action<object, System.Diagnostics.StackTrace?>? handleError = null);
     Future<bool> evict(ImageCache? cache = null, ImageConfiguration configuration = default!);
     Future<object> obtainKeyObject(ImageConfiguration configuration);
-    void resolveStreamForKeyObject(ImageConfiguration configuration, ImageStream stream, object key, Action<object, global::System.Diagnostics.StackTrace?> handleError);
+    void resolveStreamForKeyObject(ImageConfiguration configuration, ImageStream stream, object key, Action<object, System.Diagnostics.StackTrace?> handleError);
     ImageStreamCompleter loadBufferObject(object key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode);
     ImageStreamCompleter loadImageObject(object key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode);
 }
@@ -141,7 +141,7 @@ public abstract class ImageProvider<T> : IImageProvider where T : notnull
     Future<object> IImageProvider.obtainKeyObject(ImageConfiguration configuration) =>
         obtainKey(configuration).then<object>(key => key!);
 
-    void IImageProvider.resolveStreamForKeyObject(ImageConfiguration configuration, ImageStream stream, object key, Action<object, global::System.Diagnostics.StackTrace?> handleError) =>
+    void IImageProvider.resolveStreamForKeyObject(ImageConfiguration configuration, ImageStream stream, object key, Action<object, System.Diagnostics.StackTrace?> handleError) =>
         resolveStreamForKey(configuration, stream, (T)key, handleError);
 
     ImageStreamCompleter IImageProvider.loadBufferObject(object key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) =>
@@ -181,7 +181,7 @@ public abstract class ImageProvider<T> : IImageProvider where T : notnull
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<ImageCacheStatus?> obtainCacheStatus(ImageConfiguration configuration, Action<object, global::System.Diagnostics.StackTrace?>? handleError = null)
+    public virtual Future<ImageCacheStatus?> obtainCacheStatus(ImageConfiguration configuration, Action<object, System.Diagnostics.StackTrace?>? handleError = null)
     {
         var completer = new Completer<ImageCacheStatus?>();
         _createErrorHandlerAndKey(configuration, (key, innerHandleError) =>
@@ -209,11 +209,11 @@ public abstract class ImageProvider<T> : IImageProvider where T : notnull
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _createErrorHandlerAndKey(ImageConfiguration configuration, Action<T, Action<object, global::System.Diagnostics.StackTrace?>> successCallback, Func<T?, object, global::System.Diagnostics.StackTrace?, Future> errorCallback)
+    internal virtual void _createErrorHandlerAndKey(ImageConfiguration configuration, Action<T, Action<object, System.Diagnostics.StackTrace?>> successCallback, Func<T?, object, System.Diagnostics.StackTrace?, Future> errorCallback)
     {
         T? obtainedKey = default!;
         var didError = false;
-        async Future handleError(object exception, global::System.Diagnostics.StackTrace? stack)
+        async Future handleError(object exception, System.Diagnostics.StackTrace? stack)
         {
             if (didError)
             {
@@ -251,7 +251,7 @@ public abstract class ImageProvider<T> : IImageProvider where T : notnull
         }).catchError(handleError);
     }
 
-    public virtual void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, T key, Action<object, global::System.Diagnostics.StackTrace?> handleError)
+    public virtual void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, T key, Action<object, System.Diagnostics.StackTrace?> handleError)
     {
         if (stream.completer is not null)
         {
@@ -388,9 +388,9 @@ public abstract class AssetBundleImageProvider : ImageProvider<AssetBundleImageK
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future<global::Doroti.Ui.Codec> _loadAsync(AssetBundleImageKey key, Func<ImmutableBuffer, Future<Codec>> decode)
+    internal async virtual Future<Codec> _loadAsync(AssetBundleImageKey key, Func<ImmutableBuffer, Future<Codec>> decode)
     {
-        global::Doroti.Ui.ImmutableBuffer buffer = default!;
+        ImmutableBuffer buffer = default!;
         try
         {
             buffer = await key.bundle.loadBuffer(key.name);
@@ -515,7 +515,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                     targetHeight = intrinsicHeight;
                                 }
                             }
-                            return new global::Doroti.Ui.TargetImageSize(width: targetWidth, height: targetHeight);
+                            return new TargetImageSize(width: targetWidth, height: targetHeight);
                         }
                     case ResizeImagePolicy.fit:
                         {
@@ -558,7 +558,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                     }
                                 }
                             }
-                            return new global::Doroti.Ui.TargetImageSize(width: targetWidthLocal, height: targetHeightLocal);
+                            return new TargetImageSize(width: targetWidthLocal, height: targetHeightLocal);
                         }
                 }
                 throw new ArgumentOutOfRangeException(nameof(policy), policy, "Unknown image resize policy.");
@@ -643,10 +643,10 @@ public interface NetworkImage : IImageProvider
 
 public class FileImage : ImageProvider<FileImage>
 {
-    public virtual global::Doroti.Runtime.DartFile file { get; private set; } = default!;
+    public virtual DartFile file { get; private set; } = default!;
     public virtual double scale { get; private set; } = default!;
 
-    public FileImage(global::Doroti.Runtime.DartFile file, double scale = 1.0)
+    public FileImage(DartFile file, double scale = 1.0)
     {
         this.file = file;
         this.scale = scale;
@@ -670,7 +670,7 @@ public class FileImage : ImageProvider<FileImage>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future<global::Doroti.Ui.Codec> _loadAsync(FileImage key, Func<ImmutableBuffer, Future<Codec>> decode)
+    internal async virtual Future<Codec> _loadAsync(FileImage key, Func<ImmutableBuffer, Future<Codec>> decode)
     {
         DartRuntimePrimitives.Assert(() => Equals(key, this));
         long lengthInBytes = await file.length();
@@ -679,7 +679,7 @@ public class FileImage : ImageProvider<FileImage>
             PaintingBinding.instance.imageCache.evict(key);
             throw new InvalidOperationException($"{file} is empty and cannot be loaded as an image.");
         }
-        return await (Equals(DartRuntimePrimitives.RuntimeType(file), typeof(global::Doroti.Runtime.DartFile)) ? decode(await Dart_uiLibrary.ImmutableBuffer.fromFilePath(file.path)) : decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(await file.readAsBytes())));
+        return await (Equals(DartRuntimePrimitives.RuntimeType(file), typeof(DartFile)) ? decode(await Dart_uiLibrary.ImmutableBuffer.fromFilePath(file.path)) : decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(await file.readAsBytes())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -728,7 +728,7 @@ public class MemoryImage : ImageProvider<MemoryImage>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future<global::Doroti.Ui.Codec> _loadAsync(MemoryImage key, Func<ImmutableBuffer, Future<Codec>> decode)
+    internal async virtual Future<Codec> _loadAsync(MemoryImage key, Func<ImmutableBuffer, Future<Codec>> decode)
     {
         DartRuntimePrimitives.Assert(() => Equals(key, this));
         return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes));

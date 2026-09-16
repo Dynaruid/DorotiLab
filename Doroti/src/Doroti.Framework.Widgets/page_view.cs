@@ -11,7 +11,7 @@ public class PageController : ScrollController
     public virtual bool keepPage { get; private set; } = default!;
     public virtual double viewportFraction { get; private set; } = default!;
 
-    public PageController(long initialPage = 0, bool keepPage = true, double viewportFraction = 1.0, global::System.Action<ScrollPosition>? onAttach = null, global::System.Action<ScrollPosition>? onDetach = null) : base(onAttach: onAttach, onDetach: onDetach)
+    public PageController(long initialPage = 0, bool keepPage = true, double viewportFraction = 1.0, System.Action<ScrollPosition>? onAttach = null, System.Action<ScrollPosition>? onDetach = null) : base(onAttach: onAttach, onDetach: onDetach)
     {
         this.initialPage = initialPage;
         this.keepPage = keepPage;
@@ -37,7 +37,7 @@ public class PageController : ScrollController
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future animateToPage(long page, Duration duration, global::Doroti.Framework.Animation.Curve curve)
+    public virtual Future animateToPage(long page, Duration duration, Curve curve)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckPageControllerAttached());
         var positionLocal = ((_PagePosition__page_view?)position)!;
@@ -72,13 +72,13 @@ public class PageController : ScrollController
         positionLocal.jumpTo(positionLocal.getPixelsFromPage(page.toDouble()));
     }
 
-    public virtual Future nextPage(Duration duration, global::Doroti.Framework.Animation.Curve curve)
+    public virtual Future nextPage(Duration duration, Curve curve)
     {
         return animateToPage(DartRuntimePrimitives.RequireValue(page).round() + 1L, duration: duration, curve: curve);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future previousPage(Duration duration, global::Doroti.Framework.Animation.Curve curve)
+    public virtual Future previousPage(Duration duration, Curve curve)
     {
         return animateToPage(DartRuntimePrimitives.RequireValue(page).round() - 1L, duration: duration, curve: curve);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -105,12 +105,12 @@ public class PageMetrics : FixedScrollMetrics
     public PageMetrics() : base(default!, default!, default!, default!, default!, default!) { }
 
 
-    public PageMetrics(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, global::Doroti.Framework.Painting.AxisDirection axisDirection, double viewportFraction, double devicePixelRatio) : base(minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent), pixels: DartRuntimePrimitives.RequireValue(pixels), viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension), axisDirection: axisDirection, devicePixelRatio: devicePixelRatio)
+    public PageMetrics(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, AxisDirection axisDirection, double viewportFraction, double devicePixelRatio) : base(minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent), pixels: DartRuntimePrimitives.RequireValue(pixels), viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension), axisDirection: axisDirection, devicePixelRatio: devicePixelRatio)
     {
         this.viewportFraction = viewportFraction;
     }
 
-    public override PageMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public override PageMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
         return new PageMetrics(minScrollExtent: minScrollExtent ?? (hasContentDimensions ? this.minScrollExtent : null), maxScrollExtent: maxScrollExtent ?? (hasContentDimensions ? this.maxScrollExtent : null), pixels: pixels ?? (hasPixels ? this.pixels : null), viewportDimension: viewportDimension ?? (hasViewportDimension ? this.viewportDimension : null), axisDirection: axisDirection ?? this.axisDirection, viewportFraction: viewportFraction ?? this.viewportFraction, devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -140,7 +140,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
         System.Diagnostics.Debug.Assert(DartRuntimePrimitives.RequireValue(viewportFraction) > 0.0);
     }
 
-    public override Future ensureVisible(global::Doroti.Framework.Rendering.RenderObject @object, double alignment = 0.0, Duration duration = default, global::Doroti.Framework.Animation.Curve curve = default!, ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.@explicit, global::Doroti.Framework.Rendering.RenderObject? targetRenderObject = null)
+    public override Future ensureVisible(RenderObject @object, double alignment = 0.0, Duration duration = default, Curve curve = default!, ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.@explicit, RenderObject? targetRenderObject = null)
     {
         return base.ensureVisible(@object, alignment: alignment, duration: duration, curve: curve, alignmentPolicy: alignmentPolicy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -289,7 +289,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override PageMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public override PageMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
         return new PageMetrics(minScrollExtent: minScrollExtent ?? (hasContentDimensions ? this.minScrollExtent : null), maxScrollExtent: maxScrollExtent ?? (hasContentDimensions ? this.maxScrollExtent : null), pixels: pixels ?? (hasPixels ? this.pixels : null), viewportDimension: viewportDimension ?? (hasViewportDimension ? this.viewportDimension : null), axisDirection: axisDirection ?? this.axisDirection, viewportFraction: viewportFraction ?? this.viewportFraction, devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -349,7 +349,7 @@ public class PageScrollPhysics : ScrollPhysics
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _getTargetPixels(ScrollMetrics position, global::Doroti.Framework.Physics.Tolerance tolerance, double velocity)
+    internal virtual double _getTargetPixels(ScrollMetrics position, Physics.Tolerance tolerance, double velocity)
     {
         double page = _getPage(position);
         if (velocity < -tolerance.velocity)
@@ -367,17 +367,17 @@ public class PageScrollPhysics : ScrollPhysics
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
+    public override Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
     {
         if ((velocity <= 0.0) && (position.pixels <= position.minScrollExtent) || (velocity >= 0.0) && (position.pixels >= position.maxScrollExtent))
         {
             return base.createBallisticSimulation(position, velocity);
         }
-        global::Doroti.Framework.Physics.Tolerance toleranceLocal = toleranceFor(position);
+        Physics.Tolerance toleranceLocal = toleranceFor(position);
         double target = _getTargetPixels(position, toleranceLocal, velocity);
         if (target != position.pixels)
         {
-            return (global::Doroti.Framework.Physics.Simulation?)new global::Doroti.Framework.Physics.ScrollSpringSimulation(spring, position.pixels, target, velocity, tolerance: toleranceLocal);
+            return (Physics.Simulation?)new Physics.ScrollSpringSimulation(spring, position.pixels, target, velocity, tolerance: toleranceLocal);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -394,22 +394,22 @@ public static partial class Page_viewLibrary
 public class PageView : StatefulWidget
 {
     public virtual bool allowImplicitScrolling { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.ScrollCacheExtent scrollCacheExtent { get; private set; } = default!;
+    public virtual ScrollCacheExtent scrollCacheExtent { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Axis scrollDirection { get; private set; } = default!;
+    public virtual Axis scrollDirection { get; private set; } = default!;
     public virtual bool reverse { get; private set; } = default!;
     public virtual PageController? controller { get; private set; }
     public virtual ScrollPhysics? physics { get; private set; }
     public virtual bool pageSnapping { get; private set; } = default!;
-    public virtual global::System.Action<long>? onPageChanged { get; private set; }
+    public virtual System.Action<long>? onPageChanged { get; private set; }
     public virtual SliverChildDelegate childrenDelegate { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
+    public virtual HitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual ScrollBehavior? scrollBehavior { get; private set; }
     public virtual bool padEnds { get; private set; } = default!;
 
-    public PageView(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, global::System.Action<long>? onPageChanged = null, List<Widget> children = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true) : base(key: key)
+    public PageView(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, System.Action<long>? onPageChanged = null, List<Widget> children = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true) : base(key: key)
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.scrollDirection = scrollDirection;
@@ -430,7 +430,7 @@ public class PageView : StatefulWidget
         System.Diagnostics.Debug.Assert((scrollCacheExtent is null) || (scrollCacheExtent.value > 0.0 == allowImplicitScrolling));
     }
 
-    public static PageView CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, global::System.Action<long>? onPageChanged = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
+    public static PageView CreateBuilder(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, System.Action<long>? onPageChanged = null, Func<BuildContext, long, Widget?> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long? itemCount = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
     {
         var __instance = new PageView(key, scrollDirection, reverse, controller, physics, pageSnapping, onPageChanged, default!, dragStartBehavior, allowImplicitScrolling, scrollCacheExtent, restorationId, clipBehavior, hitTestBehavior, scrollBehavior, padEnds);
         __instance.scrollDirection = scrollDirection;
@@ -451,7 +451,7 @@ public class PageView : StatefulWidget
         return __instance;
     }
 
-    public static PageView CreateCustom(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, global::System.Action<long>? onPageChanged = null, SliverChildDelegate childrenDelegate = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
+    public static PageView CreateCustom(Key? key = null, Axis scrollDirection = Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, System.Action<long>? onPageChanged = null, SliverChildDelegate childrenDelegate = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool allowImplicitScrolling = false, ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
     {
         var __instance = new PageView(key, scrollDirection, reverse, controller, physics, pageSnapping, onPageChanged, default!, dragStartBehavior, allowImplicitScrolling, scrollCacheExtent, restorationId, clipBehavior, hitTestBehavior, scrollBehavior, padEnds);
         __instance.scrollDirection = scrollDirection;
@@ -514,15 +514,15 @@ internal class _PageViewState__page_view : State<PageView>
         base.didUpdateWidget(oldWidget);
     }
 
-    internal virtual global::Doroti.Framework.Painting.AxisDirection _getDirection(BuildContext context)
+    internal virtual AxisDirection _getDirection(BuildContext context)
     {
         switch (widget.scrollDirection)
         {
             case Axis.horizontal:
                 {
                     DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
-                    global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
-                    global::Doroti.Framework.Painting.AxisDirection axisDirection = Basic_typesLibrary.textDirectionToAxisDirection(textDirection);
+                    TextDirection textDirection = Directionality.of(context);
+                    AxisDirection axisDirection = Basic_typesLibrary.textDirectionToAxisDirection(textDirection);
                     return widget.reverse ? Basic_typesLibrary.flipAxisDirection(axisDirection) : axisDirection;
                 }
             case Axis.vertical:
@@ -537,7 +537,7 @@ internal class _PageViewState__page_view : State<PageView>
 
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Painting.AxisDirection axisDirectionLocal = _getDirection(context);
+        AxisDirection axisDirectionLocal = _getDirection(context);
         ScrollPhysics physicsLocal = new _ForceImplicitScrollPhysics__page_view(allowImplicitScrolling: widget.allowImplicitScrolling).applyTo(widget.pageSnapping ? Page_viewLibrary._kPagePhysics.applyTo(widget.physics ?? (widget.scrollBehavior?.getScrollPhysics(context))) : (widget.physics ?? (widget.scrollBehavior?.getScrollPhysics(context))));
         return new NotificationListener<ScrollNotification>(onNotification: (notification) =>
         {
@@ -561,16 +561,16 @@ internal class _PageViewState__page_view : State<PageView>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("scrollDirection", widget.scrollDirection));
-        description.add(new global::Doroti.Framework.Foundation.FlagProperty("reverse", value: widget.reverse, ifTrue: "reversed"));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PageController>("controller", _controller, showName: false));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollPhysics>("physics", widget.physics, showName: false));
-        description.add(new global::Doroti.Framework.Foundation.FlagProperty("pageSnapping", value: widget.pageSnapping, ifFalse: "snapping disabled"));
-        description.add(new global::Doroti.Framework.Foundation.FlagProperty("allowImplicitScrolling", value: widget.allowImplicitScrolling, ifTrue: "allow implicit scrolling"));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ScrollCacheExtent>("scrollCacheExtent", widget.scrollCacheExtent, defaultValue: ScrollCacheExtent.CreateViewport(widget.allowImplicitScrolling ? 1.0 : 0.0)));
+        description.add(new EnumProperty<Axis>("scrollDirection", widget.scrollDirection));
+        description.add(new FlagProperty("reverse", value: widget.reverse, ifTrue: "reversed"));
+        description.add(new DiagnosticsProperty<PageController>("controller", _controller, showName: false));
+        description.add(new DiagnosticsProperty<ScrollPhysics>("physics", widget.physics, showName: false));
+        description.add(new FlagProperty("pageSnapping", value: widget.pageSnapping, ifFalse: "snapping disabled"));
+        description.add(new FlagProperty("allowImplicitScrolling", value: widget.allowImplicitScrolling, ifTrue: "allow implicit scrolling"));
+        description.add(new DiagnosticsProperty<ScrollCacheExtent>("scrollCacheExtent", widget.scrollCacheExtent, defaultValue: ScrollCacheExtent.CreateViewport(widget.allowImplicitScrolling ? 1.0 : 0.0)));
     }
 
 }

@@ -30,9 +30,9 @@ public static partial class Tap_regionLibrary
     }
 }
 
-public delegate void TapRegionCallback(global::Doroti.Framework.Gestures.PointerDownEvent @event);
+public delegate void TapRegionCallback(Gestures.PointerDownEvent @event);
 
-public delegate void TapRegionUpCallback(global::Doroti.Framework.Gestures.PointerUpEvent @event);
+public delegate void TapRegionUpCallback(Gestures.PointerUpEvent @event);
 
 public interface TapRegionRegistry
 {
@@ -60,32 +60,32 @@ public interface TapRegionRegistry
 
 public class TapRegionSurface : SingleChildRenderObjectWidget
 {
-    public TapRegionSurface(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    public TapRegionSurface(Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderTapRegionSurface();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderProxyBoxWithHitTestBehavior)renderObject;
+        var __renderObject = (RenderProxyBoxWithHitTestBehavior)renderObject;
     }
 
 }
 
 internal delegate void _ClassifiedTapRegions__tap_region();
 
-public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderProxyBoxWithHitTestBehavior, TapRegionRegistry
+public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegionRegistry
 {
-    internal virtual Expando<global::Doroti.Framework.Rendering.BoxHitTestResult> _cachedResults { get; private set; } = new Expando<global::Doroti.Framework.Rendering.BoxHitTestResult>();
+    internal virtual Expando<BoxHitTestResult> _cachedResults { get; private set; } = new Expando<BoxHitTestResult>();
     internal virtual HashSet<RenderTapRegion> _registeredRegions { get; private set; } = new HashSet<RenderTapRegion>();
     internal virtual DartMap<object, HashSet<RenderTapRegion>> _groupIdToRegions { get; private set; } = new DartMap<object, HashSet<RenderTapRegion>>();
 
-    public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
+    public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
         Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener(_handleSemanticsAction);
@@ -107,20 +107,20 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         {
             return;
         }
-        global::Doroti.Ui.Rect? globalRect = Framework.Semantics.SemanticsBinding.instance.getRectOfSemanticsNodeInViewCoordinates(checked((long)@event.viewId), @event.nodeId);
+        Rect? globalRect = Framework.Semantics.SemanticsBinding.instance.getRectOfSemanticsNodeInViewCoordinates(checked((long)@event.viewId), @event.nodeId);
         if (globalRect is null)
         {
             return;
         }
-        global::Doroti.Ui.Offset globalCenter = DartRuntimePrimitives.RequireValue(globalRect).center;
-        global::Doroti.Ui.Offset localPosition = globalToLocal(globalCenter);
-        var hitResult = new global::Doroti.Framework.Rendering.BoxHitTestResult();
+        Offset globalCenter = DartRuntimePrimitives.RequireValue(globalRect).center;
+        Offset localPosition = globalToLocal(globalCenter);
+        var hitResult = new BoxHitTestResult();
         if (!hitTest(hitResult, position: localPosition))
         {
             return;
         }
         var (inside, outside) = _classifyRegions(hitResult);
-        var syntheticEvent = new global::Doroti.Framework.Gestures.PointerDownEvent(viewId: checked((long)@event.viewId), position: globalCenter);
+        var syntheticEvent = new Gestures.PointerDownEvent(viewId: checked((long)@event.viewId), position: globalCenter);
         foreach (var region in outside)
         {
             DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapOutside for {region} (from semantics action)"));
@@ -161,7 +161,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         }
     }
 
-    public override bool hitTest(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
+    public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (!size.contains(position))
         {
@@ -170,7 +170,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         bool hitTarget = hitTestChildren(result, position: position) || hitTestSelf(position);
         if (hitTarget)
         {
-            var entry = new global::Doroti.Framework.Rendering.BoxHitTestEntry(this, position);
+            var entry = new BoxHitTestEntry(this, position);
             _cachedResults[entry.identity] = result;
             result.add(entry);
         }
@@ -178,9 +178,9 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual (IEnumerable<RenderTapRegion> inside, IEnumerable<RenderTapRegion> outside) _classifyRegions(global::Doroti.Framework.Rendering.BoxHitTestResult result)
+    internal virtual (IEnumerable<RenderTapRegion> inside, IEnumerable<RenderTapRegion> outside) _classifyRegions(BoxHitTestResult result)
     {
-        IEnumerable<RenderTapRegion> hitRegions = _getRegionsHit(_registeredRegions, result.path.Cast<global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>>()).cast<RenderTapRegion>();
+        IEnumerable<RenderTapRegion> hitRegions = _getRegionsHit(_registeredRegions, result.path.Cast<HitTestEntry<HitTestTarget>>()).cast<RenderTapRegion>();
         DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Tap event hit {hitRegions.Count()} descendants."));
         var insideRegions = new HashSet<RenderTapRegion>();
         foreach (RenderTapRegion region in hitRegions)
@@ -200,7 +200,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget> entry)
+    public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() => debugHandleEvent(@event, entry));
         DartRuntimePrimitives.Assert(() =>
@@ -224,7 +224,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
             DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug("Ignored tap event because no regions are registered."));
             return;
         }
-        global::Doroti.Framework.Rendering.BoxHitTestResult? result = _cachedResults[entry.identity];
+        BoxHitTestResult? result = _cachedResults[entry.identity];
         if (result is null)
         {
             DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug("Ignored tap event because no surface descendants were hit."));
@@ -234,17 +234,17 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         var consumeOutsideTapsLocal = false;
         foreach (var regionLocal in outside)
         {
-            if (@event is global::Doroti.Framework.Gestures.PointerDownEvent)
+            if (@event is Gestures.PointerDownEvent)
             {
-                global::Doroti.Framework.Gestures.PointerDownEvent @event__as14985 = (global::Doroti.Framework.Gestures.PointerDownEvent)@event;
+                Gestures.PointerDownEvent @event__as14985 = (Gestures.PointerDownEvent)@event;
                 DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapOutside for {regionLocal}"));
                 regionLocal.onTapOutside?.Invoke(@event__as14985);
             }
             else
             {
-                if (@event is global::Doroti.Framework.Gestures.PointerUpEvent)
+                if (@event is Gestures.PointerUpEvent)
                 {
-                    global::Doroti.Framework.Gestures.PointerUpEvent @event__as15142 = (global::Doroti.Framework.Gestures.PointerUpEvent)@event;
+                    Gestures.PointerUpEvent @event__as15142 = (Gestures.PointerUpEvent)@event;
                     DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapUpOutside for {regionLocal}"));
                     regionLocal.onTapUpOutside?.Invoke(@event__as15142);
                 }
@@ -257,33 +257,33 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         }
         foreach (var regionAlternate in inside)
         {
-            if (@event is global::Doroti.Framework.Gestures.PointerDownEvent)
+            if (@event is Gestures.PointerDownEvent)
             {
-                global::Doroti.Framework.Gestures.PointerDownEvent @event__as15551 = (global::Doroti.Framework.Gestures.PointerDownEvent)@event;
+                Gestures.PointerDownEvent @event__as15551 = (Gestures.PointerDownEvent)@event;
                 DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapInside for {regionAlternate}"));
                 regionAlternate.onTapInside?.Invoke(@event__as15551);
             }
             else
             {
-                if (@event is global::Doroti.Framework.Gestures.PointerUpEvent)
+                if (@event is Gestures.PointerUpEvent)
                 {
-                    global::Doroti.Framework.Gestures.PointerUpEvent @event__as15706 = (global::Doroti.Framework.Gestures.PointerUpEvent)@event;
+                    Gestures.PointerUpEvent @event__as15706 = (Gestures.PointerUpEvent)@event;
                     DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Calling onTapUpInside for {regionAlternate}"));
                     regionAlternate.onTapUpInside?.Invoke(@event__as15706);
                 }
             }
         }
-        if (consumeOutsideTapsLocal && (@event is global::Doroti.Framework.Gestures.PointerDownEvent))
+        if (consumeOutsideTapsLocal && (@event is Gestures.PointerDownEvent))
         {
-            global::Doroti.Framework.Gestures.PointerDownEvent @event__as16104 = (global::Doroti.Framework.Gestures.PointerDownEvent)@event;
+            Gestures.PointerDownEvent @event__as16104 = (Gestures.PointerDownEvent)@event;
             GestureBinding.instance.gestureArena.add(@event__as16104.pointer, new _DummyTapRecognizer__tap_region()).resolve(GestureDisposition.accepted);
         }
     }
 
-    internal virtual HashSet<global::Doroti.Framework.Gestures.HitTestTarget> _getRegionsHit(HashSet<RenderTapRegion> detectors, IEnumerable<global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>> hitTestPath)
+    internal virtual HashSet<HitTestTarget> _getRegionsHit(HashSet<RenderTapRegion> detectors, IEnumerable<HitTestEntry<HitTestTarget>> hitTestPath)
     {
-        var regions = new HashSet<global::Doroti.Framework.Gestures.HitTestTarget>();
-        foreach (global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget> entry in hitTestPath)
+        var regions = new HashSet<HitTestTarget>();
+        foreach (HitTestEntry<HitTestTarget> entry in hitTestPath)
         {
             if (entry.target is RenderTapRegion region && detectors.Contains(region))
             {
@@ -296,7 +296,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
 
 }
 
-internal class _DummyTapRecognizer__tap_region : global::Doroti.Framework.Gestures.GestureArenaMember
+internal class _DummyTapRecognizer__tap_region : GestureArenaMember
 {
     public virtual void acceptGesture(long pointer)
     {
@@ -311,16 +311,16 @@ internal class _DummyTapRecognizer__tap_region : global::Doroti.Framework.Gestur
 public class TapRegion : SingleChildRenderObjectWidget
 {
     public virtual bool enabled { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior behavior { get; private set; } = default!;
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapInside { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpOutside { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpInside { get; private set; }
+    public virtual HitTestBehavior behavior { get; private set; } = default!;
+    public virtual System.Action<Gestures.PointerDownEvent>? onTapOutside { get; private set; }
+    public virtual System.Action<Gestures.PointerDownEvent>? onTapInside { get; private set; }
+    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpOutside { get; private set; }
+    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpInside { get; private set; }
     public virtual object? groupId { get; private set; }
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual string? debugLabel { get; private set; }
 
-    public TapRegion(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = default!, bool enabled = true, global::Doroti.Framework.Rendering.HitTestBehavior behavior = HitTestBehavior.deferToChild, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapInside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpInside = null, object? groupId = null, bool consumeOutsideTaps = false, string? debugLabel = null) : base(key: key, child: child)
+    public TapRegion(Key? key = null, Widget? child = default!, bool enabled = true, HitTestBehavior behavior = HitTestBehavior.deferToChild, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapInside = null, System.Action<Gestures.PointerUpEvent>? onTapUpOutside = null, System.Action<Gestures.PointerUpEvent>? onTapUpInside = null, object? groupId = null, bool consumeOutsideTaps = false, string? debugLabel = null) : base(key: key, child: child)
     {
         this.enabled = enabled;
         this.behavior = behavior;
@@ -333,14 +333,14 @@ public class TapRegion : SingleChildRenderObjectWidget
         this.debugLabel = Foundation.ConstantsLibrary.kReleaseMode ? null : debugLabel;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         bool isCurrent = ModalRoute<object>.isCurrentOf(context) ?? true;
         return new RenderTapRegion(registry: TapRegionRegistry.maybeOf(context), enabled: enabled, consumeOutsideTaps: isCurrent && consumeOutsideTaps, behavior: behavior, onTapOutside: isCurrent ? onTapOutside : null, onTapInside: onTapInside, onTapUpOutside: isCurrent ? onTapUpOutside : null, onTapUpInside: onTapUpInside, groupId: groupId, debugLabel: debugLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (RenderTapRegion)renderObject;
         bool isCurrent = ModalRoute<object>.isCurrentOf(context) ?? true;
@@ -364,31 +364,31 @@ public class TapRegion : SingleChildRenderObjectWidget
         }
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("behavior", behavior, defaultValue: HitTestBehavior.deferToChild));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>("debugLabel", debugLabel, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>("groupId", groupId, defaultValue: null));
+        properties.add(new FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true));
+        properties.add(new DiagnosticsProperty<HitTestBehavior>("behavior", behavior, defaultValue: HitTestBehavior.deferToChild));
+        properties.add(new DiagnosticsProperty<object?>("debugLabel", debugLabel, defaultValue: null));
+        properties.add(new DiagnosticsProperty<object?>("groupId", groupId, defaultValue: null));
     }
 
 }
 
-public class RenderTapRegion : global::Doroti.Framework.Rendering.RenderProxyBoxWithHitTestBehavior
+public class RenderTapRegion : RenderProxyBoxWithHitTestBehavior
 {
     internal virtual bool _isRegistered { get; set; } = false;
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside { get; set; } = default;
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapInside { get; set; } = default;
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpOutside { get; set; } = default;
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpInside { get; set; } = default;
+    public virtual System.Action<Gestures.PointerDownEvent>? onTapOutside { get; set; } = default;
+    public virtual System.Action<Gestures.PointerDownEvent>? onTapInside { get; set; } = default;
+    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpOutside { get; set; } = default;
+    public virtual System.Action<Gestures.PointerUpEvent>? onTapUpInside { get; set; } = default;
     public virtual string? debugLabel { get; set; } = default;
     internal virtual bool _enabled { get; set; } = default!;
     internal virtual bool _consumeOutsideTaps { get; set; } = default!;
     internal virtual object? _groupId { get; set; } = default;
     internal virtual TapRegionRegistry? _registry { get; set; } = default;
 
-    public RenderTapRegion(TapRegionRegistry? registry = null, bool enabled = true, bool consumeOutsideTaps = false, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapInside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpInside = null, global::Doroti.Framework.Rendering.HitTestBehavior behavior = HitTestBehavior.deferToChild, object? groupId = null, string? debugLabel = null) : base(behavior: behavior)
+    public RenderTapRegion(TapRegionRegistry? registry = null, bool enabled = true, bool consumeOutsideTaps = false, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapInside = null, System.Action<Gestures.PointerUpEvent>? onTapUpOutside = null, System.Action<Gestures.PointerUpEvent>? onTapUpInside = null, HitTestBehavior behavior = HitTestBehavior.deferToChild, object? groupId = null, string? debugLabel = null) : base(behavior: behavior)
     {
         this.onTapOutside = onTapOutside;
         this.onTapInside = onTapInside;
@@ -463,7 +463,7 @@ public class RenderTapRegion : global::Doroti.Framework.Rendering.RenderProxyBox
             }
         }
     }
-    public override void layout(global::Doroti.Framework.Rendering.Constraints constraints, bool parentUsesSize = false)
+    public override void layout(Constraints constraints, bool parentUsesSize = false)
     {
         base.layout(constraints, parentUsesSize: parentUsesSize);
         if (_registry is null)
@@ -491,19 +491,19 @@ public class RenderTapRegion : global::Doroti.Framework.Rendering.RenderProxyBox
         base.dispose();
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string?>("debugLabel", debugLabel, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>("groupId", groupId, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true));
+        properties.add(new DiagnosticsProperty<string?>("debugLabel", debugLabel, defaultValue: null));
+        properties.add(new DiagnosticsProperty<object?>("groupId", groupId, defaultValue: null));
+        properties.add(new FlagProperty("enabled", value: enabled, ifFalse: "DISABLED", defaultValue: true));
     }
 
 }
 
 public class TextFieldTapRegion : TapRegion
 {
-    public TextFieldTapRegion(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = default!, bool enabled = true, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapInside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>? onTapUpInside = null, bool consumeOutsideTaps = false, string? debugLabel = null, object? groupId = default!) : base(key: key, child: child, enabled: enabled, onTapOutside: onTapOutside, onTapInside: onTapInside, onTapUpOutside: onTapUpOutside, onTapUpInside: onTapUpInside, consumeOutsideTaps: consumeOutsideTaps, debugLabel: debugLabel, groupId: groupId ?? typeof(EditableText))
+    public TextFieldTapRegion(Key? key = null, Widget? child = default!, bool enabled = true, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapInside = null, System.Action<Gestures.PointerUpEvent>? onTapUpOutside = null, System.Action<Gestures.PointerUpEvent>? onTapUpInside = null, bool consumeOutsideTaps = false, string? debugLabel = null, object? groupId = default!) : base(key: key, child: child, enabled: enabled, onTapOutside: onTapOutside, onTapInside: onTapInside, onTapUpOutside: onTapUpOutside, onTapUpInside: onTapUpInside, consumeOutsideTaps: consumeOutsideTaps, debugLabel: debugLabel, groupId: groupId ?? typeof(EditableText))
     {
     }
 

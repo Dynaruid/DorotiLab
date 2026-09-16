@@ -27,17 +27,17 @@ public static partial class BannerLibrary
 
 public static partial class BannerLibrary
 {
-    internal static global::Doroti.Framework.Painting.BoxShadow _kShadow = new global::Doroti.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(2130706432L), blurRadius: 6.0);
+    internal static BoxShadow _kShadow = new BoxShadow(color: new Color(2130706432L), blurRadius: 6.0);
 }
 
 public static partial class BannerLibrary
 {
-    internal static Color _kColor = new global::Doroti.Ui.Color(2696354844L);
+    internal static Color _kColor = new Color(2696354844L);
 }
 
 public static partial class BannerLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextStyle _kTextStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4294967295L), fontSize: _kHeight * 0.85, fontWeight: FontWeight.w900, height: 1.0);
+    internal static TextStyle _kTextStyle = new TextStyle(color: new Color(4294967295L), fontSize: _kHeight * 0.85, fontWeight: FontWeight.w900, height: 1.0);
 }
 
 public enum BannerLocation
@@ -48,25 +48,25 @@ public enum BannerLocation
     bottomEnd
 }
 
-public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
+public class BannerPainter : CustomPainter
 {
     public virtual string message { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
     public virtual BannerLocation location { get; private set; } = default!;
     public virtual TextDirection layoutDirection { get; private set; } = default!;
     public virtual Color color { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle textStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.BoxShadow shadow { get; private set; } = default!;
+    public virtual TextStyle textStyle { get; private set; } = default!;
+    public virtual BoxShadow shadow { get; private set; } = default!;
     internal virtual bool _prepared { get; set; } = false;
-    internal virtual global::Doroti.Framework.Painting.TextPainter? _textPainter { get; set; } = default;
+    internal virtual TextPainter? _textPainter { get; set; } = default;
     internal virtual Paint _paintShadow { get; set; } = default!;
     internal virtual Paint _paintBanner { get; set; } = default!;
 
-    public BannerPainter(string message, TextDirection textDirection, BannerLocation location, TextDirection layoutDirection, Color color = default!, global::Doroti.Framework.Painting.TextStyle textStyle = default!, global::Doroti.Framework.Painting.BoxShadow shadow = default!) : base(repaint: PaintingBinding.instance.systemFonts)
+    public BannerPainter(string message, TextDirection textDirection, BannerLocation location, TextDirection layoutDirection, Color color = default!, TextStyle textStyle = default!, BoxShadow shadow = default!) : base(repaint: PaintingBinding.instance.systemFonts)
     {
         Color __color = color ?? BannerLibrary._kColor;
-        global::Doroti.Framework.Painting.TextStyle __textStyle = textStyle ?? BannerLibrary._kTextStyle;
-        global::Doroti.Framework.Painting.BoxShadow __shadow = shadow ?? BannerLibrary._kShadow;
+        TextStyle __textStyle = textStyle ?? BannerLibrary._kTextStyle;
+        BoxShadow __shadow = shadow ?? BannerLibrary._kShadow;
         this.message = message;
         this.textDirection = textDirection;
         this.location = location;
@@ -88,12 +88,12 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
         _paintShadow = shadow.toPaint();
         _paintBanner = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color;
     return __cascade;
 }))();
         _textPainter?.dispose();
-        _textPainter = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: textStyle, text: message), textAlign: TextAlign.center, textDirection: textDirection);
+        _textPainter = new TextPainter(text: new TextSpan(style: textStyle, text: message), textAlign: TextAlign.center, textDirection: textDirection);
         _prepared = true;
     }
 
@@ -114,10 +114,10 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
 }))());
         double widthLocal = BannerLibrary._kOffset * 2.0;
         _textPainter!.layout(minWidth: widthLocal, maxWidth: widthLocal);
-        _textPainter!.paint(canvas, BannerLibrary._kRect.topLeft + new global::Doroti.Ui.Offset(0.0, (BannerLibrary._kRect.height - _textPainter!.height) / 2.0));
+        _textPainter!.paint(canvas, BannerLibrary._kRect.topLeft + new Offset(0.0, (BannerLibrary._kRect.height - _textPainter!.height) / 2.0));
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (BannerPainter)oldDelegate;
         return (message != __oldDelegate.message) || (!Equals(location, __oldDelegate.location)) || (!Equals(color, __oldDelegate.color)) || (!Equals(textStyle, __oldDelegate.textStyle));
@@ -154,14 +154,14 @@ public class Banner : StatefulWidget
     public virtual BannerLocation location { get; private set; } = default!;
     public virtual TextDirection? layoutDirection { get; private set; }
     public virtual Color color { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle textStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.BoxShadow shadow { get; private set; } = default!;
+    public virtual TextStyle textStyle { get; private set; } = default!;
+    public virtual BoxShadow shadow { get; private set; } = default!;
 
-    public Banner(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, string message = default!, TextDirection? textDirection = null, BannerLocation location = default!, TextDirection? layoutDirection = null, Color color = default!, global::Doroti.Framework.Painting.TextStyle textStyle = default!, global::Doroti.Framework.Painting.BoxShadow shadow = default!) : base(key: key)
+    public Banner(Key? key = null, Widget? child = null, string message = default!, TextDirection? textDirection = null, BannerLocation location = default!, TextDirection? layoutDirection = null, Color color = default!, TextStyle textStyle = default!, BoxShadow shadow = default!) : base(key: key)
     {
         Color __color = color ?? BannerLibrary._kColor;
-        global::Doroti.Framework.Painting.TextStyle __textStyle = textStyle ?? BannerLibrary._kTextStyle;
-        global::Doroti.Framework.Painting.BoxShadow __shadow = shadow ?? BannerLibrary._kShadow;
+        TextStyle __textStyle = textStyle ?? BannerLibrary._kTextStyle;
+        BoxShadow __shadow = shadow ?? BannerLibrary._kShadow;
         this.child = child;
         this.message = message;
         this.textDirection = textDirection;
@@ -194,14 +194,14 @@ internal class _BannerState__banner : State<Banner>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("message", widget.message, showName: false));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", widget.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<BannerLocation>("location", widget.location));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("layoutDirection", widget.layoutDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", widget.color, showName: false));
+        properties.add(new StringProperty("message", widget.message, showName: false));
+        properties.add(new EnumProperty<TextDirection>("textDirection", widget.textDirection, defaultValue: null));
+        properties.add(new EnumProperty<BannerLocation>("location", widget.location));
+        properties.add(new EnumProperty<TextDirection>("layoutDirection", widget.layoutDirection, defaultValue: null));
+        properties.add(new ColorProperty("color", widget.color, showName: false));
         widget.textStyle.debugFillProperties(properties, prefix: "text ");
     }
 
@@ -211,7 +211,7 @@ public class CheckedModeBanner : StatelessWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public CheckedModeBanner(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    public CheckedModeBanner(Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }
@@ -229,7 +229,7 @@ public class CheckedModeBanner : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         var message = "disabled";

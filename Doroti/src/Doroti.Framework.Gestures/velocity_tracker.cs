@@ -159,7 +159,7 @@ public class VelocityTracker
                 break;
             }
             oldestSample = sample;
-            global::Doroti.Ui.Offset position = sample.point;
+            Offset position = sample.point;
             x.Add(position.dx);
             y.Add(position.dy);
             w.Add(1.0);
@@ -174,7 +174,7 @@ public class VelocityTracker
             PolynomialFit? yFit = new LeastSquaresSolver(timeLocal, y, w).solve(2L);
             if ((xFit is not null) && (yFit is not null))
             {
-                return new VelocityEstimate(pixelsPerSecond: new global::Doroti.Ui.Offset(xFit.coefficients[(int)1L] * 1000L, yFit.coefficients[(int)1L] * 1000L), confidence: xFit.confidence * yFit.confidence, duration: newestSample.time - oldestSample.time, offset: newestSample.point - oldestSample.point);
+                return new VelocityEstimate(pixelsPerSecond: new Offset(xFit.coefficients[(int)1L] * 1000L, yFit.coefficients[(int)1L] * 1000L), confidence: xFit.confidence * yFit.confidence, duration: newestSample.time - oldestSample.time, offset: newestSample.point - oldestSample.point);
             }
         }
         return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: newestSample.time - oldestSample.time, offset: newestSample.point - oldestSample.point);
@@ -219,7 +219,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
         _touchSamples[(int)_index] = new _PointAtTime__velocity_tracker(position, time);
     }
 
-    internal virtual global::Doroti.Ui.Offset _previousVelocityAt(long index)
+    internal virtual Offset _previousVelocityAt(long index)
     {
         // Dart % wraps negative offsets into the ring; C# % keeps their sign.
         long endIndex = (((_index + index) % _sampleSize) + _sampleSize) % _sampleSize;
@@ -242,7 +242,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
         {
             return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: Duration.zero, offset: Offset.zero);
         }
-        global::Doroti.Ui.Offset estimatedVelocity = (_previousVelocityAt(-2L) * 0.6) + (_previousVelocityAt(-1L) * 0.35) + (_previousVelocityAt(0L) * 0.05);
+        Offset estimatedVelocity = (_previousVelocityAt(-2L) * 0.6) + (_previousVelocityAt(-1L) * 0.35) + (_previousVelocityAt(0L) * 0.05);
         _PointAtTime__velocity_tracker? newestSample = _touchSamples[(int)_index];
         _PointAtTime__velocity_tracker? oldestNonNullSample = default!;
         for (var i = 1L; i <= _sampleSize; i += 1L)
@@ -279,7 +279,7 @@ public class MacOSScrollViewFlingVelocityTracker : IOSScrollViewFlingVelocityTra
         {
             return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: Duration.zero, offset: Offset.zero);
         }
-        global::Doroti.Ui.Offset estimatedVelocity = (_previousVelocityAt(-2L) * 0.15) + (_previousVelocityAt(-1L) * 0.65) + (_previousVelocityAt(0L) * 0.2);
+        Offset estimatedVelocity = (_previousVelocityAt(-2L) * 0.15) + (_previousVelocityAt(-1L) * 0.65) + (_previousVelocityAt(0L) * 0.2);
         _PointAtTime__velocity_tracker? newestSample = _touchSamples[(int)_index];
         _PointAtTime__velocity_tracker? oldestNonNullSample = default!;
         for (var i = 1L; i <= _sampleSize; i += 1L)

@@ -192,7 +192,7 @@ public static unsafe partial class DorotiQtRunner
                 PlatformViews.QuickSurface = Surface.QuickEnabled ? Surface : null;
                 _platformCoordinator = _application.ConfigurePlatformViews(capabilities, 1, PlatformViews);
                 PlatformViews.Configure(_platformCoordinator);
-                var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(_platformCoordinator, messages);
+                var channel = new Framework.Services.PlatformViewChannelAdapter(_platformCoordinator, messages);
                 _application.Configure(capabilities, channel);
                 renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
                     PlatformViews.Draw(renderer, canvas, commands, descriptor, width, height);

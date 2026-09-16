@@ -26,7 +26,7 @@ public delegate void PaintingContextCallback(PaintingContext context, Offset off
 
 internal delegate Rect _TransformRect__object(Matrix4 transform, Rect rect);
 
-public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
+public class PaintingContext : ClipContext
 {
     internal virtual ContainerLayer _containerLayer { get; private set; } = default!;
     public virtual Rect estimatedBounds { get; private set; } = default!;
@@ -66,7 +66,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
         else
         {
             DartRuntimePrimitives.Assert(() => debugAlsoPaintedParent || childLayer.attached);
-            global::Doroti.Ui.Offset? debugOldOffset = default!;
+            Offset? debugOldOffset = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     debugOldOffset = childLayer!.offset;
@@ -97,7 +97,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
         DartRuntimePrimitives.Assert(() => !child._needsPaint);
         DartRuntimePrimitives.Assert(() => child._layerHandle.layer is not null);
         var childLayer = ((OffsetLayer?)child._layerHandle.layer!)!;
-        global::Doroti.Ui.Offset? debugOldOffset = default!;
+        Offset? debugOldOffset = default!;
         DartRuntimePrimitives.Assert(() =>
             {
                 debugOldOffset = childLayer.offset;
@@ -204,7 +204,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             return hasCanvas;
         }
     }
-    public virtual global::Doroti.Ui.PictureRecorder recorder
+    public virtual PictureRecorder recorder
     {
         get
         {
@@ -255,7 +255,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                 {
                     var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = 6.0;
     __cascade.color = DebugLibrary.debugCurrentRepaintColor.toColor();
@@ -267,10 +267,10 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                 {
                     var paintLocal = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = 1.0;
-    __cascade.color = new global::Doroti.Ui.Color(4294940672L);
+    __cascade.color = new Color(4294940672L);
     return __cascade;
 }))();
                     canvas.drawRect(estimatedBounds, paintLocal);
@@ -334,7 +334,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetClipRect = clipRect.shift(offset);
+        Rect offsetClipRect = clipRect.shift(offset);
         if (needsCompositing)
         {
             ClipRectLayer layer = oldLayer ?? new ClipRectLayer();
@@ -363,8 +363,8 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetBounds = bounds.shift(offset);
-        global::Doroti.Ui.RRect offsetClipRRect = clipRRect.shift(offset);
+        Rect offsetBounds = bounds.shift(offset);
+        RRect offsetClipRRect = clipRRect.shift(offset);
         if (needsCompositing)
         {
             ClipRRectLayer layer = oldLayer ?? new ClipRRectLayer();
@@ -393,8 +393,8 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetBounds = bounds.shift(offset);
-        global::Doroti.Ui.RSuperellipse offsetShape = clipRSuperellipse.shift(offset);
+        Rect offsetBounds = bounds.shift(offset);
+        RSuperellipse offsetShape = clipRSuperellipse.shift(offset);
         if (needsCompositing)
         {
             ClipRSuperellipseLayer layer = oldLayer ?? new ClipRSuperellipseLayer();
@@ -423,8 +423,8 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetBounds = bounds.shift(offset);
-        global::Doroti.Ui.Path offsetClipPath = clipPath.shift(offset);
+        Rect offsetBounds = bounds.shift(offset);
+        Path offsetClipPath = clipPath.shift(offset);
         if (needsCompositing)
         {
             ClipPathLayer layer = oldLayer ?? new ClipPathLayer();
@@ -526,7 +526,7 @@ public delegate void RenderObjectVisitor(RenderObject child);
 
 public delegate void LayoutCallback<T>(T constraints) where T : Constraints;
 
-internal class _LocalSemanticsHandle__object : global::Doroti.Framework.Semantics.SemanticsHandle
+internal class _LocalSemanticsHandle__object : SemanticsHandle
 {
     internal virtual PipelineOwner _owner { get; private set; } = default!;
     public virtual Action? listener { get; private set; }
@@ -566,7 +566,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
     internal virtual List<RenderObject> _nodesNeedingPaint { get; set; } = new List<RenderObject>();
     private List<RenderObject> _nodesNeedingPaintScratch = new List<RenderObject>();
     internal virtual bool _debugDoingPaint { get; set; } = false;
-    internal virtual global::Doroti.Framework.Semantics.SemanticsOwner? _semanticsOwner { get; set; } = default;
+    internal virtual SemanticsOwner? _semanticsOwner { get; set; } = default;
     internal virtual long _outstandingSemanticsHandles { get; set; } = 0L;
     internal virtual bool _debugDoingSemantics { get; set; } = false;
     internal virtual HashSet<RenderObject> _nodesNeedingSemanticsUpdate { get; private set; } = new HashSet<RenderObject>();
@@ -817,9 +817,9 @@ public class PipelineOwner : DiagnosticableTreeMixin
         }
     }
 
-    public virtual global::Doroti.Framework.Semantics.SemanticsOwner? semanticsOwner => _semanticsOwner;
+    public virtual SemanticsOwner? semanticsOwner => _semanticsOwner;
     public virtual long debugOutstandingSemanticsHandles => _outstandingSemanticsHandles;
-    public virtual global::Doroti.Framework.Semantics.SemanticsHandle ensureSemantics(Action? listener = null)
+    public virtual SemanticsHandle ensureSemantics(Action? listener = null)
     {
         _outstandingSemanticsHandles += 1L;
         _updateSemanticsOwner();
@@ -834,7 +834,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
             if (_semanticsOwner is null)
             {
                 DartRuntimePrimitives.Assert(() => onSemanticsUpdate is not null);
-                _semanticsOwner = new global::Doroti.Framework.Semantics.SemanticsOwner(onSemanticsUpdate: onSemanticsUpdate!);
+                _semanticsOwner = new SemanticsOwner(onSemanticsUpdate: onSemanticsUpdate!);
                 onSemanticsOwnerCreated?.Invoke();
             }
         }
@@ -1330,7 +1330,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
     }
 
-    internal virtual void _reportException(string method, object exception, global::System.Diagnostics.StackTrace stack)
+    internal virtual void _reportException(string method, object exception, System.Diagnostics.StackTrace stack)
     {
         FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "rendering library", context: new ErrorDescription($"during {method}()"), informationCollector: () => new List<DiagnosticsNode> { describeForError("The following RenderObject was being processed when the exception was fired"), describeForError("RenderObject", style: DiagnosticsTreeStyle.truncateChildren) }));
     }
@@ -1645,7 +1645,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         }
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid(isAppliedConstraint: true, informationCollector: () =>
         {
-            List<string> stack = new global::System.Diagnostics.StackTrace(true).ToString().split("\n");
+            List<string> stack = new System.Diagnostics.StackTrace(true).ToString().split("\n");
             long? targetFrame = default!;
             Pattern layoutFramePattern = new RegExp("^#[0-9]+ +Render(?:Object|Box).layout \\(");
             for (var i = 0L; i < checked(stack.Count); i += 1L)
@@ -1814,7 +1814,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public virtual void runLayoutCallback()
     {
         DartRuntimePrimitives.Assert(() => debugDoingThisLayout);
-        invokeLayoutCallback<Constraints>((Constraints _) =>
+        invokeLayoutCallback((Constraints _) =>
             (this as IRenderLayoutCallback ?? throw new InvalidOperationException(
                 $"{GetType().FullName} scheduled a layout callback without implementing {nameof(IRenderLayoutCallback)}."))
             .layoutCallback());
@@ -2188,7 +2188,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         }
     }
 
-    public abstract global::Doroti.Ui.Rect paintBounds { get; }
+    public abstract Rect paintBounds { get; }
     public virtual void debugPaint(PaintingContext context, Offset offset)
     {
     }
@@ -2268,8 +2268,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Rect? describeApproximatePaintClip(RenderObject child) => null;
-    public virtual global::Doroti.Ui.Rect? describeSemanticsClip(RenderObject? child) => null;
+    public virtual Rect? describeApproximatePaintClip(RenderObject child) => null;
+    public virtual Rect? describeSemanticsClip(RenderObject? child) => null;
     public virtual void scheduleInitialSemantics()
     {
         DartRuntimePrimitives.Assert(() => !_debugDisposed);
@@ -2283,17 +2283,17 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         owner!.requestVisualUpdate();
     }
 
-    public virtual void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public virtual void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
     }
 
-    public virtual void sendSemanticsEvent(global::Doroti.Framework.Semantics.SemanticsEvent semanticsEvent)
+    public virtual void sendSemanticsEvent(SemanticsEvent semanticsEvent)
     {
         if (owner!.semanticsOwner is null)
         {
             return;
         }
-        global::Doroti.Framework.Semantics.SemanticsNode? node = _semantics.cachedSemanticsNode;
+        SemanticsNode? node = _semantics.cachedSemanticsNode;
         if ((node is not null) && !node.isMergedIntoParent)
         {
             node.sendEvent(semanticsEvent);
@@ -2307,7 +2307,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         }
     }
 
-    public abstract global::Doroti.Ui.Rect semanticBounds { get; }
+    public abstract Rect semanticBounds { get; }
     public virtual bool debugNeedsSemanticsUpdate
     {
         get
@@ -2319,7 +2319,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             return _semantics.parentDataDirty;
         }
     }
-    public virtual global::Doroti.Framework.Semantics.SemanticsNode? debugSemantics
+    public virtual SemanticsNode? debugSemantics
     {
         get
         {
@@ -2355,12 +2355,12 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         visitChildren(visitor);
     }
 
-    public virtual void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
+    public virtual void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
     {
-        node.updateWith(config: config, childrenInInversePaintOrder: ((List<global::Doroti.Framework.Semantics.SemanticsNode>?)children)!);
+        node.updateWith(config: config, childrenInInversePaintOrder: ((List<SemanticsNode>?)children)!);
     }
 
-    public virtual void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
+    public virtual void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
     }
 
@@ -2432,7 +2432,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         properties.add(new DiagnosticsProperty<ParentData>("parentData", parentData, tooltip: (_debugCanParentUseSize ?? false) ? "can use size" : null, missingIfNull: true));
         properties.add(new DiagnosticsProperty<Constraints>("constraints", _constraints, missingIfNull: true));
         properties.add(new DiagnosticsProperty<ContainerLayer>("layer", _layerHandle.layer, defaultValue: null));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Semantics.SemanticsNode>("semantics node", debugSemantics, defaultValue: null));
+        properties.add(new DiagnosticsProperty<SemanticsNode>("semantics node", debugSemantics, defaultValue: null));
         properties.add(new FlagProperty("isBlockingSemanticsOfPreviouslyPaintedNodes", value: _semantics.configProvider.effective.isBlockingSemanticsOfPreviouslyPaintedNodes, ifTrue: "blocks semantics of earlier render objects below the common boundary"));
         properties.add(new FlagProperty("isSemanticBoundary", value: _semantics.configProvider.effective.isSemanticBoundary, ifTrue: "semantic boundary"));
     }
@@ -2485,7 +2485,7 @@ public abstract class RenderObjectWithLayoutCallbackMixin : RenderObject
     public override void runLayoutCallback()
     {
         DartRuntimePrimitives.Assert(() => debugDoingThisLayout);
-        invokeLayoutCallback<Constraints>((Constraints _) => layoutCallback());
+        invokeLayoutCallback((Constraints _) => layoutCallback());
         _needsRebuild = false;
     }
 
@@ -2565,35 +2565,35 @@ public interface RelayoutWhenSystemFontsChangeMixin
 
 public interface SemanticsAnnotationsMixin
 {
-    global::Doroti.Framework.Semantics.SemanticsProperties _properties { get; set; }
+    SemanticsProperties _properties { get; set; }
     bool _container { get; set; }
     bool _explicitChildNodes { get; set; }
     bool _excludeSemantics { get; set; }
     bool _blockUserActions { get; set; }
     Locale? _localeForSubtree { get; set; }
-    global::Doroti.Framework.Semantics.AttributedString? _attributedLabel { get; set; }
-    global::Doroti.Framework.Semantics.AttributedString? _attributedValue { get; set; }
-    global::Doroti.Framework.Semantics.AttributedString? _attributedIncreasedValue { get; set; }
-    global::Doroti.Framework.Semantics.AttributedString? _attributedDecreasedValue { get; set; }
-    global::Doroti.Framework.Semantics.AttributedString? _attributedHint { get; set; }
+    AttributedString? _attributedLabel { get; set; }
+    AttributedString? _attributedValue { get; set; }
+    AttributedString? _attributedIncreasedValue { get; set; }
+    AttributedString? _attributedDecreasedValue { get; set; }
+    AttributedString? _attributedHint { get; set; }
     TextDirection? _textDirection { get; set; }
 
-    public void initSemanticsAnnotations(global::Doroti.Framework.Semantics.SemanticsProperties properties, bool container, bool explicitChildNodes, bool excludeSemantics, bool blockUserActions, Locale? localeForSubtree, TextDirection? textDirection);
-    public global::Doroti.Framework.Semantics.SemanticsProperties properties { get; set; }
+    public void initSemanticsAnnotations(SemanticsProperties properties, bool container, bool explicitChildNodes, bool excludeSemantics, bool blockUserActions, Locale? localeForSubtree, TextDirection? textDirection);
+    public SemanticsProperties properties { get; set; }
     public bool container { get; set; }
     public bool explicitChildNodes { get; set; }
     public bool excludeSemantics { get; set; }
     public bool blockUserActions { get; set; }
-    public global::Doroti.Ui.Locale? localeForSubtree { get; set; }
-    public void _updateAttributedFields(global::Doroti.Framework.Semantics.SemanticsProperties value);
-    public global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedLabel(global::Doroti.Framework.Semantics.SemanticsProperties value);
-    public global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedValue(global::Doroti.Framework.Semantics.SemanticsProperties value);
-    public global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedIncreasedValue(global::Doroti.Framework.Semantics.SemanticsProperties value);
-    public global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedDecreasedValue(global::Doroti.Framework.Semantics.SemanticsProperties value);
-    public global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedHint(global::Doroti.Framework.Semantics.SemanticsProperties value);
-    public global::Doroti.Ui.TextDirection? textDirection { get; set; }
+    public Locale? localeForSubtree { get; set; }
+    public void _updateAttributedFields(SemanticsProperties value);
+    public AttributedString? _effectiveAttributedLabel(SemanticsProperties value);
+    public AttributedString? _effectiveAttributedValue(SemanticsProperties value);
+    public AttributedString? _effectiveAttributedIncreasedValue(SemanticsProperties value);
+    public AttributedString? _effectiveAttributedDecreasedValue(SemanticsProperties value);
+    public AttributedString? _effectiveAttributedHint(SemanticsProperties value);
+    public TextDirection? textDirection { get; set; }
     public void visitChildrenForSemantics(Action<RenderObject> visitor);
-    public void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config);
+    public void describeSemanticsConfiguration(SemanticsConfiguration config);
     public void _performTap();
     public void _performLongPress();
     public void _performDismiss();
@@ -2623,12 +2623,12 @@ public class _SemanticsParentData__object
 {
     public virtual bool mergeIntoParent { get; private set; } = default!;
     public virtual bool blocksUserActions { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Semantics.AccessibilityFocusBlockType? accessibilityFocusBlockType { get; private set; }
+    public virtual AccessibilityFocusBlockType? accessibilityFocusBlockType { get; private set; }
     public virtual bool explicitChildNodes { get; private set; } = default!;
-    public virtual HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tagsForChildren { get; private set; }
+    public virtual HashSet<SemanticsTag>? tagsForChildren { get; private set; }
     public virtual Locale? localeForChildren { get; private set; }
 
-    internal _SemanticsParentData__object(bool mergeIntoParent, bool blocksUserActions, bool explicitChildNodes, HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tagsForChildren, Locale? localeForChildren, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType? accessibilityFocusBlockType)
+    internal _SemanticsParentData__object(bool mergeIntoParent, bool blocksUserActions, bool explicitChildNodes, HashSet<SemanticsTag>? tagsForChildren, Locale? localeForChildren, AccessibilityFocusBlockType? accessibilityFocusBlockType)
     {
         this.mergeIntoParent = mergeIntoParent;
         this.blocksUserActions = blocksUserActions;
@@ -2642,12 +2642,12 @@ public class _SemanticsParentData__object
     {
         var __other = other as _SemanticsParentData__object;
         if (__other is null) return false;
-        return (__other is _SemanticsParentData__object) && (__other.mergeIntoParent == mergeIntoParent) && (__other.blocksUserActions == blocksUserActions) && (__other.explicitChildNodes == explicitChildNodes) && Equals(__other.localeForChildren, localeForChildren) && Equals(__other.accessibilityFocusBlockType, accessibilityFocusBlockType) && CollectionsLibrary.setEquals<global::Doroti.Framework.Semantics.SemanticsTag>(__other.tagsForChildren, tagsForChildren);
+        return (__other is _SemanticsParentData__object) && (__other.mergeIntoParent == mergeIntoParent) && (__other.blocksUserActions == blocksUserActions) && (__other.explicitChildNodes == explicitChildNodes) && Equals(__other.localeForChildren, localeForChildren) && Equals(__other.accessibilityFocusBlockType, accessibilityFocusBlockType) && CollectionsLibrary.setEquals(__other.tagsForChildren, tagsForChildren);
     }
 
     public override int GetHashCode()
     {
-        return FoundationRuntimePorts.ObjectHash(mergeIntoParent, blocksUserActions, explicitChildNodes, localeForChildren, accessibilityFocusBlockType, Dart_coreLibrary.hashAllUnordered(tagsForChildren ?? new HashSet<global::Doroti.Framework.Semantics.SemanticsTag>()));
+        return FoundationRuntimePorts.ObjectHash(mergeIntoParent, blocksUserActions, explicitChildNodes, localeForChildren, accessibilityFocusBlockType, Dart_coreLibrary.hashAllUnordered(tagsForChildren ?? new HashSet<SemanticsTag>()));
     }
 }
 
@@ -2655,8 +2655,8 @@ public class _SemanticsConfigurationProvider__object
 {
     internal virtual RenderObject _renderObject { get; private set; } = default!;
     internal virtual bool _isEffectiveConfigWritable { get; set; } = false;
-    internal virtual global::Doroti.Framework.Semantics.SemanticsConfiguration? _originalConfiguration { get; set; } = default;
-    internal virtual global::Doroti.Framework.Semantics.SemanticsConfiguration? _effectiveConfiguration { get; set; } = default;
+    internal virtual SemanticsConfiguration? _originalConfiguration { get; set; } = default;
+    internal virtual SemanticsConfiguration? _effectiveConfiguration { get; set; } = default;
 
     internal _SemanticsConfigurationProvider__object(RenderObject _renderObject)
     {
@@ -2664,27 +2664,27 @@ public class _SemanticsConfigurationProvider__object
     }
 
     public virtual bool wasSemanticsBoundary => _originalConfiguration?.isSemanticBoundary ?? false;
-    public virtual global::Doroti.Framework.Semantics.SemanticsConfiguration effective
+    public virtual SemanticsConfiguration effective
     {
         get
         {
             return _effectiveConfiguration ?? original;
         }
     }
-    public virtual global::Doroti.Framework.Semantics.SemanticsConfiguration original
+    public virtual SemanticsConfiguration original
     {
         get
         {
             if (_originalConfiguration is null)
             {
-                _effectiveConfiguration = _originalConfiguration = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+                _effectiveConfiguration = _originalConfiguration = new SemanticsConfiguration();
                 _renderObject.describeSemanticsConfiguration(_originalConfiguration!);
                 DartRuntimePrimitives.Assert(() => !_originalConfiguration!.explicitChildNodes || (_originalConfiguration!.childConfigurationsDelegate is null));
             }
             return _originalConfiguration!;
         }
     }
-    public virtual void updateConfig(Action<global::Doroti.Framework.Semantics.SemanticsConfiguration> callback)
+    public virtual void updateConfig(Action<SemanticsConfiguration> callback)
     {
         if (!_isEffectiveConfigWritable)
         {
@@ -2694,7 +2694,7 @@ public class _SemanticsConfigurationProvider__object
         callback(_effectiveConfiguration!);
     }
 
-    public virtual void absorbAll(IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> configs)
+    public virtual void absorbAll(IEnumerable<SemanticsConfiguration> configs)
     {
         updateConfig((config) =>
         {
@@ -2721,19 +2721,19 @@ public abstract class _SemanticsFragment__object
 {
     public virtual bool mergesToSibling { get; set; } = false;
 
-    public abstract global::Doroti.Framework.Semantics.SemanticsConfiguration? configToMergeUp { get; }
+    public abstract SemanticsConfiguration? configToMergeUp { get; }
     public abstract _RenderObjectSemantics__object owner { get; }
     public abstract void markSiblingConfigurationConflict(bool conflict);
 }
 
 internal class _IncompleteSemanticsFragment__object : _SemanticsFragment__object
 {
-    private global::Doroti.Framework.Semantics.SemanticsConfiguration? __field_configToMergeUp = default!;
-    public override global::Doroti.Framework.Semantics.SemanticsConfiguration? configToMergeUp { get => __field_configToMergeUp; }
+    private SemanticsConfiguration? __field_configToMergeUp = default!;
+    public override SemanticsConfiguration? configToMergeUp { get => __field_configToMergeUp; }
     private _RenderObjectSemantics__object __field_owner = default!;
     public override _RenderObjectSemantics__object owner { get => __field_owner; }
 
-    internal _IncompleteSemanticsFragment__object(global::Doroti.Framework.Semantics.SemanticsConfiguration configToMergeUp, _RenderObjectSemantics__object owner)
+    internal _IncompleteSemanticsFragment__object(SemanticsConfiguration configToMergeUp, _RenderObjectSemantics__object owner)
     {
         __field_configToMergeUp = configToMergeUp;
         __field_owner = owner;
@@ -2755,12 +2755,12 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     internal virtual bool? _blocksPreviousSibling { get; set; } = default;
     internal virtual bool _containsIncompleteFragment { get; set; } = false;
     public virtual bool built { get; set; } = false;
-    public virtual global::Doroti.Framework.Semantics.SemanticsNode? cachedSemanticsNode { get; set; } = default;
-    public virtual List<global::Doroti.Framework.Semantics.SemanticsNode> semanticsNodes { get; private set; } = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+    public virtual SemanticsNode? cachedSemanticsNode { get; set; } = default;
+    public virtual List<SemanticsNode> semanticsNodes { get; private set; } = new List<SemanticsNode>();
     public virtual List<_SemanticsFragment__object> mergeUp { get; private set; } = new List<_SemanticsFragment__object>();
     internal virtual List<_RenderObjectSemantics__object> _children { get; private set; } = new List<_RenderObjectSemantics__object>();
     public virtual List<List<_SemanticsFragment__object>> siblingMergeGroups { get; private set; } = new List<List<_SemanticsFragment__object>>();
-    internal virtual DartMap<global::Doroti.Framework.Semantics.SemanticsNode, List<_SemanticsFragment__object>> _producedSiblingNodesAndOwners { get; private set; } = new DartMap<global::Doroti.Framework.Semantics.SemanticsNode, List<_SemanticsFragment__object>>();
+    internal virtual DartMap<SemanticsNode, List<_SemanticsFragment__object>> _producedSiblingNodesAndOwners { get; private set; } = new DartMap<SemanticsNode, List<_SemanticsFragment__object>>();
     public virtual _SemanticsParentData__object? parentData { get; set; } = default;
     public virtual _SemanticsGeometry__object? geometry { get; set; } = default;
     public virtual _SemanticsConfigurationProvider__object configProvider { get; private set; } = default!;
@@ -2844,7 +2844,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         }
     }
 
-    public override global::Doroti.Framework.Semantics.SemanticsConfiguration? configToMergeUp => shouldFormSemanticsNode ? null : configProvider.effective;
+    public override SemanticsConfiguration? configToMergeUp => shouldFormSemanticsNode ? null : configProvider.effective;
     public virtual bool contributesToSemanticsTree
     {
         get
@@ -2924,7 +2924,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             return DartRuntimePrimitives.RequireValue(_blocksPreviousSibling);
         }
     }
-    public static bool shouldDrop(global::Doroti.Framework.Semantics.SemanticsNode node) => node.isInvisible;
+    public static bool shouldDrop(SemanticsNode node) => node.isInvisible;
     public virtual void markNeedsBuild()
     {
         built = false;
@@ -2952,10 +2952,10 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         DartRuntimePrimitives.Assert(() => (parentData is not null) || isRoot);
         configProvider.reset();
-        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tagsForChildrenLocal = _getTagsForChildren();
+        HashSet<SemanticsTag>? tagsForChildrenLocal = _getTagsForChildren();
         bool explicitChildNodesForChildren = isRoot || configProvider.effective.explicitChildNodes || !contributesToSemanticsTree && (parentData?.explicitChildNodes ?? true);
         bool blocksUserAction = (parentData?.blocksUserActions ?? false) || configProvider.effective.isBlockingUserActions;
-        global::Doroti.Framework.Semantics.AccessibilityFocusBlockType accessibilityFocusBlockTypeLocal = default!;
+        AccessibilityFocusBlockType accessibilityFocusBlockTypeLocal = default!;
         if (Equals(parentData?.accessibilityFocusBlockType, AccessibilityFocusBlockType.blockSubtree))
         {
             accessibilityFocusBlockTypeLocal = AccessibilityFocusBlockType.blockSubtree;
@@ -2964,7 +2964,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         {
             accessibilityFocusBlockTypeLocal = configProvider.effective.accessibilityFocusBlockType;
         }
-        global::Doroti.Ui.Locale? localeForChildrenLocal = configProvider.effective.localeForSubtree ?? parentData?.localeForChildren;
+        Locale? localeForChildrenLocal = configProvider.effective.localeForSubtree ?? parentData?.localeForChildren;
         siblingMergeGroups.Clear();
         mergeUp.Clear();
         var childParentData = new _SemanticsParentData__object(mergeIntoParent: (parentData?.mergeIntoParent ?? false) || configProvider.effective.isMergingSemanticsOfDescendants, blocksUserActions: blocksUserAction, accessibilityFocusBlockType: accessibilityFocusBlockTypeLocal, localeForChildren: localeForChildrenLocal, explicitChildNodes: explicitChildNodesForChildren, tagsForChildren: tagsForChildrenLocal);
@@ -2979,7 +2979,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         }
         _marksConflictsInMergeGroup(mergeUp, isMergeUp: true);
         siblingMergeGroups.forEach(__fragments => _marksConflictsInMergeGroup(__fragments));
-        IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> mergeUpConfigs = mergeUp.map<_SemanticsFragment__object, global::Doroti.Framework.Semantics.SemanticsConfiguration?>((fragment) => fragment.configToMergeUp).OfType<global::Doroti.Framework.Semantics.SemanticsConfiguration>();
+        IEnumerable<SemanticsConfiguration> mergeUpConfigs = mergeUp.map((fragment) => fragment.configToMergeUp).OfType<SemanticsConfiguration>();
         configProvider.absorbAll(mergeUpConfigs);
         mergeUp.Clear();
         mergeUp.Add(this);
@@ -3019,7 +3019,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 removedChild.parentInSemanticsTree = null;
             }
         }
-        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tags = parentData?.tagsForChildren;
+        HashSet<SemanticsTag>? tags = parentData?.tagsForChildren;
         if (tags is not null)
         {
             DartRuntimePrimitives.Assert(() => checked((long)tags.Count) != 0);
@@ -3073,13 +3073,13 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? _getTagsForChildren()
+    internal virtual HashSet<SemanticsTag>? _getTagsForChildren()
     {
         if (contributesToSemanticsTree)
         {
             return configProvider.original.tagsForChildren?.toSet();
         }
-        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? result = default!;
+        HashSet<SemanticsTag>? result = default!;
         if (configProvider.original.tagsForChildren is not null)
         {
             result = configProvider.original.tagsForChildren!.toSet();
@@ -3103,10 +3103,10 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         var mergeUpLocal = new List<_SemanticsFragment__object>();
         var siblingMergeGroupsLocal = new List<List<_SemanticsFragment__object>>();
-        var childConfigurations = new List<global::Doroti.Framework.Semantics.SemanticsConfiguration>();
-        Func<List<global::Doroti.Framework.Semantics.SemanticsConfiguration>, global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult>? childConfigurationsDelegateLocal = configProvider.effective.childConfigurationsDelegate;
+        var childConfigurations = new List<SemanticsConfiguration>();
+        Func<List<SemanticsConfiguration>, ChildSemanticsConfigurationsResult>? childConfigurationsDelegateLocal = configProvider.effective.childConfigurationsDelegate;
         var hasChildConfigurationsDelegate = childConfigurationsDelegateLocal is not null;
-        var configToFragment = new DartMap<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>();
+        var configToFragment = new DartMap<SemanticsConfiguration, _SemanticsFragment__object>();
         bool needsToMakeIncompleteFragmentAssumption = hasChildConfigurationsDelegate && childParentData.explicitChildNodes;
         _SemanticsParentData__object effectiveChildParentData = default!;
         if (needsToMakeIncompleteFragmentAssumption)
@@ -3142,8 +3142,8 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         DartRuntimePrimitives.Assert(() => (childConfigurationsDelegateLocal is not null) || (checked((long)configToFragment.Count) == 0));
         if (childConfigurationsDelegateLocal is not null)
         {
-            global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult result = childConfigurationsDelegateLocal(childConfigurations);
-            mergeUpLocal.AddRange(result.mergeUp.map<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>((config) =>
+            ChildSemanticsConfigurationsResult result = childConfigurationsDelegateLocal(childConfigurations);
+            mergeUpLocal.AddRange(result.mergeUp.map((config) =>
             {
                 _SemanticsFragment__object? fragmentLocal = configToFragment.GetValueOrDefault(config);
                 if (fragmentLocal is not null)
@@ -3153,9 +3153,9 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 _containsIncompleteFragment = true;
                 return new _IncompleteSemanticsFragment__object(config, this);
             }));
-            foreach (IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> @group in result.siblingMergeGroups)
+            foreach (IEnumerable<SemanticsConfiguration> @group in result.siblingMergeGroups)
             {
-                siblingMergeGroupsLocal.Add(@group.map<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>((config) =>
+                siblingMergeGroupsLocal.Add(@group.map((config) =>
                 {
                     _SemanticsFragment__object? fragmentAlternate = configToFragment.GetValueOrDefault(config);
                     if (fragmentAlternate is not null)
@@ -3285,7 +3285,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         DartRuntimePrimitives.Assert(() => shouldFormSemanticsNode);
         if (cachedSemanticsNode is not null)
         {
-            foreach (global::Doroti.Framework.Semantics.SemanticsNode node in semanticsNodes)
+            foreach (SemanticsNode node in semanticsNodes)
             {
                 if (!Equals(node, cachedSemanticsNode))
                 {
@@ -3298,14 +3298,14 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             _produceSemanticsNode(usedSemanticsIds: usedSemanticsIds);
         }
         DartRuntimePrimitives.Assert(() => built);
-        global::Doroti.Framework.Semantics.SemanticsNode producedNode = cachedSemanticsNode!;
-        foreach (global::Doroti.Framework.Semantics.SemanticsNode nodeLocal in semanticsNodes)
+        SemanticsNode producedNode = cachedSemanticsNode!;
+        foreach (SemanticsNode nodeLocal in semanticsNodes)
         {
             if (!Equals(nodeLocal, producedNode))
             {
                 if (parentData?.tagsForChildren is not null)
                 {
-                    nodeLocal.tags ??= new HashSet<global::Doroti.Framework.Semantics.SemanticsTag>();
+                    nodeLocal.tags ??= new HashSet<SemanticsTag>();
                     nodeLocal.tags!.UnionWith(parentData!.tagsForChildren!);
                 }
                 else
@@ -3321,7 +3321,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual void _buildSemanticsSubtree(HashSet<long> usedSemanticsIds)
     {
-        var children = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        var children = new List<SemanticsNode>();
         foreach (_RenderObjectSemantics__object child in _children)
         {
             if (child.geometry is null)
@@ -3341,7 +3341,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             child._buildSemantics(usedSemanticsIds: usedSemanticsIds);
             children.AddRange(child.semanticsNodes);
         }
-        global::Doroti.Framework.Semantics.SemanticsNode node = cachedSemanticsNode!;
+        SemanticsNode node = cachedSemanticsNode!;
         children.removeWhere(shouldDrop);
         bool isSemanticsHidden = configProvider.original.isHidden || !(parentData?.mergeIntoParent ?? false) && geometry!.hidden;
         if (configProvider.effective.isHidden != isSemanticsHidden)
@@ -3355,16 +3355,16 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         {
             if (_needsMergingSiblingNodesIntoSelf)
             {
-                var innerNode = new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => renderObject.showOnScreen());
+                var innerNode = new SemanticsNode(showOnScreen: () => renderObject.showOnScreen());
                 renderObject.assembleSemanticsNode(innerNode, configProvider.effective, children);
-                var configLocal = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
+                var configLocal = ((Func<SemanticsConfiguration>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+    var __cascade = new SemanticsConfiguration();
     __cascade.isSemanticBoundary = true;
     __cascade.isMergingSemanticsOfDescendants = true;
     return __cascade;
 }))();
-                node.updateWith(config: configLocal, childrenInInversePaintOrder: new List<global::Doroti.Framework.Semantics.SemanticsNode> { innerNode });
+                node.updateWith(config: configLocal, childrenInInversePaintOrder: new List<SemanticsNode> { innerNode });
             }
             else
             {
@@ -3383,8 +3383,8 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         DartRuntimePrimitives.Assert(() => !built);
         semanticsNodes.Clear();
         _producedSiblingNodesAndOwners.Clear();
-        global::Doroti.Framework.Semantics.SemanticsNode node = cachedSemanticsNode ??= _createSemanticsNode();
-        ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
+        SemanticsNode node = cachedSemanticsNode ??= _createSemanticsNode();
+        ((Func<SemanticsNode>)(() =>
 {
     var __cascade = node;
     __cascade.isMergedIntoParent = parentData?.mergeIntoParent ?? false;
@@ -3402,13 +3402,13 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         built = true;
     }
 
-    internal virtual global::Doroti.Framework.Semantics.SemanticsNode _createSemanticsNode()
+    internal virtual SemanticsNode _createSemanticsNode()
     {
         if (isRoot)
         {
             return SemanticsNode.CreateRoot(showOnScreen: () => owner.renderObject.showOnScreen(), owner: owner.renderObject.owner!.semanticsOwner!);
         }
-        return new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => owner.renderObject.showOnScreen());
+        return new SemanticsNode(showOnScreen: () => owner.renderObject.showOnScreen());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3416,8 +3416,8 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         foreach (List<_SemanticsFragment__object> @group in siblingMergeGroups)
         {
-            global::Doroti.Framework.Semantics.SemanticsConfiguration? configuration = default!;
-            global::Doroti.Framework.Semantics.SemanticsNode? node = default!;
+            SemanticsConfiguration? configuration = default!;
+            SemanticsNode? node = default!;
             var explicitChildren = new List<_RenderObjectSemantics__object>();
             foreach (var fragmentLocal in @group)
             {
@@ -3436,11 +3436,11 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 {
                     fragmentLocal.mergesToSibling = true;
                     node ??= fragmentLocal.owner.cachedSemanticsNode;
-                    configuration ??= new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+                    configuration ??= new SemanticsConfiguration();
                     configuration.absorb(fragmentLocal.configToMergeUp!);
                 }
             }
-            var childrenNodes = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+            var childrenNodes = new List<SemanticsNode>();
             foreach (var explicitChild in explicitChildren)
             {
                 explicitChild._buildSemantics(usedSemanticsIds: usedSemanticsIds);
@@ -3450,7 +3450,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             {
                 if ((node is null) || usedSemanticsIds.Contains(node.id))
                 {
-                    node = new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => renderObject.showOnScreen());
+                    node = new SemanticsNode(showOnScreen: () => renderObject.showOnScreen());
                 }
                 usedSemanticsIds.Add(node.id);
                 foreach (var fragmentAlternate in @group)
@@ -3463,7 +3463,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 }
                 node.updateWith(config: configuration, childrenInInversePaintOrder: childrenNodes);
                 _producedSiblingNodesAndOwners[DartRuntimePrimitives.RequireReference(node)] = @group;
-                HashSet<global::Doroti.Framework.Semantics.SemanticsTag> tagsLocal = @group.map<_SemanticsFragment__object, HashSet<global::Doroti.Framework.Semantics.SemanticsTag>?>((fragment) => fragment.owner.parentData!.tagsForChildren).OfType<HashSet<global::Doroti.Framework.Semantics.SemanticsTag>>().expand((tagsLocal) => tagsLocal).toSet();
+                HashSet<SemanticsTag> tagsLocal = @group.map((fragment) => fragment.owner.parentData!.tagsForChildren).OfType<HashSet<SemanticsTag>>().expand((tagsLocal) => tagsLocal).toSet();
                 if (checked((long)tagsLocal.Count) != 0)
                 {
                     if (node.tags is null)
@@ -3483,9 +3483,9 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual void _updateSemanticsNodeGeometry()
     {
-        global::Doroti.Framework.Semantics.SemanticsNode node = cachedSemanticsNode!;
+        SemanticsNode node = cachedSemanticsNode!;
         _SemanticsGeometry__object nodeGeometry = geometry!;
-        ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
+        ((Func<SemanticsNode>)(() =>
 {
     var __cascade = node;
     __cascade.rect = nodeGeometry.rect;
@@ -3499,11 +3499,11 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     internal virtual void _updateSiblingNodesGeometries()
     {
         _SemanticsGeometry__object mainGeometry = geometry!;
-        foreach (MapEntry<global::Doroti.Framework.Semantics.SemanticsNode, List<_SemanticsFragment__object>> entry in _producedSiblingNodesAndOwners.entries)
+        foreach (MapEntry<SemanticsNode, List<_SemanticsFragment__object>> entry in _producedSiblingNodesAndOwners.entries)
         {
-            global::Doroti.Ui.Rect? rectLocal = default!;
-            global::Doroti.Ui.Rect? semanticsClipRectLocal = default!;
-            global::Doroti.Ui.Rect? paintClipRectLocal = default!;
+            Rect? rectLocal = default!;
+            Rect? semanticsClipRectLocal = default!;
+            Rect? paintClipRectLocal = default!;
             foreach (_SemanticsFragment__object fragment in entry.value)
             {
                 if (fragment.owner.shouldFormSemanticsNode)
@@ -3511,22 +3511,22 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                     continue;
                 }
                 _SemanticsGeometry__object parentGeometry = _SemanticsGeometry__object.computeChildGeometry(parentTransform: mainGeometry.transform, parentSemanticsClipRect: mainGeometry.semanticsClipRect, parentPaintClipRect: mainGeometry.paintClipRect, parent: this, child: fragment.owner);
-                global::Doroti.Ui.Rect rectInFragmentOwnerCoordinates = parentGeometry.semanticsClipRect?.intersect(fragment.owner.renderObject.semanticBounds) ?? fragment.owner.renderObject.semanticBounds;
-                global::Doroti.Ui.Rect rectInParentCoordinates = MatrixUtils.transformRect(parentGeometry.transform, rectInFragmentOwnerCoordinates);
+                Rect rectInFragmentOwnerCoordinates = parentGeometry.semanticsClipRect?.intersect(fragment.owner.renderObject.semanticBounds) ?? fragment.owner.renderObject.semanticBounds;
+                Rect rectInParentCoordinates = MatrixUtils.transformRect(parentGeometry.transform, rectInFragmentOwnerCoordinates);
                 rectLocal = rectLocal?.expandToInclude(rectInParentCoordinates) ?? rectInParentCoordinates;
                 if (parentGeometry.semanticsClipRect is not null)
                 {
-                    global::Doroti.Ui.Rect rectAlternate = MatrixUtils.transformRect(parentGeometry.transform, DartRuntimePrimitives.RequireValue(parentGeometry.semanticsClipRect));
+                    Rect rectAlternate = MatrixUtils.transformRect(parentGeometry.transform, DartRuntimePrimitives.RequireValue(parentGeometry.semanticsClipRect));
                     semanticsClipRectLocal = semanticsClipRectLocal?.intersect(rectAlternate) ?? rectAlternate;
                 }
                 if (parentGeometry.paintClipRect is not null)
                 {
-                    global::Doroti.Ui.Rect rectNested = MatrixUtils.transformRect(parentGeometry.transform, DartRuntimePrimitives.RequireValue(parentGeometry.paintClipRect));
+                    Rect rectNested = MatrixUtils.transformRect(parentGeometry.transform, DartRuntimePrimitives.RequireValue(parentGeometry.paintClipRect));
                     paintClipRectLocal = paintClipRectLocal?.intersect(rectNested) ?? rectNested;
                 }
             }
-            global::Doroti.Framework.Semantics.SemanticsNode node = entry.key;
-            ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
+            SemanticsNode node = entry.key;
+            ((Func<SemanticsNode>)(() =>
 {
     var __cascade = node;
     __cascade.rect = DartRuntimePrimitives.RequireValue(rectLocal);
@@ -3542,7 +3542,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(renderObject.GetType(), 13) : default;
         renderObject.owner!._nodesNeedingSemanticsGeometryUpdate.Add(renderObject);
-        global::Doroti.Framework.Semantics.SemanticsNode? producedSemanticsNode = cachedSemanticsNode;
+        SemanticsNode? producedSemanticsNode = cachedSemanticsNode;
         bool wasSemanticsBoundaryLocal = (producedSemanticsNode is not null) && configProvider.wasSemanticsBoundary;
         configProvider.clear();
         _containsIncompleteFragment = false;
@@ -3631,7 +3631,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
-        return _children.map<_RenderObjectSemantics__object, DiagnosticsNode>((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
+        return _children.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3732,15 +3732,15 @@ public class _SemanticsGeometry__object
         }
         DartRuntimePrimitives.Assert(() => checked(childToCommonAncestor.Count) >= 2L);
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childRenderObject, parentRenderObject));
-        global::Doroti.Ui.Rect? paintClipRectLocal = default!;
-        global::Doroti.Ui.Rect? semanticsClipRectLocal = default!;
+        Rect? paintClipRectLocal = default!;
+        Rect? semanticsClipRectLocal = default!;
         var transformLocal = Matrix4.identity();
         for (long i = checked(childToCommonAncestor.Count) - 1L; i > 0L; i -= 1L)
         {
             RenderObject nodeParent = childToCommonAncestor[(int)i];
             RenderObject node = childToCommonAncestor[(int)(i - 1L)];
-            global::Doroti.Ui.Rect? localPaintClipInParent = _transformRect(nodeParent.describeApproximatePaintClip(node), transformLocal, MatrixUtils.transformRect);
-            global::Doroti.Ui.Rect? localSemanticsClipInParent = _transformRect(nodeParent.describeSemanticsClip(node), transformLocal, MatrixUtils.transformRect);
+            Rect? localPaintClipInParent = _transformRect(nodeParent.describeApproximatePaintClip(node), transformLocal, MatrixUtils.transformRect);
+            Rect? localSemanticsClipInParent = _transformRect(nodeParent.describeSemanticsClip(node), transformLocal, MatrixUtils.transformRect);
             paintClipRectLocal = _intersectRects(paintClipRectLocal, localPaintClipInParent);
             semanticsClipRectLocal = localSemanticsClipInParent ?? semanticsClipRectLocal?.intersect(localPaintClipInParent ?? DartRuntimePrimitives.RequireValue(semanticsClipRectLocal));
             nodeParent.applyPaintTransform(node, transformLocal);
@@ -3758,12 +3758,12 @@ public class _SemanticsGeometry__object
         {
             MatrixUtils.multiplyInPlace(parentTransform, transformLocal);
         }
-        global::Doroti.Ui.Rect rectLocal = semanticsClipRectLocal?.intersect(child.renderObject.semanticBounds) ?? child.renderObject.semanticBounds;
+        Rect rectLocal = semanticsClipRectLocal?.intersect(child.renderObject.semanticBounds) ?? child.renderObject.semanticBounds;
         var isRectHidden = false;
         if (paintClipRectLocal is not null)
         {
             Rect paintClipRect__259962__value262006 = DartRuntimePrimitives.RequireValue(paintClipRectLocal);
-            global::Doroti.Ui.Rect paintRect = DartRuntimePrimitives.RequireValue(paintClipRect__259962__value262006).intersect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rectLocal)));
+            Rect paintRect = DartRuntimePrimitives.RequireValue(paintClipRect__259962__value262006).intersect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rectLocal)));
             isRectHidden = paintRect.isEmpty && !DartRuntimePrimitives.RequireValue(rectLocal).isEmpty;
             if (!isRectHidden)
             {
@@ -3774,7 +3774,7 @@ public class _SemanticsGeometry__object
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Rect? _transformRect(Rect? rect, Matrix4 transform, Func<Matrix4, Rect, Rect> apply = default!)
+    internal static Rect? _transformRect(Rect? rect, Matrix4 transform, Func<Matrix4, Rect, Rect> apply = default!)
     {
         if (rect is null)
         {
@@ -3788,7 +3788,7 @@ public class _SemanticsGeometry__object
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Rect? _intersectRects(Rect? a, Rect? b)
+    internal static Rect? _intersectRects(Rect? a, Rect? b)
     {
         if (b is null)
         {

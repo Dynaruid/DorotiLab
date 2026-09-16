@@ -11,7 +11,7 @@ public static partial class ArcLibrary
     internal static double _kOnAxisDelta = 2.0;
 }
 
-public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Offset>
+public class MaterialPointArcTween : Tween<Offset>
 {
     internal virtual bool _dirty { get; set; } = true;
     internal virtual Offset? _center { get; set; } = default;
@@ -27,13 +27,13 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
     {
 
 
-        global::Doroti.Ui.Offset beginLocal = DartRuntimePrimitives.RequireValue(begin);
-        global::Doroti.Ui.Offset endLocal = DartRuntimePrimitives.RequireValue(end);
-        global::Doroti.Ui.Offset delta = DartRuntimePrimitives.RequireValue(endLocal) - DartRuntimePrimitives.RequireValue(beginLocal);
+        Offset beginLocal = DartRuntimePrimitives.RequireValue(begin);
+        Offset endLocal = DartRuntimePrimitives.RequireValue(end);
+        Offset delta = DartRuntimePrimitives.RequireValue(endLocal) - DartRuntimePrimitives.RequireValue(beginLocal);
         double deltaX = delta.dx.abs();
         double deltaY = delta.dy.abs();
         double distanceFromAtoB = delta.distance;
-        var c = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(endLocal).dx, DartRuntimePrimitives.RequireValue(beginLocal).dy);
+        var c = new Offset(DartRuntimePrimitives.RequireValue(endLocal).dx, DartRuntimePrimitives.RequireValue(beginLocal).dy);
         double sweepAngle()
         {
             return 2.0 * Dart_mathLibrary.asin(distanceFromAtoB / (2.0 * DartRuntimePrimitives.RequireValue(_radius)));
@@ -44,7 +44,7 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
             if (deltaX < deltaY)
             {
                 _radius = distanceFromAtoB * distanceFromAtoB / (c - DartRuntimePrimitives.RequireValue(beginLocal)).distance / 2.0;
-                _center = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(endLocal).dx + (DartRuntimePrimitives.RequireValue(_radius) * Math.Sign(DartRuntimePrimitives.RequireValue(beginLocal).dx - DartRuntimePrimitives.RequireValue(endLocal).dx)), DartRuntimePrimitives.RequireValue(endLocal).dy);
+                _center = new Offset(DartRuntimePrimitives.RequireValue(endLocal).dx + (DartRuntimePrimitives.RequireValue(_radius) * Math.Sign(DartRuntimePrimitives.RequireValue(beginLocal).dx - DartRuntimePrimitives.RequireValue(endLocal).dx)), DartRuntimePrimitives.RequireValue(endLocal).dy);
                 if (DartRuntimePrimitives.RequireValue(beginLocal).dx < DartRuntimePrimitives.RequireValue(endLocal).dx)
                 {
                     _beginAngle = sweepAngle() * Math.Sign(DartRuntimePrimitives.RequireValue(beginLocal).dy - DartRuntimePrimitives.RequireValue(endLocal).dy);
@@ -59,7 +59,7 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
             else
             {
                 _radius = distanceFromAtoB * distanceFromAtoB / (c - DartRuntimePrimitives.RequireValue(endLocal)).distance / 2.0;
-                _center = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(beginLocal).dx, DartRuntimePrimitives.RequireValue(beginLocal).dy + (Math.Sign(DartRuntimePrimitives.RequireValue(endLocal).dy - DartRuntimePrimitives.RequireValue(beginLocal).dy) * DartRuntimePrimitives.RequireValue(_radius)));
+                _center = new Offset(DartRuntimePrimitives.RequireValue(beginLocal).dx, DartRuntimePrimitives.RequireValue(beginLocal).dy + (Math.Sign(DartRuntimePrimitives.RequireValue(endLocal).dy - DartRuntimePrimitives.RequireValue(beginLocal).dy) * DartRuntimePrimitives.RequireValue(_radius)));
                 if (DartRuntimePrimitives.RequireValue(beginLocal).dy < DartRuntimePrimitives.RequireValue(endLocal).dy)
                 {
                     _beginAngle = -Dart_mathLibrary.pi / 2.0;
@@ -82,7 +82,7 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
         _dirty = false;
     }
 
-    public virtual global::Doroti.Ui.Offset? center
+    public virtual Offset? center
     {
         get
         {
@@ -171,7 +171,7 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
         double angle = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(_beginAngle, _endAngle, t));
         double x = Dart_mathLibrary.cos(angle) * DartRuntimePrimitives.RequireValue(_radius);
         double y = Dart_mathLibrary.sin(angle) * DartRuntimePrimitives.RequireValue(_radius);
-        return DartRuntimePrimitives.RequireValue(_center) + new global::Doroti.Ui.Offset(x, y);
+        return DartRuntimePrimitives.RequireValue(_center) + new Offset(x, y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -213,7 +213,7 @@ internal delegate double _KeyFunc__arc<T>(T input);
 
 public static partial class ArcLibrary
 {
-    internal static T _maxBy<T>(IEnumerable<T> input, global::System.Func<T, double> keyFunc)
+    internal static T _maxBy<T>(IEnumerable<T> input, Func<T, double> keyFunc)
     {
         T maxValue = default!;
         double? maxKey = default!;
@@ -231,7 +231,7 @@ public static partial class ArcLibrary
     }
 }
 
-public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
+public class MaterialRectArcTween : RectTween
 {
     internal virtual bool _dirty { get; set; } = true;
     internal virtual MaterialPointArcTween _beginArc { get; set; } = default!;
@@ -245,8 +245,8 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
     {
 
 
-        global::Doroti.Ui.Offset centersVector = DartRuntimePrimitives.RequireValue(end).center - DartRuntimePrimitives.RequireValue(begin).center;
-        _Diagonal__arc diagonal = ArcLibrary._maxBy<_Diagonal__arc>(ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(), (d) => _diagonalSupport(centersVector, d));
+        Offset centersVector = DartRuntimePrimitives.RequireValue(end).center - DartRuntimePrimitives.RequireValue(begin).center;
+        _Diagonal__arc diagonal = ArcLibrary._maxBy(ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(), (d) => _diagonalSupport(centersVector, d));
         _beginArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.beginId), end: _cornerFor(DartRuntimePrimitives.RequireValue(end), diagonal.beginId));
         _endArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.endId), end: _cornerFor(DartRuntimePrimitives.RequireValue(end), diagonal.endId));
         _dirty = false;
@@ -254,13 +254,13 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
 
     internal virtual double _diagonalSupport(Offset centersVector, _Diagonal__arc diagonal)
     {
-        global::Doroti.Ui.Offset delta = _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.endId) - _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.beginId);
+        Offset delta = _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.endId) - _cornerFor(DartRuntimePrimitives.RequireValue(begin), diagonal.beginId);
         double length = delta.distance;
         return (centersVector.dx * delta.dx / length) + (centersVector.dy * delta.dy / length);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Offset _cornerFor(Rect rect, _CornerId__arc id)
+    internal virtual Offset _cornerFor(Rect rect, _CornerId__arc id)
     {
         return id switch { _CornerId__arc.topLeft => rect.topLeft, _CornerId__arc.topRight => rect.topRight, _CornerId__arc.bottomLeft => rect.bottomLeft, _CornerId__arc.bottomRight => rect.bottomRight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -346,7 +346,7 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
 
 }
 
-public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.RectTween
+public class MaterialRectCenterArcTween : RectTween
 {
     internal virtual bool _dirty { get; set; } = true;
     internal virtual MaterialPointArcTween _centerArc { get; set; } = default!;
@@ -412,7 +412,7 @@ public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.Rec
         {
             return DartRuntimePrimitives.RequireValue(end);
         }
-        global::Doroti.Ui.Offset center = _centerArc.lerp(t);
+        Offset center = _centerArc.lerp(t);
         double widthLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(begin).width, DartRuntimePrimitives.RequireValue(end).width, t));
         double heightLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(begin).height, DartRuntimePrimitives.RequireValue(end).height, t));
         return Rect.fromLTWH(center.dx - (widthLocal / 2.0), center.dy - (heightLocal / 2.0), widthLocal, heightLocal);

@@ -66,11 +66,11 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.RRect borderRect = borderRadius.resolve(textDirection).toRRect(rect);
-        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(side.strokeInset);
+        RRect borderRect = borderRadius.resolve(textDirection).toRRect(rect);
+        RRect adjustedRect = borderRect.deflate(side.strokeInset);
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(adjustedRect);
     return __cascade;
 }))();
@@ -81,7 +81,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
     {
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(borderRadius.resolve(textDirection).toRRect(rect));
     return __cascade;
 }))();
@@ -130,13 +130,13 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
                     {
                         var paintLocal = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = side.color;
     return __cascade;
 }))();
-                        global::Doroti.Ui.RRect borderRect = this.borderRadius.resolve(textDirection).toRRect(rect);
-                        global::Doroti.Ui.RRect inner = borderRect.deflate(side.strokeInset);
-                        global::Doroti.Ui.RRect outer = borderRect.inflate(side.strokeOutset);
+                        RRect borderRect = this.borderRadius.resolve(textDirection).toRRect(rect);
+                        RRect inner = borderRect.deflate(side.strokeInset);
+                        RRect outer = borderRect.inflate(side.strokeOutset);
                         canvas.drawDRRect(outer, inner, paintLocal);
                     }
                     break;
@@ -172,7 +172,7 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border : _Shap
 
     public override void drawShape(Canvas canvas, Rect rect, BorderRadius radius, Paint paint, double? inflation = null)
     {
-        global::Doroti.Ui.RRect rrect = radius.toRRect(rect);
+        RRect rrect = radius.toRRect(rect);
         if (inflation is not null)
         {
             double inflation__value5719 = DartRuntimePrimitives.RequireValue(inflation);
@@ -183,7 +183,7 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border : _Shap
 
     public override Path buildPath(Rect rect, BorderRadius radius, double? inflation = null)
     {
-        global::Doroti.Ui.RRect rrect = radius.toRRect(rect);
+        RRect rrect = radius.toRRect(rect);
         if (inflation is not null)
         {
             double inflation__value5959 = DartRuntimePrimitives.RequireValue(inflation);
@@ -191,7 +191,7 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border : _Shap
         }
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(rrect);
     return __cascade;
 }))();
@@ -271,18 +271,18 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
         {
             return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(rect.deflate(side.strokeInset));
     return __cascade;
 }))();
         }
         else
         {
-            global::Doroti.Ui.RSuperellipse borderRect = borderRadius.resolve(textDirection).toRSuperellipse(rect);
-            global::Doroti.Ui.RSuperellipse adjustedRect = borderRect.deflate(side.strokeInset);
+            RSuperellipse borderRect = borderRadius.resolve(textDirection).toRSuperellipse(rect);
+            RSuperellipse adjustedRect = borderRect.deflate(side.strokeInset);
             return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRSuperellipse(adjustedRect);
     return __cascade;
 }))();
@@ -296,7 +296,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
         {
             return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(rect);
     return __cascade;
 }))();
@@ -305,7 +305,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
         {
             return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRSuperellipse(borderRadius.resolve(textDirection).toRSuperellipse(rect));
     return __cascade;
 }))();
@@ -350,12 +350,12 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
                     double strokeOffset = (side.strokeOutset - side.strokeInset) / 2L;
                     if (Equals(this.borderRadius, BorderRadius.zero))
                     {
-                        global::Doroti.Ui.Rect @base = rect.inflate(strokeOffset);
+                        Rect @base = rect.inflate(strokeOffset);
                         canvas.drawRect(@base, side.toPaint());
                     }
                     else
                     {
-                        global::Doroti.Ui.RSuperellipse baseLocal = this.borderRadius.resolve(textDirection).toRSuperellipse(rect).inflate(strokeOffset);
+                        RSuperellipse baseLocal = this.borderRadius.resolve(textDirection).toRSuperellipse(rect).inflate(strokeOffset);
                         canvas.drawRSuperellipse(baseLocal, side.toPaint());
                     }
                     break;
@@ -391,7 +391,7 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border : _S
 
     public override void drawShape(Canvas canvas, Rect rect, BorderRadius radius, Paint paint, double? inflation = null)
     {
-        global::Doroti.Ui.RSuperellipse rsuperellipse = radius.toRSuperellipse(rect);
+        RSuperellipse rsuperellipse = radius.toRSuperellipse(rect);
         if (inflation is not null)
         {
             double inflation__value12640 = DartRuntimePrimitives.RequireValue(inflation);
@@ -402,7 +402,7 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border : _S
 
     public override Path buildPath(Rect rect, BorderRadius radius, double? inflation = null)
     {
-        global::Doroti.Ui.RSuperellipse rsuperellipse = radius.toRSuperellipse(rect);
+        RSuperellipse rsuperellipse = radius.toRSuperellipse(rect);
         if (inflation is not null)
         {
             double inflation__value12936 = DartRuntimePrimitives.RequireValue(inflation);
@@ -410,7 +410,7 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border : _S
         }
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRSuperellipse(rsuperellipse);
     return __cascade;
 }))();
@@ -446,7 +446,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
     }
 
     public abstract void drawShape(Canvas canvas, Rect rect, BorderRadius radius, Paint paint, double? inflation = null);
-    public abstract global::Doroti.Ui.Path buildPath(Rect rect, BorderRadius radius, double? inflation = null);
+    public abstract Path buildPath(Rect rect, BorderRadius radius, double? inflation = null);
     public abstract bool containsOuterShape(Rect rect, BorderRadius radius, Offset position);
     public override ShapeBorder scale(double t)
     {
@@ -496,7 +496,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Rect _adjustRect(Rect rect)
+    internal virtual Rect _adjustRect(Rect rect)
     {
         if ((circularity == 0.0) || (rect.width == rect.height))
         {
@@ -553,7 +553,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Rect adjustedRect = _adjustRect(rect);
+        Rect adjustedRect = _adjustRect(rect);
         BorderRadius adjustedBorderRadius = _adjustBorderRadius(rect, textDirection);
         if (Equals(adjustedBorderRadius, BorderRadius.zero))
         {

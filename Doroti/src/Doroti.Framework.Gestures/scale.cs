@@ -12,7 +12,7 @@ public static partial class ScaleLibrary
 
 public static partial class ScaleLibrary
 {
-    public static Offset kDefaultTrackpadScrollToScaleFactor = new global::Doroti.Ui.Offset(0, -1L / kDefaultMouseScrollToScaleFactor);
+    public static Offset kDefaultTrackpadScrollToScaleFactor = new Offset(0, -1L / kDefaultMouseScrollToScaleFactor);
 }
 
 internal enum _ScaleState__scale
@@ -48,7 +48,7 @@ internal class _PointerPanZoomData__scale
         return new _PointerPanZoomData__scale(parent, @event.position, @event.pan, @event.scale, @event.rotation);
     }
 
-    public virtual global::Doroti.Ui.Offset focalPoint
+    public virtual Offset focalPoint
     {
         get
         {
@@ -94,8 +94,8 @@ public class ScaleStartDetails : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPoint", focalPoint));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localFocalPoint", localFocalPoint));
+        properties.add(new DiagnosticsProperty<Offset>("focalPoint", focalPoint));
+        properties.add(new DiagnosticsProperty<Offset>("localFocalPoint", localFocalPoint));
         properties.add(new IntProperty("pointerCount", pointerCount));
         properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
     }
@@ -133,9 +133,9 @@ public class ScaleUpdateDetails : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPointDelta", focalPointDelta));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("focalPoint", focalPoint));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localFocalPoint", localFocalPoint));
+        properties.add(new DiagnosticsProperty<Offset>("focalPointDelta", focalPointDelta));
+        properties.add(new DiagnosticsProperty<Offset>("focalPoint", focalPoint));
+        properties.add(new DiagnosticsProperty<Offset>("localFocalPoint", localFocalPoint));
         properties.add(new DoubleProperty("scale", scale));
         properties.add(new DoubleProperty("horizontalScale", horizontalScale));
         properties.add(new DoubleProperty("verticalScale", verticalScale));
@@ -430,8 +430,8 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _update()
     {
-        global::Doroti.Ui.Offset? previousFocalPoint = _currentFocalPoint;
-        global::Doroti.Ui.Offset focalPointLocal = Offset.zero;
+        Offset? previousFocalPoint = _currentFocalPoint;
+        Offset focalPointLocal = Offset.zero;
         foreach (long pointer in _pointerLocations.Keys)
         {
             focalPointLocal += DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(pointer));
@@ -448,12 +448,12 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         }
         else
         {
-            global::Doroti.Ui.Offset localPreviousFocalPoint = _localFocalPoint;
+            Offset localPreviousFocalPoint = _localFocalPoint;
             _localFocalPoint = PointerEvent.transformPosition(_lastTransform, DartRuntimePrimitives.RequireValue(_currentFocalPoint));
             _delta = _localFocalPoint - localPreviousFocalPoint;
         }
         long count = _pointerLocations.Keys.Count();
-        global::Doroti.Ui.Offset pointerFocalPoint = Offset.zero;
+        Offset pointerFocalPoint = Offset.zero;
         foreach (long pointerLocal in _pointerLocations.Keys)
         {
             pointerFocalPoint += DartRuntimePrimitives.RequireValue(_pointerLocations.GetValueOrDefault(pointerLocal));
@@ -513,7 +513,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         else
         {
             _initialPanZoomScaleFactor = _scaleFactor / _pointerScaleFactor;
-            _initialPanZoomRotationFactor = _pointerPanZooms.Values.map<_PointerPanZoomData__scale, double>((x) => x.rotation).reduce((a, b) => a + b);
+            _initialPanZoomRotationFactor = _pointerPanZooms.Values.map((x) => x.rotation).reduce((a, b) => a + b);
         }
         if (Equals(_state, _ScaleState__scale.started))
         {
@@ -523,7 +523,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 Velocity velocityLocal = tracker.getVelocity();
                 if (ScaleLibrary._isFlingGesture(velocityLocal))
                 {
-                    global::Doroti.Ui.Offset pixelsPerSecondLocal = velocityLocal.pixelsPerSecond;
+                    Offset pixelsPerSecondLocal = velocityLocal.pixelsPerSecond;
                     if (pixelsPerSecondLocal.distanceSquared > (ConstantsLibrary.kMaxFlingVelocity * ConstantsLibrary.kMaxFlingVelocity))
                     {
                         velocityLocal = new Velocity(pixelsPerSecond: pixelsPerSecondLocal / pixelsPerSecondLocal.distance * ConstantsLibrary.kMaxFlingVelocity);
@@ -574,7 +574,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         }
         if (Equals(_state, _ScaleState__scale.started))
         {
-            _scaleVelocityTracker?.addPosition(@event.timeStamp, new global::Doroti.Ui.Offset(_scaleFactor, 0));
+            _scaleVelocityTracker?.addPosition(@event.timeStamp, new Offset(_scaleFactor, 0));
             if (onUpdate is not null)
             {
                 invokeCallback<object?>("onUpdate", () =>
@@ -625,7 +625,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 else
                 {
                     _initialPanZoomScaleFactor = _scaleFactor / _pointerScaleFactor;
-                    _initialPanZoomRotationFactor = _pointerPanZooms.Values.map<_PointerPanZoomData__scale, double>((x) => x.rotation).reduce((a, b) => a + b);
+                    _initialPanZoomRotationFactor = _pointerPanZooms.Values.map((x) => x.rotation).reduce((a, b) => a + b);
                 }
             }
         }

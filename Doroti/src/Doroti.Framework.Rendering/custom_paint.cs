@@ -31,10 +31,10 @@ public class CustomPainterSemantics
     public virtual Key? key { get; private set; }
     public virtual Rect rect { get; private set; } = default!;
     public virtual Matrix4? transform { get; private set; }
-    public virtual global::Doroti.Framework.Semantics.SemanticsProperties properties { get; private set; } = default!;
-    public virtual HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tags { get; private set; }
+    public virtual SemanticsProperties properties { get; private set; } = default!;
+    public virtual HashSet<SemanticsTag>? tags { get; private set; }
 
-    public CustomPainterSemantics(Key? key = null, Rect rect = default!, global::Doroti.Framework.Semantics.SemanticsProperties properties = default!, Matrix4? transform = null, HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tags = null)
+    public CustomPainterSemantics(Key? key = null, Rect rect = default!, SemanticsProperties properties = default!, Matrix4? transform = null, HashSet<SemanticsTag>? tags = null)
     {
         this.key = key;
         this.rect = rect;
@@ -54,8 +54,8 @@ public class RenderCustomPaint : RenderProxyBox
     public virtual bool willChange { get; set; } = default!;
     internal virtual Func<Size, List<CustomPainterSemantics>>? _backgroundSemanticsBuilder { get; set; } = default;
     internal virtual Func<Size, List<CustomPainterSemantics>>? _foregroundSemanticsBuilder { get; set; } = default;
-    internal virtual List<global::Doroti.Framework.Semantics.SemanticsNode>? _backgroundSemanticsNodes { get; set; } = default;
-    internal virtual List<global::Doroti.Framework.Semantics.SemanticsNode>? _foregroundSemanticsNodes { get; set; } = default;
+    internal virtual List<SemanticsNode>? _backgroundSemanticsNodes { get; set; } = default;
+    internal virtual List<SemanticsNode>? _foregroundSemanticsNodes { get; set; } = default;
 
     public RenderCustomPaint(CustomPainter? painter = null, CustomPainter? foregroundPainter = null, Size? preferredSize = null, bool isComplex = false, bool willChange = false, RenderBox? child = null) : base(child)
     {
@@ -132,7 +132,7 @@ public class RenderCustomPaint : RenderProxyBox
         }
     }
 
-    public virtual global::Doroti.Ui.Size preferredSize
+    public virtual Size preferredSize
     {
         get => _preferredSize;
         set
@@ -285,7 +285,7 @@ public class RenderCustomPaint : RenderProxyBox
         }
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         _backgroundSemanticsBuilder = painter?.semanticsBuilder;
@@ -293,7 +293,7 @@ public class RenderCustomPaint : RenderProxyBox
         config.isSemanticBoundary = (_backgroundSemanticsBuilder is not null) || (_foregroundSemanticsBuilder is not null);
     }
 
-    public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
+    public override void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -309,7 +309,7 @@ public class RenderCustomPaint : RenderProxyBox
         _foregroundSemanticsNodes = _updateSemanticsChildren(_foregroundSemanticsNodes, foregroundSemantics);
         bool hasBackgroundSemantics = (_backgroundSemanticsNodes is not null) && (checked((long)_backgroundSemanticsNodes!.Count) != 0);
         bool hasForegroundSemantics = (_foregroundSemanticsNodes is not null) && (checked((long)_foregroundSemanticsNodes!.Count) != 0);
-        var finalChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        var finalChildren = new List<SemanticsNode>();
         base.assembleSemanticsNode(node, config, finalChildren);
     }
 
@@ -320,9 +320,9 @@ public class RenderCustomPaint : RenderProxyBox
         _foregroundSemanticsNodes = null;
     }
 
-    internal static List<global::Doroti.Framework.Semantics.SemanticsNode> _updateSemanticsChildren(List<global::Doroti.Framework.Semantics.SemanticsNode>? oldSemantics, List<CustomPainterSemantics>? newChildSemantics)
+    internal static List<SemanticsNode> _updateSemanticsChildren(List<SemanticsNode>? oldSemantics, List<CustomPainterSemantics>? newChildSemantics)
     {
-        oldSemantics = oldSemantics ?? new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        oldSemantics = oldSemantics ?? new List<SemanticsNode>();
         newChildSemantics = newChildSemantics ?? new List<CustomPainterSemantics>();
         DartRuntimePrimitives.Assert(() =>
             {
@@ -351,23 +351,23 @@ public class RenderCustomPaint : RenderProxyBox
         var oldChildrenTop = 0L;
         long newChildrenBottom = checked(newChildSemantics.Count) - 1L;
         long oldChildrenBottom = checked(oldSemantics.Count) - 1L;
-        var newChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode?>(Enumerable.Repeat<global::Doroti.Framework.Semantics.SemanticsNode?>(null, checked((int)checked((long)newChildSemantics.Count))));
+        var newChildren = new List<SemanticsNode?>(Enumerable.Repeat<SemanticsNode?>(null, checked((int)checked((long)newChildSemantics.Count))));
         while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
-            global::Doroti.Framework.Semantics.SemanticsNode oldChild = oldSemantics[(int)oldChildrenTop];
+            SemanticsNode oldChild = oldSemantics[(int)oldChildrenTop];
             CustomPainterSemantics newSemantics = newChildSemantics[(int)newChildrenTop];
             if (!_canUpdateSemanticsChild(oldChild, newSemantics))
             {
                 break;
             }
-            global::Doroti.Framework.Semantics.SemanticsNode newChild = _updateSemanticsChild(oldChild, newSemantics);
+            SemanticsNode newChild = _updateSemanticsChild(oldChild, newSemantics);
             newChildren[(int)newChildrenTop] = newChild;
             newChildrenTop += 1L;
             oldChildrenTop += 1L;
         }
         while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
-            global::Doroti.Framework.Semantics.SemanticsNode oldChildLocal = oldSemantics[(int)oldChildrenBottom];
+            SemanticsNode oldChildLocal = oldSemantics[(int)oldChildrenBottom];
             CustomPainterSemantics newChildLocal = newChildSemantics[(int)newChildrenBottom];
             if (!_canUpdateSemanticsChild(oldChildLocal, newChildLocal))
             {
@@ -377,13 +377,13 @@ public class RenderCustomPaint : RenderProxyBox
             newChildrenBottom -= 1L;
         }
         bool haveOldChildren = oldChildrenTop <= oldChildrenBottom;
-        DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode> oldKeyedChildren = default!;
+        DartMap<Key, SemanticsNode> oldKeyedChildren = default!;
         if (haveOldChildren)
         {
-            oldKeyedChildren = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
+            oldKeyedChildren = new DartMap<Key, SemanticsNode>();
             while (oldChildrenTop <= oldChildrenBottom)
             {
-                global::Doroti.Framework.Semantics.SemanticsNode oldChildAlternate = oldSemantics[(int)oldChildrenTop];
+                SemanticsNode oldChildAlternate = oldSemantics[(int)oldChildrenTop];
                 if (oldChildAlternate.key is not null)
                 {
                     oldKeyedChildren[oldChildAlternate.key!] = oldChildAlternate;
@@ -393,7 +393,7 @@ public class RenderCustomPaint : RenderProxyBox
         }
         while (newChildrenTop <= newChildrenBottom)
         {
-            global::Doroti.Framework.Semantics.SemanticsNode? oldChildNested = default!;
+            SemanticsNode? oldChildNested = default!;
             CustomPainterSemantics newSemanticsLocal = newChildSemantics[(int)newChildrenTop];
             if (haveOldChildren)
             {
@@ -415,7 +415,7 @@ public class RenderCustomPaint : RenderProxyBox
                 }
             }
             DartRuntimePrimitives.Assert(() => (oldChildNested is null) || _canUpdateSemanticsChild(oldChildNested, newSemanticsLocal));
-            global::Doroti.Framework.Semantics.SemanticsNode newChildAlternate = _updateSemanticsChild(oldChildNested, newSemanticsLocal);
+            SemanticsNode newChildAlternate = _updateSemanticsChild(oldChildNested, newSemanticsLocal);
             DartRuntimePrimitives.Assert(() => Equals(oldChildNested, newChildAlternate) || (oldChildNested is null));
             newChildren[(int)newChildrenTop] = newChildAlternate;
             newChildrenTop += 1L;
@@ -427,10 +427,10 @@ public class RenderCustomPaint : RenderProxyBox
         oldChildrenBottom = checked(oldSemantics.Count) - 1L;
         while (oldChildrenTop <= oldChildrenBottom && newChildrenTop <= newChildrenBottom)
         {
-            global::Doroti.Framework.Semantics.SemanticsNode oldChildCurrent = oldSemantics[(int)oldChildrenTop];
+            SemanticsNode oldChildCurrent = oldSemantics[(int)oldChildrenTop];
             CustomPainterSemantics newSemanticsAlternate = newChildSemantics[(int)newChildrenTop];
             DartRuntimePrimitives.Assert(() => _canUpdateSemanticsChild(oldChildCurrent, newSemanticsAlternate));
-            global::Doroti.Framework.Semantics.SemanticsNode newChildNested = _updateSemanticsChild(oldChildCurrent, newSemanticsAlternate);
+            SemanticsNode newChildNested = _updateSemanticsChild(oldChildCurrent, newSemanticsAlternate);
             DartRuntimePrimitives.Assert(() => Equals(oldChildCurrent, newChildNested));
             newChildren[(int)newChildrenTop] = newChildNested;
             newChildrenTop += 1L;
@@ -444,22 +444,22 @@ public class RenderCustomPaint : RenderProxyBox
                 }
                 return true;
             });
-        return newChildren.cast<global::Doroti.Framework.Semantics.SemanticsNode>().ToList();
+        return newChildren.cast<SemanticsNode>().ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static bool _canUpdateSemanticsChild(global::Doroti.Framework.Semantics.SemanticsNode oldChild, CustomPainterSemantics newSemantics)
+    internal static bool _canUpdateSemanticsChild(SemanticsNode oldChild, CustomPainterSemantics newSemantics)
     {
         return Equals(oldChild.key, newSemantics.key);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Framework.Semantics.SemanticsNode _updateSemanticsChild(global::Doroti.Framework.Semantics.SemanticsNode? oldChild, CustomPainterSemantics newSemantics)
+    internal static SemanticsNode _updateSemanticsChild(SemanticsNode? oldChild, CustomPainterSemantics newSemantics)
     {
         DartRuntimePrimitives.Assert(() => (oldChild is null) || _canUpdateSemanticsChild(oldChild, newSemantics));
-        global::Doroti.Framework.Semantics.SemanticsNode newChild = oldChild ?? new global::Doroti.Framework.Semantics.SemanticsNode(key: newSemantics.key);
-        global::Doroti.Framework.Semantics.SemanticsProperties propertiesLocal = newSemantics.properties;
-        var configLocal = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+        SemanticsNode newChild = oldChild ?? new SemanticsNode(key: newSemantics.key);
+        SemanticsProperties propertiesLocal = newSemantics.properties;
+        var configLocal = new SemanticsConfiguration();
         if (propertiesLocal.role is not null)
         {
             configLocal.role = DartRuntimePrimitives.RequireValue(propertiesLocal.role);
@@ -752,8 +752,8 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.onCollapse = propertiesLocal.onCollapse;
         }
-        newChild.updateWith(config: configLocal, childrenInInversePaintOrder: new List<global::Doroti.Framework.Semantics.SemanticsNode>());
-        ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
+        newChild.updateWith(config: configLocal, childrenInInversePaintOrder: new List<SemanticsNode>());
+        ((Func<SemanticsNode>)(() =>
 {
     var __cascade = newChild;
     __cascade.rect = newSemantics.rect;
@@ -770,7 +770,7 @@ public class RenderCustomPaint : RenderProxyBox
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new MessageProperty("painter", $"{painter}"));
         properties.add(new MessageProperty("foregroundPainter", $"{foregroundPainter}", level: (foregroundPainter is not null) ? DiagnosticLevel.info : DiagnosticLevel.fine));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("preferredSize", preferredSize, defaultValue: Size.zero));
+        properties.add(new DiagnosticsProperty<Size>("preferredSize", preferredSize, defaultValue: Size.zero));
         properties.add(new DiagnosticsProperty<bool>("isComplex", isComplex, defaultValue: false));
         properties.add(new DiagnosticsProperty<bool>("willChange", willChange, defaultValue: false));
     }

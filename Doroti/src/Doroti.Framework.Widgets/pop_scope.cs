@@ -9,11 +9,11 @@ public delegate void PopInvokedCallback(bool didPop);
 public class PopScope<T> : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual global::System.Action<bool, T?>? onPopInvokedWithResult { get; private set; }
-    public virtual global::System.Action<bool>? onPopInvoked { get; private set; }
+    public virtual Action<bool, T?>? onPopInvokedWithResult { get; private set; }
+    public virtual System.Action<bool>? onPopInvoked { get; private set; }
     public virtual bool canPop { get; private set; } = default!;
 
-    public PopScope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, bool canPop = true, global::System.Action<bool, T?>? onPopInvokedWithResult = null, global::System.Action<bool>? onPopInvoked = null) : base(key: key)
+    public PopScope(Key? key = null, Widget child = default!, bool canPop = true, Action<bool, T?>? onPopInvokedWithResult = null, System.Action<bool>? onPopInvoked = null) : base(key: key)
     {
         this.child = child;
         this.canPop = canPop;
@@ -37,11 +37,11 @@ public class PopScope<T> : StatefulWidget
 
 internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
 {
-    global::Doroti.Framework.Foundation.ValueListenable<bool> IPopEntry.canPopNotifier => canPopNotifier;
+    ValueListenable<bool> IPopEntry.canPopNotifier => canPopNotifier;
     void IPopEntry.onPopInvokedWithResultObject(bool didPop, object? result) => onPopInvokedWithResult(didPop, result is null ? default : (T)result);
 
     internal virtual IModalRoute? _route { get; set; } = default!;
-    public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> canPopNotifier { get; private set; } = default!;
+    public virtual ValueNotifier<bool> canPopNotifier { get; private set; } = default!;
 
     public virtual void onPopInvoked(bool didPop)
     {
@@ -56,7 +56,7 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
     public override void initState()
     {
         base.initState();
-        canPopNotifier = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(widget.canPop);
+        canPopNotifier = new ValueNotifier<bool>(widget.canPop);
     }
 
     public override void didChangeDependencies()

@@ -8,30 +8,30 @@ namespace Doroti.Framework.Material;
 
 public static partial class DialogLibrary
 {
-    internal static global::Doroti.Framework.Painting.EdgeInsets _defaultInsetPadding = EdgeInsets.CreateSymmetric(horizontal: 40.0, vertical: 24.0);
+    internal static EdgeInsets _defaultInsetPadding = EdgeInsets.CreateSymmetric(horizontal: 40.0, vertical: 24.0);
 }
 
-public class Dialog : global::Doroti.Framework.Widgets.StatelessWidget
+public class Dialog : StatelessWidget
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
     public virtual Duration insetAnimationDuration { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Curve insetAnimationCurve { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? insetPadding { get; private set; }
+    public virtual Curve insetAnimationCurve { get; private set; } = default!;
+    public virtual EdgeInsets? insetPadding { get; private set; }
     public virtual Clip? clipBehavior { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
+    public virtual AlignmentGeometry? alignment { get; private set; }
+    public virtual Widget? child { get; private set; }
     internal virtual bool _fullscreen { get; private set; } = default!;
     public virtual SemanticsRole semanticsRole { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
 
-    public Dialog(global::Doroti.Framework.Foundation.Key? key = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, Duration? insetAnimationDuration = null, global::Doroti.Framework.Animation.Curve insetAnimationCurve = default!, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, global::Doroti.Framework.Widgets.Widget? child = null, SemanticsRole semanticsRole = SemanticsRole.dialog, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null) : base(key: key)
+    public Dialog(Key? key = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, Duration? insetAnimationDuration = null, Curve insetAnimationCurve = default!, EdgeInsets? insetPadding = null, Clip? clipBehavior = null, ShapeBorder? shape = null, AlignmentGeometry? alignment = null, Widget? child = null, SemanticsRole semanticsRole = SemanticsRole.dialog, BoxConstraints? constraints = null) : base(key: key)
     {
         Duration __insetAnimationDuration = insetAnimationDuration ?? Duration.Create(milliseconds: 100);
-        global::Doroti.Framework.Animation.Curve __insetAnimationCurve = insetAnimationCurve ?? Curves.decelerate;
+        Curve __insetAnimationCurve = insetAnimationCurve ?? Curves.decelerate;
         this.backgroundColor = backgroundColor;
         this.elevation = elevation;
         this.shadowColor = shadowColor;
@@ -49,10 +49,10 @@ public class Dialog : global::Doroti.Framework.Widgets.StatelessWidget
         System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
     }
 
-    public static Dialog CreateFullscreen(global::Doroti.Framework.Foundation.Key? key = null, Color? backgroundColor = null, Duration insetAnimationDuration = default, global::Doroti.Framework.Animation.Curve insetAnimationCurve = default!, global::Doroti.Framework.Widgets.Widget? child = null, SemanticsRole semanticsRole = SemanticsRole.dialog)
+    public static Dialog CreateFullscreen(Key? key = null, Color? backgroundColor = null, Duration insetAnimationDuration = default, Curve insetAnimationCurve = default!, Widget? child = null, SemanticsRole semanticsRole = SemanticsRole.dialog)
     {
         var __instance = new Dialog(key: key, backgroundColor: backgroundColor, insetAnimationDuration: insetAnimationDuration, insetAnimationCurve: insetAnimationCurve, child: child, semanticsRole: semanticsRole);
-        global::Doroti.Framework.Animation.Curve __insetAnimationCurve = insetAnimationCurve ?? Curves.decelerate;
+        Curve __insetAnimationCurve = insetAnimationCurve ?? Curves.decelerate;
         __instance.backgroundColor = backgroundColor;
         __instance.insetAnimationDuration = insetAnimationDuration;
         __instance.insetAnimationCurve = __insetAnimationCurve;
@@ -70,58 +70,58 @@ public class Dialog : global::Doroti.Framework.Widgets.StatelessWidget
         return __instance;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         DialogThemeData dialogTheme = DialogTheme.of(context);
-        global::Doroti.Framework.Painting.EdgeInsets effectivePadding = MediaQuery.viewInsetsOf(context).op_Add((insetPadding ?? dialogTheme.insetPadding) ?? DialogLibrary._defaultInsetPadding);
+        EdgeInsets effectivePadding = MediaQuery.viewInsetsOf(context).op_Add((insetPadding ?? dialogTheme.insetPadding) ?? DialogLibrary._defaultInsetPadding);
         DialogThemeData defaults = _fullscreen ? new _DialogFullscreenDefaultsM3__dialog(context) : new _DialogDefaultsM3__dialog(context);
-        global::Doroti.Framework.Rendering.BoxConstraints boxConstraints = (constraints ?? dialogTheme.constraints) ?? new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 280.0);
-        global::Doroti.Framework.Widgets.Widget dialogChild = default!;
+        BoxConstraints boxConstraints = (constraints ?? dialogTheme.constraints) ?? new BoxConstraints(minWidth: 280.0);
+        Widget dialogChild = default!;
         if (_fullscreen)
         {
-            dialogChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(color: (backgroundColor ?? dialogTheme.backgroundColor) ?? defaults.backgroundColor, child: child));
+            dialogChild = DartRuntimePrimitives.ConvertValue<Widget>(new Material(color: (backgroundColor ?? dialogTheme.backgroundColor) ?? defaults.backgroundColor, child: child));
         }
         else
         {
-            dialogChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: (alignment ?? dialogTheme.alignment) ?? defaults.alignment!, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: boxConstraints, child: new Material(color: (backgroundColor ?? dialogTheme.backgroundColor) ?? defaults.backgroundColor, elevation: (elevation ?? dialogTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation), shadowColor: (shadowColor ?? dialogTheme.shadowColor) ?? defaults.shadowColor, surfaceTintColor: (surfaceTintColor ?? dialogTheme.surfaceTintColor) ?? defaults.surfaceTintColor, shape: (shape ?? dialogTheme.shape) ?? defaults.shape!, type: MaterialType.card, clipBehavior: (clipBehavior ?? dialogTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior), child: child))));
+            dialogChild = DartRuntimePrimitives.ConvertValue<Widget>(new Align(alignment: (alignment ?? dialogTheme.alignment) ?? defaults.alignment!, child: new ConstrainedBox(constraints: boxConstraints, child: new Material(color: (backgroundColor ?? dialogTheme.backgroundColor) ?? defaults.backgroundColor, elevation: (elevation ?? dialogTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation), shadowColor: (shadowColor ?? dialogTheme.shadowColor) ?? defaults.shadowColor, surfaceTintColor: (surfaceTintColor ?? dialogTheme.surfaceTintColor) ?? defaults.surfaceTintColor, shape: (shape ?? dialogTheme.shape) ?? defaults.shape!, type: MaterialType.card, clipBehavior: (clipBehavior ?? dialogTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior), child: child))));
         }
-        return new global::Doroti.Framework.Widgets.Semantics(role: semanticsRole, child: new global::Doroti.Framework.Widgets.AnimatedPadding(padding: effectivePadding, duration: DartRuntimePrimitives.RequireValue(insetAnimationDuration), curve: insetAnimationCurve, child: MediaQuery.CreateRemoveViewInsets(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: dialogChild)));
+        return new Widgets.Semantics(role: semanticsRole, child: new AnimatedPadding(padding: effectivePadding, duration: DartRuntimePrimitives.RequireValue(insetAnimationDuration), curve: insetAnimationCurve, child: MediaQuery.CreateRemoveViewInsets(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: dialogChild)));
     }
 
 }
 
-public class AlertDialog : global::Doroti.Framework.Widgets.StatelessWidget
+public class AlertDialog : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? icon { get; private set; }
+    public virtual Widget? icon { get; private set; }
     public virtual Color? iconColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? iconPadding { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? title { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? titlePadding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? titleTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? content { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? contentTextStyle { get; private set; }
-    public virtual List<global::Doroti.Framework.Widgets.Widget>? actions { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.MainAxisAlignment? actionsAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.OverflowBarAlignment? actionsOverflowAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Painting.VerticalDirection? actionsOverflowDirection { get; private set; }
+    public virtual EdgeInsetsGeometry? iconPadding { get; private set; }
+    public virtual Widget? title { get; private set; }
+    public virtual EdgeInsetsGeometry? titlePadding { get; private set; }
+    public virtual TextStyle? titleTextStyle { get; private set; }
+    public virtual Widget? content { get; private set; }
+    public virtual EdgeInsetsGeometry? contentPadding { get; private set; }
+    public virtual TextStyle? contentTextStyle { get; private set; }
+    public virtual List<Widget>? actions { get; private set; }
+    public virtual EdgeInsetsGeometry? actionsPadding { get; private set; }
+    public virtual MainAxisAlignment? actionsAlignment { get; private set; }
+    public virtual OverflowBarAlignment? actionsOverflowAlignment { get; private set; }
+    public virtual VerticalDirection? actionsOverflowDirection { get; private set; }
     public virtual double? actionsOverflowButtonSpacing { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? buttonPadding { get; private set; }
+    public virtual EdgeInsetsGeometry? buttonPadding { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
     public virtual string? semanticLabel { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? insetPadding { get; private set; }
+    public virtual EdgeInsets? insetPadding { get; private set; }
     public virtual Clip? clipBehavior { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
+    public virtual AlignmentGeometry? alignment { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
     public virtual bool scrollable { get; private set; } = default!;
 
-    public AlertDialog(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? icon = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? iconPadding = null, Color? iconColor = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? titlePadding = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Widgets.Widget? content = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, List<global::Doroti.Framework.Widgets.Widget>? actions = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, global::Doroti.Framework.Rendering.MainAxisAlignment? actionsAlignment = null, global::Doroti.Framework.Widgets.OverflowBarAlignment? actionsOverflowAlignment = null, global::Doroti.Framework.Painting.VerticalDirection? actionsOverflowDirection = null, double? actionsOverflowButtonSpacing = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? buttonPadding = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool scrollable = false) : base(key: key)
+    public AlertDialog(Key? key = null, Widget? icon = null, EdgeInsetsGeometry? iconPadding = null, Color? iconColor = null, Widget? title = null, EdgeInsetsGeometry? titlePadding = null, TextStyle? titleTextStyle = null, Widget? content = null, EdgeInsetsGeometry? contentPadding = null, TextStyle? contentTextStyle = null, List<Widget>? actions = null, EdgeInsetsGeometry? actionsPadding = null, MainAxisAlignment? actionsAlignment = null, OverflowBarAlignment? actionsOverflowAlignment = null, VerticalDirection? actionsOverflowDirection = null, double? actionsOverflowButtonSpacing = null, EdgeInsetsGeometry? buttonPadding = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, EdgeInsets? insetPadding = null, Clip? clipBehavior = null, ShapeBorder? shape = null, AlignmentGeometry? alignment = null, BoxConstraints? constraints = null, bool scrollable = false) : base(key: key)
     {
         this.icon = icon;
         this.iconPadding = iconPadding;
@@ -152,10 +152,10 @@ public class AlertDialog : global::Doroti.Framework.Widgets.StatelessWidget
         this.scrollable = scrollable;
     }
 
-    public static AlertDialog CreateAdaptive(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? icon = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? iconPadding = null, Color? iconColor = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? titlePadding = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Widgets.Widget? content = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, List<global::Doroti.Framework.Widgets.Widget>? actions = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, global::Doroti.Framework.Rendering.MainAxisAlignment? actionsAlignment = null, global::Doroti.Framework.Widgets.OverflowBarAlignment? actionsOverflowAlignment = null, global::Doroti.Framework.Painting.VerticalDirection? actionsOverflowDirection = null, double? actionsOverflowButtonSpacing = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? buttonPadding = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, global::Doroti.Framework.Painting.EdgeInsets insetPadding = default!, Clip? clipBehavior = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool scrollable = default!, global::Doroti.Framework.Widgets.ScrollController? scrollController = null, global::Doroti.Framework.Widgets.ScrollController? actionScrollController = null, Duration insetAnimationDuration = default!, global::Doroti.Framework.Animation.Curve insetAnimationCurve = default!)
+    public static AlertDialog CreateAdaptive(Key? key = null, Widget? icon = null, EdgeInsetsGeometry? iconPadding = null, Color? iconColor = null, Widget? title = null, EdgeInsetsGeometry? titlePadding = null, TextStyle? titleTextStyle = null, Widget? content = null, EdgeInsetsGeometry? contentPadding = null, TextStyle? contentTextStyle = null, List<Widget>? actions = null, EdgeInsetsGeometry? actionsPadding = null, MainAxisAlignment? actionsAlignment = null, OverflowBarAlignment? actionsOverflowAlignment = null, VerticalDirection? actionsOverflowDirection = null, double? actionsOverflowButtonSpacing = null, EdgeInsetsGeometry? buttonPadding = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, EdgeInsets insetPadding = default!, Clip? clipBehavior = null, ShapeBorder? shape = null, AlignmentGeometry? alignment = null, BoxConstraints? constraints = null, bool scrollable = default!, ScrollController? scrollController = null, ScrollController? actionScrollController = null, Duration insetAnimationDuration = default!, Curve insetAnimationCurve = default!)
         => new _AdaptiveAlertDialog__dialog(key, icon, iconPadding, iconColor, title, titlePadding, titleTextStyle, content, contentPadding, contentTextStyle, actions, actionsPadding, actionsAlignment, actionsOverflowAlignment, actionsOverflowDirection, actionsOverflowButtonSpacing, buttonPadding, backgroundColor, elevation, shadowColor, surfaceTintColor, semanticLabel, insetPadding, clipBehavior, shape, alignment, constraints, scrollable, scrollController, actionScrollController, insetAnimationDuration, insetAnimationCurve);
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         ThemeData theme = Theme.of(context);
@@ -165,49 +165,49 @@ public class AlertDialog : global::Doroti.Framework.Widgets.StatelessWidget
         var fontSizeToScale = 14.0;
         double effectiveTextScale = MediaQuery.textScalerOf(context).scale(fontSizeToScale) / fontSizeToScale;
         double paddingScaleFactor = DialogLibrary._scalePadding(effectiveTextScale);
-        global::Doroti.Ui.TextDirection? textDirection = Directionality.maybeOf(context);
-        global::Doroti.Framework.Widgets.Widget? iconWidget = default!;
-        global::Doroti.Framework.Widgets.Widget? titleWidget = default!;
-        global::Doroti.Framework.Widgets.Widget? contentWidget = default!;
-        global::Doroti.Framework.Widgets.Widget? actionsWidget = default!;
+        TextDirection? textDirection = Directionality.maybeOf(context);
+        Widget? iconWidget = default!;
+        Widget? titleWidget = default!;
+        Widget? contentWidget = default!;
+        Widget? actionsWidget = default!;
         if (icon is not null)
         {
             var belowIsTitle = title is not null;
             bool belowIsContent = !belowIsTitle && (content is not null);
             var defaultIconPadding = EdgeInsets.CreateOnly(left: 24.0, top: 24.0, right: 24.0, bottom: belowIsTitle ? 16.0 : (belowIsContent ? 0.0 : 24.0));
-            global::Doroti.Framework.Painting.EdgeInsets effectiveIconPadding = iconPadding?.resolve(textDirection) ?? defaultIconPadding;
-            iconWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(left: effectiveIconPadding.left * paddingScaleFactor, right: effectiveIconPadding.right * paddingScaleFactor, top: effectiveIconPadding.top * paddingScaleFactor, bottom: effectiveIconPadding.bottom), child: new global::Doroti.Framework.Widgets.IconTheme(data: new global::Doroti.Framework.Widgets.IconThemeData(color: (iconColor ?? dialogTheme.iconColor) ?? defaults.iconColor), child: icon!)));
+            EdgeInsets effectiveIconPadding = iconPadding?.resolve(textDirection) ?? defaultIconPadding;
+            iconWidget = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateOnly(left: effectiveIconPadding.left * paddingScaleFactor, right: effectiveIconPadding.right * paddingScaleFactor, top: effectiveIconPadding.top * paddingScaleFactor, bottom: effectiveIconPadding.bottom), child: new IconTheme(data: new IconThemeData(color: (iconColor ?? dialogTheme.iconColor) ?? defaults.iconColor), child: icon!)));
         }
         if (title is not null)
         {
             var defaultTitlePadding = EdgeInsets.CreateOnly(left: 24.0, top: (icon is null) ? 24.0 : 0.0, right: 24.0, bottom: (content is null) ? 20.0 : 0.0);
-            global::Doroti.Framework.Painting.EdgeInsets effectiveTitlePadding = titlePadding?.resolve(textDirection) ?? defaultTitlePadding;
-            titleWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(left: effectiveTitlePadding.left * paddingScaleFactor, right: effectiveTitlePadding.right * paddingScaleFactor, top: (icon is null) ? (effectiveTitlePadding.top * paddingScaleFactor) : effectiveTitlePadding.top, bottom: effectiveTitlePadding.bottom), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (titleTextStyle ?? dialogTheme.titleTextStyle) ?? defaults.titleTextStyle!, textAlign: (icon is null) ? TextAlign.start : TextAlign.center, child: new global::Doroti.Framework.Widgets.Semantics(namesRoute: (labelLocal is null) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)), container: true, child: title))));
+            EdgeInsets effectiveTitlePadding = titlePadding?.resolve(textDirection) ?? defaultTitlePadding;
+            titleWidget = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateOnly(left: effectiveTitlePadding.left * paddingScaleFactor, right: effectiveTitlePadding.right * paddingScaleFactor, top: (icon is null) ? (effectiveTitlePadding.top * paddingScaleFactor) : effectiveTitlePadding.top, bottom: effectiveTitlePadding.bottom), child: new DefaultTextStyle(style: (titleTextStyle ?? dialogTheme.titleTextStyle) ?? defaults.titleTextStyle!, textAlign: (icon is null) ? TextAlign.start : TextAlign.center, child: new Widgets.Semantics(namesRoute: (labelLocal is null) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)), container: true, child: title))));
         }
         if (content is not null)
         {
             var defaultContentPadding = EdgeInsets.CreateOnly(left: 24.0, top: 16.0, right: 24.0, bottom: 24.0);
-            global::Doroti.Framework.Painting.EdgeInsets effectiveContentPadding = contentPadding?.resolve(textDirection) ?? defaultContentPadding;
-            contentWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(left: effectiveContentPadding.left * paddingScaleFactor, right: effectiveContentPadding.right * paddingScaleFactor, top: ((title is null) && (icon is null)) ? (effectiveContentPadding.top * paddingScaleFactor) : effectiveContentPadding.top, bottom: effectiveContentPadding.bottom), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (contentTextStyle ?? dialogTheme.contentTextStyle) ?? defaults.contentTextStyle!, child: new global::Doroti.Framework.Widgets.Semantics(container: true, explicitChildNodes: true, child: content))));
+            EdgeInsets effectiveContentPadding = contentPadding?.resolve(textDirection) ?? defaultContentPadding;
+            contentWidget = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateOnly(left: effectiveContentPadding.left * paddingScaleFactor, right: effectiveContentPadding.right * paddingScaleFactor, top: ((title is null) && (icon is null)) ? (effectiveContentPadding.top * paddingScaleFactor) : effectiveContentPadding.top, bottom: effectiveContentPadding.bottom), child: new DefaultTextStyle(style: (contentTextStyle ?? dialogTheme.contentTextStyle) ?? defaults.contentTextStyle!, child: new Widgets.Semantics(container: true, explicitChildNodes: true, child: content))));
         }
         if (actions is not null)
         {
             double spacingLocal = (buttonPadding?.horizontal ?? 16) / 2L;
-            actionsWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: (actionsPadding ?? dialogTheme.actionsPadding) ?? defaults.actionsPadding!, child: new global::Doroti.Framework.Widgets.OverflowBar(alignment: actionsAlignment ?? MainAxisAlignment.end, spacing: spacingLocal, overflowAlignment: actionsOverflowAlignment ?? OverflowBarAlignment.end, overflowDirection: actionsOverflowDirection ?? VerticalDirection.down, overflowSpacing: actionsOverflowButtonSpacing ?? 0, children: actions!)));
+            actionsWidget = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: (actionsPadding ?? dialogTheme.actionsPadding) ?? defaults.actionsPadding!, child: new OverflowBar(alignment: actionsAlignment ?? MainAxisAlignment.end, spacing: spacingLocal, overflowAlignment: actionsOverflowAlignment ?? OverflowBarAlignment.end, overflowDirection: actionsOverflowDirection ?? VerticalDirection.down, overflowSpacing: actionsOverflowButtonSpacing ?? 0, children: actions!)));
         }
-        List<global::Doroti.Framework.Widgets.Widget> columnChildren = default!;
+        List<Widget> columnChildren = default!;
         if (scrollable)
         {
-            columnChildren = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection34259 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((title is not null) || (content is not null)) { __collection34259.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.SingleChildScrollView(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection34544 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement34553 = iconWidget; if (__collectionElement34553 is { } __nonNullCollectionElement34553) { __collection34544.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement34553)); } var __collectionElement34566 = titleWidget; if (__collectionElement34566 is { } __nonNullCollectionElement34566) { __collection34544.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement34566)); } var __collectionElement34580 = contentWidget; if (__collectionElement34580 is { } __nonNullCollectionElement34580) { __collection34544.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement34580)); } return __collection34544; }))()))))); } var __collectionElement34650 = actionsWidget; if (__collectionElement34650 is { } __nonNullCollectionElement34650) { __collection34259.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement34650)); } return __collection34259; }))();
+            columnChildren = ((Func<List<Widget>>)(() => { var __collection34259 = new List<Widget>(); if ((title is not null) || (content is not null)) { __collection34259.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: new SingleChildScrollView(child: new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<Widget>>)(() => { var __collection34544 = new List<Widget>(); var __collectionElement34553 = iconWidget; if (__collectionElement34553 is { } __nonNullCollectionElement34553) { __collection34544.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement34553)); } var __collectionElement34566 = titleWidget; if (__collectionElement34566 is { } __nonNullCollectionElement34566) { __collection34544.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement34566)); } var __collectionElement34580 = contentWidget; if (__collectionElement34580 is { } __nonNullCollectionElement34580) { __collection34544.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement34580)); } return __collection34544; }))()))))); } var __collectionElement34650 = actionsWidget; if (__collectionElement34650 is { } __nonNullCollectionElement34650) { __collection34259.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement34650)); } return __collection34259; }))();
         }
         else
         {
-            columnChildren = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection34711 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement34729 = iconWidget; if (__collectionElement34729 is { } __nonNullCollectionElement34729) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement34729)); } var __collectionElement34750 = titleWidget; if (__collectionElement34750 is { } __nonNullCollectionElement34750) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement34750)); } if (contentWidget is not null) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: contentWidget))); } var __collectionElement34839 = actionsWidget; if (__collectionElement34839 is { } __nonNullCollectionElement34839) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement34839)); } return __collection34711; }))();
+            columnChildren = ((Func<List<Widget>>)(() => { var __collection34711 = new List<Widget>(); var __collectionElement34729 = iconWidget; if (__collectionElement34729 is { } __nonNullCollectionElement34729) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement34729)); } var __collectionElement34750 = titleWidget; if (__collectionElement34750 is { } __nonNullCollectionElement34750) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement34750)); } if (contentWidget is not null) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: contentWidget))); } var __collectionElement34839 = actionsWidget; if (__collectionElement34839 is { } __nonNullCollectionElement34839) { __collection34711.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement34839)); } return __collection34711; }))();
         }
-        global::Doroti.Framework.Widgets.Widget dialogChild = new global::Doroti.Framework.Widgets.IntrinsicWidth(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: columnChildren));
+        Widget dialogChild = new IntrinsicWidth(child: new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: columnChildren));
         if (labelLocal is not null)
         {
-            dialogChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, namesRoute: true, label: labelLocal, child: dialogChild));
+            dialogChild = DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, namesRoute: true, label: labelLocal, child: dialogChild));
         }
         return new Dialog(backgroundColor: backgroundColor, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, insetPadding: insetPadding, clipBehavior: clipBehavior, shape: shape, alignment: alignment, constraints: constraints, semanticsRole: SemanticsRole.alertDialog, child: dialogChild);
     }
@@ -216,22 +216,22 @@ public class AlertDialog : global::Doroti.Framework.Widgets.StatelessWidget
 
 internal class _AdaptiveAlertDialog__dialog : AlertDialog
 {
-    public virtual global::Doroti.Framework.Widgets.ScrollController? scrollController { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.ScrollController? actionScrollController { get; private set; }
+    public virtual ScrollController? scrollController { get; private set; }
+    public virtual ScrollController? actionScrollController { get; private set; }
     public virtual Duration insetAnimationDuration { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Curve insetAnimationCurve { get; private set; } = default!;
+    public virtual Curve insetAnimationCurve { get; private set; } = default!;
 
-    internal _AdaptiveAlertDialog__dialog(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? icon = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? iconPadding = null, Color? iconColor = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? titlePadding = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Widgets.Widget? content = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, List<global::Doroti.Framework.Widgets.Widget>? actions = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, global::Doroti.Framework.Rendering.MainAxisAlignment? actionsAlignment = null, global::Doroti.Framework.Widgets.OverflowBarAlignment? actionsOverflowAlignment = null, global::Doroti.Framework.Painting.VerticalDirection? actionsOverflowDirection = null, double? actionsOverflowButtonSpacing = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? buttonPadding = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool scrollable = false, global::Doroti.Framework.Widgets.ScrollController? scrollController = null, global::Doroti.Framework.Widgets.ScrollController? actionScrollController = null, Duration? insetAnimationDuration = null, global::Doroti.Framework.Animation.Curve insetAnimationCurve = default!) : base(key: key, icon: icon, iconPadding: iconPadding, iconColor: iconColor, title: title, titlePadding: titlePadding, titleTextStyle: titleTextStyle, content: content, contentPadding: contentPadding, contentTextStyle: contentTextStyle, actions: actions, actionsPadding: actionsPadding, actionsAlignment: actionsAlignment, actionsOverflowAlignment: actionsOverflowAlignment, actionsOverflowDirection: actionsOverflowDirection, actionsOverflowButtonSpacing: actionsOverflowButtonSpacing, buttonPadding: buttonPadding, backgroundColor: backgroundColor, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, semanticLabel: semanticLabel, insetPadding: insetPadding, clipBehavior: clipBehavior, shape: shape, alignment: alignment, constraints: constraints, scrollable: scrollable)
+    internal _AdaptiveAlertDialog__dialog(Key? key = null, Widget? icon = null, EdgeInsetsGeometry? iconPadding = null, Color? iconColor = null, Widget? title = null, EdgeInsetsGeometry? titlePadding = null, TextStyle? titleTextStyle = null, Widget? content = null, EdgeInsetsGeometry? contentPadding = null, TextStyle? contentTextStyle = null, List<Widget>? actions = null, EdgeInsetsGeometry? actionsPadding = null, MainAxisAlignment? actionsAlignment = null, OverflowBarAlignment? actionsOverflowAlignment = null, VerticalDirection? actionsOverflowDirection = null, double? actionsOverflowButtonSpacing = null, EdgeInsetsGeometry? buttonPadding = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, EdgeInsets? insetPadding = null, Clip? clipBehavior = null, ShapeBorder? shape = null, AlignmentGeometry? alignment = null, BoxConstraints? constraints = null, bool scrollable = false, ScrollController? scrollController = null, ScrollController? actionScrollController = null, Duration? insetAnimationDuration = null, Curve insetAnimationCurve = default!) : base(key: key, icon: icon, iconPadding: iconPadding, iconColor: iconColor, title: title, titlePadding: titlePadding, titleTextStyle: titleTextStyle, content: content, contentPadding: contentPadding, contentTextStyle: contentTextStyle, actions: actions, actionsPadding: actionsPadding, actionsAlignment: actionsAlignment, actionsOverflowAlignment: actionsOverflowAlignment, actionsOverflowDirection: actionsOverflowDirection, actionsOverflowButtonSpacing: actionsOverflowButtonSpacing, buttonPadding: buttonPadding, backgroundColor: backgroundColor, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, semanticLabel: semanticLabel, insetPadding: insetPadding, clipBehavior: clipBehavior, shape: shape, alignment: alignment, constraints: constraints, scrollable: scrollable)
     {
         Duration __insetAnimationDuration = insetAnimationDuration ?? Duration.Create(milliseconds: 100);
-        global::Doroti.Framework.Animation.Curve __insetAnimationCurve = insetAnimationCurve ?? Curves.decelerate;
+        Curve __insetAnimationCurve = insetAnimationCurve ?? Curves.decelerate;
         this.scrollController = scrollController;
         this.actionScrollController = actionScrollController;
         this.insetAnimationDuration = __insetAnimationDuration;
         this.insetAnimationCurve = __insetAnimationCurve;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         switch (theme.platform)
@@ -246,7 +246,7 @@ internal class _AdaptiveAlertDialog__dialog : AlertDialog
             case TargetPlatform.iOS:
             case TargetPlatform.macOS:
                 {
-                    return new CupertinoAlertDialog(title: title, content: content, actions: actions ?? new List<global::Doroti.Framework.Widgets.Widget>(), scrollController: scrollController, actionScrollController: actionScrollController, insetAnimationDuration: DartRuntimePrimitives.RequireValue(insetAnimationDuration), insetAnimationCurve: insetAnimationCurve);
+                    return new CupertinoAlertDialog(title: title, content: content, actions: actions ?? new List<Widget>(), scrollController: scrollController, actionScrollController: actionScrollController, insetAnimationDuration: DartRuntimePrimitives.RequireValue(insetAnimationDuration), insetAnimationCurve: insetAnimationCurve);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -257,50 +257,50 @@ internal class _AdaptiveAlertDialog__dialog : AlertDialog
 
 }
 
-public class SimpleDialogOption : global::Doroti.Framework.Widgets.StatelessWidget
+public class SimpleDialogOption : StatelessWidget
 {
-    public virtual global::System.Action? onPressed { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? padding { get; private set; }
+    public virtual Action? onPressed { get; private set; }
+    public virtual Widget? child { get; private set; }
+    public virtual EdgeInsets? padding { get; private set; }
 
-    public SimpleDialogOption(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = null, global::Doroti.Framework.Painting.EdgeInsets? padding = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key)
+    public SimpleDialogOption(Key? key = null, Action? onPressed = null, EdgeInsets? padding = null, Widget? child = null) : base(key: key)
     {
         this.onPressed = onPressed;
         this.padding = padding;
         this.child = child;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new InkWell(onTap: onPressed, child: new global::Doroti.Framework.Widgets.Padding(padding: padding ?? EdgeInsets.CreateSymmetric(vertical: 8.0, horizontal: 24.0), child: child));
+        return new InkWell(onTap: onPressed, child: new Padding(padding: padding ?? EdgeInsets.CreateSymmetric(vertical: 8.0, horizontal: 24.0), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class SimpleDialog : global::Doroti.Framework.Widgets.StatelessWidget
+public class SimpleDialog : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? title { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry titlePadding { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle? titleTextStyle { get; private set; }
-    public virtual List<global::Doroti.Framework.Widgets.Widget>? children { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry contentPadding { get; private set; } = default!;
+    public virtual Widget? title { get; private set; }
+    public virtual EdgeInsetsGeometry titlePadding { get; private set; } = default!;
+    public virtual TextStyle? titleTextStyle { get; private set; }
+    public virtual List<Widget>? children { get; private set; }
+    public virtual EdgeInsetsGeometry contentPadding { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? contentTextStyle { get; private set; }
+    public virtual TextStyle? contentTextStyle { get; private set; }
     public virtual string? semanticLabel { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? insetPadding { get; private set; }
+    public virtual EdgeInsets? insetPadding { get; private set; }
     public virtual Clip? clipBehavior { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
+    public virtual AlignmentGeometry? alignment { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
 
-    public SimpleDialog(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry titlePadding = default!, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, List<global::Doroti.Framework.Widgets.Widget>? children = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry contentPadding = default!, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null) : base(key: key)
+    public SimpleDialog(Key? key = null, Widget? title = null, EdgeInsetsGeometry titlePadding = default!, TextStyle? titleTextStyle = null, List<Widget>? children = null, EdgeInsetsGeometry contentPadding = default!, TextStyle? contentTextStyle = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, EdgeInsets? insetPadding = null, Clip? clipBehavior = null, ShapeBorder? shape = null, AlignmentGeometry? alignment = null, BoxConstraints? constraints = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __titlePadding = titlePadding ?? new global::Doroti.Framework.Painting.EdgeInsets(24.0, 24.0, 24.0, 0.0);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __contentPadding = contentPadding ?? new global::Doroti.Framework.Painting.EdgeInsets(0.0, 12.0, 0.0, 16.0);
+        EdgeInsetsGeometry __titlePadding = titlePadding ?? new EdgeInsets(24.0, 24.0, 24.0, 0.0);
+        EdgeInsetsGeometry __contentPadding = contentPadding ?? new EdgeInsets(0.0, 12.0, 0.0, 16.0);
         this.title = title;
         this.titlePadding = __titlePadding;
         this.titleTextStyle = titleTextStyle;
@@ -319,7 +319,7 @@ public class SimpleDialog : global::Doroti.Framework.Widgets.StatelessWidget
         this.constraints = constraints;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         ThemeData theme = Theme.of(context);
@@ -342,28 +342,28 @@ public class SimpleDialog : global::Doroti.Framework.Widgets.StatelessWidget
                     break;
                 }
         }
-        global::Doroti.Framework.Painting.TextStyle effectiveTitleTextStyle = (titleTextStyle ?? dialogTheme.titleTextStyle) ?? theme.textTheme.titleLarge!;
+        TextStyle effectiveTitleTextStyle = (titleTextStyle ?? dialogTheme.titleTextStyle) ?? theme.textTheme.titleLarge!;
         double fontSizeLocal = effectiveTitleTextStyle.fontSize ?? Text_painterLibrary.kDefaultFontSize;
         double fontSizeToScale = (fontSizeLocal == 0.0) ? Text_painterLibrary.kDefaultFontSize : fontSizeLocal;
         double effectiveTextScale = MediaQuery.textScalerOf(context).scale(fontSizeToScale) / fontSizeToScale;
         double paddingScaleFactor = DialogLibrary._scalePadding(effectiveTextScale);
-        global::Doroti.Ui.TextDirection? textDirection = Directionality.maybeOf(context);
-        global::Doroti.Framework.Widgets.Widget? titleWidget = default!;
+        TextDirection? textDirection = Directionality.maybeOf(context);
+        Widget? titleWidget = default!;
         if (title is not null)
         {
-            global::Doroti.Framework.Painting.EdgeInsets effectiveTitlePadding = titlePadding.resolve(textDirection);
-            titleWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(left: effectiveTitlePadding.left * paddingScaleFactor, right: effectiveTitlePadding.right * paddingScaleFactor, top: effectiveTitlePadding.top * paddingScaleFactor, bottom: (children is null) ? (effectiveTitlePadding.bottom * paddingScaleFactor) : effectiveTitlePadding.bottom), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: effectiveTitleTextStyle, child: new global::Doroti.Framework.Widgets.Semantics(namesRoute: (labelLocal is null) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)), container: true, child: title))));
+            EdgeInsets effectiveTitlePadding = titlePadding.resolve(textDirection);
+            titleWidget = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateOnly(left: effectiveTitlePadding.left * paddingScaleFactor, right: effectiveTitlePadding.right * paddingScaleFactor, top: effectiveTitlePadding.top * paddingScaleFactor, bottom: (children is null) ? (effectiveTitlePadding.bottom * paddingScaleFactor) : effectiveTitlePadding.bottom), child: new DefaultTextStyle(style: effectiveTitleTextStyle, child: new Widgets.Semantics(namesRoute: (labelLocal is null) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)), container: true, child: title))));
         }
-        global::Doroti.Framework.Widgets.Widget? contentWidget = default!;
+        Widget? contentWidget = default!;
         if (children is not null)
         {
-            global::Doroti.Framework.Painting.EdgeInsets effectiveContentPadding = contentPadding.resolve(textDirection);
-            contentWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.SingleChildScrollView(padding: EdgeInsets.CreateOnly(left: effectiveContentPadding.left * paddingScaleFactor, right: effectiveContentPadding.right * paddingScaleFactor, top: (title is null) ? (effectiveContentPadding.top * paddingScaleFactor) : effectiveContentPadding.top, bottom: effectiveContentPadding.bottom * paddingScaleFactor), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (contentTextStyle ?? dialogTheme.contentTextStyle) ?? defaults.contentTextStyle!, child: new global::Doroti.Framework.Widgets.ListBody(children: children!)))));
+            EdgeInsets effectiveContentPadding = contentPadding.resolve(textDirection);
+            contentWidget = DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: new SingleChildScrollView(padding: EdgeInsets.CreateOnly(left: effectiveContentPadding.left * paddingScaleFactor, right: effectiveContentPadding.right * paddingScaleFactor, top: (title is null) ? (effectiveContentPadding.top * paddingScaleFactor) : effectiveContentPadding.top, bottom: effectiveContentPadding.bottom * paddingScaleFactor), child: new DefaultTextStyle(style: (contentTextStyle ?? dialogTheme.contentTextStyle) ?? defaults.contentTextStyle!, child: new ListBody(children: children!)))));
         }
-        global::Doroti.Framework.Widgets.Widget dialogChild = new global::Doroti.Framework.Widgets.IntrinsicWidth(stepWidth: 56.0, child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection49860 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement49869 = titleWidget; if (__collectionElement49869 is { } __nonNullCollectionElement49869) { __collection49860.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement49869)); } var __collectionElement49883 = contentWidget; if (__collectionElement49883 is { } __nonNullCollectionElement49883) { __collection49860.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement49883)); } return __collection49860; }))()));
+        Widget dialogChild = new IntrinsicWidth(stepWidth: 56.0, child: new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<Widget>>)(() => { var __collection49860 = new List<Widget>(); var __collectionElement49869 = titleWidget; if (__collectionElement49869 is { } __nonNullCollectionElement49869) { __collection49860.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement49869)); } var __collectionElement49883 = contentWidget; if (__collectionElement49883 is { } __nonNullCollectionElement49883) { __collection49860.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement49883)); } return __collection49860; }))()));
         if (labelLocal is not null)
         {
-            dialogChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, namesRoute: true, label: labelLocal, child: dialogChild));
+            dialogChild = DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, namesRoute: true, label: labelLocal, child: dialogChild));
         }
         return new Dialog(backgroundColor: backgroundColor, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, insetPadding: insetPadding, clipBehavior: clipBehavior, shape: shape, alignment: alignment, constraints: constraints, child: dialogChild);
     }
@@ -372,51 +372,51 @@ public class SimpleDialog : global::Doroti.Framework.Widgets.StatelessWidget
 
 public static partial class DialogLibrary
 {
-    internal static global::Doroti.Framework.Widgets.Widget _buildMaterialDialogTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    internal static Widget _buildMaterialDialogTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
         return child;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-internal class _FullWindowDialogWrapper__dialog : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _FullWindowDialogWrapper__dialog : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _FullWindowDialogWrapper__dialog(global::Doroti.Framework.Widgets.Widget child)
+    internal _FullWindowDialogWrapper__dialog(Widget child)
     {
         this.child = child;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        DialogThemeData windowDialogTheme = DialogTheme.of(context).copyWith(insetPadding: EdgeInsets.zero, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), alignment: Alignment.topLeft, constraints: BoxConstraints.CreateExpand());
+        DialogThemeData windowDialogTheme = DialogTheme.of(context).copyWith(insetPadding: EdgeInsets.zero, shape: new RoundedRectangleBorder(), alignment: Alignment.topLeft, constraints: BoxConstraints.CreateExpand());
         return new DialogTheme(data: windowDialogTheme, child: MediaQuery.CreateRemoveViewInsets(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: MediaQuery.CreateRemoveViewPadding(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _DialogPopScope__dialog : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _DialogPopScope__dialog : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::System.Action<object?>? onPop { get; private set; }
+    public virtual Widget child { get; private set; } = default!;
+    public virtual System.Action<object?>? onPop { get; private set; }
 
-    internal _DialogPopScope__dialog(global::Doroti.Framework.Widgets.Widget child, global::System.Action<object?>? onPop = null)
+    internal _DialogPopScope__dialog(Widget child, System.Action<object?>? onPop = null)
     {
         this.child = child;
         this.onPop = onPop;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.PopScope<object>(canPop: false, onPopInvokedWithResult: (didPop, result) =>
+        return new PopScope<object>(canPop: false, onPopInvokedWithResult: (didPop, result) =>
         {
             if (!didPop)
             {
                 onPop?.Invoke(result);
             }
-        }, child: new global::Doroti.Framework.Widgets.Builder(builder: (context) =>
+        }, child: new Builder(builder: (context) =>
         {
             return new _NavigatorShim__dialog(onPop: onPop, child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -426,20 +426,20 @@ internal class _DialogPopScope__dialog : global::Doroti.Framework.Widgets.Statel
 
 }
 
-internal class _NavigatorShim__dialog : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _NavigatorShim__dialog : StatelessWidget
 {
-    public virtual global::System.Action<object?>? onPop { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual System.Action<object?>? onPop { get; private set; }
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _NavigatorShim__dialog(global::Doroti.Framework.Widgets.Widget child, global::System.Action<object?>? onPop = null)
+    internal _NavigatorShim__dialog(Widget child, System.Action<object?>? onPop = null)
     {
         this.child = child;
         this.onPop = onPop;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return HeroControllerScope.CreateNone(child: new global::Doroti.Framework.Widgets.Navigator(pages: new List<global::Doroti.Framework.Widgets.Page<object?>> { new _DialogContentPage__dialog(child: child) }.Cast<global::Doroti.Framework.Widgets.Page<object?>>().ToList(), onPopPage: (route, result) =>
+        return HeroControllerScope.CreateNone(child: new Navigator(pages: new List<Page<object?>> { new _DialogContentPage__dialog(child: child) }.Cast<Page<object?>>().ToList(), onPopPage: (route, result) =>
         {
             onPop?.Invoke(result);
             return false;
@@ -450,18 +450,18 @@ internal class _NavigatorShim__dialog : global::Doroti.Framework.Widgets.Statele
 
 }
 
-internal class _DialogContentPage__dialog : global::Doroti.Framework.Widgets.Page<object?>
+internal class _DialogContentPage__dialog : Page<object?>
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _DialogContentPage__dialog(global::Doroti.Framework.Widgets.Widget child)
+    internal _DialogContentPage__dialog(Widget child)
     {
         this.child = child;
     }
 
-    public override global::Doroti.Framework.Widgets.Route<object?> createRoute(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Route<object?> createRoute(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.PageRouteBuilder<object?>(settings: this, pageBuilder: (context, animation, secondaryAnimation) =>
+        return new PageRouteBuilder<object?>(settings: this, pageBuilder: (context, animation, secondaryAnimation) =>
         {
             return child;
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -473,27 +473,27 @@ internal class _DialogContentPage__dialog : global::Doroti.Framework.Widgets.Pag
 
 public static partial class DialogLibrary
 {
-    public static Future<T?> showDialog<T>(global::Doroti.Framework.Widgets.BuildContext context, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useSafeArea = true, bool useRootNavigator = true, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, Offset? anchorPoint = null, global::Doroti.Framework.Widgets.TraversalEdgeBehavior? traversalEdgeBehavior = null, bool fullscreenDialog = false, bool? requestFocus = null, global::Doroti.Framework.Animation.AnimationStyle? animationStyle = null)
+    public static Future<T?> showDialog<T>(BuildContext context, Func<BuildContext, Widget> builder, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useSafeArea = true, bool useRootNavigator = true, RouteSettings? routeSettings = null, Offset? anchorPoint = null, TraversalEdgeBehavior? traversalEdgeBehavior = null, bool fullscreenDialog = false, bool? requestFocus = null, AnimationStyle? animationStyle = null)
     {
         DartRuntimePrimitives.Assert(() => _debugIsActive(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.CapturedThemes themesLocal = InheritedTheme.capture(from: context, to: Navigator.of(context, rootNavigator: useRootNavigator).context);
-        global::Doroti.Framework.Widgets.NavigatorState navigator = Navigator.of(context, rootNavigator: useRootNavigator);
+        CapturedThemes themesLocal = InheritedTheme.capture(from: context, to: Navigator.of(context, rootNavigator: useRootNavigator).context);
+        NavigatorState navigator = Navigator.of(context, rootNavigator: useRootNavigator);
         return Widgets.DialogLibrary.showRawDialog(context: context, useRootNavigator: useRootNavigator, routeSettings: routeSettings, fullscreenDialog: fullscreenDialog, routeBuilder: (routeContext, _) =>
         {
             return new DialogRoute<T>(context: routeContext, builder: builder, barrierColor: ((barrierColor ?? DialogTheme.of(context).barrierColor) ?? Theme.of(context).dialogTheme.barrierColor) ?? Colors.black54, barrierDismissible: barrierDismissible, barrierLabel: barrierLabel, useSafeArea: useSafeArea, settings: routeSettings, themes: themesLocal, anchorPoint: anchorPoint, traversalEdgeBehavior: traversalEdgeBehavior ?? TraversalEdgeBehavior.closedLoop, requestFocus: requestFocus, animationStyle: animationStyle, fullscreenDialog: fullscreenDialog);
             throw new InvalidOperationException("Dart closure completed without a value.");
         }, builder: (routeContext) =>
         {
-            global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
+            TextDirection textDirectionLocal = Directionality.of(context);
             ThemeData themeData = Theme.of(context);
-            global::Doroti.Framework.Widgets.MediaQueryData mediaQuery = MediaQuery.of(context);
-            global::Doroti.Framework.Widgets.Widget dialogContent = new _DialogPopScope__dialog(onPop: Navigator.of(navigator.context).pop, child: new global::Doroti.Framework.Widgets.Builder(builder: (innerContext) =>
+            MediaQueryData mediaQuery = MediaQuery.of(context);
+            Widget dialogContent = new _DialogPopScope__dialog(onPop: Navigator.of(navigator.context).pop, child: new Builder(builder: (innerContext) =>
             {
                 return new _FullWindowDialogWrapper__dialog(child: builder(innerContext));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            return new global::Doroti.Framework.Widgets.Directionality(textDirection: textDirectionLocal, child: new Theme(data: themeData, child: new global::Doroti.Framework.Widgets.MediaQuery(data: mediaQuery, child: dialogContent)));
+            return new Directionality(textDirection: textDirectionLocal, child: new Theme(data: themeData, child: new MediaQuery(data: mediaQuery, child: dialogContent)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -502,7 +502,7 @@ public static partial class DialogLibrary
 
 public static partial class DialogLibrary
 {
-    public static Future<T?> showAdaptiveDialog<T>(global::Doroti.Framework.Widgets.BuildContext context, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, bool? barrierDismissible = null, Color? barrierColor = null, string? barrierLabel = null, bool useSafeArea = true, bool useRootNavigator = true, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, Offset? anchorPoint = null, global::Doroti.Framework.Widgets.TraversalEdgeBehavior? traversalEdgeBehavior = null, bool? requestFocus = null, global::Doroti.Framework.Animation.AnimationStyle? animationStyle = null)
+    public static Future<T?> showAdaptiveDialog<T>(BuildContext context, Func<BuildContext, Widget> builder, bool? barrierDismissible = null, Color? barrierColor = null, string? barrierLabel = null, bool useSafeArea = true, bool useRootNavigator = true, RouteSettings? routeSettings = null, Offset? anchorPoint = null, TraversalEdgeBehavior? traversalEdgeBehavior = null, bool? requestFocus = null, AnimationStyle? animationStyle = null)
     {
         ThemeData theme = Theme.of(context);
         switch (theme.platform)
@@ -528,32 +528,32 @@ public static partial class DialogLibrary
 
 public static partial class DialogLibrary
 {
-    internal static bool _debugIsActive(global::Doroti.Framework.Widgets.BuildContext context)
+    internal static bool _debugIsActive(BuildContext context)
     {
-        if ((context is global::Doroti.Framework.Widgets.Element) && !((global::Doroti.Framework.Widgets.Element)context).debugIsActive)
+        if ((context is Element) && !((Element)context).debugIsActive)
         {
-            global::Doroti.Framework.Widgets.Element context__as64315 = (global::Doroti.Framework.Widgets.Element)context;
-            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("This BuildContext is no longer valid."), new global::Doroti.Framework.Foundation.ErrorDescription("The showDialog function context parameter is a BuildContext that is no longer valid."), new global::Doroti.Framework.Foundation.ErrorHint("This can commonly occur when the showDialog function is called after awaiting a Future. " + "In this situation the BuildContext might refer to a widget that has already been disposed during the await. " + "Consider using a parent context instead.") }));
+            Element context__as64315 = (Element)context;
+            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("This BuildContext is no longer valid."), new ErrorDescription("The showDialog function context parameter is a BuildContext that is no longer valid."), new ErrorHint("This can commonly occur when the showDialog function is called after awaiting a Future. " + "In this situation the BuildContext might refer to a widget that has already been disposed during the await. " + "Consider using a parent context instead.") }));
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-public class DialogRoute<T> : global::Doroti.Framework.Widgets.RawDialogRoute<T>
+public class DialogRoute<T> : RawDialogRoute<T>
 {
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _curvedAnimation { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.AnimationStyle? _animationStyle { get; private set; }
+    internal virtual CurvedAnimation? _curvedAnimation { get; set; } = default;
+    internal virtual AnimationStyle? _animationStyle { get; private set; }
 
-    public DialogRoute(global::Doroti.Framework.Widgets.BuildContext context, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, global::Doroti.Framework.Widgets.CapturedThemes? themes = null, Color? barrierColor = default!, bool barrierDismissible = true, string? barrierLabel = null, bool useSafeArea = true, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null, global::Doroti.Framework.Widgets.TraversalEdgeBehavior? traversalEdgeBehavior = null, bool fullscreenDialog = false, global::Doroti.Framework.Animation.AnimationStyle? animationStyle = null) : base(barrierColor: barrierColor ?? Colors.black54, barrierDismissible: barrierDismissible, settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, traversalEdgeBehavior: traversalEdgeBehavior, fullscreenDialog: fullscreenDialog, pageBuilder: (buildContext, animation, secondaryAnimation) =>
+    public DialogRoute(BuildContext context, Func<BuildContext, Widget> builder, CapturedThemes? themes = null, Color? barrierColor = default!, bool barrierDismissible = true, string? barrierLabel = null, bool useSafeArea = true, RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null, TraversalEdgeBehavior? traversalEdgeBehavior = null, bool fullscreenDialog = false, AnimationStyle? animationStyle = null) : base(barrierColor: barrierColor ?? Colors.black54, barrierDismissible: barrierDismissible, settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, traversalEdgeBehavior: traversalEdgeBehavior, fullscreenDialog: fullscreenDialog, pageBuilder: (buildContext, animation, secondaryAnimation) =>
     {
-        global::Doroti.Framework.Widgets.Widget pageChild = new global::Doroti.Framework.Widgets.Builder(builder: builder);
-        global::Doroti.Framework.Widgets.Widget dialog = themes?.wrap(pageChild) ?? pageChild;
+        Widget pageChild = new Builder(builder: builder);
+        Widget dialog = themes?.wrap(pageChild) ?? pageChild;
         if (useSafeArea)
         {
-            dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SafeArea(child: dialog));
+            dialog = DartRuntimePrimitives.ConvertValue<Widget>(new SafeArea(child: dialog));
         }
-        dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(hitTestBehavior: SemanticsHitTestBehavior.opaque, child: dialog));
+        dialog = DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(hitTestBehavior: SemanticsHitTestBehavior.opaque, child: dialog));
         return dialog;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }, barrierLabel: barrierLabel ?? MaterialLocalizations.of(context).modalBarrierDismissLabel, transitionDuration: animationStyle?.duration ?? Duration.Create(milliseconds: 150L), transitionBuilder: DialogLibrary._buildMaterialDialogTransitions)
@@ -561,19 +561,19 @@ public class DialogRoute<T> : global::Doroti.Framework.Widgets.RawDialogRoute<T>
         _animationStyle = animationStyle;
     }
 
-    internal virtual void _setAnimation(global::Doroti.Framework.Animation.Animation<double> animation)
+    internal virtual void _setAnimation(Animation<double> animation)
     {
         if (!Equals(_curvedAnimation?.parent, animation))
         {
             _curvedAnimation?.dispose();
-            _curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: _animationStyle?.curve ?? Curves.easeOut, reverseCurve: _animationStyle?.reverseCurve ?? Curves.easeOut);
+            _curvedAnimation = new CurvedAnimation(parent: animation, curve: _animationStyle?.curve ?? Curves.easeOut, reverseCurve: _animationStyle?.reverseCurve ?? Curves.easeOut);
         }
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
         _setAnimation(animation);
-        return new global::Doroti.Framework.Widgets.FadeTransition(opacity: _curvedAnimation!, child: base.buildTransitions(context, animation, secondaryAnimation, child));
+        return new FadeTransition(opacity: _curvedAnimation!, child: base.buildTransitions(context, animation, secondaryAnimation, child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -597,19 +597,19 @@ public static partial class DialogLibrary
 
 internal class _DialogFullscreenDefaultsM3__dialog : DialogThemeData
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
 
-    internal _DialogFullscreenDefaultsM3__dialog(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none)
+    internal _DialogFullscreenDefaultsM3__dialog(BuildContext context) : base(clipBehavior: Clip.none)
     {
         this.context = context;
     }
 
-    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(context).colorScheme.surface);
+    public override Color? backgroundColor => DartRuntimePrimitives.ConvertValue<Color>(Theme.of(context).colorScheme.surface);
 }
 
 internal class _DialogDefaultsM3__dialog : DialogThemeData
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -639,16 +639,16 @@ internal class _DialogDefaultsM3__dialog : DialogThemeData
         }
     }
 
-    internal _DialogDefaultsM3__dialog(global::Doroti.Framework.Widgets.BuildContext context) : base(alignment: Alignment.center, elevation: 6.0, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(28.0))), clipBehavior: Clip.none)
+    internal _DialogDefaultsM3__dialog(BuildContext context) : base(alignment: Alignment.center, elevation: 6.0, shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(28.0))), clipBehavior: Clip.none)
     {
         this.context = context;
     }
 
-    public override global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.secondary);
-    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.surfaceContainerHigh);
-    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.TextStyle? titleTextStyle => _textTheme.headlineSmall;
-    public override global::Doroti.Framework.Painting.TextStyle? contentTextStyle => _textTheme.bodyMedium;
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.CreateOnly(left: 24.0, right: 24.0, bottom: 24.0));
+    public override Color? iconColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.secondary);
+    public override Color? backgroundColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainerHigh);
+    public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override TextStyle? titleTextStyle => _textTheme.headlineSmall;
+    public override TextStyle? contentTextStyle => _textTheme.bodyMedium;
+    public override EdgeInsetsGeometry? actionsPadding => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsets.CreateOnly(left: 24.0, right: 24.0, bottom: 24.0));
 }

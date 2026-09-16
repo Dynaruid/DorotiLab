@@ -52,20 +52,20 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static global::Doroti.Framework.Painting.EdgeInsets kTabLabelPadding = EdgeInsets.CreateSymmetric(horizontal: 16.0);
+    public static EdgeInsets kTabLabelPadding = EdgeInsets.CreateSymmetric(horizontal: 16.0);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static global::Doroti.Framework.Painting.EdgeInsets kMaterialListPadding = EdgeInsets.CreateSymmetric(vertical: 8.0);
+    public static EdgeInsets kMaterialListPadding = EdgeInsets.CreateSymmetric(vertical: 8.0);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static Color kDefaultIconLightColor = new global::Doroti.Ui.Color(4294967295L);
+    public static Color kDefaultIconLightColor = new Color(4294967295L);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static Color kDefaultIconDarkColor = new global::Doroti.Ui.Color(3707764736L);
+    public static Color kDefaultIconDarkColor = new Color(3707764736L);
 }

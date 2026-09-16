@@ -6,7 +6,7 @@ namespace Doroti.Framework.Widgets;
 
 public abstract class InheritedTheme : InheritedWidget
 {
-    protected InheritedTheme(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    protected InheritedTheme(Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 

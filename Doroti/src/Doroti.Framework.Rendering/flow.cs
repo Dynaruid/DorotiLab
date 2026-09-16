@@ -7,9 +7,9 @@ namespace Doroti.Framework.Rendering;
 
 public interface FlowPaintingContext
 {
-    public global::Doroti.Ui.Size size { get; }
+    public Size size { get; }
     public long childCount { get; }
-    public global::Doroti.Ui.Size? getChildSize(long i);
+    public Size? getChildSize(long i);
     public void paintChild(long i, Matrix4 transform = default!, double opacity = 1.0);
 }
 
@@ -22,7 +22,7 @@ public abstract class FlowDelegate
         _repaint = repaint;
     }
 
-    public virtual global::Doroti.Ui.Size getSize(BoxConstraints constraints) => constraints.biggest;
+    public virtual Size getSize(BoxConstraints constraints) => constraints.biggest;
     public virtual BoxConstraints getConstraintsForChild(long i, BoxConstraints constraints) => constraints;
     public abstract void paintChildren(FlowPaintingContext context);
     public virtual bool shouldRelayout(FlowDelegate oldDelegate) => false;
@@ -100,7 +100,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
             }
         }
     }
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -140,7 +140,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         }
     }
 
-    internal virtual global::Doroti.Ui.Size _getSize(BoxConstraints constraints)
+    internal virtual Size _getSize(BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
         return constraints.constrain(_delegate.getSize(constraints));
@@ -217,7 +217,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         }
     }
 
-    public virtual global::Doroti.Ui.Size? getChildSize(long i)
+    public virtual Size? getChildSize(long i)
     {
         if ((i < 0L) || (i >= checked(_randomAccessChildren.Count)))
         {

@@ -50,7 +50,7 @@ public class ContinuousRectangleBorder : OutlinedBorder
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Path _getPath(RRect rrect)
+    internal virtual Path _getPath(RRect rrect)
     {
         double leftLocal = rrect.left;
         double rightLocal = rrect.right;
@@ -66,7 +66,7 @@ public class ContinuousRectangleBorder : OutlinedBorder
         double brRadiusYLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.brRadiusY));
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.moveTo(leftLocal, topLocal + tlRadiusXLocal);
     __cascade.cubicTo(leftLocal, topLocal, leftLocal, topLocal, leftLocal + tlRadiusYLocal, topLocal);
     __cascade.lineTo(rightLocal - trRadiusXLocal, topLocal);

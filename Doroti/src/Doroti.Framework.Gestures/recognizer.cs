@@ -95,7 +95,7 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.PointerDeviceKind getKindForPointer(long pointer)
+    public virtual PointerDeviceKind getKindForPointer(long pointer)
     {
         DartRuntimePrimitives.Assert(() => _pointerToEventData.ContainsKey(pointer));
         return _pointerToEventData.GetValueOrDefault(pointer)!.kind;
@@ -411,7 +411,7 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual double _getGlobalDistance(PointerEvent @event)
     {
-        global::Doroti.Ui.Offset offset = @event.position - initialPosition!.global;
+        Offset offset = @event.position - initialPosition!.global;
         return offset.distance;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

@@ -27,7 +27,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     internal virtual Size _currentSize { get; set; } = default!;
     internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
 
-    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? Alignment.center, textDirection: textDirection, child: child)
+    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? Alignment.center, textDirection: textDirection, child: child)
     {
         Curve __curve = curve ?? Curves.linear;
         _vsync = vsync;
@@ -110,7 +110,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
             _animation.curve = __value;
         }
     }
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -179,7 +179,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         base.detach();
     }
 
-    internal virtual global::Doroti.Ui.Size? _animatedSize
+    internal virtual Size? _animatedSize
     {
         get
         {
@@ -237,7 +237,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         {
             return constraints.smallest;
         }
-        global::Doroti.Ui.Size childSize = child!.getDryLayout(constraints);
+        Size childSize = child!.getDryLayout(constraints);
         switch (_state)
         {
             case RenderAnimatedSizeState.start:
@@ -354,7 +354,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     {
         if ((child is not null) && _hasVisualOverflow && (!Equals(clipBehavior, Clip.none)))
         {
-            global::Doroti.Ui.Rect rect = Offset.zero & size;
+            Rect rect = Offset.zero & size;
             _clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, rect, base.paint, clipBehavior: clipBehavior, oldLayer: _clipRectLayer.layer);
         }
         else
@@ -376,9 +376,9 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         {
             return null;
         }
-        global::Doroti.Ui.Size childSize = childLocal.getDryLayout(constraints);
-        global::Doroti.Ui.Size mySize = getDryLayout(constraints);
-        global::Doroti.Ui.Offset offset = resolvedAlignment.alongOffset(mySize - childSize);
+        Size childSize = childLocal.getDryLayout(constraints);
+        Size mySize = getDryLayout(constraints);
+        Offset offset = resolvedAlignment.alongOffset(mySize - childSize);
         return DartRuntimePrimitives.RequireValue(result) + offset.dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

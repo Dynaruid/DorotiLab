@@ -106,7 +106,7 @@ internal sealed unsafe partial class VulkanObserver(Vk vk, Instance instance, Vk
     internal void ForgetHostTarget(ulong image) { Images.Remove(image); Journal.RemoveImage(image); }
     /// <summary>Only after the previous owner joined and actual GPU drain/loss was established.</summary>
     internal void TakeShutdownOwnershipAfterGpuDrain() => Owner = Environment.CurrentManagedThreadId;
-    private void CreatedImage(VkDevice d, ImageCreateInfo* p, Silk.NET.Vulkan.Image* result)
+    private void CreatedImage(VkDevice d, ImageCreateInfo* p, Image* result)
     {
         Device(d);
         // Copy scalar values only; never retain borrowed pNext/queue-family pointers.
@@ -252,7 +252,7 @@ internal sealed unsafe partial class VulkanObserver(Vk vk, Instance instance, Vk
         var info = new ImageCreateInfo { SType = StructureType.ImageCreateInfo, ImageType = ImageType.Type2D,
             Format = Format.R8G8B8A8Unorm, Extent = new(8, 8, 1), MipLevels = 1, ArrayLayers = 1,
             Samples = SampleCountFlags.Count1Bit, Usage = ImageUsageFlags.TransferDstBit, Flags = ImageCreateFlags.CreateAliasBit };
-        Silk.NET.Vulkan.Image image = default;
+        Image image = default;
         Result result;
         try
         {

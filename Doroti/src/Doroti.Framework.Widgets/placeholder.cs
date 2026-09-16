@@ -4,7 +4,7 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rendering.CustomPainter
+internal class _PlaceholderPainter__placeholder : CustomPainter
 {
     public virtual Color color { get; private set; } = default!;
     public virtual double strokeWidth { get; private set; } = default!;
@@ -19,25 +19,25 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
     {
         var paintLocal = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color;
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = strokeWidth;
     return __cascade;
 }))();
-        global::Doroti.Ui.Rect rect = Offset.zero & size;
+        Rect rect = Offset.zero & size;
         var path = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(rect);
-    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect.topRight, rect.bottomLeft }, false);
-    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect.topLeft, rect.bottomRight }, false);
+    __cascade.addPolygon(new List<Offset> { rect.topRight, rect.bottomLeft }, false);
+    __cascade.addPolygon(new List<Offset> { rect.topLeft, rect.bottomRight }, false);
     return __cascade;
 }))();
         canvas.drawPath(path, paintLocal);
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldPainter = (_PlaceholderPainter__placeholder)oldDelegate;
         return (!Equals(__oldPainter.color, color)) || (__oldPainter.strokeWidth != strokeWidth);
@@ -55,7 +55,7 @@ public class Placeholder : StatelessWidget
     public virtual double fallbackHeight { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public Placeholder(global::Doroti.Framework.Foundation.Key? key = null, Color color = default!, double strokeWidth = 2.0, double fallbackWidth = 400.0, double fallbackHeight = 400.0, Widget? child = null) : base(key: key)
+    public Placeholder(Key? key = null, Color color = default!, double strokeWidth = 2.0, double fallbackWidth = 400.0, double fallbackHeight = 400.0, Widget? child = null) : base(key: key)
     {
         Color __color = color ?? new Color(0xFF455A64);
         this.color = __color;
@@ -71,13 +71,13 @@ public class Placeholder : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: new global::Doroti.Ui.Color(4282735204L)));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeWidth", strokeWidth, defaultValue: 2.0));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackWidth", fallbackWidth, defaultValue: 400.0));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackHeight", fallbackHeight, defaultValue: 400.0));
+        properties.add(new ColorProperty("color", color, defaultValue: new Color(4282735204L)));
+        properties.add(new DoubleProperty("strokeWidth", strokeWidth, defaultValue: 2.0));
+        properties.add(new DoubleProperty("fallbackWidth", fallbackWidth, defaultValue: 400.0));
+        properties.add(new DoubleProperty("fallbackHeight", fallbackHeight, defaultValue: 400.0));
     }
 
 }

@@ -6,14 +6,14 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Cupertino;
 
-public class CupertinoTextFormFieldRow : global::Doroti.Framework.Widgets.FormField<string>
+public class CupertinoTextFormFieldRow : FormField<string>
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? prefix { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.TextEditingController? controller { get; private set; }
-    public virtual global::System.Action<string>? onChanged { get; private set; }
+    public virtual Widget? prefix { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
+    public virtual TextEditingController? controller { get; private set; }
+    public virtual System.Action<string>? onChanged { get; private set; }
 
-    public CupertinoTextFormFieldRow(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? prefix = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Widgets.TextEditingController? controller = null, string? initialValue = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Painting.BoxDecoration? decoration = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, global::Doroti.Framework.Services.TextCapitalization textCapitalization = TextCapitalization.none, global::Doroti.Framework.Services.TextInputAction? textInputAction = null, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Painting.StrutStyle? strutStyle = null, TextDirection? textDirection = null, TextAlign textAlign = TextAlign.start, global::Doroti.Framework.Painting.TextAlignVertical? textAlignVertical = null, bool autofocus = false, bool readOnly = false, global::Doroti.Framework.Widgets.ToolbarOptions? toolbarOptions = null, bool? showCursor = null, string obscuringCharacter = "•", bool obscureText = false, bool autocorrect = true, global::Doroti.Framework.Services.SmartDashesType? smartDashesType = null, global::Doroti.Framework.Services.SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, global::System.Action<string>? onChanged = null, global::System.Action? onTap = null, global::System.Action? onEditingComplete = null, global::System.Action<string>? onFieldSubmitted = null, global::System.Action<string?>? onSaved = null, global::System.Func<string?, string?>? validator = null, List<global::Doroti.Framework.Services.TextInputFormatter>? inputFormatters = null, bool? enabled = null, double cursorWidth = 2.0, double? cursorHeight = null, Color? cursorColor = null, Brightness? keyboardAppearance = null, global::Doroti.Framework.Painting.EdgeInsets scrollPadding = default!, bool enableInteractiveSelection = true, global::Doroti.Framework.Widgets.TextSelectionControls? selectionControls = null, global::Doroti.Framework.Widgets.ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = null, global::Doroti.Framework.Widgets.AutovalidateMode autovalidateMode = AutovalidateMode.disabled, string? placeholder = null, global::Doroti.Framework.Painting.TextStyle? placeholderStyle = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>? contextMenuBuilder = default!, global::Doroti.Framework.Widgets.SpellCheckConfiguration? spellCheckConfiguration = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, string? restorationId = null) : base(key: key, onSaved: onSaved, validator: validator, autovalidateMode: autovalidateMode, restorationId: restorationId, initialValue: (controller?.text ?? initialValue) ?? "", builder: (field) =>
+    public CupertinoTextFormFieldRow(Key? key = null, Widget? prefix = null, EdgeInsetsGeometry? padding = null, TextEditingController? controller = null, string? initialValue = null, FocusNode? focusNode = null, BoxDecoration? decoration = null, TextInputType? keyboardType = null, TextCapitalization textCapitalization = TextCapitalization.none, TextInputAction? textInputAction = null, TextStyle? style = null, Painting.StrutStyle? strutStyle = null, TextDirection? textDirection = null, TextAlign textAlign = TextAlign.start, TextAlignVertical? textAlignVertical = null, bool autofocus = false, bool readOnly = false, ToolbarOptions? toolbarOptions = null, bool? showCursor = null, string obscuringCharacter = "•", bool obscureText = false, bool autocorrect = true, SmartDashesType? smartDashesType = null, SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, System.Action<string>? onChanged = null, Action? onTap = null, Action? onEditingComplete = null, System.Action<string>? onFieldSubmitted = null, System.Action<string?>? onSaved = null, Func<string?, string?>? validator = null, List<TextInputFormatter>? inputFormatters = null, bool? enabled = null, double cursorWidth = 2.0, double? cursorHeight = null, Color? cursorColor = null, Brightness? keyboardAppearance = null, EdgeInsets scrollPadding = default!, bool enableInteractiveSelection = true, TextSelectionControls? selectionControls = null, ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = null, AutovalidateMode autovalidateMode = AutovalidateMode.disabled, string? placeholder = null, TextStyle? placeholderStyle = default!, Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = default!, SpellCheckConfiguration? spellCheckConfiguration = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, string? restorationId = null) : base(key: key, onSaved: onSaved, validator: validator, autovalidateMode: autovalidateMode, restorationId: restorationId, initialValue: (controller?.text ?? initialValue) ?? "", builder: (field) =>
     {
         var state = ((_CupertinoTextFormFieldRowState__text_form_field_row?)field)!;
         void onChangedHandler(string value)
@@ -21,13 +21,13 @@ public class CupertinoTextFormFieldRow : global::Doroti.Framework.Widgets.FormFi
             ((_CupertinoTextFormFieldRowState__text_form_field_row)field).didChange(value);
             onChanged?.Invoke(value);
         }
-        return new CupertinoFormRow(prefix: prefix, padding: padding, error: (((_CupertinoTextFormFieldRowState__text_form_field_row)field).errorText is null) ? null : new global::Doroti.Framework.Widgets.Text(((_CupertinoTextFormFieldRowState__text_form_field_row)field).errorText!), child: new global::Doroti.Framework.Widgets.UnmanagedRestorationScope(bucket: ((_CupertinoTextFormFieldRowState__text_form_field_row)field).bucket, child: CupertinoTextField.CreateBorderless(restorationId: restorationId, controller: state._effectiveController, focusNode: focusNode, keyboardType: keyboardType, decoration: decoration, textInputAction: textInputAction, style: style, strutStyle: strutStyle, textAlign: textAlign, textAlignVertical: textAlignVertical, textCapitalization: textCapitalization, textDirection: textDirection, autofocus: autofocus, toolbarOptions: toolbarOptions, readOnly: readOnly, showCursor: showCursor, obscuringCharacter: obscuringCharacter, obscureText: obscureText, autocorrect: autocorrect, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType, enableSuggestions: enableSuggestions, maxLines: maxLines, minLines: minLines, expands: expands, maxLength: maxLength, onChanged: onChangedHandler, onTap: onTap, onEditingComplete: onEditingComplete, onSubmitted: onFieldSubmitted, inputFormatters: inputFormatters, enabled: enabled ?? true, cursorWidth: cursorWidth, cursorHeight: cursorHeight, cursorColor: cursorColor, scrollPadding: scrollPadding ?? EdgeInsets.CreateAll(20.0), scrollPhysics: scrollPhysics, keyboardAppearance: keyboardAppearance, enableInteractiveSelection: enableInteractiveSelection, selectionControls: selectionControls, autofillHints: autofillHints, placeholder: placeholder, placeholderStyle: placeholderStyle ?? new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText), contextMenuBuilder: contextMenuBuilder ?? _defaultContextMenuBuilder, spellCheckConfiguration: spellCheckConfiguration, selectionHeightStyle: selectionHeightStyle ?? EditableText.defaultSelectionHeightStyle, selectionWidthStyle: selectionWidthStyle ?? EditableText.defaultSelectionWidthStyle)));
+        return new CupertinoFormRow(prefix: prefix, padding: padding, error: (((_CupertinoTextFormFieldRowState__text_form_field_row)field).errorText is null) ? null : new Text(((_CupertinoTextFormFieldRowState__text_form_field_row)field).errorText!), child: new UnmanagedRestorationScope(bucket: ((_CupertinoTextFormFieldRowState__text_form_field_row)field).bucket, child: CupertinoTextField.CreateBorderless(restorationId: restorationId, controller: state._effectiveController, focusNode: focusNode, keyboardType: keyboardType, decoration: decoration, textInputAction: textInputAction, style: style, strutStyle: strutStyle, textAlign: textAlign, textAlignVertical: textAlignVertical, textCapitalization: textCapitalization, textDirection: textDirection, autofocus: autofocus, toolbarOptions: toolbarOptions, readOnly: readOnly, showCursor: showCursor, obscuringCharacter: obscuringCharacter, obscureText: obscureText, autocorrect: autocorrect, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType, enableSuggestions: enableSuggestions, maxLines: maxLines, minLines: minLines, expands: expands, maxLength: maxLength, onChanged: onChangedHandler, onTap: onTap, onEditingComplete: onEditingComplete, onSubmitted: onFieldSubmitted, inputFormatters: inputFormatters, enabled: enabled ?? true, cursorWidth: cursorWidth, cursorHeight: cursorHeight, cursorColor: cursorColor, scrollPadding: scrollPadding ?? EdgeInsets.CreateAll(20.0), scrollPhysics: scrollPhysics, keyboardAppearance: keyboardAppearance, enableInteractiveSelection: enableInteractiveSelection, selectionControls: selectionControls, autofillHints: autofillHints, placeholder: placeholder, placeholderStyle: placeholderStyle ?? new TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText), contextMenuBuilder: contextMenuBuilder ?? _defaultContextMenuBuilder, spellCheckConfiguration: spellCheckConfiguration, selectionHeightStyle: selectionHeightStyle ?? EditableText.defaultSelectionHeightStyle, selectionWidthStyle: selectionWidthStyle ?? EditableText.defaultSelectionWidthStyle)));
         throw new InvalidOperationException("Dart closure completed without a value.");
     })
     {
-        global::Doroti.Framework.Painting.EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
-        global::Doroti.Framework.Painting.TextStyle? __placeholderStyle = placeholderStyle ?? new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
+        EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
+        TextStyle? __placeholderStyle = placeholderStyle ?? new TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
+        Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
         this.prefix = prefix;
         this.padding = padding;
         this.controller = controller;
@@ -42,7 +42,7 @@ public class CupertinoTextFormFieldRow : global::Doroti.Framework.Widgets.FormFi
         System.Diagnostics.Debug.Assert((maxLength is null) || (DartRuntimePrimitives.RequireValue(maxLength) > 0L));
     }
 
-    internal static global::Doroti.Framework.Widgets.Widget _defaultContextMenuBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.EditableTextState editableTextState)
+    internal static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState)
     {
         if (SystemContextMenu.isSupportedByField(editableTextState))
         {
@@ -52,16 +52,16 @@ public class CupertinoTextFormFieldRow : global::Doroti.Framework.Widgets.FormFi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.FormFieldState<string> createState() => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FormFieldState<string>>(new _CupertinoTextFormFieldRowState__text_form_field_row());
+    public override FormFieldState<string> createState() => DartRuntimePrimitives.ConvertValue<FormFieldState<string>>(new _CupertinoTextFormFieldRowState__text_form_field_row());
 }
 
-internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Doroti.Framework.Widgets.FormFieldState<string>
+internal class _CupertinoTextFormFieldRowState__text_form_field_row : FormFieldState<string>
 {
-    internal virtual global::Doroti.Framework.Widgets.RestorableTextEditingController? _controller { get; set; } = default;
+    internal virtual RestorableTextEditingController? _controller { get; set; } = default;
 
-    internal virtual global::Doroti.Framework.Widgets.TextEditingController _effectiveController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.TextEditingController>(_cupertinoTextFormFieldRow.controller ?? _controller!.value);
+    internal virtual TextEditingController _effectiveController => DartRuntimePrimitives.ConvertValue<TextEditingController>(_cupertinoTextFormFieldRow.controller ?? _controller!.value);
     internal virtual CupertinoTextFormFieldRow _cupertinoTextFormFieldRow => ((CupertinoTextFormFieldRow?)base.widget)!;
-    public override void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
+    public override void restoreState(RestorationBucket? oldBucket, bool initialRestore)
     {
         base.restoreState(oldBucket, initialRestore);
         if (_controller is not null)
@@ -77,10 +77,10 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
         registerForRestoration(_controller!, "controller");
     }
 
-    internal virtual void _createLocalController(global::Doroti.Framework.Services.TextEditingValue? value = null)
+    internal virtual void _createLocalController(TextEditingValue? value = null)
     {
         DartRuntimePrimitives.Assert(() => _controller is null);
-        _controller = (value is null) ? RestorableTextEditingController.Create() : new global::Doroti.Framework.Widgets.RestorableTextEditingController(value);
+        _controller = (value is null) ? RestorableTextEditingController.Create() : new RestorableTextEditingController(value);
         if (!restorePending)
         {
             _registerController();
@@ -92,7 +92,7 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
         base.initState();
         if (_cupertinoTextFormFieldRow.controller is null)
         {
-            _createLocalController((widget.initialValue is not null) ? new global::Doroti.Framework.Services.TextEditingValue(text: widget.initialValue!) : null);
+            _createLocalController((widget.initialValue is not null) ? new TextEditingValue(text: widget.initialValue!) : null);
         }
         else
         {
@@ -100,7 +100,7 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
         }
     }
 
-    public override void didUpdateWidget(global::Doroti.Framework.Widgets.FormField<string> oldWidget)
+    public override void didUpdateWidget(FormField<string> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
         if (!Equals(_cupertinoTextFormFieldRow.controller, ((CupertinoTextFormFieldRow)oldWidget).controller))
@@ -136,13 +136,13 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
         base.didChange(value);
         if ((value is not null) && (_effectiveController.text != value))
         {
-            _effectiveController.value = new global::Doroti.Framework.Services.TextEditingValue(text: value);
+            _effectiveController.value = new TextEditingValue(text: value);
         }
     }
 
     public override void reset()
     {
-        _effectiveController.value = new global::Doroti.Framework.Services.TextEditingValue(text: widget.initialValue ?? "");
+        _effectiveController.value = new TextEditingValue(text: widget.initialValue ?? "");
         base.reset();
         _cupertinoTextFormFieldRow.onChanged?.Invoke(_effectiveController.text);
     }

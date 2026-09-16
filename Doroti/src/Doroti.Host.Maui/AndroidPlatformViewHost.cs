@@ -363,7 +363,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             parent.Invalidate();
             _reusedSlices += frame.Cached?.Count ?? 0;
             if (_profile)
-                global::Android.Util.Log.Info("DorotiPlatformFrame", $"mode={(_optimize ? "optimized" : "baseline")} frame={++_commits} readbackFrames={_readbackFrames} readbackBytes={_readbackBytes} reusedSlices={_reusedSlices} changed={frame.Rasters.Length} cached={frame.Cached?.Count ?? 0} uiMs={System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
+                Android.Util.Log.Info("DorotiPlatformFrame", $"mode={(_optimize ? "optimized" : "baseline")} frame={++_commits} readbackFrames={_readbackFrames} readbackBytes={_readbackBytes} reusedSlices={_reusedSlices} changed={frame.Rasters.Length} cached={frame.Cached?.Count ?? 0} uiMs={System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
             return true;
         }
         finally
@@ -509,12 +509,12 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             if (_control is TextView textControl) textControl.TextChanged += TextChanged;
             if (!editor && !webView) _control.Click += Click;
             Clip.AddView(_control); parent.AddView(Clip);
-            global::Android.Util.Log.Info("DorotiPlatformView", $"create handle={handle} native={_control.Handle}");
+            Android.Util.Log.Info("DorotiPlatformView", $"create handle={handle} native={_control.Handle}");
         }
         private void Click(object? sender, EventArgs e)
         {
             if (!_disabled && !_disposed && _control is TextView textControl) { textControl.Text = $"Native clicks: {++_clicks}";
-                global::Android.Util.Log.Info("DorotiPlatformView", $"click handle={_handle} count={_clicks}"); }
+                Android.Util.Log.Info("DorotiPlatformView", $"click handle={_handle} count={_clicks}"); }
         }
         private void KeyPressed(object? sender, NativeView.KeyEventArgs e)
         {
@@ -526,15 +526,15 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         {
             e.Handled = false;
             if (e.Event?.ActionMasked is MotionEventActions.Down or MotionEventActions.Up)
-                global::Android.Util.Log.Info("DorotiPlatformView", $"touch handle={_handle} action={e.Event.ActionMasked}");
+                Android.Util.Log.Info("DorotiPlatformView", $"touch handle={_handle} action={e.Event.ActionMasked}");
         }
         private void TextChanged(object? sender, Android.Text.TextChangedEventArgs e) => _host.InvalidateBackdrop();
         private void FocusChanged(object? sender, NativeView.FocusChangeEventArgs e)
         {
-            global::Android.Util.Log.Info("DorotiPlatformView", $"focus handle={_handle} focused={e.HasFocus}");
+            Android.Util.Log.Info("DorotiPlatformView", $"focus handle={_handle} focused={e.HasFocus}");
             if (!e.HasFocus || _disabled || _disposed) return;
             try { _host.YieldTextFocus(); _focused(_handle); }
-            catch (Exception error) { global::Android.Util.Log.Error("DorotiPlatformView", error.ToString()); }
+            catch (Exception error) { Android.Util.Log.Error("DorotiPlatformView", error.ToString()); }
         }
         internal void Validate(PlatformViewPlacement placement)
         {
@@ -583,9 +583,9 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             _control.FocusChange -= FocusChanged; _control.Click -= Click; _control.KeyPress -= KeyPressed; _control.Touch -= NativeTouch;
             if (_control is TextView textControl) textControl.TextChanged -= TextChanged;
             if (_control is Android.Webkit.WebView browser) { browser.StopLoading(); browser.Destroy(); }
-            (Clip.Parent as Android.Views.ViewGroup)?.RemoveView(Clip);
+            (Clip.Parent as ViewGroup)?.RemoveView(Clip);
             Clip.RemoveView(_control); _control.Dispose(); Clip.Dispose(); _host._instances.Remove(_handle);
-            global::Android.Util.Log.Info("DorotiPlatformView", $"dispose handle={_handle}");
+            Android.Util.Log.Info("DorotiPlatformView", $"dispose handle={_handle}");
             return ValueTask.CompletedTask;
         }
     }

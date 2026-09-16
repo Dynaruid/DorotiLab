@@ -72,15 +72,15 @@ public class RelativeRect
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Rect toRect(Rect container)
+    public virtual Rect toRect(Rect container)
     {
         return Rect.fromLTRB(left, top, container.width - right, container.height - bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size toSize(Size container)
+    public virtual Size toSize(Size container)
     {
-        return new global::Doroti.Ui.Size(container.width - left - right, container.height - top - bottom);
+        return new Size(container.width - left - right, container.height - top - bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -175,8 +175,8 @@ public enum StackFit
 public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, StackParentData>, RenderBoxContainerDefaultsMixin<RenderBox, StackParentData>
 {
     internal virtual bool _hasVisualOverflow { get; set; } = false;
-    internal virtual global::Doroti.Framework.Painting.Alignment? _resolvedAlignmentCache { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _alignment { get; set; } = default!;
+    internal virtual Alignment? _resolvedAlignmentCache { get; set; } = default;
+    internal virtual AlignmentGeometry _alignment { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
     internal virtual StackFit _fit { get; set; } = default!;
     internal virtual Clip _clipBehavior { get; set; } = Clip.hardEdge;
@@ -185,9 +185,9 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    public RenderStack(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, StackFit fit = StackFit.loose, Clip clipBehavior = Clip.hardEdge)
+    public RenderStack(List<RenderBox>? children = null, AlignmentGeometry alignment = default!, TextDirection? textDirection = null, StackFit fit = StackFit.loose, Clip clipBehavior = Clip.hardEdge)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.topStart;
+        AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.topStart;
         _alignment = __alignment;
         _textDirection = textDirection;
         _fit = fit;
@@ -203,14 +203,14 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         }
     }
 
-    internal virtual global::Doroti.Framework.Painting.Alignment _resolvedAlignment => _resolvedAlignmentCache ??= alignment.resolve(textDirection);
+    internal virtual Alignment _resolvedAlignment => _resolvedAlignmentCache ??= alignment.resolve(textDirection);
     internal virtual void _markNeedResolution()
     {
         _resolvedAlignmentCache = null;
         markNeedsLayout();
     }
 
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment
+    public virtual AlignmentGeometry alignment
     {
         get => _alignment;
         set
@@ -224,7 +224,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             _markNeedResolution();
         }
     }
-    public virtual global::Doroti.Ui.TextDirection? textDirection
+    public virtual TextDirection? textDirection
     {
         get => _textDirection;
         set
@@ -251,7 +251,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             }
         }
     }
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -313,7 +313,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static bool layoutPositionedChild(RenderBox child, StackParentData childParentData, Size size, global::Doroti.Framework.Painting.Alignment alignment)
+    public static bool layoutPositionedChild(RenderBox child, StackParentData childParentData, Size size, Alignment alignment)
     {
         DartRuntimePrimitives.Assert(() => childParentData.isPositioned);
         DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentData));
@@ -321,12 +321,12 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         child.layout(childConstraints, parentUsesSize: true);
         double x = childParentData switch { StackParentData { left: double leftLocal } __object19981 => leftLocal, StackParentData { right: double rightLocal } __object20033 => size.width - rightLocal - child.size.width, StackParentData __object20119 => alignment.alongOffset(size - child.size).dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         double y = childParentData switch { StackParentData { top: double topLocal } __object20257 => topLocal, StackParentData { bottom: double bottomLocal } __object20307 => size.height - bottomLocal - child.size.height, StackParentData __object20397 => alignment.alongOffset(size - child.size).dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        childParentData.offset = new global::Doroti.Ui.Offset(x, y);
+        childParentData.offset = new Offset(x, y);
         return (x < 0.0) || ((x + child.size.width) > size.width) || (y < 0.0) || ((y + child.size.height) > size.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static double? _baselineForChild(RenderBox child, Size stackSize, BoxConstraints nonPositionedChildConstraints, global::Doroti.Framework.Painting.Alignment alignment, TextBaseline baseline)
+    internal static double? _baselineForChild(RenderBox child, Size stackSize, BoxConstraints nonPositionedChildConstraints, Alignment alignment, TextBaseline baseline)
     {
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         BoxConstraints childConstraints = childParentData.isPositioned ? childParentData.positionedChildConstraints(stackSize) : nonPositionedChildConstraints;
@@ -343,8 +343,8 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         BoxConstraints nonPositionedChildConstraints = fit switch { StackFit.loose => constraints.loosen(), StackFit.expand => BoxConstraints.CreateTight(constraints.biggest), StackFit.passthrough => constraints, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        global::Doroti.Framework.Painting.Alignment alignment = _resolvedAlignment;
-        global::Doroti.Ui.Size size = getDryLayout(constraints);
+        Alignment alignment = _resolvedAlignment;
+        Size size = getDryLayout(constraints);
         BaselineOffset baselineOffset = BaselineOffset.noBaseline;
         for (RenderBox? child = firstChild; child is not null; child = childAfter(child))
         {
@@ -360,7 +360,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
+    internal virtual Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
     {
         var hasNonPositionedChildren = false;
         if (childCount == 0L)
@@ -377,16 +377,16 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             if (!childParentData.isPositioned)
             {
                 hasNonPositionedChildren = true;
-                global::Doroti.Ui.Size childSize = layoutChild(child, nonPositionedConstraints);
+                Size childSize = layoutChild(child, nonPositionedConstraints);
                 widthLocal = Math.Max(widthLocal, childSize.width);
                 heightLocal = Math.Max(heightLocal, childSize.height);
             }
             child = childParentData.nextSibling;
         }
-        global::Doroti.Ui.Size size = default!;
+        Size size = default!;
         if (hasNonPositionedChildren)
         {
-            size = new global::Doroti.Ui.Size(widthLocal, heightLocal);
+            size = new Size(widthLocal, heightLocal);
             DartRuntimePrimitives.Assert(() => size.width == constraints.constrainWidth(widthLocal));
             DartRuntimePrimitives.Assert(() => size.height == constraints.constrainHeight(heightLocal));
         }
@@ -404,7 +404,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         BoxConstraints constraintsLocal = constraints;
         _hasVisualOverflow = false;
         size = _computeSize(constraints: constraintsLocal, layoutChild: ChildLayoutHelper.layoutChild);
-        global::Doroti.Framework.Painting.Alignment resolvedAlignment = _resolvedAlignment;
+        Alignment resolvedAlignment = _resolvedAlignment;
         RenderBox? child = firstChild;
         while (child is not null)
         {
@@ -473,10 +473,10 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection));
+        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection));
         properties.add(new EnumProperty<StackFit>("fit", fit));
-        properties.add(new EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: Clip.hardEdge));
+        properties.add(new EnumProperty<Clip>("clipBehavior", clipBehavior, defaultValue: Clip.hardEdge));
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -831,7 +831,7 @@ public class RenderIndexedStack : RenderStack
 {
     internal virtual long? _index { get; set; } = default;
 
-    public RenderIndexedStack(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, StackFit fit = StackFit.loose, Clip clipBehavior = Clip.hardEdge, long? index = 0) : base(children: children, alignment: alignment ?? AlignmentDirectional.topStart, textDirection: DartRuntimePrimitives.RequireValue(textDirection), fit: fit, clipBehavior: clipBehavior)
+    public RenderIndexedStack(List<RenderBox>? children = null, AlignmentGeometry alignment = default!, TextDirection? textDirection = null, StackFit fit = StackFit.loose, Clip clipBehavior = Clip.hardEdge, long? index = 0) : base(children: children, alignment: alignment ?? AlignmentDirectional.topStart, textDirection: DartRuntimePrimitives.RequireValue(textDirection), fit: fit, clipBehavior: clipBehavior)
     {
         _index = index;
     }
@@ -896,8 +896,8 @@ public class RenderIndexedStack : RenderStack
             return null;
         }
         BoxConstraints nonPositionedChildConstraints = fit switch { StackFit.loose => constraints.loosen(), StackFit.expand => BoxConstraints.CreateTight(constraints.biggest), StackFit.passthrough => constraints, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        global::Doroti.Framework.Painting.Alignment alignment = _resolvedAlignment;
-        global::Doroti.Ui.Size size = getDryLayout(constraints);
+        Alignment alignment = _resolvedAlignment;
+        Size size = getDryLayout(constraints);
         return _baselineForChild(displayedChild, size, nonPositionedChildConstraints, alignment, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

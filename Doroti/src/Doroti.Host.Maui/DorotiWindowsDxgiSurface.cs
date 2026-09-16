@@ -392,8 +392,8 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface, IMauiGraphite
         }
     }
 
-    private Doroti.Hosting.WindowsPrecisionTrackpad? _trackpad;
-    private Doroti.Hosting.WindowsNativePointerInput? _nativePointers;
+    private Hosting.WindowsPrecisionTrackpad? _trackpad;
+    private Hosting.WindowsNativePointerInput? _nativePointers;
     private void AttachTrackpad(nint window)
     {
         if (_trackpad is not null || window == 0) return;

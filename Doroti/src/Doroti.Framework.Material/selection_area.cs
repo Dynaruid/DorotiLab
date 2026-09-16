@@ -5,18 +5,18 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class SelectionArea : global::Doroti.Framework.Widgets.StatefulWidget
+public class SelectionArea : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Widgets.TextMagnifierConfiguration? magnifierConfiguration { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.TextSelectionControls? selectionControls { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.SelectableRegionState, global::Doroti.Framework.Widgets.Widget>? contextMenuBuilder { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Rendering.SelectedContent?>? onSelectionChanged { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual TextMagnifierConfiguration? magnifierConfiguration { get; private set; }
+    public virtual FocusNode? focusNode { get; private set; }
+    public virtual TextSelectionControls? selectionControls { get; private set; }
+    public virtual Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder { get; private set; }
+    public virtual System.Action<SelectedContent?>? onSelectionChanged { get; private set; }
+    public virtual Widget child { get; private set; } = default!;
 
-    public SelectionArea(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Widgets.TextSelectionControls? selectionControls = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.SelectableRegionState, global::Doroti.Framework.Widgets.Widget>? contextMenuBuilder = default!, global::Doroti.Framework.Widgets.TextMagnifierConfiguration? magnifierConfiguration = null, global::System.Action<global::Doroti.Framework.Rendering.SelectedContent?>? onSelectionChanged = null, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key)
+    public SelectionArea(Key? key = null, FocusNode? focusNode = null, TextSelectionControls? selectionControls = null, Func<BuildContext, SelectableRegionState, Widget>? contextMenuBuilder = default!, TextMagnifierConfiguration? magnifierConfiguration = null, System.Action<SelectedContent?>? onSelectionChanged = null, Widget child = default!) : base(key: key)
     {
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.SelectableRegionState, global::Doroti.Framework.Widgets.Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
+        Func<BuildContext, SelectableRegionState, Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
         this.focusNode = focusNode;
         this.selectionControls = selectionControls;
         this.contextMenuBuilder = __contextMenuBuilder;
@@ -25,7 +25,7 @@ public class SelectionArea : global::Doroti.Framework.Widgets.StatefulWidget
         this.child = child;
     }
 
-    internal static global::Doroti.Framework.Widgets.Widget _defaultContextMenuBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.SelectableRegionState selectableRegionState)
+    internal static Widget _defaultContextMenuBuilder(BuildContext context, SelectableRegionState selectableRegionState)
     {
         return AdaptiveTextSelectionToolbar.CreateSelectableRegion(selectableRegionState: selectableRegionState);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -34,16 +34,16 @@ public class SelectionArea : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new SelectionAreaState());
 }
 
-public class SelectionAreaState : global::Doroti.Framework.Widgets.State<SelectionArea>
+public class SelectionAreaState : State<SelectionArea>
 {
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.SelectableRegionState> _selectableRegionKey { get; private set; } = GlobalKey<SelectableRegionState>.Create();
+    internal virtual GlobalKey<SelectableRegionState> _selectableRegionKey { get; private set; } = GlobalKey<SelectableRegionState>.Create();
 
-    public virtual global::Doroti.Framework.Widgets.SelectableRegionState selectableRegion => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.SelectableRegionState>(_selectableRegionKey.currentState!);
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public virtual SelectableRegionState selectableRegion => DartRuntimePrimitives.ConvertValue<SelectableRegionState>(_selectableRegionKey.currentState!);
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.TextSelectionControls controls = widget.selectionControls ?? (Theme.of(context).platform switch { TargetPlatform.android => Text_selectionLibrary.materialTextSelectionHandleControls, TargetPlatform.fuchsia => Text_selectionLibrary.materialTextSelectionHandleControls, TargetPlatform.linux => Desktop_text_selectionLibrary.desktopTextSelectionHandleControls, TargetPlatform.windows => Desktop_text_selectionLibrary.desktopTextSelectionHandleControls, TargetPlatform.iOS => Text_selectionLibrary.materialTextSelectionHandleControls, TargetPlatform.macOS => Desktop_text_selectionLibrary.desktopTextSelectionHandleControls, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return new global::Doroti.Framework.Widgets.SelectableRegion(key: _selectableRegionKey, selectionControls: controls, focusNode: widget.focusNode, contextMenuBuilder: widget.contextMenuBuilder, magnifierConfiguration: widget.magnifierConfiguration ?? TextMagnifier.adaptiveMagnifierConfiguration, onSelectionChanged: widget.onSelectionChanged, child: widget.child);
+        TextSelectionControls controls = widget.selectionControls ?? (Theme.of(context).platform switch { TargetPlatform.android => Text_selectionLibrary.materialTextSelectionHandleControls, TargetPlatform.fuchsia => Text_selectionLibrary.materialTextSelectionHandleControls, TargetPlatform.linux => Desktop_text_selectionLibrary.desktopTextSelectionHandleControls, TargetPlatform.windows => Desktop_text_selectionLibrary.desktopTextSelectionHandleControls, TargetPlatform.iOS => Text_selectionLibrary.materialTextSelectionHandleControls, TargetPlatform.macOS => Desktop_text_selectionLibrary.desktopTextSelectionHandleControls, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return new SelectableRegion(key: _selectableRegionKey, selectionControls: controls, focusNode: widget.focusNode, contextMenuBuilder: widget.contextMenuBuilder, magnifierConfiguration: widget.magnifierConfiguration ?? TextMagnifier.adaptiveMagnifierConfiguration, onSelectionChanged: widget.onSelectionChanged, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

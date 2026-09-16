@@ -4,13 +4,13 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
 
-public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : global::Doroti.Framework.Rendering.RenderObject
+public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : RenderObject
 {
     public virtual Widget? child { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T> container { get; private set; } = default!;
+    public virtual RenderObjectWithChildMixin<T> container { get; private set; } = default!;
     public virtual string? debugShortDescription { get; private set; }
 
-    public RenderObjectToWidgetAdapter(Widget? child = null, global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T> container = default!, string? debugShortDescription = null) : base(key: new GlobalObjectKey<IState>(container))
+    public RenderObjectToWidgetAdapter(Widget? child = null, RenderObjectWithChildMixin<T> container = default!, string? debugShortDescription = null) : base(key: new GlobalObjectKey<IState>(container))
     {
         this.child = child;
         this.container = container;
@@ -18,8 +18,8 @@ public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : globa
     }
 
     public override RenderObjectToWidgetElement<T> createElement() => new RenderObjectToWidgetElement<T>(this);
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(container);
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(container);
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
     }
 
@@ -50,7 +50,7 @@ public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : globa
     public override string toStringShort() => DartRuntimePrimitives.ConvertValue<string>(debugShortDescription ?? base.toStringShort());
 }
 
-public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElementMixin where T : global::Doroti.Framework.Rendering.RenderObject
+public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElementMixin where T : RenderObject
 {
     internal virtual Element? _child { get; set; } = default;
     internal static object _rootChildSlot = new object();
@@ -60,7 +60,7 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
     {
     }
 
-    public override void visitChildren(global::System.Action<Element> visitor)
+    public override void visitChildren(System.Action<Element> visitor)
     {
         if (_child is not null)
         {
@@ -114,30 +114,30 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
         catch (Exception exceptionLocal)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
-            var details = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("attaching to the render tree"));
+            var details = new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new ErrorDescription("attaching to the render tree"));
             FlutterError.reportError(details);
             Widget error = ErrorWidget.builder(details);
             _child = updateChild(null, error, _rootChildSlot);
         }
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>?)base.renderObject)!);
-    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override RenderObject renderObject => DartRuntimePrimitives.ConvertValue<RenderObject>(((RenderObjectWithChildMixin<T>?)base.renderObject)!);
+    public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => Equals(slot, _rootChildSlot));
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)renderObject).debugValidateChild(child));
-        ((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)renderObject).child = ((T?)child)!;
+        DartRuntimePrimitives.Assert(() => ((RenderObjectWithChildMixin<T>)renderObject).debugValidateChild(child));
+        ((RenderObjectWithChildMixin<T>)renderObject).child = ((T?)child)!;
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(RenderObject child, object? oldSlot, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => false);
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(RenderObject child, object? slot)
     {
-        DartRuntimePrimitives.Assert(() => Equals(((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)renderObject).child, child));
-        ((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)renderObject).child = default(T);
+        DartRuntimePrimitives.Assert(() => Equals(((RenderObjectWithChildMixin<T>)renderObject).child, child));
+        ((RenderObjectWithChildMixin<T>)renderObject).child = default(T);
     }
 
     public virtual void assignOwner(BuildOwner owner)

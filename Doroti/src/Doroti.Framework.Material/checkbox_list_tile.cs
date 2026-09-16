@@ -12,38 +12,38 @@ internal enum _CheckboxType__checkbox_list_tile
     adaptive
 }
 
-public class CheckboxListTile : global::Doroti.Framework.Widgets.StatelessWidget
+public class CheckboxListTile : StatelessWidget
 {
     public virtual bool? value { get; private set; }
-    public virtual global::System.Action<bool?>? onChanged { get; private set; }
-    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual System.Action<bool?>? onChanged { get; private set; }
+    public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual Color? activeColor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor { get; private set; }
+    public virtual WidgetStateProperty<Color?>? fillColor { get; private set; }
     public virtual Color? checkColor { get; private set; }
     public virtual Color? hoverColor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor { get; private set; }
+    public virtual WidgetStateProperty<Color?>? overlayColor { get; private set; }
     public virtual double? splashRadius { get; private set; }
     public virtual MaterialTapTargetSize? materialTapTargetSize { get; private set; }
     public virtual VisualDensity? visualDensity { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStatesController? statesController { get; private set; }
+    public virtual FocusNode? focusNode { get; private set; }
+    public virtual WidgetStatesController? statesController { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderSide? side { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
+    public virtual BorderSide? side { get; private set; }
     public virtual bool isError { get; private set; } = default!;
     public virtual Color? tileColor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? title { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? subtitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? secondary { get; private set; }
+    public virtual Widget? title { get; private set; }
+    public virtual Widget? subtitle { get; private set; }
+    public virtual Widget? secondary { get; private set; }
     public virtual bool? isThreeLine { get; private set; }
     public virtual bool? dense { get; private set; }
     public virtual bool selected { get; private set; } = default!;
     public virtual ListTileControlAffinity? controlAffinity { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding { get; private set; }
+    public virtual EdgeInsetsGeometry? contentPadding { get; private set; }
     public virtual bool tristate { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder? checkboxShape { get; private set; }
+    public virtual OutlinedBorder? checkboxShape { get; private set; }
     public virtual Color? selectedTileColor { get; private set; }
-    public virtual global::System.Action<bool>? onFocusChange { get; private set; }
+    public virtual System.Action<bool>? onFocusChange { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
     public virtual double? horizontalTitleGap { get; private set; }
     public virtual double? minVerticalPadding { get; private set; }
@@ -56,7 +56,7 @@ public class CheckboxListTile : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual string? checkboxSemanticLabel { get; private set; }
     internal virtual _CheckboxType__checkbox_list_tile _checkboxType { get; private set; } = default!;
 
-    public CheckboxListTile(global::Doroti.Framework.Foundation.Key? key = null, bool? value = default!, global::System.Action<bool?>? onChanged = default!, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? activeColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, bool autofocus = false, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.BorderSide? side = null, bool isError = false, bool? enabled = null, Color? tileColor = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Widgets.Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, global::Doroti.Framework.Widgets.Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, bool tristate = false, global::Doroti.Framework.Painting.OutlinedBorder? checkboxShape = null, Color? selectedTileColor = null, global::System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, string? checkboxSemanticLabel = null, double checkboxScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false) : base(key: key)
+    public CheckboxListTile(Key? key = null, bool? value = default!, System.Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, bool autofocus = false, ShapeBorder? shape = null, BorderSide? side = null, bool isError = false, bool? enabled = null, Color? tileColor = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, EdgeInsetsGeometry? contentPadding = null, bool tristate = false, OutlinedBorder? checkboxShape = null, Color? selectedTileColor = null, System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, string? checkboxSemanticLabel = null, double checkboxScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false) : base(key: key)
     {
         this.value = value;
         this.onChanged = onChanged;
@@ -103,7 +103,7 @@ public class CheckboxListTile : global::Doroti.Framework.Widgets.StatelessWidget
         System.Diagnostics.Debug.Assert((isThreeLine != true) || (subtitle is not null));
     }
 
-    public static CheckboxListTile CreateAdaptive(global::Doroti.Framework.Foundation.Key? key = null, bool? value = default!, global::System.Action<bool?>? onChanged = default!, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? activeColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, bool autofocus = false, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.BorderSide? side = null, bool isError = false, bool? enabled = null, Color? tileColor = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Widgets.Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, global::Doroti.Framework.Widgets.Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, bool tristate = false, global::Doroti.Framework.Painting.OutlinedBorder? checkboxShape = null, Color? selectedTileColor = null, global::System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, string? checkboxSemanticLabel = null, double checkboxScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false)
+    public static CheckboxListTile CreateAdaptive(Key? key = null, bool? value = default!, System.Action<bool?>? onChanged = default!, MouseCursor? mouseCursor = null, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? checkColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, bool autofocus = false, ShapeBorder? shape = null, BorderSide? side = null, bool isError = false, bool? enabled = null, Color? tileColor = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, EdgeInsetsGeometry? contentPadding = null, bool tristate = false, OutlinedBorder? checkboxShape = null, Color? selectedTileColor = null, System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, string? checkboxSemanticLabel = null, double checkboxScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false)
     {
         var __instance = new CheckboxListTile(key: key, value: value, onChanged: onChanged, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, autofocus: autofocus, shape: shape, side: side, isError: isError, enabled: enabled, tileColor: tileColor, title: title, subtitle: subtitle, isThreeLine: isThreeLine, dense: dense, secondary: secondary, selected: selected, controlAffinity: controlAffinity, contentPadding: contentPadding, tristate: tristate, checkboxShape: checkboxShape, selectedTileColor: selectedTileColor, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, checkboxSemanticLabel: checkboxSemanticLabel, checkboxScaleFactor: checkboxScaleFactor, titleAlignment: titleAlignment, internalAddSemanticForOnTap: internalAddSemanticForOnTap);
         __instance.value = value;
@@ -173,34 +173,34 @@ public class CheckboxListTile : global::Doroti.Framework.Widgets.StatelessWidget
         }
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget control = default!;
+        Widget control = default!;
         switch (_checkboxType)
         {
             case _CheckboxType__checkbox_list_tile.material:
                 {
-                    control = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeFocus(child: new Checkbox(value: value, onChanged: (enabled ?? true) ? onChanged : null, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: autofocus, tristate: tristate, shape: checkboxShape, side: side, isError: isError, semanticLabel: checkboxSemanticLabel)));
+                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: new Checkbox(value: value, onChanged: (enabled ?? true) ? onChanged : null, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: autofocus, tristate: tristate, shape: checkboxShape, side: side, isError: isError, semanticLabel: checkboxSemanticLabel)));
                     break;
                 }
             case _CheckboxType__checkbox_list_tile.adaptive:
                 {
-                    control = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeFocus(child: Checkbox.CreateAdaptive(value: value, onChanged: (enabled ?? true) ? onChanged : null, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: autofocus, tristate: tristate, shape: checkboxShape, side: side, isError: isError, semanticLabel: checkboxSemanticLabel)));
+                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: Checkbox.CreateAdaptive(value: value, onChanged: (enabled ?? true) ? onChanged : null, mouseCursor: mouseCursor, activeColor: activeColor, fillColor: fillColor, checkColor: checkColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: autofocus, tristate: tristate, shape: checkboxShape, side: side, isError: isError, semanticLabel: checkboxSemanticLabel)));
                     break;
                 }
         }
         if (checkboxScaleFactor != 1.0)
         {
-            control = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Transform.CreateScale(scale: checkboxScaleFactor, child: control));
+            control = DartRuntimePrimitives.ConvertValue<Widget>(Transform.CreateScale(scale: checkboxScaleFactor, child: control));
         }
         ListTileThemeData listTileTheme = ListTileTheme.of(context);
         ListTileControlAffinity effectiveControlAffinity = (controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.platform;
-        var (leadingLocal, trailingLocal) = effectiveControlAffinity switch { ListTileControlAffinity.leading => DartRuntimePrimitives.ConvertValue<(global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?)>((control, secondary)), ListTileControlAffinity.trailing => DartRuntimePrimitives.ConvertValue<(global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?)>((secondary, control)), ListTileControlAffinity.platform => DartRuntimePrimitives.ConvertValue<(global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?)>((secondary, control)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var (leadingLocal, trailingLocal) = effectiveControlAffinity switch { ListTileControlAffinity.leading => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, secondary)), ListTileControlAffinity.trailing => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)), ListTileControlAffinity.platform => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((secondary, control)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         ThemeData theme = Theme.of(context);
         CheckboxThemeData checkboxTheme = CheckboxTheme.of(context);
-        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection21344 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (selected) { __collection21344.Add(WidgetState.selected); } return __collection21344; }))();
-        global::Doroti.Ui.Color effectiveActiveColor = (activeColor ?? (checkboxTheme.fillColor?.resolve(states))) ?? theme.colorScheme.secondary;
-        return new global::Doroti.Framework.Widgets.MergeSemantics(child: new ListTile(selectedColor: effectiveActiveColor, leading: leadingLocal, title: title, subtitle: subtitle, trailing: trailingLocal, isThreeLine: isThreeLine, dense: dense, enabled: enabled ?? (onChanged is not null), onTap: (onChanged is not null) ? _handleValueChange : null, selected: selected, autofocus: autofocus, contentPadding: contentPadding, shape: shape, selectedTileColor: selectedTileColor, tileColor: tileColor, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, titleAlignment: titleAlignment, internalAddSemanticForOnTap: internalAddSemanticForOnTap));
+        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection21344 = new HashSet<WidgetState>(); if (selected) { __collection21344.Add(WidgetState.selected); } return __collection21344; }))();
+        Color effectiveActiveColor = (activeColor ?? (checkboxTheme.fillColor?.resolve(states))) ?? theme.colorScheme.secondary;
+        return new MergeSemantics(child: new ListTile(selectedColor: effectiveActiveColor, leading: leadingLocal, title: title, subtitle: subtitle, trailing: trailingLocal, isThreeLine: isThreeLine, dense: dense, enabled: enabled ?? (onChanged is not null), onTap: (onChanged is not null) ? _handleValueChange : null, selected: selected, autofocus: autofocus, contentPadding: contentPadding, shape: shape, selectedTileColor: selectedTileColor, tileColor: tileColor, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, titleAlignment: titleAlignment, internalAddSemanticForOnTap: internalAddSemanticForOnTap));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

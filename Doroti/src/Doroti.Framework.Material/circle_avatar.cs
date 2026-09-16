@@ -6,15 +6,15 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class CircleAvatar : global::Doroti.Framework.Widgets.StatelessWidget
+public class CircleAvatar : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
+    public virtual Widget? child { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? foregroundColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.IImageProvider? backgroundImage { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.IImageProvider? foregroundImage { get; private set; } = default!;
-    public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onBackgroundImageError { get; private set; }
-    public virtual global::System.Action<object, global::System.Diagnostics.StackTrace?>? onForegroundImageError { get; private set; }
+    public virtual IImageProvider? backgroundImage { get; private set; } = default!;
+    public virtual IImageProvider? foregroundImage { get; private set; } = default!;
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onBackgroundImageError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onForegroundImageError { get; private set; }
     public virtual double? radius { get; private set; }
     public virtual double? minRadius { get; private set; }
     public virtual double? maxRadius { get; private set; }
@@ -22,7 +22,7 @@ public class CircleAvatar : global::Doroti.Framework.Widgets.StatelessWidget
     internal const double _defaultMinRadius = 0.0;
     internal static double _defaultMaxRadius = double.PositiveInfinity;
 
-    public CircleAvatar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, Color? backgroundColor = null, global::Doroti.Framework.Painting.IImageProvider? backgroundImage = null, global::Doroti.Framework.Painting.IImageProvider? foregroundImage = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onBackgroundImageError = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onForegroundImageError = null, Color? foregroundColor = null, double? radius = null, double? minRadius = null, double? maxRadius = null) : base(key: key)
+    public CircleAvatar(Key? key = null, Widget? child = null, Color? backgroundColor = null, IImageProvider? backgroundImage = null, IImageProvider? foregroundImage = null, Action<object, System.Diagnostics.StackTrace?>? onBackgroundImageError = null, Action<object, System.Diagnostics.StackTrace?>? onForegroundImageError = null, Color? foregroundColor = null, double? radius = null, double? minRadius = null, double? maxRadius = null) : base(key: key)
     {
         this.child = child;
         this.backgroundColor = backgroundColor;
@@ -61,14 +61,14 @@ public class CircleAvatar : global::Doroti.Framework.Widgets.StatelessWidget
             return 2.0 * ((radius ?? maxRadius) ?? _defaultMaxRadius);
         }
     }
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         ThemeData theme = Theme.of(context);
-        global::Doroti.Ui.Color? effectiveForegroundColor = (global::Doroti.Ui.Color?)(foregroundColor ?? theme.colorScheme.onPrimaryContainer);
-        global::Doroti.Framework.Painting.TextStyle effectiveTextStyle = theme.textTheme.titleMedium!;
-        global::Doroti.Framework.Painting.TextStyle textStyle = effectiveTextStyle.copyWith(color: effectiveForegroundColor);
-        global::Doroti.Ui.Color? effectiveBackgroundColor = (global::Doroti.Ui.Color?)(backgroundColor ?? theme.colorScheme.primaryContainer);
+        Color? effectiveForegroundColor = (Color?)(foregroundColor ?? theme.colorScheme.onPrimaryContainer);
+        TextStyle effectiveTextStyle = theme.textTheme.titleMedium!;
+        TextStyle textStyle = effectiveTextStyle.copyWith(color: effectiveForegroundColor);
+        Color? effectiveBackgroundColor = (Color?)(backgroundColor ?? theme.colorScheme.primaryContainer);
         if (effectiveBackgroundColor is null)
         {
             effectiveBackgroundColor = ThemeData.estimateBrightnessForColor(textStyle.color!) switch { Brightness.dark => theme.primaryColorLight, Brightness.light => theme.primaryColorDark, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
@@ -82,7 +82,7 @@ public class CircleAvatar : global::Doroti.Framework.Widgets.StatelessWidget
         }
         double minDiameter = _minDiameter;
         double maxDiameter = _maxDiameter;
-        return new global::Doroti.Framework.Widgets.AnimatedContainer(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: minDiameter, minWidth: minDiameter, maxWidth: maxDiameter, maxHeight: maxDiameter), duration: ConstantsLibrary.kThemeChangeDuration, decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: effectiveBackgroundColor, image: (backgroundImage is not null) ? new global::Doroti.Framework.Painting.DecorationImage(image: backgroundImage!, onError: onBackgroundImageError, fit: BoxFit.cover) : null, shape: BoxShape.circle), foregroundDecoration: (foregroundImage is not null) ? new global::Doroti.Framework.Painting.BoxDecoration(image: new global::Doroti.Framework.Painting.DecorationImage(image: foregroundImage!, onError: onForegroundImageError, fit: BoxFit.cover), shape: BoxShape.circle) : null, child: (child is null) ? null : new global::Doroti.Framework.Widgets.Center(child: MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.IconTheme(data: theme.iconTheme.copyWith(color: textStyle.color), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle, child: child!)))));
+        return new AnimatedContainer(constraints: new BoxConstraints(minHeight: minDiameter, minWidth: minDiameter, maxWidth: maxDiameter, maxHeight: maxDiameter), duration: ConstantsLibrary.kThemeChangeDuration, decoration: new BoxDecoration(color: effectiveBackgroundColor, image: (backgroundImage is not null) ? new DecorationImage(image: backgroundImage!, onError: onBackgroundImageError, fit: BoxFit.cover) : null, shape: BoxShape.circle), foregroundDecoration: (foregroundImage is not null) ? new BoxDecoration(image: new DecorationImage(image: foregroundImage!, onError: onForegroundImageError, fit: BoxFit.cover), shape: BoxShape.circle) : null, child: (child is null) ? null : new Center(child: MediaQuery.withNoTextScaling(child: new IconTheme(data: theme.iconTheme.copyWith(color: textStyle.color), child: new DefaultTextStyle(style: textStyle, child: child!)))));
     }
 
 }

@@ -71,7 +71,7 @@ public abstract class CupertinoLocalizations
     public virtual string expansionTileCollapsedTapHint => "Expand for more details";
     public virtual string expandedHint => "Collapsed";
     public virtual string collapsedHint => "Expanded";
-    public static CupertinoLocalizations of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static CupertinoLocalizations of(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasCupertinoLocalizations(context));
         return Localizations.of<CupertinoLocalizations>(context, typeof(CupertinoLocalizations))!;
@@ -80,7 +80,7 @@ public abstract class CupertinoLocalizations
 
 }
 
-internal class _CupertinoLocalizationsDelegate__localizations : global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations>
+internal class _CupertinoLocalizationsDelegate__localizations : LocalizationsDelegate<CupertinoLocalizations>
 {
     internal _CupertinoLocalizationsDelegate__localizations()
     {
@@ -88,7 +88,7 @@ internal class _CupertinoLocalizationsDelegate__localizations : global::Doroti.F
 
     public override bool isSupported(Locale locale) => DartRuntimePrimitives.ConvertValue<bool>(locale.languageCode == "en");
     public override Future<CupertinoLocalizations> load(Locale locale) => DefaultCupertinoLocalizations.load(locale);
-    public override bool shouldReload(global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations> old) => false;
+    public override bool shouldReload(LocalizationsDelegate<CupertinoLocalizations> old) => false;
     public override string ToString() => "DefaultCupertinoLocalizations.delegate(en_US)";
 }
 
@@ -97,7 +97,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     internal static List<string> _shortWeekdays = new List<string> { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
     internal static List<string> _shortMonths = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
     internal static List<string> _months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations> @delegate = new _CupertinoLocalizationsDelegate__localizations();
+    public static LocalizationsDelegate<CupertinoLocalizations> @delegate = new _CupertinoLocalizationsDelegate__localizations();
 
     public DefaultCupertinoLocalizations()
     {
@@ -181,7 +181,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     public override string collapsedHint => "Expanded";
     public static Future<CupertinoLocalizations> load(Locale locale)
     {
-        return new global::Doroti.Framework.Foundation.SynchronousFuture<CupertinoLocalizations>(new DefaultCupertinoLocalizations());
+        return new SynchronousFuture<CupertinoLocalizations>(new DefaultCupertinoLocalizations());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

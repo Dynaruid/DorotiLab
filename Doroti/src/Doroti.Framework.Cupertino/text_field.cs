@@ -8,32 +8,32 @@ namespace Doroti.Framework.Cupertino;
 
 public static partial class Text_fieldLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextStyle _kDefaultPlaceholderStyle = new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
+    internal static TextStyle _kDefaultPlaceholderStyle = new TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static global::Doroti.Framework.Painting.BorderSide _kDefaultRoundedBorderSide = new global::Doroti.Framework.Painting.BorderSide(color: new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(855638016L), darkColor: new global::Doroti.Ui.Color(872415231L)), width: 0.0);
+    internal static BorderSide _kDefaultRoundedBorderSide = new BorderSide(color: new CupertinoDynamicColor(color: new Color(855638016L), darkColor: new Color(872415231L)), width: 0.0);
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static global::Doroti.Framework.Painting.Border _kDefaultRoundedBorder = new global::Doroti.Framework.Painting.Border(top: _kDefaultRoundedBorderSide, bottom: _kDefaultRoundedBorderSide, left: _kDefaultRoundedBorderSide, right: _kDefaultRoundedBorderSide);
+    internal static Border _kDefaultRoundedBorder = new Border(top: _kDefaultRoundedBorderSide, bottom: _kDefaultRoundedBorderSide, left: _kDefaultRoundedBorderSide, right: _kDefaultRoundedBorderSide);
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static global::Doroti.Framework.Painting.BoxDecoration _kDefaultRoundedBorderDecoration = new global::Doroti.Framework.Painting.BoxDecoration(color: new CupertinoDynamicColor(color: CupertinoColors.white, darkColor: CupertinoColors.black), border: _kDefaultRoundedBorder, borderRadius: BorderRadius.CreateAll(Radius.circular(5.0)));
+    internal static BoxDecoration _kDefaultRoundedBorderDecoration = new BoxDecoration(color: new CupertinoDynamicColor(color: CupertinoColors.white, darkColor: CupertinoColors.black), border: _kDefaultRoundedBorder, borderRadius: BorderRadius.CreateAll(Radius.circular(5.0)));
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static Color _kDisabledBackground = new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4294638330L), darkColor: new global::Doroti.Ui.Color(4278519045L));
+    internal static Color _kDisabledBackground = new CupertinoDynamicColor(color: new Color(4294638330L), darkColor: new Color(4278519045L));
 }
 
 public static partial class Text_fieldLibrary
 {
-    internal static CupertinoDynamicColor _kClearButtonColor = new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(855638016L), darkColor: new global::Doroti.Ui.Color(872415231L));
+    internal static CupertinoDynamicColor _kClearButtonColor = new CupertinoDynamicColor(color: new Color(855638016L), darkColor: new Color(872415231L));
 }
 
 public static partial class Text_fieldLibrary
@@ -49,7 +49,7 @@ public enum OverlayVisibilityMode
     always
 }
 
-internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : global::Doroti.Framework.Widgets.TextSelectionGestureDetectorBuilder
+internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : TextSelectionGestureDetectorBuilder
 {
     internal virtual _CupertinoTextFieldState__text_field _state { get; private set; } = default!;
 
@@ -58,13 +58,13 @@ internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : 
         _state = state;
     }
 
-    public override void onSingleTapUp(global::Doroti.Framework.Gestures.TapDragUpDetails details)
+    public override void onSingleTapUp(Gestures.TapDragUpDetails details)
     {
         if (_state._clearGlobalKey.currentContext is not null)
         {
-            var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)_state._clearGlobalKey.currentContext!.findRenderObject()!)!;
-            global::Doroti.Ui.Offset localOffset = renderBox.globalToLocal(details.globalPosition);
-            if (renderBox.hitTest(new global::Doroti.Framework.Rendering.BoxHitTestResult(), position: localOffset))
+            var renderBox = ((RenderBox?)_state._clearGlobalKey.currentContext!.findRenderObject()!)!;
+            Offset localOffset = renderBox.globalToLocal(details.globalPosition);
+            if (renderBox.hitTest(new BoxHitTestResult(), position: localOffset))
             {
                 return;
             }
@@ -73,7 +73,7 @@ internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : 
         _state.widget.onTap?.Invoke();
     }
 
-    public override void onDragSelectionEnd(global::Doroti.Framework.Gestures.TapDragEndDetails details)
+    public override void onDragSelectionEnd(Gestures.TapDragEndDetails details)
     {
         _state._requestKeyboard();
         base.onDragSelectionEnd(details);
@@ -81,30 +81,30 @@ internal class _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field : 
 
 }
 
-public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoTextField : StatefulWidget
 {
     public virtual object groupId { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.TextEditingController? controller { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BoxDecoration? decoration { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual TextEditingController? controller { get; private set; }
+    public virtual FocusNode? focusNode { get; private set; }
+    public virtual BoxDecoration? decoration { get; private set; }
+    public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual string? placeholder { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? placeholderStyle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? prefix { get; private set; }
+    public virtual TextStyle? placeholderStyle { get; private set; }
+    public virtual Widget? prefix { get; private set; }
     public virtual OverlayVisibilityMode prefixMode { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? suffix { get; private set; }
+    public virtual Widget? suffix { get; private set; }
     public virtual OverlayVisibilityMode suffixMode { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.CrossAxisAlignment crossAxisAlignment { get; private set; } = default!;
+    public virtual CrossAxisAlignment crossAxisAlignment { get; private set; } = default!;
     public virtual OverlayVisibilityMode clearButtonMode { get; private set; } = default!;
     public virtual string? clearButtonSemanticLabel { get; private set; }
-    public virtual global::Doroti.Framework.Services.TextInputType keyboardType { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Services.TextInputAction? textInputAction { get; private set; }
-    public virtual global::Doroti.Framework.Services.TextCapitalization textCapitalization { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle? style { get; private set; }
-    public virtual global::Doroti.Framework.Painting.StrutStyle? strutStyle { get; private set; }
+    public virtual TextInputType keyboardType { get; private set; } = default!;
+    public virtual TextInputAction? textInputAction { get; private set; }
+    public virtual TextCapitalization textCapitalization { get; private set; } = default!;
+    public virtual TextStyle? style { get; private set; }
+    public virtual Painting.StrutStyle? strutStyle { get; private set; }
     public virtual TextAlign textAlign { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.ToolbarOptions? toolbarOptions { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextAlignVertical? textAlignVertical { get; private set; }
+    public virtual ToolbarOptions? toolbarOptions { get; private set; }
+    public virtual TextAlignVertical? textAlignVertical { get; private set; }
     public virtual TextDirection? textDirection { get; private set; }
     public virtual bool readOnly { get; private set; } = default!;
     public virtual bool? showCursor { get; private set; }
@@ -112,20 +112,20 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
     public virtual string obscuringCharacter { get; private set; } = default!;
     public virtual bool obscureText { get; private set; } = default!;
     public virtual bool? autocorrect { get; private set; }
-    public virtual global::Doroti.Framework.Services.SmartDashesType smartDashesType { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Services.SmartQuotesType smartQuotesType { get; private set; } = default!;
+    public virtual SmartDashesType smartDashesType { get; private set; } = default!;
+    public virtual SmartQuotesType smartQuotesType { get; private set; } = default!;
     public virtual bool enableSuggestions { get; private set; } = default!;
     public virtual long? maxLines { get; private set; }
     public virtual long? minLines { get; private set; }
     public virtual bool expands { get; private set; } = default!;
     public virtual long? maxLength { get; private set; }
-    public virtual global::Doroti.Framework.Services.MaxLengthEnforcement? maxLengthEnforcement { get; private set; }
-    public virtual global::System.Action<string>? onChanged { get; private set; }
-    public virtual global::System.Action? onEditingComplete { get; private set; }
-    public virtual global::System.Action<string>? onSubmitted { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapUpOutside { get; private set; }
-    public virtual List<global::Doroti.Framework.Services.TextInputFormatter>? inputFormatters { get; private set; }
+    public virtual MaxLengthEnforcement? maxLengthEnforcement { get; private set; }
+    public virtual System.Action<string>? onChanged { get; private set; }
+    public virtual Action? onEditingComplete { get; private set; }
+    public virtual System.Action<string>? onSubmitted { get; private set; }
+    public virtual System.Action<Gestures.PointerDownEvent>? onTapOutside { get; private set; }
+    public virtual System.Action<Gestures.PointerDownEvent>? onTapUpOutside { get; private set; }
+    public virtual List<TextInputFormatter>? inputFormatters { get; private set; }
     public virtual bool enabled { get; private set; } = default!;
     public virtual double cursorWidth { get; private set; } = default!;
     public virtual double? cursorHeight { get; private set; }
@@ -135,14 +135,14 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
     public virtual BoxHeightStyle? selectionHeightStyle { get; private set; }
     public virtual BoxWidthStyle? selectionWidthStyle { get; private set; }
     public virtual Brightness? keyboardAppearance { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsets scrollPadding { get; private set; } = default!;
+    public virtual EdgeInsets scrollPadding { get; private set; } = default!;
     public virtual bool enableInteractiveSelection { get; private set; } = default!;
     public virtual bool? selectAllOnFocus { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.TextSelectionControls? selectionControls { get; private set; }
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.ScrollController? scrollController { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.ScrollPhysics? scrollPhysics { get; private set; }
-    public virtual global::System.Action? onTap { get; private set; }
+    public virtual TextSelectionControls? selectionControls { get; private set; }
+    public virtual Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual ScrollController? scrollController { get; private set; }
+    public virtual ScrollPhysics? scrollPhysics { get; private set; }
+    public virtual Action? onTap { get; private set; }
     public virtual IEnumerable<string>? autofillHints { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
@@ -150,21 +150,21 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
     public virtual bool stylusHandwritingEnabled { get; private set; } = default!;
     public virtual bool enableIMEPersonalizedLearning { get; private set; } = default!;
     public virtual bool? enableInlinePrediction { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.ContentInsertionConfiguration? contentInsertionConfiguration { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>? contextMenuBuilder { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.TextMagnifierConfiguration? magnifierConfiguration { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.SpellCheckConfiguration? spellCheckConfiguration { get; private set; }
-    public static global::Doroti.Framework.Painting.TextStyle cupertinoMisspelledTextStyle = new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline, decorationColor: CupertinoColors.systemRed, decorationStyle: TextDecorationStyle.dotted);
-    public static Color kMisspelledSelectionColor = new global::Doroti.Ui.Color(1660917401L);
-    public virtual global::Doroti.Framework.Widgets.UndoHistoryController? undoController { get; private set; }
-    internal static global::Doroti.Framework.Widgets.TextMagnifierConfiguration _iosMagnifierConfiguration = new global::Doroti.Framework.Widgets.TextMagnifierConfiguration(magnifierBuilder: (context, controller, magnifierInfo) =>
+    public virtual ContentInsertionConfiguration? contentInsertionConfiguration { get; private set; }
+    public virtual Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder { get; private set; }
+    public virtual TextMagnifierConfiguration? magnifierConfiguration { get; private set; }
+    public virtual SpellCheckConfiguration? spellCheckConfiguration { get; private set; }
+    public static TextStyle cupertinoMisspelledTextStyle = new TextStyle(decoration: TextDecoration.underline, decorationColor: CupertinoColors.systemRed, decorationStyle: TextDecorationStyle.dotted);
+    public static Color kMisspelledSelectionColor = new Color(1660917401L);
+    public virtual UndoHistoryController? undoController { get; private set; }
+    internal static TextMagnifierConfiguration _iosMagnifierConfiguration = new TextMagnifierConfiguration(magnifierBuilder: (context, controller, magnifierInfo) =>
     {
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.android:
             case TargetPlatform.iOS:
                 {
-                    return (global::Doroti.Framework.Widgets.Widget?)new CupertinoTextMagnifier(controller: controller, magnifierInfo: magnifierInfo);
+                    return (Widget?)new CupertinoTextMagnifier(controller: controller, magnifierInfo: magnifierInfo);
                 }
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
@@ -179,17 +179,17 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
         throw new InvalidOperationException("Dart closure completed without a value.");
     });
 
-    public CupertinoTextField(global::Doroti.Framework.Foundation.Key? key = null, object groupId = default!, global::Doroti.Framework.Widgets.TextEditingController? controller = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Widgets.UndoHistoryController? undoController = null, global::Doroti.Framework.Painting.BoxDecoration? decoration = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, string? placeholder = null, global::Doroti.Framework.Painting.TextStyle? placeholderStyle = default!, global::Doroti.Framework.Widgets.Widget? prefix = null, OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always, global::Doroti.Framework.Widgets.Widget? suffix = null, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always, global::Doroti.Framework.Rendering.CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never, string? clearButtonSemanticLabel = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, global::Doroti.Framework.Services.TextInputAction? textInputAction = null, global::Doroti.Framework.Services.TextCapitalization textCapitalization = TextCapitalization.none, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Painting.StrutStyle? strutStyle = null, TextAlign textAlign = TextAlign.start, global::Doroti.Framework.Painting.TextAlignVertical? textAlignVertical = null, TextDirection? textDirection = null, bool readOnly = false, global::Doroti.Framework.Widgets.ToolbarOptions? toolbarOptions = null, bool? showCursor = null, bool autofocus = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = true, global::Doroti.Framework.Services.SmartDashesType? smartDashesType = null, global::Doroti.Framework.Services.SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, global::Doroti.Framework.Services.MaxLengthEnforcement? maxLengthEnforcement = null, global::System.Action<string>? onChanged = null, global::System.Action? onEditingComplete = null, global::System.Action<string>? onSubmitted = null, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapUpOutside = null, List<global::Doroti.Framework.Services.TextInputFormatter>? inputFormatters = null, bool enabled = true, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, Brightness? keyboardAppearance = null, global::Doroti.Framework.Painting.EdgeInsets scrollPadding = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, global::Doroti.Framework.Widgets.TextSelectionControls? selectionControls = null, global::System.Action? onTap = null, global::Doroti.Framework.Widgets.ScrollController? scrollController = null, global::Doroti.Framework.Widgets.ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = default!, global::Doroti.Framework.Widgets.ContentInsertionConfiguration? contentInsertionConfiguration = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, bool scribbleEnabled = true, bool? stylusHandwritingEnabled = null, bool enableIMEPersonalizedLearning = true, bool? enableInlinePrediction = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>? contextMenuBuilder = default!, global::Doroti.Framework.Widgets.SpellCheckConfiguration? spellCheckConfiguration = null, global::Doroti.Framework.Widgets.TextMagnifierConfiguration? magnifierConfiguration = null) : base(key: key)
+    public CupertinoTextField(Key? key = null, object groupId = default!, TextEditingController? controller = null, FocusNode? focusNode = null, UndoHistoryController? undoController = null, BoxDecoration? decoration = default!, EdgeInsetsGeometry padding = default!, string? placeholder = null, TextStyle? placeholderStyle = default!, Widget? prefix = null, OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always, Widget? suffix = null, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never, string? clearButtonSemanticLabel = null, TextInputType? keyboardType = null, TextInputAction? textInputAction = null, TextCapitalization textCapitalization = TextCapitalization.none, TextStyle? style = null, Painting.StrutStyle? strutStyle = null, TextAlign textAlign = TextAlign.start, TextAlignVertical? textAlignVertical = null, TextDirection? textDirection = null, bool readOnly = false, ToolbarOptions? toolbarOptions = null, bool? showCursor = null, bool autofocus = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = true, SmartDashesType? smartDashesType = null, SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, MaxLengthEnforcement? maxLengthEnforcement = null, System.Action<string>? onChanged = null, Action? onEditingComplete = null, System.Action<string>? onSubmitted = null, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapUpOutside = null, List<TextInputFormatter>? inputFormatters = null, bool enabled = true, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, Brightness? keyboardAppearance = null, EdgeInsets scrollPadding = default!, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, TextSelectionControls? selectionControls = null, Action? onTap = null, ScrollController? scrollController = null, ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = default!, ContentInsertionConfiguration? contentInsertionConfiguration = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, bool scribbleEnabled = true, bool? stylusHandwritingEnabled = null, bool enableIMEPersonalizedLearning = true, bool? enableInlinePrediction = null, Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = default!, SpellCheckConfiguration? spellCheckConfiguration = null, TextMagnifierConfiguration? magnifierConfiguration = null) : base(key: key)
     {
-        object __groupId = groupId ?? typeof(global::Doroti.Framework.Widgets.EditableText);
-        global::Doroti.Framework.Painting.BoxDecoration? __decoration = decoration ?? Text_fieldLibrary._kDefaultRoundedBorderDecoration;
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(7.0);
-        global::Doroti.Framework.Painting.TextStyle? __placeholderStyle = placeholderStyle ?? new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
+        object __groupId = groupId ?? typeof(EditableText);
+        BoxDecoration? __decoration = decoration ?? Text_fieldLibrary._kDefaultRoundedBorderDecoration;
+        EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(7.0);
+        TextStyle? __placeholderStyle = placeholderStyle ?? new TextStyle(fontWeight: FontWeight.w400, color: CupertinoColors.placeholderText);
         Radius __cursorRadius = cursorRadius ?? Radius.CreateCircular(2.0);
-        global::Doroti.Framework.Painting.EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
+        EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
         IEnumerable<string>? __autofillHints = autofillHints ?? new List<string>();
         bool __stylusHandwritingEnabled = stylusHandwritingEnabled ?? EditableText.defaultStylusHandwritingEnabled;
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
+        Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
         this.groupId = __groupId;
         this.controller = controller;
         this.focusNode = focusNode;
@@ -272,16 +272,16 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
         System.Diagnostics.Debug.Assert(!DartRuntimePrimitives.Identical(textInputAction, TextInputAction.newline) || (maxLines == 1L) || !DartRuntimePrimitives.Identical(keyboardType, TextInputType.text));
     }
 
-    public static CupertinoTextField CreateBorderless(global::Doroti.Framework.Foundation.Key? key = null, object groupId = default!, global::Doroti.Framework.Widgets.TextEditingController? controller = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Widgets.UndoHistoryController? undoController = null, global::Doroti.Framework.Painting.BoxDecoration? decoration = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, string? placeholder = null, global::Doroti.Framework.Painting.TextStyle? placeholderStyle = default!, global::Doroti.Framework.Widgets.Widget? prefix = null, OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always, global::Doroti.Framework.Widgets.Widget? suffix = null, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always, global::Doroti.Framework.Rendering.CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never, string? clearButtonSemanticLabel = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, global::Doroti.Framework.Services.TextInputAction? textInputAction = null, global::Doroti.Framework.Services.TextCapitalization textCapitalization = TextCapitalization.none, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Painting.StrutStyle? strutStyle = null, TextAlign textAlign = TextAlign.start, global::Doroti.Framework.Painting.TextAlignVertical? textAlignVertical = null, TextDirection? textDirection = null, bool readOnly = false, global::Doroti.Framework.Widgets.ToolbarOptions? toolbarOptions = null, bool? showCursor = null, bool autofocus = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = null, global::Doroti.Framework.Services.SmartDashesType? smartDashesType = null, global::Doroti.Framework.Services.SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, global::Doroti.Framework.Services.MaxLengthEnforcement? maxLengthEnforcement = null, global::System.Action<string>? onChanged = null, global::System.Action? onEditingComplete = null, global::System.Action<string>? onSubmitted = null, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapOutside = null, global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>? onTapUpOutside = null, List<global::Doroti.Framework.Services.TextInputFormatter>? inputFormatters = null, bool enabled = true, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, Brightness? keyboardAppearance = null, global::Doroti.Framework.Painting.EdgeInsets scrollPadding = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, global::Doroti.Framework.Widgets.TextSelectionControls? selectionControls = null, global::System.Action? onTap = null, global::Doroti.Framework.Widgets.ScrollController? scrollController = null, global::Doroti.Framework.Widgets.ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = default!, global::Doroti.Framework.Widgets.ContentInsertionConfiguration? contentInsertionConfiguration = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, bool scribbleEnabled = true, bool stylusHandwritingEnabled = true, bool enableIMEPersonalizedLearning = true, bool? enableInlinePrediction = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>? contextMenuBuilder = default!, global::Doroti.Framework.Widgets.SpellCheckConfiguration? spellCheckConfiguration = null, global::Doroti.Framework.Widgets.TextMagnifierConfiguration? magnifierConfiguration = null)
+    public static CupertinoTextField CreateBorderless(Key? key = null, object groupId = default!, TextEditingController? controller = null, FocusNode? focusNode = null, UndoHistoryController? undoController = null, BoxDecoration? decoration = null, EdgeInsetsGeometry padding = default!, string? placeholder = null, TextStyle? placeholderStyle = default!, Widget? prefix = null, OverlayVisibilityMode prefixMode = OverlayVisibilityMode.always, Widget? suffix = null, OverlayVisibilityMode suffixMode = OverlayVisibilityMode.always, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, OverlayVisibilityMode clearButtonMode = OverlayVisibilityMode.never, string? clearButtonSemanticLabel = null, TextInputType? keyboardType = null, TextInputAction? textInputAction = null, TextCapitalization textCapitalization = TextCapitalization.none, TextStyle? style = null, Painting.StrutStyle? strutStyle = null, TextAlign textAlign = TextAlign.start, TextAlignVertical? textAlignVertical = null, TextDirection? textDirection = null, bool readOnly = false, ToolbarOptions? toolbarOptions = null, bool? showCursor = null, bool autofocus = false, string obscuringCharacter = "•", bool obscureText = false, bool? autocorrect = null, SmartDashesType? smartDashesType = null, SmartQuotesType? smartQuotesType = null, bool enableSuggestions = true, long? maxLines = 1, long? minLines = null, bool expands = false, long? maxLength = null, MaxLengthEnforcement? maxLengthEnforcement = null, System.Action<string>? onChanged = null, Action? onEditingComplete = null, System.Action<string>? onSubmitted = null, System.Action<Gestures.PointerDownEvent>? onTapOutside = null, System.Action<Gestures.PointerDownEvent>? onTapUpOutside = null, List<TextInputFormatter>? inputFormatters = null, bool enabled = true, double cursorWidth = 2.0, double? cursorHeight = null, Radius? cursorRadius = null, bool cursorOpacityAnimates = true, Color? cursorColor = null, BoxHeightStyle? selectionHeightStyle = null, BoxWidthStyle? selectionWidthStyle = null, Brightness? keyboardAppearance = null, EdgeInsets scrollPadding = default!, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, bool? enableInteractiveSelection = null, bool? selectAllOnFocus = null, TextSelectionControls? selectionControls = null, Action? onTap = null, ScrollController? scrollController = null, ScrollPhysics? scrollPhysics = null, IEnumerable<string>? autofillHints = default!, ContentInsertionConfiguration? contentInsertionConfiguration = null, Clip clipBehavior = Clip.hardEdge, string? restorationId = null, bool scribbleEnabled = true, bool stylusHandwritingEnabled = true, bool enableIMEPersonalizedLearning = true, bool? enableInlinePrediction = null, Func<BuildContext, EditableTextState, Widget>? contextMenuBuilder = default!, SpellCheckConfiguration? spellCheckConfiguration = null, TextMagnifierConfiguration? magnifierConfiguration = null)
     {
         var __instance = new CupertinoTextField(key: key, groupId: groupId, controller: controller, focusNode: focusNode, undoController: undoController, decoration: decoration, padding: padding, placeholder: placeholder, placeholderStyle: placeholderStyle, prefix: prefix, prefixMode: prefixMode, suffix: suffix, suffixMode: suffixMode, crossAxisAlignment: crossAxisAlignment, clearButtonMode: clearButtonMode, clearButtonSemanticLabel: clearButtonSemanticLabel, keyboardType: keyboardType, textInputAction: textInputAction, textCapitalization: textCapitalization, style: style, strutStyle: strutStyle, textAlign: textAlign, textAlignVertical: textAlignVertical, textDirection: textDirection, readOnly: readOnly, toolbarOptions: toolbarOptions, showCursor: showCursor, autofocus: autofocus, obscuringCharacter: obscuringCharacter, obscureText: obscureText, autocorrect: autocorrect, smartDashesType: smartDashesType, smartQuotesType: smartQuotesType, enableSuggestions: enableSuggestions, maxLines: maxLines, minLines: minLines, expands: expands, maxLength: maxLength, maxLengthEnforcement: maxLengthEnforcement, onChanged: onChanged, onEditingComplete: onEditingComplete, onSubmitted: onSubmitted, onTapOutside: onTapOutside, onTapUpOutside: onTapUpOutside, inputFormatters: inputFormatters, enabled: enabled, cursorWidth: cursorWidth, cursorHeight: cursorHeight, cursorRadius: cursorRadius, cursorOpacityAnimates: cursorOpacityAnimates, cursorColor: cursorColor, selectionHeightStyle: selectionHeightStyle, selectionWidthStyle: selectionWidthStyle, keyboardAppearance: keyboardAppearance, scrollPadding: scrollPadding, dragStartBehavior: dragStartBehavior, enableInteractiveSelection: enableInteractiveSelection, selectAllOnFocus: selectAllOnFocus, selectionControls: selectionControls, onTap: onTap, scrollController: scrollController, scrollPhysics: scrollPhysics, autofillHints: autofillHints, contentInsertionConfiguration: contentInsertionConfiguration, clipBehavior: clipBehavior, restorationId: restorationId, scribbleEnabled: scribbleEnabled, stylusHandwritingEnabled: stylusHandwritingEnabled, enableIMEPersonalizedLearning: enableIMEPersonalizedLearning, enableInlinePrediction: enableInlinePrediction, contextMenuBuilder: contextMenuBuilder, spellCheckConfiguration: spellCheckConfiguration, magnifierConfiguration: magnifierConfiguration);
-        object __groupId = groupId ?? typeof(global::Doroti.Framework.Widgets.EditableText);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(7.0);
-        global::Doroti.Framework.Painting.TextStyle? __placeholderStyle = placeholderStyle ?? Text_fieldLibrary._kDefaultPlaceholderStyle;
+        object __groupId = groupId ?? typeof(EditableText);
+        EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(7.0);
+        TextStyle? __placeholderStyle = placeholderStyle ?? Text_fieldLibrary._kDefaultPlaceholderStyle;
         Radius __cursorRadius = cursorRadius ?? Radius.CreateCircular(2.0);
-        global::Doroti.Framework.Painting.EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
+        EdgeInsets __scrollPadding = scrollPadding ?? EdgeInsets.CreateAll(20.0);
         IEnumerable<string>? __autofillHints = autofillHints ?? new List<string>();
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
+        Func<BuildContext, EditableTextState, Widget>? __contextMenuBuilder = contextMenuBuilder ?? _defaultContextMenuBuilder;
         __instance.groupId = __groupId;
         __instance.controller = controller;
         __instance.focusNode = focusNode;
@@ -358,7 +358,7 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
     }
 
     public virtual bool selectionEnabled => enableInteractiveSelection;
-    internal static global::Doroti.Framework.Widgets.Widget _defaultContextMenuBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.EditableTextState editableTextState)
+    internal static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState)
     {
         if (SystemContextMenu.isSupportedByField(editableTextState))
         {
@@ -368,63 +368,63 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.Widget defaultSpellCheckSuggestionsToolbarBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.EditableTextState editableTextState)
+    public static Widget defaultSpellCheckSuggestionsToolbarBuilder(BuildContext context, EditableTextState editableTextState)
     {
         return CupertinoSpellCheckSuggestionsToolbar.CreateEditableText(editableTextState: editableTextState);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTextFieldState__text_field());
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.TextEditingController>("controller", controller, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.FocusNode>("focusNode", focusNode, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.UndoHistoryController>("undoController", undoController, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BoxDecoration>("decoration", decoration));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding));
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("placeholder", placeholder));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("placeholderStyle", placeholderStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayVisibilityMode>("prefix", (prefix is null) ? null : prefixMode));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayVisibilityMode>("suffix", (suffix is null) ? null : suffixMode));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayVisibilityMode>("clearButtonMode", clearButtonMode));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("clearButtonSemanticLabel", clearButtonSemanticLabel));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.TextInputType>("keyboardType", keyboardType, defaultValue: TextInputType.text));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("style", style, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("autofocus", autofocus, defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("obscuringCharacter", obscuringCharacter, defaultValue: "•"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("obscureText", obscureText, defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("autocorrect", autocorrect, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Services.SmartDashesType>("smartDashesType", smartDashesType, defaultValue: obscureText ? SmartDashesType.disabled : SmartDashesType.enabled));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Services.SmartQuotesType>("smartQuotesType", smartQuotesType, defaultValue: obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableSuggestions", enableSuggestions, defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", maxLines, defaultValue: 1L));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("minLines", minLines, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("expands", expands, defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLength", maxLength, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Services.MaxLengthEnforcement>("maxLengthEnforcement", maxLengthEnforcement, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("cursorWidth", cursorWidth, defaultValue: 2.0));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("cursorHeight", cursorHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Radius>("cursorRadius", DartRuntimePrimitives.RequireValue(cursorRadius), defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("cursorOpacityAnimates", cursorOpacityAnimates, defaultValue: true));
+        properties.add(new DiagnosticsProperty<TextEditingController>("controller", controller, defaultValue: null));
+        properties.add(new DiagnosticsProperty<FocusNode>("focusNode", focusNode, defaultValue: null));
+        properties.add(new DiagnosticsProperty<UndoHistoryController>("undoController", undoController, defaultValue: null));
+        properties.add(new DiagnosticsProperty<BoxDecoration>("decoration", decoration));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding));
+        properties.add(new StringProperty("placeholder", placeholder));
+        properties.add(new DiagnosticsProperty<TextStyle>("placeholderStyle", placeholderStyle));
+        properties.add(new DiagnosticsProperty<OverlayVisibilityMode>("prefix", (prefix is null) ? null : prefixMode));
+        properties.add(new DiagnosticsProperty<OverlayVisibilityMode>("suffix", (suffix is null) ? null : suffixMode));
+        properties.add(new DiagnosticsProperty<OverlayVisibilityMode>("clearButtonMode", clearButtonMode));
+        properties.add(new DiagnosticsProperty<string>("clearButtonSemanticLabel", clearButtonSemanticLabel));
+        properties.add(new DiagnosticsProperty<TextInputType>("keyboardType", keyboardType, defaultValue: TextInputType.text));
+        properties.add(new DiagnosticsProperty<TextStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("autofocus", autofocus, defaultValue: false));
+        properties.add(new DiagnosticsProperty<string>("obscuringCharacter", obscuringCharacter, defaultValue: "•"));
+        properties.add(new DiagnosticsProperty<bool>("obscureText", obscureText, defaultValue: false));
+        properties.add(new DiagnosticsProperty<bool>("autocorrect", autocorrect, defaultValue: null));
+        properties.add(new EnumProperty<SmartDashesType>("smartDashesType", smartDashesType, defaultValue: obscureText ? SmartDashesType.disabled : SmartDashesType.enabled));
+        properties.add(new EnumProperty<SmartQuotesType>("smartQuotesType", smartQuotesType, defaultValue: obscureText ? SmartQuotesType.disabled : SmartQuotesType.enabled));
+        properties.add(new DiagnosticsProperty<bool>("enableSuggestions", enableSuggestions, defaultValue: true));
+        properties.add(new IntProperty("maxLines", maxLines, defaultValue: 1L));
+        properties.add(new IntProperty("minLines", minLines, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("expands", expands, defaultValue: false));
+        properties.add(new IntProperty("maxLength", maxLength, defaultValue: null));
+        properties.add(new EnumProperty<MaxLengthEnforcement>("maxLengthEnforcement", maxLengthEnforcement, defaultValue: null));
+        properties.add(new DoubleProperty("cursorWidth", cursorWidth, defaultValue: 2.0));
+        properties.add(new DoubleProperty("cursorHeight", cursorHeight, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Radius>("cursorRadius", DartRuntimePrimitives.RequireValue(cursorRadius), defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("cursorOpacityAnimates", cursorOpacityAnimates, defaultValue: true));
         properties.add(ColorsLibrary.createCupertinoColorProperty("cursorColor", cursorColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("selectionEnabled", value: selectionEnabled, defaultValue: true, ifFalse: "selection disabled"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.TextSelectionControls>("selectionControls", selectionControls, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.ScrollController>("scrollController", scrollController, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.ScrollPhysics>("scrollPhysics", scrollPhysics, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", textAlign, defaultValue: TextAlign.start));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextAlignVertical>("textAlignVertical", textAlignVertical, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: Clip.hardEdge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("scribbleEnabled", scribbleEnabled, defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("stylusHandwritingEnabled", DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled), defaultValue: EditableText.defaultStylusHandwritingEnabled));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableIMEPersonalizedLearning", enableIMEPersonalizedLearning, defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool?>("enableInlinePrediction", enableInlinePrediction, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.SpellCheckConfiguration>("spellCheckConfiguration", spellCheckConfiguration, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<List<string>>("contentCommitMimeTypes", contentInsertionConfiguration?.allowedMimeTypes ?? new List<string>(), defaultValue: (contentInsertionConfiguration is null) ? new List<string>() : Editable_textLibrary.kDefaultContentInsertionMimeTypes));
+        properties.add(new FlagProperty("selectionEnabled", value: selectionEnabled, defaultValue: true, ifFalse: "selection disabled"));
+        properties.add(new DiagnosticsProperty<TextSelectionControls>("selectionControls", selectionControls, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ScrollController>("scrollController", scrollController, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ScrollPhysics>("scrollPhysics", scrollPhysics, defaultValue: null));
+        properties.add(new EnumProperty<TextAlign>("textAlign", textAlign, defaultValue: TextAlign.start));
+        properties.add(new DiagnosticsProperty<TextAlignVertical>("textAlignVertical", textAlignVertical, defaultValue: null));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior, defaultValue: Clip.hardEdge));
+        properties.add(new DiagnosticsProperty<bool>("scribbleEnabled", scribbleEnabled, defaultValue: true));
+        properties.add(new DiagnosticsProperty<bool>("stylusHandwritingEnabled", DartRuntimePrimitives.RequireValue(stylusHandwritingEnabled), defaultValue: EditableText.defaultStylusHandwritingEnabled));
+        properties.add(new DiagnosticsProperty<bool>("enableIMEPersonalizedLearning", enableIMEPersonalizedLearning, defaultValue: true));
+        properties.add(new DiagnosticsProperty<bool?>("enableInlinePrediction", enableInlinePrediction, defaultValue: null));
+        properties.add(new DiagnosticsProperty<SpellCheckConfiguration>("spellCheckConfiguration", spellCheckConfiguration, defaultValue: null));
+        properties.add(new DiagnosticsProperty<List<string>>("contentCommitMimeTypes", contentInsertionConfiguration?.allowedMimeTypes ?? new List<string>(), defaultValue: (contentInsertionConfiguration is null) ? new List<string>() : Editable_textLibrary.kDefaultContentInsertionMimeTypes));
     }
 
-    public static global::Doroti.Framework.Widgets.SpellCheckConfiguration inferIOSSpellCheckConfiguration(global::Doroti.Framework.Widgets.SpellCheckConfiguration? configuration)
+    public static SpellCheckConfiguration inferIOSSpellCheckConfiguration(SpellCheckConfiguration? configuration)
     {
         if ((configuration is null) || Equals(configuration, SpellCheckConfiguration.CreateDisabled()))
         {
@@ -436,24 +436,24 @@ public class CupertinoTextField : global::Doroti.Framework.Widgets.StatefulWidge
 
 }
 
-internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.Widgets.State<CupertinoTextField>, global::Doroti.Framework.Widgets.RestorationMixin<CupertinoTextField>, global::Doroti.Framework.Widgets.AutomaticKeepAliveClientMixin<CupertinoTextField>, global::Doroti.Framework.Widgets.TextSelectionGestureDetectorBuilderDelegate, global::Doroti.Framework.Services.AutofillClient
+internal class _CupertinoTextFieldState__text_field : State<CupertinoTextField>, RestorationMixin<CupertinoTextField>, AutomaticKeepAliveClientMixin<CupertinoTextField>, TextSelectionGestureDetectorBuilderDelegate, AutofillClient
 {
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _clearGlobalKey { get; private set; } = GlobalKey<IState>.Create();
-    internal virtual global::Doroti.Framework.Widgets.RestorableTextEditingController? _controller { get; set; } = default;
-    internal virtual global::Doroti.Framework.Widgets.FocusNode? _focusNode { get; set; } = default;
+    internal virtual GlobalKey<IState> _clearGlobalKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual RestorableTextEditingController? _controller { get; set; } = default;
+    internal virtual FocusNode? _focusNode { get; set; } = default;
     internal virtual bool _showSelectionHandles { get; set; } = false;
     internal virtual _CupertinoTextFieldSelectionGestureDetectorBuilder__text_field _selectionGestureDetectorBuilder { get; set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.EditableTextState> editableTextKey { get; private set; } = GlobalKey<EditableTextState>.Create();
-    public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
-    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual GlobalKey<EditableTextState> editableTextKey { get; private set; } = GlobalKey<EditableTextState>.Create();
+    public virtual RestorationBucket? _bucket { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
-    public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
+    public virtual RestorationBucket? _currentParent { get; set; } = default;
     public virtual KeepAliveHandle? _keepAliveHandle { get; set; } = default;
 
-    internal virtual global::Doroti.Framework.Widgets.TextEditingController _effectiveController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.TextEditingController>(widget.controller ?? _controller!.value);
-    internal virtual global::Doroti.Framework.Widgets.FocusNode _effectiveFocusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FocusNode>(widget.focusNode ?? (_focusNode ??= new global::Doroti.Framework.Widgets.FocusNode()));
-    internal virtual global::Doroti.Framework.Services.MaxLengthEnforcement _effectiveMaxLengthEnforcement => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.MaxLengthEnforcement>(widget.maxLengthEnforcement ?? LengthLimitingTextInputFormatter.getDefaultMaxLengthEnforcement());
+    internal virtual TextEditingController _effectiveController => DartRuntimePrimitives.ConvertValue<TextEditingController>(widget.controller ?? _controller!.value);
+    internal virtual FocusNode _effectiveFocusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? (_focusNode ??= new FocusNode()));
+    internal virtual MaxLengthEnforcement _effectiveMaxLengthEnforcement => DartRuntimePrimitives.ConvertValue<MaxLengthEnforcement>(widget.maxLengthEnforcement ?? LengthLimitingTextInputFormatter.getDefaultMaxLengthEnforcement());
     public virtual bool forcePressEnabled => true;
     public virtual bool selectionEnabled => widget.selectionEnabled;
     public override void initState()
@@ -497,7 +497,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         _effectiveFocusNode.canRequestFocus = widget.enabled;
     }
 
-    public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
+    public virtual void restoreState(RestorationBucket? oldBucket, bool initialRestore)
     {
         if (_controller is not null)
         {
@@ -512,10 +512,10 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         _controller!.value.addListener(updateKeepAlive);
     }
 
-    internal virtual void _createLocalController(global::Doroti.Framework.Services.TextEditingValue? value = null)
+    internal virtual void _createLocalController(TextEditingValue? value = null)
     {
         DartRuntimePrimitives.Assert(() => _controller is null);
-        _controller = (value is null) ? RestorableTextEditingController.Create() : new global::Doroti.Framework.Widgets.RestorableTextEditingController(value);
+        _controller = (value is null) ? RestorableTextEditingController.Create() : new RestorableTextEditingController(value);
         if (!restorePending)
         {
             _registerController();
@@ -540,7 +540,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         base.dispose();
     }
 
-    internal virtual global::Doroti.Framework.Widgets.EditableTextState _editableText => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.EditableTextState>(editableTextKey.currentState!);
+    internal virtual EditableTextState _editableText => DartRuntimePrimitives.ConvertValue<EditableTextState>(editableTextKey.currentState!);
     internal virtual void _requestKeyboard()
     {
         _editableText.requestKeyboard();
@@ -553,7 +553,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         });
     }
 
-    internal virtual bool _shouldShowSelectionHandles(global::Doroti.Framework.Services.SelectionChangedCause? cause)
+    internal virtual bool _shouldShowSelectionHandles(SelectionChangedCause? cause)
     {
         if (!_selectionGestureDetectorBuilder.shouldShowSelectionToolbar || !_selectionGestureDetectorBuilder.shouldShowSelectionHandles)
         {
@@ -579,7 +579,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleSelectionChanged(global::Doroti.Framework.Services.TextSelection selection, global::Doroti.Framework.Services.SelectionChangedCause? cause)
+    internal virtual void _handleSelectionChanged(TextSelection selection, SelectionChangedCause? cause)
     {
         bool willShowSelectionHandles = _shouldShowSelectionHandles(cause);
         if (willShowSelectionHandles != _showSelectionHandles)
@@ -640,7 +640,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             return (widget.placeholder is not null) || (!Equals(widget.clearButtonMode, OverlayVisibilityMode.never)) || (widget.prefix is not null) || (widget.suffix is not null);
         }
     }
-    internal virtual global::Doroti.Framework.Painting.TextAlignVertical _textAlignVertical
+    internal virtual TextAlignVertical _textAlignVertical
     {
         get
         {
@@ -661,56 +661,56 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         }
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildClearButton()
+    internal virtual Widget _buildClearButton()
     {
         string clearLabel = widget.clearButtonSemanticLabel ?? CupertinoLocalizations.of(context).clearButtonLabel;
-        return new global::Doroti.Framework.Widgets.Semantics(button: true, label: clearLabel, child: new global::Doroti.Framework.Widgets.GestureDetector(key: _clearGlobalKey, onTap: widget.enabled ? _onClearButtonTapped : null, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 6.0), child: new global::Doroti.Framework.Widgets.Icon(CupertinoIcons.clear_thick_circled, size: 18.0, color: CupertinoDynamicColor.resolve(Text_fieldLibrary._kClearButtonColor, context)))));
+        return new Widgets.Semantics(button: true, label: clearLabel, child: new GestureDetector(key: _clearGlobalKey, onTap: widget.enabled ? _onClearButtonTapped : null, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 6.0), child: new Icon(CupertinoIcons.clear_thick_circled, size: 18.0, color: CupertinoDynamicColor.resolve(Text_fieldLibrary._kClearButtonColor, context)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _addTextDependentAttachments(global::Doroti.Framework.Widgets.Widget editableText, global::Doroti.Framework.Painting.TextStyle textStyle, global::Doroti.Framework.Painting.TextStyle placeholderStyle)
+    internal virtual Widget _addTextDependentAttachments(Widget editableText, TextStyle textStyle, TextStyle placeholderStyle)
     {
         if (!_hasDecoration)
         {
             return editableText;
         }
-        return new global::Doroti.Framework.Widgets.ValueListenableBuilder<global::Doroti.Framework.Services.TextEditingValue>(valueListenable: _effectiveController, child: editableText, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Services.TextEditingValue, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Row>)((context, text, child) =>
+        return new ValueListenableBuilder<TextEditingValue>(valueListenable: _effectiveController, child: editableText, builder: (Func<BuildContext, TextEditingValue, Widget?, Row>)((context, text, child) =>
         {
             bool hasTextLocal = text.text.Length != 0;
             string? placeholderText = widget.placeholder;
-            global::Doroti.Framework.Widgets.Widget? placeholderLocal = (placeholderText is null) ? null : new global::Doroti.Framework.Widgets.Visibility(maintainAnimation: true, maintainSize: true, maintainState: true, visible: !hasTextLocal, child: new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new global::Doroti.Framework.Widgets.Padding(padding: widget.padding, child: new global::Doroti.Framework.Widgets.Text(placeholderText, maxLines: hasTextLocal ? 1L : widget.maxLines, overflow: placeholderStyle.overflow, style: placeholderStyle, textAlign: widget.textAlign))));
-            global::Doroti.Framework.Widgets.Widget? prefixWidget = _shouldShowAttachment(attachment: widget.prefixMode, hasText: hasTextLocal) ? widget.prefix : null;
+            Widget? placeholderLocal = (placeholderText is null) ? null : new Visibility(maintainAnimation: true, maintainSize: true, maintainState: true, visible: !hasTextLocal, child: new SizedBox(width: double.PositiveInfinity, child: new Padding(padding: widget.padding, child: new Text(placeholderText, maxLines: hasTextLocal ? 1L : widget.maxLines, overflow: placeholderStyle.overflow, style: placeholderStyle, textAlign: widget.textAlign))));
+            Widget? prefixWidget = _shouldShowAttachment(attachment: widget.prefixMode, hasText: hasTextLocal) ? widget.prefix : null;
             bool showUserSuffix = _shouldShowAttachment(attachment: widget.suffixMode, hasText: hasTextLocal);
             bool showClearButton = _shouldShowAttachment(attachment: widget.clearButtonMode, hasText: hasTextLocal);
-            global::Doroti.Framework.Widgets.Widget? suffixWidget = (showUserSuffix, showClearButton) switch { (false, false) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(null), (true, false) => widget.suffix, (true, true) => widget.suffix ?? _buildClearButton(), (false, true) => _buildClearButton() };
-            return new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: widget.crossAxisAlignment, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection51543 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement51686 = prefixWidget; if (__collectionElement51686 is { } __nonNullCollectionElement51686) { __collection51543.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement51686)); } __collection51543.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Directionality(textDirection: widget.textDirection ?? Directionality.of(context), child: new _BaselineAlignedStack__text_field(placeholder: placeholderLocal, editableText: editableText, textAlignVertical: _textAlignVertical, editableTextBaseline: textStyle.textBaseline ?? TextBaseline.alphabetic, placeholderBaseline: placeholderStyle.textBaseline ?? TextBaseline.alphabetic))))); var __collectionElement52402 = suffixWidget; if (__collectionElement52402 is { } __nonNullCollectionElement52402) { __collection51543.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement52402)); } return __collection51543; }))());
+            Widget? suffixWidget = (showUserSuffix, showClearButton) switch { (false, false) => DartRuntimePrimitives.ConvertValue<Widget>(null), (true, false) => widget.suffix, (true, true) => widget.suffix ?? _buildClearButton(), (false, true) => _buildClearButton() };
+            return new Row(crossAxisAlignment: widget.crossAxisAlignment, children: ((Func<List<Widget>>)(() => { var __collection51543 = new List<Widget>(); var __collectionElement51686 = prefixWidget; if (__collectionElement51686 is { } __nonNullCollectionElement51686) { __collection51543.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement51686)); } __collection51543.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Directionality(textDirection: widget.textDirection ?? Directionality.of(context), child: new _BaselineAlignedStack__text_field(placeholder: placeholderLocal, editableText: editableText, textAlignVertical: _textAlignVertical, editableTextBaseline: textStyle.textBaseline ?? TextBaseline.alphabetic, placeholderBaseline: placeholderStyle.textBaseline ?? TextBaseline.alphabetic))))); var __collectionElement52402 = suffixWidget; if (__collectionElement52402 is { } __nonNullCollectionElement52402) { __collection51543.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement52402)); } return __collection51543; }))());
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual string autofillId => _editableText.autofillId;
-    public virtual void autofill(global::Doroti.Framework.Services.TextEditingValue newEditingValue) => _editableText.autofill(newEditingValue);
-    public virtual global::Doroti.Framework.Services.TextInputConfiguration textInputConfiguration
+    public virtual void autofill(TextEditingValue newEditingValue) => _editableText.autofill(newEditingValue);
+    public virtual TextInputConfiguration textInputConfiguration
     {
         get
         {
             List<string>? autofillHintsLocal = widget.autofillHints?.ToList().ToList();
-            global::Doroti.Framework.Services.AutofillConfiguration autofillConfigurationLocal = (autofillHintsLocal is not null) ? new global::Doroti.Framework.Services.AutofillConfiguration(uniqueIdentifier: autofillId, autofillHints: autofillHintsLocal, currentEditingValue: _effectiveController.value, hintText: widget.placeholder) : AutofillConfiguration.disabled;
+            AutofillConfiguration autofillConfigurationLocal = (autofillHintsLocal is not null) ? new AutofillConfiguration(uniqueIdentifier: autofillId, autofillHints: autofillHintsLocal, currentEditingValue: _effectiveController.value, hintText: widget.placeholder) : AutofillConfiguration.disabled;
             return _editableText.textInputConfiguration.copyWith(autofillConfiguration: autofillConfigurationLocal);
         }
     }
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         if (wantKeepAlive && (_keepAliveHandle is null))
         {
             _ensureKeepAlive();
         }
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        global::Doroti.Framework.Widgets.TextEditingController controllerLocal = _effectiveController;
-        global::Doroti.Framework.Widgets.TextSelectionControls? textSelectionControls = widget.selectionControls;
-        global::System.Action? handleDidGainAccessibilityFocus = default!;
-        global::System.Action? handleDidLoseAccessibilityFocus = default!;
+        TextEditingController controllerLocal = _effectiveController;
+        TextSelectionControls? textSelectionControls = widget.selectionControls;
+        Action? handleDidGainAccessibilityFocus = default!;
+        Action? handleDidLoseAccessibilityFocus = default!;
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.iOS:
@@ -740,33 +740,33 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
                 }
         }
         bool enabledLocal = widget.enabled;
-        var cursorOffsetLocal = new global::Doroti.Ui.Offset(Text_fieldLibrary._iOSHorizontalCursorOffsetPixels / MediaQuery.devicePixelRatioOf(context), 0);
-        var formatters = ((Func<List<global::Doroti.Framework.Services.TextInputFormatter>>)(() => { var __collection54739 = new List<global::Doroti.Framework.Services.TextInputFormatter>(); var __collectionSpread54767 = widget.inputFormatters; if (__collectionSpread54767 is not null) { __collection54739.AddRange(__collectionSpread54767); } if (widget.maxLength is not null) { __collection54739.Add(new global::Doroti.Framework.Services.LengthLimitingTextInputFormatter(widget.maxLength, maxLengthEnforcement: _effectiveMaxLengthEnforcement)); } return __collection54739; }))();
+        var cursorOffsetLocal = new Offset(Text_fieldLibrary._iOSHorizontalCursorOffsetPixels / MediaQuery.devicePixelRatioOf(context), 0);
+        var formatters = ((Func<List<TextInputFormatter>>)(() => { var __collection54739 = new List<TextInputFormatter>(); var __collectionSpread54767 = widget.inputFormatters; if (__collectionSpread54767 is not null) { __collection54739.AddRange(__collectionSpread54767); } if (widget.maxLength is not null) { __collection54739.Add(new LengthLimitingTextInputFormatter(widget.maxLength, maxLengthEnforcement: _effectiveMaxLengthEnforcement)); } return __collection54739; }))();
         CupertinoThemeData themeData = CupertinoTheme.of(context);
-        global::Doroti.Framework.Painting.TextStyle? resolvedStyle = widget.style?.copyWith(color: CupertinoDynamicColor.maybeResolve(widget.style?.color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(widget.style?.backgroundColor, context));
-        global::Doroti.Framework.Painting.TextStyle textStyleLocal = themeData.textTheme.textStyle.merge(resolvedStyle);
-        global::Doroti.Framework.Painting.TextStyle? resolvedPlaceholderStyle = widget.placeholderStyle?.copyWith(color: CupertinoDynamicColor.maybeResolve(widget.placeholderStyle?.color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(widget.placeholderStyle?.backgroundColor, context));
-        global::Doroti.Framework.Painting.TextStyle placeholderStyleLocal = textStyleLocal.merge(resolvedPlaceholderStyle);
-        global::Doroti.Ui.Brightness keyboardAppearanceLocal = widget.keyboardAppearance ?? CupertinoTheme.brightnessOf(context);
-        global::Doroti.Ui.Color cursorColorLocal = CupertinoDynamicColor.maybeResolve(widget.cursorColor ?? DefaultSelectionStyle.of(context).cursorColor, context) ?? themeData.primaryColor;
-        global::Doroti.Ui.Color disabledColor = CupertinoDynamicColor.resolve(Text_fieldLibrary._kDisabledBackground, context);
-        global::Doroti.Ui.Color? decorationColor = CupertinoDynamicColor.maybeResolve(widget.decoration?.color, context);
-        global::Doroti.Framework.Painting.BoxBorder? borderLocal = widget.decoration?.border;
-        var resolvedBorder = ((global::Doroti.Framework.Painting.Border?)borderLocal)!;
-        if (borderLocal is global::Doroti.Framework.Painting.Border border__56361__as56449)
+        TextStyle? resolvedStyle = widget.style?.copyWith(color: CupertinoDynamicColor.maybeResolve(widget.style?.color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(widget.style?.backgroundColor, context));
+        TextStyle textStyleLocal = themeData.textTheme.textStyle.merge(resolvedStyle);
+        TextStyle? resolvedPlaceholderStyle = widget.placeholderStyle?.copyWith(color: CupertinoDynamicColor.maybeResolve(widget.placeholderStyle?.color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(widget.placeholderStyle?.backgroundColor, context));
+        TextStyle placeholderStyleLocal = textStyleLocal.merge(resolvedPlaceholderStyle);
+        Brightness keyboardAppearanceLocal = widget.keyboardAppearance ?? CupertinoTheme.brightnessOf(context);
+        Color cursorColorLocal = CupertinoDynamicColor.maybeResolve(widget.cursorColor ?? DefaultSelectionStyle.of(context).cursorColor, context) ?? themeData.primaryColor;
+        Color disabledColor = CupertinoDynamicColor.resolve(Text_fieldLibrary._kDisabledBackground, context);
+        Color? decorationColor = CupertinoDynamicColor.maybeResolve(widget.decoration?.color, context);
+        BoxBorder? borderLocal = widget.decoration?.border;
+        var resolvedBorder = ((Border?)borderLocal)!;
+        if (borderLocal is Border border__56361__as56449)
         {
-            global::Doroti.Framework.Painting.BorderSide resolveBorderSide(global::Doroti.Framework.Painting.BorderSide side)
+            BorderSide resolveBorderSide(BorderSide side)
             {
                 return Equals(side, BorderSide.none) ? side : side.copyWith(color: CupertinoDynamicColor.resolve(side.color, context));
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            resolvedBorder = (!Equals(DartRuntimePrimitives.RuntimeType(border__56361__as56449), typeof(global::Doroti.Framework.Painting.Border))) ? border__56361__as56449 : new global::Doroti.Framework.Painting.Border(top: resolveBorderSide(border__56361__as56449.top), left: resolveBorderSide(border__56361__as56449.left), bottom: resolveBorderSide(border__56361__as56449.bottom), right: resolveBorderSide(border__56361__as56449.right));
+            resolvedBorder = (!Equals(DartRuntimePrimitives.RuntimeType(border__56361__as56449), typeof(Border))) ? border__56361__as56449 : new Border(top: resolveBorderSide(border__56361__as56449.top), left: resolveBorderSide(border__56361__as56449.left), bottom: resolveBorderSide(border__56361__as56449.bottom), right: resolveBorderSide(border__56361__as56449.right));
         }
-        global::Doroti.Framework.Painting.BoxDecoration? effectiveDecoration = widget.decoration?.copyWith(border: resolvedBorder, color: enabledLocal ? decorationColor : (Equals(widget.decoration, Text_fieldLibrary._kDefaultRoundedBorderDecoration) ? disabledColor : widget.decoration?.color));
-        global::Doroti.Ui.Color selectionColorLocal = CupertinoDynamicColor.maybeResolve(DefaultSelectionStyle.of(context).selectionColor, context) ?? CupertinoTheme.of(context).primaryColor.withOpacity(0.2);
-        global::Doroti.Framework.Widgets.SpellCheckConfiguration spellCheckConfigurationLocal = CupertinoTextField.inferIOSSpellCheckConfiguration(widget.spellCheckConfiguration);
-        global::Doroti.Framework.Widgets.Widget paddedEditable = new global::Doroti.Framework.Widgets.Padding(padding: widget.padding, child: new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.UnmanagedRestorationScope(bucket: bucket, child: new global::Doroti.Framework.Widgets.EditableText(key: editableTextKey, controller: controllerLocal, undoController: widget.undoController, readOnly: widget.readOnly || !enabledLocal, toolbarOptions: widget.toolbarOptions, showCursor: widget.showCursor, showSelectionHandles: _showSelectionHandles, focusNode: _effectiveFocusNode, keyboardType: widget.keyboardType, textInputAction: widget.textInputAction, textCapitalization: widget.textCapitalization, style: textStyleLocal, strutStyle: widget.strutStyle, textAlign: widget.textAlign, textDirection: widget.textDirection, autofocus: widget.autofocus, obscuringCharacter: widget.obscuringCharacter, obscureText: widget.obscureText, autocorrect: widget.autocorrect, smartDashesType: widget.smartDashesType, smartQuotesType: widget.smartQuotesType, enableSuggestions: widget.enableSuggestions, maxLines: widget.maxLines, minLines: widget.minLines, expands: widget.expands, magnifierConfiguration: widget.magnifierConfiguration ?? CupertinoTextField._iosMagnifierConfiguration, selectionColor: _effectiveFocusNode.hasFocus ? selectionColorLocal : null, selectionControls: widget.selectionEnabled ? textSelectionControls : null, groupId: widget.groupId, onChanged: widget.onChanged, onSelectionChanged: _handleSelectionChanged, onEditingComplete: widget.onEditingComplete, onSubmitted: widget.onSubmitted, onTapOutside: widget.onTapOutside, inputFormatters: formatters, rendererIgnoresPointer: true, cursorWidth: widget.cursorWidth, cursorHeight: widget.cursorHeight, cursorRadius: widget.cursorRadius, cursorColor: cursorColorLocal, cursorOpacityAnimates: widget.cursorOpacityAnimates, cursorOffset: cursorOffsetLocal, paintCursorAboveText: true, autocorrectionTextRectColor: selectionColorLocal, backgroundCursorColor: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context), selectionHeightStyle: widget.selectionHeightStyle, selectionWidthStyle: widget.selectionWidthStyle, scrollPadding: widget.scrollPadding, keyboardAppearance: keyboardAppearanceLocal, dragStartBehavior: widget.dragStartBehavior, scrollController: widget.scrollController, scrollPhysics: widget.scrollPhysics, enableInteractiveSelection: widget.enableInteractiveSelection, selectAllOnFocus: widget.selectAllOnFocus, autofillClient: this, clipBehavior: widget.clipBehavior, restorationId: "editable", scribbleEnabled: widget.scribbleEnabled, stylusHandwritingEnabled: widget.stylusHandwritingEnabled, enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning, enableInlinePrediction: widget.enableInlinePrediction, contentInsertionConfiguration: widget.contentInsertionConfiguration, contextMenuBuilder: widget.contextMenuBuilder, spellCheckConfiguration: spellCheckConfigurationLocal))));
-        return new global::Doroti.Framework.Widgets.Semantics(enabled: enabledLocal, onTap: (!enabledLocal || widget.readOnly) ? null : (() =>
+        BoxDecoration? effectiveDecoration = widget.decoration?.copyWith(border: resolvedBorder, color: enabledLocal ? decorationColor : (Equals(widget.decoration, Text_fieldLibrary._kDefaultRoundedBorderDecoration) ? disabledColor : widget.decoration?.color));
+        Color selectionColorLocal = CupertinoDynamicColor.maybeResolve(DefaultSelectionStyle.of(context).selectionColor, context) ?? CupertinoTheme.of(context).primaryColor.withOpacity(0.2);
+        SpellCheckConfiguration spellCheckConfigurationLocal = CupertinoTextField.inferIOSSpellCheckConfiguration(widget.spellCheckConfiguration);
+        Widget paddedEditable = new Padding(padding: widget.padding, child: new RepaintBoundary(child: new UnmanagedRestorationScope(bucket: bucket, child: new EditableText(key: editableTextKey, controller: controllerLocal, undoController: widget.undoController, readOnly: widget.readOnly || !enabledLocal, toolbarOptions: widget.toolbarOptions, showCursor: widget.showCursor, showSelectionHandles: _showSelectionHandles, focusNode: _effectiveFocusNode, keyboardType: widget.keyboardType, textInputAction: widget.textInputAction, textCapitalization: widget.textCapitalization, style: textStyleLocal, strutStyle: widget.strutStyle, textAlign: widget.textAlign, textDirection: widget.textDirection, autofocus: widget.autofocus, obscuringCharacter: widget.obscuringCharacter, obscureText: widget.obscureText, autocorrect: widget.autocorrect, smartDashesType: widget.smartDashesType, smartQuotesType: widget.smartQuotesType, enableSuggestions: widget.enableSuggestions, maxLines: widget.maxLines, minLines: widget.minLines, expands: widget.expands, magnifierConfiguration: widget.magnifierConfiguration ?? CupertinoTextField._iosMagnifierConfiguration, selectionColor: _effectiveFocusNode.hasFocus ? selectionColorLocal : null, selectionControls: widget.selectionEnabled ? textSelectionControls : null, groupId: widget.groupId, onChanged: widget.onChanged, onSelectionChanged: _handleSelectionChanged, onEditingComplete: widget.onEditingComplete, onSubmitted: widget.onSubmitted, onTapOutside: widget.onTapOutside, inputFormatters: formatters, rendererIgnoresPointer: true, cursorWidth: widget.cursorWidth, cursorHeight: widget.cursorHeight, cursorRadius: widget.cursorRadius, cursorColor: cursorColorLocal, cursorOpacityAnimates: widget.cursorOpacityAnimates, cursorOffset: cursorOffsetLocal, paintCursorAboveText: true, autocorrectionTextRectColor: selectionColorLocal, backgroundCursorColor: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context), selectionHeightStyle: widget.selectionHeightStyle, selectionWidthStyle: widget.selectionWidthStyle, scrollPadding: widget.scrollPadding, keyboardAppearance: keyboardAppearanceLocal, dragStartBehavior: widget.dragStartBehavior, scrollController: widget.scrollController, scrollPhysics: widget.scrollPhysics, enableInteractiveSelection: widget.enableInteractiveSelection, selectAllOnFocus: widget.selectAllOnFocus, autofillClient: this, clipBehavior: widget.clipBehavior, restorationId: "editable", scribbleEnabled: widget.scribbleEnabled, stylusHandwritingEnabled: widget.stylusHandwritingEnabled, enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning, enableInlinePrediction: widget.enableInlinePrediction, contentInsertionConfiguration: widget.contentInsertionConfiguration, contextMenuBuilder: widget.contextMenuBuilder, spellCheckConfiguration: spellCheckConfigurationLocal))));
+        return new Widgets.Semantics(enabled: enabledLocal, onTap: (!enabledLocal || widget.readOnly) ? null : (() =>
         {
             if (!controllerLocal.selection.isValid)
             {
@@ -787,20 +787,20 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
                     _requestKeyboard();
                 }
             }
-        }) : null, child: new global::Doroti.Framework.Widgets.TextFieldTapRegion(child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: !enabledLocal, child: new global::Doroti.Framework.Widgets.Container(decoration: effectiveDecoration, color: (!enabledLocal && (effectiveDecoration is null)) ? disabledColor : null, child: _selectionGestureDetectorBuilder.buildGestureDetector(behavior: HitTestBehavior.translucent, child: new global::Doroti.Framework.Widgets.Align(alignment: new global::Doroti.Framework.Painting.Alignment(-1.0, _textAlignVertical.y), widthFactor: 1.0, heightFactor: 1.0, child: _addTextDependentAttachments(paddedEditable, textStyleLocal, placeholderStyleLocal)))))));
+        }) : null, child: new TextFieldTapRegion(child: new IgnorePointer(ignoring: !enabledLocal, child: new Container(decoration: effectiveDecoration, color: (!enabledLocal && (effectiveDecoration is null)) ? disabledColor : null, child: _selectionGestureDetectorBuilder.buildGestureDetector(behavior: HitTestBehavior.translucent, child: new Align(alignment: new Alignment(-1.0, _textAlignVertical.y), widthFactor: 1.0, heightFactor: 1.0, child: _addTextDependentAttachments(paddedEditable, textStyleLocal, placeholderStyleLocal)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => _bucket;
-    public virtual void didToggleBucket(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
+    public virtual RestorationBucket? bucket => _bucket;
+    public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
     }
 
-    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
+    public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
         DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
         object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
         if (!property.isRegistered)
@@ -830,7 +830,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             });
     }
 
-    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void unregisterFromRestoration(IRestorableProperty property)
     {
         DartRuntimePrimitives.Assert(() => Equals(property._owner, this));
         _bucket?.remove<object?>(property._restorationId!);
@@ -843,7 +843,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
         bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
         if (didReplaceBucket)
@@ -866,7 +866,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
+            RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
             return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
         }
     }
@@ -874,7 +874,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
         bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
@@ -889,7 +889,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         }
     }
 
-    public virtual void _doRestore(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
+    public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -902,14 +902,14 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             {
                 if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection41817 = new List<DiagnosticsNode>(); __collection41817.Add(new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<IRestorableProperty, DiagnosticsNode>((property) => new ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
                 }
                 _debugPropertiesWaitingForReregistration = null;
                 return true;
             });
     }
 
-    public virtual bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending)
+    public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
@@ -920,7 +920,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         DartRuntimePrimitives.Assert(() => restorationId is not null);
         if (restorePending || (_bucket is null))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
+            RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
@@ -933,19 +933,19 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
+    public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
     {
         if (Equals(newBucket, _bucket))
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         _bucket = newBucket;
         if (!restorePending)
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -953,7 +953,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void _updateProperty(IRestorableProperty property)
     {
         if (property.enabled)
         {
@@ -965,9 +965,9 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         }
     }
 
-    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void _unregister(IRestorableProperty property)
     {
-        global::System.Action listener = _properties.remove(property)!;
+        Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugPropertiesWaitingForReregistration?.Remove(property);
@@ -1025,15 +1025,15 @@ public enum _BaselineAlignedStackSlot__text_field
     editableText
 }
 
-internal class _BaselineAlignedStack__text_field : global::Doroti.Framework.Widgets.SlottedMultiChildRenderObjectWidget<_BaselineAlignedStackSlot__text_field, global::Doroti.Framework.Rendering.RenderBox>
+internal class _BaselineAlignedStack__text_field : SlottedMultiChildRenderObjectWidget<_BaselineAlignedStackSlot__text_field, RenderBox>
 {
     public virtual TextBaseline editableTextBaseline { get; private set; } = default!;
     public virtual TextBaseline placeholderBaseline { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextAlignVertical textAlignVertical { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget editableText { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? placeholder { get; private set; }
+    public virtual TextAlignVertical textAlignVertical { get; private set; } = default!;
+    public virtual Widget editableText { get; private set; } = default!;
+    public virtual Widget? placeholder { get; private set; }
 
-    internal _BaselineAlignedStack__text_field(TextBaseline editableTextBaseline, TextBaseline placeholderBaseline, global::Doroti.Framework.Painting.TextAlignVertical textAlignVertical, global::Doroti.Framework.Widgets.Widget editableText, global::Doroti.Framework.Widgets.Widget? placeholder = null)
+    internal _BaselineAlignedStack__text_field(TextBaseline editableTextBaseline, TextBaseline placeholderBaseline, TextAlignVertical textAlignVertical, Widget editableText, Widget? placeholder = null)
     {
         this.editableTextBaseline = editableTextBaseline;
         this.placeholderBaseline = placeholderBaseline;
@@ -1043,19 +1043,19 @@ internal class _BaselineAlignedStack__text_field : global::Doroti.Framework.Widg
     }
 
     public override IEnumerable<_BaselineAlignedStackSlot__text_field> slots => DartRuntimePrimitives.ConvertValue<IEnumerable<_BaselineAlignedStackSlot__text_field>>(Enum.GetValues<_BaselineAlignedStackSlot__text_field>().ToList());
-    public override global::Doroti.Framework.Widgets.Widget? childForSlot(_BaselineAlignedStackSlot__text_field slot)
+    public override Widget? childForSlot(_BaselineAlignedStackSlot__text_field slot)
     {
         return slot switch { _BaselineAlignedStackSlot__text_field.placeholder => placeholder, _BaselineAlignedStackSlot__text_field.editableText => editableText, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderBaselineAlignedStack__text_field(textAlignVertical: textAlignVertical, editableTextBaseline: editableTextBaseline, placeholderBaseline: placeholderBaseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderBaselineAlignedStack__text_field)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderBaselineAlignedStack__text_field>)(() =>
@@ -1070,25 +1070,25 @@ internal class _BaselineAlignedStack__text_field : global::Doroti.Framework.Widg
 
 }
 
-internal class _BaselineAlignedStackParentData__text_field : global::Doroti.Framework.Rendering.ContainerBoxParentData<global::Doroti.Framework.Rendering.RenderBox>
+internal class _BaselineAlignedStackParentData__text_field : ContainerBoxParentData<RenderBox>
 {
 }
 
-public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Widgets.SlottedContainerRenderObjectMixin<_BaselineAlignedStackSlot__text_field, global::Doroti.Framework.Rendering.RenderBox>
+public class _RenderBaselineAlignedStack__text_field : RenderBox, SlottedContainerRenderObjectMixin<_BaselineAlignedStackSlot__text_field, RenderBox>
 {
-    internal virtual global::Doroti.Framework.Painting.TextAlignVertical _textAlignVertical { get; set; } = default!;
+    internal virtual TextAlignVertical _textAlignVertical { get; set; } = default!;
     internal virtual TextBaseline _editableTextBaseline { get; set; } = default!;
     internal virtual TextBaseline _placeholderBaseline { get; set; } = default!;
-    public virtual DartMap<_BaselineAlignedStackSlot__text_field, global::Doroti.Framework.Rendering.RenderBox> _slotToChild { get; set; } = new DartMap<_BaselineAlignedStackSlot__text_field, global::Doroti.Framework.Rendering.RenderBox>();
+    public virtual DartMap<_BaselineAlignedStackSlot__text_field, RenderBox> _slotToChild { get; set; } = new DartMap<_BaselineAlignedStackSlot__text_field, RenderBox>();
 
-    internal _RenderBaselineAlignedStack__text_field(global::Doroti.Framework.Painting.TextAlignVertical textAlignVertical, TextBaseline editableTextBaseline, TextBaseline placeholderBaseline)
+    internal _RenderBaselineAlignedStack__text_field(TextAlignVertical textAlignVertical, TextBaseline editableTextBaseline, TextBaseline placeholderBaseline)
     {
         _textAlignVertical = textAlignVertical;
         _editableTextBaseline = editableTextBaseline;
         _placeholderBaseline = placeholderBaseline;
     }
 
-    public virtual global::Doroti.Framework.Painting.TextAlignVertical textAlignVertical
+    public virtual TextAlignVertical textAlignVertical
     {
         get => _textAlignVertical;
         set
@@ -1102,7 +1102,7 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Ui.TextBaseline editableTextBaseline
+    public virtual TextBaseline editableTextBaseline
     {
         get => _editableTextBaseline;
         set
@@ -1116,7 +1116,7 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Ui.TextBaseline placeholderBaseline
+    public virtual TextBaseline placeholderBaseline
     {
         get => _placeholderBaseline;
         set
@@ -1130,27 +1130,27 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
             markNeedsLayout();
         }
     }
-    public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
+    public override void setupParentData(RenderObject child)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         if (__child.parentData is not _BaselineAlignedStackParentData__text_field)
         {
             __child.parentData = new _BaselineAlignedStackParentData__text_field();
         }
     }
 
-    internal virtual global::Doroti.Framework.Rendering.RenderBox? _placeholderChild
+    internal virtual RenderBox? _placeholderChild
     {
         get
         {
             return childForSlot(_BaselineAlignedStackSlot__text_field.placeholder);
         }
     }
-    internal virtual global::Doroti.Framework.Rendering.RenderBox _editableTextChild
+    internal virtual RenderBox _editableTextChild
     {
         get
         {
-            global::Doroti.Framework.Rendering.RenderBox? child = childForSlot(_BaselineAlignedStackSlot__text_field.editableText);
+            RenderBox? child = childForSlot(_BaselineAlignedStackSlot__text_field.editableText);
             DartRuntimePrimitives.Assert(() => child is not null);
             return child!;
         }
@@ -1182,24 +1182,24 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
     public override void performLayout()
     {
         DartRuntimePrimitives.Assert(() => constraints.hasTightWidth);
-        global::Doroti.Framework.Rendering.RenderBox? placeholder = _placeholderChild;
-        global::Doroti.Framework.Rendering.RenderBox editableText = _editableTextChild;
+        RenderBox? placeholder = _placeholderChild;
+        RenderBox editableText = _editableTextChild;
         var editableTextParentData = ((_BaselineAlignedStackParentData__text_field?)editableText.parentData!)!;
         var placeholderParentData = ((_BaselineAlignedStackParentData__text_field?)placeholder?.parentData)!;
         size = _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.layoutChild, getBaseline: ChildLayoutHelper.getBaseline);
         double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(editableText.getDistanceToBaseline(editableTextBaseline));
         double? placeholderBaselineValue = placeholder?.getDistanceToBaseline(placeholderBaseline);
         DartRuntimePrimitives.Assert(() => (placeholder is not null) || (placeholderBaselineValue is null));
-        global::Doroti.Ui.Offset baselineDiff = (placeholderBaselineValue is not null) ? new global::Doroti.Ui.Offset(0.0, editableTextBaselineValue - DartRuntimePrimitives.RequireValue(placeholderBaselineValue)) : Offset.zero;
-        var verticalAlignment = new global::Doroti.Framework.Painting.Alignment(0.0, textAlignVertical.y);
+        Offset baselineDiff = (placeholderBaselineValue is not null) ? new Offset(0.0, editableTextBaselineValue - DartRuntimePrimitives.RequireValue(placeholderBaselineValue)) : Offset.zero;
+        var verticalAlignment = new Alignment(0.0, textAlignVertical.y);
         editableTextParentData.offset = verticalAlignment.alongOffset(size - editableText.size);
         placeholderParentData?.offset = editableTextParentData.offset + baselineDiff;
     }
 
-    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(PaintingContext context, Offset offset)
     {
-        global::Doroti.Framework.Rendering.RenderBox? placeholder = _placeholderChild;
-        global::Doroti.Framework.Rendering.RenderBox editableText = _editableTextChild;
+        RenderBox? placeholder = _placeholderChild;
+        RenderBox editableText = _editableTextChild;
         if (placeholder is not null)
         {
             var placeholderParentData = ((_BaselineAlignedStackParentData__text_field?)placeholder.parentData!)!;
@@ -1209,23 +1209,23 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
         context.paintChild(editableText, offset + editableTextParentData.offset);
     }
 
-    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.dryLayoutChild, getBaseline: ChildLayoutHelper.getDryBaseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Size _computeSize(global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?> getBaseline)
+    internal virtual Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
     {
         double widthLocal = constraints.minWidth;
         double heightLocal = constraints.minHeight;
-        global::Doroti.Framework.Rendering.RenderBox editableText = _editableTextChild;
-        global::Doroti.Ui.Size editableTextSize = layoutChild(editableText, constraints);
+        RenderBox editableText = _editableTextChild;
+        Size editableTextSize = layoutChild(editableText, constraints);
         double editableTextBaselineValue = DartRuntimePrimitives.RequireValue(getBaseline(editableText, constraints, editableTextBaseline));
         double editableTextDescent = editableTextSize.height - editableTextBaselineValue;
-        global::Doroti.Ui.Size? placeholderSize = default!;
+        Size? placeholderSize = default!;
         double? placeholderBaselineValue = default!;
-        global::Doroti.Framework.Rendering.RenderBox? placeholder = _placeholderChild;
+        RenderBox? placeholder = _placeholderChild;
         if (placeholder is not null)
         {
             placeholderSize = layoutChild(placeholder, constraints);
@@ -1237,15 +1237,15 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
         }
         heightLocal = Math.Max(heightLocal, editableTextSize.height);
         widthLocal = Math.Max(widthLocal, editableTextSize.width);
-        var size = new global::Doroti.Ui.Size(widthLocal, heightLocal);
+        var size = new Size(widthLocal, heightLocal);
         DartRuntimePrimitives.Assert(() => size.isFinite);
         return constraints.constrain(size);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
+    public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Framework.Rendering.RenderBox editableText = _editableTextChild;
+        RenderBox editableText = _editableTextChild;
         var editableTextParentData = ((_BaselineAlignedStackParentData__text_field?)editableText.parentData!)!;
         return result.addWithPaintOffset(offset: editableTextParentData.offset, position: position, hitTest: (result, transformed) =>
         {
@@ -1256,18 +1256,18 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.RenderBox? childForSlot(_BaselineAlignedStackSlot__text_field slot) => _slotToChild.GetValueOrDefault(slot);
-    public virtual IEnumerable<global::Doroti.Framework.Rendering.RenderBox> children => _slotToChild.Values;
+    public virtual RenderBox? childForSlot(_BaselineAlignedStackSlot__text_field slot) => _slotToChild.GetValueOrDefault(slot);
+    public virtual IEnumerable<RenderBox> children => _slotToChild.Values;
     public virtual string debugNameForSlot(_BaselineAlignedStackSlot__text_field slot)
     {
         return slot.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
+    public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        foreach (global::Doroti.Framework.Rendering.RenderBox child in children)
+        foreach (RenderBox child in children)
         {
             child.attach(owner);
         }
@@ -1276,7 +1276,7 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
     public override void detach()
     {
         base.detach();
-        foreach (global::Doroti.Framework.Rendering.RenderBox child in children)
+        foreach (RenderBox child in children)
         {
             child.detach();
         }
@@ -1284,19 +1284,19 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
 
     public override void redepthChildren()
     {
-        children.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
+        children.forEach((__arg0) => ((System.Action<RenderObject>)redepthChild)(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override void visitChildren(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
+    public override void visitChildren(System.Action<RenderObject> visitor)
     {
-        children.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
+        children.forEach((__arg0) => visitor(DartRuntimePrimitives.ConvertValue<RenderObject>(__arg0)));
     }
 
-    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        var value = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
-        var childToSlot = new DartMap<global::Doroti.Framework.Rendering.RenderBox, _BaselineAlignedStackSlot__text_field>(_slotToChild.Values, _slotToChild.Keys);
-        foreach (global::Doroti.Framework.Rendering.RenderBox child in children)
+        var value = new List<DiagnosticsNode>();
+        var childToSlot = new DartMap<RenderBox, _BaselineAlignedStackSlot__text_field>(_slotToChild.Values, _slotToChild.Keys);
+        foreach (RenderBox child in children)
         {
             _addDiagnostics(child, value, debugNameForSlot(DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<_BaselineAlignedStackSlot__text_field>(childToSlot, child))));
         }
@@ -1304,14 +1304,14 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _addDiagnostics(global::Doroti.Framework.Rendering.RenderBox child, List<global::Doroti.Framework.Foundation.DiagnosticsNode> value, string name)
+    public virtual void _addDiagnostics(RenderBox child, List<DiagnosticsNode> value, string name)
     {
         value.Add(((Diagnosticable)child).toDiagnosticsNode(name: name));
     }
 
-    public virtual void _setChild(global::Doroti.Framework.Rendering.RenderBox? child, _BaselineAlignedStackSlot__text_field slot)
+    public virtual void _setChild(RenderBox? child, _BaselineAlignedStackSlot__text_field slot)
     {
-        global::Doroti.Framework.Rendering.RenderBox? oldChild = _slotToChild.GetValueOrDefault(slot);
+        RenderBox? oldChild = _slotToChild.GetValueOrDefault(slot);
         if (oldChild is not null)
         {
             dropChild(oldChild);
@@ -1324,10 +1324,10 @@ public class _RenderBaselineAlignedStack__text_field : global::Doroti.Framework.
         }
     }
 
-    public virtual void _moveChild(global::Doroti.Framework.Rendering.RenderBox child, _BaselineAlignedStackSlot__text_field slot, _BaselineAlignedStackSlot__text_field oldSlot)
+    public virtual void _moveChild(RenderBox child, _BaselineAlignedStackSlot__text_field slot, _BaselineAlignedStackSlot__text_field oldSlot)
     {
         DartRuntimePrimitives.Assert(() => !Equals(slot, oldSlot));
-        global::Doroti.Framework.Rendering.RenderBox? oldChild = _slotToChild.GetValueOrDefault(oldSlot);
+        RenderBox? oldChild = _slotToChild.GetValueOrDefault(oldSlot);
         if (Equals(oldChild, child))
         {
             _setChild(null, oldSlot);

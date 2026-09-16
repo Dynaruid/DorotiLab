@@ -256,23 +256,23 @@ public class RenderTable : RenderBox
     internal virtual TableColumnWidth _defaultColumnWidth { get; set; } = default!;
     internal virtual TextDirection _textDirection { get; set; } = default!;
     internal virtual TableBorder? _border { get; set; } = default;
-    internal virtual List<global::Doroti.Framework.Painting.Decoration?>? _rowDecorations { get; set; } = default;
-    internal virtual List<global::Doroti.Framework.Painting.BoxPainter?>? _rowDecorationPainters { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.ImageConfiguration _configuration { get; set; } = default!;
+    internal virtual List<Decoration?>? _rowDecorations { get; set; } = default;
+    internal virtual List<BoxPainter?>? _rowDecorationPainters { get; set; } = default;
+    internal virtual ImageConfiguration _configuration { get; set; } = default!;
     internal virtual TableCellVerticalAlignment _defaultVerticalAlignment { get; set; } = default!;
     internal virtual TextBaseline? _textBaseline { get; set; } = default;
     internal virtual DartMap<long, _Index__table> _idToIndexMap { get; private set; } = new DartMap<long, _Index__table>();
-    internal virtual DartMap<long, global::Doroti.Framework.Semantics.SemanticsNode> _cachedRows { get; private set; } = new DartMap<long, global::Doroti.Framework.Semantics.SemanticsNode>();
-    internal virtual DartMap<_Index__table, global::Doroti.Framework.Semantics.SemanticsNode> _cachedCells { get; private set; } = new DartMap<_Index__table, global::Doroti.Framework.Semantics.SemanticsNode>();
+    internal virtual DartMap<long, SemanticsNode> _cachedRows { get; private set; } = new DartMap<long, SemanticsNode>();
+    internal virtual DartMap<_Index__table, SemanticsNode> _cachedCells { get; private set; } = new DartMap<_Index__table, SemanticsNode>();
     internal virtual double? _baselineDistance { get; set; } = default;
     internal virtual List<double> _rowTops { get; private set; } = new List<double>();
     internal virtual IEnumerable<double>? _columnLefts { get; set; } = default;
     internal virtual double _tableWidth { get; set; } = default!;
 
-    public RenderTable(long? columns = null, long? rows = null, DartMap<long, TableColumnWidth>? columnWidths = null, TableColumnWidth defaultColumnWidth = default!, TextDirection textDirection = default!, TableBorder? border = null, List<global::Doroti.Framework.Painting.Decoration?>? rowDecorations = null, global::Doroti.Framework.Painting.ImageConfiguration configuration = default!, TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top, TextBaseline? textBaseline = null, List<List<RenderBox>>? children = null)
+    public RenderTable(long? columns = null, long? rows = null, DartMap<long, TableColumnWidth>? columnWidths = null, TableColumnWidth defaultColumnWidth = default!, TextDirection textDirection = default!, TableBorder? border = null, List<Decoration?>? rowDecorations = null, ImageConfiguration configuration = default!, TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top, TextBaseline? textBaseline = null, List<List<RenderBox>>? children = null)
     {
         TableColumnWidth __defaultColumnWidth = defaultColumnWidth ?? new FlexColumnWidth();
-        global::Doroti.Framework.Painting.ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
+        ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
         _textDirection = textDirection;
         _columns = columns ?? (((children is not null) && (checked((long)children.Count) != 0)) ? checked(children.First().Count) : 0L);
         _rows = rows ?? 0L;
@@ -398,7 +398,7 @@ public class RenderTable : RenderBox
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Ui.TextDirection textDirection
+    public virtual TextDirection textDirection
     {
         get => _textDirection;
         set
@@ -427,9 +427,9 @@ public class RenderTable : RenderBox
         }
     }
     [System.Diagnostics.CodeAnalysis.AllowNull]
-    public virtual List<global::Doroti.Framework.Painting.Decoration?> rowDecorations
+    public virtual List<Decoration?> rowDecorations
     {
-        get => new List<global::Doroti.Framework.Painting.Decoration?>(_rowDecorations ?? new List<global::Doroti.Framework.Painting.Decoration?>());
+        get => new List<Decoration?>(_rowDecorations ?? new List<Decoration?>());
         set
         {
             var __value = value;
@@ -440,15 +440,15 @@ public class RenderTable : RenderBox
             _rowDecorations = __value;
             if (_rowDecorationPainters is not null)
             {
-                foreach (global::Doroti.Framework.Painting.BoxPainter? painter in _rowDecorationPainters!)
+                foreach (BoxPainter? painter in _rowDecorationPainters!)
                 {
                     painter?.dispose();
                 }
             }
-            _rowDecorationPainters = (_rowDecorations is not null) ? new List<global::Doroti.Framework.Painting.BoxPainter?>(Enumerable.Repeat<global::Doroti.Framework.Painting.BoxPainter?>(null, checked((int)checked((long)_rowDecorations!.Count)))) : null;
+            _rowDecorationPainters = (_rowDecorations is not null) ? new List<BoxPainter?>(Enumerable.Repeat<BoxPainter?>(null, checked((int)checked((long)_rowDecorations!.Count)))) : null;
         }
     }
-    public virtual global::Doroti.Framework.Painting.ImageConfiguration configuration
+    public virtual ImageConfiguration configuration
     {
         get => _configuration;
         set
@@ -476,7 +476,7 @@ public class RenderTable : RenderBox
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Ui.TextBaseline? textBaseline
+    public virtual TextBaseline? textBaseline
     {
         get => _textBaseline;
         set
@@ -498,7 +498,7 @@ public class RenderTable : RenderBox
         }
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.role = SemanticsRole.table;
@@ -513,13 +513,13 @@ public class RenderTable : RenderBox
         _cachedCells.Clear();
     }
 
-    public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
+    public override void assembleSemanticsNode(SemanticsNode node, SemanticsConfiguration config, IEnumerable<SemanticsNode> children)
     {
-        var rows = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
-        var rawCells = new List<List<List<global::Doroti.Framework.Semantics.SemanticsNode>>>(Enumerable.Select(Enumerable.Range(0, checked((int)_rows)), (rowIndex) => new List<List<global::Doroti.Framework.Semantics.SemanticsNode>>(Enumerable.Select(Enumerable.Range(0, checked((int)_columns)), (columnIndex) => new List<global::Doroti.Framework.Semantics.SemanticsNode>()))));
-        Rect rectWithOffset(global::Doroti.Framework.Semantics.SemanticsNode node)
+        var rows = new List<SemanticsNode>();
+        var rawCells = new List<List<List<SemanticsNode>>>(Enumerable.Select(Enumerable.Range(0, checked((int)_rows)), (rowIndex) => new List<List<SemanticsNode>>(Enumerable.Select(Enumerable.Range(0, checked((int)_columns)), (columnIndex) => new List<SemanticsNode>()))));
+        Rect rectWithOffset(SemanticsNode node)
         {
-            global::Doroti.Ui.Offset offset = ((node.transform is not null) ? MatrixUtils.getAsTranslation(node.transform!) : null) ?? Offset.zero;
+            Offset offset = ((node.transform is not null) ? MatrixUtils.getAsTranslation(node.transform!) : null) ?? Offset.zero;
             return node.rect.shift(offset);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
@@ -551,10 +551,10 @@ public class RenderTable : RenderBox
             return -1L;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        void shiftTransform(global::Doroti.Framework.Semantics.SemanticsNode node, double dx, double dy)
+        void shiftTransform(SemanticsNode node, double dx, double dy)
         {
             Matrix4? previousTransform = node.transform;
-            global::Doroti.Ui.Offset offsetLocal = ((previousTransform is not null) ? MatrixUtils.getAsTranslation(previousTransform) : null) ?? Offset.zero;
+            Offset offsetLocal = ((previousTransform is not null) ? MatrixUtils.getAsTranslation(previousTransform) : null) ?? Offset.zero;
             var newTransform = Matrix4.translationValues(offsetLocal.dx + dx, offsetLocal.dy + dy, 0);
             node.transform = newTransform;
         }
@@ -572,7 +572,7 @@ public class RenderTable : RenderBox
             }
             else
             {
-                global::Doroti.Ui.Rect rectLocal = rectWithOffset(child);
+                Rect rectLocal = rectWithOffset(child);
                 long yAlternate = findRowIndex(rectLocal.top);
                 long xAlternate = findColumnIndex(rectLocal.left);
                 if ((yAlternate != -1L) && (xAlternate != -1L))
@@ -583,25 +583,25 @@ public class RenderTable : RenderBox
         }
         for (var yNested = 0L; yNested < _rows; yNested++)
         {
-            global::Doroti.Ui.Rect rowBox = getRowBox(yNested);
+            Rect rowBox = getRowBox(yNested);
             if (rowBox.height == 0L)
             {
                 continue;
             }
-            global::Doroti.Framework.Semantics.SemanticsNode newRow = _cachedRows.GetValueOrDefault(yNested) ?? (_cachedRows[yNested] = new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () =>
+            SemanticsNode newRow = _cachedRows.GetValueOrDefault(yNested) ?? (_cachedRows[yNested] = new SemanticsNode(showOnScreen: () =>
             {
                 showOnScreen(descendant: this, rect: rowBox);
             }));
-            var cells = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+            var cells = new List<SemanticsNode>();
             for (var xNested = 0L; xNested < columns; xNested++)
             {
-                List<global::Doroti.Framework.Semantics.SemanticsNode> rawChildrens = rawCells[(int)yNested][(int)xNested];
+                List<SemanticsNode> rawChildrens = rawCells[(int)yNested][(int)xNested];
                 if (checked((long)rawChildrens.Count) == 0)
                 {
                     continue;
                 }
                 bool addCellWrapper = (checked(rawChildrens.Count) > 1L) || (!Equals(rawChildrens.Single().role, SemanticsRole.cell)) && (!Equals(rawChildrens.Single().role, SemanticsRole.columnHeader));
-                global::Doroti.Framework.Semantics.SemanticsNode cellLocal = default!;
+                SemanticsNode cellLocal = default!;
                 if (!addCellWrapper)
                 {
                     cellLocal = rawChildrens.Single();
@@ -609,12 +609,12 @@ public class RenderTable : RenderBox
                 else
                 {
                     var indexLocal = new _Index__table(yNested, xNested);
-                    cellLocal = ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
+                    cellLocal = ((Func<SemanticsNode>)(() =>
 {
-    var __cascade = _cachedCells.putIfAbsent(indexLocal, () => new global::Doroti.Framework.Semantics.SemanticsNode());
-    __cascade.updateWith(config: ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
+    var __cascade = _cachedCells.putIfAbsent(indexLocal, () => new SemanticsNode());
+    __cascade.updateWith(config: ((Func<SemanticsConfiguration>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+    var __cascade = new SemanticsConfiguration();
     __cascade.role = SemanticsRole.cell;
     return __cascade;
 }))(), childrenInInversePaintOrder: rawChildrens);
@@ -628,7 +628,7 @@ public class RenderTable : RenderBox
                 }
                 if (addCellWrapper)
                 {
-                    ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
+                    ((Func<SemanticsNode>)(() =>
 {
     var __cascade = cellLocal;
     __cascade.transform = Matrix4.translationValues(_columnLefts!.elementAt(xNested), 0, 0);
@@ -639,7 +639,7 @@ public class RenderTable : RenderBox
                 foreach (var childLocal in rawChildrens)
                 {
                     _idToIndexMap[childLocal.id] = new _Index__table(yNested, xNested);
-                    global::Doroti.Ui.Rect localRect = rectWithOffset(childLocal);
+                    Rect localRect = rectWithOffset(childLocal);
                     double dyLocal = (localRect.bottom > (rowBox.height + Foundation.ConstantsLibrary.precisionErrorTolerance)) ? -_rowTops.elementAt(yNested) : 0.0;
                     double dxLocal = addCellWrapper ? ((localRect.left >= cellWidth) ? -_columnLefts!.elementAt(xNested) : 0.0) : ((localRect.right <= _columnLefts!.elementAt(xNested)) ? _columnLefts!.elementAt(xNested) : 0.0);
                     if ((dxLocal != 0L) || (dyLocal != 0L))
@@ -650,12 +650,12 @@ public class RenderTable : RenderBox
                 cellLocal.indexInParent = xNested;
                 cells.Add(cellLocal);
             }
-            ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
+            ((Func<SemanticsNode>)(() =>
 {
     var __cascade = newRow;
-    __cascade.updateWith(config: ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
+    __cascade.updateWith(config: ((Func<SemanticsConfiguration>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+    var __cascade = new SemanticsConfiguration();
     __cascade.indexInParent = yNested;
     __cascade.role = SemanticsRole.row;
     return __cascade;
@@ -808,11 +808,11 @@ public class RenderTable : RenderBox
         base.detach();
         if (_rowDecorationPainters is not null)
         {
-            foreach (global::Doroti.Framework.Painting.BoxPainter? painter in _rowDecorationPainters!)
+            foreach (BoxPainter? painter in _rowDecorationPainters!)
             {
                 painter?.dispose();
             }
-            _rowDecorationPainters = new List<global::Doroti.Framework.Painting.BoxPainter?>(Enumerable.Repeat<global::Doroti.Framework.Painting.BoxPainter?>(null, checked((int)checked((long)_rowDecorations!.Count))));
+            _rowDecorationPainters = new List<BoxPainter?>(Enumerable.Repeat<BoxPainter?>(null, checked((int)checked((long)_rowDecorations!.Count))));
         }
         foreach (RenderBox? child in _children)
         {
@@ -943,8 +943,8 @@ public class RenderTable : RenderBox
     internal virtual List<double> _computeColumnWidths(BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => checked(_children.Count) == (rows * columns));
-        var widths = new List<double>(Enumerable.Repeat<double>(0.0, checked((int)columns)));
-        var minWidths = new List<double>(Enumerable.Repeat<double>(0.0, checked((int)columns)));
+        var widths = new List<double>(Enumerable.Repeat(0.0, checked((int)columns)));
+        var minWidths = new List<double>(Enumerable.Repeat(0.0, checked((int)columns)));
         var flexes = new List<double?>(Enumerable.Repeat<double?>(null, checked((int)columns)));
         var tableWidth = 0.0;
         var unflexedTableWidth = 0.0;
@@ -1086,7 +1086,7 @@ public class RenderTable : RenderBox
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Rect getRowBox(long row)
+    public virtual Rect getRowBox(long row)
     {
         DartRuntimePrimitives.Assert(() => row >= 0L);
         DartRuntimePrimitives.Assert(() => row < rows);
@@ -1154,7 +1154,7 @@ public class RenderTable : RenderBox
                         case TableCellVerticalAlignment.bottom:
                         case TableCellVerticalAlignment.intrinsicHeight:
                             {
-                                global::Doroti.Ui.Size childSize = child.getDryLayout(BoxConstraints.CreateTightFor(width: widths[(int)x]));
+                                Size childSize = child.getDryLayout(BoxConstraints.CreateTightFor(width: widths[(int)x]));
                                 rowHeight = Math.Max(rowHeight, childSize.height);
                                 break;
                             }
@@ -1167,7 +1167,7 @@ public class RenderTable : RenderBox
             }
             rowTop += rowHeight;
         }
-        return constraints.constrain(new global::Doroti.Ui.Size(tableWidth, rowTop));
+        return constraints.constrain(new Size(tableWidth, rowTop));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1184,7 +1184,7 @@ public class RenderTable : RenderBox
             return;
         }
         List<double> widths = _computeColumnWidths(constraintsLocal);
-        var positions = new List<double>(Enumerable.Repeat<double>(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))));
+        var positions = new List<double>(Enumerable.Repeat(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))));
         switch (textDirection)
         {
             case TextDirection.rtl:
@@ -1220,7 +1220,7 @@ public class RenderTable : RenderBox
             var haveBaseline = false;
             var beforeBaselineDistance = 0.0;
             var afterBaselineDistance = 0.0;
-            var baselines = new List<double>(Enumerable.Repeat<double>(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))));
+            var baselines = new List<double>(Enumerable.Repeat(0.0, checked((int)DartRuntimePrimitives.RequireValue(columnsLocal))));
             for (var xNested = 0L; xNested < DartRuntimePrimitives.RequireValue(columnsLocal); xNested += 1L)
             {
                 long xy = xNested + (yLocal * DartRuntimePrimitives.RequireValue(columnsLocal));
@@ -1248,7 +1248,7 @@ public class RenderTable : RenderBox
                                 else
                                 {
                                     rowHeight = Math.Max(rowHeight, child.size.height);
-                                    childParentData.offset = new global::Doroti.Ui.Offset(positions[(int)xNested], rowTop);
+                                    childParentData.offset = new Offset(positions[(int)xNested], rowTop);
                                 }
                                 break;
                             }
@@ -1287,29 +1287,29 @@ public class RenderTable : RenderBox
                     {
                         case TableCellVerticalAlignment.baseline:
                             {
-                                childParentDataLocal.offset = new global::Doroti.Ui.Offset(positions[(int)xCurrent], rowTop + beforeBaselineDistance - baselines[(int)xCurrent]);
+                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop + beforeBaselineDistance - baselines[(int)xCurrent]);
                                 break;
                             }
                         case TableCellVerticalAlignment.top:
                             {
-                                childParentDataLocal.offset = new global::Doroti.Ui.Offset(positions[(int)xCurrent], rowTop);
+                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop);
                                 break;
                             }
                         case TableCellVerticalAlignment.middle:
                             {
-                                childParentDataLocal.offset = new global::Doroti.Ui.Offset(positions[(int)xCurrent], rowTop + ((rowHeight - childLocal.size.height) / 2.0));
+                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop + ((rowHeight - childLocal.size.height) / 2.0));
                                 break;
                             }
                         case TableCellVerticalAlignment.bottom:
                             {
-                                childParentDataLocal.offset = new global::Doroti.Ui.Offset(positions[(int)xCurrent], rowTop + rowHeight - childLocal.size.height);
+                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop + rowHeight - childLocal.size.height);
                                 break;
                             }
                         case TableCellVerticalAlignment.fill:
                         case TableCellVerticalAlignment.intrinsicHeight:
                             {
                                 childLocal.layout(BoxConstraints.CreateTightFor(width: widths[(int)xCurrent], height: rowHeight));
-                                childParentDataLocal.offset = new global::Doroti.Ui.Offset(positions[(int)xCurrent], rowTop);
+                                childParentDataLocal.offset = new Offset(positions[(int)xCurrent], rowTop);
                                 break;
                             }
                     }
@@ -1318,7 +1318,7 @@ public class RenderTable : RenderBox
             rowTop += rowHeight;
         }
         _rowTops.Add(rowTop);
-        size = constraintsLocal.constrain(new global::Doroti.Ui.Size(_tableWidth, rowTop));
+        size = constraintsLocal.constrain(new Size(_tableWidth, rowTop));
         DartRuntimePrimitives.Assert(() => checked(_rowTops.Count) == (DartRuntimePrimitives.RequireValue(rowsLocal) + 1L));
     }
 
@@ -1362,7 +1362,7 @@ public class RenderTable : RenderBox
         if (_rowDecorations is not null)
         {
             DartRuntimePrimitives.Assert(() => checked(_rowDecorations!.Count) == checked((long)_rowDecorationPainters!.Count));
-            global::Doroti.Ui.Canvas canvasLocal = context.canvas;
+            Canvas canvasLocal = context.canvas;
             for (var y = 0L; y < rows; y += 1L)
             {
                 if (checked(_rowDecorations!.Count) <= y)
@@ -1372,7 +1372,7 @@ public class RenderTable : RenderBox
                 if (_rowDecorations![(int)y] is not null)
                 {
                     _rowDecorationPainters![(int)y] ??= _rowDecorations![(int)y]!.createBoxPainter(markNeedsPaint);
-                    _rowDecorationPainters![(int)y]!.paint(canvasLocal, new global::Doroti.Ui.Offset(offset.dx, offset.dy + _rowTops[(int)y]), configuration.copyWith(size: new global::Doroti.Ui.Size(size.width, _rowTops[(int)(y + 1L)] - _rowTops[(int)y])));
+                    _rowDecorationPainters![(int)y]!.paint(canvasLocal, new Offset(offset.dx, offset.dy + _rowTops[(int)y]), configuration.copyWith(size: new Size(size.width, _rowTops[(int)(y + 1L)] - _rowTops[(int)y])));
                 }
             }
         }
@@ -1403,8 +1403,8 @@ public class RenderTable : RenderBox
         properties.add(new DiagnosticsProperty<DartMap<long, TableColumnWidth>>("specified column widths", _columnWidths, level: (checked((long)_columnWidths.Count) == 0) ? DiagnosticLevel.hidden : DiagnosticLevel.info));
         properties.add(new DiagnosticsProperty<TableColumnWidth>("default column width", defaultColumnWidth));
         properties.add(new MessageProperty("table size", $"{columns}×{rows}"));
-        properties.add(new IterableProperty<string>("column offsets", _columnLefts?.map<double, string>(value => Foundation.DebugLibrary.debugFormatDouble(value)), ifNull: "unknown"));
-        properties.add(new IterableProperty<string>("row offsets", _rowTops.map<double, string>(value => Foundation.DebugLibrary.debugFormatDouble(value)), ifNull: "unknown"));
+        properties.add(new IterableProperty<string>("column offsets", _columnLefts?.map(value => Foundation.DebugLibrary.debugFormatDouble(value)), ifNull: "unknown"));
+        properties.add(new IterableProperty<string>("row offsets", _rowTops.map(value => Foundation.DebugLibrary.debugFormatDouble(value)), ifNull: "unknown"));
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()

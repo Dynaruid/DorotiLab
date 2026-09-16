@@ -13,31 +13,31 @@ internal delegate Size _GetChildSize__wrap(RenderBox child);
 
 public class _AxisSize__wrap
 {
-    public global::Doroti.Ui.Size _size { get; }
+    public Size _size { get; }
 
-    private _AxisSize__wrap(global::Doroti.Ui.Size _size)
+    private _AxisSize__wrap(Size _size)
     {
         this._size = _size;
     }
 
-    public static _AxisSize__wrap Create_(global::Doroti.Ui.Size _size) => new _AxisSize__wrap(_size);
+    public static _AxisSize__wrap Create_(Size _size) => new _AxisSize__wrap(_size);
 
-    public static implicit operator global::Doroti.Ui.Size(_AxisSize__wrap value) => value._size;
-    public static implicit operator _AxisSize__wrap(global::Doroti.Ui.Size value) => new _AxisSize__wrap(value);
+    public static implicit operator Size(_AxisSize__wrap value) => value._size;
+    public static implicit operator _AxisSize__wrap(Size value) => new _AxisSize__wrap(value);
 
     public static _AxisSize__wrap empty = Create_(Size.zero);
 
     internal _AxisSize__wrap(double mainAxisExtent, double crossAxisExtent)
     {
-        _size = new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent);
+        _size = new Size(mainAxisExtent, crossAxisExtent);
     }
 
-    internal static _AxisSize__wrap CreateFromSize(Size size, global::Doroti.Framework.Painting.Axis direction)
+    internal static _AxisSize__wrap CreateFromSize(Size size, Axis direction)
     {
         return Create_(_convert(size, direction));
     }
 
-    internal static global::Doroti.Ui.Size _convert(Size size, global::Doroti.Framework.Painting.Axis direction)
+    internal static Size _convert(Size size, Axis direction)
     {
         return direction switch { Axis.horizontal => size, Axis.vertical => size.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -45,8 +45,8 @@ public class _AxisSize__wrap
 
     public virtual double mainAxisExtent => _size.width;
     public virtual double crossAxisExtent => _size.height;
-    public virtual global::Doroti.Ui.Size toSize(global::Doroti.Framework.Painting.Axis direction) => _convert(_size, direction);
-    public virtual _AxisSize__wrap applyConstraints(BoxConstraints constraints, global::Doroti.Framework.Painting.Axis direction)
+    public virtual Size toSize(Axis direction) => _convert(_size, direction);
+    public virtual _AxisSize__wrap applyConstraints(BoxConstraints constraints, Axis direction)
     {
         BoxConstraints effectiveConstraints = direction switch { Axis.horizontal => constraints, Axis.vertical => constraints.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         return Create_(effectiveConstraints.constrain(_size));
@@ -54,8 +54,8 @@ public class _AxisSize__wrap
     }
 
     public virtual _AxisSize__wrap flipped => Create_(_size.flipped);
-    public virtual _AxisSize__wrap op_Add(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size(_size.width + other._size.width, Math.Max(_size.height, other._size.height)));
-    public virtual _AxisSize__wrap op_Subtract(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size(_size.width - other._size.width, _size.height - other._size.height));
+    public virtual _AxisSize__wrap op_Add(_AxisSize__wrap other) => Create_(new Size(_size.width + other._size.width, Math.Max(_size.height, other._size.height)));
+    public virtual _AxisSize__wrap op_Subtract(_AxisSize__wrap other) => Create_(new Size(_size.width - other._size.width, _size.height - other._size.height));
 }
 
 public enum WrapAlignment
@@ -131,14 +131,14 @@ public class WrapParentData : ContainerBoxParentData<RenderBox>
 
 public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapParentData>, RenderBoxContainerDefaultsMixin<RenderBox, WrapParentData>
 {
-    internal virtual global::Doroti.Framework.Painting.Axis _direction { get; set; } = default!;
+    internal virtual Axis _direction { get; set; } = default!;
     internal virtual WrapAlignment _alignment { get; set; } = default!;
     internal virtual double _spacing { get; set; } = default!;
     internal virtual WrapAlignment _runAlignment { get; set; } = default!;
     internal virtual double _runSpacing { get; set; } = default!;
     internal virtual WrapCrossAlignment _crossAxisAlignment { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.VerticalDirection _verticalDirection { get; set; } = default!;
+    internal virtual VerticalDirection _verticalDirection { get; set; } = default!;
     internal virtual Clip _clipBehavior { get; set; } = Clip.none;
     internal virtual bool _hasVisualOverflow { get; set; } = false;
     internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
@@ -146,7 +146,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    public RenderWrap(List<RenderBox>? children = null, global::Doroti.Framework.Painting.Axis direction = Axis.horizontal, WrapAlignment alignment = WrapAlignment.start, double spacing = 0.0, WrapAlignment runAlignment = WrapAlignment.start, double runSpacing = 0.0, WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.start, TextDirection? textDirection = null, global::Doroti.Framework.Painting.VerticalDirection verticalDirection = VerticalDirection.down, Clip clipBehavior = Clip.none)
+    public RenderWrap(List<RenderBox>? children = null, Axis direction = Axis.horizontal, WrapAlignment alignment = WrapAlignment.start, double spacing = 0.0, WrapAlignment runAlignment = WrapAlignment.start, double runSpacing = 0.0, WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.start, TextDirection? textDirection = null, VerticalDirection verticalDirection = VerticalDirection.down, Clip clipBehavior = Clip.none)
     {
         _direction = direction;
         _alignment = alignment;
@@ -159,7 +159,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         _clipBehavior = clipBehavior;
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis direction
+    public virtual Axis direction
     {
         get => _direction;
         set
@@ -243,7 +243,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Ui.TextDirection? textDirection
+    public virtual TextDirection? textDirection
     {
         get => _textDirection;
         set
@@ -256,7 +256,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             }
         }
     }
-    public virtual global::Doroti.Framework.Painting.VerticalDirection verticalDirection
+    public virtual VerticalDirection verticalDirection
     {
         get => _verticalDirection;
         set
@@ -269,7 +269,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             }
         }
     }
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -469,9 +469,9 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Offset _getOffset(double mainAxisOffset, double crossAxisOffset)
+    internal virtual Offset _getOffset(double mainAxisOffset, double crossAxisOffset)
     {
-        return direction switch { Axis.horizontal => new global::Doroti.Ui.Offset(mainAxisOffset, crossAxisOffset), Axis.vertical => new global::Doroti.Ui.Offset(crossAxisOffset, mainAxisOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return direction switch { Axis.horizontal => new Offset(mainAxisOffset, crossAxisOffset), Axis.vertical => new Offset(crossAxisOffset, mainAxisOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -515,7 +515,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     }
 
     // Dart library-private member: distinct from the same name in the base library.
-    internal new virtual global::Doroti.Ui.Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
+    internal new virtual Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
     {
         var (childConstraints, mainAxisLimit) = direction switch { Axis.horizontal => ((BoxConstraints, double))(new BoxConstraints(maxWidth: constraints.maxWidth), constraints.maxWidth), Axis.vertical => ((BoxConstraints, double))(new BoxConstraints(maxHeight: constraints.maxHeight), constraints.maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var mainAxisExtent = 0.0;
@@ -526,7 +526,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         RenderBox? child = firstChild;
         while (child is not null)
         {
-            global::Doroti.Ui.Size childSize = layoutChild(child, childConstraints);
+            Size childSize = layoutChild(child, childConstraints);
             double childMainAxisExtent = _getMainAxisExtent(childSize);
             double childCrossAxisExtent = _getCrossAxisExtent(childSize);
             if ((childCount > 0L) && ((runMainAxisExtent + childMainAxisExtent + spacing) > mainAxisLimit))
@@ -548,11 +548,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         }
         crossAxisExtent += runCrossAxisExtent;
         mainAxisExtent = Math.Max(mainAxisExtent, runMainAxisExtent);
-        return constraints.constrain(direction switch { Axis.horizontal => new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent), Axis.vertical => new global::Doroti.Ui.Size(crossAxisExtent, mainAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return constraints.constrain(direction switch { Axis.horizontal => new Size(mainAxisExtent, crossAxisExtent), Axis.vertical => new Size(crossAxisExtent, mainAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Size _getChildSize(RenderBox child) => child.size;
+    internal static Size _getChildSize(RenderBox child) => child.size;
     internal static void _setChildPosition(Offset offset, RenderBox child)
     {
         ((WrapParentData?)(object?)child.parentData!)!.offset = offset;
@@ -663,14 +663,14 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", direction));
+        properties.add(new EnumProperty<Axis>("direction", direction));
         properties.add(new EnumProperty<WrapAlignment>("alignment", alignment));
         properties.add(new DoubleProperty("spacing", spacing));
         properties.add(new EnumProperty<WrapAlignment>("runAlignment", runAlignment));
         properties.add(new DoubleProperty("runSpacing", runSpacing));
         properties.add(new DoubleProperty("crossAxisAlignment", runSpacing));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", verticalDirection, defaultValue: VerticalDirection.down));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new EnumProperty<VerticalDirection>("verticalDirection", verticalDirection, defaultValue: VerticalDirection.down));
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)

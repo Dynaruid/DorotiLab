@@ -6,7 +6,7 @@ namespace Doroti.Framework.Widgets;
 
 public class BottomNavigationBarItem
 {
-    public virtual global::Doroti.Framework.Foundation.Key? key { get; private set; }
+    public virtual Key? key { get; private set; }
     public virtual Widget icon { get; private set; } = default!;
     public virtual Widget activeIcon { get; private set; } = default!;
     public virtual string? label { get; private set; }
@@ -14,7 +14,7 @@ public class BottomNavigationBarItem
     public virtual string? tooltip { get; private set; }
     public virtual string? semanticsLabel { get; private set; }
 
-    public BottomNavigationBarItem(global::Doroti.Framework.Foundation.Key? key = null, Widget icon = default!, string? label = null, Widget? activeIcon = null, Color? backgroundColor = null, string? tooltip = null, string? semanticsLabel = null)
+    public BottomNavigationBarItem(Key? key = null, Widget icon = default!, string? label = null, Widget? activeIcon = null, Color? backgroundColor = null, string? tooltip = null, string? semanticsLabel = null)
     {
         this.key = key;
         this.icon = icon;

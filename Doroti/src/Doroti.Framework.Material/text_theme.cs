@@ -6,25 +6,25 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
+public class TextTheme : Diagnosticable
 {
-    public virtual global::Doroti.Framework.Painting.TextStyle? displayLarge { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? displayMedium { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? displaySmall { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? headlineLarge { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? headlineMedium { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? headlineSmall { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? titleLarge { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? titleMedium { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? titleSmall { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? bodyLarge { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? bodyMedium { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? bodySmall { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? labelLarge { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? labelMedium { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? labelSmall { get; private set; }
+    public virtual TextStyle? displayLarge { get; private set; }
+    public virtual TextStyle? displayMedium { get; private set; }
+    public virtual TextStyle? displaySmall { get; private set; }
+    public virtual TextStyle? headlineLarge { get; private set; }
+    public virtual TextStyle? headlineMedium { get; private set; }
+    public virtual TextStyle? headlineSmall { get; private set; }
+    public virtual TextStyle? titleLarge { get; private set; }
+    public virtual TextStyle? titleMedium { get; private set; }
+    public virtual TextStyle? titleSmall { get; private set; }
+    public virtual TextStyle? bodyLarge { get; private set; }
+    public virtual TextStyle? bodyMedium { get; private set; }
+    public virtual TextStyle? bodySmall { get; private set; }
+    public virtual TextStyle? labelLarge { get; private set; }
+    public virtual TextStyle? labelMedium { get; private set; }
+    public virtual TextStyle? labelSmall { get; private set; }
 
-    public TextTheme(global::Doroti.Framework.Painting.TextStyle? displayLarge = null, global::Doroti.Framework.Painting.TextStyle? displayMedium = null, global::Doroti.Framework.Painting.TextStyle? displaySmall = null, global::Doroti.Framework.Painting.TextStyle? headlineLarge = null, global::Doroti.Framework.Painting.TextStyle? headlineMedium = null, global::Doroti.Framework.Painting.TextStyle? headlineSmall = null, global::Doroti.Framework.Painting.TextStyle? titleLarge = null, global::Doroti.Framework.Painting.TextStyle? titleMedium = null, global::Doroti.Framework.Painting.TextStyle? titleSmall = null, global::Doroti.Framework.Painting.TextStyle? bodyLarge = null, global::Doroti.Framework.Painting.TextStyle? bodyMedium = null, global::Doroti.Framework.Painting.TextStyle? bodySmall = null, global::Doroti.Framework.Painting.TextStyle? labelLarge = null, global::Doroti.Framework.Painting.TextStyle? labelMedium = null, global::Doroti.Framework.Painting.TextStyle? labelSmall = null)
+    public TextTheme(TextStyle? displayLarge = null, TextStyle? displayMedium = null, TextStyle? displaySmall = null, TextStyle? headlineLarge = null, TextStyle? headlineMedium = null, TextStyle? headlineSmall = null, TextStyle? titleLarge = null, TextStyle? titleMedium = null, TextStyle? titleSmall = null, TextStyle? bodyLarge = null, TextStyle? bodyMedium = null, TextStyle? bodySmall = null, TextStyle? labelLarge = null, TextStyle? labelMedium = null, TextStyle? labelSmall = null)
     {
         this.displayLarge = displayLarge;
         this.displayMedium = displayMedium;
@@ -43,7 +43,7 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
         this.labelSmall = labelSmall;
     }
 
-    public virtual TextTheme copyWith(global::Doroti.Framework.Painting.TextStyle? displayLarge = null, global::Doroti.Framework.Painting.TextStyle? displayMedium = null, global::Doroti.Framework.Painting.TextStyle? displaySmall = null, global::Doroti.Framework.Painting.TextStyle? headlineLarge = null, global::Doroti.Framework.Painting.TextStyle? headlineMedium = null, global::Doroti.Framework.Painting.TextStyle? headlineSmall = null, global::Doroti.Framework.Painting.TextStyle? titleLarge = null, global::Doroti.Framework.Painting.TextStyle? titleMedium = null, global::Doroti.Framework.Painting.TextStyle? titleSmall = null, global::Doroti.Framework.Painting.TextStyle? bodyLarge = null, global::Doroti.Framework.Painting.TextStyle? bodyMedium = null, global::Doroti.Framework.Painting.TextStyle? bodySmall = null, global::Doroti.Framework.Painting.TextStyle? labelLarge = null, global::Doroti.Framework.Painting.TextStyle? labelMedium = null, global::Doroti.Framework.Painting.TextStyle? labelSmall = null)
+    public virtual TextTheme copyWith(TextStyle? displayLarge = null, TextStyle? displayMedium = null, TextStyle? displaySmall = null, TextStyle? headlineLarge = null, TextStyle? headlineMedium = null, TextStyle? headlineSmall = null, TextStyle? titleLarge = null, TextStyle? titleMedium = null, TextStyle? titleSmall = null, TextStyle? bodyLarge = null, TextStyle? bodyMedium = null, TextStyle? bodySmall = null, TextStyle? labelLarge = null, TextStyle? labelMedium = null, TextStyle? labelSmall = null)
     {
         return new TextTheme(displayLarge: displayLarge ?? this.displayLarge, displayMedium: displayMedium ?? this.displayMedium, displaySmall: displaySmall ?? this.displaySmall, headlineLarge: headlineLarge ?? this.headlineLarge, headlineMedium: headlineMedium ?? this.headlineMedium, headlineSmall: headlineSmall ?? this.headlineSmall, titleLarge: titleLarge ?? this.titleLarge, titleMedium: titleMedium ?? this.titleMedium, titleSmall: titleSmall ?? this.titleSmall, bodyLarge: bodyLarge ?? this.bodyLarge, bodyMedium: bodyMedium ?? this.bodyMedium, bodySmall: bodySmall ?? this.bodySmall, labelLarge: labelLarge ?? this.labelLarge, labelMedium: labelMedium ?? this.labelMedium, labelSmall: labelSmall ?? this.labelSmall);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -75,8 +75,8 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static TextTheme of(global::Doroti.Framework.Widgets.BuildContext context) => Theme.of(context).textTheme;
-    public static TextTheme primaryOf(global::Doroti.Framework.Widgets.BuildContext context) => Theme.of(context).primaryTextTheme;
+    public static TextTheme of(BuildContext context) => Theme.of(context).textTheme;
+    public static TextTheme primaryOf(BuildContext context) => Theme.of(context).primaryTextTheme;
     public override bool Equals(object? other)
     {
         var __other = other as TextTheme;
@@ -93,24 +93,24 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(displayLarge, displayMedium, displaySmall, headlineLarge, headlineMedium, headlineSmall, titleLarge, titleMedium, titleSmall, bodyLarge, bodyMedium, bodySmall, labelLarge, labelMedium, labelSmall));
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         TextTheme defaultTheme = Typography.CreateMaterial2021(platform: PlatformLibrary.defaultTargetPlatform).black;
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayLarge", displayLarge, defaultValue: defaultTheme.displayLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayMedium", displayMedium, defaultValue: defaultTheme.displayMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displaySmall", displaySmall, defaultValue: defaultTheme.displaySmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineLarge", headlineLarge, defaultValue: defaultTheme.headlineLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineMedium", headlineMedium, defaultValue: defaultTheme.headlineMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineSmall", headlineSmall, defaultValue: defaultTheme.headlineSmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleLarge", titleLarge, defaultValue: defaultTheme.titleLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleMedium", titleMedium, defaultValue: defaultTheme.titleMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleSmall", titleSmall, defaultValue: defaultTheme.titleSmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodyLarge", bodyLarge, defaultValue: defaultTheme.bodyLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodyMedium", bodyMedium, defaultValue: defaultTheme.bodyMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodySmall", bodySmall, defaultValue: defaultTheme.bodySmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelLarge", labelLarge, defaultValue: defaultTheme.labelLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelMedium", labelMedium, defaultValue: defaultTheme.labelMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelSmall", labelSmall, defaultValue: defaultTheme.labelSmall));
+        properties.add(new DiagnosticsProperty<TextStyle>("displayLarge", displayLarge, defaultValue: defaultTheme.displayLarge));
+        properties.add(new DiagnosticsProperty<TextStyle>("displayMedium", displayMedium, defaultValue: defaultTheme.displayMedium));
+        properties.add(new DiagnosticsProperty<TextStyle>("displaySmall", displaySmall, defaultValue: defaultTheme.displaySmall));
+        properties.add(new DiagnosticsProperty<TextStyle>("headlineLarge", headlineLarge, defaultValue: defaultTheme.headlineLarge));
+        properties.add(new DiagnosticsProperty<TextStyle>("headlineMedium", headlineMedium, defaultValue: defaultTheme.headlineMedium));
+        properties.add(new DiagnosticsProperty<TextStyle>("headlineSmall", headlineSmall, defaultValue: defaultTheme.headlineSmall));
+        properties.add(new DiagnosticsProperty<TextStyle>("titleLarge", titleLarge, defaultValue: defaultTheme.titleLarge));
+        properties.add(new DiagnosticsProperty<TextStyle>("titleMedium", titleMedium, defaultValue: defaultTheme.titleMedium));
+        properties.add(new DiagnosticsProperty<TextStyle>("titleSmall", titleSmall, defaultValue: defaultTheme.titleSmall));
+        properties.add(new DiagnosticsProperty<TextStyle>("bodyLarge", bodyLarge, defaultValue: defaultTheme.bodyLarge));
+        properties.add(new DiagnosticsProperty<TextStyle>("bodyMedium", bodyMedium, defaultValue: defaultTheme.bodyMedium));
+        properties.add(new DiagnosticsProperty<TextStyle>("bodySmall", bodySmall, defaultValue: defaultTheme.bodySmall));
+        properties.add(new DiagnosticsProperty<TextStyle>("labelLarge", labelLarge, defaultValue: defaultTheme.labelLarge));
+        properties.add(new DiagnosticsProperty<TextStyle>("labelMedium", labelMedium, defaultValue: defaultTheme.labelMedium));
+        properties.add(new DiagnosticsProperty<TextStyle>("labelSmall", labelSmall, defaultValue: defaultTheme.labelSmall));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);

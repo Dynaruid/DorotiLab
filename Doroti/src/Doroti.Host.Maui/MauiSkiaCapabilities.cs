@@ -1,6 +1,7 @@
 using Doroti.Skia.Rendering;
 using Doroti.Skia.RuntimeEffects;
 using Doroti.Ui;
+using Color = Doroti.Ui.Color;
 using SkiaSharp;
 using UiImage = Doroti.Ui.Image;
 
@@ -56,8 +57,8 @@ internal sealed class MauiSkiaCapabilities :
     internal MauiSkiaCapabilities(
         ulong viewId,
         MauiHostAdapter host,
-        Doroti.Ui.Color? backgroundColor,
-        Doroti.Ui.Color? darkBackgroundColor)
+        Color? backgroundColor,
+        Color? darkBackgroundColor)
     {
         _host = host;
         _renderer = new(

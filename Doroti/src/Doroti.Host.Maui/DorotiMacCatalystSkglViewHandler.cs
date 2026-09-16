@@ -72,7 +72,7 @@ public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
                     // construction, so pin it again in the actual resize callback.
                     Layer.ContentsGravity = CALayer.GravityTopLeft;
                     DrawableSize = drawableSize;
-                    Layer.ContentsScale = (System.Runtime.InteropServices.NFloat)scale;
+                    Layer.ContentsScale = (nfloat)scale;
 
                     // MTKView.Draw invokes the existing SkiaSharp delegate with
                     // the drawable that exactly matches the current bounds.

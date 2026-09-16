@@ -49,12 +49,12 @@ public class BeveledRectangleBorder : OutlinedBorder
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Path _getPath(RRect rrect)
+    internal virtual Path _getPath(RRect rrect)
     {
-        var centerLeft = new global::Doroti.Ui.Offset(rrect.left, rrect.center.dy);
-        var centerRight = new global::Doroti.Ui.Offset(rrect.right, rrect.center.dy);
-        var centerTop = new global::Doroti.Ui.Offset(rrect.center.dx, rrect.top);
-        var centerBottom = new global::Doroti.Ui.Offset(rrect.center.dx, rrect.bottom);
+        var centerLeft = new Offset(rrect.left, rrect.center.dy);
+        var centerRight = new Offset(rrect.right, rrect.center.dy);
+        var centerTop = new Offset(rrect.center.dx, rrect.top);
+        var centerBottom = new Offset(rrect.center.dx, rrect.bottom);
         double tlRadiusXLocal = Math.Max(0.0, rrect.tlRadiusX);
         double tlRadiusYLocal = Math.Max(0.0, rrect.tlRadiusY);
         double trRadiusXLocal = Math.Max(0.0, rrect.trRadiusX);
@@ -63,10 +63,10 @@ public class BeveledRectangleBorder : OutlinedBorder
         double blRadiusYLocal = Math.Max(0.0, rrect.blRadiusY);
         double brRadiusXLocal = Math.Max(0.0, rrect.brRadiusX);
         double brRadiusYLocal = Math.Max(0.0, rrect.brRadiusY);
-        var vertices = new List<global::Doroti.Ui.Offset> { new global::Doroti.Ui.Offset(rrect.left, Math.Min(centerLeft.dy, rrect.top + tlRadiusYLocal)), new global::Doroti.Ui.Offset(Math.Min(centerTop.dx, rrect.left + tlRadiusXLocal), rrect.top), new global::Doroti.Ui.Offset(Math.Max(centerTop.dx, rrect.right - trRadiusXLocal), rrect.top), new global::Doroti.Ui.Offset(rrect.right, Math.Min(centerRight.dy, rrect.top + trRadiusYLocal)), new global::Doroti.Ui.Offset(rrect.right, Math.Max(centerRight.dy, rrect.bottom - brRadiusYLocal)), new global::Doroti.Ui.Offset(Math.Max(centerBottom.dx, rrect.right - brRadiusXLocal), rrect.bottom), new global::Doroti.Ui.Offset(Math.Min(centerBottom.dx, rrect.left + blRadiusXLocal), rrect.bottom), new global::Doroti.Ui.Offset(rrect.left, Math.Max(centerLeft.dy, rrect.bottom - blRadiusYLocal)) };
+        var vertices = new List<Offset> { new Offset(rrect.left, Math.Min(centerLeft.dy, rrect.top + tlRadiusYLocal)), new Offset(Math.Min(centerTop.dx, rrect.left + tlRadiusXLocal), rrect.top), new Offset(Math.Max(centerTop.dx, rrect.right - trRadiusXLocal), rrect.top), new Offset(rrect.right, Math.Min(centerRight.dy, rrect.top + trRadiusYLocal)), new Offset(rrect.right, Math.Max(centerRight.dy, rrect.bottom - brRadiusYLocal)), new Offset(Math.Max(centerBottom.dx, rrect.right - brRadiusXLocal), rrect.bottom), new Offset(Math.Min(centerBottom.dx, rrect.left + blRadiusXLocal), rrect.bottom), new Offset(rrect.left, Math.Max(centerLeft.dy, rrect.bottom - blRadiusYLocal)) };
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addPolygon(vertices, true);
     return __cascade;
 }))();
@@ -99,9 +99,9 @@ public class BeveledRectangleBorder : OutlinedBorder
                 }
             case BorderStyle.solid:
                 {
-                    global::Doroti.Ui.RRect borderRect = this.borderRadius.resolve(textDirection).toRRect(rect);
-                    global::Doroti.Ui.RRect adjustedRect = borderRect.inflate(side.strokeOutset);
-                    global::Doroti.Ui.Path path = ((Func<Path>)(() =>
+                    RRect borderRect = this.borderRadius.resolve(textDirection).toRRect(rect);
+                    RRect adjustedRect = borderRect.inflate(side.strokeOutset);
+                    Path path = ((Func<Path>)(() =>
 {
     var __cascade = _getPath(adjustedRect);
     __cascade.addPath(getInnerPath(rect, textDirection: textDirection), Offset.zero);

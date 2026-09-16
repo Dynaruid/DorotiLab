@@ -164,10 +164,10 @@ public class LinearBorder : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Rect adjustedRect = dimensions.resolve(textDirection).deflateRect(rect);
+        Rect adjustedRect = dimensions.resolve(textDirection).deflateRect(rect);
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(adjustedRect);
     return __cascade;
 }))();
@@ -178,7 +178,7 @@ public class LinearBorder : OutlinedBorder
     {
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(rect);
     return __cascade;
 }))();
@@ -189,10 +189,10 @@ public class LinearBorder : OutlinedBorder
     {
         EdgeInsets insets = dimensions.resolve(textDirection);
         var rtlLocal = Equals(textDirection, TextDirection.rtl);
-        var path = new global::Doroti.Ui.Path();
+        var path = new Path();
         var paintLocal = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.strokeWidth = 0.0;
     return __cascade;
 }))();

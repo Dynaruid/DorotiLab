@@ -18,8 +18,8 @@ public interface PaintingBinding
     }
     public ImageCache imageCache { get; }
     public ImageCache createImageCache();
-    public Future<global::Doroti.Ui.Codec> instantiateImageCodecFromBuffer(ImmutableBuffer buffer, long? cacheWidth = null, long? cacheHeight = null, bool allowUpscaling = false);
-    public Future<global::Doroti.Ui.Codec> instantiateImageCodecWithSize(ImmutableBuffer buffer, Func<long, long, TargetImageSize>? getTargetSize = null);
+    public Future<Codec> instantiateImageCodecFromBuffer(ImmutableBuffer buffer, long? cacheWidth = null, long? cacheHeight = null, bool allowUpscaling = false);
+    public Future<Codec> instantiateImageCodecWithSize(ImmutableBuffer buffer, Func<long, long, TargetImageSize>? getTargetSize = null);
     public void evict(string asset);
     public void handleMemoryPressure();
     public Listenable systemFonts { get; }

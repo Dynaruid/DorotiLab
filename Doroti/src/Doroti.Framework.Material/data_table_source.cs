@@ -2,7 +2,7 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/data_table_source.dart
 namespace Doroti.Framework.Material;
 
-public abstract class DataTableSource : global::Doroti.Framework.Foundation.ChangeNotifier
+public abstract class DataTableSource : ChangeNotifier
 {
     public abstract DataRow? getRow(long index);
     public abstract long rowCount { get; }

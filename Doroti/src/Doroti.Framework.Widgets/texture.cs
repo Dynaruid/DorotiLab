@@ -11,17 +11,17 @@ public class Texture : LeafRenderObjectWidget
     public virtual bool freeze { get; private set; } = default!;
     public virtual FilterQuality filterQuality { get; private set; } = default!;
 
-    public Texture(global::Doroti.Framework.Foundation.Key? key = null, long textureId = default!, bool freeze = false, FilterQuality filterQuality = FilterQuality.low) : base(key: key)
+    public Texture(Key? key = null, long textureId = default!, bool freeze = false, FilterQuality filterQuality = FilterQuality.low) : base(key: key)
     {
         this.textureId = textureId;
         this.freeze = freeze;
         this.filterQuality = filterQuality;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.TextureBox(textureId: textureId, freeze: freeze, filterQuality: filterQuality));
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new TextureBox(textureId: textureId, freeze: freeze, filterQuality: filterQuality));
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.TextureBox)renderObject;
+        var __renderObject = (TextureBox)renderObject;
         __renderObject.textureId = textureId;
         __renderObject.freeze = freeze;
         __renderObject.filterQuality = filterQuality;

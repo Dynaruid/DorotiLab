@@ -24,7 +24,7 @@ public class SuggestionSpan
         {
             return true;
         }
-        return (__other is SuggestionSpan) && (__other.range.start == range.start) && (__other.range.end == range.end) && CollectionsLibrary.listEquals<string>(__other.suggestions, suggestions);
+        return (__other is SuggestionSpan) && (__other.range.start == range.start) && (__other.range.end == range.end) && CollectionsLibrary.listEquals(__other.suggestions, suggestions);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(range.start, range.end, FoundationRuntimePorts.ObjectHashAll(suggestions));
@@ -55,7 +55,7 @@ public class SpellCheckResults
         {
             return true;
         }
-        return (__other is SpellCheckResults) && (__other.spellCheckedText == spellCheckedText) && CollectionsLibrary.listEquals<SuggestionSpan>(__other.suggestionSpans, suggestionSpans);
+        return (__other is SpellCheckResults) && (__other.spellCheckedText == spellCheckedText) && CollectionsLibrary.listEquals(__other.suggestionSpans, suggestionSpans);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(spellCheckedText, FoundationRuntimePorts.ObjectHashAll(suggestionSpans));

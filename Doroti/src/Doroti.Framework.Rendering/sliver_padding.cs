@@ -9,7 +9,7 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
 {
     public virtual RenderSliver? _child { get; set; } = default;
 
-    public abstract global::Doroti.Framework.Painting.EdgeInsets? resolvedPadding { get; }
+    public abstract EdgeInsets? resolvedPadding { get; }
     public virtual double beforePadding
     {
         get
@@ -64,7 +64,7 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         DartRuntimePrimitives.Assert(() => resolvedPadding is not null);
-        global::Doroti.Framework.Painting.EdgeInsets resolvedPaddingLocal = resolvedPadding!;
+        EdgeInsets resolvedPaddingLocal = resolvedPadding!;
         double beforePaddingLocal = beforePadding;
         double afterPaddingLocal = afterPadding;
         double mainAxisPaddingLocal = mainAxisPadding;
@@ -99,7 +99,7 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
         geometry = new SliverGeometry(paintOrigin: childLayoutGeometry.paintOrigin, scrollExtent: mainAxisPaddingLocal + scrollExtentLocal, paintExtent: paintExtentAlternate, layoutExtent: Math.Min(mainAxisPaddingPaintExtent + childLayoutGeometry.layoutExtent, paintExtentAlternate), cacheExtent: Math.Min(mainAxisPaddingCacheExtent + childLayoutGeometry.cacheExtent, constraintsLocal.remainingCacheExtent), maxPaintExtent: mainAxisPaddingLocal + childLayoutGeometry.maxPaintExtent, hitTestExtent: Math.Max(mainAxisPaddingPaintExtent + childLayoutGeometry.paintExtent, beforePaddingPaintExtent + childLayoutGeometry.hitTestExtent), hasVisualOverflow: childLayoutGeometry.hasVisualOverflow);
         double calculatedOffset = SliverLibrary.applyGrowthDirectionToAxisDirection(constraintsLocal.axisDirection, constraintsLocal.growthDirection) switch { AxisDirection.up => paintOffset(from: resolvedPaddingLocal.bottom + scrollExtentLocal, to: resolvedPaddingLocal.vertical + scrollExtentLocal), AxisDirection.left => paintOffset(from: resolvedPaddingLocal.right + scrollExtentLocal, to: resolvedPaddingLocal.horizontal + scrollExtentLocal), AxisDirection.right => paintOffset(from: 0.0, to: resolvedPaddingLocal.left), AxisDirection.down => paintOffset(from: 0.0, to: resolvedPaddingLocal.top), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
-        childParentData.paintOffset = constraintsLocal.axis switch { Axis.horizontal => new global::Doroti.Ui.Offset(calculatedOffset, resolvedPaddingLocal.top), Axis.vertical => new global::Doroti.Ui.Offset(resolvedPaddingLocal.left, calculatedOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        childParentData.paintOffset = constraintsLocal.axis switch { Axis.horizontal => new Offset(calculatedOffset, resolvedPaddingLocal.top), Axis.vertical => new Offset(resolvedPaddingLocal.left, calculatedOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         DartRuntimePrimitives.Assert(() => beforePaddingLocal == beforePadding);
         DartRuntimePrimitives.Assert(() => afterPaddingLocal == afterPadding);
         DartRuntimePrimitives.Assert(() => mainAxisPaddingLocal == mainAxisPadding);
@@ -164,12 +164,12 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
             {
                 if (DebugLibrary.debugPaintSizeEnabled)
                 {
-                    global::Doroti.Ui.Size parentSize = getAbsoluteSize();
-                    global::Doroti.Ui.Rect outerRect = offset & parentSize;
-                    global::Doroti.Ui.Rect? innerRect = default!;
+                    Size parentSize = getAbsoluteSize();
+                    Rect outerRect = offset & parentSize;
+                    Rect? innerRect = default!;
                     if (child is not null)
                     {
-                        global::Doroti.Ui.Size childSize = child!.getAbsoluteSize();
+                        Size childSize = child!.getAbsoluteSize();
                         var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
                         innerRect = offset + childParentData.paintOffset & childSize;
                         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.RequireValue(innerRect).top >= outerRect.top);
@@ -252,18 +252,18 @@ public abstract class RenderSliverEdgeInsetsPadding : RenderSliver, RenderObject
 
 public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
 {
-    internal virtual global::Doroti.Framework.Painting.EdgeInsets? _resolvedPadding { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry _padding { get; set; } = default!;
+    internal virtual EdgeInsets? _resolvedPadding { get; set; } = default;
+    internal virtual EdgeInsetsGeometry _padding { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderSliverPadding(global::Doroti.Framework.Painting.EdgeInsetsGeometry padding, TextDirection? textDirection = null, RenderSliver? child = null)
+    public RenderSliverPadding(EdgeInsetsGeometry padding, TextDirection? textDirection = null, RenderSliver? child = null)
     {
         _padding = padding;
         _textDirection = textDirection;
         System.Diagnostics.Debug.Assert(padding.isNonNegative);
     }
 
-    public override global::Doroti.Framework.Painting.EdgeInsets? resolvedPadding => _resolvedPadding;
+    public override EdgeInsets? resolvedPadding => _resolvedPadding;
     internal virtual void _resolve()
     {
         if (resolvedPadding is not null)
@@ -280,7 +280,7 @@ public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
         markNeedsLayout();
     }
 
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding
+    public virtual EdgeInsetsGeometry padding
     {
         get => _padding;
         set
@@ -295,7 +295,7 @@ public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
             _markNeedsResolution();
         }
     }
-    public virtual global::Doroti.Ui.TextDirection? textDirection
+    public virtual TextDirection? textDirection
     {
         get => _textDirection;
         set
@@ -318,8 +318,8 @@ public class RenderSliverPadding : RenderSliverEdgeInsetsPadding
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
     }
 
 }

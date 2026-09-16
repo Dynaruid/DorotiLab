@@ -20,9 +20,9 @@ internal class _ScrollNotificationObserverScope__scroll_notification_observer : 
 
 internal class _ListenerEntry__scroll_notification_observer : DartLinkedListEntry<_ListenerEntry__scroll_notification_observer>
 {
-    public virtual global::System.Action<ScrollNotification> listener { get; private set; } = default!;
+    public virtual System.Action<ScrollNotification> listener { get; private set; } = default!;
 
-    internal _ListenerEntry__scroll_notification_observer(global::System.Action<ScrollNotification> listener)
+    internal _ListenerEntry__scroll_notification_observer(System.Action<ScrollNotification> listener)
     {
         this.listener = listener;
     }
@@ -33,7 +33,7 @@ public class ScrollNotificationObserver : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public ScrollNotificationObserver(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    public ScrollNotificationObserver(Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }
@@ -82,13 +82,13 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void addListener(global::System.Action<ScrollNotification> listener)
+    public virtual void addListener(System.Action<ScrollNotification> listener)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         _listeners!.add(new _ListenerEntry__scroll_notification_observer(listener));
     }
 
-    public virtual void removeListener(global::System.Action<ScrollNotification> listener)
+    public virtual void removeListener(System.Action<ScrollNotification> listener)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         foreach (_ListenerEntry__scroll_notification_observer entry in _listeners!)
@@ -121,7 +121,7 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
             catch (Exception exceptionLocal)
             {
                 var stackLocal = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {GetType()}"), informationCollector: () => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollNotificationObserverState>($"The {GetType()} sending notification was", this, style: DiagnosticsTreeStyle.errorProperty) }));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget library", context: new ErrorDescription($"while dispatching notifications for {GetType()}"), informationCollector: () => new List<DiagnosticsNode> { new DiagnosticsProperty<ScrollNotificationObserverState>($"The {GetType()} sending notification was", this, style: DiagnosticsTreeStyle.errorProperty) }));
             }
         }
     }

@@ -6,19 +6,19 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class ButtonBarThemeData : Diagnosticable
 {
-    public virtual global::Doroti.Framework.Rendering.MainAxisAlignment? alignment { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.MainAxisSize? mainAxisSize { get; private set; }
+    public virtual MainAxisAlignment? alignment { get; private set; }
+    public virtual MainAxisSize? mainAxisSize { get; private set; }
     public virtual ButtonTextTheme? buttonTextTheme { get; private set; }
     public virtual double? buttonMinWidth { get; private set; }
     public virtual double? buttonHeight { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? buttonPadding { get; private set; }
+    public virtual EdgeInsetsGeometry? buttonPadding { get; private set; }
     public virtual bool? buttonAlignedDropdown { get; private set; }
     public virtual ButtonBarLayoutBehavior? layoutBehavior { get; private set; }
-    public virtual global::Doroti.Framework.Painting.VerticalDirection? overflowDirection { get; private set; }
+    public virtual VerticalDirection? overflowDirection { get; private set; }
 
-    public ButtonBarThemeData(global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, global::Doroti.Framework.Rendering.MainAxisSize? mainAxisSize = null, ButtonTextTheme? buttonTextTheme = null, double? buttonMinWidth = null, double? buttonHeight = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? buttonPadding = null, bool? buttonAlignedDropdown = null, ButtonBarLayoutBehavior? layoutBehavior = null, global::Doroti.Framework.Painting.VerticalDirection? overflowDirection = null)
+    public ButtonBarThemeData(MainAxisAlignment? alignment = null, MainAxisSize? mainAxisSize = null, ButtonTextTheme? buttonTextTheme = null, double? buttonMinWidth = null, double? buttonHeight = null, EdgeInsetsGeometry? buttonPadding = null, bool? buttonAlignedDropdown = null, ButtonBarLayoutBehavior? layoutBehavior = null, VerticalDirection? overflowDirection = null)
     {
         this.alignment = alignment;
         this.mainAxisSize = mainAxisSize;
@@ -33,7 +33,7 @@ public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         System.Diagnostics.Debug.Assert((buttonHeight is null) || (buttonHeight >= 0.0));
     }
 
-    public virtual ButtonBarThemeData copyWith(global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, global::Doroti.Framework.Rendering.MainAxisSize? mainAxisSize = null, ButtonTextTheme? buttonTextTheme = null, double? buttonMinWidth = null, double? buttonHeight = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? buttonPadding = null, bool? buttonAlignedDropdown = null, ButtonBarLayoutBehavior? layoutBehavior = null, global::Doroti.Framework.Painting.VerticalDirection? overflowDirection = null)
+    public virtual ButtonBarThemeData copyWith(MainAxisAlignment? alignment = null, MainAxisSize? mainAxisSize = null, ButtonTextTheme? buttonTextTheme = null, double? buttonMinWidth = null, double? buttonHeight = null, EdgeInsetsGeometry? buttonPadding = null, bool? buttonAlignedDropdown = null, ButtonBarLayoutBehavior? layoutBehavior = null, VerticalDirection? overflowDirection = null)
     {
         return new ButtonBarThemeData(alignment: alignment ?? this.alignment, mainAxisSize: mainAxisSize ?? this.mainAxisSize, buttonTextTheme: buttonTextTheme ?? this.buttonTextTheme, buttonMinWidth: buttonMinWidth ?? this.buttonMinWidth, buttonHeight: buttonHeight ?? this.buttonHeight, buttonPadding: buttonPadding ?? this.buttonPadding, buttonAlignedDropdown: buttonAlignedDropdown ?? this.buttonAlignedDropdown, layoutBehavior: layoutBehavior ?? this.layoutBehavior, overflowDirection: overflowDirection ?? this.overflowDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -65,17 +65,17 @@ public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         return (__other is ButtonBarThemeData) && Equals(__other.alignment, alignment) && Equals(__other.mainAxisSize, mainAxisSize) && Equals(__other.buttonTextTheme, buttonTextTheme) && (__other.buttonMinWidth == buttonMinWidth) && (__other.buttonHeight == buttonHeight) && Equals(__other.buttonPadding, buttonPadding) && (__other.buttonAlignedDropdown == buttonAlignedDropdown) && Equals(__other.layoutBehavior, layoutBehavior) && Equals(__other.overflowDirection, overflowDirection);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("alignment", alignment, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.MainAxisSize>("mainAxisSize", mainAxisSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonTextTheme>("textTheme", buttonTextTheme, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minWidth", buttonMinWidth, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", buttonHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", buttonPadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("buttonAlignedDropdown", value: buttonAlignedDropdown, ifTrue: "dropdown width matches button"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonBarLayoutBehavior>("layoutBehavior", layoutBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", overflowDirection, defaultValue: null));
+        properties.add(new DiagnosticsProperty<MainAxisAlignment>("alignment", alignment, defaultValue: null));
+        properties.add(new DiagnosticsProperty<MainAxisSize>("mainAxisSize", mainAxisSize, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ButtonTextTheme>("textTheme", buttonTextTheme, defaultValue: null));
+        properties.add(new DoubleProperty("minWidth", buttonMinWidth, defaultValue: null));
+        properties.add(new DoubleProperty("height", buttonHeight, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", buttonPadding, defaultValue: null));
+        properties.add(new FlagProperty("buttonAlignedDropdown", value: buttonAlignedDropdown, ifTrue: "dropdown width matches button"));
+        properties.add(new DiagnosticsProperty<ButtonBarLayoutBehavior>("layoutBehavior", layoutBehavior, defaultValue: null));
+        properties.add(new DiagnosticsProperty<VerticalDirection>("overflowDirection", overflowDirection, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -101,21 +101,21 @@ public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
 
 }
 
-public class ButtonBarTheme : global::Doroti.Framework.Widgets.InheritedWidget
+public class ButtonBarTheme : InheritedWidget
 {
     public virtual ButtonBarThemeData data { get; private set; } = default!;
 
-    public ButtonBarTheme(global::Doroti.Framework.Foundation.Key? key = null, ButtonBarThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public ButtonBarTheme(Key? key = null, ButtonBarThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static ButtonBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static ButtonBarThemeData of(BuildContext context)
     {
         ButtonBarTheme? buttonBarThemeLocal = context.dependOnInheritedWidgetOfExactType<ButtonBarTheme>();
         return buttonBarThemeLocal?.data ?? Theme.of(context).buttonBarTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ButtonBarTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ButtonBarTheme)oldWidget).data));
 }

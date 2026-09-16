@@ -356,10 +356,10 @@ public sealed record FrameTiming(
         _ => throw new ArgumentOutOfRangeException(nameof(phase)),
     }).TotalMicroseconds);
 
-    public Doroti.Runtime.Duration totalSpan => (Doroti.Runtime.Duration)(rasterFinish - vsyncStart);
-    public Doroti.Runtime.Duration buildDuration => (Doroti.Runtime.Duration)(buildFinish - buildStart);
-    public Doroti.Runtime.Duration rasterDuration => (Doroti.Runtime.Duration)(rasterFinish - rasterStart);
-    public Doroti.Runtime.Duration vsyncOverhead => (Doroti.Runtime.Duration)(buildStart - vsyncStart);
+    public Duration totalSpan => (Duration)(rasterFinish - vsyncStart);
+    public Duration buildDuration => (Duration)(buildFinish - buildStart);
+    public Duration rasterDuration => (Duration)(rasterFinish - rasterStart);
+    public Duration vsyncOverhead => (Duration)(buildStart - vsyncStart);
 }
 
 public delegate void TimingsCallback(IReadOnlyList<FrameTiming> timings);
@@ -506,11 +506,11 @@ public static class Platform
     public static bool isWindows => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.windows;
     public static bool isLinux => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.linux;
     public static bool isMacOS => PlatformEnvironmentContext.current.operatingSystem == HostOperatingSystem.macOS;
-    public static Doroti.Runtime.DartMap<string, string> environment
+    public static DartMap<string, string> environment
     {
         get
         {
-            var result = new Doroti.Runtime.DartMap<string, string>();
+            var result = new DartMap<string, string>();
             foreach (System.Collections.DictionaryEntry item in Environment.GetEnvironmentVariables())
                 result[item.Key.ToString()!] = item.Value?.ToString() ?? string.Empty;
             return result;

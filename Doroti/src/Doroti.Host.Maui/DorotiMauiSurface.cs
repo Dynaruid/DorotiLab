@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Doroti.Hosting;
 using Doroti.Ui;
+using Color = Doroti.Ui.Color;
 
 namespace Doroti.Host.Maui;
 
@@ -443,11 +444,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
     }
 
-    private Doroti.Ui.Color ResolveBackgroundColor(AppTheme theme) =>
+    private Color ResolveBackgroundColor(AppTheme theme) =>
         theme == AppTheme.Dark
             ? _application.ViewConfiguration.darkBackgroundColor ??
-              _application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xff141218L)
-            : _application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xfffffbfeL);
+              _application.ViewConfiguration.backgroundColor ?? new Color(0xff141218L)
+            : _application.ViewConfiguration.backgroundColor ?? new Color(0xfffffbfeL);
 
 #if WINDOWS
     private async void HandleNativeClosing(

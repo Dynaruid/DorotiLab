@@ -1,6 +1,9 @@
 using Doroti.Hosting;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices;
+#if IOS || MACCATALYST
+using UIKit;
+#endif
 
 #if ANDROID
 // MAUI's haptic implementation checks this permission even for View feedback.
@@ -57,12 +60,12 @@ internal static class MauiHapticFeedback
         // MAUI exposes only Click/LongPress; retain Flutter's distinct UIKit types.
         if (kind == HapticFeedbackKind.selectionClick)
         {
-            using var selection = new UIKit.UISelectionFeedbackGenerator();
+            using var selection = new UISelectionFeedbackGenerator();
             selection.SelectionChanged();
         }
         else if (kind is HapticFeedbackKind.successNotification or HapticFeedbackKind.warningNotification or HapticFeedbackKind.errorNotification)
         {
-            using var notification = new UIKit.UINotificationFeedbackGenerator();
+            using var notification = new UINotificationFeedbackGenerator();
             notification.NotificationOccurred(kind switch
             {
                 HapticFeedbackKind.successNotification => UIKit.UINotificationFeedbackType.Success,
@@ -79,10 +82,10 @@ internal static class MauiHapticFeedback
                 _ => UIKit.UIImpactFeedbackStyle.Heavy,
             };
             // Modern UIKit requires the real originating view, not an unattached placeholder.
-            if (surface.Element.Handler?.PlatformView is not UIKit.UIView nativeView) return;
+            if (surface.Element.Handler?.PlatformView is not UIView nativeView) return;
             using var impact = OperatingSystem.IsIOSVersionAtLeast(17, 5) || OperatingSystem.IsMacCatalystVersionAtLeast(17, 5)
                 ? UIKit.UIImpactFeedbackGenerator.GetFeedbackGenerator(style, nativeView)
-                : new UIKit.UIImpactFeedbackGenerator(style);
+                : new UIImpactFeedbackGenerator(style);
             impact.ImpactOccurred();
         }
 #else

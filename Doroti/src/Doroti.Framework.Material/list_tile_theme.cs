@@ -6,18 +6,18 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class ListTileThemeData : Diagnosticable
 {
     public virtual bool? dense { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
     public virtual ListTileStyle? style { get; private set; }
     public virtual Color? selectedColor { get; private set; }
     public virtual Color? iconColor { get; private set; }
     public virtual Color? textColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? titleTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? subtitleTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding { get; private set; }
+    public virtual TextStyle? titleTextStyle { get; private set; }
+    public virtual TextStyle? subtitleTextStyle { get; private set; }
+    public virtual TextStyle? leadingAndTrailingTextStyle { get; private set; }
+    public virtual EdgeInsetsGeometry? contentPadding { get; private set; }
     public virtual Color? tileColor { get; private set; }
     public virtual Color? selectedTileColor { get; private set; }
     public virtual double? horizontalTitleGap { get; private set; }
@@ -25,13 +25,13 @@ public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnostica
     public virtual double? minLeadingWidth { get; private set; }
     public virtual double? minTileHeight { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor { get; private set; }
+    public virtual WidgetStateProperty<MouseCursor?>? mouseCursor { get; private set; }
     public virtual VisualDensity? visualDensity { get; private set; }
     public virtual ListTileTitleAlignment? titleAlignment { get; private set; }
     public virtual ListTileControlAffinity? controlAffinity { get; private set; }
     public virtual bool? isThreeLine { get; private set; }
 
-    public ListTileThemeData(bool? dense = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? subtitleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, bool? enableFeedback = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, double? minTileHeight = null, ListTileTitleAlignment? titleAlignment = null, ListTileControlAffinity? controlAffinity = null, bool? isThreeLine = null)
+    public ListTileThemeData(bool? dense = null, ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, TextStyle? titleTextStyle = null, TextStyle? subtitleTextStyle = null, TextStyle? leadingAndTrailingTextStyle = null, EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, bool? enableFeedback = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, double? minTileHeight = null, ListTileTitleAlignment? titleAlignment = null, ListTileControlAffinity? controlAffinity = null, bool? isThreeLine = null)
     {
         this.dense = dense;
         this.shape = shape;
@@ -57,7 +57,7 @@ public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnostica
         this.isThreeLine = isThreeLine;
     }
 
-    public virtual ListTileThemeData copyWith(bool? dense = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? subtitleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, bool? enableFeedback = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, bool? isThreeLine = null, VisualDensity? visualDensity = null, ListTileTitleAlignment? titleAlignment = null, ListTileControlAffinity? controlAffinity = null)
+    public virtual ListTileThemeData copyWith(bool? dense = null, ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, TextStyle? titleTextStyle = null, TextStyle? subtitleTextStyle = null, TextStyle? leadingAndTrailingTextStyle = null, EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, bool? enableFeedback = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, bool? isThreeLine = null, VisualDensity? visualDensity = null, ListTileTitleAlignment? titleAlignment = null, ListTileControlAffinity? controlAffinity = null)
     {
         return new ListTileThemeData(dense: dense ?? this.dense, shape: shape ?? this.shape, style: style ?? this.style, selectedColor: selectedColor ?? this.selectedColor, iconColor: iconColor ?? this.iconColor, textColor: textColor ?? this.textColor, titleTextStyle: titleTextStyle ?? this.titleTextStyle, subtitleTextStyle: subtitleTextStyle ?? this.subtitleTextStyle, leadingAndTrailingTextStyle: leadingAndTrailingTextStyle ?? this.leadingAndTrailingTextStyle, contentPadding: contentPadding ?? this.contentPadding, tileColor: tileColor ?? this.tileColor, selectedTileColor: selectedTileColor ?? this.selectedTileColor, horizontalTitleGap: horizontalTitleGap ?? this.horizontalTitleGap, minVerticalPadding: minVerticalPadding ?? this.minVerticalPadding, minLeadingWidth: minLeadingWidth ?? this.minLeadingWidth, minTileHeight: minTileHeight ?? this.minTileHeight, enableFeedback: enableFeedback ?? this.enableFeedback, mouseCursor: mouseCursor ?? this.mouseCursor, visualDensity: visualDensity ?? this.visualDensity, titleAlignment: titleAlignment ?? this.titleAlignment, controlAffinity: controlAffinity ?? this.controlAffinity, isThreeLine: isThreeLine ?? this.isThreeLine);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -89,30 +89,30 @@ public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnostica
         return (__other is ListTileThemeData) && (__other.dense == dense) && Equals(__other.shape, shape) && Equals(__other.style, style) && Equals(__other.selectedColor, selectedColor) && Equals(__other.iconColor, iconColor) && Equals(__other.titleTextStyle, titleTextStyle) && Equals(__other.subtitleTextStyle, subtitleTextStyle) && Equals(__other.leadingAndTrailingTextStyle, leadingAndTrailingTextStyle) && Equals(__other.textColor, textColor) && Equals(__other.contentPadding, contentPadding) && Equals(__other.tileColor, tileColor) && Equals(__other.selectedTileColor, selectedTileColor) && (__other.horizontalTitleGap == horizontalTitleGap) && (__other.minVerticalPadding == minVerticalPadding) && (__other.minLeadingWidth == minLeadingWidth) && (__other.minTileHeight == minTileHeight) && (__other.enableFeedback == enableFeedback) && Equals(__other.mouseCursor, mouseCursor) && Equals(__other.visualDensity, visualDensity) && Equals(__other.titleAlignment, titleAlignment) && Equals(__other.controlAffinity, controlAffinity) && (__other.isThreeLine == isThreeLine);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("dense", dense, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<ListTileStyle>("style", style, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectedColor", selectedColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("iconColor", iconColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("textColor", textColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleTextStyle", titleTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("subtitleTextStyle", subtitleTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("leadingAndTrailingTextStyle", leadingAndTrailingTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("contentPadding", contentPadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("tileColor", tileColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectedTileColor", selectedTileColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("horizontalTitleGap", horizontalTitleGap, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minVerticalPadding", minVerticalPadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minLeadingWidth", minLeadingWidth, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minTileHeight", minTileHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableFeedback", enableFeedback, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", mouseCursor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ListTileTitleAlignment>("titleAlignment", titleAlignment, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ListTileControlAffinity>("controlAffinity", controlAffinity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("isThreeLine", isThreeLine, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("dense", dense, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ShapeBorder>("shape", shape, defaultValue: null));
+        properties.add(new EnumProperty<ListTileStyle>("style", style, defaultValue: null));
+        properties.add(new ColorProperty("selectedColor", selectedColor, defaultValue: null));
+        properties.add(new ColorProperty("iconColor", iconColor, defaultValue: null));
+        properties.add(new ColorProperty("textColor", textColor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<TextStyle>("titleTextStyle", titleTextStyle, defaultValue: null));
+        properties.add(new DiagnosticsProperty<TextStyle>("subtitleTextStyle", subtitleTextStyle, defaultValue: null));
+        properties.add(new DiagnosticsProperty<TextStyle>("leadingAndTrailingTextStyle", leadingAndTrailingTextStyle, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("contentPadding", contentPadding, defaultValue: null));
+        properties.add(new ColorProperty("tileColor", tileColor, defaultValue: null));
+        properties.add(new ColorProperty("selectedTileColor", selectedTileColor, defaultValue: null));
+        properties.add(new DoubleProperty("horizontalTitleGap", horizontalTitleGap, defaultValue: null));
+        properties.add(new DoubleProperty("minVerticalPadding", minVerticalPadding, defaultValue: null));
+        properties.add(new DoubleProperty("minLeadingWidth", minLeadingWidth, defaultValue: null));
+        properties.add(new DoubleProperty("minTileHeight", minTileHeight, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("enableFeedback", enableFeedback, defaultValue: null));
+        properties.add(new DiagnosticsProperty<WidgetStateProperty<MouseCursor?>>("mouseCursor", mouseCursor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<VisualDensity>("visualDensity", visualDensity, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ListTileTitleAlignment>("titleAlignment", titleAlignment, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ListTileControlAffinity>("controlAffinity", controlAffinity, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("isThreeLine", isThreeLine, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -138,26 +138,26 @@ public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnostica
 
 }
 
-public class ListTileTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class ListTileTheme : InheritedTheme
 {
     internal virtual ListTileThemeData? _data { get; private set; }
     internal virtual bool? _dense { get; private set; }
-    internal virtual global::Doroti.Framework.Painting.ShapeBorder? _shape { get; private set; }
+    internal virtual ShapeBorder? _shape { get; private set; }
     internal virtual ListTileStyle? _style { get; private set; }
     internal virtual Color? _selectedColor { get; private set; }
     internal virtual Color? _iconColor { get; private set; }
     internal virtual Color? _textColor { get; private set; }
-    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _contentPadding { get; private set; }
+    internal virtual EdgeInsetsGeometry? _contentPadding { get; private set; }
     internal virtual Color? _tileColor { get; private set; }
     internal virtual Color? _selectedTileColor { get; private set; }
     internal virtual double? _horizontalTitleGap { get; private set; }
     internal virtual double? _minVerticalPadding { get; private set; }
     internal virtual double? _minLeadingWidth { get; private set; }
     internal virtual bool? _enableFeedback { get; private set; }
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? _mouseCursor { get; private set; }
+    internal virtual WidgetStateProperty<MouseCursor?>? _mouseCursor { get; private set; }
     internal virtual ListTileControlAffinity? _controlAffinity { get; private set; }
 
-    public ListTileTheme(global::Doroti.Framework.Foundation.Key? key = null, ListTileThemeData? data = null, bool? dense = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, bool? enableFeedback = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, ListTileControlAffinity? controlAffinity = null, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public ListTileTheme(Key? key = null, ListTileThemeData? data = null, bool? dense = null, ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, bool? enableFeedback = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, ListTileControlAffinity? controlAffinity = null, Widget child = default!) : base(key: key, child: child)
     {
         _data = data;
         _dense = dense;
@@ -186,29 +186,29 @@ public class ListTileTheme : global::Doroti.Framework.Widgets.InheritedTheme
         }
     }
     public virtual bool? dense => (_data is not null) ? _data.dense : _dense;
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape => (_data is not null) ? _data.shape : _shape;
+    public virtual ShapeBorder? shape => (_data is not null) ? _data.shape : _shape;
     public virtual ListTileStyle? style => (_data is not null) ? _data.style : _style;
-    public virtual global::Doroti.Ui.Color? selectedColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.selectedColor : _selectedColor);
-    public virtual global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.iconColor : _iconColor);
-    public virtual global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.textColor : _textColor);
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding => (_data is not null) ? _data.contentPadding : _contentPadding;
-    public virtual global::Doroti.Ui.Color? tileColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.tileColor : _tileColor);
-    public virtual global::Doroti.Ui.Color? selectedTileColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((_data is not null) ? _data.selectedTileColor : _selectedTileColor);
+    public virtual Color? selectedColor => DartRuntimePrimitives.ConvertValue<Color>((_data is not null) ? _data.selectedColor : _selectedColor);
+    public virtual Color? iconColor => DartRuntimePrimitives.ConvertValue<Color>((_data is not null) ? _data.iconColor : _iconColor);
+    public virtual Color? textColor => DartRuntimePrimitives.ConvertValue<Color>((_data is not null) ? _data.textColor : _textColor);
+    public virtual EdgeInsetsGeometry? contentPadding => (_data is not null) ? _data.contentPadding : _contentPadding;
+    public virtual Color? tileColor => DartRuntimePrimitives.ConvertValue<Color>((_data is not null) ? _data.tileColor : _tileColor);
+    public virtual Color? selectedTileColor => DartRuntimePrimitives.ConvertValue<Color>((_data is not null) ? _data.selectedTileColor : _selectedTileColor);
     public virtual double? horizontalTitleGap => (_data is not null) ? _data.horizontalTitleGap : _horizontalTitleGap;
     public virtual double? minVerticalPadding => (_data is not null) ? _data.minVerticalPadding : _minVerticalPadding;
     public virtual double? minLeadingWidth => (_data is not null) ? _data.minLeadingWidth : _minLeadingWidth;
     public virtual bool? enableFeedback => (_data is not null) ? _data.enableFeedback : _enableFeedback;
     public virtual ListTileControlAffinity? controlAffinity => (_data is not null) ? _data.controlAffinity : _controlAffinity;
-    public static ListTileThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static ListTileThemeData of(BuildContext context)
     {
         ListTileTheme? result = context.dependOnInheritedWidgetOfExactType<ListTileTheme>();
         return result?.data ?? Theme.of(context).listTileTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.Widget merge(global::Doroti.Framework.Foundation.Key? key = null, bool? dense = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? subtitleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, ListTileTitleAlignment? titleAlignment = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, ListTileControlAffinity? controlAffinity = null, bool? isThreeLine = null, global::Doroti.Framework.Widgets.Widget child = default!)
+    public static Widget merge(Key? key = null, bool? dense = null, ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, TextStyle? titleTextStyle = null, TextStyle? subtitleTextStyle = null, TextStyle? leadingAndTrailingTextStyle = null, EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, ListTileTitleAlignment? titleAlignment = null, WidgetStateProperty<MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, ListTileControlAffinity? controlAffinity = null, bool? isThreeLine = null, Widget child = default!)
     {
-        return new global::Doroti.Framework.Widgets.Builder(builder: (context) =>
+        return new Builder(builder: (context) =>
         {
             ListTileThemeData parent = of(context);
             return new ListTileTheme(key: key, data: new ListTileThemeData(dense: dense ?? parent.dense, shape: shape ?? parent.shape, style: style ?? parent.style, selectedColor: selectedColor ?? parent.selectedColor, iconColor: iconColor ?? parent.iconColor, textColor: textColor ?? parent.textColor, titleTextStyle: titleTextStyle ?? parent.titleTextStyle, subtitleTextStyle: subtitleTextStyle ?? parent.subtitleTextStyle, leadingAndTrailingTextStyle: leadingAndTrailingTextStyle ?? parent.leadingAndTrailingTextStyle, contentPadding: contentPadding ?? parent.contentPadding, tileColor: tileColor ?? parent.tileColor, selectedTileColor: selectedTileColor ?? parent.selectedTileColor, enableFeedback: enableFeedback ?? parent.enableFeedback, horizontalTitleGap: horizontalTitleGap ?? parent.horizontalTitleGap, minVerticalPadding: minVerticalPadding ?? parent.minVerticalPadding, minLeadingWidth: minLeadingWidth ?? parent.minLeadingWidth, minTileHeight: minTileHeight ?? parent.minTileHeight, titleAlignment: titleAlignment ?? parent.titleAlignment, mouseCursor: mouseCursor ?? parent.mouseCursor, visualDensity: visualDensity ?? parent.visualDensity, controlAffinity: controlAffinity ?? parent.controlAffinity, isThreeLine: isThreeLine ?? parent.isThreeLine), child: child);
@@ -217,11 +217,11 @@ public class ListTileTheme : global::Doroti.Framework.Widgets.InheritedTheme
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new ListTileTheme(data: new ListTileThemeData(dense: dense, shape: shape, style: style, selectedColor: selectedColor, iconColor: iconColor, textColor: textColor, contentPadding: contentPadding, tileColor: tileColor, selectedTileColor: selectedTileColor, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, isThreeLine: _data?.isThreeLine), child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ListTileTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ListTileTheme)oldWidget).data));
 }

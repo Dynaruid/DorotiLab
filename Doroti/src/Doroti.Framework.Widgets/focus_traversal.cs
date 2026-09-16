@@ -26,7 +26,7 @@ public static partial class Focus_traversalLibrary
     }
 }
 
-public delegate void TraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null);
+public delegate void TraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, Curve? curve = null);
 
 internal class _FocusTraversalGroupInfo__focus_traversal
 {
@@ -59,7 +59,7 @@ public enum TraversalEdgeBehavior
     stop
 }
 
-public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation.Diagnosticable
+public abstract class FocusTraversalPolicy : Diagnosticable
 {
     public virtual TraversalRequestFocusCallback requestFocusCallback { get; private set; } = default!;
 
@@ -68,13 +68,13 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
         this.requestFocusCallback = requestFocusCallback ?? defaultTraversalRequestFocusCallback;
     }
 
-    public static void defaultTraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null)
+    public static void defaultTraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, Curve? curve = null)
     {
         node.requestFocus();
         DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(node.context!, alignment: alignment ?? 1, alignmentPolicy: alignmentPolicy ?? ScrollPositionAlignmentPolicy.@explicit, duration: duration ?? Duration.zero, curve: curve ?? Curves.ease));
     }
 
-    internal virtual bool _requestTabTraversalFocus(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null, bool forward = default!)
+    internal virtual bool _requestTabTraversalFocus(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, Curve? curve = null, bool forward = default!)
     {
         if (node is FocusScopeNode)
         {
@@ -228,7 +228,7 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
         });
         DartRuntimePrimitives.Assert(() =>
             {
-                HashSet<FocusNode> differenceLocal = sortedDescendants.toSet().difference<FocusNode>(scope.traversalDescendants.toSet());
+                HashSet<FocusNode> differenceLocal = sortedDescendants.toSet().difference(scope.traversalDescendants.toSet());
                 if (!_canRequestTraversalFocus(currentNode))
                 {
                     DartRuntimePrimitives.Assert(() => !Enumerable.Any(differenceLocal) || (checked(differenceLocal.Count) == 1L) && differenceLocal.Contains(currentNode), () => (object?)"Difference between sorted descendants and FocusScopeNode.traversalDescendants contains " + $"something other than the current skipped node. This is the difference: {differenceLocal}");
@@ -407,10 +407,10 @@ public interface DirectionalFocusTraversalPolicyMixin
     public static IEnumerable<FocusNode> _sortByDistancePreferVertical(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted = nodes.ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (nodeA, nodeB) =>
+        CollectionsLibrary.mergeSort(sorted, compare: (nodeA, nodeB) =>
         {
-            global::Doroti.Ui.Offset a = nodeA.rect.center;
-            global::Doroti.Ui.Offset b = nodeB.rect.center;
+            Offset a = nodeA.rect.center;
+            Offset b = nodeB.rect.center;
             long vertical = _verticalCompare(target, a, b);
             if (vertical == 0L)
             {
@@ -424,10 +424,10 @@ public interface DirectionalFocusTraversalPolicyMixin
     public static IEnumerable<FocusNode> _sortByDistancePreferHorizontal(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted = nodes.ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (nodeA, nodeB) =>
+        CollectionsLibrary.mergeSort(sorted, compare: (nodeA, nodeB) =>
         {
-            global::Doroti.Ui.Offset a = nodeA.rect.center;
-            global::Doroti.Ui.Offset b = nodeB.rect.center;
+            Offset a = nodeA.rect.center;
+            Offset b = nodeB.rect.center;
             long horizontal = _horizontalCompare(target, a, b);
             if (horizontal == 0L)
             {
@@ -453,7 +453,7 @@ public interface DirectionalFocusTraversalPolicyMixin
     public static IEnumerable<FocusNode> _sortClosestEdgesByDistancePreferHorizontal(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted = nodes.ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (nodeA, nodeB) =>
+        CollectionsLibrary.mergeSort(sorted, compare: (nodeA, nodeB) =>
         {
             long horizontal = _horizontalCompareClosestEdge(target, nodeA.rect, nodeB.rect);
             if (horizontal == 0L)
@@ -468,7 +468,7 @@ public interface DirectionalFocusTraversalPolicyMixin
     public static IEnumerable<FocusNode> _sortClosestEdgesByDistancePreferVertical(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted = nodes.ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (nodeA, nodeB) =>
+        CollectionsLibrary.mergeSort(sorted, compare: (nodeA, nodeB) =>
         {
             long vertical = _verticalCompareClosestEdge(target, nodeA.rect, nodeB.rect);
             if (vertical == 0L)
@@ -485,7 +485,7 @@ public interface DirectionalFocusTraversalPolicyMixin
     public bool _popPolicyDataIfNeeded(TraversalDirection direction, FocusScopeNode nearestScope, FocusNode focusedChild, _FocusTraversalGroupNode__focus_traversal? groupNode);
     public void _pushPolicyData(TraversalDirection direction, FocusScopeNode nearestScope, FocusNode focusedChild);
     public bool _requestTraversalFocusInDirection(FocusNode currentNode, FocusNode node, FocusScopeNode nearestScope, TraversalDirection direction, _FocusTraversalGroupNode__focus_traversal? groupNode);
-    public void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null);
+    public void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, Curve? curve = null);
     public bool _onEdgeForDirection(FocusNode currentNode, FocusNode focusedChild, _FocusTraversalGroupNode__focus_traversal? groupNode, TraversalDirection direction, FocusScopeNode? scope = null);
     public bool inDirection(FocusNode currentNode, TraversalDirection direction);
 }
@@ -523,7 +523,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
         IEnumerable<FocusNode> nodes = currentNode.nearestScope!.traversalDescendants;
         List<FocusNode> sorted = nodes.ToList().ToList();
         var (vertical, first) = direction switch { TraversalDirection.up => (true, false), TraversalDirection.down => (true, true), TraversalDirection.left => (false, false), TraversalDirection.right => (false, true), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) =>
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) =>
         {
             if (vertical)
             {
@@ -642,7 +642,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
     {
         DartRuntimePrimitives.Assert(() => Equals(direction, TraversalDirection.left) || Equals(direction, TraversalDirection.right));
         List<FocusNode> sorted = nodes.where(direction switch { TraversalDirection.left => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dx <= target.left) : (node.rect.center.dx >= target.left)), TraversalDirection.right => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dx >= target.right) : (node.rect.center.dx <= target.right)), TraversalDirection.up => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), TraversalDirection.down => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx));
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx));
         return sorted;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -651,7 +651,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
     {
         DartRuntimePrimitives.Assert(() => Equals(direction, TraversalDirection.up) || Equals(direction, TraversalDirection.down));
         List<FocusNode> sorted = nodes.where(direction switch { TraversalDirection.up => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dy <= target.top) : (node.rect.center.dy >= target.top)), TraversalDirection.down => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dy >= target.bottom) : (node.rect.center.dy <= target.bottom)), TraversalDirection.left => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), TraversalDirection.right => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy));
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy));
         return sorted;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -668,7 +668,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             }
             bool popOrInvalidate(TraversalDirection direction)
             {
-                FocusNode lastNode = policyData.history.removeLast<_DirectionalPolicyDataEntry__focus_traversal>().node;
+                FocusNode lastNode = policyData.history.removeLast().node;
                 if (!Equals(Scrollable.maybeOf(lastNode.context!), Scrollable.maybeOf(Focus_managerLibrary.primaryFocus!.context!)))
                 {
                     invalidateScopeData(nearestScope);
@@ -812,7 +812,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null)
+    public virtual void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, Curve? curve = null)
     {
         groupNode?.lastRequestedFocus = node;
         requestFocusCallback(node, alignmentPolicy: alignmentPolicy, alignment: alignment, duration: duration, curve: curve);
@@ -908,7 +908,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
 
 }
 
-public class _ReadingOrderSortData__focus_traversal : global::Doroti.Framework.Foundation.Diagnosticable
+public class _ReadingOrderSortData__focus_traversal : Diagnosticable
 {
     public virtual TextDirection? directionality { get; private set; }
     public virtual Rect rect { get; private set; } = default!;
@@ -922,15 +922,15 @@ public class _ReadingOrderSortData__focus_traversal : global::Doroti.Framework.F
         directionality = _findDirectionality(node.context!);
     }
 
-    internal static global::Doroti.Ui.TextDirection? _findDirectionality(BuildContext context)
+    internal static TextDirection? _findDirectionality(BuildContext context)
     {
         return context.getInheritedWidgetOfExactType<Directionality>()?.textDirection;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.TextDirection? commonDirectionalityOf(List<_ReadingOrderSortData__focus_traversal> list)
+    public static TextDirection? commonDirectionalityOf(List<_ReadingOrderSortData__focus_traversal> list)
     {
-        IEnumerable<HashSet<Directionality>> allAncestors = list.map<_ReadingOrderSortData__focus_traversal, HashSet<Directionality>>((member) => member.directionalAncestors.toSet());
+        IEnumerable<HashSet<Directionality>> allAncestors = list.map((member) => member.directionalAncestors.toSet());
         HashSet<Directionality>? common = default!;
         foreach (var ancestorSet in allAncestors)
         {
@@ -947,7 +947,7 @@ public class _ReadingOrderSortData__focus_traversal : global::Doroti.Framework.F
 
     public static void sortWithDirectionality(List<_ReadingOrderSortData__focus_traversal> list, TextDirection directionality)
     {
-        CollectionsLibrary.mergeSort<_ReadingOrderSortData__focus_traversal>(list, compare: (a, b) => directionality switch { TextDirection.ltr => a.rect.left.CompareTo(b.rect.left), TextDirection.rtl => b.rect.right.CompareTo(a.rect.right), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        CollectionsLibrary.mergeSort(list, compare: (a, b) => directionality switch { TextDirection.ltr => a.rect.left.CompareTo(b.rect.left), TextDirection.rtl => b.rect.right.CompareTo(a.rect.right), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
 
     public virtual IEnumerable<Directionality> directionalAncestors
@@ -970,11 +970,11 @@ public class _ReadingOrderSortData__focus_traversal : global::Doroti.Framework.F
             return _directionalAncestors!;
         }
     }
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextDirection>("directionality", directionality));
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("name", node.debugLabel, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", rect));
+        properties.add(new DiagnosticsProperty<TextDirection>("directionality", directionality));
+        properties.add(new StringProperty("name", node.debugLabel, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Rect>("rect", rect));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -1001,7 +1001,7 @@ public class _ReadingOrderSortData__focus_traversal : global::Doroti.Framework.F
 
 }
 
-internal class _ReadingOrderDirectionalGroupData__focus_traversal : global::Doroti.Framework.Foundation.Diagnosticable
+internal class _ReadingOrderDirectionalGroupData__focus_traversal : Diagnosticable
 {
     public virtual List<_ReadingOrderSortData__focus_traversal> members { get; private set; } = default!;
     internal virtual Rect? _rect { get; set; } = default;
@@ -1012,14 +1012,14 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : global::Doro
         this.members = members;
     }
 
-    public virtual global::Doroti.Ui.TextDirection? directionality => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextDirection>(members.First().directionality);
-    public virtual global::Doroti.Ui.Rect rect
+    public virtual TextDirection? directionality => DartRuntimePrimitives.ConvertValue<TextDirection>(members.First().directionality);
+    public virtual Rect rect
     {
         get
         {
             if (_rect is null)
             {
-                foreach (global::Doroti.Ui.Rect rectLocal in members.map<_ReadingOrderSortData__focus_traversal, Rect>((data) => data.rect))
+                foreach (Rect rectLocal in members.map((data) => data.rect))
                 {
                     _rect ??= rectLocal;
                     _rect = DartRuntimePrimitives.RequireValue(_rect).expandToInclude(rectLocal);
@@ -1045,14 +1045,14 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : global::Doro
     }
     public static void sortWithDirectionality(List<_ReadingOrderDirectionalGroupData__focus_traversal> list, TextDirection directionality)
     {
-        CollectionsLibrary.mergeSort<_ReadingOrderDirectionalGroupData__focus_traversal>(list, compare: (a, b) => directionality switch { TextDirection.ltr => a.rect.left.CompareTo(b.rect.left), TextDirection.rtl => b.rect.right.CompareTo(a.rect.right), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        CollectionsLibrary.mergeSort(list, compare: (a, b) => directionality switch { TextDirection.ltr => a.rect.left.CompareTo(b.rect.left), TextDirection.rtl => b.rect.right.CompareTo(a.rect.right), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextDirection>("directionality", directionality));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", rect));
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("members", members.map<_ReadingOrderSortData__focus_traversal, string>((member) =>
+        properties.add(new DiagnosticsProperty<TextDirection>("directionality", directionality));
+        properties.add(new DiagnosticsProperty<Rect>("rect", rect));
+        properties.add(new IterableProperty<string>("members", members.map((member) =>
         {
             return $"\"{member.node.debugLabel}\"({member.rect})";
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1116,7 +1116,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
 
     internal static List<_ReadingOrderDirectionalGroupData__focus_traversal> _collectDirectionalityGroups(IEnumerable<_ReadingOrderSortData__focus_traversal> candidates)
     {
-        global::Doroti.Ui.TextDirection? currentDirection = candidates.First().directionality;
+        TextDirection? currentDirection = candidates.First().directionality;
         var currentGroup = new List<_ReadingOrderSortData__focus_traversal>();
         var result = new List<_ReadingOrderDirectionalGroupData__focus_traversal>();
         foreach (var candidate in candidates)
@@ -1148,7 +1148,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
 
     internal static _ReadingOrderSortData__focus_traversal _pickNext(List<_ReadingOrderSortData__focus_traversal> candidates)
     {
-        CollectionsLibrary.mergeSort<_ReadingOrderSortData__focus_traversal>(candidates, compare: (a, b) => a.rect.top.CompareTo(b.rect.top));
+        CollectionsLibrary.mergeSort(candidates, compare: (a, b) => a.rect.top.CompareTo(b.rect.top));
         _ReadingOrderSortData__focus_traversal topmost = candidates.First();
         List<_ReadingOrderSortData__focus_traversal> inBand(_ReadingOrderSortData__focus_traversal current, IEnumerable<_ReadingOrderSortData__focus_traversal> candidates)
         {
@@ -1166,7 +1166,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
         {
             return topmost;
         }
-        global::Doroti.Ui.TextDirection? nearestCommonDirectionality = _ReadingOrderSortData__focus_traversal.commonDirectionalityOf(inBandOfTop);
+        TextDirection? nearestCommonDirectionality = _ReadingOrderSortData__focus_traversal.commonDirectionalityOf(inBandOfTop);
         _ReadingOrderSortData__focus_traversal.sortWithDirectionality(inBandOfTop, DartRuntimePrimitives.RequireValue(nearestCommonDirectionality));
         List<_ReadingOrderDirectionalGroupData__focus_traversal> bandGroups = _collectDirectionalityGroups(inBandOfTop.Cast<_ReadingOrderSortData__focus_traversal>());
         if (checked(bandGroups.Count) == 1L)
@@ -1203,7 +1203,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
         IEnumerable<FocusNode> nodes = currentNode.nearestScope!.traversalDescendants;
         List<FocusNode> sorted = nodes.ToList().ToList();
         var (vertical, first) = direction switch { TraversalDirection.up => (true, false), TraversalDirection.down => (true, true), TraversalDirection.left => (false, false), TraversalDirection.right => (false, true), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) =>
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) =>
         {
             if (vertical)
             {
@@ -1322,7 +1322,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
     {
         DartRuntimePrimitives.Assert(() => Equals(direction, TraversalDirection.left) || Equals(direction, TraversalDirection.right));
         List<FocusNode> sorted = nodes.where(direction switch { TraversalDirection.left => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dx <= target.left) : (node.rect.center.dx >= target.left)), TraversalDirection.right => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dx >= target.right) : (node.rect.center.dx <= target.right)), TraversalDirection.up => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), TraversalDirection.down => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx));
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx));
         return sorted;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1331,7 +1331,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
     {
         DartRuntimePrimitives.Assert(() => Equals(direction, TraversalDirection.up) || Equals(direction, TraversalDirection.down));
         List<FocusNode> sorted = nodes.where(direction switch { TraversalDirection.up => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dy <= target.top) : (node.rect.center.dy >= target.top)), TraversalDirection.down => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dy >= target.bottom) : (node.rect.center.dy <= target.bottom)), TraversalDirection.left => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), TraversalDirection.right => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy));
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy));
         return sorted;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1348,7 +1348,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
             }
             bool popOrInvalidate(TraversalDirection direction)
             {
-                FocusNode lastNode = policyData.history.removeLast<_DirectionalPolicyDataEntry__focus_traversal>().node;
+                FocusNode lastNode = policyData.history.removeLast().node;
                 if (!Equals(Scrollable.maybeOf(lastNode.context!), Scrollable.maybeOf(Focus_managerLibrary.primaryFocus!.context!)))
                 {
                     invalidateScopeData(nearestScope);
@@ -1492,7 +1492,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null)
+    public virtual void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, Curve? curve = null)
     {
         groupNode?.lastRequestedFocus = node;
         requestFocusCallback(node, alignmentPolicy: alignmentPolicy, alignment: alignment, duration: duration, curve: curve);
@@ -1588,7 +1588,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
 
 }
 
-public abstract class FocusOrder : global::Doroti.Framework.Foundation.Diagnosticable, IComparable<FocusOrder>
+public abstract class FocusOrder : Diagnosticable, IComparable<FocusOrder>
 {
 
     protected FocusOrder()
@@ -1642,10 +1642,10 @@ public class NumericFocusOrder : FocusOrder
     }
 
     public override long doCompare(FocusOrder other) => order.CompareTo(((NumericFocusOrder)other).order);
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("order", order));
+        properties.add(new DoubleProperty("order", order));
     }
 
 }
@@ -1660,10 +1660,10 @@ public class LexicalFocusOrder : FocusOrder
     }
 
     public override long doCompare(FocusOrder other) => order.CompareTo(((LexicalFocusOrder)other).order);
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("order", order));
+        properties.add(new StringProperty("order", order));
     }
 
 }
@@ -1709,13 +1709,13 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                 unordered.Add(nodeLocal);
             }
         }
-        CollectionsLibrary.mergeSort<_OrderedFocusInfo__focus_traversal>(ordered, compare: (a, b) =>
+        CollectionsLibrary.mergeSort(ordered, compare: (a, b) =>
         {
             DartRuntimePrimitives.Assert(() => Equals(DartRuntimePrimitives.RuntimeType(a.order), DartRuntimePrimitives.RuntimeType(b.order)), () => (object?)$"When sorting nodes for determining focus order, the order ({a.order}) of " + $"node {a.node}, isn't the same type as the order ({b.order}) of {b.node}. " + "Incompatible order types can't be compared. Use a FocusTraversalGroup to group " + "similar orders together.");
             return a.order.compareTo(b.order);
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
-        return ordered.map<_OrderedFocusInfo__focus_traversal, FocusNode>((info) => info.node).followedBy(unordered.Cast<FocusNode>());
+        return ordered.map((info) => info.node).followedBy(unordered.Cast<FocusNode>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1743,7 +1743,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
         IEnumerable<FocusNode> nodes = currentNode.nearestScope!.traversalDescendants;
         List<FocusNode> sorted = nodes.ToList().ToList();
         var (vertical, first) = direction switch { TraversalDirection.up => (true, false), TraversalDirection.down => (true, true), TraversalDirection.left => (false, false), TraversalDirection.right => (false, true), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) =>
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) =>
         {
             if (vertical)
             {
@@ -1862,7 +1862,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
     {
         DartRuntimePrimitives.Assert(() => Equals(direction, TraversalDirection.left) || Equals(direction, TraversalDirection.right));
         List<FocusNode> sorted = nodes.where(direction switch { TraversalDirection.left => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dx <= target.left) : (node.rect.center.dx >= target.left)), TraversalDirection.right => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dx >= target.right) : (node.rect.center.dx <= target.right)), TraversalDirection.up => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), TraversalDirection.down => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx));
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx));
         return sorted;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1871,7 +1871,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
     {
         DartRuntimePrimitives.Assert(() => Equals(direction, TraversalDirection.up) || Equals(direction, TraversalDirection.down));
         List<FocusNode> sorted = nodes.where(direction switch { TraversalDirection.up => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dy <= target.top) : (node.rect.center.dy >= target.top)), TraversalDirection.down => (node) => (!Equals(node.rect, target)) && (forward ? (node.rect.center.dy >= target.bottom) : (node.rect.center.dy <= target.bottom)), TraversalDirection.left => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), TraversalDirection.right => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Invalid direction {direction}")), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).ToList().ToList();
-        CollectionsLibrary.mergeSort<FocusNode>(sorted, compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy));
+        CollectionsLibrary.mergeSort(sorted, compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy));
         return sorted;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1888,7 +1888,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             }
             bool popOrInvalidate(TraversalDirection direction)
             {
-                FocusNode lastNode = policyData.history.removeLast<_DirectionalPolicyDataEntry__focus_traversal>().node;
+                FocusNode lastNode = policyData.history.removeLast().node;
                 if (!Equals(Scrollable.maybeOf(lastNode.context!), Scrollable.maybeOf(Focus_managerLibrary.primaryFocus!.context!)))
                 {
                     invalidateScopeData(nearestScope);
@@ -2032,7 +2032,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null)
+    public virtual void _requestFocus(FocusNode node, _FocusTraversalGroupNode__focus_traversal? groupNode, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, Curve? curve = null)
     {
         groupNode?.lastRequestedFocus = node;
         requestFocusCallback(node, alignmentPolicy: alignmentPolicy, alignment: alignment, duration: duration, curve: curve);
@@ -2132,7 +2132,7 @@ public class FocusTraversalOrder : InheritedWidget
 {
     public virtual FocusOrder order { get; private set; } = default!;
 
-    public FocusTraversalOrder(global::Doroti.Framework.Foundation.Key? key = null, FocusOrder order = default!, Widget child = default!) : base(key: key, child: child)
+    public FocusTraversalOrder(Key? key = null, FocusOrder order = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.order = order;
     }
@@ -2161,10 +2161,10 @@ public class FocusTraversalOrder : InheritedWidget
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) => false;
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusOrder>("order", order));
+        properties.add(new DiagnosticsProperty<FocusOrder>("order", order));
     }
 
 }
@@ -2175,10 +2175,10 @@ public class FocusTraversalGroup : StatefulWidget
     public virtual bool descendantsAreFocusable { get; private set; } = default!;
     public virtual bool descendantsAreTraversable { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
-    public virtual global::System.Action<FocusNode>? onFocusNodeCreated { get; private set; }
+    public virtual System.Action<FocusNode>? onFocusNodeCreated { get; private set; }
     public virtual FocusNode? parentNode { get; private set; }
 
-    public FocusTraversalGroup(global::Doroti.Framework.Foundation.Key? key = null, FocusTraversalPolicy? policy = null, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, global::System.Action<FocusNode>? onFocusNodeCreated = null, FocusNode? parentNode = null, Widget child = default!) : base(key: key)
+    public FocusTraversalGroup(Key? key = null, FocusTraversalPolicy? policy = null, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, System.Action<FocusNode>? onFocusNodeCreated = null, FocusNode? parentNode = null, Widget child = default!) : base(key: key)
     {
         this.descendantsAreFocusable = descendantsAreFocusable;
         this.descendantsAreTraversable = descendantsAreTraversable;
@@ -2241,10 +2241,10 @@ public class FocusTraversalGroup : StatefulWidget
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _FocusTraversalGroupState__focus_traversal());
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusTraversalPolicy>("policy", policy));
+        properties.add(new DiagnosticsProperty<FocusTraversalPolicy>("policy", policy));
     }
 
 }
@@ -2413,10 +2413,10 @@ public class DirectionalFocusIntent : Intent
         this.ignoreTextFields = ignoreTextFields;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<TraversalDirection>("direction", direction));
+        properties.add(new EnumProperty<TraversalDirection>("direction", direction));
     }
 
 }
@@ -2453,7 +2453,7 @@ public class ExcludeFocusTraversal : StatelessWidget
     public virtual bool excluding { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public ExcludeFocusTraversal(global::Doroti.Framework.Foundation.Key? key = null, bool excluding = true, Widget child = default!) : base(key: key)
+    public ExcludeFocusTraversal(Key? key = null, bool excluding = true, Widget child = default!) : base(key: key)
     {
         this.excluding = excluding;
         this.child = child;

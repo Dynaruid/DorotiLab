@@ -4,7 +4,7 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
+public class DesktopTextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
 {
     public virtual Offset anchor { get; private set; } = default!;
 
@@ -13,7 +13,7 @@ public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Framewor
         this.anchor = anchor;
     }
 
-    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return constraints.loosen();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -21,12 +21,12 @@ public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Framewor
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        var overhang = new global::Doroti.Ui.Offset(anchor.dx + childSize.width - size.width, anchor.dy + childSize.height - size.height);
-        return new global::Doroti.Ui.Offset((overhang.dx > 0.0) ? (anchor.dx - overhang.dx) : anchor.dx, (overhang.dy > 0.0) ? (anchor.dy - overhang.dy) : anchor.dy);
+        var overhang = new Offset(anchor.dx + childSize.width - size.width, anchor.dy + childSize.height - size.height);
+        return new Offset((overhang.dx > 0.0) ? (anchor.dx - overhang.dx) : anchor.dx, (overhang.dy > 0.0) ? (anchor.dy - overhang.dy) : anchor.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (DesktopTextSelectionToolbarLayoutDelegate)oldDelegate;
         return !Equals(anchor, __oldDelegate.anchor);

@@ -69,9 +69,9 @@ internal static partial class WindowsNativeV1
         internal double LogicalHeight;
         internal ulong DisplayId;
         internal long TimestampQpc;
-        internal Doroti.Ui.ViewPadding ViewPadding;
-        internal Doroti.Ui.ViewPadding ViewInsets;
-        internal Doroti.Ui.ViewPadding SystemGestureInsets;
+        internal Ui.ViewPadding ViewPadding;
+        internal Ui.ViewPadding ViewInsets;
+        internal Ui.ViewPadding SystemGestureInsets;
         internal ulong EnvironmentGeneration;
         internal double TextScaleFactor;
         internal uint AccessibilityFlags;

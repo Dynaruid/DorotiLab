@@ -15,13 +15,13 @@ public enum OverflowBarAlignment
 public class OverflowBar : MultiChildRenderObjectWidget
 {
     public virtual double spacing { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.MainAxisAlignment? alignment { get; private set; }
+    public virtual MainAxisAlignment? alignment { get; private set; }
     public virtual double overflowSpacing { get; private set; } = default!;
     public virtual OverflowBarAlignment overflowAlignment { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.VerticalDirection overflowDirection { get; private set; } = default!;
+    public virtual VerticalDirection overflowDirection { get; private set; } = default!;
     public virtual TextDirection? textDirection { get; private set; }
 
-    public OverflowBar(global::Doroti.Framework.Foundation.Key? key = null, double spacing = 0.0, global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, global::Doroti.Framework.Painting.VerticalDirection overflowDirection = VerticalDirection.down, TextDirection? textDirection = null, List<Widget> children = default!) : base(key: key, children: children ?? new List<Widget>())
+    public OverflowBar(Key? key = null, double spacing = 0.0, MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, VerticalDirection overflowDirection = VerticalDirection.down, TextDirection? textDirection = null, List<Widget> children = default!) : base(key: key, children: children ?? new List<Widget>())
     {
         this.spacing = spacing;
         this.alignment = alignment;
@@ -31,13 +31,13 @@ public class OverflowBar : MultiChildRenderObjectWidget
         this.textDirection = textDirection;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderOverflowBar__overflow_bar(spacing: spacing, alignment: alignment, overflowSpacing: overflowSpacing, overflowAlignment: overflowAlignment, overflowDirection: overflowDirection, textDirection: textDirection ?? Directionality.of(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         DartRuntimePrimitives.Ignore(((Func<_RenderOverflowBar__overflow_bar>)(() =>
 {
@@ -52,36 +52,36 @@ public class OverflowBar : MultiChildRenderObjectWidget
 }))());
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("spacing", spacing, defaultValue: 0L));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("alignment", alignment, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("overflowSpacing", overflowSpacing, defaultValue: 0L));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<OverflowBarAlignment>("overflowAlignment", overflowAlignment, defaultValue: OverflowBarAlignment.start));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", overflowDirection, defaultValue: VerticalDirection.down));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new DoubleProperty("spacing", spacing, defaultValue: 0L));
+        properties.add(new EnumProperty<MainAxisAlignment>("alignment", alignment, defaultValue: null));
+        properties.add(new DoubleProperty("overflowSpacing", overflowSpacing, defaultValue: 0L));
+        properties.add(new EnumProperty<OverflowBarAlignment>("overflowAlignment", overflowAlignment, defaultValue: OverflowBarAlignment.start));
+        properties.add(new EnumProperty<VerticalDirection>("overflowDirection", overflowDirection, defaultValue: VerticalDirection.down));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
     }
 
 }
 
-internal class _OverflowBarParentData__overflow_bar : global::Doroti.Framework.Rendering.ContainerBoxParentData<global::Doroti.Framework.Rendering.RenderBox>
+internal class _OverflowBarParentData__overflow_bar : ContainerBoxParentData<RenderBox>
 {
 }
 
-internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.ContainerRenderObjectMixin<global::Doroti.Framework.Rendering.RenderBox, _OverflowBarParentData__overflow_bar>, global::Doroti.Framework.Rendering.RenderBoxContainerDefaultsMixin<global::Doroti.Framework.Rendering.RenderBox, _OverflowBarParentData__overflow_bar>
+internal class _RenderOverflowBar__overflow_bar : RenderBox, ContainerRenderObjectMixin<RenderBox, _OverflowBarParentData__overflow_bar>, RenderBoxContainerDefaultsMixin<RenderBox, _OverflowBarParentData__overflow_bar>
 {
     internal virtual double _spacing { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Rendering.MainAxisAlignment? _alignment { get; set; } = default;
+    internal virtual MainAxisAlignment? _alignment { get; set; } = default;
     internal virtual double _overflowSpacing { get; set; } = default!;
     internal virtual OverflowBarAlignment _overflowAlignment { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.VerticalDirection _overflowDirection { get; set; } = default!;
+    internal virtual VerticalDirection _overflowDirection { get; set; } = default!;
     internal virtual TextDirection _textDirection { get; set; } = default!;
     public virtual long _childCount { get; set; } = 0L;
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    internal _RenderOverflowBar__overflow_bar(List<global::Doroti.Framework.Rendering.RenderBox>? children = null, double spacing = 0.0, global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, global::Doroti.Framework.Painting.VerticalDirection overflowDirection = VerticalDirection.down, TextDirection textDirection = default!)
+    internal _RenderOverflowBar__overflow_bar(List<RenderBox>? children = null, double spacing = 0.0, MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, VerticalDirection overflowDirection = VerticalDirection.down, TextDirection textDirection = default!)
     {
         _spacing = spacing;
         _alignment = alignment;
@@ -105,7 +105,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Rendering.MainAxisAlignment? alignment
+    public virtual MainAxisAlignment? alignment
     {
         get => _alignment;
         set
@@ -147,7 +147,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Painting.VerticalDirection overflowDirection
+    public virtual VerticalDirection overflowDirection
     {
         get => _overflowDirection;
         set
@@ -161,7 +161,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Ui.TextDirection textDirection
+    public virtual TextDirection textDirection
     {
         get => _textDirection;
         set
@@ -175,9 +175,9 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             markNeedsLayout();
         }
     }
-    public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
+    public override void setupParentData(RenderObject child)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         if (__child.parentData is not _OverflowBarParentData__overflow_bar)
         {
             __child.parentData = new _OverflowBarParentData__overflow_bar();
@@ -186,7 +186,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        RenderBox? child = firstChild;
         if (child is null)
         {
             return 0;
@@ -224,7 +224,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        RenderBox? child = firstChild;
         if (child is null)
         {
             return 0;
@@ -262,7 +262,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        RenderBox? child = firstChild;
         if (child is null)
         {
             return 0;
@@ -279,7 +279,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        RenderBox? child = firstChild;
         if (child is null)
         {
             return 0;
@@ -300,25 +300,25 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
+    public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = constraints.loosen();
-        var (next, startChild) = overflowDirection switch { VerticalDirection.down => ((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>, global::Doroti.Framework.Rendering.RenderBox?))(childAfter, firstChild), VerticalDirection.up => ((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>, global::Doroti.Framework.Rendering.RenderBox?))(childBefore, lastChild), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        BoxConstraints childConstraints = constraints.loosen();
+        var (next, startChild) = overflowDirection switch { VerticalDirection.down => ((Func<RenderBox, RenderBox?>, RenderBox?))(childAfter, firstChild), VerticalDirection.up => ((Func<RenderBox, RenderBox?>, RenderBox?))(childBefore, lastChild), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var maxChildHeight = 0.0;
         var y = 0.0;
         var childrenWidth = 0.0;
-        global::Doroti.Framework.Rendering.BaselineOffset minHorizontalBaseline = BaselineOffset.noBaseline;
-        global::Doroti.Framework.Rendering.BaselineOffset verticalBaseline = BaselineOffset.noBaseline;
+        BaselineOffset minHorizontalBaseline = BaselineOffset.noBaseline;
+        BaselineOffset verticalBaseline = BaselineOffset.noBaseline;
         for (var child = startChild; child is not null; child = next(child))
         {
-            global::Doroti.Ui.Size childSize = child.getDryLayout(childConstraints);
+            Size childSize = child.getDryLayout(childConstraints);
             double heightDiff = childSize.height - maxChildHeight;
             if (heightDiff > 0L)
             {
                 minHorizontalBaseline = minHorizontalBaseline.op_Add(heightDiff / 2L);
                 maxChildHeight = childSize.height;
             }
-            var baselineOffset = new global::Doroti.Framework.Rendering.BaselineOffset(child.getDryBaseline(childConstraints, baseline));
+            var baselineOffset = new BaselineOffset(child.getDryBaseline(childConstraints, baseline));
             if (baselineOffset is not null)
             {
                 verticalBaseline ??= (baselineOffset.op_Add(y));
@@ -332,20 +332,20 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(BoxConstraints constraints)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        RenderBox? child = firstChild;
         if (child is null)
         {
             return constraints.smallest;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = constraints.loosen();
+        BoxConstraints childConstraints = constraints.loosen();
         var childrenWidth = 0.0;
         var maxChildHeight = 0.0;
         var y = 0.0;
         while (child is not null)
         {
-            global::Doroti.Ui.Size childSize = child.getDryLayout(childConstraints);
+            Size childSize = child.getDryLayout(childConstraints);
             childrenWidth += childSize.width;
             maxChildHeight = Math.Max(maxChildHeight, childSize.height);
             y += childSize.height + overflowSpacing;
@@ -354,25 +354,25 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         double actualWidth = childrenWidth + (spacing * (childCount - 1L));
         if (actualWidth > constraints.maxWidth)
         {
-            return constraints.constrain(new global::Doroti.Ui.Size(constraints.maxWidth, y - overflowSpacing));
+            return constraints.constrain(new Size(constraints.maxWidth, y - overflowSpacing));
         }
         else
         {
             double overallWidth = (alignment is null) ? actualWidth : constraints.maxWidth;
-            return constraints.constrain(new global::Doroti.Ui.Size(overallWidth, maxChildHeight));
+            return constraints.constrain(new Size(overallWidth, maxChildHeight));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        RenderBox? child = firstChild;
         if (child is null)
         {
             size = constraints.smallest;
             return;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = constraints.loosen();
+        BoxConstraints childConstraints = constraints.loosen();
         double childrenWidth = 0;
         double maxChildHeight = 0;
         double maxChildWidth = 0;
@@ -389,7 +389,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         if (actualWidth > constraints.maxWidth)
         {
             child = Equals(overflowDirection, VerticalDirection.down) ? firstChild : lastChild;
-            global::Doroti.Framework.Rendering.RenderBox? nextChild()
+            RenderBox? nextChild()
             {
                 return Equals(overflowDirection, VerticalDirection.down) ? childAfter(child!) : childBefore(child!);
                 throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -399,18 +399,18 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             {
                 var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
                 double x = overflowAlignment switch { OverflowBarAlignment.center => (constraints.maxWidth - child.size.width) / 2L, OverflowBarAlignment.start => rtlLocal ? (constraints.maxWidth - child.size.width) : 0, OverflowBarAlignment.end => rtlLocal ? 0 : (constraints.maxWidth - child.size.width), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-                childParentData.offset = new global::Doroti.Ui.Offset(x, y);
+                childParentData.offset = new Offset(x, y);
                 y += child.size.height + overflowSpacing;
                 child = nextChild();
             }
-            size = constraints.constrain(new global::Doroti.Ui.Size(constraints.maxWidth, y - overflowSpacing));
+            size = constraints.constrain(new Size(constraints.maxWidth, y - overflowSpacing));
         }
         else
         {
             child = firstChild;
             double firstChildWidth = child!.size.width;
             double overallWidth = (alignment is null) ? actualWidth : constraints.maxWidth;
-            size = constraints.constrain(new global::Doroti.Ui.Size(overallWidth, maxChildHeight));
+            size = constraints.constrain(new Size(overallWidth, maxChildHeight));
             double xLocal = default!;
             double layoutSpacing = spacing;
             switch (alignment)
@@ -458,7 +458,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             while (child is not null)
             {
                 var childParentDataLocal = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
-                childParentDataLocal.offset = new global::Doroti.Ui.Offset(xLocal, (maxChildHeight - child.size.height) / 2L);
+                childParentDataLocal.offset = new Offset(xLocal, (maxChildHeight - child.size.height) / 2L);
                 if (!rtlLocal)
                 {
                     xLocal += child.size.width + layoutSpacing;
@@ -472,25 +472,25 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         }
     }
 
-    public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
+    public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return defaultHitTestChildren(result, position: position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(PaintingContext context, Offset offset)
     {
         defaultPaint(context, offset);
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("spacing", spacing, defaultValue: 0L));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("overflowSpacing", overflowSpacing, defaultValue: 0L));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<OverflowBarAlignment>("overflowAlignment", overflowAlignment, defaultValue: OverflowBarAlignment.start));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", overflowDirection, defaultValue: VerticalDirection.down));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new DoubleProperty("spacing", spacing, defaultValue: 0L));
+        properties.add(new DoubleProperty("overflowSpacing", overflowSpacing, defaultValue: 0L));
+        properties.add(new EnumProperty<OverflowBarAlignment>("overflowAlignment", overflowAlignment, defaultValue: OverflowBarAlignment.start));
+        properties.add(new EnumProperty<VerticalDirection>("overflowDirection", overflowDirection, defaultValue: VerticalDirection.down));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -526,7 +526,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             {
                 if (child is not RenderBox)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderBox)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -599,7 +599,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public virtual void addAll(List<RenderBox>? children)
     {
-        children?.forEach((__arg0) => ((global::System.Action<RenderBox>)add)(__arg0));
+        children?.forEach((__arg0) => ((System.Action<RenderBox>)add)(__arg0));
     }
 
     public virtual void _removeFromChildList(RenderBox child)
@@ -707,7 +707,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         }
     }
 
-    public override void visitChildren(global::System.Action<RenderObject> visitor)
+    public override void visitChildren(System.Action<RenderObject> visitor)
     {
         RenderBox? child = _firstChild;
         while (child is not null)
@@ -736,9 +736,9 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        var children = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+        var children = new List<DiagnosticsNode>();
         if (firstChild is not null)
         {
             RenderBox child = firstChild!;

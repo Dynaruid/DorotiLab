@@ -173,7 +173,7 @@ public class ColorTween : Tween<Color?>
     {
     }
 
-    public override global::Doroti.Ui.Color? lerp(double t) => Dart_uiLibrary.Color.lerp(begin, end, t);
+    public override Color? lerp(double t) => Dart_uiLibrary.Color.lerp(begin, end, t);
 }
 
 public class SizeTween : Tween<Size?>
@@ -182,7 +182,7 @@ public class SizeTween : Tween<Size?>
     {
     }
 
-    public override global::Doroti.Ui.Size? lerp(double t) => Dart_uiLibrary.Size.lerp(begin, end, t);
+    public override Size? lerp(double t) => Dart_uiLibrary.Size.lerp(begin, end, t);
 }
 
 public class RectTween : Tween<Rect?>
@@ -191,7 +191,7 @@ public class RectTween : Tween<Rect?>
     {
     }
 
-    public override global::Doroti.Ui.Rect? lerp(double t) => Dart_uiLibrary.Rect.lerp(begin, end, t);
+    public override Rect? lerp(double t) => Dart_uiLibrary.Rect.lerp(begin, end, t);
 }
 
 public class IntTween : Tween<long>

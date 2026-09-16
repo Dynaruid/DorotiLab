@@ -16,11 +16,11 @@ public class BoxShadow : Shadow
         this.blurStyle = blurStyle;
     }
 
-    public new virtual global::Doroti.Ui.Paint toPaint()
+    public new virtual Paint toPaint()
     {
         var result = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color;
     __cascade.maskFilter = MaskFilter.blur(blurStyle, blurSigma);
     return __cascade;

@@ -6,19 +6,19 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class TextMagnifier : global::Doroti.Framework.Widgets.StatefulWidget
+public class TextMagnifier : StatefulWidget
 {
-    public static global::Doroti.Framework.Widgets.TextMagnifierConfiguration adaptiveMagnifierConfiguration = new global::Doroti.Framework.Widgets.TextMagnifierConfiguration(shouldDisplayHandlesInMagnifier: Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS), magnifierBuilder: (context, controller, magnifierInfo) =>
+    public static TextMagnifierConfiguration adaptiveMagnifierConfiguration = new TextMagnifierConfiguration(shouldDisplayHandlesInMagnifier: Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS), magnifierBuilder: (context, controller, magnifierInfo) =>
     {
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.iOS:
                 {
-                    return (global::Doroti.Framework.Widgets.Widget?)new CupertinoTextMagnifier(controller: controller, magnifierInfo: magnifierInfo);
+                    return (Widget?)new CupertinoTextMagnifier(controller: controller, magnifierInfo: magnifierInfo);
                 }
             case TargetPlatform.android:
                 {
-                    return (global::Doroti.Framework.Widgets.Widget?)new TextMagnifier(magnifierInfo: magnifierInfo);
+                    return (Widget?)new TextMagnifier(magnifierInfo: magnifierInfo);
                 }
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
@@ -33,9 +33,9 @@ public class TextMagnifier : global::Doroti.Framework.Widgets.StatefulWidget
         throw new InvalidOperationException("Dart closure completed without a value.");
     });
     public static Duration jumpBetweenLinesAnimationDuration = Duration.Create(milliseconds: 70L);
-    public virtual global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Widgets.MagnifierInfo> magnifierInfo { get; private set; } = default!;
+    public virtual ValueNotifier<MagnifierInfo> magnifierInfo { get; private set; } = default!;
 
-    public TextMagnifier(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Widgets.MagnifierInfo> magnifierInfo = default!) : base(key: key)
+    public TextMagnifier(Key? key = null, ValueNotifier<MagnifierInfo> magnifierInfo = default!) : base(key: key)
     {
         this.magnifierInfo = magnifierInfo;
     }
@@ -43,9 +43,9 @@ public class TextMagnifier : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TextMagnifierState__magnifier());
 }
 
-internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets.State<TextMagnifier>
+internal class _TextMagnifierState__magnifier : State<TextMagnifier>
 {
-    internal virtual global::System.Action _magnifierInfoListener { get; set; } = default!;
+    internal virtual Action _magnifierInfoListener { get; set; } = default!;
     internal virtual Offset? _magnifierPosition { get; set; } = default;
     internal virtual Timer? _positionShouldBeAnimatedTimer { get; set; } = default;
     internal virtual Offset _extraFocalPointOffset { get; set; } = Offset.zero;
@@ -83,13 +83,13 @@ internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets
 
     internal virtual void _determineMagnifierPositionAndFocalPoint()
     {
-        global::Doroti.Framework.Widgets.MagnifierInfo selectionInfo = widget.magnifierInfo.value;
-        global::Doroti.Ui.Rect screenRect = Offset.zero & MediaQuery.sizeOf(context);
-        var basicMagnifierOffset = new global::Doroti.Ui.Offset(Magnifier.kDefaultMagnifierSize.width / 2L, Magnifier.kDefaultMagnifierSize.height + Magnifier.kStandardVerticalFocalPointShift);
+        MagnifierInfo selectionInfo = widget.magnifierInfo.value;
+        Rect screenRect = Offset.zero & MediaQuery.sizeOf(context);
+        var basicMagnifierOffset = new Offset(Magnifier.kDefaultMagnifierSize.width / 2L, Magnifier.kDefaultMagnifierSize.height + Magnifier.kStandardVerticalFocalPointShift);
         double magnifierX = Dart_uiLibrary.clampDouble(selectionInfo.globalGesturePosition.dx, selectionInfo.currentLineBoundaries.left, selectionInfo.currentLineBoundaries.right);
-        global::Doroti.Ui.Rect unadjustedMagnifierRect = (new global::Doroti.Ui.Offset(magnifierX, selectionInfo.caretRect.center.dy) - basicMagnifierOffset) & Magnifier.kDefaultMagnifierSize;
-        global::Doroti.Ui.Rect screenBoundsAdjustedMagnifierRect = MagnifierController.shiftWithinBounds(bounds: screenRect, rect: unadjustedMagnifierRect);
-        global::Doroti.Ui.Offset finalMagnifierPosition = screenBoundsAdjustedMagnifierRect.topLeft;
+        Rect unadjustedMagnifierRect = (new Offset(magnifierX, selectionInfo.caretRect.center.dy) - basicMagnifierOffset) & Magnifier.kDefaultMagnifierSize;
+        Rect screenBoundsAdjustedMagnifierRect = MagnifierController.shiftWithinBounds(bounds: screenRect, rect: unadjustedMagnifierRect);
+        Offset finalMagnifierPosition = screenBoundsAdjustedMagnifierRect.topLeft;
         double horizontalMaxFocalPointEdgeInsets = Magnifier.kDefaultMagnifierSize.width / 2L / Magnifier._magnification;
         double newGlobalFocalPointX = default!;
         if (selectionInfo.fieldBounds.width < (horizontalMaxFocalPointEdgeInsets * 2L))
@@ -101,7 +101,7 @@ internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets
             newGlobalFocalPointX = Dart_uiLibrary.clampDouble(screenBoundsAdjustedMagnifierRect.center.dx, selectionInfo.fieldBounds.left + horizontalMaxFocalPointEdgeInsets, selectionInfo.fieldBounds.right - horizontalMaxFocalPointEdgeInsets);
         }
         double newRelativeFocalPointX = newGlobalFocalPointX - screenBoundsAdjustedMagnifierRect.center.dx;
-        var focalPointAdjustmentForScreenBoundsAdjustment = new global::Doroti.Ui.Offset(newRelativeFocalPointX, unadjustedMagnifierRect.top - screenBoundsAdjustedMagnifierRect.top);
+        var focalPointAdjustmentForScreenBoundsAdjustment = new Offset(newRelativeFocalPointX, unadjustedMagnifierRect.top - screenBoundsAdjustedMagnifierRect.top);
         Timer? positionShouldBeAnimated = _positionShouldBeAnimatedTimer;
         if ((_magnifierPosition is not null) && (finalMagnifierPosition.dy != DartRuntimePrimitives.RequireValue(_magnifierPosition).dy))
         {
@@ -125,33 +125,33 @@ internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets
         });
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _magnifierPosition is not null, () => (object?)"Magnifier position should only be null before the first build.");
-        return new global::Doroti.Framework.Widgets.AnimatedPositioned(top: DartRuntimePrimitives.RequireValue(_magnifierPosition).dy, left: DartRuntimePrimitives.RequireValue(_magnifierPosition).dx, duration: _positionShouldBeAnimated ? TextMagnifier.jumpBetweenLinesAnimationDuration : Duration.zero, child: new Magnifier(additionalFocalPointOffset: _extraFocalPointOffset));
+        return new AnimatedPositioned(top: DartRuntimePrimitives.RequireValue(_magnifierPosition).dy, left: DartRuntimePrimitives.RequireValue(_magnifierPosition).dx, duration: _positionShouldBeAnimated ? TextMagnifier.jumpBetweenLinesAnimationDuration : Duration.zero, child: new Magnifier(additionalFocalPointOffset: _extraFocalPointOffset));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class Magnifier : global::Doroti.Framework.Widgets.StatelessWidget
+public class Magnifier : StatelessWidget
 {
-    public static Size kDefaultMagnifierSize = new global::Doroti.Ui.Size(77.37, 37.9);
+    public static Size kDefaultMagnifierSize = new Size(77.37, 37.9);
     public const double kStandardVerticalFocalPointShift = 22.0;
     internal const double _borderRadius = 40;
     internal const double _magnification = 1.25;
     public virtual Offset additionalFocalPointOffset { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.BorderRadius borderRadius { get; private set; } = default!;
+    public virtual BorderRadius borderRadius { get; private set; } = default!;
     public virtual Color filmColor { get; private set; } = default!;
-    public virtual List<global::Doroti.Framework.Painting.BoxShadow> shadows { get; private set; } = default!;
+    public virtual List<BoxShadow> shadows { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual Size size { get; private set; } = default!;
 
-    public Magnifier(global::Doroti.Framework.Foundation.Key? key = null, Offset additionalFocalPointOffset = default, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!, Color filmColor = default!, List<global::Doroti.Framework.Painting.BoxShadow> shadows = default!, Clip clipBehavior = Clip.hardEdge, Size? size = null) : base(key: key)
+    public Magnifier(Key? key = null, Offset additionalFocalPointOffset = default, BorderRadius borderRadius = default!, Color filmColor = default!, List<BoxShadow> shadows = default!, Clip clipBehavior = Clip.hardEdge, Size? size = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.BorderRadius __borderRadius = borderRadius ?? BorderRadius.CreateAll(Radius.circular(_borderRadius));
+        BorderRadius __borderRadius = borderRadius ?? BorderRadius.CreateAll(Radius.circular(_borderRadius));
         Color __filmColor = filmColor ?? Color.CreateFromARGB(8, 158, 158, 158);
-        List<global::Doroti.Framework.Painting.BoxShadow> __shadows = shadows ?? new List<global::Doroti.Framework.Painting.BoxShadow> { new global::Doroti.Framework.Painting.BoxShadow(blurRadius: 1.5, offset: new Offset(0.0, 2.0), spreadRadius: 0.75, color: Color.fromARGB(25, 0, 0, 0)) };
+        List<BoxShadow> __shadows = shadows ?? new List<BoxShadow> { new BoxShadow(blurRadius: 1.5, offset: new Offset(0.0, 2.0), spreadRadius: 0.75, color: Color.fromARGB(25, 0, 0, 0)) };
         Size __size = size ?? kDefaultMagnifierSize;
         this.additionalFocalPointOffset = additionalFocalPointOffset;
         this.borderRadius = __borderRadius;
@@ -161,9 +161,9 @@ public class Magnifier : global::Doroti.Framework.Widgets.StatelessWidget
         this.size = __size;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.RawMagnifier(decoration: new global::Doroti.Framework.Widgets.MagnifierDecoration(shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: borderRadius), shadows: shadows), clipBehavior: clipBehavior, magnificationScale: _magnification, focalPointOffset: additionalFocalPointOffset + new global::Doroti.Ui.Offset(0, kStandardVerticalFocalPointShift + (kDefaultMagnifierSize.height / 2L)), size: DartRuntimePrimitives.RequireValue(size), child: new global::Doroti.Framework.Widgets.ColoredBox(color: filmColor));
+        return new RawMagnifier(decoration: new MagnifierDecoration(shape: new RoundedRectangleBorder(borderRadius: borderRadius), shadows: shadows), clipBehavior: clipBehavior, magnificationScale: _magnification, focalPointOffset: additionalFocalPointOffset + new Offset(0, kStandardVerticalFocalPointShift + (kDefaultMagnifierSize.height / 2L)), size: DartRuntimePrimitives.RequireValue(size), child: new ColoredBox(color: filmColor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

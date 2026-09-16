@@ -65,7 +65,7 @@ internal static partial class BrowserInterop
 {
     private const string Module = "doroti.web";
 
-    [System.Runtime.InteropServices.JavaScript.JSImport("createHost", Module)]
+    [JSImport("createHost", Module)]
     internal static partial string CreateHost(
         int hostId,
         string canvasId,
@@ -79,13 +79,13 @@ internal static partial class BrowserInterop
     [JSImport("getRendererIdentity", Module)]
     internal static partial string GetRendererIdentity();
 
-    [System.Runtime.InteropServices.JavaScript.JSImport("showHost", Module)]
+    [JSImport("showHost", Module)]
     internal static partial string ShowHost(int hostId);
 
-    [System.Runtime.InteropServices.JavaScript.JSImport("resizeHost", Module)]
+    [JSImport("resizeHost", Module)]
     internal static partial string ResizeHost(int hostId, double logicalWidth, double logicalHeight);
 
-    [System.Runtime.InteropServices.JavaScript.JSImport("requestFrame", Module)]
+    [JSImport("requestFrame", Module)]
     internal static partial void RequestFrame(int hostId, int callbackId);
 
     [JSImport("recordManagedRaster", Module)]
@@ -102,10 +102,10 @@ internal static partial class BrowserInterop
     [JSImport("captureResizeTrace", Module)]
     internal static partial string CaptureResizeTrace(int hostId);
 
-    [System.Runtime.InteropServices.JavaScript.JSImport("closeHost", Module)]
+    [JSImport("closeHost", Module)]
     internal static partial void CloseHost(int hostId);
 
-    [System.Runtime.InteropServices.JavaScript.JSImport("resolveResourceUrl", Module)]
+    [JSImport("resolveResourceUrl", Module)]
     internal static partial string ResolveResourceUrl(string relativeUrl);
 
     [JSImport("setCursor", Module)]
@@ -163,8 +163,8 @@ internal static partial class BrowserInterop
     [JSImport("setApplicationTitle", Module)]
     internal static partial void SetApplicationTitle(int hostId, string title);
 
-    [System.Runtime.InteropServices.JavaScript.JSImport("invokePlugin", Module)]
-    [return: System.Runtime.InteropServices.JavaScript.JSMarshalAs<System.Runtime.InteropServices.JavaScript.JSType.Promise<System.Runtime.InteropServices.JavaScript.JSType.String>>]
+    [JSImport("invokePlugin", Module)]
+    [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> InvokePluginAsync(
         string moduleUrl,
         string exportName,
@@ -172,11 +172,11 @@ internal static partial class BrowserInterop
         string codec,
         string payloadBase64);
 
-    [System.Runtime.InteropServices.JavaScript.JSExport]
+    [JSExport]
     internal static void DispatchAnimationFrame(int hostId, int callbackId, double timestampMilliseconds) =>
         BrowserHostAdapter.DispatchAnimationFrame(hostId, callbackId, timestampMilliseconds);
 
-    [System.Runtime.InteropServices.JavaScript.JSExport]
+    [JSExport]
     internal static void DispatchSnapshot(int hostId, string json) =>
         BrowserHostAdapter.DispatchSnapshot(hostId, json);
 

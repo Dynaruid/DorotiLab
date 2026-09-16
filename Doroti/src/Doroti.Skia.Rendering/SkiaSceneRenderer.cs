@@ -1863,7 +1863,7 @@ public sealed partial class SkiaSceneRenderer :
             ToSamplingOptions(value.FilterQuality ?? FilterQuality.none), ToMatrix(value.Matrix4));
     }
 
-    private static SKShader CreateImageShader(Doroti.Ui.Image image)
+    private static SKShader CreateImageShader(UiImage image)
     {
         if (image.HostHandle is not SkiaImageHandle handle)
             throw new InvalidDataException("Doroti fragment shader sampler has no native image handle.");
@@ -2085,13 +2085,13 @@ public sealed partial class SkiaSceneRenderer :
         private SkiaImageHandle(SharedImage shared) { _shared = shared; Interlocked.Increment(ref shared.References); }
         internal SKImage Image => _shared.Image;
         public IDorotiImageHandle Clone() => new SkiaImageHandle(_shared);
-        public ValueTask<Doroti.Runtime.ByteData> ReadBytesAsync(ImageByteFormat format)
+        public ValueTask<Runtime.ByteData> ReadBytesAsync(ImageByteFormat format)
         {
             if (format == ImageByteFormat.png)
             {
                 using var encoded = Image.Encode(SKEncodedImageFormat.Png, 100)
                     ?? throw new InvalidOperationException("Skia PNG encoding failed.");
-                return ValueTask.FromResult(new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(encoded.ToArray())));
+                return ValueTask.FromResult(new Runtime.ByteData(new Runtime.Uint8List(encoded.ToArray())));
             }
             var alpha = format == ImageByteFormat.rawStraightRgba ? SKAlphaType.Unpremul : SKAlphaType.Premul;
             // rawUnmodified is canonicalized to this host's tightly packed RGBA8/premultiplied storage.
@@ -2103,7 +2103,7 @@ public sealed partial class SkiaSceneRenderer :
             for (var row = 0; row < Image.Height; row++)
                 System.Runtime.InteropServices.Marshal.Copy(bitmap.GetPixels() + row * bitmap.RowBytes,
                     bytes, row * Image.Width * 4, Image.Width * 4);
-            return ValueTask.FromResult(new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(bytes)));
+            return ValueTask.FromResult(new Runtime.ByteData(new Runtime.Uint8List(bytes)));
         }
         public void Release() { if (Interlocked.Decrement(ref _shared.References) == 0) _shared.Image.Dispose(); }
         private sealed class SharedImage(SKImage image) { internal readonly SKImage Image = image; internal int References = 1; }

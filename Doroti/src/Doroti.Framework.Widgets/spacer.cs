@@ -6,7 +6,7 @@ public class Spacer : StatelessWidget
 {
     public virtual long flex { get; private set; } = default!;
 
-    public Spacer(global::Doroti.Framework.Foundation.Key? key = null, long flex = 1) : base(key: key)
+    public Spacer(Key? key = null, long flex = 1) : base(key: key)
     {
         this.flex = flex;
         System.Diagnostics.Debug.Assert(flex > 0L);

@@ -112,7 +112,7 @@ public static class Dart_developerLibrary
     public static T inspect<T>(T value) => value;
     public static class Flow
     {
-        public static global::Doroti.Runtime.Flow step(long id) =>
+        public static Runtime.Flow step(long id) =>
             DartDeveloperTimeline.step(id);
     }
 
@@ -138,7 +138,7 @@ public static class Dart_developerLibrary
             DartDeveloperTimeline.emit(slices.Pop(), DartTimelineEventKind.end);
         }
 
-        public static T timeSync<T>(string name, Func<T> callback, global::Doroti.Runtime.Flow? flow = null)
+        public static T timeSync<T>(string name, Func<T> callback, Runtime.Flow? flow = null)
         {
             ArgumentNullException.ThrowIfNull(callback);
             DartDeveloperTimeline.emit(name, DartTimelineEventKind.begin, flow);
@@ -152,7 +152,7 @@ public static class Dart_developerLibrary
             }
         }
 
-        public static void timeSync(string name, Action callback, global::Doroti.Runtime.Flow? flow = null)
+        public static void timeSync(string name, Action callback, Runtime.Flow? flow = null)
         {
             ArgumentNullException.ThrowIfNull(callback);
             timeSync<object?>(name, () =>

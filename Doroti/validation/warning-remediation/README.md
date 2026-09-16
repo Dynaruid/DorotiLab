@@ -39,10 +39,37 @@ Build `SourceTools/SourceTools.csproj`, then invoke its DLL with one of:
   This avoids the combined analyzer's unrelated qualified-type-name pass. It
   requires the pinned SDK's internal analyzer API and fails on incompatible SDKs.
   Use the check command after changes; builds alone do not validate IDE0002.
+- `fix-ide0001 <solution-or-project> <report.json>` / `check-ide0001 ...`: run
+  the SDK Roslyn name analyzer and apply only its IDE0001 document code fixes.
+  Preserve qualification required to resolve name collisions; skip generated
+  documents. `--module=ProjectName` restricts the operation to one project.
+  Check again after fixing: builds alone do not validate IDE0001. These commands
+  also require the pinned SDK's internal analyzer and code-fix types.
+- `simplify-icon-data-names <solution-or-project> <report.json>`: batch the
+  repeated `global::Doroti.Ui.Offset` / `Size` names in reviewed Material animated
+  icon data and `global::Doroti.Framework.Widgets.IconData` in its icon catalog.
+  Add a file-local `Doroti.Ui` import where needed and verify every replacement binds
+  to the identical Roslyn type symbol before saving. This avoids repeatedly
+  rebinding enormous initializers during the normal IDE0001 pass. Run the normal
+  check afterwards; this is not a replacement for analyzer or build validation.
+
+Workspace commands accept `--property=Name=Value` for explicit MSBuild properties,
+for example `--property=DorotiHostTargetFrameworks=net10.0-android` when inspecting
+one MAUI target. Qualify conditional platform code separately for each target.
 
 Use a solution containing only the projects being validated. Do not include
 generated/reference/history sources or unsupported platform projects implicitly.
 The tools do not regenerate or adopt the framework from Dart.
+
+For VS Code/Cursor at the repository root, set `dotnet.defaultSolution` to
+`Doroti/Doroti.Editor.slnx`. This managed editing solution includes the framework,
+supported managed hosts, tooling and shared testbed; platform runners remain in
+`Doroti.Product.slnx`. The local `.vscode/settings.json` is ignored by Git. Reload
+the editor window after changing the setting if the C# server still uses a
+temporary `roslyn-canonical-misc/Canonical.csproj` instead of the real projects.
+In that incomplete context it can suggest removing necessary qualification such
+as `System.Action<T>`, which would bind to Widgets' unrelated `Action<T>` in the
+actual project. Verify simplifications against a loaded project before applying.
 
 The strict warning guard is an exit gate: all framework pragmas must be gone.
 During work, `--baseline <baseline.json>` only checks that existing suppressions

@@ -6,19 +6,19 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class DrawerThemeData : Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? scrimColor { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? endShape { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
+    public virtual ShapeBorder? endShape { get; private set; }
     public virtual double? width { get; private set; }
     public virtual Clip? clipBehavior { get; private set; }
 
-    public DrawerThemeData(Color? backgroundColor = null, Color? scrimColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.ShapeBorder? endShape = null, double? width = null, Clip? clipBehavior = null)
+    public DrawerThemeData(Color? backgroundColor = null, Color? scrimColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, ShapeBorder? shape = null, ShapeBorder? endShape = null, double? width = null, Clip? clipBehavior = null)
     {
         this.backgroundColor = backgroundColor;
         this.scrimColor = scrimColor;
@@ -31,7 +31,7 @@ public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         this.clipBehavior = clipBehavior;
     }
 
-    public virtual DrawerThemeData copyWith(Color? backgroundColor = null, Color? scrimColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.ShapeBorder? endShape = null, double? width = null, Clip? clipBehavior = null)
+    public virtual DrawerThemeData copyWith(Color? backgroundColor = null, Color? scrimColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, ShapeBorder? shape = null, ShapeBorder? endShape = null, double? width = null, Clip? clipBehavior = null)
     {
         return new DrawerThemeData(backgroundColor: backgroundColor ?? this.backgroundColor, scrimColor: scrimColor ?? this.scrimColor, elevation: elevation ?? this.elevation, shadowColor: shadowColor ?? this.shadowColor, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, shape: shape ?? this.shape, endShape: endShape ?? this.endShape, width: width ?? this.width, clipBehavior: clipBehavior ?? this.clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -63,17 +63,17 @@ public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         return (__other is DrawerThemeData) && Equals(__other.backgroundColor, backgroundColor) && Equals(__other.scrimColor, scrimColor) && (__other.elevation == elevation) && Equals(__other.shadowColor, shadowColor) && Equals(__other.surfaceTintColor, surfaceTintColor) && Equals(__other.shape, shape) && Equals(__other.endShape, endShape) && (__other.width == width) && Equals(__other.clipBehavior, clipBehavior);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("scrimColor", scrimColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("endShape", endShape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", width, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: null));
+        properties.add(new ColorProperty("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(new ColorProperty("scrimColor", scrimColor, defaultValue: null));
+        properties.add(new DoubleProperty("elevation", elevation, defaultValue: null));
+        properties.add(new ColorProperty("shadowColor", shadowColor, defaultValue: null));
+        properties.add(new ColorProperty("surfaceTintColor", surfaceTintColor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ShapeBorder>("shape", shape, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ShapeBorder>("endShape", endShape, defaultValue: null));
+        properties.add(new DoubleProperty("width", width, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -99,27 +99,27 @@ public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
 }
 
-public class DrawerTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class DrawerTheme : InheritedTheme
 {
     public virtual DrawerThemeData data { get; private set; } = default!;
 
-    public DrawerTheme(global::Doroti.Framework.Foundation.Key? key = null, DrawerThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public DrawerTheme(Key? key = null, DrawerThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static DrawerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static DrawerThemeData of(BuildContext context)
     {
         DrawerTheme? drawerThemeLocal = context.dependOnInheritedWidgetOfExactType<DrawerTheme>();
         return drawerThemeLocal?.data ?? Theme.of(context).drawerTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new DrawerTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((DrawerTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((DrawerTheme)oldWidget).data));
 }

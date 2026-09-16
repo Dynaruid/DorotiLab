@@ -46,7 +46,7 @@ public abstract class Decoration : Diagnosticable
 
     public virtual bool hitTest(Size size, Offset position, TextDirection? textDirection = null) => true;
     public abstract BoxPainter createBoxPainter(Action onChanged = default!);
-    public virtual global::Doroti.Ui.Path getClipPath(Rect rect, TextDirection textDirection)
+    public virtual Path getClipPath(Rect rect, TextDirection textDirection)
     {
         throw new NotSupportedException($"{objectRuntimeTypeFunctions.objectRuntimeType(this, "This Decoration subclass")} does not expect to be used for clipping.");
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -17,13 +17,13 @@ public class FilledButton : ButtonStyleButton
     internal virtual _FilledButtonVariant__filled_button _variant { get; private set; } = default!;
     internal virtual bool _addPadding { get; private set; } = default!;
 
-    public FilledButton(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = default!, global::System.Action? onLongPress = null, global::System.Action<bool>? onHover = null, global::System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, global::Doroti.Framework.Widgets.Widget? child = default!) : base(key: key, onPressed: onPressed, onLongPress: onLongPress, onHover: onHover, onFocusChange: onFocusChange, style: style, focusNode: focusNode, autofocus: autofocus, clipBehavior: clipBehavior, statesController: statesController, child: child)
+    public FilledButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, System.Action<bool>? onHover = null, System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, WidgetStatesController? statesController = null, Widget? child = default!) : base(key: key, onPressed: onPressed, onLongPress: onLongPress, onHover: onHover, onFocusChange: onFocusChange, style: style, focusNode: focusNode, autofocus: autofocus, clipBehavior: clipBehavior, statesController: statesController, child: child)
     {
         _variant = _FilledButtonVariant__filled_button.filled;
         _addPadding = false;
     }
 
-    public static FilledButton CreateIcon(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = default!, global::System.Action? onLongPress = null, global::System.Action<bool>? onHover = null, global::System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, global::Doroti.Framework.Widgets.Widget? icon = null, global::Doroti.Framework.Widgets.Widget label = default!, IconAlignment? iconAlignment = null)
+    public static FilledButton CreateIcon(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, System.Action<bool>? onHover = null, System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, WidgetStatesController? statesController = null, Widget? icon = null, Widget label = default!, IconAlignment? iconAlignment = null)
     {
         var __instance = new FilledButton(key: key, onPressed: onPressed, onLongPress: onLongPress, onHover: onHover, onFocusChange: onFocusChange, style: style, focusNode: focusNode, autofocus: autofocus, clipBehavior: clipBehavior, statesController: statesController, child: icon is null ? label : new _FilledButtonWithIconChild__filled_button(label: label, icon: icon, buttonStyle: style, iconAlignment: iconAlignment));
         __instance._variant = _FilledButtonVariant__filled_button.filled;
@@ -31,7 +31,7 @@ public class FilledButton : ButtonStyleButton
         return __instance;
     }
 
-    public static FilledButton CreateTonal(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = default!, global::System.Action? onLongPress = null, global::System.Action<bool>? onHover = null, global::System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, global::Doroti.Framework.Widgets.Widget? child = default!)
+    public static FilledButton CreateTonal(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, System.Action<bool>? onHover = null, System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, WidgetStatesController? statesController = null, Widget? child = default!)
     {
         var __instance = new FilledButton(key: key, onPressed: onPressed, onLongPress: onLongPress, onHover: onHover, onFocusChange: onFocusChange, style: style, focusNode: focusNode, autofocus: autofocus, clipBehavior: clipBehavior, statesController: statesController, child: child);
         __instance._variant = _FilledButtonVariant__filled_button.tonal;
@@ -39,7 +39,7 @@ public class FilledButton : ButtonStyleButton
         return __instance;
     }
 
-    public static FilledButton CreateTonalIcon(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = default!, global::System.Action? onLongPress = null, global::System.Action<bool>? onHover = null, global::System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, global::Doroti.Framework.Widgets.Widget? icon = null, global::Doroti.Framework.Widgets.Widget label = default!, IconAlignment? iconAlignment = null)
+    public static FilledButton CreateTonalIcon(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, System.Action<bool>? onHover = null, System.Action<bool>? onFocusChange = null, ButtonStyle? style = null, FocusNode? focusNode = null, bool autofocus = false, Clip? clipBehavior = Clip.none, WidgetStatesController? statesController = null, Widget? icon = null, Widget label = default!, IconAlignment? iconAlignment = null)
     {
         var __instance = new FilledButton(key: key, onPressed: onPressed, onLongPress: onLongPress, onHover: onHover, onFocusChange: onFocusChange, style: style, focusNode: focusNode, autofocus: autofocus, clipBehavior: clipBehavior, statesController: statesController, child: icon is null ? label : new _FilledButtonWithIconChild__filled_button(label: label, icon: icon, buttonStyle: style, iconAlignment: iconAlignment));
         __instance._variant = _FilledButtonVariant__filled_button.tonal;
@@ -47,27 +47,27 @@ public class FilledButton : ButtonStyleButton
         return __instance;
     }
 
-    public static ButtonStyle styleFrom(Color? foregroundColor = null, Color? backgroundColor = null, Color? disabledForegroundColor = null, Color? disabledBackgroundColor = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? iconColor = null, double? iconSize = null, IconAlignment? iconAlignment = null, Color? disabledIconColor = null, Color? overlayColor = null, double? elevation = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Size? minimumSize = null, Size? fixedSize = null, Size? maximumSize = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, global::Doroti.Framework.Services.MouseCursor? enabledMouseCursor = null, global::Doroti.Framework.Services.MouseCursor? disabledMouseCursor = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? tapTargetSize = null, Duration? animationDuration = null, bool? enableFeedback = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, InteractiveInkFeatureFactory? splashFactory = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? backgroundBuilder = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? foregroundBuilder = null)
+    public static ButtonStyle styleFrom(Color? foregroundColor = null, Color? backgroundColor = null, Color? disabledForegroundColor = null, Color? disabledBackgroundColor = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? iconColor = null, double? iconSize = null, IconAlignment? iconAlignment = null, Color? disabledIconColor = null, Color? overlayColor = null, double? elevation = null, TextStyle? textStyle = null, EdgeInsetsGeometry? padding = null, Size? minimumSize = null, Size? fixedSize = null, Size? maximumSize = null, BorderSide? side = null, OutlinedBorder? shape = null, MouseCursor? enabledMouseCursor = null, MouseCursor? disabledMouseCursor = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? tapTargetSize = null, Duration? animationDuration = null, bool? enableFeedback = null, AlignmentGeometry? alignment = null, InteractiveInkFeatureFactory? splashFactory = null, Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? backgroundBuilder = null, Func<BuildContext, HashSet<WidgetState>, Widget?, Widget>? foregroundBuilder = null)
     {
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColorProp = (global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)((foregroundColor, overlayColor) switch { (null, null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>>(null), (_, global::Doroti.Ui.Color { a: 0.0 } __object9574) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(overlayColor)), (_, global::Doroti.Ui.Color color) => WidgetStateProperty<Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [WidgetState.pressed.asConstraint()] = color.withOpacity(0.1), [WidgetState.hovered.asConstraint()] = color.withOpacity(0.08), [WidgetState.focused.asConstraint()] = color.withOpacity(0.1) }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>()), (global::Doroti.Ui.Color colorLocal, _) => WidgetStateProperty<Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [WidgetState.pressed.asConstraint()] = colorLocal.withOpacity(0.1), [WidgetState.hovered.asConstraint()] = colorLocal.withOpacity(0.08), [WidgetState.focused.asConstraint()] = colorLocal.withOpacity(0.1) }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>()) });
-        return new ButtonStyle(textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(textStyle), backgroundColor: defaultColor(backgroundColor, disabledBackgroundColor), foregroundColor: defaultColor(foregroundColor, disabledForegroundColor), overlayColor: overlayColorProp, shadowColor: allOrNull(shadowColor), surfaceTintColor: allOrNull(surfaceTintColor), iconColor: defaultColor(iconColor, disabledIconColor), iconSize: allOrNull(iconSize), iconAlignment: iconAlignment, elevation: allOrNull(elevation), padding: allOrNull(padding), minimumSize: allOrNull(minimumSize), fixedSize: allOrNull(fixedSize), maximumSize: allOrNull(maximumSize), side: allOrNull(side), shape: allOrNull(shape), mouseCursor: WidgetStateProperty<MouseCursor?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Framework.Services.MouseCursor?> { [WidgetState.disabled.asConstraint()] = disabledMouseCursor, [WidgetStateMembers.any] = enabledMouseCursor }), visualDensity: visualDensity, tapTargetSize: tapTargetSize, animationDuration: animationDuration, enableFeedback: enableFeedback, alignment: alignment, splashFactory: splashFactory, backgroundBuilder: backgroundBuilder, foregroundBuilder: foregroundBuilder);
+        WidgetStateProperty<Color?>? overlayColorProp = (WidgetStateProperty<Color?>?)((foregroundColor, overlayColor) switch { (null, null) => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(null), (_, Color { a: 0.0 } __object9574) => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(new WidgetStatePropertyAll<Color?>(overlayColor)), (_, Color color) => WidgetStateProperty<Color?>.CreateFromMap(new DartMap<WidgetStatesConstraint, Color?> { [WidgetState.pressed.asConstraint()] = color.withOpacity(0.1), [WidgetState.hovered.asConstraint()] = color.withOpacity(0.08), [WidgetState.focused.asConstraint()] = color.withOpacity(0.1) }.cast<WidgetStatesConstraint, Color?>()), (Color colorLocal, _) => WidgetStateProperty<Color?>.CreateFromMap(new DartMap<WidgetStatesConstraint, Color?> { [WidgetState.pressed.asConstraint()] = colorLocal.withOpacity(0.1), [WidgetState.hovered.asConstraint()] = colorLocal.withOpacity(0.08), [WidgetState.focused.asConstraint()] = colorLocal.withOpacity(0.1) }.cast<WidgetStatesConstraint, Color?>()) });
+        return new ButtonStyle(textStyle: new WidgetStatePropertyAll<TextStyle?>(textStyle), backgroundColor: defaultColor(backgroundColor, disabledBackgroundColor), foregroundColor: defaultColor(foregroundColor, disabledForegroundColor), overlayColor: overlayColorProp, shadowColor: allOrNull(shadowColor), surfaceTintColor: allOrNull(surfaceTintColor), iconColor: defaultColor(iconColor, disabledIconColor), iconSize: allOrNull(iconSize), iconAlignment: iconAlignment, elevation: allOrNull(elevation), padding: allOrNull(padding), minimumSize: allOrNull(minimumSize), fixedSize: allOrNull(fixedSize), maximumSize: allOrNull(maximumSize), side: allOrNull(side), shape: allOrNull(shape), mouseCursor: WidgetStateProperty<MouseCursor?>.CreateFromMap(new DartMap<WidgetStatesConstraint, MouseCursor?> { [WidgetState.disabled.asConstraint()] = disabledMouseCursor, [WidgetStateMembers.any] = enabledMouseCursor }), visualDensity: visualDensity, tapTargetSize: tapTargetSize, animationDuration: animationDuration, enableFeedback: enableFeedback, alignment: alignment, splashFactory: splashFactory, backgroundBuilder: backgroundBuilder, foregroundBuilder: foregroundBuilder);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override ButtonStyle defaultStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
+    public override ButtonStyle defaultStyleOf(BuildContext context)
     {
         ButtonStyle buttonStyle = _variant switch { _FilledButtonVariant__filled_button.filled => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _FilledButtonDefaultsM3__filled_button(context)), _FilledButtonVariant__filled_button.tonal => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _FilledTonalButtonDefaultsM3__filled_button(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         if (_addPadding)
         {
-            double defaultFontSize = buttonStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0;
+            double defaultFontSize = buttonStyle.textStyle?.resolve(new HashSet<WidgetState>())?.fontSize ?? 14.0;
             double effectiveTextScale = MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0;
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(16, 0, 24, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(8, 0, 12, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(4, 0, 6, 0), effectiveTextScale);
-            return buttonStyle.copyWith(padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(scaledPaddingLocal));
+            EdgeInsetsGeometry scaledPaddingLocal = scaledPadding(new EdgeInsetsDirectional(16, 0, 24, 0), new EdgeInsetsDirectional(8, 0, 12, 0), new EdgeInsetsDirectional(4, 0, 6, 0), effectiveTextScale);
+            return buttonStyle.copyWith(padding: new WidgetStatePropertyAll<EdgeInsetsGeometry>(scaledPaddingLocal));
         }
         return buttonStyle;
     }
 
-    public override ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
+    public override ButtonStyle? themeStyleOf(BuildContext context)
     {
         return FilledButtonTheme.of(context).style;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -77,7 +77,7 @@ public class FilledButton : ButtonStyleButton
 
 public static partial class Filled_buttonLibrary
 {
-    internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _scaledPadding(global::Doroti.Framework.Widgets.BuildContext context)
+    internal static EdgeInsetsGeometry _scaledPadding(BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         double defaultFontSize = theme.textTheme.labelLarge?.fontSize ?? 14.0;
@@ -87,14 +87,14 @@ public static partial class Filled_buttonLibrary
     }
 }
 
-internal class _FilledButtonWithIconChild__filled_button : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _FilledButtonWithIconChild__filled_button : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget label { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget icon { get; private set; } = default!;
+    public virtual Widget label { get; private set; } = default!;
+    public virtual Widget icon { get; private set; } = default!;
     public virtual ButtonStyle? buttonStyle { get; private set; }
     public virtual IconAlignment? iconAlignment { get; private set; }
 
-    internal _FilledButtonWithIconChild__filled_button(global::Doroti.Framework.Widgets.Widget label, global::Doroti.Framework.Widgets.Widget icon, ButtonStyle? buttonStyle, IconAlignment? iconAlignment)
+    internal _FilledButtonWithIconChild__filled_button(Widget label, Widget icon, ButtonStyle? buttonStyle, IconAlignment? iconAlignment)
     {
         this.label = label;
         this.icon = icon;
@@ -102,13 +102,13 @@ internal class _FilledButtonWithIconChild__filled_button : global::Doroti.Framew
         this.iconAlignment = iconAlignment;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        double defaultFontSize = buttonStyle?.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0;
+        double defaultFontSize = buttonStyle?.textStyle?.resolve(new HashSet<WidgetState>())?.fontSize ?? 14.0;
         double scaleLocal = Dart_uiLibrary.clampDouble(MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0, 1.0, 2.0) - 1.0;
         FilledButtonThemeData filledButtonTheme = FilledButtonTheme.of(context);
         IconAlignment effectiveIconAlignment = ((iconAlignment ?? filledButtonTheme.style?.iconAlignment) ?? buttonStyle?.iconAlignment) ?? IconAlignment.start;
-        return new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, spacing: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)), children: Equals(effectiveIconAlignment, IconAlignment.start) ? new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(icon), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: label)) } : new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: label)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(icon) });
+        return new Row(mainAxisSize: MainAxisSize.min, spacing: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)), children: Equals(effectiveIconAlignment, IconAlignment.start) ? new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(icon), DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: label)) } : new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: label)), DartRuntimePrimitives.ConvertValue<Widget>(icon) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -116,7 +116,7 @@ internal class _FilledButtonWithIconChild__filled_button : global::Doroti.Framew
 
 internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -132,13 +132,13 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
         }
     }
 
-    internal _FilledButtonDefaultsM3__filled_button(global::Doroti.Framework.Widgets.BuildContext context) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
+    internal _FilledButtonDefaultsM3__filled_button(BuildContext context) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
     {
         this.context = context;
     }
 
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(Theme.of(context).textTheme.labelLarge));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override WidgetStateProperty<TextStyle?> textStyle => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<TextStyle?>>(new WidgetStatePropertyAll<TextStyle?>(Theme.of(context).textTheme.labelLarge));
+    public override WidgetStateProperty<Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
@@ -147,7 +147,7 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
         return _colors.primary;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override WidgetStateProperty<Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
@@ -156,7 +156,7 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
         return _colors.onPrimary;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override WidgetStateProperty<Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.pressed))
         {
@@ -173,9 +173,9 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
         return null;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(_colors.shadow));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? elevation => WidgetStateProperty.resolveWith<double?>((states) =>
+    public override WidgetStateProperty<Color>? shadowColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(_colors.shadow));
+    public override WidgetStateProperty<Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
+    public override WidgetStateProperty<double?>? elevation => WidgetStateProperty.resolveWith<double?>((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
@@ -196,14 +196,14 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
         return 0.0;
         throw new InvalidOperationException("Dart closure completed without a value.");
     });
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(Filled_buttonLibrary._scaledPadding(context)));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? minimumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(64.0, 40.0)));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(18.0));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? iconColor
+    public override WidgetStateProperty<EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(new WidgetStatePropertyAll<EdgeInsetsGeometry>(Filled_buttonLibrary._scaledPadding(context)));
+    public override WidgetStateProperty<Size>? minimumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(new Size(64.0, 40.0)));
+    public override WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(18.0));
+    public override WidgetStateProperty<Color>? iconColor
     {
         get
         {
-            return (global::Doroti.Framework.Widgets.WidgetStateProperty<Color>?)WidgetStateProperty.resolveWith((states) =>
+            return (WidgetStateProperty<Color>?)WidgetStateProperty.resolveWith((states) =>
             {
                 if (states.Contains(WidgetState.disabled))
                 {
@@ -226,9 +226,9 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
             });
         }
     }
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? maximumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(Size.infinite));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
+    public override WidgetStateProperty<Size>? maximumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(Size.infinite));
+    public override WidgetStateProperty<OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder()));
+    public override WidgetStateProperty<MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
     public override VisualDensity? visualDensity => Theme.of(context).visualDensity;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(context).materialTapTargetSize;
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;
@@ -236,7 +236,7 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
 
 internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -252,13 +252,13 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
         }
     }
 
-    internal _FilledTonalButtonDefaultsM3__filled_button(global::Doroti.Framework.Widgets.BuildContext context) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
+    internal _FilledTonalButtonDefaultsM3__filled_button(BuildContext context) : base(animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: Alignment.center)
     {
         this.context = context;
     }
 
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(Theme.of(context).textTheme.labelLarge));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override WidgetStateProperty<TextStyle?> textStyle => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<TextStyle?>>(new WidgetStatePropertyAll<TextStyle?>(Theme.of(context).textTheme.labelLarge));
+    public override WidgetStateProperty<Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
@@ -267,7 +267,7 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
         return _colors.secondaryContainer;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override WidgetStateProperty<Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
@@ -276,7 +276,7 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
         return _colors.onSecondaryContainer;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override WidgetStateProperty<Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.pressed))
         {
@@ -293,9 +293,9 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
         return null;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(_colors.shadow));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? elevation => WidgetStateProperty.resolveWith<double?>((states) =>
+    public override WidgetStateProperty<Color>? shadowColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(_colors.shadow));
+    public override WidgetStateProperty<Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color>>(new WidgetStatePropertyAll<Color>(Colors.transparent));
+    public override WidgetStateProperty<double?>? elevation => WidgetStateProperty.resolveWith<double?>((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
@@ -316,14 +316,14 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
         return 0.0;
         throw new InvalidOperationException("Dart closure completed without a value.");
     });
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(Filled_buttonLibrary._scaledPadding(context)));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? minimumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(64.0, 40.0)));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(18.0));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? iconColor
+    public override WidgetStateProperty<EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<EdgeInsetsGeometry>>(new WidgetStatePropertyAll<EdgeInsetsGeometry>(Filled_buttonLibrary._scaledPadding(context)));
+    public override WidgetStateProperty<Size>? minimumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(new Size(64.0, 40.0)));
+    public override WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<double?>>(new WidgetStatePropertyAll<double?>(18.0));
+    public override WidgetStateProperty<Color>? iconColor
     {
         get
         {
-            return (global::Doroti.Framework.Widgets.WidgetStateProperty<Color>?)WidgetStateProperty.resolveWith((states) =>
+            return (WidgetStateProperty<Color>?)WidgetStateProperty.resolveWith((states) =>
             {
                 if (states.Contains(WidgetState.disabled))
                 {
@@ -346,9 +346,9 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
             });
         }
     }
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? maximumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(Size.infinite));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
+    public override WidgetStateProperty<Size>? maximumSize => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Size>>(new WidgetStatePropertyAll<Size>(Size.infinite));
+    public override WidgetStateProperty<OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<OutlinedBorder>>(new WidgetStatePropertyAll<OutlinedBorder>(new StadiumBorder()));
+    public override WidgetStateProperty<MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<MouseCursor?>>(WidgetStateMouseCursor.adaptiveClickable);
     public override VisualDensity? visualDensity => Theme.of(context).visualDensity;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(context).materialTapTargetSize;
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(context).splashFactory;

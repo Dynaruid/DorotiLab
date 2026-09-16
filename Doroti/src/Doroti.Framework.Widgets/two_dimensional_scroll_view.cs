@@ -9,19 +9,19 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
 {
     public virtual TwoDimensionalChildDelegate @delegate { get; private set; } = default!;
     public virtual double? cacheExtent { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.CacheExtentStyle? cacheExtentStyle { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent { get; private set; }
+    public virtual CacheExtentStyle? cacheExtentStyle { get; private set; }
+    public virtual ScrollCacheExtent? scrollCacheExtent { get; private set; }
     public virtual DiagonalDragBehavior diagonalDragBehavior { get; private set; } = default!;
     public virtual bool? primary { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Axis mainAxis { get; private set; } = default!;
+    public virtual Axis mainAxis { get; private set; } = default!;
     public virtual ScrollableDetails verticalDetails { get; private set; } = default!;
     public virtual ScrollableDetails horizontalDetails { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
+    public virtual HitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    protected TwoDimensionalScrollView(global::Doroti.Framework.Foundation.Key? key = null, bool? primary = null, global::Doroti.Framework.Painting.Axis mainAxis = Axis.vertical, ScrollableDetails verticalDetails = default!, ScrollableDetails horizontalDetails = default!, TwoDimensionalChildDelegate @delegate = default!, double? cacheExtent = null, global::Doroti.Framework.Rendering.CacheExtentStyle? cacheExtentStyle = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key)
+    protected TwoDimensionalScrollView(Key? key = null, bool? primary = null, Axis mainAxis = Axis.vertical, ScrollableDetails verticalDetails = default!, ScrollableDetails horizontalDetails = default!, TwoDimensionalChildDelegate @delegate = default!, double? cacheExtent = null, CacheExtentStyle? cacheExtentStyle = null, ScrollCacheExtent? scrollCacheExtent = null, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, Clip clipBehavior = Clip.hardEdge, HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key)
     {
         ScrollableDetails __verticalDetails = verticalDetails ?? ScrollableDetails.CreateVertical();
         ScrollableDetails __horizontalDetails = horizontalDetails ?? ScrollableDetails.CreateHorizontal();
@@ -40,7 +40,7 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
         this.hitTestBehavior = hitTestBehavior;
     }
 
-    public abstract Widget buildViewport(BuildContext context, global::Doroti.Framework.Rendering.ViewportOffset verticalOffset, global::Doroti.Framework.Rendering.ViewportOffset horizontalOffset);
+    public abstract Widget buildViewport(BuildContext context, ViewportOffset verticalOffset, ViewportOffset horizontalOffset);
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Equals(Basic_typesLibrary.axisDirectionToAxis(verticalDetails.direction), Axis.vertical), () => (object?)"TwoDimensionalScrollView.verticalDetails are not Axis.vertical.");
@@ -72,14 +72,14 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.Axis>("mainAxis", mainAxis));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<DiagonalDragBehavior>("diagonalDragBehavior", diagonalDragBehavior));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("primary", value: primary, ifTrue: "using primary controller", showName: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollableDetails>("verticalDetails", verticalDetails, showName: false));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollableDetails>("horizontalDetails", horizontalDetails, showName: false));
+        properties.add(new EnumProperty<Axis>("mainAxis", mainAxis));
+        properties.add(new EnumProperty<DiagonalDragBehavior>("diagonalDragBehavior", diagonalDragBehavior));
+        properties.add(new FlagProperty("primary", value: primary, ifTrue: "using primary controller", showName: true));
+        properties.add(new DiagnosticsProperty<ScrollableDetails>("verticalDetails", verticalDetails, showName: false));
+        properties.add(new DiagnosticsProperty<ScrollableDetails>("horizontalDetails", horizontalDetails, showName: false));
     }
 
 }

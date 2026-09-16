@@ -5,15 +5,15 @@ namespace Doroti.Framework.Material;
 
 public static partial class CurvesLibrary
 {
-    public static global::Doroti.Framework.Animation.Curve standardEasing = Curves.fastOutSlowIn;
+    public static Curve standardEasing = Curves.fastOutSlowIn;
 }
 
 public static partial class CurvesLibrary
 {
-    public static global::Doroti.Framework.Animation.Curve accelerateEasing = new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0);
+    public static Curve accelerateEasing = new Cubic(0.4, 0.0, 1.0, 1.0);
 }
 
 public static partial class CurvesLibrary
 {
-    public static global::Doroti.Framework.Animation.Curve decelerateEasing = new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.2, 1.0);
+    public static Curve decelerateEasing = new Cubic(0.0, 0.0, 0.2, 1.0);
 }

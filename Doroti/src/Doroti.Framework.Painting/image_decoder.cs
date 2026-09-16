@@ -9,9 +9,9 @@ public static partial class Image_decoderLibrary
 {
     public static async Future<Image> decodeImageFromList(Uint8List bytes)
     {
-        global::Doroti.Ui.ImmutableBuffer buffer = await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes);
-        global::Doroti.Ui.Codec codec = await PaintingBinding.instance.instantiateImageCodecWithSize(buffer);
-        global::Doroti.Ui.FrameInfo frameInfo = default!;
+        ImmutableBuffer buffer = await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes);
+        Codec codec = await PaintingBinding.instance.instantiateImageCodecWithSize(buffer);
+        FrameInfo frameInfo = default!;
         try
         {
             frameInfo = await codec.getNextFrame();

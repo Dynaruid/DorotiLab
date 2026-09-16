@@ -58,19 +58,19 @@ public abstract class AssetBundle
 public class NetworkAssetBundle : AssetBundle
 {
     internal virtual DartUri _baseUrl { get; private set; } = default!;
-    internal virtual global::Doroti.Runtime.HttpClient _httpClient { get; private set; } = default!;
+    internal virtual Runtime.HttpClient _httpClient { get; private set; } = default!;
 
     public NetworkAssetBundle(DartUri baseUrl)
     {
         _baseUrl = baseUrl;
-        _httpClient = new global::Doroti.Runtime.HttpClient();
+        _httpClient = new Runtime.HttpClient();
     }
 
     internal virtual DartUri _urlFromKey(string key) => _baseUrl.resolve(key);
     public async override Future<ByteData> load(string key)
     {
-        global::Doroti.Runtime.HttpClientRequest request = await _httpClient.getUrl(_urlFromKey(key));
-        global::Doroti.Runtime.HttpClientResponse response = await request.close();
+        HttpClientRequest request = await _httpClient.getUrl(_urlFromKey(key));
+        HttpClientResponse response = await request.close();
         if (response.statusCode != HttpStatus.ok)
         {
             throw new FlutterError(new List<DiagnosticsNode> { Asset_bundleLibrary._errorSummaryWithKey(key), new IntProperty("HTTP status code", response.statusCode) });
@@ -185,7 +185,7 @@ public class PlatformAssetBundle : CachingAssetBundle
     public override Future<ByteData> load(string key)
     {
         Uint8List encoded = Dart_convertLibrary.utf8.encode(new DartUri(path: DartUri.encodeFull(key)).path);
-        Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger.send("flutter/assets", new ByteData(encoded))?.then<ByteData>((asset) =>
+        Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger.send("flutter/assets", new ByteData(encoded))?.then((asset) =>
         {
             if (asset is null)
             {

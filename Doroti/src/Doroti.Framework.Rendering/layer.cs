@@ -34,7 +34,7 @@ public class AnnotationResult<T>
     {
         get
         {
-            return _entries.map<AnnotationEntry<T>, T>((entry) => entry.annotation);
+            return _entries.map((entry) => entry.annotation);
         }
     }
 }
@@ -88,7 +88,7 @@ public abstract class Layer : DiagnosticableTreeMixin
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Rect? describeClipBounds() => null;
+    public virtual Rect? describeClipBounds() => null;
     public virtual Action addCompositionCallback(Action<Layer> callback)
     {
         _updateSubtreeCompositionObserverCount(1L);
@@ -205,7 +205,7 @@ public abstract class Layer : DiagnosticableTreeMixin
             return result;
         }
     }
-    public virtual global::Doroti.Ui.EngineLayer? engineLayer
+    public virtual EngineLayer? engineLayer
     {
         get => _engineLayer;
         set
@@ -282,7 +282,7 @@ public abstract class Layer : DiagnosticableTreeMixin
     public virtual S? find<S>(Offset localPosition)
     {
         var result = new AnnotationResult<S>();
-        findAnnotations<S>(result, localPosition, onlyFirst: true);
+        findAnnotations(result, localPosition, onlyFirst: true);
         return (result.entries.Count() == 0) ? default(S) : result.entries.First().annotation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -290,7 +290,7 @@ public abstract class Layer : DiagnosticableTreeMixin
     public virtual AnnotationResult<S> findAllAnnotations<S>(Offset localPosition)
     {
         var result = new AnnotationResult<S>();
-        findAnnotations<S>(result, localPosition, onlyFirst: false);
+        findAnnotations(result, localPosition, onlyFirst: false);
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -375,7 +375,7 @@ public class PictureLayer : Layer
         this.canvasBounds = canvasBounds;
     }
 
-    public virtual global::Doroti.Ui.Picture? picture
+    public virtual Picture? picture
     {
         get => _picture;
         set
@@ -433,7 +433,7 @@ public class PictureLayer : Layer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("paint bounds", canvasBounds));
+        properties.add(new DiagnosticsProperty<Rect>("paint bounds", canvasBounds));
         properties.add(new DiagnosticsProperty<string>("picture", DiagnosticsLibrary.describeIdentity(_picture)));
         properties.add(new DiagnosticsProperty<string>("raster cache hints", $"isComplex = {isComplexHint}, willChange = {willChangeHint}"));
     }
@@ -509,7 +509,7 @@ public class PerformanceOverlayLayer : Layer
         _overlayRect = overlayRect;
     }
 
-    public virtual global::Doroti.Ui.Rect overlayRect
+    public virtual Rect overlayRect
     {
         get => _overlayRect;
         set
@@ -573,7 +573,7 @@ public class ContainerLayer : Layer
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Scene buildScene(SceneBuilder builder)
+    public virtual Scene buildScene(SceneBuilder builder)
     {
         updateSubtreeNeedsAddToScene();
         addToScene(builder);
@@ -582,7 +582,7 @@ public class ContainerLayer : Layer
             _fireCompositionCallbacks(includeChildren: true);
         }
         _needsAddToScene = false;
-        global::Doroti.Ui.Scene scene = builder.build();
+        Scene scene = builder.build();
         return scene;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -636,7 +636,7 @@ public class ContainerLayer : Layer
     {
         for (Layer? child = lastChild; child is not null; child = child.previousSibling)
         {
-            bool isAbsorbed = child.findAnnotations<S>(result, localPosition, onlyFirst: onlyFirst);
+            bool isAbsorbed = child.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
             if (isAbsorbed)
             {
                 return true;
@@ -909,7 +909,7 @@ public class OffsetLayer : ContainerLayer
         _offset = offset;
     }
 
-    public virtual global::Doroti.Ui.Offset offset
+    public virtual Offset offset
     {
         get => _offset;
         set
@@ -924,7 +924,7 @@ public class OffsetLayer : ContainerLayer
     }
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        return base.findAnnotations<S>(result, localPosition - offset, onlyFirst: onlyFirst);
+        return base.findAnnotations(result, localPosition - offset, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -939,7 +939,7 @@ public class OffsetLayer : ContainerLayer
         engineLayer = builder.pushOffset(
             offset.dx,
             offset.dy,
-            oldLayer: ((global::Doroti.Ui.OffsetEngineLayer?)_engineLayer)!);
+            oldLayer: ((OffsetEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -947,12 +947,12 @@ public class OffsetLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset));
+        properties.add(new DiagnosticsProperty<Offset>("offset", offset));
     }
 
-    internal virtual global::Doroti.Ui.Scene _createSceneForImage(Rect bounds, double pixelRatio = 1.0)
+    internal virtual Scene _createSceneForImage(Rect bounds, double pixelRatio = 1.0)
     {
-        var builder = new global::Doroti.Ui.SceneBuilder();
+        var builder = new SceneBuilder();
         var transform = Matrix4.diagonal3Values(pixelRatio, pixelRatio, 1);
         transform.translateByDouble(-(bounds.left + offset.dx), -(bounds.top + offset.dy), 0, 1);
         builder.pushTransform(transform.storage);
@@ -960,9 +960,9 @@ public class OffsetLayer : ContainerLayer
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<global::Doroti.Ui.Image> toImage(Rect bounds, double pixelRatio = 1.0)
+    public async virtual Future<Image> toImage(Rect bounds, double pixelRatio = 1.0)
     {
-        global::Doroti.Ui.Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
+        Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
         try
         {
             return await scene.toImage((pixelRatio * bounds.width).ceil(), (pixelRatio * bounds.height).ceil());
@@ -974,9 +974,9 @@ public class OffsetLayer : ContainerLayer
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Image toImageSync(Rect bounds, double pixelRatio = 1.0)
+    public virtual Image toImageSync(Rect bounds, double pixelRatio = 1.0)
     {
-        global::Doroti.Ui.Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
+        Scene scene = _createSceneForImage(bounds, pixelRatio: pixelRatio);
         try
         {
             return scene.toImageSync((pixelRatio * bounds.width).ceil(), (pixelRatio * bounds.height).ceil());
@@ -1002,7 +1002,7 @@ public class ClipRectLayer : ContainerLayer
         System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
-    public virtual global::Doroti.Ui.Rect? clipRect
+    public virtual Rect? clipRect
     {
         get => _clipRect;
         set
@@ -1016,7 +1016,7 @@ public class ClipRectLayer : ContainerLayer
         }
     }
     public override Rect? describeClipBounds() => clipRect;
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -1036,7 +1036,7 @@ public class ClipRectLayer : ContainerLayer
         {
             return false;
         }
-        return base.findAnnotations<S>(result, localPosition, onlyFirst: onlyFirst);
+        return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1051,7 +1051,7 @@ public class ClipRectLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipRect(DartRuntimePrimitives.RequireValue(clipRect), clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRectEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipRect(DartRuntimePrimitives.RequireValue(clipRect), clipBehavior: clipBehavior, oldLayer: ((ClipRectEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1067,8 +1067,8 @@ public class ClipRectLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("clipRect", clipRect));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
+        properties.add(new DiagnosticsProperty<Rect>("clipRect", clipRect));
+        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1085,7 +1085,7 @@ public class ClipRRectLayer : ContainerLayer
         System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
-    public virtual global::Doroti.Ui.RRect? clipRRect
+    public virtual RRect? clipRRect
     {
         get => _clipRRect;
         set
@@ -1099,7 +1099,7 @@ public class ClipRRectLayer : ContainerLayer
         }
     }
     public override Rect? describeClipBounds() => clipRRect?.outerRect;
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -1119,7 +1119,7 @@ public class ClipRRectLayer : ContainerLayer
         {
             return false;
         }
-        return base.findAnnotations<S>(result, localPosition, onlyFirst: onlyFirst);
+        return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1134,7 +1134,7 @@ public class ClipRRectLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipRRect(clipRRect!, clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRRectEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipRRect(clipRRect!, clipBehavior: clipBehavior, oldLayer: ((ClipRRectEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1150,8 +1150,8 @@ public class ClipRRectLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.RRect>("clipRRect", clipRRect));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
+        properties.add(new DiagnosticsProperty<RRect>("clipRRect", clipRRect));
+        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1168,7 +1168,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
         System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
-    public virtual global::Doroti.Ui.RSuperellipse? clipRSuperellipse
+    public virtual RSuperellipse? clipRSuperellipse
     {
         get => _clipRSuperellipse;
         set
@@ -1182,7 +1182,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
         }
     }
     public override Rect? describeClipBounds() => clipRSuperellipse?.outerRect;
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -1202,7 +1202,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
         {
             return false;
         }
-        return base.findAnnotations<S>(result, localPosition, onlyFirst: onlyFirst);
+        return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1217,7 +1217,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipRSuperellipse(clipRSuperellipse!, clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipRSuperellipseEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipRSuperellipse(clipRSuperellipse!, clipBehavior: clipBehavior, oldLayer: ((ClipRSuperellipseEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1233,8 +1233,8 @@ public class ClipRSuperellipseLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.RSuperellipse>("clipRSuperellipse", clipRSuperellipse));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
+        properties.add(new DiagnosticsProperty<RSuperellipse>("clipRSuperellipse", clipRSuperellipse));
+        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1251,7 +1251,7 @@ public class ClipPathLayer : ContainerLayer
         System.Diagnostics.Debug.Assert(!Equals(clipBehavior, Clip.none));
     }
 
-    public virtual global::Doroti.Ui.Path? clipPath
+    public virtual Path? clipPath
     {
         get => _clipPath;
         set
@@ -1265,7 +1265,7 @@ public class ClipPathLayer : ContainerLayer
         }
     }
     public override Rect? describeClipBounds() => clipPath?.getBounds();
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -1285,7 +1285,7 @@ public class ClipPathLayer : ContainerLayer
         {
             return false;
         }
-        return base.findAnnotations<S>(result, localPosition, onlyFirst: onlyFirst);
+        return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1300,7 +1300,7 @@ public class ClipPathLayer : ContainerLayer
             });
         if (enabled)
         {
-            engineLayer = builder.pushClipPath(clipPath!, clipBehavior: clipBehavior, oldLayer: ((global::Doroti.Ui.ClipPathEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushClipPath(clipPath!, clipBehavior: clipBehavior, oldLayer: ((ClipPathEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1316,7 +1316,7 @@ public class ClipPathLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior));
+        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior));
     }
 
 }
@@ -1330,7 +1330,7 @@ public class ColorFilterLayer : ContainerLayer
         _colorFilter = colorFilter;
     }
 
-    public virtual global::Doroti.Ui.ColorFilter? colorFilter
+    public virtual ColorFilter? colorFilter
     {
         get => _colorFilter;
         set
@@ -1347,7 +1347,7 @@ public class ColorFilterLayer : ContainerLayer
     public override void addToScene(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => colorFilter is not null);
-        engineLayer = builder.pushColorFilter(colorFilter!, oldLayer: ((global::Doroti.Ui.ColorFilterEngineLayer?)_engineLayer)!);
+        engineLayer = builder.pushColorFilter(colorFilter!, oldLayer: ((ColorFilterEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1355,7 +1355,7 @@ public class ColorFilterLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ColorFilter>("colorFilter", colorFilter));
+        properties.add(new DiagnosticsProperty<ColorFilter>("colorFilter", colorFilter));
     }
 
 }
@@ -1372,7 +1372,7 @@ public class ImageFilterLayer : OffsetLayer
         _imageFilter = imageFilter;
     }
 
-    public virtual global::Doroti.Ui.ImageFilter? imageFilter
+    public virtual ImageFilter? imageFilter
     {
         get => _imageFilter;
         set
@@ -1387,7 +1387,7 @@ public class ImageFilterLayer : OffsetLayer
             }
         }
     }
-    public virtual global::Doroti.Ui.Rect? bounds
+    public virtual Rect? bounds
     {
         get => _bounds;
         set
@@ -1431,7 +1431,7 @@ public class ImageFilterLayer : OffsetLayer
             _filterInputDirty = false;
         }
         engineLayer = builder.pushImageFilter(imageFilter!, offset: offset,
-            oldLayer: ((global::Doroti.Ui.ImageFilterEngineLayer?)_engineLayer)!, bounds: bounds,
+            oldLayer: ((ImageFilterEngineLayer?)_engineLayer)!, bounds: bounds,
             cacheKey: this, cacheGeneration: _filterCacheGeneration);
         addChildrenToScene(builder);
         builder.pop();
@@ -1442,8 +1442,8 @@ public class ImageFilterLayer : OffsetLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("imageFilter", imageFilter));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect?>("bounds", bounds));
+        properties.add(new DiagnosticsProperty<ImageFilter>("imageFilter", imageFilter));
+        properties.add(new DiagnosticsProperty<Rect?>("bounds", bounds));
     }
 
 }
@@ -1490,12 +1490,12 @@ public class TransformLayer : OffsetLayer
     return __cascade;
 }))();
         }
-        engineLayer = builder.pushTransform(_lastEffectiveTransform!.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
+        engineLayer = builder.pushTransform(_lastEffectiveTransform!.storage, oldLayer: ((TransformEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
 
-    internal virtual global::Doroti.Ui.Offset? _transformOffset(Offset localPosition)
+    internal virtual Offset? _transformOffset(Offset localPosition)
     {
         if (_inverseDirty)
         {
@@ -1512,12 +1512,12 @@ public class TransformLayer : OffsetLayer
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        global::Doroti.Ui.Offset? transformedOffset = _transformOffset(localPosition);
+        Offset? transformedOffset = _transformOffset(localPosition);
         if (transformedOffset is null)
         {
             return false;
         }
-        return base.findAnnotations<S>(result, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(transformedOffset)), onlyFirst: onlyFirst);
+        return base.findAnnotations(result, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(transformedOffset)), onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1538,7 +1538,7 @@ public class TransformLayer : OffsetLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", transform));
+        properties.add(new TransformProperty("transform", transform));
     }
 
 }
@@ -1588,12 +1588,12 @@ public class OpacityLayer : OffsetLayer
         if (enabled && (realizedAlpha < 255L))
         {
             DartRuntimePrimitives.Assert(() => _engineLayer is null or OpacityEngineLayer);
-            engineLayer = builder.pushOpacity(realizedAlpha, offset: offset, oldLayer: ((global::Doroti.Ui.OpacityEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushOpacity(realizedAlpha, offset: offset, oldLayer: ((OpacityEngineLayer?)_engineLayer)!);
         }
         else
         {
             DartRuntimePrimitives.Assert(() => _engineLayer is null or OffsetEngineLayer);
-            engineLayer = builder.pushOffset(offset.dx, offset.dy, oldLayer: ((global::Doroti.Ui.OffsetEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushOffset(offset.dx, offset.dy, oldLayer: ((OffsetEngineLayer?)_engineLayer)!);
         }
         addChildrenToScene(builder);
         builder.pop();
@@ -1620,7 +1620,7 @@ public class ShaderMaskLayer : ContainerLayer
         _blendMode = blendMode;
     }
 
-    public virtual global::Doroti.Ui.Shader? shader
+    public virtual Shader? shader
     {
         get => _shader;
         set
@@ -1633,7 +1633,7 @@ public class ShaderMaskLayer : ContainerLayer
             }
         }
     }
-    public virtual global::Doroti.Ui.Rect? maskRect
+    public virtual Rect? maskRect
     {
         get => _maskRect;
         set
@@ -1646,7 +1646,7 @@ public class ShaderMaskLayer : ContainerLayer
             }
         }
     }
-    public virtual global::Doroti.Ui.BlendMode? blendMode
+    public virtual BlendMode? blendMode
     {
         get => _blendMode;
         set
@@ -1664,7 +1664,7 @@ public class ShaderMaskLayer : ContainerLayer
         DartRuntimePrimitives.Assert(() => shader is not null);
         DartRuntimePrimitives.Assert(() => maskRect is not null);
         DartRuntimePrimitives.Assert(() => blendMode is not null);
-        engineLayer = builder.pushShaderMask(shader!, DartRuntimePrimitives.RequireValue(maskRect), DartRuntimePrimitives.RequireValue(blendMode), oldLayer: ((global::Doroti.Ui.ShaderMaskEngineLayer?)_engineLayer)!);
+        engineLayer = builder.pushShaderMask(shader!, DartRuntimePrimitives.RequireValue(maskRect), DartRuntimePrimitives.RequireValue(blendMode), oldLayer: ((ShaderMaskEngineLayer?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1672,9 +1672,9 @@ public class ShaderMaskLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Shader>("shader", shader));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("maskRect", maskRect));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode));
+        properties.add(new DiagnosticsProperty<Shader>("shader", shader));
+        properties.add(new DiagnosticsProperty<Rect>("maskRect", maskRect));
+        properties.add(new EnumProperty<BlendMode>("blendMode", blendMode));
     }
 
 }
@@ -1703,7 +1703,7 @@ public class BackdropFilterLayer : ContainerLayer
         _blendMode = blendMode;
     }
 
-    public virtual global::Doroti.Ui.ImageFilter? filter
+    public virtual ImageFilter? filter
     {
         get => _filter;
         set
@@ -1716,7 +1716,7 @@ public class BackdropFilterLayer : ContainerLayer
             }
         }
     }
-    public virtual global::Doroti.Ui.BlendMode blendMode
+    public virtual BlendMode blendMode
     {
         get => _blendMode;
         set
@@ -1745,7 +1745,7 @@ public class BackdropFilterLayer : ContainerLayer
     public override void addToScene(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => filter is not null);
-        engineLayer = builder.pushBackdropFilter(filter!, blendMode: blendMode, oldLayer: ((global::Doroti.Ui.BackdropFilterEngineLayer?)_engineLayer)!, backdropId: _backdropKey?._key);
+        engineLayer = builder.pushBackdropFilter(filter!, blendMode: blendMode, oldLayer: ((BackdropFilterEngineLayer?)_engineLayer)!, backdropId: _backdropKey?._key);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1753,8 +1753,8 @@ public class BackdropFilterLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("filter", filter));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode));
+        properties.add(new DiagnosticsProperty<ImageFilter>("filter", filter));
+        properties.add(new EnumProperty<BlendMode>("blendMode", blendMode));
         properties.add(new IntProperty("backdropKey", _backdropKey?._key));
     }
 
@@ -1854,7 +1854,7 @@ public class LeaderLayer : ContainerLayer
             _link = __value;
         }
     }
-    public virtual global::Doroti.Ui.Offset offset
+    public virtual Offset offset
     {
         get => _offset;
         set
@@ -1885,7 +1885,7 @@ public class LeaderLayer : ContainerLayer
 
     public override bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
-        return base.findAnnotations<S>(result, localPosition - offset, onlyFirst: onlyFirst);
+        return base.findAnnotations(result, localPosition - offset, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1893,7 +1893,7 @@ public class LeaderLayer : ContainerLayer
     {
         if (!Equals(offset, Offset.zero))
         {
-            engineLayer = builder.pushTransform(Matrix4.translationValues(offset.dx, offset.dy, 0.0).storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushTransform(Matrix4.translationValues(offset.dx, offset.dy, 0.0).storage, oldLayer: ((TransformEngineLayer?)_engineLayer)!);
         }
         else
         {
@@ -1917,7 +1917,7 @@ public class LeaderLayer : ContainerLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset));
+        properties.add(new DiagnosticsProperty<Offset>("offset", offset));
         properties.add(new DiagnosticsProperty<LayerLink>("link", link));
     }
 
@@ -1942,7 +1942,7 @@ public class FollowerLayer : ContainerLayer
         this.linkedOffset = linkedOffset;
     }
 
-    internal virtual global::Doroti.Ui.Offset? _transformOffset(Offset localPosition)
+    internal virtual Offset? _transformOffset(Offset localPosition)
     {
         if (_inverseDirty)
         {
@@ -1953,9 +1953,9 @@ public class FollowerLayer : ContainerLayer
         {
             return null;
         }
-        var vector = new global::System.Numerics.Vector4(checked((float)localPosition.dx), checked((float)localPosition.dy), checked((float)0.0), checked((float)1.0));
-        global::System.Numerics.Vector4 result = _invertedTransform!.transform(vector);
-        return new global::Doroti.Ui.Offset(result[(int)0L] - DartRuntimePrimitives.RequireValue(linkedOffset).dx, result[(int)1L] - DartRuntimePrimitives.RequireValue(linkedOffset).dy);
+        var vector = new System.Numerics.Vector4(checked((float)localPosition.dx), checked((float)localPosition.dy), checked((float)0.0), checked((float)1.0));
+        System.Numerics.Vector4 result = _invertedTransform!.transform(vector);
+        return new Offset(result[(int)0L] - DartRuntimePrimitives.RequireValue(linkedOffset).dx, result[(int)1L] - DartRuntimePrimitives.RequireValue(linkedOffset).dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1969,12 +1969,12 @@ public class FollowerLayer : ContainerLayer
             }
             return false;
         }
-        global::Doroti.Ui.Offset? transformedOffset = _transformOffset(localPosition);
+        Offset? transformedOffset = _transformOffset(localPosition);
         if (transformedOffset is null)
         {
             return false;
         }
-        return base.findAnnotations<S>(result, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(transformedOffset)), onlyFirst: onlyFirst);
+        return base.findAnnotations(result, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(transformedOffset)), onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2098,7 +2098,7 @@ public class FollowerLayer : ContainerLayer
         if (_lastTransform is not null)
         {
             _lastOffset = unlinkedOffset;
-            engineLayer = builder.pushTransform(_lastTransform!.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushTransform(_lastTransform!.storage, oldLayer: ((TransformEngineLayer?)_engineLayer)!);
             addChildrenToScene(builder);
             builder.pop();
         }
@@ -2106,7 +2106,7 @@ public class FollowerLayer : ContainerLayer
         {
             _lastOffset = null;
             var matrix = Matrix4.translationValues(DartRuntimePrimitives.RequireValue(unlinkedOffset).dx, DartRuntimePrimitives.RequireValue(unlinkedOffset).dy, 0.0);
-            engineLayer = builder.pushTransform(matrix.storage, oldLayer: ((global::Doroti.Ui.TransformEngineLayer?)_engineLayer)!);
+            engineLayer = builder.pushTransform(matrix.storage, oldLayer: ((TransformEngineLayer?)_engineLayer)!);
             addChildrenToScene(builder);
             builder.pop();
         }
@@ -2130,7 +2130,7 @@ public class FollowerLayer : ContainerLayer
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<LayerLink>("link", link));
-        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", getLastTransform(), defaultValue: null));
+        properties.add(new TransformProperty("transform", getLastTransform(), defaultValue: null));
     }
 
 }
@@ -2177,8 +2177,8 @@ public class AnnotatedRegionLayer<T> : ContainerLayer
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<T>("value", value));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("size", size, defaultValue: null));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", offset, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Size>("size", size, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Offset>("offset", offset, defaultValue: null));
         properties.add(new DiagnosticsProperty<bool>("opaque", opaque, defaultValue: false));
     }
 

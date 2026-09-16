@@ -48,7 +48,7 @@ public class MouseTrackerAnnotation : Diagnosticable, IMouseTrackerAnnotation
     public virtual MouseCursor cursor { get; private set; } = default!;
     public virtual bool validForMouseTracker { get; private set; } = default!;
 
-    public MouseTrackerAnnotation(global::System.Action<PointerEnterEvent>? onEnter = null, global::System.Action<PointerExitEvent>? onExit = null, MouseCursor cursor = default!, bool validForMouseTracker = true)
+    public MouseTrackerAnnotation(Action<PointerEnterEvent>? onEnter = null, Action<PointerExitEvent>? onExit = null, MouseCursor cursor = default!, bool validForMouseTracker = true)
     {
         MouseCursor __cursor = cursor ?? MouseCursor.defer;
         this.onEnter = onEnter is null ? null : new MouseTrackerCallback<PointerEnterEvent>(onEnter);

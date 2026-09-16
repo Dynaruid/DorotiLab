@@ -24,7 +24,7 @@ public class FontLoader
         {
             throw new InvalidOperationException("FontLoader is already loaded");
         }
-        _fontFutures.Add(bytes.then<Uint8List>((data) => new Uint8List(data.buffer, data.offsetInBytes, data.lengthInBytes)));
+        _fontFutures.Add(bytes.then((data) => new Uint8List(data.buffer, data.offsetInBytes, data.lengthInBytes)));
     }
 
     public async virtual Future load()

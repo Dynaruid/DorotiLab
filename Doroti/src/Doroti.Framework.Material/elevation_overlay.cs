@@ -7,7 +7,7 @@ namespace Doroti.Framework.Material;
 
 public abstract class ElevationOverlay
 {
-    public static global::Doroti.Ui.Color applySurfaceTint(Color color, Color? surfaceTint, double elevation)
+    public static Color applySurfaceTint(Color color, Color? surfaceTint, double elevation)
     {
         if ((surfaceTint is not null) && (!Equals(surfaceTint, Colors.transparent)))
         {
@@ -39,7 +39,7 @@ public abstract class ElevationOverlay
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Color applyOverlay(global::Doroti.Framework.Widgets.BuildContext context, Color color, double elevation)
+    public static Color applyOverlay(BuildContext context, Color color, double elevation)
     {
         ThemeData theme = Theme.of(context);
         if ((elevation > 0.0) && theme.applyElevationOverlayColor && Equals(theme.brightness, Brightness.dark) && Equals(color.withOpacity(1.0), theme.colorScheme.surface.withOpacity(1.0)))
@@ -50,20 +50,20 @@ public abstract class ElevationOverlay
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Color overlayColor(global::Doroti.Framework.Widgets.BuildContext context, double elevation)
+    public static Color overlayColor(BuildContext context, double elevation)
     {
         ThemeData theme = Theme.of(context);
         return _overlayColor(theme.colorScheme.onSurface, elevation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Color colorWithOverlay(Color surface, Color overlay, double elevation)
+    public static Color colorWithOverlay(Color surface, Color overlay, double elevation)
     {
         return Dart_uiLibrary.Color.alphaBlend(_overlayColor(overlay, elevation), surface);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Color _overlayColor(Color color, double elevation)
+    internal static Color _overlayColor(Color color, double elevation)
     {
         double opacity = ((4.5 * Runtime.Dart_mathLibrary.log(elevation + 1L)) + 2L) / 100.0;
         return color.withOpacity(opacity);

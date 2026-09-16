@@ -360,8 +360,8 @@ public sealed class DartHttpHeaders
 
 public sealed class HttpClientResponse : IAsyncEnumerable<ReadOnlyMemory<byte>>
 {
-    private readonly System.Net.Http.HttpResponseMessage _response;
-    public HttpClientResponse(System.Net.Http.HttpResponseMessage response) => _response = response;
+    private readonly HttpResponseMessage _response;
+    public HttpClientResponse(HttpResponseMessage response) => _response = response;
     public long statusCode => (long)_response.StatusCode;
     public Future<T> drain<T>(T futureValue) => Future<T>.fromTask(DrainAsync(futureValue));
     private async Task<T> DrainAsync<T>(T value) { await _response.Content.LoadIntoBufferAsync(); return value; }
@@ -374,7 +374,7 @@ public sealed class HttpClientResponse : IAsyncEnumerable<ReadOnlyMemory<byte>>
     }
 }
 
-public class DartMatch(long start, long end, System.Text.RegularExpressions.Match? match = null)
+public class DartMatch(long start, long end, Match? match = null)
 {
     public long start { get; } = start;
     public long end { get; } = end;

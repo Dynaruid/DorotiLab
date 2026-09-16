@@ -2,30 +2,30 @@
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/tweens.dart
 namespace Doroti.Framework.Rendering;
 
-public class FractionalOffsetTween : Tween<global::Doroti.Framework.Painting.FractionalOffset?>
+public class FractionalOffsetTween : Tween<FractionalOffset?>
 {
-    public FractionalOffsetTween(global::Doroti.Framework.Painting.FractionalOffset? begin = null, global::Doroti.Framework.Painting.FractionalOffset? end = null) : base(begin: begin, end: end)
+    public FractionalOffsetTween(FractionalOffset? begin = null, FractionalOffset? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Framework.Painting.FractionalOffset? lerp(double t) => FractionalOffset.lerp(begin, end, t);
+    public override FractionalOffset? lerp(double t) => FractionalOffset.lerp(begin, end, t);
 }
 
-public class AlignmentTween : Tween<global::Doroti.Framework.Painting.Alignment>
+public class AlignmentTween : Tween<Alignment>
 {
-    public AlignmentTween(global::Doroti.Framework.Painting.Alignment? begin = null, global::Doroti.Framework.Painting.Alignment? end = null) : base(begin: begin, end: end)
+    public AlignmentTween(Alignment? begin = null, Alignment? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Framework.Painting.Alignment lerp(double t) => Alignment.lerp(begin, end, t)!;
+    public override Alignment lerp(double t) => Alignment.lerp(begin, end, t)!;
 }
 
-public class AlignmentGeometryTween : Tween<global::Doroti.Framework.Painting.AlignmentGeometry?>
+public class AlignmentGeometryTween : Tween<AlignmentGeometry?>
 {
-    public AlignmentGeometryTween(global::Doroti.Framework.Painting.AlignmentGeometry? begin = null, global::Doroti.Framework.Painting.AlignmentGeometry? end = null) : base(begin: begin, end: end)
+    public AlignmentGeometryTween(AlignmentGeometry? begin = null, AlignmentGeometry? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Framework.Painting.AlignmentGeometry? lerp(double t) => AlignmentGeometry.lerp(begin, end, t);
+    public override AlignmentGeometry? lerp(double t) => AlignmentGeometry.lerp(begin, end, t);
 }
 

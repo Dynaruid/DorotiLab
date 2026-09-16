@@ -36,8 +36,8 @@ public static partial class Box_fitLibrary
         {
             return new FittedSizes(Size.zero, Size.zero);
         }
-        global::Doroti.Ui.Size sourceSize = default!;
-        global::Doroti.Ui.Size destinationSize = default!;
+        Size sourceSize = default!;
+        Size destinationSize = default!;
         switch (fit)
         {
             case BoxFit.fill:
@@ -51,11 +51,11 @@ public static partial class Box_fitLibrary
                     sourceSize = inputSize;
                     if ((outputSize.width / outputSize.height) > (sourceSize.width / sourceSize.height))
                     {
-                        destinationSize = new global::Doroti.Ui.Size(sourceSize.width * outputSize.height / sourceSize.height, outputSize.height);
+                        destinationSize = new Size(sourceSize.width * outputSize.height / sourceSize.height, outputSize.height);
                     }
                     else
                     {
-                        destinationSize = new global::Doroti.Ui.Size(outputSize.width, sourceSize.height * outputSize.width / sourceSize.width);
+                        destinationSize = new Size(outputSize.width, sourceSize.height * outputSize.width / sourceSize.width);
                     }
                     break;
                 }
@@ -63,11 +63,11 @@ public static partial class Box_fitLibrary
                 {
                     if ((outputSize.width / outputSize.height) > (inputSize.width / inputSize.height))
                     {
-                        sourceSize = new global::Doroti.Ui.Size(inputSize.width, inputSize.width * outputSize.height / outputSize.width);
+                        sourceSize = new Size(inputSize.width, inputSize.width * outputSize.height / outputSize.width);
                     }
                     else
                     {
-                        sourceSize = new global::Doroti.Ui.Size(inputSize.height * outputSize.width / outputSize.height, inputSize.height);
+                        sourceSize = new Size(inputSize.height * outputSize.width / outputSize.height, inputSize.height);
                     }
                     destinationSize = outputSize;
                     break;
@@ -76,13 +76,13 @@ public static partial class Box_fitLibrary
                 {
                     if ((outputSize.width / outputSize.height) > (inputSize.width / inputSize.height))
                     {
-                        sourceSize = new global::Doroti.Ui.Size(inputSize.width, inputSize.width * outputSize.height / outputSize.width);
+                        sourceSize = new Size(inputSize.width, inputSize.width * outputSize.height / outputSize.width);
                         destinationSize = outputSize;
                     }
                     else
                     {
                         sourceSize = inputSize;
-                        destinationSize = new global::Doroti.Ui.Size(outputSize.width, sourceSize.height * outputSize.width / sourceSize.width);
+                        destinationSize = new Size(outputSize.width, sourceSize.height * outputSize.width / sourceSize.width);
                     }
                     break;
                 }
@@ -91,18 +91,18 @@ public static partial class Box_fitLibrary
                     if ((outputSize.width / outputSize.height) > (inputSize.width / inputSize.height))
                     {
                         sourceSize = inputSize;
-                        destinationSize = new global::Doroti.Ui.Size(sourceSize.width * outputSize.height / sourceSize.height, outputSize.height);
+                        destinationSize = new Size(sourceSize.width * outputSize.height / sourceSize.height, outputSize.height);
                     }
                     else
                     {
-                        sourceSize = new global::Doroti.Ui.Size(inputSize.height * outputSize.width / outputSize.height, inputSize.height);
+                        sourceSize = new Size(inputSize.height * outputSize.width / outputSize.height, inputSize.height);
                         destinationSize = outputSize;
                     }
                     break;
                 }
             case BoxFit.none:
                 {
-                    sourceSize = new global::Doroti.Ui.Size(Math.Min(inputSize.width, outputSize.width), Math.Min(inputSize.height, outputSize.height));
+                    sourceSize = new Size(Math.Min(inputSize.width, outputSize.width), Math.Min(inputSize.height, outputSize.height));
                     destinationSize = sourceSize;
                     break;
                 }
@@ -113,11 +113,11 @@ public static partial class Box_fitLibrary
                     double aspectRatio = inputSize.width / inputSize.height;
                     if (destinationSize.height > outputSize.height)
                     {
-                        destinationSize = new global::Doroti.Ui.Size(outputSize.height * aspectRatio, outputSize.height);
+                        destinationSize = new Size(outputSize.height * aspectRatio, outputSize.height);
                     }
                     if (destinationSize.width > outputSize.width)
                     {
-                        destinationSize = new global::Doroti.Ui.Size(outputSize.width, outputSize.width / aspectRatio);
+                        destinationSize = new Size(outputSize.width, outputSize.width / aspectRatio);
                     }
                     break;
                 }

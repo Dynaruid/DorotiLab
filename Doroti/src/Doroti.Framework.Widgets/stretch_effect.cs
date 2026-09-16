@@ -8,10 +8,10 @@ namespace Doroti.Framework.Widgets;
 public class StretchEffect : StatelessWidget
 {
     public virtual double stretchStrength { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.Axis axis { get; private set; } = default!;
+    public virtual Axis axis { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public StretchEffect(global::Doroti.Framework.Foundation.Key? key = null, double stretchStrength = 0.0, global::Doroti.Framework.Painting.Axis axis = default!, Widget child = default!) : base(key: key)
+    public StretchEffect(Key? key = null, double stretchStrength = 0.0, Axis axis = default!, Widget child = default!) : base(key: key)
     {
         this.stretchStrength = stretchStrength;
         this.axis = axis;
@@ -19,7 +19,7 @@ public class StretchEffect : StatelessWidget
         System.Diagnostics.Debug.Assert((stretchStrength >= -1.0) && (stretchStrength <= 1.0));
     }
 
-    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _getAlignment(TextDirection direction)
+    internal virtual AlignmentGeometry _getAlignment(TextDirection direction)
     {
         bool isForward = stretchStrength > 0L;
         if (Equals(axis, Axis.vertical))
@@ -43,7 +43,7 @@ public class StretchEffect : StatelessWidget
         {
             return new _StretchOverscrollEffect__stretch_effect(stretchStrength: stretchStrength, axis: axis, child: child);
         }
-        global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
+        TextDirection textDirection = Directionality.of(context);
         var x = 1.0;
         var y = 1.0;
         switch (axis)
@@ -68,10 +68,10 @@ public class StretchEffect : StatelessWidget
 internal class _StretchOverscrollEffect__stretch_effect : StatefulWidget
 {
     public virtual double stretchStrength { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.Axis axis { get; private set; } = default!;
+    public virtual Axis axis { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _StretchOverscrollEffect__stretch_effect(double stretchStrength = 0.0, global::Doroti.Framework.Painting.Axis axis = default!, Widget child = default!)
+    internal _StretchOverscrollEffect__stretch_effect(double stretchStrength = 0.0, Axis axis = default!, Widget child = default!)
     {
         this.stretchStrength = stretchStrength;
         this.axis = axis;
@@ -84,10 +84,10 @@ internal class _StretchOverscrollEffect__stretch_effect : StatefulWidget
 
 internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOverscrollEffect__stretch_effect>
 {
-    internal virtual global::Doroti.Ui.FragmentShader? _fragmentShader { get; set; } = default;
+    internal virtual FragmentShader? _fragmentShader { get; set; } = default;
     public const double maxStretchIntensity = 1.0;
     public const double interpolationStrength = 0.7;
-    internal static ImageFilter _emptyFilter = new global::Doroti.Ui.ImageFilter(Matrix4.identity().storage);
+    internal static ImageFilter _emptyFilter = new ImageFilter(Matrix4.identity().storage);
 
     public override void dispose()
     {
@@ -108,7 +108,7 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
     public override Widget build(BuildContext context)
     {
         bool isShaderNeeded = widget.stretchStrength.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance;
-        global::Doroti.Ui.ImageFilter imageFilterLocal = default!;
+        ImageFilter imageFilterLocal = default!;
         if (_StretchEffectShader__stretch_effect._initialized)
         {
             _fragmentShader?.dispose();
@@ -125,7 +125,7 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
                 _fragmentShader!.setFloat(4L, 0.0);
             }
             _fragmentShader!.setFloat(5L, interpolationStrength);
-            imageFilterLocal = new global::Doroti.Ui.ImageFilter(_fragmentShader!);
+            imageFilterLocal = new ImageFilter(_fragmentShader!);
         }
         else
         {
@@ -139,32 +139,32 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
 
 }
 
-internal class _StretchEffectPainter__stretch_effect : global::Doroti.Framework.Rendering.CustomPainter
+internal class _StretchEffectPainter__stretch_effect : CustomPainter
 {
     public override void paint(Canvas canvas, Size size)
     {
         var paintLocal = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = Color.fromARGB(1L, 0L, 0L, 0L);
     __cascade.style = PaintingStyle.fill;
     return __cascade;
 }))();
-        canvas.drawPoints(PointMode.points, new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset(size.width - 1L, 0), new global::Doroti.Ui.Offset(0, size.height - 1L), new global::Doroti.Ui.Offset(size.width - 1L, size.height - 1L) }, paintLocal);
+        canvas.drawPoints(PointMode.points, new List<Offset> { Offset.zero, new Offset(size.width - 1L, 0), new Offset(0, size.height - 1L), new Offset(size.width - 1L, size.height - 1L) }, paintLocal);
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
+    public override bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 internal class _StretchEffectShader__stretch_effect
 {
     internal static bool _initCalled = false;
     internal static bool _initialized = false;
-    internal static global::Doroti.Ui.FragmentProgram? _program = default;
+    internal static FragmentProgram? _program = default;
 
     public static void initializeShader(
-        global::System.Action? onReady = null,
-        global::System.Action<global::System.Exception>? onError = null)
+        Action? onReady = null,
+        System.Action<Exception>? onError = null)
     {
         if (_initialized && _program is not null)
         {

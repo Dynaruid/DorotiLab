@@ -6,23 +6,23 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class NavigationRailThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class NavigationRailThemeData : Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? selectedLabelTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme { get; private set; }
+    public virtual TextStyle? unselectedLabelTextStyle { get; private set; }
+    public virtual TextStyle? selectedLabelTextStyle { get; private set; }
+    public virtual IconThemeData? unselectedIconTheme { get; private set; }
+    public virtual IconThemeData? selectedIconTheme { get; private set; }
     public virtual double? groupAlignment { get; private set; }
     public virtual NavigationRailLabelType? labelType { get; private set; }
     public virtual bool? useIndicator { get; private set; }
     public virtual Color? indicatorColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? indicatorShape { get; private set; }
+    public virtual ShapeBorder? indicatorShape { get; private set; }
     public virtual double? minWidth { get; private set; }
     public virtual double? minExtendedWidth { get; private set; }
 
-    public NavigationRailThemeData(Color? backgroundColor = null, double? elevation = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelTextStyle = null, global::Doroti.Framework.Painting.TextStyle? selectedLabelTextStyle = null, global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme = null, double? groupAlignment = null, NavigationRailLabelType? labelType = null, bool? useIndicator = null, Color? indicatorColor = null, global::Doroti.Framework.Painting.ShapeBorder? indicatorShape = null, double? minWidth = null, double? minExtendedWidth = null)
+    public NavigationRailThemeData(Color? backgroundColor = null, double? elevation = null, TextStyle? unselectedLabelTextStyle = null, TextStyle? selectedLabelTextStyle = null, IconThemeData? unselectedIconTheme = null, IconThemeData? selectedIconTheme = null, double? groupAlignment = null, NavigationRailLabelType? labelType = null, bool? useIndicator = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, double? minWidth = null, double? minExtendedWidth = null)
     {
         this.backgroundColor = backgroundColor;
         this.elevation = elevation;
@@ -39,7 +39,7 @@ public class NavigationRailThemeData : global::Doroti.Framework.Foundation.Diagn
         this.minExtendedWidth = minExtendedWidth;
     }
 
-    public virtual NavigationRailThemeData copyWith(Color? backgroundColor = null, double? elevation = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelTextStyle = null, global::Doroti.Framework.Painting.TextStyle? selectedLabelTextStyle = null, global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme = null, double? groupAlignment = null, NavigationRailLabelType? labelType = null, bool? useIndicator = null, Color? indicatorColor = null, global::Doroti.Framework.Painting.ShapeBorder? indicatorShape = null, double? minWidth = null, double? minExtendedWidth = null)
+    public virtual NavigationRailThemeData copyWith(Color? backgroundColor = null, double? elevation = null, TextStyle? unselectedLabelTextStyle = null, TextStyle? selectedLabelTextStyle = null, IconThemeData? unselectedIconTheme = null, IconThemeData? selectedIconTheme = null, double? groupAlignment = null, NavigationRailLabelType? labelType = null, bool? useIndicator = null, Color? indicatorColor = null, ShapeBorder? indicatorShape = null, double? minWidth = null, double? minExtendedWidth = null)
     {
         return new NavigationRailThemeData(backgroundColor: backgroundColor ?? this.backgroundColor, elevation: elevation ?? this.elevation, unselectedLabelTextStyle: unselectedLabelTextStyle ?? this.unselectedLabelTextStyle, selectedLabelTextStyle: selectedLabelTextStyle ?? this.selectedLabelTextStyle, unselectedIconTheme: unselectedIconTheme ?? this.unselectedIconTheme, selectedIconTheme: selectedIconTheme ?? this.selectedIconTheme, groupAlignment: groupAlignment ?? this.groupAlignment, labelType: labelType ?? this.labelType, useIndicator: useIndicator ?? this.useIndicator, indicatorColor: indicatorColor ?? this.indicatorColor, indicatorShape: indicatorShape ?? this.indicatorShape, minWidth: minWidth ?? this.minWidth, minExtendedWidth: minExtendedWidth ?? this.minExtendedWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -71,22 +71,22 @@ public class NavigationRailThemeData : global::Doroti.Framework.Foundation.Diagn
         return (__other is NavigationRailThemeData) && Equals(__other.backgroundColor, backgroundColor) && (__other.elevation == elevation) && Equals(__other.unselectedLabelTextStyle, unselectedLabelTextStyle) && Equals(__other.selectedLabelTextStyle, selectedLabelTextStyle) && Equals(__other.unselectedIconTheme, unselectedIconTheme) && Equals(__other.selectedIconTheme, selectedIconTheme) && (__other.groupAlignment == groupAlignment) && Equals(__other.labelType, labelType) && (__other.useIndicator == useIndicator) && Equals(__other.indicatorColor, indicatorColor) && Equals(__other.indicatorShape, indicatorShape) && (__other.minWidth == minWidth) && (__other.minExtendedWidth == minExtendedWidth);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         var defaultData = new NavigationRailThemeData();
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", backgroundColor, defaultValue: defaultData.backgroundColor));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", elevation, defaultValue: defaultData.elevation));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("unselectedLabelTextStyle", unselectedLabelTextStyle, defaultValue: defaultData.unselectedLabelTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("selectedLabelTextStyle", selectedLabelTextStyle, defaultValue: defaultData.selectedLabelTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("unselectedIconTheme", unselectedIconTheme, defaultValue: defaultData.unselectedIconTheme));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("selectedIconTheme", selectedIconTheme, defaultValue: defaultData.selectedIconTheme));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("groupAlignment", groupAlignment, defaultValue: defaultData.groupAlignment));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationRailLabelType>("labelType", labelType, defaultValue: defaultData.labelType));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("useIndicator", useIndicator, defaultValue: defaultData.useIndicator));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("indicatorColor", indicatorColor, defaultValue: defaultData.indicatorColor));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("indicatorShape", indicatorShape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minWidth", minWidth, defaultValue: defaultData.minWidth));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minExtendedWidth", minExtendedWidth, defaultValue: defaultData.minExtendedWidth));
+        properties.add(new ColorProperty("backgroundColor", backgroundColor, defaultValue: defaultData.backgroundColor));
+        properties.add(new DoubleProperty("elevation", elevation, defaultValue: defaultData.elevation));
+        properties.add(new DiagnosticsProperty<TextStyle>("unselectedLabelTextStyle", unselectedLabelTextStyle, defaultValue: defaultData.unselectedLabelTextStyle));
+        properties.add(new DiagnosticsProperty<TextStyle>("selectedLabelTextStyle", selectedLabelTextStyle, defaultValue: defaultData.selectedLabelTextStyle));
+        properties.add(new DiagnosticsProperty<IconThemeData>("unselectedIconTheme", unselectedIconTheme, defaultValue: defaultData.unselectedIconTheme));
+        properties.add(new DiagnosticsProperty<IconThemeData>("selectedIconTheme", selectedIconTheme, defaultValue: defaultData.selectedIconTheme));
+        properties.add(new DoubleProperty("groupAlignment", groupAlignment, defaultValue: defaultData.groupAlignment));
+        properties.add(new DiagnosticsProperty<NavigationRailLabelType>("labelType", labelType, defaultValue: defaultData.labelType));
+        properties.add(new DiagnosticsProperty<bool>("useIndicator", useIndicator, defaultValue: defaultData.useIndicator));
+        properties.add(new ColorProperty("indicatorColor", indicatorColor, defaultValue: defaultData.indicatorColor));
+        properties.add(new DiagnosticsProperty<ShapeBorder>("indicatorShape", indicatorShape, defaultValue: null));
+        properties.add(new DoubleProperty("minWidth", minWidth, defaultValue: defaultData.minWidth));
+        properties.add(new DoubleProperty("minExtendedWidth", minExtendedWidth, defaultValue: defaultData.minExtendedWidth));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -112,27 +112,27 @@ public class NavigationRailThemeData : global::Doroti.Framework.Foundation.Diagn
 
 }
 
-public class NavigationRailTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class NavigationRailTheme : InheritedTheme
 {
     public virtual NavigationRailThemeData data { get; private set; } = default!;
 
-    public NavigationRailTheme(global::Doroti.Framework.Foundation.Key? key = null, NavigationRailThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public NavigationRailTheme(Key? key = null, NavigationRailThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static NavigationRailThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static NavigationRailThemeData of(BuildContext context)
     {
         NavigationRailTheme? navigationRailThemeLocal = context.dependOnInheritedWidgetOfExactType<NavigationRailTheme>();
         return navigationRailThemeLocal?.data ?? Theme.of(context).navigationRailTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new NavigationRailTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((NavigationRailTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((NavigationRailTheme)oldWidget).data));
 }

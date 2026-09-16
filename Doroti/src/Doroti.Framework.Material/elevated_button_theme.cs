@@ -5,7 +5,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class ElevatedButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class ElevatedButtonThemeData : Diagnosticable
 {
     public virtual ButtonStyle? style { get; private set; }
 
@@ -40,9 +40,9 @@ public class ElevatedButtonThemeData : global::Doroti.Framework.Foundation.Diagn
         return (__other is ElevatedButtonThemeData) && Equals(__other.style, style);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -68,27 +68,27 @@ public class ElevatedButtonThemeData : global::Doroti.Framework.Foundation.Diagn
 
 }
 
-public class ElevatedButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class ElevatedButtonTheme : InheritedTheme
 {
     public virtual ElevatedButtonThemeData data { get; private set; } = default!;
 
-    public ElevatedButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, ElevatedButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public ElevatedButtonTheme(Key? key = null, ElevatedButtonThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static ElevatedButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static ElevatedButtonThemeData of(BuildContext context)
     {
         ElevatedButtonTheme? buttonTheme = context.dependOnInheritedWidgetOfExactType<ElevatedButtonTheme>();
         return buttonTheme?.data ?? Theme.of(context).elevatedButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new ElevatedButtonTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ElevatedButtonTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ElevatedButtonTheme)oldWidget).data));
 }

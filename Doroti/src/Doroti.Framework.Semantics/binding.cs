@@ -7,14 +7,14 @@ namespace Doroti.Framework.Semantics;
 
 public interface SemanticsBinding
 {
-    public static global::Doroti.Framework.Semantics.SemanticsBinding? _instance = default;
+    public static SemanticsBinding? _instance = default;
     ValueNotifier<bool> _semanticsEnabled { get; }
     ObserverList<Action<SemanticsActionEvent>> _semanticsActionListeners { get; }
     long _outstandingHandles { get; set; }
     SemanticsHandle? _semanticsHandle { get; set; }
     AccessibilityFeatures _accessibilityFeatures { get; set; }
 
-    public static global::Doroti.Framework.Semantics.SemanticsBinding instance
+    public static SemanticsBinding instance
     {
         get => BindingBase.checkInstance(_instance);
     }
@@ -23,7 +23,7 @@ public interface SemanticsBinding
     public void removeSemanticsEnabledListener(Action listener);
     public void addSemanticsActionListener(Action<SemanticsActionEvent> listener);
     public void removeSemanticsActionListener(Action<SemanticsActionEvent> listener);
-    public global::Doroti.Ui.Rect? getRectOfSemanticsNodeInViewCoordinates(long viewId, long nodeId);
+    public Rect? getRectOfSemanticsNodeInViewCoordinates(long viewId, long nodeId);
     public long debugOutstandingSemanticsHandles { get; }
     public SemanticsHandle ensureSemantics();
     public void _didDisposeSemanticsHandle();
@@ -31,9 +31,9 @@ public interface SemanticsBinding
     public void _handleSemanticsActionEvent(SemanticsActionEvent action);
     public void _handleFrameworkSemanticsEnabledChanged();
     public void performSemanticsAction(SemanticsActionEvent action);
-    public global::Doroti.Ui.AccessibilityFeatures accessibilityFeatures { get; }
+    public AccessibilityFeatures accessibilityFeatures { get; }
     public void handleAccessibilityFeaturesChanged();
-    public global::Doroti.Ui.SemanticsUpdateBuilder createSemanticsUpdateBuilder();
+    public SemanticsUpdateBuilder createSemanticsUpdateBuilder();
     public bool disableAnimations { get; }
 }
 

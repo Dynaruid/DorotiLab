@@ -85,7 +85,7 @@ internal class _TextEditingValueAccumulator
         debugFinalized = true;
         _MutableTextRange? selection = this.selection;
         _MutableTextRange? composingRegion = this.composingRegion;
-        return new TextEditingValue(text: stringBuffer.ToString(), composing: ((composingRegion is null) || (composingRegion.@base == composingRegion.extent)) ? TextRange.empty : new global::Doroti.Ui.TextRange(start: composingRegion.@base, end: composingRegion.extent), selection: (selection is null) ? TextSelection.CreateCollapsed(offset: -1L) : new TextSelection(baseOffset: selection.@base, extentOffset: selection.extent, affinity: inputValue.selection.affinity, isDirectional: inputValue.selection.isDirectional));
+        return new TextEditingValue(text: stringBuffer.ToString(), composing: ((composingRegion is null) || (composingRegion.@base == composingRegion.extent)) ? TextRange.empty : new TextRange(start: composingRegion.@base, end: composingRegion.extent), selection: (selection is null) ? TextSelection.CreateCollapsed(offset: -1L) : new TextSelection(baseOffset: selection.@base, extentOffset: selection.extent, affinity: inputValue.selection.affinity, isDirectional: inputValue.selection.isDirectional));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -207,7 +207,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
             iterator.expandNext(maxLength);
         }
         string truncated = iterator.Current;
-        return new TextEditingValue(text: truncated, selection: value.selection.copyWith(baseOffset: Math.Min(value.selection.start, truncated.Length), extentOffset: Math.Min(value.selection.end, truncated.Length)), composing: (!value.composing.isCollapsed && (truncated.Length > value.composing.start)) ? new global::Doroti.Ui.TextRange(start: value.composing.start, end: Math.Min(value.composing.end, truncated.Length)) : TextRange.empty);
+        return new TextEditingValue(text: truncated, selection: value.selection.copyWith(baseOffset: Math.Min(value.selection.start, truncated.Length), extentOffset: Math.Min(value.selection.end, truncated.Length)), composing: (!value.composing.isCollapsed && (truncated.Length > value.composing.start)) ? new TextRange(start: value.composing.start, end: Math.Min(value.composing.end, truncated.Length)) : TextRange.empty);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

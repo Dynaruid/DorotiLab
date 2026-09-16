@@ -12,6 +12,6 @@ public enum StandardComponentType
 
 public static class StandardComponentTypeMembers
 {
-    public static global::Doroti.Framework.Foundation.ValueKey<StandardComponentType> key(this StandardComponentType value) => new global::Doroti.Framework.Foundation.ValueKey<StandardComponentType>(value);
+    public static ValueKey<StandardComponentType> key(this StandardComponentType value) => new ValueKey<StandardComponentType>(value);
 }
 

@@ -7,22 +7,22 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class ImageLibrary
 {
-    public static global::Doroti.Framework.Painting.ImageConfiguration createLocalImageConfiguration(BuildContext context, Size? size = null)
+    public static ImageConfiguration createLocalImageConfiguration(BuildContext context, Size? size = null)
     {
-        return new global::Doroti.Framework.Painting.ImageConfiguration(bundle: DefaultAssetBundle.of(context), devicePixelRatio: MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0, locale: Localizations.maybeLocaleOf(context), textDirection: Directionality.maybeOf(context), size: size, platform: PlatformLibrary.defaultTargetPlatform);
+        return new ImageConfiguration(bundle: DefaultAssetBundle.of(context), devicePixelRatio: MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0, locale: Localizations.maybeLocaleOf(context), textDirection: Directionality.maybeOf(context), size: size, platform: PlatformLibrary.defaultTargetPlatform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class ImageLibrary
 {
-    public static Future precacheImage(global::Doroti.Framework.Painting.IImageProvider provider, BuildContext context, Size? size = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
+    public static Future precacheImage(IImageProvider provider, BuildContext context, Size? size = null, Action<object, System.Diagnostics.StackTrace?>? onError = null)
     {
-        global::Doroti.Framework.Painting.ImageConfiguration config = createLocalImageConfiguration(context, size: size);
+        ImageConfiguration config = createLocalImageConfiguration(context, size: size);
         var completer = new Completer<object?>();
-        global::Doroti.Framework.Painting.ImageStream stream = provider.resolve(config);
-        global::Doroti.Framework.Painting.ImageStreamListener? listener = default!;
-        listener = new global::Doroti.Framework.Painting.ImageStreamListener((image, sync) =>
+        ImageStream stream = provider.resolve(config);
+        ImageStreamListener? listener = default!;
+        listener = new ImageStreamListener((image, sync) =>
         {
             if (!completer.isCompleted)
             {
@@ -46,7 +46,7 @@ public static partial class ImageLibrary
             }
             else
             {
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(context: new global::Doroti.Framework.Foundation.ErrorDescription("image failed to precache"), library: "image resource service", exception: exception, stack: stackTrace, silent: true));
+                FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("image failed to precache"), library: "image resource service", exception: exception, stack: stackTrace, silent: true));
             }
         });
         stream.addListener(listener);
@@ -57,25 +57,25 @@ public static partial class ImageLibrary
 
 public delegate Widget ImageFrameBuilder(BuildContext context, Widget child, long? frame, bool wasSynchronouslyLoaded);
 
-public delegate Widget ImageLoadingBuilder(BuildContext context, Widget child, global::Doroti.Framework.Painting.ImageChunkEvent? loadingProgress);
+public delegate Widget ImageLoadingBuilder(BuildContext context, Widget child, ImageChunkEvent? loadingProgress);
 
-public delegate Widget ImageErrorWidgetBuilder(BuildContext context, object error, global::System.Diagnostics.StackTrace? stackTrace);
+public delegate Widget ImageErrorWidgetBuilder(BuildContext context, object error, System.Diagnostics.StackTrace? stackTrace);
 
 public class Image : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Painting.IImageProvider image { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder { get; private set; }
-    public virtual global::System.Func<BuildContext, Widget, global::Doroti.Framework.Painting.ImageChunkEvent?, Widget>? loadingBuilder { get; private set; }
-    public virtual global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder { get; private set; }
+    public virtual IImageProvider image { get; private set; } = default!;
+    public virtual Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder { get; private set; }
+    public virtual Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder { get; private set; }
+    public virtual Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder { get; private set; }
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
     public virtual Color? color { get; private set; }
-    public virtual global::Doroti.Framework.Animation.Animation<double>? opacity { get; private set; }
+    public virtual Animation<double>? opacity { get; private set; }
     public virtual FilterQuality filterQuality { get; private set; } = default!;
     public virtual BlendMode? colorBlendMode { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BoxFit? fit { get; private set; }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.ImageRepeat repeat { get; private set; } = default!;
+    public virtual BoxFit? fit { get; private set; }
+    public virtual AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual ImageRepeat repeat { get; private set; } = default!;
     public virtual Rect? centerSlice { get; private set; }
     public virtual bool matchTextDirection { get; private set; } = default!;
     public virtual bool gaplessPlayback { get; private set; } = default!;
@@ -83,9 +83,9 @@ public class Image : StatefulWidget
     public virtual bool excludeFromSemantics { get; private set; } = default!;
     public virtual bool isAntiAlias { get; private set; } = default!;
 
-    public Image(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.IImageProvider image = default!, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::System.Func<BuildContext, Widget, global::Doroti.Framework.Painting.ImageChunkEvent?, Widget>? loadingBuilder = null, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, global::Doroti.Framework.Animation.Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium) : base(key: key)
+    public Image(Key? key = null, IImageProvider image = default!, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium) : base(key: key)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.image = image;
         this.frameBuilder = frameBuilder;
         this.loadingBuilder = loadingBuilder;
@@ -107,10 +107,10 @@ public class Image : StatefulWidget
         this.filterQuality = filterQuality;
     }
 
-    public static Image CreateNetwork(string src, global::Doroti.Framework.Foundation.Key? key = null, double scale = 1.0, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::System.Func<BuildContext, Widget, global::Doroti.Framework.Painting.ImageChunkEvent?, Widget>? loadingBuilder = null, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, global::Doroti.Framework.Animation.Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, FilterQuality filterQuality = FilterQuality.medium, bool isAntiAlias = false, DartMap<string, string>? headers = null, long? cacheWidth = null, long? cacheHeight = null, global::Doroti.Framework.Painting.WebHtmlElementStrategy webHtmlElementStrategy = WebHtmlElementStrategy.never)
+    public static Image CreateNetwork(string src, Key? key = null, double scale = 1.0, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, Widget, ImageChunkEvent?, Widget>? loadingBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, FilterQuality filterQuality = FilterQuality.medium, bool isAntiAlias = false, DartMap<string, string>? headers = null, long? cacheWidth = null, long? cacheHeight = null, WebHtmlElementStrategy webHtmlElementStrategy = WebHtmlElementStrategy.never)
     {
         var __instance = new Image(key, default!, frameBuilder, loadingBuilder, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.loadingBuilder = loadingBuilder;
         __instance.errorBuilder = errorBuilder;
@@ -129,14 +129,14 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.filterQuality = filterQuality;
         __instance.isAntiAlias = isAntiAlias;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new global::Doroti.Framework.Painting.NetworkImageIo(src, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale)), headers: headers, webHtmlElementStrategy: webHtmlElementStrategy));
+        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new NetworkImageIo(src, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale)), headers: headers, webHtmlElementStrategy: webHtmlElementStrategy));
         return __instance;
     }
 
-    public static Image CreateFile(global::Doroti.Runtime.DartFile file, global::Doroti.Framework.Foundation.Key? key = null, double scale = 1.0, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, global::Doroti.Framework.Animation.Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
+    public static Image CreateFile(DartFile file, Key? key = null, double scale = 1.0, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
     {
         var __instance = new Image(key, default!, frameBuilder, default!, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.errorBuilder = errorBuilder;
         __instance.semanticLabel = semanticLabel;
@@ -154,15 +154,15 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.isAntiAlias = isAntiAlias;
         __instance.filterQuality = filterQuality;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new global::Doroti.Framework.Painting.FileImage(file, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))));
+        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new FileImage(file, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))));
         __instance.loadingBuilder = null;
         return __instance;
     }
 
-    public static Image CreateAsset(string name, global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Services.AssetBundle? bundle = null, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? scale = null, double? width = null, double? height = null, Color? color = null, global::Doroti.Framework.Animation.Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, string? package = null, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
+    public static Image CreateAsset(string name, Key? key = null, AssetBundle? bundle = null, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? scale = null, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, string? package = null, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
     {
         var __instance = new Image(key, default!, frameBuilder, default!, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.errorBuilder = errorBuilder;
         __instance.semanticLabel = semanticLabel;
@@ -185,10 +185,10 @@ public class Image : StatefulWidget
         return __instance;
     }
 
-    public static Image CreateMemory(Uint8List bytes, global::Doroti.Framework.Foundation.Key? key = null, double scale = 1.0, global::System.Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, global::Doroti.Framework.Animation.Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
+    public static Image CreateMemory(Uint8List bytes, Key? key = null, double scale = 1.0, Func<BuildContext, Widget, long?, bool, Widget>? frameBuilder = null, Func<BuildContext, object, System.Diagnostics.StackTrace?, Widget>? errorBuilder = null, string? semanticLabel = null, bool excludeFromSemantics = false, double? width = null, double? height = null, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, bool gaplessPlayback = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, long? cacheWidth = null, long? cacheHeight = null)
     {
         var __instance = new Image(key, default!, frameBuilder, default!, errorBuilder, semanticLabel, excludeFromSemantics, width, height, color, opacity, colorBlendMode, fit, alignment, repeat, centerSlice, matchTextDirection, gaplessPlayback, isAntiAlias, filterQuality);
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.frameBuilder = frameBuilder;
         __instance.errorBuilder = errorBuilder;
         __instance.semanticLabel = semanticLabel;
@@ -206,50 +206,50 @@ public class Image : StatefulWidget
         __instance.gaplessPlayback = gaplessPlayback;
         __instance.isAntiAlias = isAntiAlias;
         __instance.filterQuality = filterQuality;
-        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new global::Doroti.Framework.Painting.MemoryImage(bytes, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))));
+        __instance.image = ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, new MemoryImage(bytes, scale: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(scale))));
         __instance.loadingBuilder = null;
         return __instance;
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ImageState__image());
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("image", image));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Delegate>("frameBuilder", frameBuilder));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Delegate>("loadingBuilder", loadingBuilder));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", width, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", height, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Animation<double>?>("opacity", opacity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", fit, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", centerSlice, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticLabel", semanticLabel, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("this.excludeFromSemantics", excludeFromSemantics));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", filterQuality));
+        properties.add(new DiagnosticsProperty<object>("image", image));
+        properties.add(new DiagnosticsProperty<Delegate>("frameBuilder", frameBuilder));
+        properties.add(new DiagnosticsProperty<Delegate>("loadingBuilder", loadingBuilder));
+        properties.add(new DoubleProperty("width", width, defaultValue: null));
+        properties.add(new DoubleProperty("height", height, defaultValue: null));
+        properties.add(new ColorProperty("color", color, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Animation<double>?>("opacity", opacity, defaultValue: null));
+        properties.add(new EnumProperty<BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
+        properties.add(new EnumProperty<BoxFit>("fit", fit, defaultValue: null));
+        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null));
+        properties.add(new EnumProperty<ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
+        properties.add(new DiagnosticsProperty<Rect>("centerSlice", centerSlice, defaultValue: null));
+        properties.add(new FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
+        properties.add(new StringProperty("semanticLabel", semanticLabel, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("this.excludeFromSemantics", excludeFromSemantics));
+        properties.add(new EnumProperty<FilterQuality>("filterQuality", filterQuality));
     }
 
 }
 
 internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 {
-    internal virtual global::Doroti.Framework.Painting.ImageStream? _imageStream { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.ImageInfo? _imageInfo { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.ImageChunkEvent? _loadingProgress { get; set; } = default;
+    internal virtual ImageStream? _imageStream { get; set; } = default;
+    internal virtual ImageInfo? _imageInfo { get; set; } = default;
+    internal virtual ImageChunkEvent? _loadingProgress { get; set; } = default;
     internal virtual bool _isListeningToStream { get; set; } = false;
     internal virtual bool _invertColors { get; set; } = default!;
     internal virtual long? _frameNumber { get; set; } = default;
     internal virtual bool _wasSynchronouslyLoaded { get; set; } = false;
     internal virtual DisposableBuildContext<State<Image>> _scrollAwareContext { get; set; } = default!;
     internal virtual object? _lastException { get; set; } = default;
-    internal virtual global::System.Diagnostics.StackTrace? _lastStack { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.ImageStreamCompleterHandle? _completerHandle { get; set; } = default;
+    internal virtual System.Diagnostics.StackTrace? _lastStack { get; set; } = default;
+    internal virtual ImageStreamCompleterHandle? _completerHandle { get; set; } = default;
     internal virtual bool _isPaused { get; set; } = false;
-    internal virtual global::Doroti.Framework.Painting.ImageStreamListener? _imageStreamListener { get; set; } = default;
+    internal virtual ImageStreamListener? _imageStreamListener { get; set; } = default;
 
     public override void initState()
     {
@@ -290,7 +290,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         base.didUpdateWidget(oldWidget);
         if (_isListeningToStream && (widget.loadingBuilder is null != oldWidget.loadingBuilder is null))
         {
-            global::Doroti.Framework.Painting.ImageStreamListener oldListener = _getListener();
+            ImageStreamListener oldListener = _getListener();
             _imageStream!.addListener(_getListener(recreateListener: true));
             _imageStream!.removeListener(oldListener);
         }
@@ -321,23 +321,23 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         _invertColors = MediaQuery.maybeInvertColorsOf(context) ?? Framework.Semantics.SemanticsBinding.instance.accessibilityFeatures.invertColors;
     }
 
-    private ScrollAwareImageProvider CreateScrollAwareProvider(global::Doroti.Framework.Painting.IImageProvider imageProvider) =>
+    private ScrollAwareImageProvider CreateScrollAwareProvider(IImageProvider imageProvider) =>
         new(context: _scrollAwareContext, imageProvider: imageProvider);
 
     internal virtual void _resolveImage()
     {
-        global::Doroti.Framework.Painting.IImageProvider provider = CreateScrollAwareProvider(widget.image);
-        global::Doroti.Framework.Painting.ImageStream newStream = provider.resolve(ImageLibrary.createLocalImageConfiguration(context, size: ((widget.width is not null) && (widget.height is not null)) ? new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(widget.width), DartRuntimePrimitives.RequireValue(widget.height)) : null));
+        IImageProvider provider = CreateScrollAwareProvider(widget.image);
+        ImageStream newStream = provider.resolve(ImageLibrary.createLocalImageConfiguration(context, size: ((widget.width is not null) && (widget.height is not null)) ? new Size(DartRuntimePrimitives.RequireValue(widget.width), DartRuntimePrimitives.RequireValue(widget.height)) : null));
         _updateSourceStream(newStream);
     }
 
-    internal virtual global::Doroti.Framework.Painting.ImageStreamListener _getListener(bool recreateListener = false)
+    internal virtual ImageStreamListener _getListener(bool recreateListener = false)
     {
         if ((_imageStreamListener is null) || recreateListener)
         {
             _lastException = null;
             _lastStack = null;
-            _imageStreamListener = new global::Doroti.Framework.Painting.ImageStreamListener(_handleImageFrame, onChunk: (widget.loadingBuilder is null) ? null : _handleImageChunk, onError: ((widget.errorBuilder is not null) || Foundation.ConstantsLibrary.kDebugMode) ? ((error, stackTrace) =>
+            _imageStreamListener = new ImageStreamListener(_handleImageFrame, onChunk: (widget.loadingBuilder is null) ? null : _handleImageChunk, onError: ((widget.errorBuilder is not null) || Foundation.ConstantsLibrary.kDebugMode) ? ((error, stackTrace) =>
             {
                 setState(() =>
                 {
@@ -359,7 +359,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleImageFrame(global::Doroti.Framework.Painting.ImageInfo imageInfo, bool synchronousCall)
+    internal virtual void _handleImageFrame(ImageInfo imageInfo, bool synchronousCall)
     {
         setState(() =>
         {
@@ -376,7 +376,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         }
     }
 
-    internal virtual void _handleImageChunk(global::Doroti.Framework.Painting.ImageChunkEvent @event)
+    internal virtual void _handleImageChunk(ImageChunkEvent @event)
     {
         DartRuntimePrimitives.Assert(() => widget.loadingBuilder is not null);
         setState(() =>
@@ -387,9 +387,9 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         });
     }
 
-    internal virtual void _replaceImage(global::Doroti.Framework.Painting.ImageInfo? info)
+    internal virtual void _replaceImage(ImageInfo? info)
     {
-        global::Doroti.Framework.Painting.ImageInfo? oldImageInfo = _imageInfo;
+        ImageInfo? oldImageInfo = _imageInfo;
         if (oldImageInfo is not null)
         {
             Scheduler.SchedulerBinding.instance.addPostFrameCallback((duration) => { oldImageInfo.dispose(); }, debugLabel: "Image.disposeOldInfo");
@@ -397,7 +397,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         _imageInfo = info;
     }
 
-    internal virtual void _updateSourceStream(global::Doroti.Framework.Painting.ImageStream newStream)
+    internal virtual void _updateSourceStream(ImageStream newStream)
     {
         if (Equals(_imageStream?.key, newStream.key))
         {
@@ -461,7 +461,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     internal virtual Widget _debugBuildErrorWidget(BuildContext context, object error)
     {
-        return new Stack(alignment: Alignment.center, children: new List<Widget> { Positioned.CreateFill(child: new Placeholder(color: new global::Doroti.Ui.Color(3482124831L))), new Padding(padding: EdgeInsets.CreateAll(4.0), child: new FittedBox(child: new Text($"{error}", textAlign: TextAlign.center, textDirection: TextDirection.ltr, style: new global::Doroti.Framework.Painting.TextStyle(shadows: new List<global::Doroti.Ui.Shadow> { new global::Doroti.Ui.Shadow(blurRadius: 1.0) })))) });
+        return new Stack(alignment: Alignment.center, children: new List<Widget> { Positioned.CreateFill(child: new Placeholder(color: new Color(3482124831L))), new Padding(padding: EdgeInsets.CreateAll(4.0), child: new FittedBox(child: new Text($"{error}", textAlign: TextAlign.center, textDirection: TextDirection.ltr, style: new TextStyle(shadows: new List<Shadow> { new Shadow(blurRadius: 1.0) })))) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -503,14 +503,14 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageStream>("stream", _imageStream));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageInfo>("pixels", _imageInfo));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ImageChunkEvent>("loadingProgress", _loadingProgress));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<long>("frameNumber", _frameNumber));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("wasSynchronouslyLoaded", _wasSynchronouslyLoaded));
+        description.add(new DiagnosticsProperty<ImageStream>("stream", _imageStream));
+        description.add(new DiagnosticsProperty<ImageInfo>("pixels", _imageInfo));
+        description.add(new DiagnosticsProperty<ImageChunkEvent>("loadingProgress", _loadingProgress));
+        description.add(new DiagnosticsProperty<long>("frameNumber", _frameNumber));
+        description.add(new DiagnosticsProperty<bool>("wasSynchronouslyLoaded", _wasSynchronouslyLoaded));
     }
 
 }

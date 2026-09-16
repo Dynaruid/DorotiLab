@@ -177,7 +177,7 @@ public class ImageCache
         }).sizeBytes ??= sizeBytes;
     }
 
-    public virtual ImageStreamCompleter? putIfAbsent(object key, Func<ImageStreamCompleter> loader, Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
+    public virtual ImageStreamCompleter? putIfAbsent(object key, Func<ImageStreamCompleter> loader, Action<object, System.Diagnostics.StackTrace?>? onError = null)
     {
         TimelineTask? debugTimelineTask = default!;
         if (!Foundation.ConstantsLibrary.kReleaseMode)

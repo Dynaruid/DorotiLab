@@ -56,17 +56,17 @@ public abstract class EdgeInsetsGeometry
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size collapsedSize => new global::Doroti.Ui.Size(horizontal, vertical);
+    public virtual Size collapsedSize => new Size(horizontal, vertical);
     public virtual EdgeInsetsGeometry flipped => new _MixedEdgeInsets__edge_insets(_right, _left, _end, _start, _bottom, _top);
-    public virtual global::Doroti.Ui.Size inflateSize(Size size)
+    public virtual Size inflateSize(Size size)
     {
-        return new global::Doroti.Ui.Size(size.width + horizontal, size.height + vertical);
+        return new Size(size.width + horizontal, size.height + vertical);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size deflateSize(Size size)
+    public virtual Size deflateSize(Size size)
     {
-        return new global::Doroti.Ui.Size(size.width - horizontal, size.height - vertical);
+        return new Size(size.width - horizontal, size.height - vertical);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -221,30 +221,30 @@ public class EdgeInsets : EdgeInsetsGeometry
     internal override double _bottom => bottom;
     internal override double _start => 0.0;
     internal override double _end => 0.0;
-    public virtual global::Doroti.Ui.Offset topLeft => new global::Doroti.Ui.Offset(left, top);
-    public virtual global::Doroti.Ui.Offset topRight => new global::Doroti.Ui.Offset(-right, top);
-    public virtual global::Doroti.Ui.Offset bottomLeft => new global::Doroti.Ui.Offset(left, -bottom);
-    public virtual global::Doroti.Ui.Offset bottomRight => new global::Doroti.Ui.Offset(-right, -bottom);
+    public virtual Offset topLeft => new Offset(left, top);
+    public virtual Offset topRight => new Offset(-right, top);
+    public virtual Offset bottomLeft => new Offset(left, -bottom);
+    public virtual Offset bottomRight => new Offset(-right, -bottom);
     public override EdgeInsets flipped => new EdgeInsets(right, bottom, left, top);
-    public virtual global::Doroti.Ui.Rect inflateRect(Rect rect)
+    public virtual Rect inflateRect(Rect rect)
     {
         return Rect.fromLTRB(rect.left - left, rect.top - top, rect.right + right, rect.bottom + bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Rect deflateRect(Rect rect)
+    public virtual Rect deflateRect(Rect rect)
     {
         return Rect.fromLTRB(rect.left + left, rect.top + top, rect.right - right, rect.bottom - bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.RRect inflateRRect(RRect rect)
+    public virtual RRect inflateRRect(RRect rect)
     {
         return RRect.fromLTRBAndCorners(rect.left - left, rect.top - top, rect.right + right, rect.bottom + bottom, topLeft: (rect.tlRadius + Radius.elliptical(left, top)).clamp(minimum: Radius.zero), topRight: (rect.trRadius + Radius.elliptical(right, top)).clamp(minimum: Radius.zero), bottomRight: (rect.brRadius + Radius.elliptical(right, bottom)).clamp(minimum: Radius.zero), bottomLeft: (rect.blRadius + Radius.elliptical(left, bottom)).clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.RRect deflateRRect(RRect rect)
+    public virtual RRect deflateRRect(RRect rect)
     {
         return RRect.fromLTRBAndCorners(rect.left + left, rect.top + top, rect.right - right, rect.bottom - bottom, topLeft: (rect.tlRadius - Radius.elliptical(left, top)).clamp(minimum: Radius.zero), topRight: (rect.trRadius - Radius.elliptical(right, top)).clamp(minimum: Radius.zero), bottomRight: (rect.brRadius - Radius.elliptical(right, bottom)).clamp(minimum: Radius.zero), bottomLeft: (rect.blRadius - Radius.elliptical(left, bottom)).clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -14,11 +14,11 @@ public class SizeChangedLayoutNotification : LayoutChangedNotification
 
 public class SizeChangedLayoutNotifier : SingleChildRenderObjectWidget
 {
-    public SizeChangedLayoutNotifier(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null) : base(key: key, child: child)
+    public SizeChangedLayoutNotifier(Key? key = null, Widget? child = null) : base(key: key, child: child)
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: () =>
         {
@@ -29,12 +29,12 @@ public class SizeChangedLayoutNotifier : SingleChildRenderObjectWidget
 
 }
 
-internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : global::Doroti.Framework.Rendering.RenderProxyBox
+internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : RenderProxyBox
 {
-    public virtual global::System.Action onLayoutChangedCallback { get; private set; } = default!;
+    public virtual Action onLayoutChangedCallback { get; private set; } = default!;
     internal virtual Size? _oldSize { get; set; } = default;
 
-    internal _RenderSizeChangedWithCallback__size_changed_layout_notifier(global::Doroti.Framework.Rendering.RenderBox? child = null, global::System.Action onLayoutChangedCallback = default!) : base(child)
+    internal _RenderSizeChangedWithCallback__size_changed_layout_notifier(RenderBox? child = null, Action onLayoutChangedCallback = default!) : base(child)
     {
         this.onLayoutChangedCallback = onLayoutChangedCallback;
     }

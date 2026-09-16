@@ -113,7 +113,7 @@ public class HSVColor
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Color toColor()
+    public virtual Color toColor()
     {
         double chroma = saturation * value;
         double secondary = chroma * (1.0 - (hue / 60.0 % 2.0 - 1.0).abs());
@@ -223,7 +223,7 @@ public class HSLColor
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Color toColor()
+    public virtual Color toColor()
     {
         double chroma = (1.0 - ((2.0 * lightness) - 1.0).abs()) * saturation;
         double secondary = chroma * (1.0 - (hue / 60.0 % 2.0 - 1.0).abs());
@@ -280,7 +280,7 @@ public class ColorSwatch<T> : Color where T : notnull
         this._swatch = _swatch;
     }
 
-    public global::Doroti.Ui.Color? this[T key]
+    public Color? this[T key]
     {
         get
         {
@@ -301,7 +301,7 @@ public class ColorSwatch<T> : Color where T : notnull
         {
             return false;
         }
-        return Equals(__other) && (__other is ColorSwatch<T>) && CollectionsLibrary.mapEquals<T, global::Doroti.Ui.Color>(__other._swatch, _swatch);
+        return Equals(__other) && (__other is ColorSwatch<T>) && CollectionsLibrary.mapEquals(__other._swatch, _swatch);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(GetType(), value, _swatch);
@@ -312,20 +312,20 @@ public class ColorSwatch<T> : Color where T : notnull
         {
             return a;
         }
-        DartMap<TKey, global::Doroti.Ui.Color> swatch = default!;
+        DartMap<TKey, Color> swatch = default!;
         if (b is null)
         {
-            swatch = a!._swatch.map<TKey, Color, TKey, Color>((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, null, t)!));
+            swatch = a!._swatch.map((key, color) => new MapEntry<TKey, Color>(key, Dart_uiLibrary.Color.lerp(color, null, t)!));
         }
         else
         {
             if (a is null)
             {
-                swatch = b._swatch.map<TKey, Color, TKey, Color>((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(null, color, t)!));
+                swatch = b._swatch.map((key, color) => new MapEntry<TKey, Color>(key, Dart_uiLibrary.Color.lerp(null, color, t)!));
             }
             else
             {
-                swatch = a._swatch.map<TKey, Color, TKey, Color>((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, b[key], t)!));
+                swatch = a._swatch.map((key, color) => new MapEntry<TKey, Color>(key, Dart_uiLibrary.Color.lerp(color, b[key], t)!));
             }
         }
         return new ColorSwatch<TKey>(Dart_uiLibrary.Color.lerp(a, b, t)!.value, swatch);

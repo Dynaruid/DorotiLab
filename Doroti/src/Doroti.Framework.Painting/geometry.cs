@@ -22,7 +22,7 @@ public static partial class GeometryLibrary
         }
         double flexibleSpace = size.width - childSize.width;
         double x = (flexibleSpace <= (2L * margin)) ? (flexibleSpace / 2.0) : Dart_uiLibrary.clampDouble(target.dx - (childSize.width / 2L), margin, flexibleSpace - margin);
-        return new global::Doroti.Ui.Offset(x, y);
+        return new Offset(x, y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

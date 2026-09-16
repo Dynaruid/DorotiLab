@@ -31,9 +31,9 @@ public abstract class Notification
 
 public class NotificationListener<T> : ProxyWidget where T : Notification
 {
-    public virtual global::System.Func<T, bool>? onNotification { get; private set; }
+    public virtual Func<T, bool>? onNotification { get; private set; }
 
-    public NotificationListener(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<T, bool>? onNotification = null) : base(key: key, child: child)
+    public NotificationListener(Key? key = null, Widget child = default!, Func<T, bool>? onNotification = null) : base(key: key, child: child)
     {
         this.onNotification = onNotification;
     }

@@ -2,7 +2,7 @@
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/binding.dart
 using Doroti.Runtime;
 using Doroti.Ui;
-using SemanticsBinding = global::Doroti.Framework.Semantics.SemanticsBinding;
+using SemanticsBinding = Doroti.Framework.Semantics.SemanticsBinding;
 
 namespace Doroti.Framework.Rendering;
 
@@ -30,14 +30,14 @@ public interface RendererBinding
     public void addRenderView(RenderView view);
     public void removeRenderView(RenderView view);
     public ViewConfiguration createViewConfigurationFor(RenderView renderView);
-    public global::Doroti.Ui.SceneBuilder createSceneBuilder();
-    public global::Doroti.Ui.PictureRecorder createPictureRecorder();
-    public global::Doroti.Ui.Canvas createCanvas(PictureRecorder recorder);
+    public SceneBuilder createSceneBuilder();
+    public PictureRecorder createPictureRecorder();
+    public Canvas createCanvas(PictureRecorder recorder);
     public void handleMetricsChanged();
     public void handleTextScaleFactorChanged();
     public void handlePlatformBrightnessChanged();
     public void initMouseTracker(MouseTracker? tracker = null);
-    public void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult);
+    public void dispatchEvent(PointerEvent @event, HitTestResult? hitTestResult);
     public void performSemanticsAction(SemanticsActionEvent action);
     public Rect? getRectOfSemanticsNodeInViewCoordinates(long viewId, long nodeId);
     public void _handleWebFirstFrame(Duration __unused0);
@@ -99,7 +99,7 @@ public static partial class BindingLibrary
 
 public static partial class BindingLibrary
 {
-    internal static string _debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder childOrder)
+    internal static string _debugCollectSemanticsTrees(DebugSemanticsDumpOrder childOrder)
     {
         if (RendererBinding.instance.renderViews.Count() == 0)
         {
@@ -133,7 +133,7 @@ public static partial class BindingLibrary
 
 public static partial class BindingLibrary
 {
-    public static void debugDumpSemanticsTree(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)
+    public static void debugDumpSemanticsTree(DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)
     {
         PrintLibrary.debugPrint(_debugCollectSemanticsTrees(childOrder));
     }
@@ -147,7 +147,7 @@ public static partial class BindingLibrary
     }
 }
 
-public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.GestureBinding, global::Doroti.Framework.Semantics.SemanticsBinding, global::Doroti.Framework.Painting.PaintingBinding, RendererBinding
+public class RenderingFlutterBinding : GestureBinding, SemanticsBinding, PaintingBinding, RendererBinding
 {
     private bool __late__semanticsEnabled_initialized;
     private ValueNotifier<bool> __late__semanticsEnabled = default!;
@@ -163,7 +163,7 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
             return __late__semanticsEnabled;
         }
     }
-    public virtual ObserverList<Action<SemanticsActionEvent>> _semanticsActionListeners { get; set; } = new ObserverList<Action<global::Doroti.Ui.SemanticsActionEvent>>();
+    public virtual ObserverList<Action<SemanticsActionEvent>> _semanticsActionListeners { get; set; } = new ObserverList<Action<SemanticsActionEvent>>();
     public virtual long _outstandingHandles { get; set; } = 0L;
     public virtual SemanticsHandle? _semanticsHandle { get; set; } = default;
     public virtual AccessibilityFeatures _accessibilityFeatures { get; set; } = default!;
@@ -335,8 +335,8 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
     public virtual void _handleSemanticsActionEvent(SemanticsActionEvent action)
     {
         object? argumentsLocal = action.arguments;
-        global::Doroti.Ui.SemanticsActionEvent decodedAction = (argumentsLocal is ByteData) ? action.copyWith(arguments: new StandardMessageCodec().decodeMessage((ByteData)argumentsLocal)) : action;
-        List<Action<global::Doroti.Ui.SemanticsActionEvent>> localListeners = _semanticsActionListeners.ToList();
+        SemanticsActionEvent decodedAction = (argumentsLocal is ByteData) ? action.copyWith(arguments: new StandardMessageCodec().decodeMessage((ByteData)argumentsLocal)) : action;
+        List<Action<SemanticsActionEvent>> localListeners = _semanticsActionListeners.ToList();
         foreach (var listener in localListeners)
         {
             if (_semanticsActionListeners.contains(listener))
@@ -360,7 +360,7 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
 
     public virtual SemanticsUpdateBuilder createSemanticsUpdateBuilder()
     {
-        return new global::Doroti.Ui.SemanticsUpdateBuilder();
+        return new SemanticsUpdateBuilder();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -561,9 +561,9 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual SceneBuilder createSceneBuilder() => new global::Doroti.Ui.SceneBuilder();
-    public virtual PictureRecorder createPictureRecorder() => new global::Doroti.Ui.PictureRecorder();
-    public virtual Canvas createCanvas(PictureRecorder recorder) => new global::Doroti.Ui.Canvas(recorder);
+    public virtual SceneBuilder createSceneBuilder() => new SceneBuilder();
+    public virtual PictureRecorder createPictureRecorder() => new PictureRecorder();
+    public virtual Canvas createCanvas(PictureRecorder recorder) => new Canvas(recorder);
     public virtual void handleMetricsChanged()
     {
         var forceFrame = false;
@@ -597,9 +597,9 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         });
     }
 
-    public override void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult)
+    public override void dispatchEvent(PointerEvent @event, HitTestResult? hitTestResult)
     {
-        _mouseTracker!.updateWithEvent(@event, (@event is global::Doroti.Framework.Gestures.PointerMoveEvent) ? null : hitTestResult);
+        _mouseTracker!.updateWithEvent(@event, (@event is Gestures.PointerMoveEvent) ? null : hitTestResult);
         base.dispatchEvent(@event, hitTestResult);
     }
 

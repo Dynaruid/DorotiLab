@@ -6,7 +6,7 @@ namespace Doroti.Framework.Widgets;
 
 public class LookupBoundary : InheritedWidget
 {
-    public LookupBoundary(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    public LookupBoundary(Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 
@@ -100,7 +100,7 @@ public class LookupBoundary : InheritedWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static T? findAncestorRenderObjectOfType<T>(BuildContext context) where T : global::Doroti.Framework.Rendering.RenderObject
+    public static T? findAncestorRenderObjectOfType<T>(BuildContext context) where T : RenderObject
     {
         Element? target = default!;
         context.visitAncestorElements((ancestor) =>
@@ -117,7 +117,7 @@ public class LookupBoundary : InheritedWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static void visitAncestorElements(BuildContext context, global::System.Func<Element, bool> visitor)
+    public static void visitAncestorElements(BuildContext context, Func<Element, bool> visitor)
     {
         context.visitAncestorElements((ancestor) =>
         {
@@ -126,7 +126,7 @@ public class LookupBoundary : InheritedWidget
         });
     }
 
-    public static void visitChildElements(BuildContext context, global::System.Action<Element> visitor)
+    public static void visitChildElements(BuildContext context, System.Action<Element> visitor)
     {
         context.visitChildElements((child) =>
         {
@@ -189,7 +189,7 @@ public class LookupBoundary : InheritedWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static bool debugIsHidingAncestorRenderObjectOfType<T>(BuildContext context) where T : global::Doroti.Framework.Rendering.RenderObject
+    public static bool debugIsHidingAncestorRenderObjectOfType<T>(BuildContext context) where T : RenderObject
     {
         bool? result = default!;
         DartRuntimePrimitives.Assert(() =>

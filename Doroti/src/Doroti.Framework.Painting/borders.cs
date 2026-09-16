@@ -68,7 +68,7 @@ public class BorderSide : Diagnosticable
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Paint toPaint()
+    public virtual Paint toPaint()
     {
         switch (style)
         {
@@ -76,7 +76,7 @@ public class BorderSide : Diagnosticable
                 {
                     return ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color;
     __cascade.strokeWidth = width;
     __cascade.style = PaintingStyle.stroke;
@@ -87,8 +87,8 @@ public class BorderSide : Diagnosticable
                 {
                     return ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = new global::Doroti.Ui.Color(0L);
+    var __cascade = new Paint();
+    __cascade.color = new Color(0L);
     __cascade.strokeWidth = 0.0;
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
@@ -131,8 +131,8 @@ public class BorderSide : Diagnosticable
         {
             return new BorderSide(color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), style: a.style, strokeAlign: DartRuntimePrimitives.RequireValue(a.strokeAlign));
         }
-        global::Doroti.Ui.Color colorA = a.style switch { BorderStyle.solid => a.color, BorderStyle.none => a.color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        global::Doroti.Ui.Color colorB = b.style switch { BorderStyle.solid => b.color, BorderStyle.none => b.color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        Color colorA = a.style switch { BorderStyle.solid => a.color, BorderStyle.none => a.color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        Color colorB = b.style switch { BorderStyle.solid => b.color, BorderStyle.none => b.color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         if (a.strokeAlign != b.strokeAlign)
         {
             return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), strokeAlign: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(a.strokeAlign), DartRuntimePrimitives.RequireValue(b.strokeAlign), t)));
@@ -164,7 +164,7 @@ public class BorderSide : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Color>("color", color, defaultValue: new global::Doroti.Ui.Color(4278190080L)));
+        properties.add(new DiagnosticsProperty<Color>("color", color, defaultValue: new Color(4278190080L)));
         properties.add(new DoubleProperty("width", width, defaultValue: 1.0));
         properties.add(new DoubleProperty("strokeAlign", DartRuntimePrimitives.RequireValue(strokeAlign), defaultValue: strokeAlignInside));
         properties.add(new EnumProperty<BorderStyle>("style", style, defaultValue: BorderStyle.solid));
@@ -218,8 +218,8 @@ public abstract class ShapeBorder
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public abstract global::Doroti.Ui.Path getOuterPath(Rect rect, TextDirection? textDirection = null);
-    public abstract global::Doroti.Ui.Path getInnerPath(Rect rect, TextDirection? textDirection = null);
+    public abstract Path getOuterPath(Rect rect, TextDirection? textDirection = null);
+    public abstract Path getInnerPath(Rect rect, TextDirection? textDirection = null);
     public virtual bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
         return getOuterPath(rect, textDirection: textDirection).contains(position);
@@ -329,7 +329,7 @@ internal class _CompoundBorder__borders : ShapeBorder
 
     public override ShapeBorder scale(double t)
     {
-        return new _CompoundBorder__borders(borders.map<ShapeBorder, ShapeBorder>((border) => border.scale(t)).ToList());
+        return new _CompoundBorder__borders(borders.map((border) => border.scale(t)).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -427,13 +427,13 @@ internal class _CompoundBorder__borders : ShapeBorder
         {
             return false;
         }
-        return (__other is _CompoundBorder__borders) && CollectionsLibrary.listEquals<ShapeBorder>(__other.borders, borders);
+        return (__other is _CompoundBorder__borders) && CollectionsLibrary.listEquals(__other.borders, borders);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHashAll(borders);
     public override string ToString()
     {
-        return string.Join(" + ", Enumerable.Reverse(borders).map<ShapeBorder, string>((border) => border.ToString()));
+        return string.Join(" + ", Enumerable.Reverse(borders).map((border) => border.ToString()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -445,11 +445,11 @@ public static partial class BordersLibrary
     {
         var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.strokeWidth = 0.0;
     return __cascade;
 }))();
-        var path = new global::Doroti.Ui.Path();
+        var path = new Path();
         switch (top.style)
         {
             case BorderStyle.solid:

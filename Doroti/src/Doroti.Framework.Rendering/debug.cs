@@ -7,7 +7,7 @@ namespace Doroti.Framework.Rendering;
 
 public static partial class DebugLibrary
 {
-    internal static global::Doroti.Framework.Painting.HSVColor _kDebugDefaultRepaintColor = new global::Doroti.Framework.Painting.HSVColor(0.4, 60.0, 1.0, 1.0);
+    internal static HSVColor _kDebugDefaultRepaintColor = new HSVColor(0.4, 60.0, 1.0, 1.0);
 }
 
 public static partial class DebugLibrary
@@ -47,7 +47,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    public static global::Doroti.Framework.Painting.HSVColor debugCurrentRepaintColor = _kDebugDefaultRepaintColor;
+    public static HSVColor debugCurrentRepaintColor = _kDebugDefaultRepaintColor;
 }
 
 public static partial class DebugLibrary
@@ -118,7 +118,7 @@ public static partial class DebugLibrary
     {
         var path = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.fillType = PathFillType.evenOdd;
     __cascade.addRect(outerRect);
     __cascade.addRect(innerRect);
@@ -126,7 +126,7 @@ public static partial class DebugLibrary
 }))();
         var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color;
     return __cascade;
 }))();
@@ -143,15 +143,15 @@ public static partial class DebugLibrary
                 if ((innerRect is not null) && !DartRuntimePrimitives.RequireValue(innerRect).isEmpty)
                 {
                     Rect innerRect__value12483 = DartRuntimePrimitives.RequireValue(innerRect);
-                    _debugDrawDoubleRect(canvas, outerRect, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new global::Doroti.Ui.Color(2415956223L));
-                    _debugDrawDoubleRect(canvas, DartRuntimePrimitives.RequireValue(innerRect__value12483).inflate(outlineWidth).intersect(outerRect), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new global::Doroti.Ui.Color(4278227199L));
+                    _debugDrawDoubleRect(canvas, outerRect, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new Color(2415956223L));
+                    _debugDrawDoubleRect(canvas, DartRuntimePrimitives.RequireValue(innerRect__value12483).inflate(outlineWidth).intersect(outerRect), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new Color(4278227199L));
                 }
                 else
                 {
                     var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = new global::Doroti.Ui.Color(2425393296L);
+    var __cascade = new Paint();
+    __cascade.color = new Color(2425393296L);
     return __cascade;
 }))();
                     canvas.drawRect(outerRect, paint);
@@ -180,7 +180,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    public static bool debugCheckHasBoundedAxis(global::Doroti.Framework.Painting.Axis axis, BoxConstraints constraints)
+    public static bool debugCheckHasBoundedAxis(Axis axis, BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() =>
             {

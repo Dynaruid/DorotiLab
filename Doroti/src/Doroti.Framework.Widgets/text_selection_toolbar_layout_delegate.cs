@@ -5,7 +5,7 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public class TextSelectionToolbarLayoutDelegate : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
+public class TextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
 {
     public virtual Offset anchorAbove { get; private set; } = default!;
     public virtual Offset anchorBelow { get; private set; } = default!;
@@ -32,7 +32,7 @@ public class TextSelectionToolbarLayoutDelegate : global::Doroti.Framework.Rende
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return constraints.loosen();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -41,12 +41,12 @@ public class TextSelectionToolbarLayoutDelegate : global::Doroti.Framework.Rende
     public override Offset getPositionForChild(Size size, Size childSize)
     {
         bool fitsAboveLocal = fitsAbove ?? (anchorAbove.dy >= childSize.height);
-        global::Doroti.Ui.Offset anchor = DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? anchorAbove : anchorBelow;
-        return new global::Doroti.Ui.Offset(centerOn(anchor.dx, childSize.width, size.width), DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? Math.Max(0.0, anchor.dy - childSize.height) : anchor.dy);
+        Offset anchor = DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? anchorAbove : anchorBelow;
+        return new Offset(centerOn(anchor.dx, childSize.width, size.width), DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? Math.Max(0.0, anchor.dy - childSize.height) : anchor.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (TextSelectionToolbarLayoutDelegate)oldDelegate;
         return (!Equals(anchorAbove, __oldDelegate.anchorAbove)) || (!Equals(anchorBelow, __oldDelegate.anchorBelow)) || (fitsAbove != __oldDelegate.fitsAbove);

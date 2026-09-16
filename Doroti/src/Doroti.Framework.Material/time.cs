@@ -49,7 +49,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
     public virtual DayPeriod period => (hour < hoursPerPeriod) ? DayPeriod.am : DayPeriod.pm;
     public virtual long hourOfPeriod => ((hour == 0L) || (hour == 12L)) ? 12L : (hour - periodOffset);
     public virtual long periodOffset => Equals(period, DayPeriod.am) ? 0L : hoursPerPeriod;
-    public virtual string format(global::Doroti.Framework.Widgets.BuildContext context)
+    public virtual string format(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
@@ -96,7 +96,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
     public int CompareTo(TimeOfDay? other) => checked((int)compareTo(other!));
 }
 
-public class RestorableTimeOfDay : global::Doroti.Framework.Widgets.RestorableValue<TimeOfDay>
+public class RestorableTimeOfDay : RestorableValue<TimeOfDay>
 {
     internal virtual TimeOfDay _defaultValue { get; private set; } = default!;
 

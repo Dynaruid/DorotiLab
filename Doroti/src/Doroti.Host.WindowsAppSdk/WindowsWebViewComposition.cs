@@ -25,7 +25,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
     private readonly Dictionary<int, (double Sigma, C.SpriteVisual Visual, C.CompositionEffectBrush Brush)> _effects = [];
     private C.Compositor? _compositor;
     private C.ContainerVisual? _root;
-    private Windows.UI.Composition.Desktop.DesktopWindowTarget? _target;
+    private C.Desktop.DesktopWindowTarget? _target;
     private Windows.System.DispatcherQueueController? _queue;
     private Task<CoreWebView2Environment>? _environment;
     private nint _graphics;

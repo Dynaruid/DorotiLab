@@ -23,7 +23,7 @@ public sealed class RenderPlatformView : RenderBox
     {
         if (_handle is { } handle && !size.isEmpty) context.addLayer(new TypedPlatformViewLayer(handle, offset & size));
     }
-    public override void describeSemanticsConfiguration(Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         if (_handle is not { } handle) return;

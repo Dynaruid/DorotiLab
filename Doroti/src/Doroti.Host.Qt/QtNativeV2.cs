@@ -89,9 +89,9 @@ internal static unsafe class QtNativeV2
         internal readonly uint Reserved;
         internal readonly ulong MetricsGeneration;
         internal readonly long TimestampMicroseconds;
-        internal readonly Doroti.Ui.ViewPadding ViewPadding;
-        internal readonly Doroti.Ui.ViewPadding ViewInsets;
-        internal readonly Doroti.Ui.ViewPadding SystemGestureInsets;
+        internal readonly Ui.ViewPadding ViewPadding;
+        internal readonly Ui.ViewPadding ViewInsets;
+        internal readonly Ui.ViewPadding SystemGestureInsets;
         internal readonly double PhysicalTouchSlop;
     }
 

@@ -330,7 +330,7 @@ public sealed class Scene : IDisposable
 
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
 
-    public Doroti.Runtime.Future<Image> toImage(long width, long height) =>
+    public Future<Image> toImage(long width, long height) =>
         Future<Image>.value(toImageSync(width, height));
 
     public Image toImageSync(long width, long height)

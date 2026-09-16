@@ -6,20 +6,20 @@ namespace Doroti.Framework.Rendering;
 
 public class RenderDecoratedSliver : RenderProxySliver
 {
-    internal virtual global::Doroti.Framework.Painting.Decoration _decoration { get; set; } = default!;
+    internal virtual Decoration _decoration { get; set; } = default!;
     internal virtual DecorationPosition _position { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.ImageConfiguration _configuration { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.BoxPainter? _painter { get; set; } = default;
+    internal virtual ImageConfiguration _configuration { get; set; } = default!;
+    internal virtual BoxPainter? _painter { get; set; } = default;
 
-    public RenderDecoratedSliver(global::Doroti.Framework.Painting.Decoration decoration, DecorationPosition position = DecorationPosition.background, global::Doroti.Framework.Painting.ImageConfiguration configuration = default!)
+    public RenderDecoratedSliver(Decoration decoration, DecorationPosition position = DecorationPosition.background, ImageConfiguration configuration = default!)
     {
-        global::Doroti.Framework.Painting.ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
+        ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
         _decoration = decoration;
         _position = position;
         _configuration = __configuration;
     }
 
-    public virtual global::Doroti.Framework.Painting.Decoration decoration
+    public virtual Decoration decoration
     {
         get => _decoration;
         set
@@ -49,7 +49,7 @@ public class RenderDecoratedSliver : RenderProxySliver
             markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Framework.Painting.ImageConfiguration configuration
+    public virtual ImageConfiguration configuration
     {
         get => _configuration;
         set
@@ -89,7 +89,7 @@ public class RenderDecoratedSliver : RenderProxySliver
         {
             return;
         }
-        global::Doroti.Ui.Rect paintRect = getMaxPaintRect();
+        Rect paintRect = getMaxPaintRect();
         void paintDecoration()
         {
             _painter!.paint(context.canvas, offset + paintRect.topLeft, configuration.copyWith(size: paintRect.size));
@@ -115,7 +115,7 @@ public class RenderDecoratedSliver : RenderProxySliver
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(((Diagnosticable)_decoration).toDiagnosticsNode(name: "decoration"));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.ImageConfiguration>("configuration", configuration));
+        properties.add(new DiagnosticsProperty<ImageConfiguration>("configuration", configuration));
     }
 
 }

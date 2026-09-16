@@ -35,7 +35,7 @@ public abstract class TextBoundary
     {
         long start = getLeadingTextBoundaryAt(position) ?? -1L;
         long end = getTrailingTextBoundaryAt(position) ?? -1L;
-        return new global::Doroti.Ui.TextRange(start: start, end: end);
+        return new TextRange(start: start, end: end);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -79,17 +79,17 @@ public class CharacterBoundary : TextBoundary
     {
         if (position < 0L)
         {
-            return new global::Doroti.Ui.TextRange(start: -1L, end: getTrailingTextBoundaryAt(position) ?? -1L);
+            return new TextRange(start: -1L, end: getTrailingTextBoundaryAt(position) ?? -1L);
         }
         else
         {
             if (position >= _text.Length)
             {
-                return new global::Doroti.Ui.TextRange(start: getLeadingTextBoundaryAt(position) ?? -1L, end: -1L);
+                return new TextRange(start: getLeadingTextBoundaryAt(position) ?? -1L, end: -1L);
             }
         }
         var rangeAtPosition = new CharacterRange(_text, position);
-        return (rangeAtPosition.Count != 0) ? new global::Doroti.Ui.TextRange(start: rangeAtPosition.stringBeforeLength, end: rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length) : new global::Doroti.Ui.TextRange(start: rangeAtPosition.stringBeforeLength, end: getTrailingTextBoundaryAt(position) ?? -1L);
+        return (rangeAtPosition.Count != 0) ? new TextRange(start: rangeAtPosition.stringBeforeLength, end: rangeAtPosition.stringBeforeLength + rangeAtPosition.Current.Length) : new TextRange(start: rangeAtPosition.stringBeforeLength, end: getTrailingTextBoundaryAt(position) ?? -1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -104,7 +104,7 @@ public class LineBoundary : TextBoundary
         this._textLayout = _textLayout;
     }
 
-    public override TextRange getTextBoundaryAt(long position) => _textLayout.getLineAtOffset(new global::Doroti.Ui.TextPosition(offset: Math.Max(position, 0L)));
+    public override TextRange getTextBoundaryAt(long position) => _textLayout.getLineAtOffset(new TextPosition(offset: Math.Max(position, 0L)));
 }
 
 public class ParagraphBoundary : TextBoundary

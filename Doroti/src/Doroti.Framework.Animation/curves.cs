@@ -310,8 +310,8 @@ public abstract class Curve2D : ParametricCurve<Offset>
         var rand = new DartRandom(samplingSeed);
         bool isFlat(Offset p, Offset q, Offset r)
         {
-            global::Doroti.Ui.Offset pr = p - r;
-            global::Doroti.Ui.Offset qr = q - r;
+            Offset pr = p - r;
+            Offset qr = q - r;
             double z = (pr.dx * qr.dy) - (qr.dx * pr.dy);
             return z * z < tolerance;
             throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -405,7 +405,7 @@ public class CatmullRomSpline : Curve2D
         _startHandle = startHandle;
         _endHandle = endHandle;
         _tension = tension;
-        _cubicSegments = new List<List<global::Doroti.Ui.Offset>>();
+        _cubicSegments = new List<List<Offset>>();
         System.Diagnostics.Debug.Assert(tension <= 1.0);
         System.Diagnostics.Debug.Assert(tension >= 0.0);
         System.Diagnostics.Debug.Assert(checked(controlPoints.Count) > 3L);
@@ -422,7 +422,7 @@ public class CatmullRomSpline : Curve2D
         return __instance;
     }
 
-    internal static List<List<global::Doroti.Ui.Offset>> _computeSegments(List<Offset> controlPoints, double tension, Offset? startHandle = null, Offset? endHandle = null)
+    internal static List<List<Offset>> _computeSegments(List<Offset> controlPoints, double tension, Offset? startHandle = null, Offset? endHandle = null)
     {
         DartRuntimePrimitives.Assert(() => (startHandle is null) || DartRuntimePrimitives.RequireValue(startHandle).isFinite);
         DartRuntimePrimitives.Assert(() => (endHandle is null) || DartRuntimePrimitives.RequireValue(endHandle).isFinite);
@@ -439,23 +439,23 @@ public class CatmullRomSpline : Curve2D
             });
         startHandle ??= ((controlPoints[(int)0L] * 2.0) - controlPoints[(int)1L]);
         endHandle ??= ((controlPoints.Last() * 2.0) - controlPoints[(int)(checked(controlPoints.Count) - 2L)]);
-        var allPoints = new List<global::Doroti.Ui.Offset> { DartRuntimePrimitives.RequireValue(startHandle), DartRuntimePrimitives.RequireValue(endHandle) };
+        var allPoints = new List<Offset> { DartRuntimePrimitives.RequireValue(startHandle), DartRuntimePrimitives.RequireValue(endHandle) };
         var alpha = 0.5;
         double reverseTension = 1.0 - tension;
-        var result = new List<List<global::Doroti.Ui.Offset>>();
+        var result = new List<List<Offset>>();
         for (var i = 0L; i < (checked(allPoints.Count) - 3L); ++i)
         {
-            var curve = new List<global::Doroti.Ui.Offset> { allPoints[(int)i], allPoints[(int)(i + 1L)], allPoints[(int)(i + 2L)], allPoints[(int)(i + 3L)] };
-            global::Doroti.Ui.Offset diffCurve10 = curve[(int)1L] - curve[(int)0L];
-            global::Doroti.Ui.Offset diffCurve21 = curve[(int)2L] - curve[(int)1L];
-            global::Doroti.Ui.Offset diffCurve32 = curve[(int)3L] - curve[(int)2L];
+            var curve = new List<Offset> { allPoints[(int)i], allPoints[(int)(i + 1L)], allPoints[(int)(i + 2L)], allPoints[(int)(i + 3L)] };
+            Offset diffCurve10 = curve[(int)1L] - curve[(int)0L];
+            Offset diffCurve21 = curve[(int)2L] - curve[(int)1L];
+            Offset diffCurve32 = curve[(int)3L] - curve[(int)2L];
             double t01 = Dart_mathLibrary.pow(diffCurve10.distance, alpha).toDouble();
             double t12 = Dart_mathLibrary.pow(diffCurve21.distance, alpha).toDouble();
             double t23 = Dart_mathLibrary.pow(diffCurve32.distance, alpha).toDouble();
-            global::Doroti.Ui.Offset m1 = (diffCurve21 + (((diffCurve10 / t01) - ((curve[(int)2L] - curve[(int)0L]) / (t01 + t12))) * t12)) * reverseTension;
-            global::Doroti.Ui.Offset m2 = (diffCurve21 + (((diffCurve32 / t23) - ((curve[(int)3L] - curve[(int)1L]) / (t12 + t23))) * t12)) * reverseTension;
-            global::Doroti.Ui.Offset sumM12 = m1 + m2;
-            var segment = new List<global::Doroti.Ui.Offset> { (diffCurve21 * -2.0) + sumM12, (diffCurve21 * 3.0) - m1 - sumM12, m1, curve[(int)1L] };
+            Offset m1 = (diffCurve21 + (((diffCurve10 / t01) - ((curve[(int)2L] - curve[(int)0L]) / (t01 + t12))) * t12)) * reverseTension;
+            Offset m2 = (diffCurve21 + (((diffCurve32 / t23) - ((curve[(int)3L] - curve[(int)1L]) / (t12 + t23))) * t12)) * reverseTension;
+            Offset sumM12 = m1 + m2;
+            var segment = new List<Offset> { (diffCurve21 * -2.0) + sumM12, (diffCurve21 * 3.0) - m1 - sumM12, m1, curve[(int)1L] };
             result.Add(segment);
         }
         return result;
@@ -476,11 +476,11 @@ public class CatmullRomSpline : Curve2D
         get
         {
             _initializeIfNeeded();
-            global::Doroti.Ui.Offset seedPoint = _cubicSegments[(int)0L][(int)1L];
+            Offset seedPoint = _cubicSegments[(int)0L][(int)1L];
             return ((seedPoint.dx + seedPoint.dy) * 10000L).round();
         }
     }
-    public override global::Doroti.Ui.Offset transformInternal(double t)
+    public override Offset transformInternal(double t)
     {
         _initializeIfNeeded();
         double length = checked((long)_cubicSegments.Count).toDouble();
@@ -499,7 +499,7 @@ public class CatmullRomSpline : Curve2D
             localT = 1.0;
             index = checked(_cubicSegments.Count) - 1L;
         }
-        List<global::Doroti.Ui.Offset> cubicControlPoints = _cubicSegments[(int)index];
+        List<Offset> cubicControlPoints = _cubicSegments[(int)index];
         double localT2 = localT * localT;
         return (cubicControlPoints[(int)0L] * localT2 * localT) + (cubicControlPoints[(int)1L] * localT2) + (cubicControlPoints[(int)2L] * localT) + cubicControlPoints[(int)3L];
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -541,7 +541,7 @@ public class CatmullRomCurve : Curve
 
     internal static List<Curve2DSample> _computeSamples(List<Offset> controlPoints, double tension)
     {
-        return CatmullRomSpline.CreatePrecompute(new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset(1.0, 1.0) }, tension: tension).generateSamples(tolerance: 1e-12).ToList();
+        return CatmullRomSpline.CreatePrecompute(new List<Offset> { Offset.zero, new Offset(1.0, 1.0) }, tension: tension).generateSamples(tolerance: 1e-12).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -565,10 +565,10 @@ public class CatmullRomCurve : Curve
                 });
             return false;
         }
-        controlPoints = new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset(1.0, 1.0) };
-        global::Doroti.Ui.Offset startHandle = (controlPoints[(int)0L] * 2.0) - controlPoints[(int)1L];
-        global::Doroti.Ui.Offset endHandle = (controlPoints.Last() * 2.0) - controlPoints[(int)(checked(controlPoints.Count) - 2L)];
-        controlPoints = new List<global::Doroti.Ui.Offset> { startHandle, endHandle };
+        controlPoints = new List<Offset> { Offset.zero, new Offset(1.0, 1.0) };
+        Offset startHandle = (controlPoints[(int)0L] * 2.0) - controlPoints[(int)1L];
+        Offset endHandle = (controlPoints.Last() * 2.0) - controlPoints[(int)(checked(controlPoints.Count) - 2L)];
+        controlPoints = new List<Offset> { startHandle, endHandle };
         double lastX = -double.PositiveInfinity;
         for (var i = 0L; i < checked(controlPoints.Count); ++i)
         {
@@ -616,7 +616,7 @@ public class CatmullRomCurve : Curve
         }
         foreach (var sample in samplePoints)
         {
-            global::Doroti.Ui.Offset point = sample.value;
+            Offset point = sample.value;
             double tLocal = sample.t;
             double x = point.dx;
             if ((tLocal >= startLocal) && (tLocal <= endLocal) && ((x < -0.001) || (x > (1.0 + 0.001))))
@@ -664,9 +664,9 @@ public class CatmullRomCurve : Curve
         var start = 0L;
         long end = checked(_precomputedSamples.Count) - 1L;
         long mid = default!;
-        global::Doroti.Ui.Offset valueLocal = default!;
-        global::Doroti.Ui.Offset startValue = _precomputedSamples[(int)start].value;
-        global::Doroti.Ui.Offset endValue = _precomputedSamples[(int)end].value;
+        Offset valueLocal = default!;
+        Offset startValue = _precomputedSamples[(int)start].value;
+        Offset endValue = _precomputedSamples[(int)end].value;
         while ((end - start) > 1L)
         {
             mid = checked((end + start) / 2L);
@@ -887,7 +887,7 @@ public abstract class Curves
     public static Curve linear = new _Linear__curves();
     public static Curve decelerate = new _DecelerateCurve__curves();
     public static Cubic fastLinearToSlowEaseIn = new Cubic(0.18, 1.0, 0.04, 1.0);
-    public static ThreePointCubic fastEaseInToSlowEaseOut = new ThreePointCubic(new global::Doroti.Ui.Offset(0.056, 0.024), new global::Doroti.Ui.Offset(0.108, 0.3085), new global::Doroti.Ui.Offset(0.198, 0.541), new global::Doroti.Ui.Offset(0.3655, 1.0), new global::Doroti.Ui.Offset(0.5465, 0.989));
+    public static ThreePointCubic fastEaseInToSlowEaseOut = new ThreePointCubic(new Offset(0.056, 0.024), new Offset(0.108, 0.3085), new Offset(0.198, 0.541), new Offset(0.3655, 1.0), new Offset(0.5465, 0.989));
     public static Cubic ease = new Cubic(0.25, 0.1, 0.25, 1.0);
     public static Cubic easeIn = new Cubic(0.42, 0.0, 1.0, 1.0);
     public static Cubic easeInToLinear = new Cubic(0.67, 0.03, 0.65, 0.09);
@@ -913,7 +913,7 @@ public abstract class Curves
     public static Cubic easeInOutSine = new Cubic(0.445, 0.05, 0.55, 0.95);
     public static Cubic easeInOutQuad = new Cubic(0.455, 0.03, 0.515, 0.955);
     public static Cubic easeInOutCubic = new Cubic(0.645, 0.045, 0.355, 1.0);
-    public static ThreePointCubic easeInOutCubicEmphasized = new ThreePointCubic(new global::Doroti.Ui.Offset(0.05, 0), new global::Doroti.Ui.Offset(0.133333, 0.06), new global::Doroti.Ui.Offset(0.166666, 0.4), new global::Doroti.Ui.Offset(0.208333, 0.82), new global::Doroti.Ui.Offset(0.25, 1));
+    public static ThreePointCubic easeInOutCubicEmphasized = new ThreePointCubic(new Offset(0.05, 0), new Offset(0.133333, 0.06), new Offset(0.166666, 0.4), new Offset(0.208333, 0.82), new Offset(0.25, 1));
     public static Cubic easeInOutQuart = new Cubic(0.77, 0.0, 0.175, 1.0);
     public static Cubic easeInOutQuint = new Cubic(0.86, 0.0, 0.07, 1.0);
     public static Cubic easeInOutExpo = new Cubic(1.0, 0.0, 0.0, 1.0);

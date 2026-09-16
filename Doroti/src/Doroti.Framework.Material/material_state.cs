@@ -7,7 +7,7 @@ namespace Doroti.Framework.Material;
 
 public delegate void MaterialState();
 
-public delegate T MaterialPropertyResolver<T>(HashSet<global::Doroti.Framework.Widgets.WidgetState> states);
+public delegate T MaterialPropertyResolver<T>(HashSet<WidgetState> states);
 
 public delegate void MaterialStateColor();
 
@@ -19,63 +19,63 @@ public delegate void MaterialStateOutlinedBorder();
 
 public delegate void MaterialStateTextStyle();
 
-public abstract class MaterialStateOutlineInputBorder : OutlineInputBorder, global::Doroti.Framework.Widgets.WidgetStateProperty<InputBorder>
+public abstract class MaterialStateOutlineInputBorder : OutlineInputBorder, WidgetStateProperty<InputBorder>
 {
     protected MaterialStateOutlineInputBorder()
     {
     }
 
-    public static MaterialStateOutlineInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
+    public static MaterialStateOutlineInputBorder CreateResolveWith(Func<HashSet<WidgetState>, InputBorder> callback)
         => new _MaterialStateOutlineInputBorder__material_state(callback);
 
-    public abstract InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states);
+    public abstract InputBorder resolve(HashSet<WidgetState> states);
 }
 
 internal class _MaterialStateOutlineInputBorder__material_state : MaterialStateOutlineInputBorder
 {
-    internal virtual global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> _resolve { get; private set; } = default!;
+    internal virtual Func<HashSet<WidgetState>, InputBorder> _resolve { get; private set; } = default!;
 
-    internal _MaterialStateOutlineInputBorder__material_state(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> _resolve)
+    internal _MaterialStateOutlineInputBorder__material_state(Func<HashSet<WidgetState>, InputBorder> _resolve)
     {
         this._resolve = _resolve;
     }
 
-    public override InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => _resolve(states);
+    public override InputBorder resolve(HashSet<WidgetState> states) => _resolve(states);
 }
 
-public abstract class MaterialStateUnderlineInputBorder : UnderlineInputBorder, global::Doroti.Framework.Widgets.WidgetStateProperty<InputBorder>
+public abstract class MaterialStateUnderlineInputBorder : UnderlineInputBorder, WidgetStateProperty<InputBorder>
 {
     protected MaterialStateUnderlineInputBorder()
     {
     }
 
-    public static MaterialStateUnderlineInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
+    public static MaterialStateUnderlineInputBorder CreateResolveWith(Func<HashSet<WidgetState>, InputBorder> callback)
         => new _MaterialStateUnderlineInputBorder__material_state(callback);
 
-    public abstract InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states);
+    public abstract InputBorder resolve(HashSet<WidgetState> states);
 }
 
 internal class _MaterialStateUnderlineInputBorder__material_state : MaterialStateUnderlineInputBorder
 {
-    internal virtual global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> _resolve { get; private set; } = default!;
+    internal virtual Func<HashSet<WidgetState>, InputBorder> _resolve { get; private set; } = default!;
 
-    internal _MaterialStateUnderlineInputBorder__material_state(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> _resolve)
+    internal _MaterialStateUnderlineInputBorder__material_state(Func<HashSet<WidgetState>, InputBorder> _resolve)
     {
         this._resolve = _resolve;
     }
 
-    public override InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => _resolve(states);
+    public override InputBorder resolve(HashSet<WidgetState> states) => _resolve(states);
 }
 
-public abstract class WidgetStateInputBorder : InputBorder, global::Doroti.Framework.Widgets.WidgetStateProperty<InputBorder>
+public abstract class WidgetStateInputBorder : InputBorder, WidgetStateProperty<InputBorder>
 {
     public WidgetStateInputBorder() { }
 
-    public static WidgetStateInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
+    public static WidgetStateInputBorder CreateResolveWith(Func<HashSet<WidgetState>, InputBorder> callback)
         => new _WidgetStateInputBorder__material_state(callback);
 
-    public static WidgetStateInputBorder CreateFromMap(DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, InputBorder> map)
+    public static WidgetStateInputBorder CreateFromMap(DartMap<WidgetStatesConstraint, InputBorder> map)
         => new _WidgetInputBorderMapper__material_state(map);
 
-    public virtual InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => throw new NotSupportedException();
+    public virtual InputBorder resolve(HashSet<WidgetState> states) => throw new NotSupportedException();
 }

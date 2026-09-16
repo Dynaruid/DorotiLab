@@ -7,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 
 public interface ScrollActivityDelegate
 {
-    public global::Doroti.Framework.Painting.AxisDirection axisDirection { get; }
+    public AxisDirection axisDirection { get; }
     public double setPixels(double pixels);
     public void applyUserOffset(double delta);
     public void goIdle();
@@ -94,9 +94,9 @@ public interface ScrollHoldController
 
 public class HoldScrollActivity : ScrollActivity, ScrollHoldController
 {
-    public virtual global::System.Action? onHoldCanceled { get; private set; }
+    public virtual Action? onHoldCanceled { get; private set; }
 
-    public HoldScrollActivity(ScrollActivityDelegate @delegate, global::System.Action? onHoldCanceled = null) : base(@delegate)
+    public HoldScrollActivity(ScrollActivityDelegate @delegate, Action? onHoldCanceled = null) : base(@delegate)
     {
         this.onHoldCanceled = onHoldCanceled;
     }
@@ -117,10 +117,10 @@ public class HoldScrollActivity : ScrollActivity, ScrollHoldController
 
 }
 
-public class ScrollDragController : global::Doroti.Framework.Gestures.Drag
+public class ScrollDragController : Drag
 {
     internal virtual ScrollActivityDelegate _delegate { get; set; } = default!;
-    public virtual global::System.Action? onDragCanceled { get; private set; }
+    public virtual Action? onDragCanceled { get; private set; }
     public virtual double? carriedVelocity { get; private set; }
     public virtual double? motionStartDistanceThreshold { get; private set; }
     internal virtual Duration? _lastNonStationaryTimestamp { get; set; } = default;
@@ -133,7 +133,7 @@ public class ScrollDragController : global::Doroti.Framework.Gestures.Drag
     internal virtual PointerDeviceKind? _kind { get; private set; }
     internal virtual object? _lastDetails { get; set; } = default!;
 
-    public ScrollDragController(ScrollActivityDelegate @delegate, global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action? onDragCanceled = null, double? carriedVelocity = null, double? motionStartDistanceThreshold = null)
+    public ScrollDragController(ScrollActivityDelegate @delegate, DragStartDetails details, Action? onDragCanceled = null, double? carriedVelocity = null, double? motionStartDistanceThreshold = null)
     {
         this.onDragCanceled = onDragCanceled;
         this.carriedVelocity = carriedVelocity;
@@ -208,7 +208,7 @@ public class ScrollDragController : global::Doroti.Framework.Gestures.Drag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void update(global::Doroti.Framework.Gestures.DragUpdateDetails details)
+    public override void update(DragUpdateDetails details)
     {
         DartRuntimePrimitives.Assert(() => details.primaryDelta is not null);
         _lastDetails = details;
@@ -230,7 +230,7 @@ public class ScrollDragController : global::Doroti.Framework.Gestures.Drag
         @delegate.applyUserOffset(offset);
     }
 
-    public override void end(global::Doroti.Framework.Gestures.DragEndDetails details)
+    public override void end(DragEndDetails details)
     {
         DartRuntimePrimitives.Assert(() => details.primaryVelocity is not null);
         double velocity = -DartRuntimePrimitives.RequireValue(details.primaryVelocity);
@@ -279,28 +279,28 @@ public class DragScrollActivity : ScrollActivity
     public override void dispatchScrollStartNotification(ScrollMetrics metrics, BuildContext? context)
     {
         object? lastDetailsLocal = _controller!.lastDetails;
-        DartRuntimePrimitives.Assert(() => lastDetailsLocal is global::Doroti.Framework.Gestures.DragStartDetails);
-        new ScrollStartNotification(metrics: metrics, context: context, dragDetails: ((global::Doroti.Framework.Gestures.DragStartDetails?)lastDetailsLocal)!).dispatch(context);
+        DartRuntimePrimitives.Assert(() => lastDetailsLocal is DragStartDetails);
+        new ScrollStartNotification(metrics: metrics, context: context, dragDetails: ((DragStartDetails?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchScrollUpdateNotification(ScrollMetrics metrics, BuildContext context, double scrollDelta)
     {
         object? lastDetailsLocal = _controller!.lastDetails;
-        DartRuntimePrimitives.Assert(() => lastDetailsLocal is global::Doroti.Framework.Gestures.DragUpdateDetails);
-        new ScrollUpdateNotification(metrics: metrics, context: context, scrollDelta: scrollDelta, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)lastDetailsLocal)!).dispatch(context);
+        DartRuntimePrimitives.Assert(() => lastDetailsLocal is DragUpdateDetails);
+        new ScrollUpdateNotification(metrics: metrics, context: context, scrollDelta: scrollDelta, dragDetails: ((DragUpdateDetails?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchOverscrollNotification(ScrollMetrics metrics, BuildContext context, double overscroll)
     {
         object? lastDetailsLocal = _controller!.lastDetails;
-        DartRuntimePrimitives.Assert(() => lastDetailsLocal is global::Doroti.Framework.Gestures.DragUpdateDetails);
-        new OverscrollNotification(metrics: metrics, context: context, overscroll: overscroll, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)lastDetailsLocal)!).dispatch(context);
+        DartRuntimePrimitives.Assert(() => lastDetailsLocal is DragUpdateDetails);
+        new OverscrollNotification(metrics: metrics, context: context, overscroll: overscroll, dragDetails: ((DragUpdateDetails?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchScrollEndNotification(ScrollMetrics metrics, BuildContext context)
     {
         object? lastDetailsLocal = _controller!.lastDetails;
-        new ScrollEndNotification(metrics: metrics, context: context, dragDetails: (lastDetailsLocal is global::Doroti.Framework.Gestures.DragEndDetails) ? ((global::Doroti.Framework.Gestures.DragEndDetails)lastDetailsLocal) : null).dispatch(context);
+        new ScrollEndNotification(metrics: metrics, context: context, dragDetails: (lastDetailsLocal is DragEndDetails) ? ((DragEndDetails)lastDetailsLocal) : null).dispatch(context);
     }
 
     public override bool shouldIgnorePointer => DartRuntimePrimitives.ConvertValue<bool>(!Equals(_controller?._kind, PointerDeviceKind.trackpad));
@@ -322,14 +322,14 @@ public class DragScrollActivity : ScrollActivity
 
 public class BallisticScrollActivity : ScrollActivity
 {
-    internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; set; } = default!;
+    internal virtual AnimationController _controller { get; set; } = default!;
     private bool __field_shouldIgnorePointer = default!;
     public override bool shouldIgnorePointer { get => __field_shouldIgnorePointer; }
 
-    public BallisticScrollActivity(ScrollActivityDelegate @delegate, global::Doroti.Framework.Physics.Simulation simulation, global::Doroti.Framework.Scheduler.TickerProvider vsync, bool shouldIgnorePointer) : base(@delegate)
+    public BallisticScrollActivity(ScrollActivityDelegate @delegate, Physics.Simulation simulation, Scheduler.TickerProvider vsync, bool shouldIgnorePointer) : base(@delegate)
     {
         __field_shouldIgnorePointer = shouldIgnorePointer;
-        _controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        _controller = ((Func<AnimationController>)(() =>
         {
             var controller = AnimationController.CreateUnbounded(
                 debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(this, "BallisticScrollActivity"),
@@ -396,9 +396,9 @@ public class BallisticScrollActivity : ScrollActivity
 public class DrivenScrollActivity : ScrollActivity
 {
     internal virtual Completer<object?> _completer { get; private set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; private set; } = default!;
+    internal virtual AnimationController _controller { get; private set; } = default!;
 
-    public DrivenScrollActivity(ScrollActivityDelegate @delegate, double from, double to, Duration duration, global::Doroti.Framework.Animation.Curve curve, global::Doroti.Framework.Scheduler.TickerProvider vsync) : base(@delegate)
+    public DrivenScrollActivity(ScrollActivityDelegate @delegate, double from, double to, Duration duration, Curve curve, Scheduler.TickerProvider vsync) : base(@delegate)
     {
         System.Diagnostics.Debug.Assert(duration > Duration.zero);
         _completer = new Completer<object?>();
@@ -413,11 +413,11 @@ public class DrivenScrollActivity : ScrollActivity
             "DrivenScrollActivity.animateTo");
     }
 
-    public static DrivenScrollActivity CreateSimulation(ScrollActivityDelegate @delegate, global::Doroti.Framework.Physics.Simulation simulation, global::Doroti.Framework.Scheduler.TickerProvider vsync)
+    public static DrivenScrollActivity CreateSimulation(ScrollActivityDelegate @delegate, Physics.Simulation simulation, Scheduler.TickerProvider vsync)
     {
         var __instance = new DrivenScrollActivity(@delegate, default!, default!, default!, default!, vsync);
         __instance._completer = new Completer<object?>();
-        __instance._controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        __instance._controller = ((Func<AnimationController>)(() =>
 {
     var __cascade = AnimationController.CreateUnbounded(debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(__instance, "DrivenScrollActivity"), vsync: vsync);
     __cascade.addListener(__instance._tick);

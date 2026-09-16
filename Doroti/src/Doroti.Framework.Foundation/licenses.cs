@@ -2,7 +2,7 @@
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/licenses.dart
 namespace Doroti.Framework.Foundation;
 
-public delegate Doroti.Runtime.Stream<LicenseEntry> LicenseEntryCollector();
+public delegate Runtime.Stream<LicenseEntry> LicenseEntryCollector();
 
 public abstract class LicenseEntry
 {

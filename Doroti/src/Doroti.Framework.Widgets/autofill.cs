@@ -15,7 +15,7 @@ public class AutofillGroup : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual AutofillContextAction onDisposeAction { get; private set; } = default!;
 
-    public AutofillGroup(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, AutofillContextAction onDisposeAction = AutofillContextAction.commit) : base(key: key)
+    public AutofillGroup(Key? key = null, Widget child = default!, AutofillContextAction onDisposeAction = AutofillContextAction.commit) : base(key: key)
     {
         this.child = child;
         this.onDisposeAction = onDisposeAction;
@@ -47,20 +47,20 @@ public class AutofillGroup : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new AutofillGroupState());
 }
 
-public class AutofillGroupState : State<AutofillGroup>, global::Doroti.Framework.Services.AutofillScopeMixin
+public class AutofillGroupState : State<AutofillGroup>, AutofillScopeMixin
 {
-    internal virtual DartMap<string, global::Doroti.Framework.Services.AutofillClient> _clients { get; private set; } = new DartMap<string, global::Doroti.Framework.Services.AutofillClient>();
+    internal virtual DartMap<string, AutofillClient> _clients { get; private set; } = new DartMap<string, AutofillClient>();
     internal virtual bool _isTopmostAutofillGroup { get; set; } = false;
 
-    public virtual global::Doroti.Framework.Services.AutofillClient? getAutofillClient(string autofillId) => _clients.GetValueOrDefault(autofillId);
-    public virtual IEnumerable<global::Doroti.Framework.Services.AutofillClient> autofillClients
+    public virtual AutofillClient? getAutofillClient(string autofillId) => _clients.GetValueOrDefault(autofillId);
+    public virtual IEnumerable<AutofillClient> autofillClients
     {
         get
         {
             return _clients.Values.where((client) => client.textInputConfiguration.autofillConfiguration.enabled);
         }
     }
-    public virtual void register(global::Doroti.Framework.Services.AutofillClient client)
+    public virtual void register(AutofillClient client)
     {
         _clients.putIfAbsent(client.autofillId, () => client);
     }
@@ -108,7 +108,7 @@ public class AutofillGroupState : State<AutofillGroup>, global::Doroti.Framework
     public virtual TextInputConnection attach(TextInputClient trigger, TextInputConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => !autofillClients.any((client) => !client.textInputConfiguration.autofillConfiguration.enabled), () => (object?)"Every client in AutofillScope.autofillClients must enable autofill");
-        TextInputConfiguration inputConfiguration = new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: autofillClients.map<AutofillClient, TextInputConfiguration>((client) => client.textInputConfiguration).Cast<TextInputConfiguration>(), currentClientConfiguration: configuration);
+        TextInputConfiguration inputConfiguration = new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: autofillClients.map((client) => client.textInputConfiguration).Cast<TextInputConfiguration>(), currentClientConfiguration: configuration);
         return TextInput.attach(trigger, inputConfiguration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

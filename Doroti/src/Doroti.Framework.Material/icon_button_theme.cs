@@ -5,7 +5,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class IconButtonThemeData : Diagnosticable
 {
     public virtual ButtonStyle? style { get; private set; }
 
@@ -40,9 +40,9 @@ public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
         return (__other is IconButtonThemeData) && Equals(__other.style, style);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -68,27 +68,27 @@ public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
 }
 
-public class IconButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class IconButtonTheme : InheritedTheme
 {
     public virtual IconButtonThemeData data { get; private set; } = default!;
 
-    public IconButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, IconButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public IconButtonTheme(Key? key = null, IconButtonThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static IconButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static IconButtonThemeData of(BuildContext context)
     {
         IconButtonTheme? buttonTheme = context.dependOnInheritedWidgetOfExactType<IconButtonTheme>();
         return buttonTheme?.data ?? Theme.of(context).iconButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new IconButtonTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((IconButtonTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((IconButtonTheme)oldWidget).data));
 }

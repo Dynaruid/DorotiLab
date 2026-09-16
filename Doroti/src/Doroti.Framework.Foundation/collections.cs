@@ -131,17 +131,17 @@ public static partial class CollectionsLibrary
         }
         if (length < _kMergeSortLimit)
         {
-            _insertionSort<T>(list, compare, start, end);
+            _insertionSort(list, compare, start, end);
             return;
         }
         int middle = start + (end - start >> 1);
         int firstLength = middle - start;
         int secondLength = end - middle;
-        var scratchSpace = new List<T>(Enumerable.Repeat<T>(list[start], secondLength));
-        _mergeSort<T>(list, compare, middle, end, scratchSpace, 0);
+        var scratchSpace = new List<T>(Enumerable.Repeat(list[start], secondLength));
+        _mergeSort(list, compare, middle, end, scratchSpace, 0);
         int firstTarget = end - firstLength;
-        _mergeSort<T>(list, compare, start, middle, list, firstTarget);
-        _merge<T>(compare, list, firstTarget, end, scratchSpace, 0, secondLength, list, start);
+        _mergeSort(list, compare, start, middle, list, firstTarget);
+        _merge(compare, list, firstTarget, end, scratchSpace, 0, secondLength, list, start);
     }
 }
 
@@ -229,16 +229,16 @@ public static partial class CollectionsLibrary
         int length = end - start;
         if (length < _kMergeSortLimit)
         {
-            _movingInsertionSort<T>(list, compare, start, end, target, targetOffset);
+            _movingInsertionSort(list, compare, start, end, target, targetOffset);
             return;
         }
         int middle = start + (length >> 1);
         int firstLength = middle - start;
         int secondLength = end - middle;
         int targetMiddle = targetOffset + firstLength;
-        _mergeSort<T>(list, compare, middle, end, target, targetMiddle);
-        _mergeSort<T>(list, compare, start, middle, list, middle);
-        _merge<T>(compare, list, middle, middle + firstLength, target, targetMiddle, targetMiddle + secondLength, target, targetOffset);
+        _mergeSort(list, compare, middle, end, target, targetMiddle);
+        _mergeSort(list, compare, start, middle, list, middle);
+        _merge(compare, list, middle, middle + firstLength, target, targetMiddle, targetMiddle + secondLength, target, targetOffset);
     }
 }
 

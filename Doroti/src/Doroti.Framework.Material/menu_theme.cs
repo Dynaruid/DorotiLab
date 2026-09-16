@@ -5,12 +5,12 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class MenuThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class MenuThemeData : Diagnosticable
 {
     public virtual MenuStyle? style { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Widget?>? submenuIcon { get; private set; }
+    public virtual WidgetStateProperty<Widget?>? submenuIcon { get; private set; }
 
-    public MenuThemeData(MenuStyle? style = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Widget?>? submenuIcon = null)
+    public MenuThemeData(MenuStyle? style = null, WidgetStateProperty<Widget?>? submenuIcon = null)
     {
         this.style = style;
         this.submenuIcon = submenuIcon;
@@ -42,10 +42,10 @@ public class MenuThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         return (__other is MenuThemeData) && Equals(__other.style, style) && Equals(__other.submenuIcon, submenuIcon);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuStyle>("style", style, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.Widget?>>("submenuIcon", submenuIcon, defaultValue: null));
+        properties.add(new DiagnosticsProperty<MenuStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<WidgetStateProperty<Widget?>>("submenuIcon", submenuIcon, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -71,27 +71,27 @@ public class MenuThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
 }
 
-public class MenuTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class MenuTheme : InheritedTheme
 {
     public virtual MenuThemeData data { get; private set; } = default!;
 
-    public MenuTheme(global::Doroti.Framework.Foundation.Key? key = null, MenuThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public MenuTheme(Key? key = null, MenuThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static MenuThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static MenuThemeData of(BuildContext context)
     {
         MenuTheme? menuThemeLocal = context.dependOnInheritedWidgetOfExactType<MenuTheme>();
         return menuThemeLocal?.data ?? Theme.of(context).menuTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new MenuTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MenuTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MenuTheme)oldWidget).data));
 }

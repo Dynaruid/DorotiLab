@@ -59,10 +59,10 @@ public class ImageStreamListener
 {
     public virtual Action<ImageInfo, bool> onImage { get; private set; } = default!;
     public virtual Action<ImageChunkEvent>? onChunk { get; private set; }
-    public virtual Action<object, global::System.Diagnostics.StackTrace?>? onError { get; private set; }
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onError { get; private set; }
     public virtual bool reportErrors { get; private set; } = default!;
 
-    public ImageStreamListener(Action<ImageInfo, bool> onImage, Action<ImageChunkEvent>? onChunk = null, Action<object, global::System.Diagnostics.StackTrace?>? onError = null, bool reportErrors = true)
+    public ImageStreamListener(Action<ImageInfo, bool> onImage, Action<ImageChunkEvent>? onChunk = null, Action<object, System.Diagnostics.StackTrace?>? onError = null, bool reportErrors = true)
     {
         this.onImage = onImage;
         this.onChunk = onChunk;
@@ -88,7 +88,7 @@ public delegate void ImageListener(ImageInfo image, bool synchronousCall);
 
 public delegate void ImageChunkListener(ImageChunkEvent @event);
 
-public delegate void ImageErrorListener(object exception, global::System.Diagnostics.StackTrace? stackTrace);
+public delegate void ImageErrorListener(object exception, System.Diagnostics.StackTrace? stackTrace);
 
 public class ImageChunkEvent : Diagnosticable
 {
@@ -202,7 +202,7 @@ public class ImageStreamCompleterHandle
 public abstract class ImageStreamCompleter : Diagnosticable
 {
     internal virtual List<ImageStreamListener> _listeners { get; private set; } = new List<ImageStreamListener>();
-    internal virtual List<Action<object, global::System.Diagnostics.StackTrace?>> _ephemeralErrorListeners { get; private set; } = new List<Action<object, global::System.Diagnostics.StackTrace?>>();
+    internal virtual List<Action<object, System.Diagnostics.StackTrace?>> _ephemeralErrorListeners { get; private set; } = new List<Action<object, System.Diagnostics.StackTrace?>>();
     internal virtual ImageInfo? _currentImage { get; set; } = default;
     internal virtual FlutterErrorDetails? _currentError { get; set; } = default;
     public virtual string? debugLabel { get; set; } = default;
@@ -250,7 +250,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
         }
     }
 
-    public virtual void addEphemeralErrorListener(Action<object, global::System.Diagnostics.StackTrace?> listener)
+    public virtual void addEphemeralErrorListener(Action<object, System.Diagnostics.StackTrace?> listener)
     {
         _checkDisposed();
         if (_currentError is not null)
@@ -374,7 +374,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
         }
     }
 
-    public virtual void reportError(DiagnosticsNode? context = null, object exception = default!, global::System.Diagnostics.StackTrace? stack = null, InformationCollector? informationCollector = null, bool silent = false)
+    public virtual void reportError(DiagnosticsNode? context = null, object exception = default!, System.Diagnostics.StackTrace? stack = null, InformationCollector? informationCollector = null, bool silent = false)
     {
         _currentError = new FlutterErrorDetails(exception: exception, stack: stack, library: "image resource service", context: context, informationCollector: informationCollector, silent: silent);
         var localErrorListeners = _listeners.Where(listener => listener.onError is not null)
@@ -412,7 +412,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
         _checkDisposed();
         if (hasListeners)
         {
-            List<Action<ImageChunkEvent>> localListeners = _listeners.map<ImageStreamListener, Action<ImageChunkEvent>?>((listener) => listener.onChunk).OfType<Action<ImageChunkEvent>>().ToList();
+            List<Action<ImageChunkEvent>> localListeners = _listeners.map((listener) => listener.onChunk).OfType<Action<ImageChunkEvent>>().ToList();
             foreach (var listenerLocal in localListeners)
             {
                 listenerLocal(@event);
@@ -425,7 +425,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(new DiagnosticsProperty<ImageInfo>("current", _currentImage, ifNull: "unresolved", showName: false));
         description.add(new ObjectFlagProperty<List<ImageStreamListener>>("listeners", _listeners, ifPresent: $"{checked((long)_listeners.Count)} listener{((checked(_listeners.Count) == 1L) ? "" : "s")}"));
-        description.add(new ObjectFlagProperty<List<Action<object, global::System.Diagnostics.StackTrace?>>>("ephemeralErrorListeners", _ephemeralErrorListeners, ifPresent: $"{checked((long)_ephemeralErrorListeners.Count)} ephemeralErrorListener{((checked(_ephemeralErrorListeners.Count) == 1L) ? "" : "s")}"));
+        description.add(new ObjectFlagProperty<List<Action<object, System.Diagnostics.StackTrace?>>>("ephemeralErrorListeners", _ephemeralErrorListeners, ifPresent: $"{checked((long)_ephemeralErrorListeners.Count)} ephemeralErrorListener{((checked(_ephemeralErrorListeners.Count) == 1L) ? "" : "s")}"));
         description.add(new FlagProperty("disposed", value: _disposed, ifTrue: "<disposed>"));
     }
 
@@ -469,7 +469,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         _ = ObserveCodec(codec);
         if (chunkEvents is not null)
             _chunkSubscription = chunkEvents.listen(reportImageChunkEvent,
-                (object error, global::System.Diagnostics.StackTrace? stack) =>
+                (object error, System.Diagnostics.StackTrace? stack) =>
                     reportError(context: new ErrorDescription("loading an image"), exception: error,
                         stack: stack, informationCollector: informationCollector, silent: true));
     }
@@ -485,7 +485,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         catch (Exception exception)
         {
             if (!_disposed) reportError(context: new ErrorDescription("resolving an image codec"),
-                exception: exception, stack: new global::System.Diagnostics.StackTrace(exception),
+                exception: exception, stack: new System.Diagnostics.StackTrace(exception),
                 informationCollector: _informationCollector, silent: true);
         }
     }

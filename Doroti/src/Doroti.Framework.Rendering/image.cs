@@ -7,7 +7,7 @@ namespace Doroti.Framework.Rendering;
 
 public class RenderImage : RenderBox
 {
-    internal virtual global::Doroti.Framework.Painting.Alignment? _resolvedAlignment { get; set; } = default;
+    internal virtual Alignment? _resolvedAlignment { get; set; } = default;
     internal virtual bool? _flipHorizontally { get; set; } = default;
     internal virtual Image? _image { get; set; } = default;
     public virtual string? debugImageLabel { get; set; } = default;
@@ -20,18 +20,18 @@ public class RenderImage : RenderBox
     internal virtual FilterQuality _filterQuality { get; set; } = default!;
     internal virtual BlendMode? _colorBlendMode { get; set; } = default;
     internal virtual BlendMode _blendMode { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.BoxFit? _fit { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _alignment { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.ImageRepeat _repeat { get; set; } = default!;
+    internal virtual BoxFit? _fit { get; set; } = default;
+    internal virtual AlignmentGeometry _alignment { get; set; } = default!;
+    internal virtual ImageRepeat _repeat { get; set; } = default!;
     internal virtual Rect? _centerSlice { get; set; } = default;
     internal virtual bool _invertColors { get; set; } = default!;
     internal virtual bool _matchTextDirection { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
     internal virtual bool _isAntiAlias { get; set; } = default!;
 
-    public RenderImage(Image? image = null, string? debugImageLabel = null, double? width = null, double? height = null, double scale = 1.0, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, TextDirection? textDirection = null, bool invertColors = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, BlendMode blendMode = BlendMode.srcOver)
+    public RenderImage(Image? image = null, string? debugImageLabel = null, double? width = null, double? height = null, double scale = 1.0, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, TextDirection? textDirection = null, bool invertColors = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, BlendMode blendMode = BlendMode.srcOver)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.debugImageLabel = debugImageLabel;
         _image = image;
         _width = width;
@@ -69,7 +69,7 @@ public class RenderImage : RenderBox
         markNeedsPaint();
     }
 
-    public virtual global::Doroti.Ui.Image? image
+    public virtual Image? image
     {
         get => _image;
         set
@@ -148,7 +148,7 @@ public class RenderImage : RenderBox
         }
     }
 
-    public virtual global::Doroti.Ui.Color? color
+    public virtual Color? color
     {
         get => _color;
         set
@@ -184,7 +184,7 @@ public class RenderImage : RenderBox
             }
         }
     }
-    public virtual global::Doroti.Ui.FilterQuality filterQuality
+    public virtual FilterQuality filterQuality
     {
         get => _filterQuality;
         set
@@ -198,7 +198,7 @@ public class RenderImage : RenderBox
             markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Ui.BlendMode? colorBlendMode
+    public virtual BlendMode? colorBlendMode
     {
         get => _colorBlendMode;
         set
@@ -213,7 +213,7 @@ public class RenderImage : RenderBox
             markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Ui.BlendMode blendMode
+    public virtual BlendMode blendMode
     {
         get => _blendMode;
         set
@@ -227,7 +227,7 @@ public class RenderImage : RenderBox
             markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Framework.Painting.BoxFit? fit
+    public virtual BoxFit? fit
     {
         get => _fit;
         set
@@ -241,7 +241,7 @@ public class RenderImage : RenderBox
             markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment
+    public virtual AlignmentGeometry alignment
     {
         get => _alignment;
         set
@@ -255,7 +255,7 @@ public class RenderImage : RenderBox
             _markNeedResolution();
         }
     }
-    public virtual global::Doroti.Framework.Painting.ImageRepeat repeat
+    public virtual ImageRepeat repeat
     {
         get => _repeat;
         set
@@ -269,7 +269,7 @@ public class RenderImage : RenderBox
             markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Ui.Rect? centerSlice
+    public virtual Rect? centerSlice
     {
         get => _centerSlice;
         set
@@ -311,7 +311,7 @@ public class RenderImage : RenderBox
             _markNeedResolution();
         }
     }
-    public virtual global::Doroti.Ui.TextDirection? textDirection
+    public virtual TextDirection? textDirection
     {
         get => _textDirection;
         set
@@ -339,14 +339,14 @@ public class RenderImage : RenderBox
             markNeedsPaint();
         }
     }
-    internal virtual global::Doroti.Ui.Size _sizeForConstraints(BoxConstraints constraints)
+    internal virtual Size _sizeForConstraints(BoxConstraints constraints)
     {
         constraints = BoxConstraints.CreateTightFor(width: _width, height: _height).enforce(constraints);
         if (_image is null)
         {
             return constraints.smallest;
         }
-        return constraints.constrainSizeAndAttemptToPreserveAspectRatio(new global::Doroti.Ui.Size(_image!.width.toDouble() / _scale, _image!.height.toDouble() / _scale));
+        return constraints.constrainSizeAndAttemptToPreserveAspectRatio(new Size(_image!.width.toDouble() / _scale, _image!.height.toDouble() / _scale));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -432,22 +432,22 @@ public class RenderImage : RenderBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Image>("image", image));
+        properties.add(new DiagnosticsProperty<Image>("image", image));
         properties.add(new DoubleProperty("width", width, defaultValue: null));
         properties.add(new DoubleProperty("height", height, defaultValue: null));
         properties.add(new DoubleProperty("scale", scale, defaultValue: 1.0));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new ColorProperty("color", color, defaultValue: null));
         properties.add(new DiagnosticsProperty<Animation<double>?>("opacity", opacity, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", fit, defaultValue: null));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", centerSlice, defaultValue: null));
+        properties.add(new EnumProperty<BlendMode>("colorBlendMode", colorBlendMode, defaultValue: null));
+        properties.add(new EnumProperty<BoxFit>("fit", fit, defaultValue: null));
+        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: null));
+        properties.add(new EnumProperty<ImageRepeat>("repeat", repeat, defaultValue: ImageRepeat.noRepeat));
+        properties.add(new DiagnosticsProperty<Rect>("centerSlice", centerSlice, defaultValue: null));
         properties.add(new FlagProperty("matchTextDirection", value: matchTextDirection, ifTrue: "match text direction"));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
         properties.add(new DiagnosticsProperty<bool>("invertColors", invertColors));
-        properties.add(new EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", filterQuality));
-        properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("blendMode", blendMode, defaultValue: BlendMode.srcOver));
+        properties.add(new EnumProperty<FilterQuality>("filterQuality", filterQuality));
+        properties.add(new EnumProperty<BlendMode>("blendMode", blendMode, defaultValue: BlendMode.srcOver));
     }
 
 }

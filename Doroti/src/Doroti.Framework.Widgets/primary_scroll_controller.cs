@@ -6,40 +6,40 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class Primary_scroll_controllerLibrary
 {
-    internal static HashSet<global::Doroti.Framework.Foundation.TargetPlatform> _kMobilePlatforms = new HashSet<global::Doroti.Framework.Foundation.TargetPlatform> { TargetPlatform.android, TargetPlatform.iOS, TargetPlatform.fuchsia };
+    internal static HashSet<TargetPlatform> _kMobilePlatforms = new HashSet<TargetPlatform> { TargetPlatform.android, TargetPlatform.iOS, TargetPlatform.fuchsia };
 }
 
 public class PrimaryScrollController : InheritedWidget
 {
     public virtual ScrollController? controller { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Axis? scrollDirection { get; private set; }
-    public virtual HashSet<global::Doroti.Framework.Foundation.TargetPlatform> automaticallyInheritForPlatforms { get; private set; } = default!;
+    public virtual Axis? scrollDirection { get; private set; }
+    public virtual HashSet<TargetPlatform> automaticallyInheritForPlatforms { get; private set; } = default!;
 
-    public PrimaryScrollController(global::Doroti.Framework.Foundation.Key? key = null, ScrollController controller = default!, HashSet<global::Doroti.Framework.Foundation.TargetPlatform> automaticallyInheritForPlatforms = default!, global::Doroti.Framework.Painting.Axis? scrollDirection = Axis.vertical, Widget child = default!) : base(key: key, child: child)
+    public PrimaryScrollController(Key? key = null, ScrollController controller = default!, HashSet<TargetPlatform> automaticallyInheritForPlatforms = default!, Axis? scrollDirection = Axis.vertical, Widget child = default!) : base(key: key, child: child)
     {
-        HashSet<global::Doroti.Framework.Foundation.TargetPlatform> __automaticallyInheritForPlatforms = automaticallyInheritForPlatforms ?? Primary_scroll_controllerLibrary._kMobilePlatforms;
+        HashSet<TargetPlatform> __automaticallyInheritForPlatforms = automaticallyInheritForPlatforms ?? Primary_scroll_controllerLibrary._kMobilePlatforms;
         this.controller = controller;
         this.automaticallyInheritForPlatforms = __automaticallyInheritForPlatforms;
         this.scrollDirection = scrollDirection;
     }
 
-    public static PrimaryScrollController CreateNone(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
+    public static PrimaryScrollController CreateNone(Key? key = null, Widget child = default!)
     {
         var __instance = new PrimaryScrollController(key, default!, default!, default!, child);
-        __instance.automaticallyInheritForPlatforms = new HashSet<global::Doroti.Framework.Foundation.TargetPlatform>();
+        __instance.automaticallyInheritForPlatforms = new HashSet<TargetPlatform>();
         __instance.scrollDirection = null;
         __instance.controller = null;
         return __instance;
     }
 
-    public static bool shouldInherit(BuildContext context, global::Doroti.Framework.Painting.Axis scrollDirection)
+    public static bool shouldInherit(BuildContext context, Axis scrollDirection)
     {
         PrimaryScrollController? result = context.findAncestorWidgetOfExactType<PrimaryScrollController>();
         if (result is null)
         {
             return false;
         }
-        global::Doroti.Framework.Foundation.TargetPlatform platform = ScrollConfiguration.of(context).getPlatform(context);
+        TargetPlatform platform = ScrollConfiguration.of(context).getPlatform(context);
         if (result.automaticallyInheritForPlatforms.Contains(platform))
         {
             return Equals(result.scrollDirection, DartRuntimePrimitives.RequireValue(scrollDirection));
@@ -72,10 +72,10 @@ public class PrimaryScrollController : InheritedWidget
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(controller, ((PrimaryScrollController)oldWidget).controller));
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("controller", controller, ifNull: "no controller", showName: false));
+        properties.add(new DiagnosticsProperty<ScrollController>("controller", controller, ifNull: "no controller", showName: false));
     }
 
 }

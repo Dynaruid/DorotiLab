@@ -13,9 +13,9 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     public virtual double scale { get; private set; } = default!;
     public virtual DartMap<string, string>? headers { get; private set; }
     public virtual WebHtmlElementStrategy webHtmlElementStrategy { get; private set; } = default!;
-    internal static global::Doroti.Runtime.HttpClient _sharedHttpClient = ((Func<global::Doroti.Runtime.HttpClient>)(() =>
+    internal static Runtime.HttpClient _sharedHttpClient = ((Func<Runtime.HttpClient>)(() =>
 {
-    var __cascade = new global::Doroti.Runtime.HttpClient();
+    var __cascade = new Runtime.HttpClient();
     __cascade.autoUncompress = false;
     return __cascade;
 }))();
@@ -51,11 +51,11 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Runtime.HttpClient _httpClient
+    internal static Runtime.HttpClient _httpClient
     {
         get
         {
-            global::Doroti.Runtime.HttpClient? client = default!;
+            Runtime.HttpClient? client = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (DebugLibrary.debugNetworkImageHttpClientProvider is not null)
@@ -67,21 +67,21 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
             return client ?? _sharedHttpClient;
         }
     }
-    internal async virtual Future<global::Doroti.Ui.Codec> _loadAsync(NetworkImageIo key, StreamController<ImageChunkEvent> chunkEvents, Func<ImmutableBuffer, Future<Codec>> decode)
+    internal async virtual Future<Codec> _loadAsync(NetworkImageIo key, StreamController<ImageChunkEvent> chunkEvents, Func<ImmutableBuffer, Future<Codec>> decode)
     {
         try
         {
             DartRuntimePrimitives.Assert(() => Equals(key, this));
             DartUri resolved = DartUri.@base.resolve(key.url);
-            global::Doroti.Runtime.HttpClientRequest request = await _httpClient.getUrl(resolved);
+            HttpClientRequest request = await _httpClient.getUrl(resolved);
             headers?.forEach((name, value) =>
             {
                 request.headers.add(name, value);
             });
-            global::Doroti.Runtime.HttpClientResponse response = await request.close();
+            HttpClientResponse response = await request.close();
             if (response.statusCode != HttpStatus.ok)
             {
-                await response.drain<List<long>>(new List<long>());
+                await response.drain(new List<long>());
                 throw new NetworkImageLoadException(statusCode: response.statusCode, uri: resolved);
             }
             Uint8List bytes = await Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response, onBytesReceived: (cumulative, total) =>

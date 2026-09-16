@@ -9,9 +9,9 @@ public enum KeyEventDeviceType { keyboard, directionalPad, gamepad, joystick, hd
 public enum AppExitType { cancelable, required }
 public enum AppExitResponse { exit, cancel }
 
-public readonly record struct FontWeight(int value) : Doroti.Runtime.IDartEnumIndex
+public readonly record struct FontWeight(int value) : IDartEnumIndex
 {
-    long Doroti.Runtime.IDartEnumIndex.DartEnumIndex => (value / 100) - 1;
+    long IDartEnumIndex.DartEnumIndex => (value / 100) - 1;
 
     public static FontWeight w100 { get; } = new(100);
     public static FontWeight w200 { get; } = new(200);
@@ -220,7 +220,7 @@ public sealed class Matrix4
         return result;
     }
     public static Matrix4 diagonal3Values(double x, double y, double z) => new([x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1]);
-    public static Matrix4 diagonal3(global::System.Numerics.Vector3 value) => diagonal3Values(value.X, value.Y, value.Z);
+    public static Matrix4 diagonal3(System.Numerics.Vector3 value) => diagonal3Values(value.X, value.Y, value.Z);
     public static Matrix4 diagonal3(Vector3 value) => diagonal3Values(value.x, value.y, value.z);
     public static Matrix4 rotationX(double radians)
     {
@@ -238,10 +238,10 @@ public sealed class Matrix4
     }
     public static Matrix4 compose(Vector3 translation, Quaternion rotation, Vector3 scale)
     {
-        var matrix = global::System.Numerics.Matrix4x4.CreateScale((float)scale.x, (float)scale.y, (float)scale.z) *
-            global::System.Numerics.Matrix4x4.CreateFromQuaternion(new global::System.Numerics.Quaternion(
+        var matrix = System.Numerics.Matrix4x4.CreateScale((float)scale.x, (float)scale.y, (float)scale.z) *
+            System.Numerics.Matrix4x4.CreateFromQuaternion(new System.Numerics.Quaternion(
                 (float)rotation.x, (float)rotation.y, (float)rotation.z, (float)rotation.w)) *
-            global::System.Numerics.Matrix4x4.CreateTranslation((float)translation.x, (float)translation.y, (float)translation.z);
+            System.Numerics.Matrix4x4.CreateTranslation((float)translation.x, (float)translation.y, (float)translation.z);
         return FromNumerics(matrix);
     }
     public double entry(long row, long column) => _storage[checked((int)column * 4 + (int)row)];
@@ -331,7 +331,7 @@ public sealed class Matrix4
     {
         get
         {
-            var matrix = new global::System.Numerics.Matrix4x4(
+            var matrix = new System.Numerics.Matrix4x4(
                 (float)_storage[0], (float)_storage[1], (float)_storage[2], (float)_storage[3],
                 (float)_storage[4], (float)_storage[5], (float)_storage[6], (float)_storage[7],
                 (float)_storage[8], (float)_storage[9], (float)_storage[10], (float)_storage[11],
@@ -340,7 +340,7 @@ public sealed class Matrix4
         }
     }
 
-    public global::System.Numerics.Vector4 transform(global::System.Numerics.Vector4 value) => new(
+    public System.Numerics.Vector4 transform(System.Numerics.Vector4 value) => new(
         (float)((_storage[0] * value.X) + (_storage[4] * value.Y) + (_storage[8] * value.Z) + (_storage[12] * value.W)),
         (float)((_storage[1] * value.X) + (_storage[5] * value.Y) + (_storage[9] * value.Z) + (_storage[13] * value.W)),
         (float)((_storage[2] * value.X) + (_storage[6] * value.Y) + (_storage[10] * value.Z) + (_storage[14] * value.W)),
@@ -357,19 +357,19 @@ public sealed class Matrix4
         CopyStorage(result._storage, _storage);
     }
 
-    public global::System.Numerics.Vector4 getRow(long row)
+    public System.Numerics.Vector4 getRow(long row)
     {
         var index = checked((int)row);
         return new((float)_storage[index], (float)_storage[4 + index], (float)_storage[8 + index], (float)_storage[12 + index]);
     }
 
-    public global::System.Numerics.Vector4 getColumn(long column)
+    public System.Numerics.Vector4 getColumn(long column)
     {
         var index = checked((int)column) * 4;
         return new((float)_storage[index], (float)_storage[index + 1], (float)_storage[index + 2], (float)_storage[index + 3]);
     }
 
-    public void setColumn(long column, global::System.Numerics.Vector4 value)
+    public void setColumn(long column, System.Numerics.Vector4 value)
     {
         var index = checked((int)column);
         if ((uint)index >= 4) throw new ArgumentOutOfRangeException(nameof(column));
@@ -379,7 +379,7 @@ public sealed class Matrix4
         _storage[(index * 4) + 3] = value.W;
     }
 
-    public void setRow(long row, global::System.Numerics.Vector4 value)
+    public void setRow(long row, System.Numerics.Vector4 value)
     {
         var index = checked((int)row);
         if ((uint)index >= 4) throw new ArgumentOutOfRangeException(nameof(row));
@@ -430,7 +430,7 @@ public sealed class Matrix4
     public bool decompose(Vector3 translation, Quaternion rotation, Vector3 scale)
     {
         var matrix = ToNumerics();
-        if (!global::System.Numerics.Matrix4x4.Decompose(matrix, out var numericScale, out var numericRotation, out var numericTranslation))
+        if (!System.Numerics.Matrix4x4.Decompose(matrix, out var numericScale, out var numericRotation, out var numericTranslation))
         {
             return false;
         }
@@ -442,12 +442,12 @@ public sealed class Matrix4
 
     public static Matrix4? tryInvert(Matrix4 value)
     {
-        var matrix = new global::System.Numerics.Matrix4x4(
+        var matrix = new System.Numerics.Matrix4x4(
             (float)value._storage[0], (float)value._storage[1], (float)value._storage[2], (float)value._storage[3],
             (float)value._storage[4], (float)value._storage[5], (float)value._storage[6], (float)value._storage[7],
             (float)value._storage[8], (float)value._storage[9], (float)value._storage[10], (float)value._storage[11],
             (float)value._storage[12], (float)value._storage[13], (float)value._storage[14], (float)value._storage[15]);
-        if (!global::System.Numerics.Matrix4x4.Invert(matrix, out var inverse)) return null;
+        if (!System.Numerics.Matrix4x4.Invert(matrix, out var inverse)) return null;
         return new Matrix4([
             inverse.M11, inverse.M12, inverse.M13, inverse.M14,
             inverse.M21, inverse.M22, inverse.M23, inverse.M24,
@@ -461,13 +461,13 @@ public sealed class Matrix4
         for (var index = 0; index < 16; index++) destination[index] = source[index];
     }
 
-    private global::System.Numerics.Matrix4x4 ToNumerics() => new(
+    private System.Numerics.Matrix4x4 ToNumerics() => new(
         (float)_storage[0], (float)_storage[1], (float)_storage[2], (float)_storage[3],
         (float)_storage[4], (float)_storage[5], (float)_storage[6], (float)_storage[7],
         (float)_storage[8], (float)_storage[9], (float)_storage[10], (float)_storage[11],
         (float)_storage[12], (float)_storage[13], (float)_storage[14], (float)_storage[15]);
 
-    private static Matrix4 FromNumerics(global::System.Numerics.Matrix4x4 value) => new([
+    private static Matrix4 FromNumerics(System.Numerics.Matrix4x4 value) => new([
         value.M11, value.M12, value.M13, value.M14,
         value.M21, value.M22, value.M23, value.M24,
         value.M31, value.M32, value.M33, value.M34,

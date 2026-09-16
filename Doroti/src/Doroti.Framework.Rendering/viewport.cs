@@ -127,7 +127,7 @@ public abstract class RenderAbstractViewport : RenderObject
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public abstract RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, global::Doroti.Framework.Painting.Axis? axis = null);
+    public abstract RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, Axis? axis = null);
 }
 
 public class RevealedOffset
@@ -175,8 +175,8 @@ public class RevealedOffset
 
 public abstract class RenderViewportBase<ParentDataClass> : RenderBox, ContainerRenderObjectMixin<RenderSliver, ParentDataClass> where ParentDataClass : ContainerParentDataMixin<RenderSliver>
 {
-    internal virtual global::Doroti.Framework.Painting.AxisDirection _axisDirection { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.AxisDirection _crossAxisDirection { get; set; } = default!;
+    internal virtual AxisDirection _axisDirection { get; set; } = default!;
+    internal virtual AxisDirection _crossAxisDirection { get; set; } = default!;
     internal virtual ViewportOffset _offset { get; set; } = default!;
     internal virtual ScrollCacheExtent _scrollCacheExtent { get; set; } = default!;
     internal virtual double? _calculatedCacheExtent { get; set; } = default;
@@ -187,7 +187,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
     public virtual RenderSliver? _firstChild { get; set; } = default;
     public virtual RenderSliver? _lastChild { get; set; } = default;
 
-    protected RenderViewportBase(global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection crossAxisDirection = default!, ViewportOffset offset = default!, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge)
+    protected RenderViewportBase(AxisDirection axisDirection = AxisDirection.down, AxisDirection crossAxisDirection = default!, ViewportOffset offset = default!, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge)
     {
         _axisDirection = axisDirection;
         _crossAxisDirection = crossAxisDirection;
@@ -199,7 +199,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         System.Diagnostics.Debug.Assert((cacheExtent is not null) || Equals(cacheExtentStyle, CacheExtentStyle.pixel));
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.addTagForChildren(RenderViewport.useTwoPaneSemantics);
@@ -214,7 +214,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         }).forEach(visitor);
     }
 
-    public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection
+    public virtual AxisDirection axisDirection
     {
         get => _axisDirection;
         set
@@ -228,7 +228,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Painting.AxisDirection crossAxisDirection
+    public virtual AxisDirection crossAxisDirection
     {
         get => _crossAxisDirection;
         set
@@ -242,7 +242,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
+    public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
     public virtual ViewportOffset offset
     {
         get => _offset;
@@ -286,7 +286,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             markNeedsLayout();
         }
     }
-    [global::System.Diagnostics.CodeAnalysis.AllowNull]
+    [System.Diagnostics.CodeAnalysis.AllowNull]
     public virtual ScrollCacheExtent scrollCacheExtent
     {
         get => _scrollCacheExtent;
@@ -330,7 +330,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             }
         }
     }
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -483,7 +483,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                     break;
                 }
         }
-        global::Doroti.Ui.Rect viewportClip = Offset.zero & size;
+        Rect viewportClip = Offset.zero & size;
         if ((__child.constraints.overlap == 0L) || !double.IsFinite(__child.constraints.viewportMainAxisExtent))
         {
             return viewportClip;
@@ -587,17 +587,17 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                 base.debugPaintSize(context, offset);
                 var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = 1.0;
-    __cascade.color = new global::Doroti.Ui.Color(4278255360L);
+    __cascade.color = new Color(4278255360L);
     return __cascade;
 }))();
-                global::Doroti.Ui.Canvas canvasLocal = context.canvas;
+                Canvas canvasLocal = context.canvas;
                 RenderSliver? child = firstChild;
                 while (child is not null)
                 {
-                    global::Doroti.Ui.Size size = axis switch { Axis.vertical => new global::Doroti.Ui.Size(child.constraints.crossAxisExtent, child.geometry!.layoutExtent), Axis.horizontal => new global::Doroti.Ui.Size(child.geometry!.layoutExtent, child.constraints.crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                    Size size = axis switch { Axis.vertical => new Size(child.constraints.crossAxisExtent, child.geometry!.layoutExtent), Axis.horizontal => new Size(child.geometry!.layoutExtent, child.constraints.crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
                     canvasLocal.drawRect((offset + paintOffsetOf(child) & size).deflate(0.5), paint);
                     child = childAfter(child);
                 }
@@ -630,7 +630,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, global::Doroti.Framework.Painting.Axis? axis = null)
+    public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, Axis? axis = null)
     {
         axis = this.axis;
         var leadingScrollOffset = 0.0;
@@ -657,7 +657,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             }
             child = parentLocal;
         }
-        global::Doroti.Ui.Rect rectLocal = default!;
+        Rect rectLocal = default!;
         double pivotExtent = default!;
         GrowthDirection growthDirectionLocal = default!;
         if (pivot is not null)
@@ -710,7 +710,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         bool isPinned = (sliver.geometry!.maxScrollObstructionExtent > 0L) && (leadingScrollOffset >= 0L);
         leadingScrollOffset = scrollOffsetOf(sliver, leadingScrollOffset);
         Matrix4 transform = target.getTransformTo(this);
-        global::Doroti.Ui.Rect targetRect = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
+        Rect targetRect = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
         double extentOfPinnedSlivers = maxScrollObstructionExtentBefore(sliver);
         switch (sliver.constraints.growthDirection)
         {
@@ -741,19 +741,19 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Offset computeAbsolutePaintOffset(RenderSliver child, double layoutOffset, GrowthDirection growthDirection)
+    public virtual Offset computeAbsolutePaintOffset(RenderSliver child, double layoutOffset, GrowthDirection growthDirection)
     {
         DartRuntimePrimitives.Assert(() => hasSize);
         DartRuntimePrimitives.Assert(() => child.geometry is not null);
-        return SliverLibrary.applyGrowthDirectionToAxisDirection(axisDirection, growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, size.height - layoutOffset - child.geometry!.paintExtent), AxisDirection.left => new global::Doroti.Ui.Offset(size.width - layoutOffset - child.geometry!.paintExtent, 0.0), AxisDirection.right => new global::Doroti.Ui.Offset(layoutOffset, 0.0), AxisDirection.down => new global::Doroti.Ui.Offset(0.0, layoutOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return SliverLibrary.applyGrowthDirectionToAxisDirection(axisDirection, growthDirection) switch { AxisDirection.up => new Offset(0.0, size.height - layoutOffset - child.geometry!.paintExtent), AxisDirection.left => new Offset(size.width - layoutOffset - child.geometry!.paintExtent, 0.0), AxisDirection.right => new Offset(layoutOffset, 0.0), AxisDirection.down => new Offset(0.0, layoutOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", axisDirection));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("crossAxisDirection", crossAxisDirection));
+        properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
+        properties.add(new EnumProperty<AxisDirection>("crossAxisDirection", crossAxisDirection));
         properties.add(new DiagnosticsProperty<ViewportOffset>("offset", offset));
     }
 
@@ -783,7 +783,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
     public abstract bool hasVisualOverflow { get; }
     public abstract void updateOutOfBandData(GrowthDirection growthDirection, SliverGeometry childLayoutGeometry);
     public abstract void updateChildLayoutOffset(RenderSliver child, double layoutOffset, GrowthDirection growthDirection);
-    public abstract global::Doroti.Ui.Offset paintOffsetOf(RenderSliver child);
+    public abstract Offset paintOffsetOf(RenderSliver child);
     public abstract double scrollOffsetOf(RenderSliver child, double scrollOffsetWithinChild);
     public abstract double maxScrollObstructionExtentBefore(RenderSliver child);
     public abstract double computeChildMainAxisPosition(RenderSliver child, double parentMainAxisPosition);
@@ -838,11 +838,11 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             base.showOnScreen(descendant: descendant, rect: rect, duration: duration, curve: curve);
             return;
         }
-        global::Doroti.Ui.Rect? newRect = RenderViewportBase<ParentDataClass>.showInViewport(descendant: descendant, viewport: this, offset: offset, rect: rect, duration: duration, curve: curve);
+        Rect? newRect = RenderViewportBase<ParentDataClass>.showInViewport(descendant: descendant, viewport: this, offset: offset, rect: rect, duration: duration, curve: curve);
         base.showOnScreen(rect: newRect, duration: duration, curve: curve);
     }
 
-    public static global::Doroti.Ui.Rect? showInViewport(RenderObject? descendant = null, Rect? rect = null, RenderViewportBase<ParentDataClass> viewport = default!, ViewportOffset offset = default!, Duration duration = default, Curve curve = default!)
+    public static Rect? showInViewport(RenderObject? descendant = null, Rect? rect = null, RenderViewportBase<ParentDataClass> viewport = default!, ViewportOffset offset = default!, Duration duration = default, Curve curve = default!)
     {
         if (descendant is null)
         {
@@ -1085,8 +1085,8 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
 
 public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentData>
 {
-    public static global::Doroti.Framework.Semantics.SemanticsTag useTwoPaneSemantics = new global::Doroti.Framework.Semantics.SemanticsTag("RenderViewport.twoPane");
-    public static global::Doroti.Framework.Semantics.SemanticsTag excludeFromScrolling = new global::Doroti.Framework.Semantics.SemanticsTag("RenderViewport.excludeFromScrolling");
+    public static SemanticsTag useTwoPaneSemantics = new SemanticsTag("RenderViewport.twoPane");
+    public static SemanticsTag excludeFromScrolling = new SemanticsTag("RenderViewport.excludeFromScrolling");
     internal virtual double _anchor { get; set; } = default!;
     internal virtual RenderSliver? _center { get; set; } = default;
     internal const long _maxLayoutCyclesPerChild = 10L;
@@ -1094,7 +1094,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
     internal virtual double _maxScrollExtent { get; set; } = default!;
     internal virtual bool _hasVisualOverflow { get; set; } = false;
 
-    public RenderViewport(global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection crossAxisDirection = default!, ViewportOffset offset = default!, double anchor = 0.0, List<RenderSliver>? children = null, RenderSliver? center = null, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge) : base(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection, offset: offset, cacheExtent: cacheExtent, cacheExtentStyle: cacheExtentStyle, scrollCacheExtent: scrollCacheExtent, paintOrder: paintOrder, clipBehavior: clipBehavior)
+    public RenderViewport(AxisDirection axisDirection = AxisDirection.down, AxisDirection crossAxisDirection = default!, ViewportOffset offset = default!, double anchor = 0.0, List<RenderSliver>? children = null, RenderSliver? center = null, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge) : base(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection, offset: offset, cacheExtent: cacheExtent, cacheExtentStyle: cacheExtentStyle, scrollCacheExtent: scrollCacheExtent, paintOrder: paintOrder, clipBehavior: clipBehavior)
     {
         _anchor = anchor;
         _center = center;
@@ -1344,7 +1344,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
 
     public override double computeChildMainAxisPosition(RenderSliver child, double parentMainAxisPosition)
     {
-        global::Doroti.Ui.Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
+        Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
         return SliverLibrary.applyGrowthDirectionToAxisDirection(child.constraints.axisDirection, child.constraints.growthDirection) switch { AxisDirection.down => parentMainAxisPosition - paintOffsetLocal.dy, AxisDirection.right => parentMainAxisPosition - paintOffsetLocal.dx, AxisDirection.up => child.geometry!.paintExtent - (parentMainAxisPosition - paintOffsetLocal.dy), AxisDirection.left => child.geometry!.paintExtent - (parentMainAxisPosition - paintOffsetLocal.dx), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1390,7 +1390,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
     internal virtual double _shrinkWrapExtent { get; set; } = default!;
     internal virtual bool _hasVisualOverflow { get; set; } = false;
 
-    public RenderShrinkWrappingViewport(global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection crossAxisDirection = default!, ViewportOffset offset = default!, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, ScrollCacheExtent? scrollCacheExtent = null, List<RenderSliver>? children = null) : base(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection, offset: offset, paintOrder: paintOrder, clipBehavior: clipBehavior, scrollCacheExtent: scrollCacheExtent)
+    public RenderShrinkWrappingViewport(AxisDirection axisDirection = AxisDirection.down, AxisDirection crossAxisDirection = default!, ViewportOffset offset = default!, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, ScrollCacheExtent? scrollCacheExtent = null, List<RenderSliver>? children = null) : base(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection, offset: offset, paintOrder: paintOrder, clipBehavior: clipBehavior, scrollCacheExtent: scrollCacheExtent)
     {
     }
 
@@ -1451,7 +1451,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
         if (firstChild is null)
         {
             DartRuntimePrimitives.Assert(() => _debugCheckHasBoundedCrossAxis());
-            size = axis switch { Axis.vertical => new global::Doroti.Ui.Size(constraintsLocal.maxWidth, constraintsLocal.minHeight), Axis.horizontal => new global::Doroti.Ui.Size(constraintsLocal.minWidth, constraintsLocal.maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            size = axis switch { Axis.vertical => new Size(constraintsLocal.maxWidth, constraintsLocal.minHeight), Axis.horizontal => new Size(constraintsLocal.minWidth, constraintsLocal.maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             offset.applyViewportDimension(0.0);
             _maxScrollExtent = 0.0;
             _shrinkWrapExtent = 0.0;
@@ -1564,7 +1564,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
-        global::Doroti.Ui.Offset offset = paintOffsetOf(((RenderSliver?)(object?)child)!);
+        Offset offset = paintOffsetOf(((RenderSliver?)(object?)child)!);
         transform.translateByDouble(offset.dx, offset.dy, 0, 1);
     }
 

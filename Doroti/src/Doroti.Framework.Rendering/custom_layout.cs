@@ -24,7 +24,7 @@ public abstract class MultiChildLayoutDelegate
     }
 
     public virtual bool hasChild(object childId) => _idToChild!.ContainsKey(childId);
-    public virtual global::Doroti.Ui.Size layoutChild(object childId, BoxConstraints constraints)
+    public virtual Size layoutChild(object childId, BoxConstraints constraints)
     {
         RenderBox? child = _idToChild!.GetValueOrDefault(childId);
         DartRuntimePrimitives.Assert(() =>
@@ -112,7 +112,7 @@ public abstract class MultiChildLayoutDelegate
                 {
                     if (checked((long)_debugChildrenNeedingLayout!.Count) != 0)
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Each child must be laid out exactly once."), new DiagnosticsBlock(name: $"The {this} custom multichild layout delegate forgot " + "to lay out the following " + $"{((checked(_debugChildrenNeedingLayout!.Count) > 1L) ? "children" : "child__9287")}", children: _debugChildrenNeedingLayout!.map<RenderBox, DiagnosticsNode>(_debugDescribeChild).ToList()) });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Each child must be laid out exactly once."), new DiagnosticsBlock(name: $"The {this} custom multichild layout delegate forgot " + "to lay out the following " + $"{((checked(_debugChildrenNeedingLayout!.Count) > 1L) ? "children" : "child__9287")}", children: _debugChildrenNeedingLayout!.map(_debugDescribeChild).ToList()) });
                     }
                     return true;
                 });
@@ -128,7 +128,7 @@ public abstract class MultiChildLayoutDelegate
         }
     }
 
-    public virtual global::Doroti.Ui.Size getSize(BoxConstraints constraints) => constraints.biggest;
+    public virtual Size getSize(BoxConstraints constraints) => constraints.biggest;
     public abstract void performLayout(Size size);
     public abstract bool shouldRelayout(MultiChildLayoutDelegate oldDelegate);
     public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "MultiChildLayoutDelegate");
@@ -204,7 +204,7 @@ public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectM
         }
     }
 
-    internal virtual global::Doroti.Ui.Size _getSize(BoxConstraints constraints)
+    internal virtual Size _getSize(BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
         return constraints.constrain(_delegate.getSize(constraints));

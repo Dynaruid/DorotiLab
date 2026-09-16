@@ -246,7 +246,7 @@ public sealed class PlatformDispatcher : IDisposable
 
     public event Action<DorotiView, AppLifecycleState>? lifecycleChanged;
 
-    public Action<Doroti.Runtime.Duration>? onBeginFrame { get; set; }
+    public Action<Duration>? onBeginFrame { get; set; }
 
     public Action? onDrawFrame { get; set; }
 

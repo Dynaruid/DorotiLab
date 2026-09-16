@@ -43,7 +43,7 @@ public class ViewConfiguration
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Size toPhysicalSize(Size logicalSize)
+    public virtual Size toPhysicalSize(Size logicalSize)
     {
         return physicalConstraints.constrain(logicalSize * devicePixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -79,7 +79,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         _view = view;
     }
 
-    public virtual global::Doroti.Ui.Size size => _size;
+    public virtual Size size => _size;
     public virtual ViewConfiguration configuration
     {
         get => _configuration!;
@@ -116,7 +116,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             return configuration.logicalConstraints;
         }
     }
-    public virtual global::Doroti.Ui.DorotiView flutterView => _view;
+    public virtual DorotiView flutterView => _view;
     public virtual void prepareInitialFrame()
     {
         DartRuntimePrimitives.Assert(() => owner is not null);
@@ -206,10 +206,10 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             DartRuntimePrimitives.Assert(() => hasConfiguration);
             DartRuntimePrimitives.Assert(() => _rootTransform is not null);
             DartRuntimePrimitives.Assert(() => layer is not null);
-            global::Doroti.Ui.SceneBuilder builder = _view.viewId == 0
+            SceneBuilder builder = _view.viewId == 0
                 ? RendererBinding.instance.createSceneBuilder()
-                : new global::Doroti.Ui.SceneBuilder(_view.viewId);
-            global::Doroti.Ui.Scene scene = layer!.buildScene(builder);
+                : new SceneBuilder(_view.viewId);
+            Scene scene = layer!.buildScene(builder);
             if (automaticSystemUiAdjustment)
             {
                 _updateSystemChrome();
@@ -242,9 +242,9 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
 
     internal virtual void _updateSystemChrome()
     {
-        global::Doroti.Ui.Rect bounds = paintBounds;
-        var topLocal = new global::Doroti.Ui.Offset(bounds.center.dx, _view.padding.top / 2.0);
-        var bottomLocal = new global::Doroti.Ui.Offset(bounds.center.dx, bounds.bottom - 1.0 - (_view.padding.bottom / 2.0));
+        Rect bounds = paintBounds;
+        var topLocal = new Offset(bounds.center.dx, _view.padding.top / 2.0);
+        var bottomLocal = new Offset(bounds.center.dx, bounds.bottom - 1.0 - (_view.padding.bottom / 2.0));
         SystemUiOverlayStyle? upperOverlayStyle = layer!.find<SystemUiOverlayStyle>(topLocal);
         SystemUiOverlayStyle? lowerOverlayStyle = default!;
         switch (PlatformLibrary.defaultTargetPlatform)
@@ -295,7 +295,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
                 properties.add(new DiagnosticsNode($"debug mode enabled - {(Foundation.ConstantsLibrary.kIsWeb ? "Web" : Platform.operatingSystem)}"));
                 return true;
             });
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("view size", _view.physicalSize, tooltip: "in physical pixels"));
+        properties.add(new DiagnosticsProperty<Size>("view size", _view.physicalSize, tooltip: "in physical pixels"));
         properties.add(new DoubleProperty("device pixel ratio", _view.devicePixelRatio, tooltip: "physical pixels per logical pixel"));
         properties.add(new DiagnosticsProperty<ViewConfiguration>("configuration", configuration, tooltip: "in logical pixels"));
         if (_view.platformDispatcher.semanticsEnabled)

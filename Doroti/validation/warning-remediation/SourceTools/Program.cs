@@ -69,7 +69,10 @@ if (args[0] == "index")
 
 var sdk = Assembly.GetExecutingAssembly().GetCustomAttributes<AssemblyMetadataAttribute>().Single(a => a.Key == "SdkPath").Value!;
 MSBuildLocator.RegisterMSBuildPath(Path.GetFullPath(sdk));
-using var workspace = MSBuildWorkspace.Create();
+var workspaceProperties = args.Where(a => a.StartsWith("--property=", StringComparison.Ordinal))
+    .Select(a => a[11..].Split('=', 2))
+    .ToDictionary(p => p[0], p => p.Length == 2 ? p[1] : throw new ArgumentException("Expected --property=Name=Value."));
+using var workspace = MSBuildWorkspace.Create(workspaceProperties);
 workspace.RegisterWorkspaceFailedHandler(e => Console.Error.WriteLine(e.Diagnostic));
 if (args[1].EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
     await workspace.OpenProjectAsync(args[1]);
@@ -79,6 +82,112 @@ if (workspace.Diagnostics.Any(d => d.Kind == WorkspaceDiagnosticKind.Failure))
     throw new InvalidOperationException("Workspace contains load failures.");
 
 var projectIds = workspace.CurrentSolution.GetProjectDependencyGraph().GetTopologicallySortedProjects().ToArray();
+if (args[0] == "simplify-icon-data-names")
+{
+    var report = new List<object>();
+    foreach (var projectId in projectIds)
+    {
+        var project = workspace.CurrentSolution.GetProject(projectId)!;
+        if (project.Name != "Doroti.Framework.Material") continue;
+        foreach (var documentId in project.DocumentIds)
+        {
+            var document = workspace.CurrentSolution.GetDocument(documentId)!;
+            if (IsGenerated(document)) continue;
+            var source = await document.GetTextAsync();
+            var headerText = source.ToString(new TextSpan(0, Math.Min(500, source.Length)));
+            if (!headerText.Contains("/animated_icons/data/", StringComparison.Ordinal) &&
+                !headerText.Contains("/material/icons.dart", StringComparison.Ordinal)) continue;
+            var root = (CompilationUnitSyntax)(await document.GetSyntaxRootAsync() ?? throw new InvalidOperationException());
+            var names = root.DescendantNodes().OfType<QualifiedNameSyntax>()
+                .Where(n => n.ToString() is "global::Doroti.Ui.Offset" or "global::Doroti.Ui.Size" or "global::Doroti.Framework.Widgets.IconData").ToArray();
+            if (names.Length == 0) continue;
+            Console.WriteLine($"Checking icon data type bindings: {document.Name}: {names.Length}");
+            var model = await document.GetSemanticModelAsync() ?? throw new InvalidOperationException();
+            // These globally qualified, non-generic type names have a unique
+            // metadata identity. Lookup avoids binding the entire initializer per name.
+            var expected = names.Select(n => model.Compilation.GetTypeByMetadataName(n.ToString()[8..])
+                ?? throw new InvalidOperationException("Icon data name is not a resolved type.")).ToArray();
+            var indices = names.Select((node, index) => (node, index)).ToDictionary(p => p.node, p => p.index);
+            const string annotationKind = "DorotiIconDataType";
+            var updated = root.ReplaceNodes(names, (original, _) => SyntaxFactory.IdentifierName(original.Right.Identifier)
+                .WithTriviaFrom(original).WithAdditionalAnnotations(new SyntaxAnnotation(annotationKind, indices[original].ToString())));
+            // Each large field initializer is bound once after the batch edit, rather
+            // than speculatively rebinding it for every repeated coordinate type.
+            if (names.Any(n => n.ToString().StartsWith("global::Doroti.Ui.", StringComparison.Ordinal)) &&
+                !updated.Usings.Any(u => u.Alias is null && u.Name?.ToString() == "Doroti.Ui"))
+            {
+                var header = updated.GetLeadingTrivia();
+                updated = updated.WithoutLeadingTrivia().AddUsings(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("Doroti.Ui"))
+                    .WithUsingKeyword(SyntaxFactory.Token(SyntaxKind.UsingKeyword).WithTrailingTrivia(SyntaxFactory.Space))
+                    .WithTrailingTrivia(SyntaxFactory.EndOfLine("\n"), SyntaxFactory.EndOfLine("\n"))).WithLeadingTrivia(header);
+            }
+            var candidate = document.WithSyntaxRoot(updated);
+            var candidateRoot = await candidate.GetSyntaxRootAsync() ?? throw new InvalidOperationException();
+            var candidateModel = await candidate.GetSemanticModelAsync() ?? throw new InvalidOperationException();
+            var checkedNames = 0;
+            foreach (var node in candidateRoot.GetAnnotatedNodes(annotationKind))
+            {
+                var index = int.Parse(node.GetAnnotations(annotationKind).Single().Data!);
+                var actual = candidateModel.LookupNamespacesAndTypes(node.SpanStart, name: expected[index].Name);
+                if (actual.Length != 1 || !SymbolEqualityComparer.Default.Equals(expected[index], actual[0]))
+                    throw new InvalidOperationException($"Icon data type binding changed in {document.Name} at {index}.");
+                checkedNames++;
+            }
+            if (checkedNames != names.Length || candidateModel.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+                throw new InvalidOperationException($"Icon data validation failed in {document.Name}.");
+            if (!workspace.TryApplyChanges(candidate.Project.Solution)) throw new InvalidOperationException("Icon data simplification could not be applied.");
+            report.Add(new { file = document.FilePath, count = checkedNames });
+        }
+    }
+    File.WriteAllText(args[2], JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
+    return;
+}
+
+if (args[0] is "fix-ide0001" or "check-ide0001")
+{
+    var featuresAssembly = Assembly.Load("Microsoft.CodeAnalysis.CSharp.Features");
+    var nameAnalyzerType = featuresAssembly.GetType("Microsoft.CodeAnalysis.CSharp.Diagnostics.SimplifyTypeNames.CSharpSimplifyTypeNamesDiagnosticAnalyzer", true)!;
+    var nameAnalyzer = (DiagnosticAnalyzer)Activator.CreateInstance(nameAnalyzerType, true)!;
+    var nameProviderType = featuresAssembly.GetTypes().Single(t => t.Name == "SimplifyTypeNamesCodeFixProvider");
+    var nameProvider = (CodeFixProvider)Activator.CreateInstance(nameProviderType, true)!;
+    var report = new List<object>();
+    var module = args.FirstOrDefault(a => a.StartsWith("--module=", StringComparison.Ordinal))?[9..];
+    foreach (var projectId in projectIds)
+    {
+        var project = workspace.CurrentSolution.GetProject(projectId)!;
+        if (module is not null && project.Name != module) continue;
+        Console.WriteLine($"Analyzing IDE0001: {project.Name}");
+        var compilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException();
+        var analysis = compilation.WithAnalyzers([nameAnalyzer], project.AnalyzerOptions);
+        foreach (var documentId in project.DocumentIds)
+        {
+            var document = workspace.CurrentSolution.GetDocument(documentId)!;
+            if (IsGenerated(document)) continue;
+            Console.WriteLine($"  Checking {document.Name}");
+            var originalTree = await project.GetDocument(documentId)!.GetSyntaxTreeAsync() ?? throw new InvalidOperationException();
+            var documentDiagnostics = await analysis.GetAnalyzerSemanticDiagnosticsAsync(compilation.GetSemanticModel(originalTree), null, CancellationToken.None);
+            if (documentDiagnostics.Any(d => d.Id == "AD0001"))
+                throw new InvalidOperationException("IDE0001 analyzer failed: " + string.Join("\n", documentDiagnostics.Where(d => d.Id == "AD0001")));
+            var diagnostics = documentDiagnostics.Where(d => d.Id == "IDE0001" && d.Location.SourceTree == originalTree).ToImmutableArray();
+            if (diagnostics.IsEmpty) continue;
+            report.Add(new { file = document.FilePath, count = diagnostics.Length });
+            Console.WriteLine($"  {document.Name}: {diagnostics.Length}");
+            if (args[0] != "fix-ide0001") continue;
+            var actions = new List<CodeAction>();
+            await nameProvider.RegisterCodeFixesAsync(new CodeFixContext(document, diagnostics[0], (a, _) => actions.Add(a), CancellationToken.None));
+            var context = new FixAllContext(document, nameProvider, FixAllScope.Document, actions.First().EquivalenceKey, ["IDE0001"],
+                new DocumentDiagnostics(documentId, diagnostics), CancellationToken.None);
+            var action = await nameProvider.GetFixAllProvider()!.GetFixAsync(context) ?? throw new InvalidOperationException("No IDE0001 fix-all action.");
+            var operation = (await action.GetOperationsAsync(CancellationToken.None)).OfType<ApplyChangesOperation>().Single();
+            if (!workspace.TryApplyChanges(operation.ChangedSolution)) throw new InvalidOperationException("Name simplification could not be applied.");
+        }
+    }
+    File.WriteAllText(args[2], JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
+    Console.WriteLine($"IDE0001 affected documents: {report.Count}");
+    if (args[0] == "check-ide0001" && report.Count != 0) Environment.ExitCode = 1;
+    return;
+}
+
 if (args[0] == "rename-generics")
 {
     var changes = new List<object>();

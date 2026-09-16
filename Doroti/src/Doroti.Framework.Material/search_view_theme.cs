@@ -6,23 +6,23 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class SearchViewThemeData : Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderSide? side { get; private set; }
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder? shape { get; private set; }
+    public virtual BorderSide? side { get; private set; }
+    public virtual OutlinedBorder? shape { get; private set; }
     public virtual double? headerHeight { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? headerTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? headerHintStyle { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? barPadding { get; private set; }
+    public virtual TextStyle? headerTextStyle { get; private set; }
+    public virtual TextStyle? headerHintStyle { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
+    public virtual EdgeInsetsGeometry? barPadding { get; private set; }
     public virtual bool? shrinkWrap { get; private set; }
     public virtual Color? dividerColor { get; private set; }
 
-    public SearchViewThemeData(Color? backgroundColor = null, double? elevation = null, Color? surfaceTintColor = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? barPadding = null, bool? shrinkWrap = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, double? headerHeight = null, global::Doroti.Framework.Painting.TextStyle? headerTextStyle = null, global::Doroti.Framework.Painting.TextStyle? headerHintStyle = null, Color? dividerColor = null)
+    public SearchViewThemeData(Color? backgroundColor = null, double? elevation = null, Color? surfaceTintColor = null, BoxConstraints? constraints = null, EdgeInsetsGeometry? padding = null, EdgeInsetsGeometry? barPadding = null, bool? shrinkWrap = null, BorderSide? side = null, OutlinedBorder? shape = null, double? headerHeight = null, TextStyle? headerTextStyle = null, TextStyle? headerHintStyle = null, Color? dividerColor = null)
     {
         this.backgroundColor = backgroundColor;
         this.elevation = elevation;
@@ -39,7 +39,7 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
         this.dividerColor = dividerColor;
     }
 
-    public virtual SearchViewThemeData copyWith(Color? backgroundColor = null, double? elevation = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, double? headerHeight = null, global::Doroti.Framework.Painting.TextStyle? headerTextStyle = null, global::Doroti.Framework.Painting.TextStyle? headerHintStyle = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? barPadding = null, bool? shrinkWrap = null, Color? dividerColor = null)
+    public virtual SearchViewThemeData copyWith(Color? backgroundColor = null, double? elevation = null, Color? surfaceTintColor = null, BorderSide? side = null, OutlinedBorder? shape = null, double? headerHeight = null, TextStyle? headerTextStyle = null, TextStyle? headerHintStyle = null, BoxConstraints? constraints = null, EdgeInsetsGeometry? padding = null, EdgeInsetsGeometry? barPadding = null, bool? shrinkWrap = null, Color? dividerColor = null)
     {
         return new SearchViewThemeData(backgroundColor: backgroundColor ?? this.backgroundColor, elevation: elevation ?? this.elevation, surfaceTintColor: surfaceTintColor ?? this.surfaceTintColor, side: side ?? this.side, shape: shape ?? this.shape, headerHeight: headerHeight ?? this.headerHeight, headerTextStyle: headerTextStyle ?? this.headerTextStyle, headerHintStyle: headerHintStyle ?? this.headerHintStyle, constraints: constraints ?? this.constraints, padding: padding ?? this.padding, barPadding: barPadding ?? this.barPadding, shrinkWrap: shrinkWrap ?? this.shrinkWrap, dividerColor: dividerColor ?? this.dividerColor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -71,40 +71,40 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
         return (__other is SearchViewThemeData) && Equals(__other.backgroundColor, backgroundColor) && (__other.elevation == elevation) && Equals(__other.surfaceTintColor, surfaceTintColor) && Equals(__other.side, side) && Equals(__other.shape, shape) && (__other.headerHeight == headerHeight) && Equals(__other.headerTextStyle, headerTextStyle) && Equals(__other.headerHintStyle, headerHintStyle) && Equals(__other.constraints, constraints) && Equals(__other.padding, padding) && Equals(__other.barPadding, barPadding) && (__other.shrinkWrap == shrinkWrap) && Equals(__other.dividerColor, dividerColor);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("backgroundColor", backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double?>("elevation", elevation, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("surfaceTintColor", surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderSide?>("side", side, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.OutlinedBorder?>("shape", shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double?>("headerHeight", headerHeight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle?>("headerTextStyle", headerTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle?>("headerHintStyle", headerHintStyle, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", constraints, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("padding", padding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("barPadding", barPadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool?>("shrinkWrap", shrinkWrap, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("dividerColor", dividerColor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Color?>("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<double?>("elevation", elevation, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Color?>("surfaceTintColor", surfaceTintColor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<BorderSide?>("side", side, defaultValue: null));
+        properties.add(new DiagnosticsProperty<OutlinedBorder?>("shape", shape, defaultValue: null));
+        properties.add(new DiagnosticsProperty<double?>("headerHeight", headerHeight, defaultValue: null));
+        properties.add(new DiagnosticsProperty<TextStyle?>("headerTextStyle", headerTextStyle, defaultValue: null));
+        properties.add(new DiagnosticsProperty<TextStyle?>("headerHintStyle", headerHintStyle, defaultValue: null));
+        properties.add(new DiagnosticsProperty<BoxConstraints>("constraints", constraints, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry?>("padding", padding, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry?>("barPadding", barPadding, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool?>("shrinkWrap", shrinkWrap, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Color?>("dividerColor", dividerColor, defaultValue: null));
     }
 
-    internal static global::Doroti.Framework.Painting.BorderSide? _lerpSides(global::Doroti.Framework.Painting.BorderSide? a, global::Doroti.Framework.Painting.BorderSide? b, double t)
+    internal static BorderSide? _lerpSides(BorderSide? a, BorderSide? b, double t)
     {
         if ((a is null) && (b is null))
         {
             return null;
         }
-        if (a is global::Doroti.Framework.Widgets.WidgetStateBorderSide)
+        if (a is WidgetStateBorderSide)
         {
-            a = ((global::Doroti.Framework.Widgets.WidgetStateBorderSide)a).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
+            a = ((WidgetStateBorderSide)a).resolve(new HashSet<WidgetState>());
         }
-        if (b is global::Doroti.Framework.Widgets.WidgetStateBorderSide)
+        if (b is WidgetStateBorderSide)
         {
-            b = ((global::Doroti.Framework.Widgets.WidgetStateBorderSide)b).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
+            b = ((WidgetStateBorderSide)b).resolve(new HashSet<WidgetState>());
         }
-        a ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L));
-        b ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: a.color.withAlpha(0L));
-        return (global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, b, t);
+        a ??= new BorderSide(width: 0, color: b!.color.withAlpha(0L));
+        b ??= new BorderSide(width: 0, color: a.color.withAlpha(0L));
+        return (BorderSide?)BorderSide.lerp(a, b, t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -131,27 +131,27 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
 }
 
-public class SearchViewTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class SearchViewTheme : InheritedTheme
 {
     public virtual SearchViewThemeData data { get; private set; } = default!;
 
-    public SearchViewTheme(global::Doroti.Framework.Foundation.Key? key = null, SearchViewThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public SearchViewTheme(Key? key = null, SearchViewThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static SearchViewThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static SearchViewThemeData of(BuildContext context)
     {
         SearchViewTheme? searchViewThemeLocal = context.dependOnInheritedWidgetOfExactType<SearchViewTheme>();
         return searchViewThemeLocal?.data ?? Theme.of(context).searchViewTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new SearchViewTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((SearchViewTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((SearchViewTheme)oldWidget).data));
 }

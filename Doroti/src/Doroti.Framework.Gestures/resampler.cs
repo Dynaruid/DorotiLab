@@ -36,7 +36,7 @@ public class PointerEventResampler
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Offset _positionAt(Duration sampleTime)
+    internal virtual Offset _positionAt(Duration sampleTime)
     {
         double x = _next?.position.dx ?? 0.0;
         double y = _next?.position.dy ?? 0.0;
@@ -51,7 +51,7 @@ public class PointerEventResampler
             x = lastX + ((x - lastX) * scalar);
             y = lastY + ((y - lastY) * scalar);
         }
-        return new global::Doroti.Ui.Offset(x, y);
+        return new Offset(x, y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -113,7 +113,7 @@ public class PointerEventResampler
             _isTracked = eventLocal is not PointerRemovedEvent;
             _isDown = eventLocal.down;
             _hasButtons = eventLocal.buttons;
-            global::Doroti.Ui.Offset positionLocal = _positionAt(sampleTime);
+            Offset positionLocal = _positionAt(sampleTime);
             if (_isTracked && !wasTracked)
             {
                 _position = positionLocal;
@@ -125,7 +125,7 @@ public class PointerEventResampler
             {
                 if (!Equals(positionLocal, _position))
                 {
-                    global::Doroti.Ui.Offset deltaLocal = positionLocal - _position;
+                    Offset deltaLocal = positionLocal - _position;
                     callback(_toMoveOrHoverEvent(eventLocal, positionLocal, deltaLocal, _pointerIdentifier, sampleTime, wasDown, hadButtons));
                     _position = positionLocal;
                 }
@@ -137,11 +137,11 @@ public class PointerEventResampler
 
     internal virtual void _samplePointerPosition(Duration sampleTime, Action<PointerEvent> callback)
     {
-        global::Doroti.Ui.Offset position = _positionAt(sampleTime);
+        Offset position = _positionAt(sampleTime);
         PointerEvent? next = _next;
         if ((!Equals(position, _position)) && (next is not null))
         {
-            global::Doroti.Ui.Offset delta = position - _position;
+            Offset delta = position - _position;
             callback(_toMoveOrHoverEvent(next, position, delta, _pointerIdentifier, sampleTime, _isDown, _hasButtons));
             _position = position;
         }

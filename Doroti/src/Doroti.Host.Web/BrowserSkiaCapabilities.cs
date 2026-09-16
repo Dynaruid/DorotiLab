@@ -340,7 +340,7 @@ internal sealed class BrowserSkiaCapabilities :
                 return bytes;
             }).ToArray();
             }
-            using var stream = new System.IO.MemoryStream();
+            using var stream = new MemoryStream();
             using (var writer = new Utf8JsonWriter(stream))
             {
                 writer.WriteStartObject();

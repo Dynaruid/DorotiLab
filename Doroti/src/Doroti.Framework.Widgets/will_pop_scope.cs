@@ -7,9 +7,9 @@ namespace Doroti.Framework.Widgets;
 public class WillPopScope : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual global::System.Func<Future<bool>>? onWillPop { get; private set; }
+    public virtual Func<Future<bool>>? onWillPop { get; private set; }
 
-    public WillPopScope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<Future<bool>>? onWillPop = default!) : base(key: key)
+    public WillPopScope(Key? key = null, Widget child = default!, Func<Future<bool>>? onWillPop = default!) : base(key: key)
     {
         this.child = child;
         this.onWillPop = onWillPop;

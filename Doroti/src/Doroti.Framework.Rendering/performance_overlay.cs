@@ -83,7 +83,7 @@ public class RenderPerformanceOverlay : RenderBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return constraints.constrain(new global::Doroti.Ui.Size(double.PositiveInfinity, _intrinsicHeight));
+        return constraints.constrain(new Size(double.PositiveInfinity, _intrinsicHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

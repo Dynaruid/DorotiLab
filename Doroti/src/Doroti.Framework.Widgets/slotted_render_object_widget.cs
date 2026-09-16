@@ -4,10 +4,10 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
 
-public abstract class SlottedMultiChildRenderObjectWidget<SlotType, ChildType> : RenderObjectWidget, SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> where SlotType : notnull where ChildType : global::Doroti.Framework.Rendering.RenderObject
+public abstract class SlottedMultiChildRenderObjectWidget<SlotType, ChildType> : RenderObjectWidget, SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> where SlotType : notnull where ChildType : RenderObject
 {
 
-    protected SlottedMultiChildRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
+    protected SlottedMultiChildRenderObjectWidget(Key? key = null) : base(key: key)
     {
     }
 
@@ -17,44 +17,44 @@ public abstract class SlottedMultiChildRenderObjectWidget<SlotType, ChildType> :
     public override SlottedRenderObjectElement<SlotType, ChildType> createElement() => new SlottedRenderObjectElement<SlotType, ChildType>(this);
 }
 
-public interface SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> where SlotType : notnull where ChildType : global::Doroti.Framework.Rendering.RenderObject
+public interface SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> where SlotType : notnull where ChildType : RenderObject
 {
     public IEnumerable<SlotType> slots { get; }
     public Widget? childForSlot(SlotType slot);
-    public global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context);
-    public void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject);
+    public RenderObject createRenderObject(BuildContext context);
+    public void updateRenderObject(BuildContext context, RenderObject renderObject);
     public SlottedRenderObjectElement<SlotType, ChildType> createElement();
 }
 
-public interface SlottedContainerRenderObjectMixin<SlotType, ChildType> where SlotType : notnull where ChildType : global::Doroti.Framework.Rendering.RenderObject
+public interface SlottedContainerRenderObjectMixin<SlotType, ChildType> where SlotType : notnull where ChildType : RenderObject
 {
     DartMap<SlotType, ChildType> _slotToChild { get; }
 
     public ChildType? childForSlot(SlotType slot);
     public IEnumerable<ChildType> children { get; }
     public string debugNameForSlot(SlotType slot);
-    public void attach(global::Doroti.Framework.Rendering.PipelineOwner owner);
+    public void attach(PipelineOwner owner);
     public void detach();
     public void redepthChildren();
-    public void visitChildren(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor);
-    public List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren();
-    public void _addDiagnostics(ChildType child, List<global::Doroti.Framework.Foundation.DiagnosticsNode> value, string name);
+    public void visitChildren(System.Action<RenderObject> visitor);
+    public List<DiagnosticsNode> debugDescribeChildren();
+    public void _addDiagnostics(ChildType child, List<DiagnosticsNode> value, string name);
     public void _setChild(ChildType? child, SlotType slot);
     public void _moveChild(ChildType child, SlotType slot, SlotType oldSlot);
 }
 
-public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectElement where SlotType : notnull where ChildType : global::Doroti.Framework.Rendering.RenderObject
+public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectElement where SlotType : notnull where ChildType : RenderObject
 {
     internal virtual DartMap<SlotType, Element> _slotToChild { get; set; } = new DartMap<SlotType, Element>();
-    internal virtual DartMap<global::Doroti.Framework.Foundation.Key, Element> _keyedChildren { get; set; } = new DartMap<global::Doroti.Framework.Foundation.Key, Element>();
+    internal virtual DartMap<Key, Element> _keyedChildren { get; set; } = new DartMap<Key, Element>();
     internal virtual List<SlotType>? _debugPreviousSlots { get; set; } = default;
 
     public SlottedRenderObjectElement(SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType> widget) : base((RenderObjectWidget)widget)
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((SlottedContainerRenderObjectMixin<SlotType, ChildType>?)base.renderObject)!);
-    public override void visitChildren(global::System.Action<Element> visitor)
+    public override RenderObject renderObject => DartRuntimePrimitives.ConvertValue<RenderObject>(((SlottedContainerRenderObjectMixin<SlotType, ChildType>?)base.renderObject)!);
+    public override void visitChildren(System.Action<Element> visitor)
     {
         _slotToChild.Values.forEach((__arg0) => visitor(__arg0));
     }
@@ -92,15 +92,15 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }, () => (object?)$"{DartRuntimePrimitives.RuntimeType(widget)}.slots must not change.");
         DartRuntimePrimitives.Assert(() => checked((long)slottedMultiChildRenderObjectWidgetMixin.slots.toSet().Count) == slottedMultiChildRenderObjectWidgetMixin.slots.Count(), () => (object?)"slots must be unique");
-        DartMap<global::Doroti.Framework.Foundation.Key, Element> oldKeyedElements = _keyedChildren;
-        _keyedChildren = new DartMap<global::Doroti.Framework.Foundation.Key, Element>();
+        DartMap<Key, Element> oldKeyedElements = _keyedChildren;
+        _keyedChildren = new DartMap<Key, Element>();
         DartMap<SlotType, Element> oldSlotToChild = _slotToChild;
         _slotToChild = new DartMap<SlotType, Element>();
-        DartMap<global::Doroti.Framework.Foundation.Key, List<Element>>? debugDuplicateKeys = default!;
+        DartMap<Key, List<Element>>? debugDuplicateKeys = default!;
         foreach (SlotType slotLocal in slottedMultiChildRenderObjectWidgetMixin.slots)
         {
             Widget? widgetLocal = slottedMultiChildRenderObjectWidgetMixin.childForSlot(slotLocal);
-            global::Doroti.Framework.Foundation.Key? newWidgetKey = widgetLocal?.key;
+            Key? newWidgetKey = widgetLocal?.key;
             Element? oldSlotChild = oldSlotToChild.GetValueOrDefault(slotLocal);
             Element? oldKeyChild = oldKeyedElements.GetValueOrDefault(newWidgetKey);
             Element? fromElement = default!;
@@ -131,7 +131,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
                             Element? existingElement = _keyedChildren.GetValueOrDefault(newWidgetKey);
                             if (existingElement is not null)
                             {
-                                (debugDuplicateKeys ??= new DartMap<global::Doroti.Framework.Foundation.Key, List<Element>>()).putIfAbsent(newWidgetKey, () => new List<Element> { existingElement }).Add(newChild);
+                                (debugDuplicateKeys ??= new DartMap<Key, List<Element>>()).putIfAbsent(newWidgetKey, () => new List<Element> { existingElement }).Add(newChild);
                             }
                             return true;
                             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -140,26 +140,26 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
                 }
             }
         }
-        oldSlotToChild.Values.forEach((__arg0) => ((global::System.Action<Element>)deactivateChild)(__arg0));
+        oldSlotToChild.Values.forEach((__arg0) => ((System.Action<Element>)deactivateChild)(__arg0));
         DartRuntimePrimitives.Assert(() => _debugDuplicateKeys(debugDuplicateKeys));
         DartRuntimePrimitives.Assert(() => _keyedChildren.Values.All(_slotToChild.Values.contains), () => (object?)$"_keyedChildren {_keyedChildren.Values} should be a subset of {_slotToChild.Values}");
     }
 
-    internal virtual bool _debugDuplicateKeys(DartMap<global::Doroti.Framework.Foundation.Key, List<Element>>? debugDuplicateKeys)
+    internal virtual bool _debugDuplicateKeys(DartMap<Key, List<Element>>? debugDuplicateKeys)
     {
         if (debugDuplicateKeys is null)
         {
             return true;
         }
-        foreach (MapEntry<global::Doroti.Framework.Foundation.Key, List<Element>> duplicateKey in debugDuplicateKeys.entries)
+        foreach (MapEntry<Key, List<Element>> duplicateKey in debugDuplicateKeys.entries)
         {
-            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"Multiple widgets used the same key in {DartRuntimePrimitives.RuntimeType(widget)}."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {duplicateKey.key} was used by multiple widgets. The offending widgets were:\n"), new global::Doroti.Framework.Foundation.ErrorDescription("A key can only be specified on one widget at a time in the same parent widget.") }));
+            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Multiple widgets used the same key in {DartRuntimePrimitives.RuntimeType(widget)}."), new ErrorDescription($"The key {duplicateKey.key} was used by multiple widgets. The offending widgets were:\n"), new ErrorDescription("A key can only be specified on one widget at a time in the same parent widget.") }));
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
         var __child = (ChildType)child;
         var __slot = slot is SlotType typedslot ? typedslot : throw new ArgumentException("A slotted child requires its declared slot type.", nameof(slot));
@@ -167,7 +167,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
         DartRuntimePrimitives.Assert(() => EqualityComparer<ChildType>.Default.Equals(((SlottedContainerRenderObjectMixin<SlotType, ChildType>)renderObject)._slotToChild.GetValueOrDefault(__slot), __child));
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(RenderObject child, object? slot)
     {
         var __child = (ChildType)child;
         var __slot = slot is SlotType typedslot ? typedslot : throw new ArgumentException("A slotted child requires its declared slot type.", nameof(slot));
@@ -178,7 +178,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
         }
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(RenderObject child, object? oldSlot, object? newSlot)
     {
         var __child = (ChildType)child;
         var __oldSlot = oldSlot is SlotType typedoldSlot ? typedoldSlot : throw new ArgumentException("A slotted child requires its declared slot type.", nameof(oldSlot));

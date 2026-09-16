@@ -30,7 +30,7 @@ public static class DorotiMauiApplicationBuilderExtensions
 #if ANDROID
         if (DorotiGraphiteView.Enabled)
         {
-            var info = global::Android.App.Application.Context.ApplicationInfo!;
+            var info = Android.App.Application.Context.ApplicationInfo!;
             Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureAndroid(info.SourceDir!, info.NativeLibraryDir!, info.SplitSourceDirs);
         }
 #elif WINDOWS
@@ -49,7 +49,7 @@ public static class DorotiMauiApplicationBuilderExtensions
 #if ANDROID
         if (DorotiGraphiteView.Enabled)
         {
-            var info = global::Android.App.Application.Context.ApplicationInfo!;
+            var info = Android.App.Application.Context.ApplicationInfo!;
             Doroti.Skia.Vulkan.GraphiteNativeLibrary.ConfigureAndroid(info.SourceDir!, info.NativeLibraryDir!, info.SplitSourceDirs);
         }
 #elif WINDOWS

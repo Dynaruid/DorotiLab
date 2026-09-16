@@ -8,8 +8,8 @@ public interface ScrollContext
 {
     public BuildContext? notificationContext { get; }
     public BuildContext storageContext { get; }
-    public global::Doroti.Framework.Scheduler.TickerProvider vsync { get; }
-    public global::Doroti.Framework.Painting.AxisDirection axisDirection { get; }
+    public Scheduler.TickerProvider vsync { get; }
+    public AxisDirection axisDirection { get; }
     public double devicePixelRatio { get; }
     public void setIgnorePointer(bool value);
     public void setCanDrag(bool value);

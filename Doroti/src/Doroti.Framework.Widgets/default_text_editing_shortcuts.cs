@@ -51,7 +51,7 @@ public class DefaultTextEditingShortcuts : StatelessWidget
         _windowsShortcuts.AddRange(_clipboardShortcuts);
     }
 
-    public DefaultTextEditingShortcuts(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    public DefaultTextEditingShortcuts(Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }

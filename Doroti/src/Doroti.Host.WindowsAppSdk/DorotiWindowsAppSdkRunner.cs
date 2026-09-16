@@ -371,7 +371,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     WindowsManagedVulkanPresenter.GraphiteEnabled ? Presenter as WindowsManagedVulkanPresenter : null);
                 var coordinator = _application.ConfigurePlatformViews(capabilities, 1, dispatcher);
                 platformViews.Configure(coordinator);
-                var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+                var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
                 _application.Configure(capabilities, channel);
                 renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
                     platformViews.Draw(renderer, canvas, commands, descriptor, width, height);

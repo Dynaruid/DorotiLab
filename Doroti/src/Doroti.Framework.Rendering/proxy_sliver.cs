@@ -282,7 +282,7 @@ public class RenderSliverIgnorePointer : RenderProxySliver
         base.visitChildrenForSemantics(visitor);
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.isBlockingUserActions = ignoring && (_ignoringSemantics ?? true);
@@ -545,24 +545,24 @@ public class RenderSliverConstrainedCrossAxis : RenderProxySliver
 
 public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnnotationsMixin
 {
-    public virtual global::Doroti.Framework.Semantics.SemanticsProperties _properties { get; set; } = default!;
+    public virtual SemanticsProperties _properties { get; set; } = default!;
     public virtual bool _container { get; set; } = default!;
     public virtual bool _explicitChildNodes { get; set; } = default!;
     public virtual bool _excludeSemantics { get; set; } = default!;
     public virtual bool _blockUserActions { get; set; } = default!;
     public virtual Locale? _localeForSubtree { get; set; } = default;
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _attributedLabel { get; set; } = default;
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _attributedValue { get; set; } = default;
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _attributedIncreasedValue { get; set; } = default;
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _attributedDecreasedValue { get; set; } = default;
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _attributedHint { get; set; } = default;
+    public virtual AttributedString? _attributedLabel { get; set; } = default;
+    public virtual AttributedString? _attributedValue { get; set; } = default;
+    public virtual AttributedString? _attributedIncreasedValue { get; set; } = default;
+    public virtual AttributedString? _attributedDecreasedValue { get; set; } = default;
+    public virtual AttributedString? _attributedHint { get; set; } = default;
     public virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderSliverSemanticsAnnotations(RenderSliver? child = null, global::Doroti.Framework.Semantics.SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
+    public RenderSliverSemanticsAnnotations(RenderSliver? child = null, SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
     {
     }
 
-    public virtual void initSemanticsAnnotations(global::Doroti.Framework.Semantics.SemanticsProperties properties, bool container, bool explicitChildNodes, bool excludeSemantics, bool blockUserActions, Locale? localeForSubtree, TextDirection? textDirection)
+    public virtual void initSemanticsAnnotations(SemanticsProperties properties, bool container, bool explicitChildNodes, bool excludeSemantics, bool blockUserActions, Locale? localeForSubtree, TextDirection? textDirection)
     {
         _properties = properties;
         _container = container;
@@ -574,7 +574,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         _updateAttributedFields(_properties);
     }
 
-    public virtual global::Doroti.Framework.Semantics.SemanticsProperties properties
+    public virtual SemanticsProperties properties
     {
         get => _properties;
         set
@@ -659,7 +659,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
             markNeedsSemanticsUpdate();
         }
     }
-    public virtual void _updateAttributedFields(global::Doroti.Framework.Semantics.SemanticsProperties value)
+    public virtual void _updateAttributedFields(SemanticsProperties value)
     {
         _attributedLabel = _effectiveAttributedLabel(value);
         _attributedValue = _effectiveAttributedValue(value);
@@ -668,33 +668,33 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         _attributedHint = _effectiveAttributedHint(value);
     }
 
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedLabel(global::Doroti.Framework.Semantics.SemanticsProperties value)
+    public virtual AttributedString? _effectiveAttributedLabel(SemanticsProperties value)
     {
-        return value.attributedLabel ?? ((value.label is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.label!));
+        return value.attributedLabel ?? ((value.label is null) ? null : new AttributedString(value.label!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedValue(global::Doroti.Framework.Semantics.SemanticsProperties value)
+    public virtual AttributedString? _effectiveAttributedValue(SemanticsProperties value)
     {
-        return value.attributedValue ?? ((value.value is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.value!));
+        return value.attributedValue ?? ((value.value is null) ? null : new AttributedString(value.value!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedIncreasedValue(global::Doroti.Framework.Semantics.SemanticsProperties value)
+    public virtual AttributedString? _effectiveAttributedIncreasedValue(SemanticsProperties value)
     {
-        return value.attributedIncreasedValue ?? ((value.increasedValue is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.increasedValue!));
+        return value.attributedIncreasedValue ?? ((value.increasedValue is null) ? null : new AttributedString(value.increasedValue!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedDecreasedValue(global::Doroti.Framework.Semantics.SemanticsProperties value)
+    public virtual AttributedString? _effectiveAttributedDecreasedValue(SemanticsProperties value)
     {
-        return properties.attributedDecreasedValue ?? ((value.decreasedValue is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.decreasedValue!));
+        return properties.attributedDecreasedValue ?? ((value.decreasedValue is null) ? null : new AttributedString(value.decreasedValue!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Semantics.AttributedString? _effectiveAttributedHint(global::Doroti.Framework.Semantics.SemanticsProperties value)
+    public virtual AttributedString? _effectiveAttributedHint(SemanticsProperties value)
     {
-        return value.attributedHint ?? ((value.hint is null) ? null : new global::Doroti.Framework.Semantics.AttributedString(value.hint!));
+        return value.attributedHint ?? ((value.hint is null) ? null : new AttributedString(value.hint!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -721,7 +721,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         base.visitChildrenForSemantics(visitor);
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = container || _properties.identifier is not null;

@@ -41,9 +41,9 @@ public static partial class Popup_menuLibrary
     internal static double _kMenuScreenPadding = 8.0;
 }
 
-public abstract class PopupMenuEntry<T> : global::Doroti.Framework.Widgets.StatefulWidget
+public abstract class PopupMenuEntry<T> : StatefulWidget
 {
-    protected PopupMenuEntry(global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
+    protected PopupMenuEntry(Key? key = null) : base(key: key)
     {
     }
 
@@ -58,10 +58,10 @@ public class PopupMenuDivider : PopupMenuEntry<dynamic>
     public virtual double? thickness { get; private set; }
     public virtual double? indent { get; private set; }
     public virtual double? endIndent { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderRadiusGeometry? radius { get; private set; }
+    public virtual BorderRadiusGeometry? radius { get; private set; }
     public virtual Color? color { get; private set; }
 
-    public PopupMenuDivider(global::Doroti.Framework.Foundation.Key? key = null, double? height = null, double? thickness = null, double? indent = null, double? endIndent = null, global::Doroti.Framework.Painting.BorderRadiusGeometry? radius = null, Color? color = null) : base(key: key)
+    public PopupMenuDivider(Key? key = null, double? height = null, double? thickness = null, double? indent = null, double? endIndent = null, BorderRadiusGeometry? radius = null, Color? color = null) : base(key: key)
     {
         double __height = height ?? Popup_menuLibrary._kMenuDividerHeight;
         __field_height = __height;
@@ -76,9 +76,9 @@ public class PopupMenuDivider : PopupMenuEntry<dynamic>
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PopupMenuDividerState__popup_menu());
 }
 
-internal class _PopupMenuDividerState__popup_menu : global::Doroti.Framework.Widgets.State<PopupMenuDivider>
+internal class _PopupMenuDividerState__popup_menu : State<PopupMenuDivider>
 {
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         return new Divider(height: widget.height, thickness: widget.thickness, indent: widget.indent, color: widget.color, endIndent: widget.endIndent, radius: widget.radius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -86,22 +86,22 @@ internal class _PopupMenuDividerState__popup_menu : global::Doroti.Framework.Wid
 
 }
 
-internal class _MenuItem__popup_menu : global::Doroti.Framework.Widgets.SingleChildRenderObjectWidget
+internal class _MenuItem__popup_menu : SingleChildRenderObjectWidget
 {
-    public virtual global::System.Action<Size> onLayout { get; private set; } = default!;
+    public virtual System.Action<Size> onLayout { get; private set; } = default!;
 
-    internal _MenuItem__popup_menu(global::System.Action<Size> onLayout, global::Doroti.Framework.Widgets.Widget? child) : base(child: child)
+    internal _MenuItem__popup_menu(System.Action<Size> onLayout, Widget? child) : base(child: child)
     {
         this.onLayout = onLayout;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderMenuItem__popup_menu(onLayout);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderMenuItem__popup_menu)renderObject;
         __renderObject.onLayout = onLayout;
@@ -109,22 +109,22 @@ internal class _MenuItem__popup_menu : global::Doroti.Framework.Widgets.SingleCh
 
 }
 
-public class _RenderMenuItem__popup_menu : global::Doroti.Framework.Rendering.RenderShiftedBox
+public class _RenderMenuItem__popup_menu : RenderShiftedBox
 {
-    public virtual global::System.Action<Size> onLayout { get; set; } = default!;
+    public virtual System.Action<Size> onLayout { get; set; } = default!;
 
-    internal _RenderMenuItem__popup_menu(global::System.Action<Size> onLayout, global::Doroti.Framework.Rendering.RenderBox? child = null) : base(child)
+    internal _RenderMenuItem__popup_menu(System.Action<Size> onLayout, RenderBox? child = null) : base(child)
     {
         this.onLayout = onLayout;
     }
 
-    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(BoxConstraints constraints)
     {
         return child?.getDryLayout(constraints) ?? Size.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
+    public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         return child?.getDryBaseline(constraints, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -140,7 +140,7 @@ public class _RenderMenuItem__popup_menu : global::Doroti.Framework.Rendering.Re
         {
             child!.layout(constraints, parentUsesSize: true);
             size = constraints.constrain(child!.size);
-            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)child!.parentData!)!;
+            var childParentData = ((BoxParentData?)child!.parentData!)!;
             childParentData.offset = Offset.zero;
         }
         onLayout(size);
@@ -151,17 +151,17 @@ public class _RenderMenuItem__popup_menu : global::Doroti.Framework.Rendering.Re
 public class PopupMenuItem<T> : PopupMenuEntry<T>
 {
     public virtual T? value { get; private set; }
-    public virtual global::System.Action? onTap { get; private set; }
+    public virtual Action? onTap { get; private set; }
     public virtual bool enabled { get; private set; } = default!;
     private double __field_height = default!;
     public override double height { get => __field_height; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? padding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? textStyle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
+    public virtual EdgeInsets? padding { get; private set; }
+    public virtual TextStyle? textStyle { get; private set; }
+    public virtual WidgetStateProperty<TextStyle?>? labelTextStyle { get; private set; }
+    public virtual MouseCursor? mouseCursor { get; private set; }
+    public virtual Widget? child { get; private set; }
 
-    public PopupMenuItem(global::Doroti.Framework.Foundation.Key? key = null, T? value = default, global::System.Action? onTap = null, bool enabled = true, double? height = null, global::Doroti.Framework.Painting.EdgeInsets? padding = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Framework.Widgets.Widget? child = default!) : base(key: key)
+    public PopupMenuItem(Key? key = null, T? value = default, Action? onTap = null, bool enabled = true, double? height = null, EdgeInsets? padding = null, TextStyle? textStyle = null, WidgetStateProperty<TextStyle?>? labelTextStyle = null, MouseCursor? mouseCursor = null, Widget? child = default!) : base(key: key)
     {
         double __height = height ?? ConstantsLibrary.kMinInteractiveDimension;
         this.value = value;
@@ -179,39 +179,39 @@ public class PopupMenuItem<T> : PopupMenuEntry<T>
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new PopupMenuItemState<T, PopupMenuItem<T>>());
 }
 
-public class PopupMenuItemState<T, W> : global::Doroti.Framework.Widgets.State<W> where W : PopupMenuItem<T>
+public class PopupMenuItemState<T, W> : State<W> where W : PopupMenuItem<T>
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? buildChild() => widget.child;
+    public virtual Widget? buildChild() => widget.child;
     public virtual void handleTap()
     {
-        Navigator.pop<T>(context, widget.value);
+        Navigator.pop(context, widget.value);
         widget.onTap?.Invoke();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
         PopupMenuThemeData defaults = new _PopupMenuDefaultsM3__popup_menu(context);
-        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection14434 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!widget.enabled) { __collection14434.Add(WidgetState.disabled); } return __collection14434; }))();
-        global::Doroti.Framework.Painting.TextStyle styleLocal = (widget.labelTextStyle?.resolve(states) ?? popupMenuTheme.labelTextStyle?.resolve(states)!) ?? defaults.labelTextStyle!.resolve(states)!;
+        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection14434 = new HashSet<WidgetState>(); if (!widget.enabled) { __collection14434.Add(WidgetState.disabled); } return __collection14434; }))();
+        TextStyle styleLocal = (widget.labelTextStyle?.resolve(states) ?? popupMenuTheme.labelTextStyle?.resolve(states)!) ?? defaults.labelTextStyle!.resolve(states)!;
         if (!widget.enabled && false)
         {
             styleLocal = styleLocal.copyWith(color: theme.disabledColor);
         }
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = widget.padding ?? _PopupMenuDefaultsM3__popup_menu.menuItemPadding;
-        global::Doroti.Framework.Widgets.Widget item = new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: styleLocal, duration: ConstantsLibrary.kThemeChangeDuration, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: widget.height), child: new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: buildChild()))));
+        EdgeInsetsGeometry paddingLocal = widget.padding ?? _PopupMenuDefaultsM3__popup_menu.menuItemPadding;
+        Widget item = new AnimatedDefaultTextStyle(style: styleLocal, duration: ConstantsLibrary.kThemeChangeDuration, child: new ConstrainedBox(constraints: new BoxConstraints(minHeight: widget.height), child: new Padding(padding: paddingLocal, child: new Align(alignment: AlignmentDirectional.centerStart, child: buildChild()))));
         if (!widget.enabled)
         {
             var isDark = Equals(theme.brightness, Brightness.dark);
-            item = IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(opacity: isDark ? 0.5 : 0.38), child: item);
+            item = IconTheme.merge(data: new IconThemeData(opacity: isDark ? 0.5 : 0.38), child: item);
         }
-        return new global::Doroti.Framework.Widgets.MergeSemantics(child: buildSemantics(child: new InkWell(onTap: widget.enabled ? handleTap : null, canRequestFocus: widget.enabled, mouseCursor: new _EffectiveMouseCursor__popup_menu(widget.mouseCursor, popupMenuTheme.mouseCursor), child: ListTileTheme.merge(contentPadding: EdgeInsets.zero, titleTextStyle: styleLocal, child: item))));
+        return new MergeSemantics(child: buildSemantics(child: new InkWell(onTap: widget.enabled ? handleTap : null, canRequestFocus: widget.enabled, mouseCursor: new _EffectiveMouseCursor__popup_menu(widget.mouseCursor, popupMenuTheme.mouseCursor), child: ListTileTheme.merge(contentPadding: EdgeInsets.zero, titleTextStyle: styleLocal, child: item))));
     }
 
-    public virtual global::Doroti.Framework.Widgets.Widget buildSemantics(global::Doroti.Framework.Widgets.Widget child)
+    public virtual Widget buildSemantics(Widget child)
     {
-        return new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.menuItem, enabled: widget.enabled, button: true, child: child);
+        return new Widgets.Semantics(role: SemanticsRole.menuItem, enabled: widget.enabled, button: true, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -221,29 +221,29 @@ public class CheckedPopupMenuItem<T> : PopupMenuItem<T>
 {
     public virtual bool @checked { get; private set; } = default!;
 
-    public CheckedPopupMenuItem(global::Doroti.Framework.Foundation.Key? key = null, T? value = default, bool @checked = false, bool enabled = true, global::Doroti.Framework.Painting.EdgeInsets? padding = null, double? height = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null) : base(key: key, value: value, enabled: enabled, padding: padding, height: height ?? ConstantsLibrary.kMinInteractiveDimension, labelTextStyle: labelTextStyle, mouseCursor: mouseCursor, child: child, onTap: onTap)
+    public CheckedPopupMenuItem(Key? key = null, T? value = default, bool @checked = false, bool enabled = true, EdgeInsets? padding = null, double? height = null, WidgetStateProperty<TextStyle?>? labelTextStyle = null, MouseCursor? mouseCursor = null, Widget? child = null, Action? onTap = null) : base(key: key, value: value, enabled: enabled, padding: padding, height: height ?? ConstantsLibrary.kMinInteractiveDimension, labelTextStyle: labelTextStyle, mouseCursor: mouseCursor, child: child, onTap: onTap)
     {
         this.@checked = @checked;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget? child => base.child;
+    public override Widget? child => base.child;
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CheckedPopupMenuItemState__popup_menu<T>());
 }
 
-internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T, CheckedPopupMenuItem<T>>, global::Doroti.Framework.Widgets.SingleTickerProviderStateMixin<CheckedPopupMenuItem<T>>
+internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T, CheckedPopupMenuItem<T>>, SingleTickerProviderStateMixin<CheckedPopupMenuItem<T>>
 {
     internal static Duration _fadeDuration = Duration.Create(milliseconds: 150L);
-    internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; set; } = default!;
-    public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal virtual AnimationController _controller { get; set; } = default!;
+    public virtual Scheduler.Ticker? _ticker { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _opacity => _controller.view;
+    internal virtual Animation<double> _opacity => _controller.view;
     public override void initState()
     {
         base.initState();
-        _controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        _controller = ((Func<AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: _fadeDuration, vsync: this);
+    var __cascade = new AnimationController(duration: _fadeDuration, vsync: this);
     __cascade.value = widget.@checked ? 1.0 : 0.0;
     __cascade.addListener(() =>
     {
@@ -264,7 +264,7 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), _ticker!.describeForError("The offending ticker was") }));
             });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -284,23 +284,23 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
         base.handleTap();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildSemantics(global::Doroti.Framework.Widgets.Widget child)
+    public override Widget buildSemantics(Widget child)
     {
-        return new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.menuItemCheckbox, enabled: widget.enabled, @checked: widget.@checked, button: true, child: child);
+        return new Widgets.Semantics(role: SemanticsRole.menuItemCheckbox, enabled: widget.enabled, @checked: widget.@checked, button: true, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget? buildChild()
+    public override Widget? buildChild()
     {
         ThemeData theme = Theme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
         PopupMenuThemeData defaults = new _PopupMenuDefaultsM3__popup_menu(context);
-        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection22101 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (widget.@checked) { __collection22101.Add(WidgetState.selected); } return __collection22101; }))();
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? effectiveLabelTextStyle = (widget.labelTextStyle ?? popupMenuTheme.labelTextStyle) ?? defaults.labelTextStyle;
-        return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.IgnorePointer(child: ListTileTheme.merge(contentPadding: EdgeInsets.zero, child: new ListTile(enabled: widget.enabled, titleTextStyle: effectiveLabelTextStyle?.resolve(states), leading: new global::Doroti.Framework.Widgets.FadeTransition(opacity: _opacity, child: new global::Doroti.Framework.Widgets.Icon(_controller.isDismissed ? null : Icons.done)), title: widget.child)));
+        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection22101 = new HashSet<WidgetState>(); if (widget.@checked) { __collection22101.Add(WidgetState.selected); } return __collection22101; }))();
+        WidgetStateProperty<TextStyle?>? effectiveLabelTextStyle = (widget.labelTextStyle ?? popupMenuTheme.labelTextStyle) ?? defaults.labelTextStyle;
+        return (Widget?)new IgnorePointer(child: ListTileTheme.merge(contentPadding: EdgeInsets.zero, child: new ListTile(enabled: widget.enabled, titleTextStyle: effectiveLabelTextStyle?.resolve(states), leading: new FadeTransition(opacity: _opacity, child: new Icon(_controller.isDismissed ? null : Icons.done)), title: widget.child)));
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -308,9 +308,9 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        _ticker = new global::Doroti.Framework.Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
+        _ticker = new Scheduler.Ticker(onTick, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
@@ -336,7 +336,7 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -346,24 +346,24 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         string? tickerDescription = (_ticker?.isActive, _ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) };
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
+        properties.add(new DiagnosticsProperty<Scheduler.Ticker>("ticker", _ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
 
-public class _PopupMenu__popup_menu<T> : global::Doroti.Framework.Widgets.StatefulWidget
+public class _PopupMenu__popup_menu<T> : StatefulWidget
 {
-    public virtual List<global::Doroti.Framework.Widgets.GlobalKey<IState>> itemKeys { get; private set; } = default!;
+    public virtual List<GlobalKey<IState>> itemKeys { get; private set; } = default!;
     public virtual _PopupMenuRoute__popup_menu<T> route { get; private set; } = default!;
     public virtual string? semanticLabel { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    internal _PopupMenu__popup_menu(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.GlobalKey<IState>> itemKeys = default!, _PopupMenuRoute__popup_menu<T> route = default!, string? semanticLabel = default!, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, Clip clipBehavior = default!) : base(key: key)
+    internal _PopupMenu__popup_menu(Key? key = null, List<GlobalKey<IState>> itemKeys = default!, _PopupMenuRoute__popup_menu<T> route = default!, string? semanticLabel = default!, BoxConstraints? constraints = null, Clip clipBehavior = default!) : base(key: key)
     {
         this.itemKeys = itemKeys;
         this.route = route;
@@ -375,9 +375,9 @@ public class _PopupMenu__popup_menu<T> : global::Doroti.Framework.Widgets.Statef
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PopupMenuState__popup_menu<T>());
 }
 
-internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets.State<_PopupMenu__popup_menu<T>>
+internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
 {
-    internal virtual List<global::Doroti.Framework.Animation.CurvedAnimation> _opacities { get; set; } = new List<global::Doroti.Framework.Animation.CurvedAnimation>();
+    internal virtual List<CurvedAnimation> _opacities { get; set; } = new List<CurvedAnimation>();
 
     public override void initState()
     {
@@ -396,17 +396,17 @@ internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets
 
     internal virtual void _setOpacities()
     {
-        foreach (global::Doroti.Framework.Animation.CurvedAnimation opacity in _opacities)
+        foreach (CurvedAnimation opacity in _opacities)
         {
             opacity.dispose();
         }
-        var newOpacities = new List<global::Doroti.Framework.Animation.CurvedAnimation>();
+        var newOpacities = new List<CurvedAnimation>();
         double unit = 1.0 / (checked(widget.route.items.Count) + 1.5);
         for (var i = 0L; i < checked(widget.route.items.Count); i += 1L)
         {
             double start = (i + 1L) * unit;
             double end = Dart_uiLibrary.clampDouble(start + (1.5 * unit), 0.0, 1.0);
-            var opacityLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.route.animation!, curve: new global::Doroti.Framework.Animation.Interval(start, end));
+            var opacityLocal = new CurvedAnimation(parent: widget.route.animation!, curve: new Interval(start, end));
             newOpacities.Add(opacityLocal);
         }
         _opacities = newOpacities;
@@ -414,17 +414,17 @@ internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets
 
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Animation.CurvedAnimation opacity in _opacities)
+        foreach (CurvedAnimation opacity in _opacities)
         {
             opacity.dispose();
         }
         base.dispose();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         double unit = 1.0 / (checked(widget.route.items.Count) + 1.5);
-        var childrenLocal = new List<global::Doroti.Framework.Widgets.Widget>();
+        var childrenLocal = new List<Widget>();
         ThemeData theme = Theme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
         PopupMenuThemeData defaults = new _PopupMenuDefaultsM3__popup_menu(context);
@@ -433,40 +433,40 @@ internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets
             // Layout runs after this loop. Capture the entry index rather than
             // the shared C# loop variable, which has advanced past the list.
             var itemIndex = checked((int)i);
-            global::Doroti.Framework.Animation.CurvedAnimation opacityLocal = _opacities[(int)i];
-            global::Doroti.Framework.Widgets.Widget item = widget.route.items[(int)i];
+            CurvedAnimation opacityLocal = _opacities[(int)i];
+            Widget item = widget.route.items[(int)i];
             if ((widget.route.initialValue is not null) && widget.route.items[(int)i].represents(widget.route.initialValue))
             {
-                item = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ColoredBox(color: Theme.of(context).highlightColor, child: item));
+                item = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: Theme.of(context).highlightColor, child: item));
             }
             childrenLocal.Add(new _MenuItem__popup_menu(onLayout: (size) =>
             {
                 widget.route.itemSizes[itemIndex] = size;
-            }, child: new global::Doroti.Framework.Widgets.FadeTransition(key: widget.itemKeys[(int)i], opacity: opacityLocal, child: item)));
+            }, child: new FadeTransition(key: widget.itemKeys[(int)i], opacity: opacityLocal, child: item)));
         }
-        var opacityAlternate = new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, 1.0 / 3.0));
-        var width = new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, unit));
-        var height = new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, unit * checked(widget.route.items.Count)));
-        global::Doroti.Framework.Widgets.Widget childLocal = new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: widget.constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: Popup_menuLibrary._kMenuMinWidth, maxWidth: Popup_menuLibrary._kMenuMaxWidth), child: new global::Doroti.Framework.Widgets.IntrinsicWidth(stepWidth: Popup_menuLibrary._kMenuWidthStep, child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.menu, scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: widget.semanticLabel, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(padding: (widget.route.menuPadding ?? popupMenuTheme.menuPadding) ?? defaults.menuPadding, child: new global::Doroti.Framework.Widgets.ListBody(children: childrenLocal)))));
-        return new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: widget.route.animation!, builder: (context, child) =>
+        var opacityAlternate = new CurveTween(curve: new Interval(0.0, 1.0 / 3.0));
+        var width = new CurveTween(curve: new Interval(0.0, unit));
+        var height = new CurveTween(curve: new Interval(0.0, unit * checked(widget.route.items.Count)));
+        Widget childLocal = new ConstrainedBox(constraints: widget.constraints ?? new BoxConstraints(minWidth: Popup_menuLibrary._kMenuMinWidth, maxWidth: Popup_menuLibrary._kMenuMaxWidth), child: new IntrinsicWidth(stepWidth: Popup_menuLibrary._kMenuWidthStep, child: new Widgets.Semantics(role: SemanticsRole.menu, scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: widget.semanticLabel, child: new SingleChildScrollView(padding: (widget.route.menuPadding ?? popupMenuTheme.menuPadding) ?? defaults.menuPadding, child: new ListBody(children: childrenLocal)))));
+        return new AnimatedBuilder(animation: widget.route.animation!, builder: (context, child) =>
         {
-            return new global::Doroti.Framework.Widgets.FadeTransition(opacity: opacityAlternate.animate(widget.route.animation!), child: new Material(shape: (widget.route.shape ?? popupMenuTheme.shape) ?? defaults.shape, color: (widget.route.color ?? popupMenuTheme.color) ?? defaults.color, clipBehavior: widget.clipBehavior, type: MaterialType.card, elevation: (widget.route.elevation ?? popupMenuTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation), shadowColor: (widget.route.shadowColor ?? popupMenuTheme.shadowColor) ?? defaults.shadowColor, surfaceTintColor: (widget.route.surfaceTintColor ?? popupMenuTheme.surfaceTintColor) ?? defaults.surfaceTintColor, child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.topEnd, widthFactor: width.evaluate(widget.route.animation!), heightFactor: height.evaluate(widget.route.animation!), child: child)));
+            return new FadeTransition(opacity: opacityAlternate.animate(widget.route.animation!), child: new Material(shape: (widget.route.shape ?? popupMenuTheme.shape) ?? defaults.shape, color: (widget.route.color ?? popupMenuTheme.color) ?? defaults.color, clipBehavior: widget.clipBehavior, type: MaterialType.card, elevation: (widget.route.elevation ?? popupMenuTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation), shadowColor: (widget.route.shadowColor ?? popupMenuTheme.shadowColor) ?? defaults.shadowColor, surfaceTintColor: (widget.route.surfaceTintColor ?? popupMenuTheme.surfaceTintColor) ?? defaults.surfaceTintColor, child: new Align(alignment: AlignmentDirectional.topEnd, widthFactor: width.evaluate(widget.route.animation!), heightFactor: height.evaluate(widget.route.animation!), child: child)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }, child: childLocal);
     }
 
 }
 
-internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
+internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
 {
-    public virtual global::Doroti.Framework.Rendering.RelativeRect position { get; private set; } = default!;
+    public virtual RelativeRect position { get; private set; } = default!;
     public virtual List<Size?> itemSizes { get; set; } = default!;
     public virtual long? selectedItemIndex { get; private set; }
     public virtual TextDirection textDirection { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets padding { get; set; } = default!;
+    public virtual EdgeInsets padding { get; set; } = default!;
     public virtual HashSet<Rect> avoidBounds { get; private set; } = default!;
 
-    internal _PopupMenuRouteLayout__popup_menu(global::Doroti.Framework.Rendering.RelativeRect position, List<Size?> itemSizes, long? selectedItemIndex, TextDirection textDirection, global::Doroti.Framework.Painting.EdgeInsets padding, HashSet<Rect> avoidBounds)
+    internal _PopupMenuRouteLayout__popup_menu(RelativeRect position, List<Size?> itemSizes, long? selectedItemIndex, TextDirection textDirection, EdgeInsets padding, HashSet<Rect> avoidBounds)
     {
         this.position = position;
         this.itemSizes = itemSizes;
@@ -476,7 +476,7 @@ internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rend
         this.avoidBounds = avoidBounds;
     }
 
-    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return BoxConstraints.CreateLoose(constraints.biggest).deflate(EdgeInsets.CreateAll(Popup_menuLibrary._kMenuScreenPadding).op_Add(padding));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -501,17 +501,17 @@ internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rend
                 x = textDirection switch { TextDirection.rtl => size.width - position.right - childSize.width, TextDirection.ltr => position.left, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             }
         }
-        var wantedPosition = new global::Doroti.Ui.Offset(x, y);
-        global::Doroti.Ui.Offset originCenter = position.toRect(Offset.zero & size).center;
-        IEnumerable<global::Doroti.Ui.Rect> subScreens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & size, avoidBounds);
-        global::Doroti.Ui.Rect subScreen = _closestScreen(subScreens.Cast<Rect>(), originCenter);
+        var wantedPosition = new Offset(x, y);
+        Offset originCenter = position.toRect(Offset.zero & size).center;
+        IEnumerable<Rect> subScreens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & size, avoidBounds);
+        Rect subScreen = _closestScreen(subScreens.Cast<Rect>(), originCenter);
         return _fitInsideScreen(subScreen, childSize, wantedPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Rect _closestScreen(IEnumerable<Rect> screens, Offset point)
+    internal virtual Rect _closestScreen(IEnumerable<Rect> screens, Offset point)
     {
-        global::Doroti.Ui.Rect closest = screens.First();
+        Rect closest = screens.First();
         foreach (var screen in screens)
         {
             if ((screen.center - point).distance < (closest.center - point).distance)
@@ -523,7 +523,7 @@ internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rend
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Offset _fitInsideScreen(Rect screen, Size childSize, Offset wantedPosition)
+    internal virtual Offset _fitInsideScreen(Rect screen, Size childSize, Offset wantedPosition)
     {
         double x = wantedPosition.dx;
         double y = wantedPosition.dy;
@@ -549,11 +549,11 @@ internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rend
                 y = screen.bottom - childSize.height - Popup_menuLibrary._kMenuScreenPadding - padding.bottom;
             }
         }
-        return new global::Doroti.Ui.Offset(x, y);
+        return new Offset(x, y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_PopupMenuRouteLayout__popup_menu)oldDelegate;
         DartRuntimePrimitives.Assert(() => checked(itemSizes.Count) == checked((long)__oldDelegate.itemSizes.Count));
@@ -563,31 +563,31 @@ internal class _PopupMenuRouteLayout__popup_menu : global::Doroti.Framework.Rend
 
 }
 
-public class _PopupMenuRoute__popup_menu<T> : global::Doroti.Framework.Widgets.PopupRoute<T>
+public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
 {
-    public virtual global::Doroti.Framework.Rendering.RelativeRect? position { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Rendering.RelativeRect>? positionBuilder { get; private set; }
+    public virtual RelativeRect? position { get; private set; }
+    public virtual Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder { get; private set; }
     public virtual List<PopupMenuEntry<T>> items { get; private set; } = default!;
-    public virtual List<global::Doroti.Framework.Widgets.GlobalKey<IState>> itemKeys { get; private set; } = default!;
+    public virtual List<GlobalKey<IState>> itemKeys { get; private set; } = default!;
     public virtual List<Size?> itemSizes { get; private set; } = default!;
     public virtual T? initialValue { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual string? semanticLabel { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? menuPadding { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
+    public virtual EdgeInsetsGeometry? menuPadding { get; private set; }
     public virtual Color? color { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.CapturedThemes capturedThemes { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual CapturedThemes capturedThemes { get; private set; } = default!;
+    public virtual BoxConstraints? constraints { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.AnimationStyle? popUpAnimationStyle { get; private set; }
+    public virtual AnimationStyle? popUpAnimationStyle { get; private set; }
     // Dart library-private member: distinct from the same name in the base library.
-    internal new virtual global::Doroti.Framework.Animation.CurvedAnimation? _animation { get; set; } = default;
+    internal new virtual CurvedAnimation? _animation { get; set; } = default;
     private string? __field_barrierLabel = default!;
     public override string? barrierLabel { get => __field_barrierLabel; }
 
-    internal _PopupMenuRoute__popup_menu(global::Doroti.Framework.Rendering.RelativeRect? position = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Rendering.RelativeRect>? positionBuilder = null, List<PopupMenuEntry<T>> items = default!, List<global::Doroti.Framework.Widgets.GlobalKey<IState>> itemKeys = default!, T? initialValue = default, double? elevation = null, Color? surfaceTintColor = null, Color? shadowColor = null, string barrierLabel = default!, string? semanticLabel = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? menuPadding = null, Color? color = null, global::Doroti.Framework.Widgets.CapturedThemes capturedThemes = default!, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, Clip clipBehavior = default!, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, global::Doroti.Framework.Animation.AnimationStyle? popUpAnimationStyle = null) : base(settings: settings, requestFocus: requestFocus, traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop)
+    internal _PopupMenuRoute__popup_menu(RelativeRect? position = null, Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder = null, List<PopupMenuEntry<T>> items = default!, List<GlobalKey<IState>> itemKeys = default!, T? initialValue = default, double? elevation = null, Color? surfaceTintColor = null, Color? shadowColor = null, string barrierLabel = default!, string? semanticLabel = null, ShapeBorder? shape = null, EdgeInsetsGeometry? menuPadding = null, Color? color = null, CapturedThemes capturedThemes = default!, BoxConstraints? constraints = null, Clip clipBehavior = default!, RouteSettings? settings = null, bool? requestFocus = null, AnimationStyle? popUpAnimationStyle = null) : base(settings: settings, requestFocus: requestFocus, traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop)
     {
         this.position = position;
         this.positionBuilder = positionBuilder;
@@ -606,15 +606,15 @@ public class _PopupMenuRoute__popup_menu<T> : global::Doroti.Framework.Widgets.P
         this.constraints = constraints;
         this.clipBehavior = clipBehavior;
         this.popUpAnimationStyle = popUpAnimationStyle;
-        itemSizes = new List<global::Doroti.Ui.Size?>(Enumerable.Repeat<global::Doroti.Ui.Size?>(null, checked((int)checked((long)items.Count))));
+        itemSizes = new List<Size?>(Enumerable.Repeat<Size?>(null, checked((int)checked((long)items.Count))));
         System.Diagnostics.Debug.Assert(position is not null != positionBuilder is not null);
     }
 
-    public override global::Doroti.Framework.Animation.Animation<double> createAnimation()
+    public override Animation<double> createAnimation()
     {
         if (!Equals(popUpAnimationStyle, AnimationStyle.noAnimation))
         {
-            return _animation ??= new global::Doroti.Framework.Animation.CurvedAnimation(parent: base.createAnimation(), curve: popUpAnimationStyle?.curve ?? Curves.linear, reverseCurve: popUpAnimationStyle?.reverseCurve ?? new global::Doroti.Framework.Animation.Interval(0.0, Popup_menuLibrary._kMenuCloseIntervalEnd));
+            return _animation ??= new CurvedAnimation(parent: base.createAnimation(), curve: popUpAnimationStyle?.curve ?? Curves.linear, reverseCurve: popUpAnimationStyle?.reverseCurve ?? new Interval(0.0, Popup_menuLibrary._kMenuCloseIntervalEnd));
         }
         return base.createAnimation();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -634,7 +634,7 @@ public class _PopupMenuRoute__popup_menu<T> : global::Doroti.Framework.Widgets.P
     public override Duration transitionDuration => DartRuntimePrimitives.ConvertValue<Duration>(popUpAnimationStyle?.duration ?? Popup_menuLibrary._kMenuDuration);
     public override bool barrierDismissible => true;
     public override Color? barrierColor => DartRuntimePrimitives.ConvertValue<Color>(null);
-    public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
+    public override Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation)
     {
         long? selectedItemIndex = default!;
         if (initialValue is not null)
@@ -652,17 +652,17 @@ public class _PopupMenuRoute__popup_menu<T> : global::Doroti.Framework.Widgets.P
             long selectedItemIndex__34930__value35194 = DartRuntimePrimitives.RequireValue(selectedItemIndex);
             scrollTo(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(selectedItemIndex__34930__value35194)));
         }
-        global::Doroti.Framework.Widgets.Widget menu = new _PopupMenu__popup_menu<T>(route: this, itemKeys: itemKeys, semanticLabel: semanticLabel, constraints: constraints, clipBehavior: clipBehavior);
-        global::Doroti.Framework.Widgets.MediaQueryData mediaQuery = MediaQuery.of(context);
-        return MediaQuery.CreateRemovePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: (context, constraints) =>
+        Widget menu = new _PopupMenu__popup_menu<T>(route: this, itemKeys: itemKeys, semanticLabel: semanticLabel, constraints: constraints, clipBehavior: clipBehavior);
+        MediaQueryData mediaQuery = MediaQuery.of(context);
+        return MediaQuery.CreateRemovePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: new LayoutBuilder(builder: (context, constraints) =>
         {
-            return new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new _PopupMenuRouteLayout__popup_menu(positionBuilder is null ? position! : positionBuilder.Invoke(context, constraints), itemSizes, selectedItemIndex, Directionality.of(context), mediaQuery.padding, _avoidBounds(mediaQuery)), child: capturedThemes.wrap(menu));
+            return new CustomSingleChildLayout(@delegate: new _PopupMenuRouteLayout__popup_menu(positionBuilder is null ? position! : positionBuilder.Invoke(context, constraints), itemSizes, selectedItemIndex, Directionality.of(context), mediaQuery.padding, _avoidBounds(mediaQuery)), child: capturedThemes.wrap(menu));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual HashSet<global::Doroti.Ui.Rect> _avoidBounds(global::Doroti.Framework.Widgets.MediaQueryData mediaQuery)
+    internal virtual HashSet<Rect> _avoidBounds(MediaQueryData mediaQuery)
     {
         return DisplayFeatureSubScreen.avoidBounds(mediaQuery).toSet();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -676,11 +676,11 @@ public class _PopupMenuRoute__popup_menu<T> : global::Doroti.Framework.Widgets.P
 
 }
 
-public delegate global::Doroti.Framework.Rendering.RelativeRect PopupMenuPositionBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.BoxConstraints constraints);
+public delegate RelativeRect PopupMenuPositionBuilder(BuildContext context, BoxConstraints constraints);
 
 public static partial class Popup_menuLibrary
 {
-    public static Future<T?> showMenu<T>(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RelativeRect? position = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Rendering.RelativeRect>? positionBuilder = null, List<PopupMenuEntry<T>> items = default!, T? initialValue = default, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? menuPadding = null, Color? color = null, bool useRootNavigator = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, global::Doroti.Framework.Animation.AnimationStyle? popUpAnimationStyle = null, bool? requestFocus = null)
+    public static Future<T?> showMenu<T>(BuildContext context, RelativeRect? position = null, Func<BuildContext, BoxConstraints, RelativeRect>? positionBuilder = null, List<PopupMenuEntry<T>> items = default!, T? initialValue = default, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, string? semanticLabel = null, ShapeBorder? shape = null, EdgeInsetsGeometry? menuPadding = null, Color? color = null, bool useRootNavigator = false, BoxConstraints? constraints = null, Clip clipBehavior = Clip.none, RouteSettings? routeSettings = null, AnimationStyle? popUpAnimationStyle = null, bool? requestFocus = null)
     {
         DartRuntimePrimitives.Assert(() => Enumerable.Any(items));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
@@ -701,8 +701,8 @@ public static partial class Popup_menuLibrary
                     break;
                 }
         }
-        var menuItemKeys = DartRuntimePrimitives.CreateList<global::Doroti.Framework.Widgets.GlobalKey<IState>>(checked(items.Count), (index) => GlobalKey<IState>.Create());
-        global::Doroti.Framework.Widgets.NavigatorState navigator = Navigator.of(context, rootNavigator: useRootNavigator);
+        var menuItemKeys = DartRuntimePrimitives.CreateList(checked(items.Count), (index) => GlobalKey<IState>.Create());
+        NavigatorState navigator = Navigator.of(context, rootNavigator: useRootNavigator);
         return navigator.push(new _PopupMenuRoute__popup_menu<T>(position: position, positionBuilder: positionBuilder, items: items, itemKeys: menuItemKeys, initialValue: initialValue, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, semanticLabel: semanticLabel, barrierLabel: MaterialLocalizations.of(context).menuDismissLabel, shape: shape, menuPadding: menuPadding, color: color, capturedThemes: InheritedTheme.capture(from: context, to: navigator.context), constraints: constraints, clipBehavior: clipBehavior, settings: routeSettings, popUpAnimationStyle: popUpAnimationStyle, requestFocus: requestFocus));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -712,44 +712,44 @@ public delegate void PopupMenuItemSelected<T>(T value);
 
 public delegate void PopupMenuCanceled();
 
-public delegate List<PopupMenuEntry<T>> PopupMenuItemBuilder<T>(global::Doroti.Framework.Widgets.BuildContext context);
+public delegate List<PopupMenuEntry<T>> PopupMenuItemBuilder<T>(BuildContext context);
 
-public class PopupMenuButton<T> : global::Doroti.Framework.Widgets.StatefulWidget
+public class PopupMenuButton<T> : StatefulWidget
 {
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, List<PopupMenuEntry<T>>> itemBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder { get; private set; } = default!;
     public virtual T? initialValue { get; private set; }
-    public virtual global::System.Action? onOpened { get; private set; }
-    public virtual global::System.Action<T>? onSelected { get; private set; }
-    public virtual global::System.Action? onCanceled { get; private set; }
+    public virtual Action? onOpened { get; private set; }
+    public virtual System.Action<T>? onSelected { get; private set; }
+    public virtual Action? onCanceled { get; private set; }
     public virtual string? tooltip { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? menuPadding { get; private set; }
+    public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual EdgeInsetsGeometry? menuPadding { get; private set; }
     public virtual double? splashRadius { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? icon { get; private set; }
+    public virtual Widget? child { get; private set; }
+    public virtual BorderRadius? borderRadius { get; private set; }
+    public virtual Widget? icon { get; private set; }
     public virtual Offset offset { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
     public virtual Color? color { get; private set; }
     public virtual Color? iconColor { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
     public virtual double? iconSize { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
     public virtual PopupMenuPosition? position { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual bool useRootNavigator { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.AnimationStyle? popUpAnimationStyle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.RouteSettings? routeSettings { get; private set; }
+    public virtual AnimationStyle? popUpAnimationStyle { get; private set; }
+    public virtual RouteSettings? routeSettings { get; private set; }
     public virtual ButtonStyle? style { get; private set; }
     public virtual bool? requestFocus { get; private set; }
 
-    public PopupMenuButton(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, List<PopupMenuEntry<T>>> itemBuilder = default!, T? initialValue = default, global::System.Action? onOpened = null, global::System.Action<T>? onSelected = null, global::System.Action? onCanceled = null, string? tooltip = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry? menuPadding = null, global::Doroti.Framework.Widgets.Widget? child = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, double? splashRadius = null, global::Doroti.Framework.Widgets.Widget? icon = null, double? iconSize = null, Offset offset = default, bool enabled = true, global::Doroti.Framework.Painting.ShapeBorder? shape = null, Color? color = null, Color? iconColor = null, bool? enableFeedback = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, PopupMenuPosition? position = null, Clip clipBehavior = Clip.none, bool useRootNavigator = false, global::Doroti.Framework.Animation.AnimationStyle? popUpAnimationStyle = null, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, ButtonStyle? style = null, bool? requestFocus = null) : base(key: key)
+    public PopupMenuButton(Key? key = null, Func<BuildContext, List<PopupMenuEntry<T>>> itemBuilder = default!, T? initialValue = default, Action? onOpened = null, System.Action<T>? onSelected = null, Action? onCanceled = null, string? tooltip = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, EdgeInsetsGeometry padding = default!, EdgeInsetsGeometry? menuPadding = null, Widget? child = null, BorderRadius? borderRadius = null, double? splashRadius = null, Widget? icon = null, double? iconSize = null, Offset offset = default, bool enabled = true, ShapeBorder? shape = null, Color? color = null, Color? iconColor = null, bool? enableFeedback = null, BoxConstraints? constraints = null, PopupMenuPosition? position = null, Clip clipBehavior = Clip.none, bool useRootNavigator = false, AnimationStyle? popUpAnimationStyle = null, RouteSettings? routeSettings = null, ButtonStyle? style = null, bool? requestFocus = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(8.0);
+        EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(8.0);
         this.itemBuilder = itemBuilder;
         this.initialValue = initialValue;
         this.onOpened = onOpened;
@@ -786,13 +786,13 @@ public class PopupMenuButton<T> : global::Doroti.Framework.Widgets.StatefulWidge
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new PopupMenuButtonState<T>());
 }
 
-public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<PopupMenuButton<T>>
+public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
 {
     internal virtual bool _isMenuExpanded { get; set; } = false;
-    internal virtual global::Doroti.Framework.Rendering.RelativeRect? _lastPosition { get; set; } = default;
+    internal virtual RelativeRect? _lastPosition { get; set; } = default;
     internal virtual PopupMenuThemeData _popupMenuTheme { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Rendering.RenderBox? _cachedButtonRenderBox { get; set; } = default;
-    internal virtual global::Doroti.Framework.Rendering.RenderBox? _cachedOverlayRenderBox { get; set; } = default;
+    internal virtual RenderBox? _cachedButtonRenderBox { get; set; } = default;
+    internal virtual RenderBox? _cachedOverlayRenderBox { get; set; } = default;
 
     public override void didChangeDependencies()
     {
@@ -805,19 +805,19 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
         if (mounted)
         {
             _popupMenuTheme = PopupMenuTheme.of(context);
-            global::Doroti.Framework.Rendering.RenderObject? buttonRenderObject = context.findRenderObject();
-            if (buttonRenderObject is global::Doroti.Framework.Rendering.RenderBox)
+            RenderObject? buttonRenderObject = context.findRenderObject();
+            if (buttonRenderObject is RenderBox)
             {
-                global::Doroti.Framework.Rendering.RenderBox buttonRenderObject__57178__as57237 = (global::Doroti.Framework.Rendering.RenderBox)buttonRenderObject;
+                RenderBox buttonRenderObject__57178__as57237 = (RenderBox)buttonRenderObject;
                 _cachedButtonRenderBox = buttonRenderObject__57178__as57237;
             }
             try
             {
-                global::Doroti.Framework.Widgets.NavigatorState navigator = Navigator.of(context, rootNavigator: widget.useRootNavigator);
-                global::Doroti.Framework.Rendering.RenderObject? overlayRenderObject = navigator.overlay?.context.findRenderObject();
-                if (overlayRenderObject is global::Doroti.Framework.Rendering.RenderBox)
+                NavigatorState navigator = Navigator.of(context, rootNavigator: widget.useRootNavigator);
+                RenderObject? overlayRenderObject = navigator.overlay?.context.findRenderObject();
+                if (overlayRenderObject is RenderBox)
                 {
-                    global::Doroti.Framework.Rendering.RenderBox overlayRenderObject__57508__as57589 = (global::Doroti.Framework.Rendering.RenderBox)overlayRenderObject;
+                    RenderBox overlayRenderObject__57508__as57589 = (RenderBox)overlayRenderObject;
                     _cachedOverlayRenderBox = overlayRenderObject__57508__as57589;
                 }
             }
@@ -829,27 +829,27 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
         }
     }
 
-    internal virtual global::Doroti.Framework.Rendering.RelativeRect _getDefaultPosition(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    internal virtual RelativeRect _getDefaultPosition(BoxConstraints constraints)
     {
         return _lastPosition ?? RelativeRect.CreateFromSize(Rect.zero, constraints.biggest);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Rendering.RelativeRect _positionBuilder(global::Doroti.Framework.Widgets.BuildContext __unused0, global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    internal virtual RelativeRect _positionBuilder(BuildContext __unused0, BoxConstraints constraints)
     {
         if (!mounted)
         {
             return _getDefaultPosition(constraints);
         }
         PopupMenuThemeData popupMenuTheme = _popupMenuTheme;
-        global::Doroti.Framework.Rendering.RenderBox? button = _cachedButtonRenderBox;
-        global::Doroti.Framework.Rendering.RenderBox? overlay = _cachedOverlayRenderBox;
+        RenderBox? button = _cachedButtonRenderBox;
+        RenderBox? overlay = _cachedOverlayRenderBox;
         if ((button is null) || (overlay is null) || !button.attached || !overlay.attached)
         {
             return _getDefaultPosition(constraints);
         }
         PopupMenuPosition popupMenuPosition = (widget.position ?? popupMenuTheme.position) ?? PopupMenuPosition.over;
-        global::Doroti.Ui.Offset offsetLocal = default!;
+        Offset offsetLocal = default!;
         switch (popupMenuPosition)
         {
             case var __constant59105 when Equals(__constant59105, PopupMenuPosition.over):
@@ -859,10 +859,10 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
                 }
             case var __constant59172 when Equals(__constant59172, PopupMenuPosition.under):
                 {
-                    offsetLocal = new global::Doroti.Ui.Offset(0.0, button.size.height) + widget.offset;
+                    offsetLocal = new Offset(0.0, button.size.height) + widget.offset;
                     if (widget.child is null)
                     {
-                        offsetLocal -= new global::Doroti.Ui.Offset(0.0, widget.padding.vertical / 2L);
+                        offsetLocal -= new Offset(0.0, widget.padding.vertical / 2L);
                     }
                     break;
                 }
@@ -883,7 +883,7 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
             {
                 _isMenuExpanded = true;
             });
-            DartRuntimePrimitives.Ignore(Popup_menuLibrary.showMenu<T>(context: context, elevation: widget.elevation, shadowColor: widget.shadowColor, surfaceTintColor: widget.surfaceTintColor, items: itemsLocal, initialValue: widget.initialValue, positionBuilder: _positionBuilder, shape: widget.shape, menuPadding: widget.menuPadding, color: widget.color, constraints: widget.constraints, clipBehavior: widget.clipBehavior, useRootNavigator: widget.useRootNavigator, popUpAnimationStyle: widget.popUpAnimationStyle, routeSettings: widget.routeSettings, requestFocus: widget.requestFocus).then((newValue) =>
+            DartRuntimePrimitives.Ignore(Popup_menuLibrary.showMenu(context: context, elevation: widget.elevation, shadowColor: widget.shadowColor, surfaceTintColor: widget.surfaceTintColor, items: itemsLocal, initialValue: widget.initialValue, positionBuilder: _positionBuilder, shape: widget.shape, menuPadding: widget.menuPadding, color: widget.color, constraints: widget.constraints, clipBehavior: widget.clipBehavior, useRootNavigator: widget.useRootNavigator, popUpAnimationStyle: widget.popUpAnimationStyle, routeSettings: widget.routeSettings, requestFocus: widget.requestFocus).then((newValue) =>
             {
                 if (!mounted)
                 {
@@ -909,46 +909,46 @@ public class PopupMenuButtonState<T> : global::Doroti.Framework.Widgets.State<Po
     {
         get
         {
-            global::Doroti.Framework.Widgets.NavigationMode mode = MediaQuery.maybeNavigationModeOf(context) ?? NavigationMode.traditional;
+            NavigationMode mode = MediaQuery.maybeNavigationModeOf(context) ?? NavigationMode.traditional;
             return mode switch { NavigationMode.traditional => widget.enabled, NavigationMode.directional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         }
     }
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.IconThemeData iconTheme = IconTheme.of(context);
+        IconThemeData iconTheme = IconTheme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
         bool enableFeedbackLocal = (widget.enableFeedback ?? PopupMenuTheme.of(context).enableFeedback) ?? true;
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         if (widget.child is not null)
         {
-            global::Doroti.Framework.Widgets.Widget childLocal = new Tooltip(message: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip, child: new InkWell(borderRadius: widget.borderRadius, onTap: widget.enabled ? showButtonMenu : null, canRequestFocus: _canRequestFocus, radius: widget.splashRadius, enableFeedback: enableFeedbackLocal, child: widget.child));
+            Widget childLocal = new Tooltip(message: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip, child: new InkWell(borderRadius: widget.borderRadius, onTap: widget.enabled ? showButtonMenu : null, canRequestFocus: _canRequestFocus, radius: widget.splashRadius, enableFeedback: enableFeedbackLocal, child: widget.child));
             MaterialTapTargetSize tapTargetSizeLocal = widget.style?.tapTargetSize ?? MaterialTapTargetSize.shrinkWrap;
             if (Equals(tapTargetSizeLocal, MaterialTapTargetSize.padded))
             {
-                return new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: Widgets.ConstantsLibrary.kMinInteractiveDimension, minHeight: Widgets.ConstantsLibrary.kMinInteractiveDimension), child: childLocal);
+                return new ConstrainedBox(constraints: new BoxConstraints(minWidth: Widgets.ConstantsLibrary.kMinInteractiveDimension, minHeight: Widgets.ConstantsLibrary.kMinInteractiveDimension), child: childLocal);
             }
-            return new global::Doroti.Framework.Widgets.Semantics(expanded: _isMenuExpanded, child: childLocal);
+            return new Widgets.Semantics(expanded: _isMenuExpanded, child: childLocal);
         }
-        return new global::Doroti.Framework.Widgets.Semantics(child: new IconButton(key: StandardComponentTypeMembers.key(StandardComponentType.moreButton), icon: new global::Doroti.Framework.Widgets.Semantics(expanded: _isMenuExpanded, child: widget.icon ?? new global::Doroti.Framework.Widgets.Icon(Icons.adaptive.more)), padding: widget.padding, splashRadius: widget.splashRadius, iconSize: (widget.iconSize ?? popupMenuTheme.iconSize) ?? iconTheme.size, color: (widget.iconColor ?? popupMenuTheme.iconColor) ?? iconTheme.color, tooltip: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip, onPressed: widget.enabled ? showButtonMenu : null, enableFeedback: enableFeedbackLocal, style: widget.style));
+        return new Widgets.Semantics(child: new IconButton(key: StandardComponentTypeMembers.key(StandardComponentType.moreButton), icon: new Widgets.Semantics(expanded: _isMenuExpanded, child: widget.icon ?? new Icon(Icons.adaptive.more)), padding: widget.padding, splashRadius: widget.splashRadius, iconSize: (widget.iconSize ?? popupMenuTheme.iconSize) ?? iconTheme.size, color: (widget.iconColor ?? popupMenuTheme.iconColor) ?? iconTheme.color, tooltip: widget.tooltip ?? MaterialLocalizations.of(context).showMenuTooltip, onPressed: widget.enabled ? showButtonMenu : null, enableFeedback: enableFeedbackLocal, style: widget.style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _EffectiveMouseCursor__popup_menu : global::Doroti.Framework.Widgets.WidgetStateMouseCursor
+internal class _EffectiveMouseCursor__popup_menu : WidgetStateMouseCursor
 {
-    public virtual global::Doroti.Framework.Services.MouseCursor? widgetCursor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? themeCursor { get; private set; }
+    public virtual MouseCursor? widgetCursor { get; private set; }
+    public virtual WidgetStateProperty<MouseCursor?>? themeCursor { get; private set; }
 
-    internal _EffectiveMouseCursor__popup_menu(global::Doroti.Framework.Services.MouseCursor? widgetCursor, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? themeCursor)
+    internal _EffectiveMouseCursor__popup_menu(MouseCursor? widgetCursor, WidgetStateProperty<MouseCursor?>? themeCursor)
     {
         this.widgetCursor = widgetCursor;
         this.themeCursor = themeCursor;
     }
 
-    public override global::Doroti.Framework.Services.MouseCursor resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states)
+    public override MouseCursor resolve(HashSet<WidgetState> states)
     {
-        return (WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(widgetCursor, states) ?? (themeCursor?.resolve(states))) ?? adaptiveClickable.resolve(states);
+        return (WidgetStateProperty.resolveAs(widgetCursor, states) ?? (themeCursor?.resolve(states))) ?? adaptiveClickable.resolve(states);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -957,7 +957,7 @@ internal class _EffectiveMouseCursor__popup_menu : global::Doroti.Framework.Widg
 
 internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
     private bool __late__theme_initialized;
     private ThemeData __late__theme = default!;
     internal virtual ThemeData _theme
@@ -1000,20 +1000,20 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
             return __late__textTheme;
         }
     }
-    public static global::Doroti.Framework.Painting.EdgeInsets menuItemPadding = EdgeInsets.CreateSymmetric(horizontal: 12.0);
+    public static EdgeInsets menuItemPadding = EdgeInsets.CreateSymmetric(horizontal: 12.0);
 
-    internal _PopupMenuDefaultsM3__popup_menu(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 3.0)
+    internal _PopupMenuDefaultsM3__popup_menu(BuildContext context) : base(elevation: 3.0)
     {
         this.context = context;
     }
 
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle
+    public override WidgetStateProperty<TextStyle?>? labelTextStyle
     {
         get
         {
-            return (global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>?)WidgetStateProperty.resolveWith((states) =>
+            return (WidgetStateProperty<TextStyle?>?)WidgetStateProperty.resolveWith((states) =>
             {
-                global::Doroti.Framework.Painting.TextStyle style = _textTheme.labelLarge!;
+                TextStyle style = _textTheme.labelLarge!;
                 if (states.Contains(WidgetState.disabled))
                 {
                     return style.apply(color: _colors.onSurface.withOpacity(0.38));
@@ -1023,9 +1023,9 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
             });
         }
     }
-    public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.surfaceContainer);
-    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.shadow);
-    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0))));
-    public override global::Doroti.Framework.Painting.EdgeInsets? menuPadding => EdgeInsets.CreateSymmetric(vertical: 8.0);
+    public override Color? color => DartRuntimePrimitives.ConvertValue<Color>(_colors.surfaceContainer);
+    public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.shadow);
+    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<ShapeBorder>(new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(4.0))));
+    public override EdgeInsets? menuPadding => EdgeInsets.CreateSymmetric(vertical: 8.0);
 }

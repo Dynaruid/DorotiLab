@@ -12,35 +12,35 @@ internal enum _RadioType__radio_list_tile
     adaptive
 }
 
-public class RadioListTile<T> : global::Doroti.Framework.Widgets.StatefulWidget
+public class RadioListTile<T> : StatefulWidget
 {
     public virtual T value { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
-    public virtual global::System.Action<T?>? onChanged { get; private set; }
-    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual System.Action<T?>? onChanged { get; private set; }
+    public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool toggleable { get; private set; } = default!;
     public virtual Color? activeColor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor { get; private set; }
+    public virtual WidgetStateProperty<Color?>? fillColor { get; private set; }
     public virtual MaterialTapTargetSize? materialTapTargetSize { get; private set; }
     public virtual Color? hoverColor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor { get; private set; }
+    public virtual WidgetStateProperty<Color?>? overlayColor { get; private set; }
     public virtual double? splashRadius { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? title { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? subtitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? secondary { get; private set; }
+    public virtual Widget? title { get; private set; }
+    public virtual Widget? subtitle { get; private set; }
+    public virtual Widget? secondary { get; private set; }
     public virtual bool? isThreeLine { get; private set; }
     public virtual bool? dense { get; private set; }
     public virtual bool selected { get; private set; } = default!;
     public virtual ListTileControlAffinity? controlAffinity { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
+    public virtual EdgeInsetsGeometry? contentPadding { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
     public virtual Color? tileColor { get; private set; }
     public virtual Color? selectedTileColor { get; private set; }
     public virtual VisualDensity? visualDensity { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStatesController? statesController { get; private set; }
-    public virtual global::System.Action<bool>? onFocusChange { get; private set; }
+    public virtual FocusNode? focusNode { get; private set; }
+    public virtual WidgetStatesController? statesController { get; private set; }
+    public virtual System.Action<bool>? onFocusChange { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
     public virtual double? horizontalTitleGap { get; private set; }
     public virtual double? minVerticalPadding { get; private set; }
@@ -52,11 +52,11 @@ public class RadioListTile<T> : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual bool useCupertinoCheckmarkStyle { get; private set; } = default!;
     public virtual double radioScaleFactor { get; private set; } = default!;
     public virtual bool? enabled { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? radioBackgroundColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderSide? radioSide { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? radioInnerRadius { get; private set; }
+    public virtual WidgetStateProperty<Color?>? radioBackgroundColor { get; private set; }
+    public virtual BorderSide? radioSide { get; private set; }
+    public virtual WidgetStateProperty<double?>? radioInnerRadius { get; private set; }
 
-    public RadioListTile(global::Doroti.Framework.Foundation.Key? key = null, T value = default!, T? groupValue = default, global::System.Action<T?>? onChanged = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Widgets.Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, global::Doroti.Framework.Widgets.Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, global::System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool? enabled = null, bool internalAddSemanticForOnTap = false, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? radioBackgroundColor = null, global::Doroti.Framework.Painting.BorderSide? radioSide = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? radioInnerRadius = null) : base(key: key)
+    public RadioListTile(Key? key = null, T value = default!, T? groupValue = default, System.Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, ListTileTitleAlignment? titleAlignment = null, bool? enabled = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null) : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -102,7 +102,7 @@ public class RadioListTile<T> : global::Doroti.Framework.Widgets.StatefulWidget
         System.Diagnostics.Debug.Assert((isThreeLine != true) || (subtitle is not null));
     }
 
-    public static RadioListTile<T> CreateAdaptive(global::Doroti.Framework.Foundation.Key? key = null, T value = default!, T? groupValue = default, global::System.Action<T?>? onChanged = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Widgets.Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, global::Doroti.Framework.Widgets.Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, global::System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, bool? enabled = null, bool useCupertinoCheckmarkStyle = false, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? radioBackgroundColor = null, global::Doroti.Framework.Painting.BorderSide? radioSide = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? radioInnerRadius = null)
+    public static RadioListTile<T> CreateAdaptive(Key? key = null, T value = default!, T? groupValue = default, System.Action<T?>? onChanged = null, MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, WidgetStateProperty<Color?>? fillColor = null, Color? hoverColor = null, WidgetStateProperty<Color?>? overlayColor = null, double? splashRadius = null, MaterialTapTargetSize? materialTapTargetSize = null, Widget? title = null, Widget? subtitle = null, bool? isThreeLine = null, bool? dense = null, Widget? secondary = null, bool selected = false, ListTileControlAffinity? controlAffinity = null, bool autofocus = false, EdgeInsetsGeometry? contentPadding = null, ShapeBorder? shape = null, Color? tileColor = null, Color? selectedTileColor = null, VisualDensity? visualDensity = null, FocusNode? focusNode = null, WidgetStatesController? statesController = null, System.Action<bool>? onFocusChange = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, double radioScaleFactor = 1.0, bool? enabled = null, bool useCupertinoCheckmarkStyle = false, ListTileTitleAlignment? titleAlignment = null, bool internalAddSemanticForOnTap = false, WidgetStateProperty<Color?>? radioBackgroundColor = null, BorderSide? radioSide = null, WidgetStateProperty<double?>? radioInnerRadius = null)
     {
         var __instance = new RadioListTile<T>(key: key, value: value, groupValue: groupValue, onChanged: onChanged, mouseCursor: mouseCursor, toggleable: toggleable, activeColor: activeColor, fillColor: fillColor, hoverColor: hoverColor, overlayColor: overlayColor, splashRadius: splashRadius, materialTapTargetSize: materialTapTargetSize, title: title, subtitle: subtitle, isThreeLine: isThreeLine, dense: dense, secondary: secondary, selected: selected, controlAffinity: controlAffinity, autofocus: autofocus, contentPadding: contentPadding, shape: shape, tileColor: tileColor, selectedTileColor: selectedTileColor, visualDensity: visualDensity, focusNode: focusNode, statesController: statesController, onFocusChange: onFocusChange, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth, minTileHeight: minTileHeight, radioScaleFactor: radioScaleFactor, titleAlignment: titleAlignment, enabled: enabled, internalAddSemanticForOnTap: internalAddSemanticForOnTap, radioBackgroundColor: radioBackgroundColor, radioSide: radioSide, radioInnerRadius: radioInnerRadius);
         __instance.value = value;
@@ -153,9 +153,9 @@ public class RadioListTile<T> : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RadioListTileState__radio_list_tile<T>());
 }
 
-internal class _RadioListTileState__radio_list_tile<T> : global::Doroti.Framework.Widgets.State<RadioListTile<T>>, global::Doroti.Framework.Widgets.RadioClient<T>
+internal class _RadioListTileState__radio_list_tile<T> : State<RadioListTile<T>>, RadioClient<T>
 {
-    internal virtual global::Doroti.Framework.Widgets.FocusNode? _internalFocusNode { get; set; } = default;
+    internal virtual FocusNode? _internalFocusNode { get; set; } = default;
     private bool __late__radioRegistry_initialized;
     private _RadioRegistry__radio_list_tile<T> __late__radioRegistry = default!;
     internal virtual _RadioRegistry__radio_list_tile<T> _radioRegistry
@@ -172,7 +172,7 @@ internal class _RadioListTileState__radio_list_tile<T> : global::Doroti.Framewor
     }
     public virtual RadioGroupRegistry<T>? _registry { get; set; } = default;
 
-    public virtual global::Doroti.Framework.Widgets.FocusNode focusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FocusNode>(widget.focusNode ?? (_internalFocusNode ??= new global::Doroti.Framework.Widgets.FocusNode()));
+    public virtual FocusNode focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? (_internalFocusNode ??= new FocusNode()));
     public virtual T radioValue => widget.value;
     public virtual bool tristate => widget.toggleable;
     public virtual bool enabled => _enabled;
@@ -222,37 +222,37 @@ internal class _RadioListTileState__radio_list_tile<T> : global::Doroti.Framewor
         base.dispose();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => !(widget.enabled ?? false) || (widget.onChanged is not null) || (RadioGroup.maybeOf<T>(context) is not null), () => (object?)"Radio is enabled but has no RadioListTile.onChange or registry above");
-        global::Doroti.Framework.Widgets.Widget control = default!;
+        Widget control = default!;
         switch (widget._radioType)
         {
             case _RadioType__radio_list_tile.material:
                 {
-                    control = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeFocus(child: new Radio<T>(value: radioValue, groupValue: _radioRegistry.groupValue, toggleable: widget.toggleable, activeColor: widget.activeColor, materialTapTargetSize: widget.materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: widget.autofocus, fillColor: widget.fillColor, mouseCursor: widget.mouseCursor, hoverColor: widget.hoverColor, overlayColor: widget.overlayColor, splashRadius: widget.splashRadius, enabled: _enabled, groupRegistry: _radioRegistry, backgroundColor: widget.radioBackgroundColor, side: widget.radioSide, innerRadius: widget.radioInnerRadius)));
+                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: new Radio<T>(value: radioValue, groupValue: _radioRegistry.groupValue, toggleable: widget.toggleable, activeColor: widget.activeColor, materialTapTargetSize: widget.materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: widget.autofocus, fillColor: widget.fillColor, mouseCursor: widget.mouseCursor, hoverColor: widget.hoverColor, overlayColor: widget.overlayColor, splashRadius: widget.splashRadius, enabled: _enabled, groupRegistry: _radioRegistry, backgroundColor: widget.radioBackgroundColor, side: widget.radioSide, innerRadius: widget.radioInnerRadius)));
                     break;
                 }
             case _RadioType__radio_list_tile.adaptive:
                 {
-                    control = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeFocus(child: Radio<T>.CreateAdaptive(value: radioValue, groupValue: _radioRegistry.groupValue, toggleable: widget.toggleable, activeColor: widget.activeColor, materialTapTargetSize: widget.materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: widget.autofocus, fillColor: widget.fillColor, mouseCursor: widget.mouseCursor, hoverColor: widget.hoverColor, overlayColor: widget.overlayColor, splashRadius: widget.splashRadius, useCupertinoCheckmarkStyle: widget.useCupertinoCheckmarkStyle, enabled: _enabled, groupRegistry: _radioRegistry, backgroundColor: widget.radioBackgroundColor, side: widget.radioSide, innerRadius: widget.radioInnerRadius)));
+                    control = DartRuntimePrimitives.ConvertValue<Widget>(new ExcludeFocus(child: Radio<T>.CreateAdaptive(value: radioValue, groupValue: _radioRegistry.groupValue, toggleable: widget.toggleable, activeColor: widget.activeColor, materialTapTargetSize: widget.materialTapTargetSize ?? MaterialTapTargetSize.shrinkWrap, autofocus: widget.autofocus, fillColor: widget.fillColor, mouseCursor: widget.mouseCursor, hoverColor: widget.hoverColor, overlayColor: widget.overlayColor, splashRadius: widget.splashRadius, useCupertinoCheckmarkStyle: widget.useCupertinoCheckmarkStyle, enabled: _enabled, groupRegistry: _radioRegistry, backgroundColor: widget.radioBackgroundColor, side: widget.radioSide, innerRadius: widget.radioInnerRadius)));
                     break;
                 }
         }
         if (widget.radioScaleFactor != 1.0)
         {
-            control = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Transform.CreateScale(scale: widget.radioScaleFactor, child: control));
+            control = DartRuntimePrimitives.ConvertValue<Widget>(Transform.CreateScale(scale: widget.radioScaleFactor, child: control));
         }
         ListTileThemeData listTileTheme = ListTileTheme.of(context);
         ListTileControlAffinity effectiveControlAffinity = (widget.controlAffinity ?? listTileTheme.controlAffinity) ?? ListTileControlAffinity.platform;
-        global::Doroti.Framework.Widgets.Widget? leadingLocal = default!;
-        global::Doroti.Framework.Widgets.Widget? trailingLocal = default!;
-        DartRuntimePrimitives.Ignore((leadingLocal, trailingLocal) = effectiveControlAffinity switch { var __constant24953 when Equals(__constant24953, ListTileControlAffinity.leading) => DartRuntimePrimitives.ConvertValue<(global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?)>((control, widget.secondary)), var __constant24994 when Equals(__constant24994, ListTileControlAffinity.platform) => DartRuntimePrimitives.ConvertValue<(global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?)>((control, widget.secondary)), var __constant25065 when Equals(__constant25065, ListTileControlAffinity.trailing) => DartRuntimePrimitives.ConvertValue<(global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?)>((widget.secondary, control)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        Widget? leadingLocal = default!;
+        Widget? trailingLocal = default!;
+        DartRuntimePrimitives.Ignore((leadingLocal, trailingLocal) = effectiveControlAffinity switch { var __constant24953 when Equals(__constant24953, ListTileControlAffinity.leading) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, widget.secondary)), var __constant24994 when Equals(__constant24994, ListTileControlAffinity.platform) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((control, widget.secondary)), var __constant25065 when Equals(__constant25065, ListTileControlAffinity.trailing) => DartRuntimePrimitives.ConvertValue<(Widget?, Widget?)>((widget.secondary, control)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         ThemeData theme = Theme.of(context);
         RadioThemeData radioThemeData = RadioTheme.of(context);
-        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection25269 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (widget.selected) { __collection25269.Add(WidgetState.selected); } return __collection25269; }))();
-        global::Doroti.Ui.Color effectiveActiveColor = (widget.activeColor ?? (radioThemeData.fillColor?.resolve(states))) ?? theme.colorScheme.secondary;
-        return new global::Doroti.Framework.Widgets.MergeSemantics(child: new ListTile(selectedColor: effectiveActiveColor, leading: leadingLocal, title: widget.title, subtitle: widget.subtitle, trailing: trailingLocal, isThreeLine: widget.isThreeLine, dense: widget.dense, enabled: _enabled, shape: widget.shape, tileColor: widget.tileColor, selectedTileColor: widget.selectedTileColor, onTap: _enabled ? _handleListTileTap : null, selected: widget.selected, autofocus: widget.autofocus, contentPadding: widget.contentPadding, visualDensity: widget.visualDensity, focusNode: focusNode, statesController: widget.statesController, onFocusChange: widget.onFocusChange, enableFeedback: widget.enableFeedback, horizontalTitleGap: widget.horizontalTitleGap, minVerticalPadding: widget.minVerticalPadding, minLeadingWidth: widget.minLeadingWidth, minTileHeight: widget.minTileHeight, titleAlignment: widget.titleAlignment, internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap));
+        var states = ((Func<HashSet<WidgetState>>)(() => { var __collection25269 = new HashSet<WidgetState>(); if (widget.selected) { __collection25269.Add(WidgetState.selected); } return __collection25269; }))();
+        Color effectiveActiveColor = (widget.activeColor ?? (radioThemeData.fillColor?.resolve(states))) ?? theme.colorScheme.secondary;
+        return new MergeSemantics(child: new ListTile(selectedColor: effectiveActiveColor, leading: leadingLocal, title: widget.title, subtitle: widget.subtitle, trailing: trailingLocal, isThreeLine: widget.isThreeLine, dense: widget.dense, enabled: _enabled, shape: widget.shape, tileColor: widget.tileColor, selectedTileColor: widget.selectedTileColor, onTap: _enabled ? _handleListTileTap : null, selected: widget.selected, autofocus: widget.autofocus, contentPadding: widget.contentPadding, visualDensity: widget.visualDensity, focusNode: focusNode, statesController: widget.statesController, onFocusChange: widget.onFocusChange, enableFeedback: widget.enableFeedback, horizontalTitleGap: widget.horizontalTitleGap, minVerticalPadding: widget.minVerticalPadding, minLeadingWidth: widget.minLeadingWidth, minTileHeight: widget.minTileHeight, titleAlignment: widget.titleAlignment, internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -272,7 +272,7 @@ internal class _RadioListTileState__radio_list_tile<T> : global::Doroti.Framewor
     }
 }
 
-internal class _RadioRegistry__radio_list_tile<T> : global::Doroti.Framework.Widgets.RadioGroupRegistry<T>
+internal class _RadioRegistry__radio_list_tile<T> : RadioGroupRegistry<T>
 {
     public virtual _RadioListTileState__radio_list_tile<T> state { get; private set; } = default!;
 
@@ -282,12 +282,12 @@ internal class _RadioRegistry__radio_list_tile<T> : global::Doroti.Framework.Wid
     }
 
     public virtual T? groupValue => state.effectiveGroupValue;
-    public virtual global::System.Action<T?> onChanged => state.handleChange;
-    public virtual void registerClient(global::Doroti.Framework.Widgets.RadioClient<T> radio)
+    public virtual System.Action<T?> onChanged => state.handleChange;
+    public virtual void registerClient(RadioClient<T> radio)
     {
     }
 
-    public virtual void unregisterClient(global::Doroti.Framework.Widgets.RadioClient<T> radio)
+    public virtual void unregisterClient(RadioClient<T> radio)
     {
     }
 

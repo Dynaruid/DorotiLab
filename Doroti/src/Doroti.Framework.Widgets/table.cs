@@ -7,11 +7,11 @@ namespace Doroti.Framework.Widgets;
 
 public class TableRow
 {
-    public virtual global::Doroti.Framework.Foundation.LocalKey? key { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Decoration? decoration { get; private set; }
+    public virtual LocalKey? key { get; private set; }
+    public virtual Decoration? decoration { get; private set; }
     public virtual List<Widget> children { get; private set; } = default!;
 
-    public TableRow(global::Doroti.Framework.Foundation.LocalKey? key = null, global::Doroti.Framework.Painting.Decoration? decoration = null, List<Widget> children = default!)
+    public TableRow(LocalKey? key = null, Decoration? decoration = null, List<Widget> children = default!)
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.key = key;
@@ -48,10 +48,10 @@ public class TableRow
 
 internal class _TableElementRow__table
 {
-    public virtual global::Doroti.Framework.Foundation.LocalKey? key { get; private set; }
+    public virtual LocalKey? key { get; private set; }
     public virtual List<Element> children { get; private set; } = default!;
 
-    internal _TableElementRow__table(global::Doroti.Framework.Foundation.LocalKey? key = null, List<Element> children = default!)
+    internal _TableElementRow__table(LocalKey? key = null, List<Element> children = default!)
     {
         this.key = key;
         this.children = children;
@@ -62,18 +62,18 @@ internal class _TableElementRow__table
 public class Table : RenderObjectWidget
 {
     public virtual List<TableRow> children { get; private set; } = default!;
-    public virtual DartMap<long, global::Doroti.Framework.Rendering.TableColumnWidth>? columnWidths { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.TableColumnWidth defaultColumnWidth { get; private set; } = default!;
+    public virtual DartMap<long, TableColumnWidth>? columnWidths { get; private set; }
+    public virtual TableColumnWidth defaultColumnWidth { get; private set; } = default!;
     public virtual TextDirection? textDirection { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.TableBorder? border { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.TableCellVerticalAlignment defaultVerticalAlignment { get; private set; } = default!;
+    public virtual TableBorder? border { get; private set; }
+    public virtual TableCellVerticalAlignment defaultVerticalAlignment { get; private set; } = default!;
     public virtual TextBaseline? textBaseline { get; private set; }
-    internal virtual List<global::Doroti.Framework.Painting.Decoration?>? _rowDecorations { get; private set; }
+    internal virtual List<Decoration?>? _rowDecorations { get; private set; }
 
-    public Table(global::Doroti.Framework.Foundation.Key? key = null, List<TableRow> children = default!, DartMap<long, global::Doroti.Framework.Rendering.TableColumnWidth>? columnWidths = null, global::Doroti.Framework.Rendering.TableColumnWidth defaultColumnWidth = default!, TextDirection? textDirection = null, global::Doroti.Framework.Rendering.TableBorder? border = null, global::Doroti.Framework.Rendering.TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top, TextBaseline? textBaseline = null) : base(key: key)
+    public Table(Key? key = null, List<TableRow> children = default!, DartMap<long, TableColumnWidth>? columnWidths = null, TableColumnWidth defaultColumnWidth = default!, TextDirection? textDirection = null, TableBorder? border = null, TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top, TextBaseline? textBaseline = null) : base(key: key)
     {
         List<TableRow> __children = children ?? new List<TableRow>();
-        global::Doroti.Framework.Rendering.TableColumnWidth __defaultColumnWidth = defaultColumnWidth ?? new global::Doroti.Framework.Rendering.FlexColumnWidth();
+        TableColumnWidth __defaultColumnWidth = defaultColumnWidth ?? new FlexColumnWidth();
         this.children = __children;
         this.columnWidths = columnWidths;
         this.defaultColumnWidth = __defaultColumnWidth;
@@ -81,9 +81,9 @@ public class Table : RenderObjectWidget
         this.border = border;
         this.defaultVerticalAlignment = defaultVerticalAlignment;
         this.textBaseline = textBaseline;
-        _rowDecorations = this.children.any((row) => row.decoration is not null) ? this.children.map<TableRow, global::Doroti.Framework.Painting.Decoration?>((row) => row.decoration).ToList() : null;
+        _rowDecorations = this.children.any((row) => row.decoration is not null) ? this.children.map((row) => row.decoration).ToList() : null;
         System.Diagnostics.Debug.Assert((!Equals(defaultVerticalAlignment, TableCellVerticalAlignment.baseline)) || (textBaseline is not null));
-        System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
+        System.Diagnostics.Debug.Assert(((Func<bool>)(() =>
         {
             if (__children.any((row1) => (row1.key is not null) && __children.any((row2) => (!Equals(row1, row2)) && Equals(row1.key, row2.key))))
             {
@@ -92,7 +92,7 @@ public class Table : RenderObjectWidget
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))());
-        System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
+        System.Diagnostics.Debug.Assert(((Func<bool>)(() =>
         {
             if (Enumerable.Any(__children))
             {
@@ -112,20 +112,20 @@ public class Table : RenderObjectWidget
     }
 
     public override RenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<RenderObjectElement>(new _TableElement__table(this));
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
-        return new global::Doroti.Framework.Rendering.RenderTable(columns: Enumerable.Any(children) ? checked(children[(int)0L].children.Count) : 0L, rows: checked(children.Count), columnWidths: columnWidths, defaultColumnWidth: defaultColumnWidth, textDirection: textDirection ?? Directionality.of(context), border: border, rowDecorations: _rowDecorations, configuration: ImageLibrary.createLocalImageConfiguration(context), defaultVerticalAlignment: defaultVerticalAlignment, textBaseline: textBaseline);
+        return new RenderTable(columns: Enumerable.Any(children) ? checked(children[(int)0L].children.Count) : 0L, rows: checked(children.Count), columnWidths: columnWidths, defaultColumnWidth: defaultColumnWidth, textDirection: textDirection ?? Directionality.of(context), border: border, rowDecorations: _rowDecorations, configuration: ImageLibrary.createLocalImageConfiguration(context), defaultVerticalAlignment: defaultVerticalAlignment, textBaseline: textBaseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderTable)renderObject;
+        var __renderObject = (RenderTable)renderObject;
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Assert(() => __renderObject.columns == (Enumerable.Any(children) ? checked(children[(int)0L].children.Count) : 0L));
         DartRuntimePrimitives.Assert(() => __renderObject.rows == checked(children.Count));
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderTable>)(() =>
+        DartRuntimePrimitives.Ignore(((Func<RenderTable>)(() =>
 {
     var __cascade = __renderObject;
     __cascade.columnWidths = columnWidths;
@@ -152,18 +152,18 @@ internal class _TableElement__table : RenderObjectElement
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderTable renderObject => (global::Doroti.Framework.Rendering.RenderTable)base.renderObject;
+    public override RenderTable renderObject => (RenderTable)base.renderObject;
     public override void mount(Element? parent, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => !_doingMountOrUpdate);
         _doingMountOrUpdate = true;
         base.mount(parent, newSlot);
         var rowIndex = -1L;
-        _children = ((Table?)widget)!.children.map<TableRow, _TableElementRow__table>((row) =>
+        _children = ((Table?)widget)!.children.map((row) =>
         {
             var columnIndex = 0L;
             rowIndex += 1L;
-            return new _TableElementRow__table(key: row.key, children: row.children.map<Widget, Element>((child) =>
+            return new _TableElementRow__table(key: row.key, children: row.children.map((child) =>
             {
                 return inflateWidget(child, new _TableSlot__table(columnIndex++, rowIndex));
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -175,9 +175,9 @@ internal class _TableElement__table : RenderObjectElement
         _doingMountOrUpdate = false;
     }
 
-    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         var __slot = slot as _TableSlot__table ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
         renderObject.setupParentData(__child);
         if (!_doingMountOrUpdate)
@@ -186,17 +186,17 @@ internal class _TableElement__table : RenderObjectElement
         }
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(RenderObject child, object? oldSlot, object? newSlot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         var __oldSlot = (_TableSlot__table?)oldSlot;
         var __newSlot = (_TableSlot__table?)newSlot;
         DartRuntimePrimitives.Assert(() => _doingMountOrUpdate);
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(RenderObject child, object? slot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         var __slot = slot as _TableSlot__table ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
         renderObject.setChild(__slot.column, __slot.row, null);
     }
@@ -206,7 +206,7 @@ internal class _TableElement__table : RenderObjectElement
         var __newWidget = (Table)newWidget;
         DartRuntimePrimitives.Assert(() => !_doingMountOrUpdate);
         _doingMountOrUpdate = true;
-        var oldKeyedRows = new DartMap<global::Doroti.Framework.Foundation.LocalKey, List<Element>>();
+        var oldKeyedRows = new DartMap<LocalKey, List<Element>>();
         foreach (_TableElementRow__table rowLocal in _children)
         {
             if (rowLocal.key is not null)
@@ -261,17 +261,17 @@ internal class _TableElement__table : RenderObjectElement
     {
         renderObject.setFlatChildren(Enumerable.Any(_children) ? checked(_children[(int)0L].children.Count) : 0L, _children.expand((row) =>
         {
-            return row.children.map<Element, global::Doroti.Framework.Rendering.RenderBox>((child) =>
+            return row.children.map((child) =>
             {
-                var box = ((global::Doroti.Framework.Rendering.RenderBox?)child.renderObject!)!;
+                var box = ((RenderBox?)child.renderObject!)!;
                 return box;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }).ToList().Cast<global::Doroti.Framework.Rendering.RenderBox?>().ToList());
+        }).ToList().Cast<RenderBox?>().ToList());
     }
 
-    public override void visitChildren(global::System.Action<Element> visitor)
+    public override void visitChildren(System.Action<Element> visitor)
     {
         foreach (Element child in _children.expand((row) => row.children))
         {
@@ -294,10 +294,10 @@ internal class _TableElement__table : RenderObjectElement
 
 public class TableCell : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Rendering.TableCellVerticalAlignment? verticalAlignment { get; private set; }
+    public virtual TableCellVerticalAlignment? verticalAlignment { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public TableCell(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.TableCellVerticalAlignment? verticalAlignment = null, Widget child = default!) : base(key: key)
+    public TableCell(Key? key = null, TableCellVerticalAlignment? verticalAlignment = null, Widget child = default!) : base(key: key)
     {
         this.verticalAlignment = verticalAlignment;
         this.child = child;
@@ -311,18 +311,18 @@ public class TableCell : StatelessWidget
 
 }
 
-internal class _TableCell__table : ParentDataWidget<global::Doroti.Framework.Rendering.TableCellParentData>
+internal class _TableCell__table : ParentDataWidget<TableCellParentData>
 {
-    public virtual global::Doroti.Framework.Rendering.TableCellVerticalAlignment? verticalAlignment { get; private set; }
+    public virtual TableCellVerticalAlignment? verticalAlignment { get; private set; }
 
-    internal _TableCell__table(global::Doroti.Framework.Rendering.TableCellVerticalAlignment? verticalAlignment = null, Widget child = default!) : base(child: child)
+    internal _TableCell__table(TableCellVerticalAlignment? verticalAlignment = null, Widget child = default!) : base(child: child)
     {
         this.verticalAlignment = verticalAlignment;
     }
 
-    public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void applyParentData(RenderObject renderObject)
     {
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.TableCellParentData?)renderObject.parentData!)!;
+        var parentDataLocal = ((TableCellParentData?)renderObject.parentData!)!;
         if (!Equals(parentDataLocal.verticalAlignment, verticalAlignment))
         {
             parentDataLocal.verticalAlignment = verticalAlignment;
@@ -331,15 +331,15 @@ internal class _TableCell__table : ParentDataWidget<global::Doroti.Framework.Ren
     }
 
     public override Type debugTypicalAncestorWidgetClass => typeof(Table);
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.TableCellVerticalAlignment>("verticalAlignment", verticalAlignment));
+        properties.add(new EnumProperty<TableCellVerticalAlignment>("verticalAlignment", verticalAlignment));
     }
 
 }
 
-public class _TableSlot__table : global::Doroti.Framework.Foundation.Diagnosticable
+public class _TableSlot__table : Diagnosticable
 {
     public virtual long column { get; private set; } = default!;
     public virtual long row { get; private set; } = default!;
@@ -362,10 +362,10 @@ public class _TableSlot__table : global::Doroti.Framework.Foundation.Diagnostica
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(column, row));
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("x", column));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("y", row));
+        properties.add(new IntProperty("x", column));
+        properties.add(new IntProperty("y", row));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);

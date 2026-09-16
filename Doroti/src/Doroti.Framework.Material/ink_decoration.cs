@@ -6,58 +6,58 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class Ink : global::Doroti.Framework.Widgets.StatefulWidget
+public class Ink : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Decoration? decoration { get; private set; }
+    public virtual Widget? child { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
+    public virtual Decoration? decoration { get; private set; }
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
 
-    public Ink(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Color? color = null, global::Doroti.Framework.Painting.Decoration? decoration = null, double? width = null, double? height = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key)
+    public Ink(Key? key = null, EdgeInsetsGeometry? padding = null, Color? color = null, Decoration? decoration = null, double? width = null, double? height = null, Widget? child = null) : base(key: key)
     {
         this.padding = padding;
         this.width = width;
         this.height = height;
         this.child = child;
-        this.decoration = decoration ?? ((color is not null) ? new global::Doroti.Framework.Painting.BoxDecoration(color: color) : null);
+        this.decoration = decoration ?? ((color is not null) ? new BoxDecoration(color: color) : null);
         System.Diagnostics.Debug.Assert((padding is null) || padding.isNonNegative);
         System.Diagnostics.Debug.Assert((decoration is null) || decoration.debugAssertIsValid());
         System.Diagnostics.Debug.Assert((color is null) || (decoration is null));
     }
 
-    public static Ink CreateImage(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.IImageProvider image = default!, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onImageError = null, ColorFilter? colorFilter = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, Rect? centerSlice = null, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, double? width = null, double? height = null, global::Doroti.Framework.Widgets.Widget? child = null)
+    public static Ink CreateImage(Key? key = null, EdgeInsetsGeometry? padding = null, IImageProvider image = default!, Action<object, System.Diagnostics.StackTrace?>? onImageError = null, ColorFilter? colorFilter = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, double? width = null, double? height = null, Widget? child = null)
     {
         var __instance = new Ink(key: key, padding: padding, width: width, height: height, child: child);
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        AlignmentGeometry __alignment = alignment ?? Alignment.center;
         __instance.padding = padding;
         __instance.width = width;
         __instance.height = height;
         __instance.child = child;
-        __instance.decoration = new global::Doroti.Framework.Painting.BoxDecoration(image: new global::Doroti.Framework.Painting.DecorationImage(image: image, onError: onImageError, colorFilter: colorFilter, fit: fit, alignment: __alignment, centerSlice: centerSlice, repeat: repeat, matchTextDirection: matchTextDirection));
+        __instance.decoration = new BoxDecoration(image: new DecorationImage(image: image, onError: onImageError, colorFilter: colorFilter, fit: fit, alignment: __alignment, centerSlice: centerSlice, repeat: repeat, matchTextDirection: matchTextDirection));
         return __instance;
     }
 
-    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry _paddingIncludingDecoration
+    internal virtual EdgeInsetsGeometry _paddingIncludingDecoration
     {
         get
         {
-            return (padding, decoration?.padding) switch { (null, null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.zero), (null, global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal) => paddingLocal, (global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingAlternate, null) => paddingAlternate, _ => padding!.add(decoration!.padding) };
+            return (padding, decoration?.padding) switch { (null, null) => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsets.zero), (null, EdgeInsetsGeometry paddingLocal) => paddingLocal, (EdgeInsetsGeometry paddingAlternate, null) => paddingAlternate, _ => padding!.add(decoration!.padding) };
         }
     }
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", padding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("bg", decoration, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("padding", padding, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Decoration>("bg", decoration, defaultValue: null));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InkState__ink_decoration());
 }
 
-internal class _InkState__ink_decoration : global::Doroti.Framework.Widgets.State<Ink>
+internal class _InkState__ink_decoration : State<Ink>
 {
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _boxKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual GlobalKey<IState> _boxKey { get; private set; } = GlobalKey<IState>.Create();
     internal virtual InkDecoration? _ink { get; set; } = default;
 
     internal virtual void _handleRemoved()
@@ -72,11 +72,11 @@ internal class _InkState__ink_decoration : global::Doroti.Framework.Widgets.Stat
         base.deactivate();
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _build(global::Doroti.Framework.Widgets.BuildContext context)
+    internal virtual Widget _build(BuildContext context)
     {
         if (_ink is null)
         {
-            _ink = new InkDecoration(decoration: widget.decoration, isVisible: Visibility.of(context), configuration: ImageLibrary.createLocalImageConfiguration(context), controller: Material.of(context), referenceBox: ((global::Doroti.Framework.Rendering.RenderBox?)_boxKey.currentContext!.findRenderObject()!)!, onRemoved: () => _handleRemoved());
+            _ink = new InkDecoration(decoration: widget.decoration, isVisible: Visibility.of(context), configuration: ImageLibrary.createLocalImageConfiguration(context), controller: Material.of(context), referenceBox: ((RenderBox?)_boxKey.currentContext!.findRenderObject()!)!, onRemoved: () => _handleRemoved());
         }
         else
         {
@@ -84,17 +84,17 @@ internal class _InkState__ink_decoration : global::Doroti.Framework.Widgets.Stat
             _ink!.isVisible = Visibility.of(context);
             _ink!.configuration = ImageLibrary.createLocalImageConfiguration(context);
         }
-        return widget.child ?? new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: BoxConstraints.CreateExpand());
+        return widget.child ?? new ConstrainedBox(constraints: BoxConstraints.CreateExpand());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        global::Doroti.Framework.Widgets.Widget result = new global::Doroti.Framework.Widgets.Padding(key: _boxKey, padding: widget._paddingIncludingDecoration, child: new global::Doroti.Framework.Widgets.Builder(builder: _build));
+        Widget result = new Padding(key: _boxKey, padding: widget._paddingIncludingDecoration, child: new Builder(builder: _build));
         if ((widget.width is not null) || (widget.height is not null))
         {
-            result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: widget.width, height: widget.height, child: result));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: widget.width, height: widget.height, child: result));
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -104,12 +104,12 @@ internal class _InkState__ink_decoration : global::Doroti.Framework.Widgets.Stat
 
 public class InkDecoration : InkFeature
 {
-    internal virtual global::Doroti.Framework.Painting.BoxPainter? _painter { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.Decoration? _decoration { get; set; } = default;
+    internal virtual BoxPainter? _painter { get; set; } = default;
+    internal virtual Decoration? _decoration { get; set; } = default;
     internal virtual bool _isVisible { get; set; } = true;
-    internal virtual global::Doroti.Framework.Painting.ImageConfiguration _configuration { get; set; } = default!;
+    internal virtual ImageConfiguration _configuration { get; set; } = default!;
 
-    public InkDecoration(global::Doroti.Framework.Painting.Decoration? decoration, bool isVisible = true, global::Doroti.Framework.Painting.ImageConfiguration configuration = default!, MaterialInkController controller = default!, global::Doroti.Framework.Rendering.RenderBox referenceBox = default!, global::System.Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved)
+    public InkDecoration(Decoration? decoration, bool isVisible = true, ImageConfiguration configuration = default!, MaterialInkController controller = default!, RenderBox referenceBox = default!, Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved)
     {
         _configuration = configuration;
         this.decoration = decoration;
@@ -117,7 +117,7 @@ public class InkDecoration : InkFeature
         this.controller.addInkFeature(this);
     }
 
-    public virtual global::Doroti.Framework.Painting.Decoration? decoration
+    public virtual Decoration? decoration
     {
         get => _decoration;
         set
@@ -147,7 +147,7 @@ public class InkDecoration : InkFeature
             controller.markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Framework.Painting.ImageConfiguration configuration
+    public virtual ImageConfiguration configuration
     {
         get => _configuration;
         set
@@ -178,8 +178,8 @@ public class InkDecoration : InkFeature
         {
             return;
         }
-        global::Doroti.Ui.Offset? originOffset = MatrixUtils.getAsTranslation(transform);
-        global::Doroti.Framework.Painting.ImageConfiguration sizedConfiguration = configuration.copyWith(size: referenceBox.size);
+        Offset? originOffset = MatrixUtils.getAsTranslation(transform);
+        ImageConfiguration sizedConfiguration = configuration.copyWith(size: referenceBox.size);
         if (originOffset is null)
         {
             canvas.save();

@@ -23,12 +23,12 @@ public static partial class RouteLibrary
 
 public static partial class RouteLibrary
 {
-    internal static Color _kCupertinoPageTransitionBarrierColor = new global::Doroti.Ui.Color(402653184L);
+    internal static Color _kCupertinoPageTransitionBarrierColor = new Color(402653184L);
 }
 
 public static partial class RouteLibrary
 {
-    public static Color kCupertinoModalBarrierColor = new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(855638016L), darkColor: new global::Doroti.Ui.Color(2046820352L));
+    public static Color kCupertinoModalBarrierColor = new CupertinoDynamicColor(color: new Color(855638016L), darkColor: new Color(2046820352L));
 }
 
 public static partial class RouteLibrary
@@ -38,47 +38,47 @@ public static partial class RouteLibrary
 
 public static partial class RouteLibrary
 {
-    internal static global::Doroti.Framework.Animation.Animatable<Offset> _kRightMiddleTween = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(1.0, 0.0), end: Offset.zero);
+    internal static Animatable<Offset> _kRightMiddleTween = new Tween<Offset>(begin: new Offset(1.0, 0.0), end: Offset.zero);
 }
 
 public static partial class RouteLibrary
 {
-    internal static global::Doroti.Framework.Animation.Animatable<Offset> _kMiddleLeftTween = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: Offset.zero, end: new global::Doroti.Ui.Offset(-1.0 / 3.0, 0.0));
+    internal static Animatable<Offset> _kMiddleLeftTween = new Tween<Offset>(begin: Offset.zero, end: new Offset(-1.0 / 3.0, 0.0));
 }
 
 public static partial class RouteLibrary
 {
-    internal static global::Doroti.Framework.Animation.Animatable<Offset> _kBottomUpTween = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(0.0, 1.0), end: Offset.zero);
+    internal static Animatable<Offset> _kBottomUpTween = new Tween<Offset>(begin: new Offset(0.0, 1.0), end: Offset.zero);
 }
 
 public interface ICupertinoRouteTitle
 {
     string? title { get; }
-    global::Doroti.Framework.Foundation.ValueListenable<string?> previousTitle { get; }
+    ValueListenable<string?> previousTitle { get; }
 }
 
 public interface CupertinoRouteTransitionMixin<T> : ICupertinoRouteTitle
 {
-    global::Doroti.Framework.Foundation.ValueNotifier<string?>? _previousTitle { get; set; }
+    ValueNotifier<string?>? _previousTitle { get; set; }
     public static Duration kTransitionDuration = Duration.Create(milliseconds: 500L);
 
-    public global::Doroti.Framework.Widgets.Widget buildContent(global::Doroti.Framework.Widgets.BuildContext context);
+    public Widget buildContent(BuildContext context);
     public new string? title { get; }
-    public new global::Doroti.Framework.Foundation.ValueListenable<string?> previousTitle { get; }
+    public new ValueListenable<string?> previousTitle { get; }
     public void dispose();
     public void didChangePrevious(dynamic? previousRoute);
     public Duration transitionDuration { get; }
-    public global::Doroti.Ui.Color? barrierColor { get; }
+    public Color? barrierColor { get; }
     public string? barrierLabel { get; }
     public bool canTransitionTo(dynamic nextRoute);
     public bool canTransitionFrom(dynamic previousRoute);
-    public global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation);
-    public static _CupertinoBackGestureController__route<TRouteResult> _startPopGesture<TRouteResult>(global::Doroti.Framework.Widgets.PageRoute<TRouteResult> route)
+    public Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation);
+    public static _CupertinoBackGestureController__route<TRouteResult> _startPopGesture<TRouteResult>(PageRoute<TRouteResult> route)
     {
         DartRuntimePrimitives.Assert(() => route.popGestureEnabled);
         return new _CupertinoBackGestureController__route<TRouteResult>(navigator: route.navigator!, getIsCurrent: () => route.isCurrent, getIsActive: () => route.isActive, controller: route.controller!);
     }
-    public static global::Doroti.Framework.Widgets.Widget buildPageTransitions<TRouteResult>(global::Doroti.Framework.Widgets.PageRoute<TRouteResult> route, global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    public static Widget buildPageTransitions<TRouteResult>(PageRoute<TRouteResult> route, BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
         bool linearTransitionLocal = route.popGestureInProgress;
         if (route.fullscreenDialog)
@@ -87,21 +87,21 @@ public interface CupertinoRouteTransitionMixin<T> : ICupertinoRouteTitle
         }
         else
         {
-            return new CupertinoPageTransition(primaryRouteAnimation: animation, secondaryRouteAnimation: secondaryAnimation, linearTransition: linearTransitionLocal, child: new _CupertinoBackGestureDetector__route<TRouteResult>(enabledCallback: () => route.popGestureEnabled, onStartPopGesture: () => CupertinoRouteTransitionMixin<TRouteResult>._startPopGesture<TRouteResult>(route), child: child));
+            return new CupertinoPageTransition(primaryRouteAnimation: animation, secondaryRouteAnimation: secondaryAnimation, linearTransition: linearTransitionLocal, child: new _CupertinoBackGestureDetector__route<TRouteResult>(enabledCallback: () => route.popGestureEnabled, onStartPopGesture: () => CupertinoRouteTransitionMixin<TRouteResult>._startPopGesture(route), child: child));
         }
     }
-    public global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child);
+    public Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child);
 }
 
-public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T>, CupertinoRouteTransitionMixin<T>
+public class CupertinoPageRoute<T> : PageRoute<T>, CupertinoRouteTransitionMixin<T>
 {
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, Widget> builder { get; private set; } = default!;
     public virtual string? title { get; private set; }
     private bool __field_maintainState = default!;
     public override bool maintainState { get => __field_maintainState; }
-    public virtual global::Doroti.Framework.Foundation.ValueNotifier<string?>? _previousTitle { get; set; } = default;
+    public virtual ValueNotifier<string?>? _previousTitle { get; set; } = default;
 
-    public CupertinoPageRoute(global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, string? title = null, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, bool maintainState = true, bool fullscreenDialog = false, bool allowSnapshotting = true, bool barrierDismissible = false) : base(settings: settings, requestFocus: requestFocus, fullscreenDialog: fullscreenDialog, allowSnapshotting: allowSnapshotting, barrierDismissible: barrierDismissible)
+    public CupertinoPageRoute(Func<BuildContext, Widget> builder, string? title = null, RouteSettings? settings = null, bool? requestFocus = null, bool maintainState = true, bool fullscreenDialog = false, bool allowSnapshotting = true, bool barrierDismissible = false) : base(settings: settings, requestFocus: requestFocus, fullscreenDialog: fullscreenDialog, allowSnapshotting: allowSnapshotting, barrierDismissible: barrierDismissible)
     {
         this.builder = builder;
         this.title = title;
@@ -109,10 +109,10 @@ public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<
         DartRuntimePrimitives.Assert(() => opaque);
     }
 
-    public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => CupertinoPageTransition.delegatedTransition;
-    public virtual global::Doroti.Framework.Widgets.Widget buildContent(global::Doroti.Framework.Widgets.BuildContext context) => builder(context);
+    public override Func<BuildContext, Animation<double>, Animation<double>, bool, Widget?, Widget?>? delegatedTransition => CupertinoPageTransition.delegatedTransition;
+    public virtual Widget buildContent(BuildContext context) => builder(context);
     public override string debugLabel => $"{base.debugLabel}({settings.name})";
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<string?> previousTitle
+    public virtual ValueListenable<string?> previousTitle
     {
         get
         {
@@ -131,7 +131,7 @@ public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<
         string? previousTitleString = (previousRoute is ICupertinoRouteTitle) ? ((ICupertinoRouteTitle)(object)previousRoute).title : null;
         if (_previousTitle is null)
         {
-            _previousTitle = new global::Doroti.Framework.Foundation.ValueNotifier<string?>(previousTitleString);
+            _previousTitle = new ValueNotifier<string?>(previousTitleString);
         }
         else
         {
@@ -145,8 +145,8 @@ public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<
     public override string? barrierLabel => DartRuntimePrimitives.ConvertValue<string>(null);
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = nextRoute is not IPageRoute || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog;
-        bool nextRouteHasDelegatedTransition = (nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null);
+        bool nextRouteIsNotFullscreen = nextRoute is not IPageRoute || !((IPageRoute)(object)nextRoute).fullscreenDialog;
+        bool nextRouteHasDelegatedTransition = (nextRoute is IModalRoute) && (((IModalRoute)(object)nextRoute).delegatedTransition is not null);
         return nextRouteIsNotFullscreen && (nextRoute is ICupertinoRouteTitle || nextRouteHasDelegatedTransition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -157,38 +157,38 @@ public class CupertinoPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
+    public override Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = buildContent(context);
-        return new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: childLocal);
+        Widget childLocal = buildContent(context);
+        return new Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: childLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
-        return CupertinoRouteTransitionMixin<object>.buildPageTransitions<T>(this, context, animation, secondaryAnimation, child);
+        return CupertinoRouteTransitionMixin<object>.buildPageTransitions(this, context, animation, secondaryAnimation, child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _PageBasedCupertinoPageRoute__route<T> : global::Doroti.Framework.Widgets.PageRoute<T>, CupertinoRouteTransitionMixin<T>
+internal class _PageBasedCupertinoPageRoute__route<T> : PageRoute<T>, CupertinoRouteTransitionMixin<T>
 {
-    public virtual global::Doroti.Framework.Foundation.ValueNotifier<string?>? _previousTitle { get; set; } = default;
+    public virtual ValueNotifier<string?>? _previousTitle { get; set; } = default;
 
     internal _PageBasedCupertinoPageRoute__route(CupertinoPage<T> page, bool allowSnapshotting = true) : base(allowSnapshotting: allowSnapshotting, settings: page)
     {
         DartRuntimePrimitives.Assert(() => opaque);
     }
 
-    public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => fullscreenDialog ? null : CupertinoPageTransition.delegatedTransition;
+    public override Func<BuildContext, Animation<double>, Animation<double>, bool, Widget?, Widget?>? delegatedTransition => fullscreenDialog ? null : CupertinoPageTransition.delegatedTransition;
     internal virtual CupertinoPage<T> _page => ((CupertinoPage<T>?)settings)!;
-    public virtual global::Doroti.Framework.Widgets.Widget buildContent(global::Doroti.Framework.Widgets.BuildContext context) => _page.child;
+    public virtual Widget buildContent(BuildContext context) => _page.child;
     public virtual string? title => _page.title;
     public override bool maintainState => _page.maintainState;
     public override bool fullscreenDialog => _page.fullscreenDialog;
     public override string debugLabel => $"{base.debugLabel}({_page.name})";
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<string?> previousTitle
+    public virtual ValueListenable<string?> previousTitle
     {
         get
         {
@@ -207,7 +207,7 @@ internal class _PageBasedCupertinoPageRoute__route<T> : global::Doroti.Framework
         string? previousTitleString = (previousRoute is ICupertinoRouteTitle) ? ((ICupertinoRouteTitle)(object)previousRoute).title : null;
         if (_previousTitle is null)
         {
-            _previousTitle = new global::Doroti.Framework.Foundation.ValueNotifier<string?>(previousTitleString);
+            _previousTitle = new ValueNotifier<string?>(previousTitleString);
         }
         else
         {
@@ -221,8 +221,8 @@ internal class _PageBasedCupertinoPageRoute__route<T> : global::Doroti.Framework
     public override string? barrierLabel => DartRuntimePrimitives.ConvertValue<string>(null);
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = nextRoute is not IPageRoute || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog;
-        bool nextRouteHasDelegatedTransition = (nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null);
+        bool nextRouteIsNotFullscreen = nextRoute is not IPageRoute || !((IPageRoute)(object)nextRoute).fullscreenDialog;
+        bool nextRouteHasDelegatedTransition = (nextRoute is IModalRoute) && (((IModalRoute)(object)nextRoute).delegatedTransition is not null);
         return nextRouteIsNotFullscreen && (nextRoute is ICupertinoRouteTitle || nextRouteHasDelegatedTransition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -233,30 +233,30 @@ internal class _PageBasedCupertinoPageRoute__route<T> : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
+    public override Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = buildContent(context);
-        return new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: childLocal);
+        Widget childLocal = buildContent(context);
+        return new Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: childLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
-        return CupertinoRouteTransitionMixin<object>.buildPageTransitions<T>(this, context, animation, secondaryAnimation, child);
+        return CupertinoRouteTransitionMixin<object>.buildPageTransitions(this, context, animation, secondaryAnimation, child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class CupertinoPage<T> : global::Doroti.Framework.Widgets.Page<T>
+public class CupertinoPage<T> : Page<T>
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
     public virtual string? title { get; private set; }
     public virtual bool maintainState { get; private set; } = default!;
     public virtual bool fullscreenDialog { get; private set; } = default!;
     public virtual bool allowSnapshotting { get; private set; } = default!;
 
-    public CupertinoPage(global::Doroti.Framework.Widgets.Widget child, bool maintainState = true, string? title = null, bool fullscreenDialog = false, bool allowSnapshotting = true, bool canPop = true, global::System.Action<bool, T?> onPopInvoked = default!, global::Doroti.Framework.Foundation.LocalKey? key = null, string? name = null, object? arguments = null, string? restorationId = null) : base(canPop: canPop, onPopInvoked: onPopInvoked ?? ((didPop, result) => Page<object?>._defaultPopInvokedHandler(didPop, result)), key: key, name: name, arguments: arguments, restorationId: restorationId)
+    public CupertinoPage(Widget child, bool maintainState = true, string? title = null, bool fullscreenDialog = false, bool allowSnapshotting = true, bool canPop = true, Action<bool, T?> onPopInvoked = default!, LocalKey? key = null, string? name = null, object? arguments = null, string? restorationId = null) : base(canPop: canPop, onPopInvoked: onPopInvoked ?? ((didPop, result) => Page<object?>._defaultPopInvokedHandler(didPop, result)), key: key, name: name, arguments: arguments, restorationId: restorationId)
     {
         this.child = child;
         this.maintainState = maintainState;
@@ -265,7 +265,7 @@ public class CupertinoPage<T> : global::Doroti.Framework.Widgets.Page<T>
         this.allowSnapshotting = allowSnapshotting;
     }
 
-    public override global::Doroti.Framework.Widgets.Route<T> createRoute(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Route<T> createRoute(BuildContext context)
     {
         return new _PageBasedCupertinoPageRoute__route<T>(page: this, allowSnapshotting: allowSnapshotting);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -273,14 +273,14 @@ public class CupertinoPage<T> : global::Doroti.Framework.Widgets.Page<T>
 
 }
 
-public class CupertinoPageTransition : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoPageTransition : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<double> primaryRouteAnimation { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<double> secondaryRouteAnimation { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
+    public virtual Animation<double> primaryRouteAnimation { get; private set; } = default!;
+    public virtual Animation<double> secondaryRouteAnimation { get; private set; } = default!;
     public virtual bool linearTransition { get; private set; } = default!;
 
-    public CupertinoPageTransition(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> primaryRouteAnimation = default!, global::Doroti.Framework.Animation.Animation<double> secondaryRouteAnimation = default!, global::Doroti.Framework.Widgets.Widget child = default!, bool linearTransition = default!) : base(key: key)
+    public CupertinoPageTransition(Key? key = null, Animation<double> primaryRouteAnimation = default!, Animation<double> secondaryRouteAnimation = default!, Widget child = default!, bool linearTransition = default!) : base(key: key)
     {
         this.primaryRouteAnimation = primaryRouteAnimation;
         this.secondaryRouteAnimation = secondaryRouteAnimation;
@@ -288,28 +288,28 @@ public class CupertinoPageTransition : global::Doroti.Framework.Widgets.Stateful
         this.linearTransition = linearTransition;
     }
 
-    public static global::Doroti.Framework.Widgets.Widget? delegatedTransition(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, bool allowSnapshotting, global::Doroti.Framework.Widgets.Widget? child)
+    public static Widget? delegatedTransition(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, bool allowSnapshotting, Widget? child)
     {
-        var animationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: secondaryAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.easeInToLinear);
-        global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> delegatedPositionAnimation = animationLocal.drive(RouteLibrary._kMiddleLeftTween);
+        var animationLocal = new CurvedAnimation(parent: secondaryAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.easeInToLinear);
+        Animation<Offset> delegatedPositionAnimation = animationLocal.drive(RouteLibrary._kMiddleLeftTween);
         animationLocal.dispose();
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.SlideTransition(position: delegatedPositionAnimation, textDirection: textDirectionLocal, transformHitTests: false, child: child);
+        TextDirection textDirectionLocal = Directionality.of(context);
+        return (Widget?)new SlideTransition(position: delegatedPositionAnimation, textDirection: textDirectionLocal, transformHitTests: false, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoPageTransitionState__route());
 }
 
-internal class _CupertinoPageTransitionState__route : global::Doroti.Framework.Widgets.State<CupertinoPageTransition>
+internal class _CupertinoPageTransitionState__route : State<CupertinoPageTransition>
 {
-    internal virtual global::Doroti.Framework.Animation.Animation<Offset> _primaryPositionAnimation { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<Offset> _secondaryPositionAnimation { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.Decoration> _primaryShadowAnimation { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _primaryPositionCurve { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _secondaryPositionCurve { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _primaryShadowCurve { get; set; } = default;
+    internal virtual Animation<Offset> _primaryPositionAnimation { get; set; } = default!;
+    internal virtual Animation<Offset> _secondaryPositionAnimation { get; set; } = default!;
+    internal virtual Animation<Decoration> _primaryShadowAnimation { get; set; } = default!;
+    internal virtual CurvedAnimation? _primaryPositionCurve { get; set; } = default;
+    internal virtual CurvedAnimation? _secondaryPositionCurve { get; set; } = default;
+    internal virtual CurvedAnimation? _primaryShadowCurve { get; set; } = default;
 
     public override void initState()
     {
@@ -347,33 +347,33 @@ internal class _CupertinoPageTransitionState__route : global::Doroti.Framework.W
     {
         if (!widget.linearTransition)
         {
-            _primaryPositionCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.primaryRouteAnimation, curve: Curves.fastEaseInToSlowEaseOut, reverseCurve: Curves.fastEaseInToSlowEaseOut.flipped);
-            _secondaryPositionCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.secondaryRouteAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.easeInToLinear);
-            _primaryShadowCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.primaryRouteAnimation, curve: Curves.linearToEaseOut);
+            _primaryPositionCurve = new CurvedAnimation(parent: widget.primaryRouteAnimation, curve: Curves.fastEaseInToSlowEaseOut, reverseCurve: Curves.fastEaseInToSlowEaseOut.flipped);
+            _secondaryPositionCurve = new CurvedAnimation(parent: widget.secondaryRouteAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.easeInToLinear);
+            _primaryShadowCurve = new CurvedAnimation(parent: widget.primaryRouteAnimation, curve: Curves.linearToEaseOut);
         }
         _primaryPositionAnimation = (_primaryPositionCurve ?? widget.primaryRouteAnimation).drive(RouteLibrary._kRightMiddleTween);
         _secondaryPositionAnimation = (_secondaryPositionCurve ?? widget.secondaryRouteAnimation).drive(RouteLibrary._kMiddleLeftTween);
         _primaryShadowAnimation = (_primaryShadowCurve ?? widget.primaryRouteAnimation).drive(_CupertinoEdgeShadowDecoration__route.kTween);
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        return new global::Doroti.Framework.Widgets.SlideTransition(position: _secondaryPositionAnimation, textDirection: textDirectionLocal, transformHitTests: false, child: new global::Doroti.Framework.Widgets.SlideTransition(position: _primaryPositionAnimation, textDirection: textDirectionLocal, child: new global::Doroti.Framework.Widgets.DecoratedBoxTransition(decoration: _primaryShadowAnimation, child: widget.child)));
+        TextDirection textDirectionLocal = Directionality.of(context);
+        return new SlideTransition(position: _secondaryPositionAnimation, textDirection: textDirectionLocal, transformHitTests: false, child: new SlideTransition(position: _primaryPositionAnimation, textDirection: textDirectionLocal, child: new DecoratedBoxTransition(decoration: _primaryShadowAnimation, child: widget.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class CupertinoFullscreenDialogTransition : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoFullscreenDialogTransition : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Animation.Animation<double> primaryRouteAnimation { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<double> secondaryRouteAnimation { get; private set; } = default!;
+    public virtual Animation<double> primaryRouteAnimation { get; private set; } = default!;
+    public virtual Animation<double> secondaryRouteAnimation { get; private set; } = default!;
     public virtual bool linearTransition { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    public CupertinoFullscreenDialogTransition(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> primaryRouteAnimation = default!, global::Doroti.Framework.Animation.Animation<double> secondaryRouteAnimation = default!, global::Doroti.Framework.Widgets.Widget child = default!, bool linearTransition = default!) : base(key: key)
+    public CupertinoFullscreenDialogTransition(Key? key = null, Animation<double> primaryRouteAnimation = default!, Animation<double> secondaryRouteAnimation = default!, Widget child = default!, bool linearTransition = default!) : base(key: key)
     {
         this.primaryRouteAnimation = primaryRouteAnimation;
         this.secondaryRouteAnimation = secondaryRouteAnimation;
@@ -384,12 +384,12 @@ public class CupertinoFullscreenDialogTransition : global::Doroti.Framework.Widg
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoFullscreenDialogTransitionState__route());
 }
 
-internal class _CupertinoFullscreenDialogTransitionState__route : global::Doroti.Framework.Widgets.State<CupertinoFullscreenDialogTransition>
+internal class _CupertinoFullscreenDialogTransitionState__route : State<CupertinoFullscreenDialogTransition>
 {
-    internal virtual global::Doroti.Framework.Animation.Animation<Offset> _primaryPositionAnimation { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<Offset> _secondaryPositionAnimation { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _primaryPositionCurve { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _secondaryPositionCurve { get; set; } = default;
+    internal virtual Animation<Offset> _primaryPositionAnimation { get; set; } = default!;
+    internal virtual Animation<Offset> _secondaryPositionAnimation { get; set; } = default!;
+    internal virtual CurvedAnimation? _primaryPositionCurve { get; set; } = default;
+    internal virtual CurvedAnimation? _secondaryPositionCurve { get; set; } = default;
 
     public override void initState()
     {
@@ -423,27 +423,27 @@ internal class _CupertinoFullscreenDialogTransitionState__route : global::Doroti
 
     internal virtual void _setupAnimation()
     {
-        _primaryPositionAnimation = (_primaryPositionCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.primaryRouteAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.linearToEaseOut.flipped)).drive(RouteLibrary._kBottomUpTween);
-        _secondaryPositionAnimation = (widget.linearTransition ? widget.secondaryRouteAnimation : _secondaryPositionCurve = new global::Doroti.Framework.Animation.CurvedAnimation(parent: widget.secondaryRouteAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.easeInToLinear)).drive(RouteLibrary._kMiddleLeftTween);
+        _primaryPositionAnimation = (_primaryPositionCurve = new CurvedAnimation(parent: widget.primaryRouteAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.linearToEaseOut.flipped)).drive(RouteLibrary._kBottomUpTween);
+        _secondaryPositionAnimation = (widget.linearTransition ? widget.secondaryRouteAnimation : _secondaryPositionCurve = new CurvedAnimation(parent: widget.secondaryRouteAnimation, curve: Curves.linearToEaseOut, reverseCurve: Curves.easeInToLinear)).drive(RouteLibrary._kMiddleLeftTween);
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        return new global::Doroti.Framework.Widgets.SlideTransition(position: _secondaryPositionAnimation, textDirection: textDirectionLocal, transformHitTests: false, child: new global::Doroti.Framework.Widgets.SlideTransition(position: _primaryPositionAnimation, child: widget.child));
+        TextDirection textDirectionLocal = Directionality.of(context);
+        return new SlideTransition(position: _secondaryPositionAnimation, textDirection: textDirectionLocal, transformHitTests: false, child: new SlideTransition(position: _primaryPositionAnimation, child: widget.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _CupertinoBackGestureDetector__route<T> : global::Doroti.Framework.Widgets.StatefulWidget
+internal class _CupertinoBackGestureDetector__route<T> : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::System.Func<bool> enabledCallback { get; private set; } = default!;
-    public virtual global::System.Func<_CupertinoBackGestureController__route<T>> onStartPopGesture { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
+    public virtual Func<bool> enabledCallback { get; private set; } = default!;
+    public virtual Func<_CupertinoBackGestureController__route<T>> onStartPopGesture { get; private set; } = default!;
 
-    internal _CupertinoBackGestureDetector__route(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<bool> enabledCallback = default!, global::System.Func<_CupertinoBackGestureController__route<T>> onStartPopGesture = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key)
+    internal _CupertinoBackGestureDetector__route(Key? key = null, Func<bool> enabledCallback = default!, Func<_CupertinoBackGestureController__route<T>> onStartPopGesture = default!, Widget child = default!) : base(key: key)
     {
         this.enabledCallback = enabledCallback;
         this.onStartPopGesture = onStartPopGesture;
@@ -453,17 +453,17 @@ internal class _CupertinoBackGestureDetector__route<T> : global::Doroti.Framewor
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoBackGestureDetectorState__route<T>());
 }
 
-internal class _CupertinoBackGestureDetectorState__route<T> : global::Doroti.Framework.Widgets.State<_CupertinoBackGestureDetector__route<T>>
+internal class _CupertinoBackGestureDetectorState__route<T> : State<_CupertinoBackGestureDetector__route<T>>
 {
     internal virtual _CupertinoBackGestureController__route<T>? _backGestureController { get; set; } = default;
-    internal virtual global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer _recognizer { get; set; } = default!;
+    internal virtual Gestures.HorizontalDragGestureRecognizer _recognizer { get; set; } = default!;
 
     public override void initState()
     {
         base.initState();
-        _recognizer = ((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
+        _recognizer = ((Func<Gestures.HorizontalDragGestureRecognizer>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(debugOwner: this);
+    var __cascade = new Gestures.HorizontalDragGestureRecognizer(debugOwner: this);
     __cascade.onStart = _handleDragStart;
     __cascade.onUpdate = _handleDragUpdate;
     __cascade.onEnd = _handleDragEnd;
@@ -489,21 +489,21 @@ internal class _CupertinoBackGestureDetectorState__route<T> : global::Doroti.Fra
         base.dispose();
     }
 
-    internal virtual void _handleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
+    internal virtual void _handleDragStart(Gestures.DragStartDetails details)
     {
         DartRuntimePrimitives.Assert(() => mounted);
         DartRuntimePrimitives.Assert(() => _backGestureController is null);
         _backGestureController = widget.onStartPopGesture();
     }
 
-    internal virtual void _handleDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
+    internal virtual void _handleDragUpdate(Gestures.DragUpdateDetails details)
     {
         DartRuntimePrimitives.Assert(() => mounted);
         DartRuntimePrimitives.Assert(() => _backGestureController is not null);
         _backGestureController!.dragUpdate(_convertToLogical(DartRuntimePrimitives.RequireValue(details.primaryDelta) / DartRuntimePrimitives.RequireValue(context.size).width));
     }
 
-    internal virtual void _handleDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
+    internal virtual void _handleDragEnd(Gestures.DragEndDetails details)
     {
         DartRuntimePrimitives.Assert(() => mounted);
         DartRuntimePrimitives.Assert(() => _backGestureController is not null);
@@ -518,7 +518,7 @@ internal class _CupertinoBackGestureDetectorState__route<T> : global::Doroti.Fra
         _backGestureController = null;
     }
 
-    internal virtual void _handlePointerDown(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    internal virtual void _handlePointerDown(Gestures.PointerDownEvent @event)
     {
         if (widget.enabledCallback())
         {
@@ -532,11 +532,11 @@ internal class _CupertinoBackGestureDetectorState__route<T> : global::Doroti.Fra
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         double dragAreaWidth = Directionality.of(context) switch { TextDirection.rtl => MediaQuery.paddingOf(context).right, TextDirection.ltr => MediaQuery.paddingOf(context).left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        return new global::Doroti.Framework.Widgets.Stack(fit: StackFit.passthrough, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(widget.child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.PositionedDirectional(start: 0.0, width: Math.Max(dragAreaWidth, RouteLibrary._kBackGestureWidth), top: 0.0, bottom: 0.0, child: new global::Doroti.Framework.Widgets.Listener(onPointerDown: _handlePointerDown, behavior: HitTestBehavior.translucent))) });
+        return new Stack(fit: StackFit.passthrough, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(widget.child), DartRuntimePrimitives.ConvertValue<Widget>(new PositionedDirectional(start: 0.0, width: Math.Max(dragAreaWidth, RouteLibrary._kBackGestureWidth), top: 0.0, bottom: 0.0, child: new Listener(onPointerDown: _handlePointerDown, behavior: HitTestBehavior.translucent))) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -544,12 +544,12 @@ internal class _CupertinoBackGestureDetectorState__route<T> : global::Doroti.Fra
 
 public class _CupertinoBackGestureController__route<T>
 {
-    public virtual global::Doroti.Framework.Animation.AnimationController controller { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.NavigatorState navigator { get; private set; } = default!;
-    public virtual global::System.Func<bool> getIsActive { get; private set; } = default!;
-    public virtual global::System.Func<bool> getIsCurrent { get; private set; } = default!;
+    public virtual AnimationController controller { get; private set; } = default!;
+    public virtual NavigatorState navigator { get; private set; } = default!;
+    public virtual Func<bool> getIsActive { get; private set; } = default!;
+    public virtual Func<bool> getIsCurrent { get; private set; } = default!;
 
-    internal _CupertinoBackGestureController__route(global::Doroti.Framework.Widgets.NavigatorState navigator, global::Doroti.Framework.Animation.AnimationController controller, global::System.Func<bool> getIsActive, global::System.Func<bool> getIsCurrent)
+    internal _CupertinoBackGestureController__route(NavigatorState navigator, AnimationController controller, Func<bool> getIsActive, Func<bool> getIsCurrent)
     {
         this.navigator = navigator;
         this.controller = controller;
@@ -565,7 +565,7 @@ public class _CupertinoBackGestureController__route<T>
 
     public virtual void dragEnd(double velocity)
     {
-        global::Doroti.Framework.Animation.Curve animationCurve = Curves.fastEaseInToSlowEaseOut;
+        Curve animationCurve = Curves.fastEaseInToSlowEaseOut;
         bool isCurrent = getIsCurrent();
         bool animateForward = default!;
         if (!isCurrent)
@@ -616,9 +616,9 @@ public class _CupertinoBackGestureController__route<T>
 
 }
 
-public class _CupertinoEdgeShadowDecoration__route : global::Doroti.Framework.Painting.Decoration
+public class _CupertinoEdgeShadowDecoration__route : Decoration
 {
-    public static global::Doroti.Framework.Widgets.DecorationTween kTween = new global::Doroti.Framework.Widgets.DecorationTween(begin: new _CupertinoEdgeShadowDecoration__route(), end: new _CupertinoEdgeShadowDecoration__route(new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(67108864L), CupertinoColors.transparent }));
+    public static DecorationTween kTween = new DecorationTween(begin: new _CupertinoEdgeShadowDecoration__route(), end: new _CupertinoEdgeShadowDecoration__route(new List<Color> { new Color(67108864L), CupertinoColors.transparent }));
     internal virtual List<Color>? _colors { get; private set; }
 
     internal _CupertinoEdgeShadowDecoration__route(List<Color>? _colors = null)
@@ -634,11 +634,11 @@ public class _CupertinoEdgeShadowDecoration__route : global::Doroti.Framework.Pa
         }
         if (a is null)
         {
-            return (b!._colors is null) ? b : new _CupertinoEdgeShadowDecoration__route(b._colors!.map<Color, Color>((color) => Dart_uiLibrary.Color.lerp(null, color, t)!).ToList());
+            return (b!._colors is null) ? b : new _CupertinoEdgeShadowDecoration__route(b._colors!.map((color) => Dart_uiLibrary.Color.lerp(null, color, t)!).ToList());
         }
         if (b is null)
         {
-            return (a._colors is null) ? a : new _CupertinoEdgeShadowDecoration__route(a._colors.map<Color, Color>((color) => Dart_uiLibrary.Color.lerp(null, color, 1.0 - t)!).ToList());
+            return (a._colors is null) ? a : new _CupertinoEdgeShadowDecoration__route(a._colors.map((color) => Dart_uiLibrary.Color.lerp(null, color, 1.0 - t)!).ToList());
         }
         DartRuntimePrimitives.Assert(() => (b._colors is not null) || (a._colors is not null));
         DartRuntimePrimitives.Assert(() => (b._colors is null) || (a._colors is null) || (checked(a._colors.Count) == checked((long)b._colors.Count)));
@@ -650,7 +650,7 @@ public class _CupertinoEdgeShadowDecoration__route : global::Doroti.Framework.Pa
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override _CupertinoEdgeShadowDecoration__route lerpFrom(global::Doroti.Framework.Painting.Decoration? a, double t)
+    public override _CupertinoEdgeShadowDecoration__route lerpFrom(Decoration? a, double t)
     {
         if (a is _CupertinoEdgeShadowDecoration__route)
         {
@@ -661,7 +661,7 @@ public class _CupertinoEdgeShadowDecoration__route : global::Doroti.Framework.Pa
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override _CupertinoEdgeShadowDecoration__route lerpTo(global::Doroti.Framework.Painting.Decoration? b, double t)
+    public override _CupertinoEdgeShadowDecoration__route lerpTo(Decoration? b, double t)
     {
         if (b is _CupertinoEdgeShadowDecoration__route)
         {
@@ -672,7 +672,7 @@ public class _CupertinoEdgeShadowDecoration__route : global::Doroti.Framework.Pa
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override _CupertinoEdgeShadowPainter__route createBoxPainter(global::System.Action onChanged = default!)
+    public override _CupertinoEdgeShadowPainter__route createBoxPainter(Action onChanged = default!)
     {
         return new _CupertinoEdgeShadowPainter__route(this, () => onChanged());
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -690,27 +690,27 @@ public class _CupertinoEdgeShadowDecoration__route : global::Doroti.Framework.Pa
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(_colors?.GetHashCode() ?? 0);
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<global::Doroti.Ui.Color>("colors", _colors));
+        properties.add(new IterableProperty<Color>("colors", _colors));
     }
 
 }
 
-public class _CupertinoEdgeShadowPainter__route : global::Doroti.Framework.Painting.BoxPainter
+public class _CupertinoEdgeShadowPainter__route : BoxPainter
 {
     internal virtual _CupertinoEdgeShadowDecoration__route _decoration { get; private set; } = default!;
 
-    internal _CupertinoEdgeShadowPainter__route(_CupertinoEdgeShadowDecoration__route _decoration, global::System.Action? onChanged) : base(onChanged)
+    internal _CupertinoEdgeShadowPainter__route(_CupertinoEdgeShadowDecoration__route _decoration, Action? onChanged) : base(onChanged)
     {
         this._decoration = _decoration;
         System.Diagnostics.Debug.Assert((_decoration._colors is null) || (checked(_decoration._colors.Count) > 1L));
     }
 
-    public override void paint(Canvas canvas, Offset offset, global::Doroti.Framework.Painting.ImageConfiguration configuration)
+    public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
-        List<global::Doroti.Ui.Color>? colors = _decoration._colors?.ToList();
+        List<Color>? colors = _decoration._colors?.ToList();
         if (colors is null)
         {
             return;
@@ -718,7 +718,7 @@ public class _CupertinoEdgeShadowPainter__route : global::Doroti.Framework.Paint
         double shadowWidth = 0.05 * DartRuntimePrimitives.RequireValue(configuration.size).width;
         double shadowHeight = DartRuntimePrimitives.RequireValue(configuration.size).height;
         double bandWidth = shadowWidth / (checked(colors.Count) - 1L);
-        global::Doroti.Ui.TextDirection? textDirectionLocal = configuration.textDirection;
+        TextDirection? textDirectionLocal = configuration.textDirection;
         DartRuntimePrimitives.Assert(() => textDirectionLocal is not null);
         var (shadowDirection, start) = DartRuntimePrimitives.RequireValue(textDirectionLocal) switch { TextDirection.rtl => (1, offset.dx + DartRuntimePrimitives.RequireValue(configuration.size).width), TextDirection.ltr => ((double, double))(-1, offset.dx), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         var bandColorIndex = 0L;
@@ -730,7 +730,7 @@ public class _CupertinoEdgeShadowPainter__route : global::Doroti.Framework.Paint
             }
             var paintLocal = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = Dart_uiLibrary.Color.lerp(colors[(int)bandColorIndex], colors[(int)(bandColorIndex + 1L)], dxLocal % bandWidth / bandWidth)!;
     return __cascade;
 }))();
@@ -753,17 +753,17 @@ public static partial class RouteLibrary
 
 public static partial class RouteLibrary
 {
-    internal static global::Doroti.Framework.Physics.SpringDescription _kStandardSpring = new global::Doroti.Framework.Physics.SpringDescription(mass: 1, stiffness: _kStandardStiffness, damping: _kStandardDamping);
+    internal static Physics.SpringDescription _kStandardSpring = new Physics.SpringDescription(mass: 1, stiffness: _kStandardStiffness, damping: _kStandardDamping);
 }
 
 public static partial class RouteLibrary
 {
-    internal static global::Doroti.Framework.Physics.Tolerance _kStandardTolerance = new global::Doroti.Framework.Physics.Tolerance(velocity: 0.03);
+    internal static Physics.Tolerance _kStandardTolerance = new Physics.Tolerance(velocity: 0.03);
 }
 
-public class CupertinoModalPopupRoute<T> : global::Doroti.Framework.Widgets.PopupRoute<T>
+public class CupertinoModalPopupRoute<T> : PopupRoute<T>
 {
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, Widget> builder { get; private set; } = default!;
     internal virtual bool _barrierDismissible { get; private set; } = default!;
     internal virtual bool _semanticsDismissible { get; private set; } = default!;
     private string? __field_barrierLabel = default!;
@@ -771,9 +771,9 @@ public class CupertinoModalPopupRoute<T> : global::Doroti.Framework.Widgets.Popu
     private Color? __field_barrierColor = default!;
     public override Color? barrierColor { get => __field_barrierColor; }
     public virtual Offset? anchorPoint { get; private set; }
-    internal static global::Doroti.Framework.Animation.Tween<Offset> _offsetTween = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(0.0, 1.0), end: Offset.zero);
+    internal static Tween<Offset> _offsetTween = new Tween<Offset>(begin: new Offset(0.0, 1.0), end: Offset.zero);
 
-    public CupertinoModalPopupRoute(global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, string barrierLabel = "Dismiss", Color? barrierColor = default!, bool barrierDismissible = true, bool semanticsDismissible = false, ImageFilter? filter = null, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null) : base(filter: filter, settings: settings, requestFocus: requestFocus)
+    public CupertinoModalPopupRoute(Func<BuildContext, Widget> builder, string barrierLabel = "Dismiss", Color? barrierColor = default!, bool barrierDismissible = true, bool semanticsDismissible = false, ImageFilter? filter = null, RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null) : base(filter: filter, settings: settings, requestFocus: requestFocus)
     {
         Color? __barrierColor = barrierColor ?? RouteLibrary.kCupertinoModalBarrierColor;
         this.builder = builder;
@@ -787,23 +787,23 @@ public class CupertinoModalPopupRoute<T> : global::Doroti.Framework.Widgets.Popu
     public override bool barrierDismissible => _barrierDismissible;
     public override bool semanticsDismissible => _semanticsDismissible;
     public override Duration transitionDuration => RouteLibrary._kModalPopupTransitionDuration;
-    public override global::Doroti.Framework.Physics.Simulation? createSimulation(bool forward)
+    public override Physics.Simulation? createSimulation(bool forward)
     {
         DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
         var end = forward ? 1.0 : 0.0;
-        return (global::Doroti.Framework.Physics.Simulation?)new global::Doroti.Framework.Physics.SpringSimulation(RouteLibrary._kStandardSpring, controller!.value, end, 0, tolerance: RouteLibrary._kStandardTolerance, snapToEnd: true);
+        return (Physics.Simulation?)new Physics.SpringSimulation(RouteLibrary._kStandardSpring, controller!.value, end, 0, tolerance: RouteLibrary._kStandardTolerance, snapToEnd: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
+    public override Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation)
     {
-        return new CupertinoUserInterfaceLevel(data: CupertinoUserInterfaceLevelData.elevated, child: new global::Doroti.Framework.Widgets.DisplayFeatureSubScreen(anchorPoint: anchorPoint, child: new global::Doroti.Framework.Widgets.Builder(builder: builder)));
+        return new CupertinoUserInterfaceLevel(data: CupertinoUserInterfaceLevelData.elevated, child: new DisplayFeatureSubScreen(anchorPoint: anchorPoint, child: new Builder(builder: builder)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
-        return new global::Doroti.Framework.Widgets.Align(alignment: Alignment.bottomCenter, child: new global::Doroti.Framework.Widgets.FractionalTranslation(translation: _offsetTween.evaluate(animation), child: child));
+        return new Align(alignment: Alignment.bottomCenter, child: new FractionalTranslation(translation: _offsetTween.evaluate(animation), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -811,7 +811,7 @@ public class CupertinoModalPopupRoute<T> : global::Doroti.Framework.Widgets.Popu
 
 public static partial class RouteLibrary
 {
-    public static Future<T?> showCupertinoModalPopup<T>(global::Doroti.Framework.Widgets.BuildContext context, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, ImageFilter? filter = null, Color barrierColor = default!, bool barrierDismissible = true, bool useRootNavigator = true, bool semanticsDismissible = false, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, Offset? anchorPoint = null, bool? requestFocus = null)
+    public static Future<T?> showCupertinoModalPopup<T>(BuildContext context, Func<BuildContext, Widget> builder, ImageFilter? filter = null, Color barrierColor = default!, bool barrierDismissible = true, bool useRootNavigator = true, bool semanticsDismissible = false, RouteSettings? routeSettings = null, Offset? anchorPoint = null, bool? requestFocus = null)
     {
         return Navigator.of(context, rootNavigator: useRootNavigator).push(new CupertinoModalPopupRoute<T>(builder: builder, filter: filter, barrierColor: CupertinoDynamicColor.resolve(barrierColor, context), barrierDismissible: barrierDismissible, semanticsDismissible: semanticsDismissible, settings: routeSettings, anchorPoint: anchorPoint, requestFocus: requestFocus));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -820,7 +820,7 @@ public static partial class RouteLibrary
 
 public static partial class RouteLibrary
 {
-    internal static global::Doroti.Framework.Widgets.Widget _buildCupertinoDialogTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    internal static Widget _buildCupertinoDialogTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
         return child;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -829,20 +829,20 @@ public static partial class RouteLibrary
 
 public static partial class RouteLibrary
 {
-    public static Future<T?> showCupertinoDialog<T>(global::Doroti.Framework.Widgets.BuildContext context, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, string? barrierLabel = null, Color? barrierColor = null, bool useRootNavigator = true, bool barrierDismissible = false, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, Offset? anchorPoint = null, bool? requestFocus = null)
+    public static Future<T?> showCupertinoDialog<T>(BuildContext context, Func<BuildContext, Widget> builder, string? barrierLabel = null, Color? barrierColor = null, bool useRootNavigator = true, bool barrierDismissible = false, RouteSettings? routeSettings = null, Offset? anchorPoint = null, bool? requestFocus = null)
     {
-        return Navigator.of(context, rootNavigator: useRootNavigator).push<T>(new CupertinoDialogRoute<T>(builder: builder, context: context, barrierDismissible: barrierDismissible, barrierLabel: barrierLabel, barrierColor: barrierColor, settings: routeSettings, anchorPoint: anchorPoint, requestFocus: requestFocus));
+        return Navigator.of(context, rootNavigator: useRootNavigator).push(new CupertinoDialogRoute<T>(builder: builder, context: context, barrierDismissible: barrierDismissible, barrierLabel: barrierLabel, barrierColor: barrierColor, settings: routeSettings, anchorPoint: anchorPoint, requestFocus: requestFocus));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-public class CupertinoDialogRoute<T> : global::Doroti.Framework.Widgets.RawDialogRoute<T>
+public class CupertinoDialogRoute<T> : RawDialogRoute<T>
 {
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>? transitionBuilder { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _fadeAnimation { get; set; } = default;
-    internal static global::Doroti.Framework.Animation.Tween<double> _dialogScaleTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 1.3, end: 1.0);
+    public virtual Func<BuildContext, Animation<double>, Animation<double>, Widget, Widget>? transitionBuilder { get; set; } = default;
+    internal virtual CurvedAnimation? _fadeAnimation { get; set; } = default;
+    internal static Tween<double> _dialogScaleTween = new Tween<double>(begin: 1.3, end: 1.0);
 
-    public CupertinoDialogRoute(global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, global::Doroti.Framework.Widgets.BuildContext context, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, Duration? transitionDuration = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>? transitionBuilder = null, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null) : base(barrierDismissible: barrierDismissible, transitionDuration: transitionDuration ?? Duration.Create(milliseconds: 250), settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, pageBuilder: (context, animation, secondaryAnimation) =>
+    public CupertinoDialogRoute(Func<BuildContext, Widget> builder, BuildContext context, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, Duration? transitionDuration = null, Func<BuildContext, Animation<double>, Animation<double>, Widget, Widget>? transitionBuilder = null, RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null) : base(barrierDismissible: barrierDismissible, transitionDuration: transitionDuration ?? Duration.Create(milliseconds: 250), settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, pageBuilder: (context, animation, secondaryAnimation) =>
     {
         return builder(context);
         throw new InvalidOperationException("Dart closure completed without a value.");
@@ -851,15 +851,15 @@ public class CupertinoDialogRoute<T> : global::Doroti.Framework.Widgets.RawDialo
         this.transitionBuilder = transitionBuilder;
     }
 
-    public override global::Doroti.Framework.Physics.Simulation? createSimulation(bool forward)
+    public override Physics.Simulation? createSimulation(bool forward)
     {
         DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {GetType()} after disposing it.");
         var end = forward ? 1.0 : 0.0;
-        return (global::Doroti.Framework.Physics.Simulation?)new global::Doroti.Framework.Physics.SpringSimulation(RouteLibrary._kStandardSpring, controller!.value, end, 0, tolerance: RouteLibrary._kStandardTolerance, snapToEnd: true);
+        return (Physics.Simulation?)new Physics.SpringSimulation(RouteLibrary._kStandardSpring, controller!.value, end, 0, tolerance: RouteLibrary._kStandardTolerance, snapToEnd: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
         if (transitionBuilder is not null)
         {
@@ -867,9 +867,9 @@ public class CupertinoDialogRoute<T> : global::Doroti.Framework.Widgets.RawDialo
         }
         if (Equals(animation.status, AnimationStatus.reverse))
         {
-            return new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: child);
+            return new FadeTransition(opacity: animation, child: child);
         }
-        return new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: animation.drive(_dialogScaleTween), child: child));
+        return new FadeTransition(opacity: animation, child: new ScaleTransition(scale: animation.drive(_dialogScaleTween), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -881,17 +881,17 @@ public class CupertinoDialogRoute<T> : global::Doroti.Framework.Widgets.RawDialo
 
 }
 
-public class CupertinoPageTransitionsBuilder : global::Doroti.Framework.Widgets.PageTransitionsBuilder
+public class CupertinoPageTransitionsBuilder : PageTransitionsBuilder
 {
     public CupertinoPageTransitionsBuilder()
     {
     }
 
     public override Duration transitionDuration => CupertinoRouteTransitionMixin<object>.kTransitionDuration;
-    public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => CupertinoPageTransition.delegatedTransition;
-    public override global::Doroti.Framework.Widgets.Widget buildTransitions<T>(global::Doroti.Framework.Widgets.PageRoute<T> route, global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
+    public override Func<BuildContext, Animation<double>, Animation<double>, bool, Widget?, Widget?>? delegatedTransition => CupertinoPageTransition.delegatedTransition;
+    public override Widget buildTransitions<T>(PageRoute<T> route, BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
     {
-        return CupertinoRouteTransitionMixin<object>.buildPageTransitions<T>(route, context, animation, secondaryAnimation, child);
+        return CupertinoRouteTransitionMixin<object>.buildPageTransitions(route, context, animation, secondaryAnimation, child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

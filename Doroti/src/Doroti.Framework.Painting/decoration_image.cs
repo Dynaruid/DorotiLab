@@ -15,8 +15,8 @@ public enum ImageRepeat
 
 public class DecorationImage
 {
-    public virtual global::Doroti.Framework.Painting.IImageProvider image { get; private set; } = default!;
-    public virtual Action<object, global::System.Diagnostics.StackTrace?>? onError { get; private set; }
+    public virtual IImageProvider image { get; private set; } = default!;
+    public virtual Action<object, System.Diagnostics.StackTrace?>? onError { get; private set; }
     public virtual ColorFilter? colorFilter { get; private set; }
     public virtual BoxFit? fit { get; private set; }
     public virtual AlignmentGeometry alignment { get; private set; } = default!;
@@ -31,7 +31,7 @@ public class DecorationImage
     public DecorationImage() { }
 
 
-    public DecorationImage(global::Doroti.Framework.Painting.IImageProvider image, Action<object, global::System.Diagnostics.StackTrace?>? onError = null, ColorFilter? colorFilter = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, double scale = 1.0, double opacity = 1.0, FilterQuality filterQuality = FilterQuality.medium, bool invertColors = false, bool isAntiAlias = false)
+    public DecorationImage(IImageProvider image, Action<object, System.Diagnostics.StackTrace?>? onError = null, ColorFilter? colorFilter = null, BoxFit? fit = null, AlignmentGeometry alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool matchTextDirection = false, double scale = 1.0, double opacity = 1.0, FilterQuality filterQuality = FilterQuality.medium, bool invertColors = false, bool isAntiAlias = false)
     {
         AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.image = image;
@@ -222,9 +222,9 @@ public static partial class Decoration_imageLibrary
         {
             return;
         }
-        global::Doroti.Ui.Size outputSize = rect.size;
-        var inputSize = new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble());
-        global::Doroti.Ui.Offset? sliceBorder = default!;
+        Size outputSize = rect.size;
+        var inputSize = new Size(image.width.toDouble(), image.height.toDouble());
+        Offset? sliceBorder = default!;
         if (centerSlice is not null)
         {
             Rect centerSlice__value20139 = DartRuntimePrimitives.RequireValue(centerSlice);
@@ -235,8 +235,8 @@ public static partial class Decoration_imageLibrary
         fit ??= ((centerSlice is null) ? BoxFit.scaleDown : BoxFit.fill);
         DartRuntimePrimitives.Assert(() => (centerSlice is null) || (!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.none)) && (!Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.cover)));
         FittedSizes fittedSizes = Box_fitLibrary.applyBoxFit(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)), inputSize / scale, outputSize);
-        global::Doroti.Ui.Size sourceSize = fittedSizes.source * scale;
-        global::Doroti.Ui.Size destinationSize = fittedSizes.destination;
+        Size sourceSize = fittedSizes.source * scale;
+        Size destinationSize = fittedSizes.destination;
         if (centerSlice is not null)
         {
             Rect centerSlice__value20675 = DartRuntimePrimitives.RequireValue(centerSlice);
@@ -250,7 +250,7 @@ public static partial class Decoration_imageLibrary
         }
         var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.isAntiAlias = isAntiAlias;
     return __cascade;
 }))();
@@ -266,13 +266,13 @@ public static partial class Decoration_imageLibrary
         double halfHeightDelta = (outputSize.height - destinationSize.height) / 2.0;
         double dx = halfWidthDelta + ((flipHorizontally ? -alignment.x : alignment.x) * halfWidthDelta);
         double dy = halfHeightDelta + (alignment.y * halfHeightDelta);
-        global::Doroti.Ui.Offset destinationPosition = rect.topLeft.translate(dx, dy);
-        global::Doroti.Ui.Rect destinationRect = destinationPosition & destinationSize;
+        Offset destinationPosition = rect.topLeft.translate(dx, dy);
+        Rect destinationRect = destinationPosition & destinationSize;
         var invertedCanvas = false;
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             double maxDevicePixelRatio = Enumerable.Aggregate(PaintingBinding.instance.platformDispatcher.views, (double)0.0, (previousValue, view) => Math.Max(previousValue, view.devicePixelRatio));
-            var sizeInfo = new ImageSizeInfo(source: debugImageLabel ?? $"<Unknown Image({image.width}×{image.height})>", imageSize: new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble()), displaySize: outputSize * maxDevicePixelRatio);
+            var sizeInfo = new ImageSizeInfo(source: debugImageLabel ?? $"<Unknown Image({image.width}×{image.height})>", imageSize: new Size(image.width.toDouble(), image.height.toDouble()), displaySize: outputSize * maxDevicePixelRatio);
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (DebugLibrary.debugInvertOversizedImages && (sizeInfo.decodedSizeInBytes > (sizeInfo.displaySizeInBytes + DebugLibrary.debugImageOverheadAllowance)))
@@ -283,7 +283,7 @@ public static partial class Decoration_imageLibrary
                         FlutterError.reportError(new FlutterErrorDetails(exception: $"Image {debugImageLabel} has a display size of " + $"{outputWidth}×{outputHeight} but a decode size of " + $"{image.width}×{image.height}, which uses an additional " + $"{overheadInKilobytes}KB (assuming a device pixel ratio of " + $"{maxDevicePixelRatio}).\n\n" + "Consider resizing the asset ahead of time, supplying a cacheWidth " + $"parameter of {outputWidth}, a cacheHeight parameter of " + $"{outputHeight}, or using a ResizeImage.", library: "painting library", context: new ErrorDescription("while painting an image")));
                         canvas.saveLayer(destinationRect, ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.colorFilter = ColorFilter.matrix(new List<double> { -1, 0, 0, 0, 255, 0, -1, 0, 0, 255, 0, 0, -1, 0, 255, 0, 0, 0, 1, 0 });
     return __cascade;
 }))());
@@ -333,14 +333,14 @@ public static partial class Decoration_imageLibrary
         }
         if (centerSlice is null)
         {
-            global::Doroti.Ui.Rect sourceRect = alignment.inscribe(sourceSize, Offset.zero & inputSize);
+            Rect sourceRect = alignment.inscribe(sourceSize, Offset.zero & inputSize);
             if (Equals(repeat, ImageRepeat.noRepeat))
             {
                 canvas.drawImageRect(image, sourceRect, destinationRect, paint);
             }
             else
             {
-                foreach (global::Doroti.Ui.Rect tileRect in _generateImageTileRects(rect, destinationRect, repeat))
+                foreach (Rect tileRect in _generateImageTileRects(rect, destinationRect, repeat))
                 {
                     canvas.drawImageRect(image, sourceRect, tileRect, paint);
                 }
@@ -355,7 +355,7 @@ public static partial class Decoration_imageLibrary
             }
             else
             {
-                foreach (global::Doroti.Ui.Rect tileRectLocal in _generateImageTileRects(rect, destinationRect, repeat))
+                foreach (Rect tileRectLocal in _generateImageTileRects(rect, destinationRect, repeat))
                 {
                     canvas.drawImageNine(image, _scaleRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(centerSlice)), scale), _scaleRect(tileRectLocal, scale), paint);
                 }
@@ -392,7 +392,7 @@ public static partial class Decoration_imageLibrary
             startY = ((outputRect.top - fundamentalRect.top) / strideY).floor();
             stopY = ((outputRect.bottom - fundamentalRect.bottom) / strideY).ceil();
         }
-        return new List<global::Doroti.Ui.Rect>();
+        return new List<Rect>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -416,8 +416,8 @@ internal class _BlendedDecorationImage__decoration_image : DecorationImage
         System.Diagnostics.Debug.Assert((a is not null) || (b is not null));
     }
 
-    public override global::Doroti.Framework.Painting.IImageProvider image => b?.image ?? a!.image;
-    public override Action<object, global::System.Diagnostics.StackTrace?>? onError => b?.onError ?? a!.onError;
+    public override IImageProvider image => b?.image ?? a!.image;
+    public override Action<object, System.Diagnostics.StackTrace?>? onError => b?.onError ?? a!.onError;
     public override ColorFilter? colorFilter => b?.colorFilter ?? a!.colorFilter;
     public override BoxFit? fit => b?.fit ?? a!.fit;
     public override AlignmentGeometry alignment => b?.alignment ?? a!.alignment;
@@ -474,7 +474,7 @@ internal class _BlendedDecorationImagePainter__decoration_image : DecorationImag
 
     public virtual void paint(Canvas canvas, Rect rect, Path? clipPath, ImageConfiguration configuration, double blend = 1.0, BlendMode blendMode = BlendMode.srcOver)
     {
-        canvas.saveLayer(null, new global::Doroti.Ui.Paint());
+        canvas.saveLayer(null, new Paint());
         a?.paint(canvas, rect, clipPath, configuration, blend: blend * (1.0 - t), blendMode: blendMode);
         b?.paint(canvas, rect, clipPath, configuration, blend: blend * t, blendMode: (a is not null) ? BlendMode.plus : blendMode);
         canvas.restore();

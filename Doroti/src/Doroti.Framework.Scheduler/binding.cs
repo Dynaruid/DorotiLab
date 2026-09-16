@@ -194,7 +194,7 @@ public abstract class SchedulerBinding : BindingBase
             }
             catch (Exception exception)
             {
-                var stack = new System.Diagnostics.StackTrace();
+                var stack = new StackTrace();
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
@@ -318,7 +318,7 @@ public abstract class SchedulerBinding : BindingBase
             }
             catch (Exception exception)
             {
-                var exceptionStack = new System.Diagnostics.StackTrace();
+                var exceptionStack = new StackTrace();
                 StackTrace? callbackStack = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
@@ -871,7 +871,7 @@ public abstract class SchedulerBinding : BindingBase
         }
         catch (Exception exception)
         {
-            var exceptionStack = new System.Diagnostics.StackTrace();
+            var exceptionStack = new StackTrace();
             FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: exceptionStack, library: "scheduler library", context: new ErrorDescription("during a scheduler callback"), informationCollector: (callbackStack is null) ? null : (() =>
             {
                 return new List<DiagnosticsNode> { new DiagnosticsStackTrace("\nThis exception was thrown in the context of a scheduler callback. " + "When the scheduler callback was _registered_ (as opposed to when the " + "exception was thrown), this was the stack", callbackStack) };

@@ -7,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class Scroll_configurationLibrary
 {
-    internal static Color _kDefaultGlowColor = new global::Doroti.Ui.Color(4294967295L);
+    internal static Color _kDefaultGlowColor = new Color(4294967295L);
 }
 
 public static partial class Scroll_configurationLibrary
@@ -31,15 +31,15 @@ public class ScrollBehavior
     {
     }
 
-    public virtual ScrollBehavior copyWith(bool? scrollbars = null, bool? overscroll = null, HashSet<PointerDeviceKind>? dragDevices = null, global::Doroti.Framework.Gestures.MultitouchDragStrategy? multitouchDragStrategy = null, HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>? pointerAxisModifiers = null, ScrollPhysics? physics = null, global::Doroti.Framework.Foundation.TargetPlatform? platform = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null)
+    public virtual ScrollBehavior copyWith(bool? scrollbars = null, bool? overscroll = null, HashSet<PointerDeviceKind>? dragDevices = null, MultitouchDragStrategy? multitouchDragStrategy = null, HashSet<LogicalKeyboardKey>? pointerAxisModifiers = null, ScrollPhysics? physics = null, TargetPlatform? platform = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null)
     {
         return new _WrappedScrollBehavior__scroll_configuration(@delegate: this, scrollbars: scrollbars ?? true, overscroll: overscroll ?? true, dragDevices: dragDevices, multitouchDragStrategy: multitouchDragStrategy, pointerAxisModifiers: pointerAxisModifiers, physics: physics, platform: platform, keyboardDismissBehavior: keyboardDismissBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Foundation.TargetPlatform getPlatform(BuildContext context) => PlatformLibrary.defaultTargetPlatform;
-    public virtual HashSet<global::Doroti.Ui.PointerDeviceKind> dragDevices => DartRuntimePrimitives.ConvertValue<HashSet<global::Doroti.Ui.PointerDeviceKind>>(Scroll_configurationLibrary._kTouchLikeDeviceTypes);
-    public virtual global::Doroti.Framework.Gestures.MultitouchDragStrategy getMultitouchDragStrategy(BuildContext context)
+    public virtual TargetPlatform getPlatform(BuildContext context) => PlatformLibrary.defaultTargetPlatform;
+    public virtual HashSet<PointerDeviceKind> dragDevices => DartRuntimePrimitives.ConvertValue<HashSet<PointerDeviceKind>>(Scroll_configurationLibrary._kTouchLikeDeviceTypes);
+    public virtual MultitouchDragStrategy getMultitouchDragStrategy(BuildContext context)
     {
         switch (getPlatform(context))
         {
@@ -61,7 +61,7 @@ public class ScrollBehavior
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> pointerAxisModifiers => new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.shiftRight };
+    public virtual HashSet<LogicalKeyboardKey> pointerAxisModifiers => new HashSet<LogicalKeyboardKey> { LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.shiftRight };
     public virtual Widget buildScrollbar(BuildContext context, Widget child, ScrollableDetails details)
     {
         switch (getPlatform(context))
@@ -107,24 +107,24 @@ public class ScrollBehavior
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::System.Func<global::Doroti.Framework.Gestures.PointerEvent, global::Doroti.Framework.Gestures.VelocityTracker> velocityTrackerBuilder(BuildContext context)
+    public virtual Func<PointerEvent, VelocityTracker> velocityTrackerBuilder(BuildContext context)
     {
         switch (getPlatform(context))
         {
             case TargetPlatform.iOS:
                 {
-                    return (@event) => new global::Doroti.Framework.Gestures.IOSScrollViewFlingVelocityTracker(@event.kind);
+                    return (@event) => new IOSScrollViewFlingVelocityTracker(@event.kind);
                 }
             case TargetPlatform.macOS:
                 {
-                    return (@event) => new global::Doroti.Framework.Gestures.MacOSScrollViewFlingVelocityTracker(@event.kind);
+                    return (@event) => new MacOSScrollViewFlingVelocityTracker(@event.kind);
                 }
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
             case TargetPlatform.windows:
                 {
-                    return (@event) => new global::Doroti.Framework.Gestures.VelocityTracker(@event.kind);
+                    return (@event) => new VelocityTracker(@event.kind);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -168,13 +168,13 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
     public virtual bool scrollbars { get; private set; } = default!;
     public virtual bool overscroll { get; private set; } = default!;
     public virtual ScrollPhysics? physics { get; private set; }
-    public virtual global::Doroti.Framework.Foundation.TargetPlatform? platform { get; private set; }
+    public virtual TargetPlatform? platform { get; private set; }
     public virtual ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior { get; private set; }
     internal virtual HashSet<PointerDeviceKind>? _dragDevices { get; private set; }
-    public virtual global::Doroti.Framework.Gestures.MultitouchDragStrategy? multitouchDragStrategy { get; private set; }
-    internal virtual HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>? _pointerAxisModifiers { get; private set; }
+    public virtual MultitouchDragStrategy? multitouchDragStrategy { get; private set; }
+    internal virtual HashSet<LogicalKeyboardKey>? _pointerAxisModifiers { get; private set; }
 
-    internal _WrappedScrollBehavior__scroll_configuration(ScrollBehavior @delegate, bool scrollbars = true, bool overscroll = true, HashSet<PointerDeviceKind>? dragDevices = null, global::Doroti.Framework.Gestures.MultitouchDragStrategy? multitouchDragStrategy = null, HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>? pointerAxisModifiers = null, ScrollPhysics? physics = null, global::Doroti.Framework.Foundation.TargetPlatform? platform = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null)
+    internal _WrappedScrollBehavior__scroll_configuration(ScrollBehavior @delegate, bool scrollbars = true, bool overscroll = true, HashSet<PointerDeviceKind>? dragDevices = null, MultitouchDragStrategy? multitouchDragStrategy = null, HashSet<LogicalKeyboardKey>? pointerAxisModifiers = null, ScrollPhysics? physics = null, TargetPlatform? platform = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null)
     {
         this.@delegate = @delegate;
         this.scrollbars = scrollbars;
@@ -188,8 +188,8 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
     }
 
     public override HashSet<PointerDeviceKind> dragDevices => DartRuntimePrimitives.ConvertValue<HashSet<PointerDeviceKind>>(_dragDevices ?? @delegate.dragDevices);
-    public override HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> pointerAxisModifiers => DartRuntimePrimitives.ConvertValue<HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>>(_pointerAxisModifiers ?? @delegate.pointerAxisModifiers);
-    public override global::Doroti.Framework.Gestures.MultitouchDragStrategy getMultitouchDragStrategy(BuildContext context)
+    public override HashSet<LogicalKeyboardKey> pointerAxisModifiers => DartRuntimePrimitives.ConvertValue<HashSet<LogicalKeyboardKey>>(_pointerAxisModifiers ?? @delegate.pointerAxisModifiers);
+    public override MultitouchDragStrategy getMultitouchDragStrategy(BuildContext context)
     {
         return multitouchDragStrategy ?? @delegate.getMultitouchDragStrategy(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -215,13 +215,13 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override ScrollBehavior copyWith(bool? scrollbars = null, bool? overscroll = null, HashSet<PointerDeviceKind>? dragDevices = null, global::Doroti.Framework.Gestures.MultitouchDragStrategy? multitouchDragStrategy = null, HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>? pointerAxisModifiers = null, ScrollPhysics? physics = null, global::Doroti.Framework.Foundation.TargetPlatform? platform = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null)
+    public override ScrollBehavior copyWith(bool? scrollbars = null, bool? overscroll = null, HashSet<PointerDeviceKind>? dragDevices = null, MultitouchDragStrategy? multitouchDragStrategy = null, HashSet<LogicalKeyboardKey>? pointerAxisModifiers = null, ScrollPhysics? physics = null, TargetPlatform? platform = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null)
     {
         return @delegate.copyWith(scrollbars: scrollbars ?? this.scrollbars, overscroll: overscroll ?? this.overscroll, dragDevices: dragDevices ?? this.dragDevices, multitouchDragStrategy: multitouchDragStrategy ?? this.multitouchDragStrategy, pointerAxisModifiers: pointerAxisModifiers ?? this.pointerAxisModifiers, physics: physics ?? this.physics, platform: platform ?? this.platform, keyboardDismissBehavior: keyboardDismissBehavior ?? this.keyboardDismissBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Foundation.TargetPlatform getPlatform(BuildContext context)
+    public override TargetPlatform getPlatform(BuildContext context)
     {
         return platform ?? @delegate.getPlatform(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -242,11 +242,11 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
     public override bool shouldNotify(ScrollBehavior oldDelegate)
     {
         var __oldDelegate = (_WrappedScrollBehavior__scroll_configuration)oldDelegate;
-        return (!Equals(DartRuntimePrimitives.RuntimeType(__oldDelegate.@delegate), DartRuntimePrimitives.RuntimeType(@delegate))) || (__oldDelegate.scrollbars != scrollbars) || (__oldDelegate.overscroll != overscroll) || !CollectionsLibrary.setEquals<global::Doroti.Ui.PointerDeviceKind>(__oldDelegate.dragDevices, dragDevices) || (!Equals(__oldDelegate.multitouchDragStrategy, multitouchDragStrategy)) || !CollectionsLibrary.setEquals<global::Doroti.Framework.Services.LogicalKeyboardKey>(__oldDelegate.pointerAxisModifiers, pointerAxisModifiers) || (!Equals(__oldDelegate.physics, physics)) || (!Equals(__oldDelegate.platform, platform)) || @delegate.shouldNotify(__oldDelegate.@delegate);
+        return (!Equals(DartRuntimePrimitives.RuntimeType(__oldDelegate.@delegate), DartRuntimePrimitives.RuntimeType(@delegate))) || (__oldDelegate.scrollbars != scrollbars) || (__oldDelegate.overscroll != overscroll) || !CollectionsLibrary.setEquals(__oldDelegate.dragDevices, dragDevices) || (!Equals(__oldDelegate.multitouchDragStrategy, multitouchDragStrategy)) || !CollectionsLibrary.setEquals(__oldDelegate.pointerAxisModifiers, pointerAxisModifiers) || (!Equals(__oldDelegate.physics, physics)) || (!Equals(__oldDelegate.platform, platform)) || @delegate.shouldNotify(__oldDelegate.@delegate);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::System.Func<global::Doroti.Framework.Gestures.PointerEvent, global::Doroti.Framework.Gestures.VelocityTracker> velocityTrackerBuilder(BuildContext context)
+    public override Func<PointerEvent, VelocityTracker> velocityTrackerBuilder(BuildContext context)
     {
         return @delegate.velocityTrackerBuilder(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -259,7 +259,7 @@ public class ScrollConfiguration : InheritedWidget
 {
     public virtual ScrollBehavior behavior { get; private set; } = default!;
 
-    public ScrollConfiguration(global::Doroti.Framework.Foundation.Key? key = null, ScrollBehavior behavior = default!, Widget child = default!) : base(key: key, child: child)
+    public ScrollConfiguration(Key? key = null, ScrollBehavior behavior = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.behavior = behavior;
     }
@@ -278,10 +278,10 @@ public class ScrollConfiguration : InheritedWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollBehavior>("behavior", behavior));
+        properties.add(new DiagnosticsProperty<ScrollBehavior>("behavior", behavior));
     }
 
 }

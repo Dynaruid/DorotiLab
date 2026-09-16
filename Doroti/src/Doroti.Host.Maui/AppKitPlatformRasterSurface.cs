@@ -40,7 +40,7 @@ internal sealed class AppKitPlatformRasterSurface : NSView
     {
         ObjectDisposedException.ThrowIf(_retired, this);
         _metal.DrawableSize = new CGSize(width, height);
-        _metal.ContentsScale = (System.Runtime.InteropServices.NFloat)scale;
+        _metal.ContentsScale = (nfloat)scale;
         var drawable = _metal.NextDrawable() ?? throw new InvalidOperationException("No AppKit segment drawable available.");
         var frame = new RasterFrame(this, drawable, segment.PaintOrder);
         _leases++;

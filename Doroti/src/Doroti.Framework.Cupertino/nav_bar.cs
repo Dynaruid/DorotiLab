@@ -79,7 +79,7 @@ public static partial class Nav_barLibrary
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kNavBarSearchCurve = Curves.easeInOut;
+    internal static Curve _kNavBarSearchCurve = Curves.easeInOut;
 }
 
 public static partial class Nav_barLibrary
@@ -89,27 +89,27 @@ public static partial class Nav_barLibrary
 
 public static partial class Nav_barLibrary
 {
-    internal static Color _kDefaultNavBarBorderColor = new global::Doroti.Ui.Color(1291845632L);
+    internal static Color _kDefaultNavBarBorderColor = new Color(1291845632L);
 }
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Painting.Border _kDefaultNavBarBorder = new global::Doroti.Framework.Painting.Border(bottom: new global::Doroti.Framework.Painting.BorderSide(color: _kDefaultNavBarBorderColor, width: 0.0));
+    internal static Border _kDefaultNavBarBorder = new Border(bottom: new BorderSide(color: _kDefaultNavBarBorderColor, width: 0.0));
 }
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Painting.Border _kTransparentNavBarBorder = new global::Doroti.Framework.Painting.Border(bottom: new global::Doroti.Framework.Painting.BorderSide(color: new global::Doroti.Ui.Color(0L), width: 0.0));
+    internal static Border _kTransparentNavBarBorder = new Border(bottom: new BorderSide(color: new Color(0L), width: 0.0));
 }
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kTopNavBarHeaderTransitionCurve = new global::Doroti.Framework.Animation.Cubic(0.0, 0.45, 0.45, 0.98);
+    internal static Curve _kTopNavBarHeaderTransitionCurve = new Cubic(0.0, 0.45, 0.45, 0.98);
 }
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kBottomNavBarHeaderTransitionCurve = new global::Doroti.Framework.Animation.Cubic(0.05, 0.9, 0.9, 0.95);
+    internal static Curve _kBottomNavBarHeaderTransitionCurve = new Cubic(0.05, 0.9, 0.9, 0.95);
 }
 
 public static partial class Nav_barLibrary
@@ -119,9 +119,9 @@ public static partial class Nav_barLibrary
 
 internal class _HeroTag__nav_bar
 {
-    public virtual global::Doroti.Framework.Widgets.NavigatorState? navigator { get; private set; }
+    public virtual NavigatorState? navigator { get; private set; }
 
-    internal _HeroTag__nav_bar(global::Doroti.Framework.Widgets.NavigatorState? navigator)
+    internal _HeroTag__nav_bar(NavigatorState? navigator)
     {
         this.navigator = navigator;
     }
@@ -145,15 +145,15 @@ internal class _HeroTag__nav_bar
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(Dart_coreLibrary.identityHashCode(navigator));
 }
 
-public class _FixedSizeSlidingTransition__nav_bar : global::Doroti.Framework.Widgets.AnimatedWidget
+public class _FixedSizeSlidingTransition__nav_bar : AnimatedWidget
 {
     public virtual bool isLTR { get; private set; } = default!;
     public virtual double width { get; private set; } = default!;
     public virtual double height { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<Offset> offsetAnimation { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Animation<Offset> offsetAnimation { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _FixedSizeSlidingTransition__nav_bar(bool isLTR, global::Doroti.Framework.Animation.Animation<Offset> offsetAnimation, double width, double height, global::Doroti.Framework.Widgets.Widget child) : base(listenable: offsetAnimation)
+    internal _FixedSizeSlidingTransition__nav_bar(bool isLTR, Animation<Offset> offsetAnimation, double width, double height, Widget child) : base(listenable: offsetAnimation)
     {
         this.isLTR = isLTR;
         this.offsetAnimation = offsetAnimation;
@@ -162,9 +162,9 @@ public class _FixedSizeSlidingTransition__nav_bar : global::Doroti.Framework.Wid
         this.child = child;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.Positioned(top: offsetAnimation.value.dy, left: isLTR ? offsetAnimation.value.dx : null, right: isLTR ? null : offsetAnimation.value.dx, width: width, height: height, child: child);
+        return new Positioned(top: offsetAnimation.value.dy, left: isLTR ? offsetAnimation.value.dx : null, right: isLTR ? null : offsetAnimation.value.dx, width: width, height: height, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -172,18 +172,18 @@ public class _FixedSizeSlidingTransition__nav_bar : global::Doroti.Framework.Wid
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Widgets.Widget _wrapWithBackground(global::Doroti.Framework.Painting.Border? border = null, Color backgroundColor = default!, Brightness? brightness = null, global::Doroti.Framework.Widgets.Widget child = default!, bool updateSystemUiOverlay = true, bool enableBackgroundFilterBlur = true)
+    internal static Widget _wrapWithBackground(Border? border = null, Color backgroundColor = default!, Brightness? brightness = null, Widget child = default!, bool updateSystemUiOverlay = true, bool enableBackgroundFilterBlur = true)
     {
         var result = child;
         if (updateSystemUiOverlay)
         {
             bool isDark = backgroundColor.computeLuminance() < 0.179;
-            global::Doroti.Ui.Brightness newBrightness = brightness ?? (isDark ? Brightness.dark : Brightness.light);
-            global::Doroti.Framework.Services.SystemUiOverlayStyle overlayStyle = newBrightness switch { Brightness.dark => SystemUiOverlayStyle.light, Brightness.light => SystemUiOverlayStyle.dark, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-            result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnnotatedRegion<global::Doroti.Framework.Services.SystemUiOverlayStyle>(value: new global::Doroti.Framework.Services.SystemUiOverlayStyle(statusBarColor: overlayStyle.statusBarColor, statusBarBrightness: overlayStyle.statusBarBrightness, statusBarIconBrightness: overlayStyle.statusBarIconBrightness, systemStatusBarContrastEnforced: overlayStyle.systemStatusBarContrastEnforced), child: result));
+            Brightness newBrightness = brightness ?? (isDark ? Brightness.dark : Brightness.light);
+            SystemUiOverlayStyle overlayStyle = newBrightness switch { Brightness.dark => SystemUiOverlayStyle.light, Brightness.light => SystemUiOverlayStyle.dark, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new AnnotatedRegion<SystemUiOverlayStyle>(value: new SystemUiOverlayStyle(statusBarColor: overlayStyle.statusBarColor, statusBarBrightness: overlayStyle.statusBarBrightness, statusBarIconBrightness: overlayStyle.statusBarIconBrightness, systemStatusBarContrastEnforced: overlayStyle.systemStatusBarContrastEnforced), child: result));
         }
-        var childWithBackground = new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: border, color: backgroundColor), child: result);
-        return new global::Doroti.Framework.Widgets.ClipRect(child: new global::Doroti.Framework.Widgets.BackdropFilter(enabled: (backgroundColor.alpha != 255L) && enableBackgroundFilterBlur, filter: new global::Doroti.Ui.ImageFilter(sigmaX: 10.0, sigmaY: 10.0), child: childWithBackground));
+        var childWithBackground = new DecoratedBox(decoration: new BoxDecoration(border: border, color: backgroundColor), child: result);
+        return new ClipRect(child: new BackdropFilter(enabled: (backgroundColor.alpha != 255L) && enableBackgroundFilterBlur, filter: new ImageFilter(sigmaX: 10.0, sigmaY: 10.0), child: childWithBackground));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -200,36 +200,36 @@ public static partial class Nav_barLibrary
 
 public static partial class Nav_barLibrary
 {
-    internal static bool _isTransitionable(global::Doroti.Framework.Widgets.BuildContext context)
+    internal static bool _isTransitionable(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.IModalRoute? route = ModalRoute<object>.untypedOf(context);
+        IModalRoute? route = ModalRoute<object>.untypedOf(context);
         return (route is IPageRoute) && !route.fullscreenDialog && !CupertinoSheetRoute<object>.hasParentSheet(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-public class CupertinoNavigationBar : global::Doroti.Framework.Widgets.StatefulWidget, ObstructingPreferredSizeWidget
+public class CupertinoNavigationBar : StatefulWidget, ObstructingPreferredSizeWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? largeTitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? leading { get; private set; }
+    public virtual Widget? largeTitle { get; private set; }
+    public virtual Widget? leading { get; private set; }
     public virtual bool automaticallyImplyLeading { get; private set; } = default!;
     public virtual bool automaticallyImplyMiddle { get; private set; } = default!;
     public virtual string? previousPageTitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? middle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? trailing { get; private set; }
+    public virtual Widget? middle { get; private set; }
+    public virtual Widget? trailing { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual bool automaticBackgroundVisibility { get; private set; } = default!;
     public virtual Brightness? brightness { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Border? border { get; private set; }
+    public virtual EdgeInsetsDirectional? padding { get; private set; }
+    public virtual Border? border { get; private set; }
     public virtual bool transitionBetweenRoutes { get; private set; } = default!;
     public virtual bool enableBackgroundFilterBlur { get; private set; } = default!;
     public virtual object heroTag { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.PreferredSizeWidget? bottom { get; private set; }
+    public virtual PreferredSizeWidget? bottom { get; private set; }
 
-    public CupertinoNavigationBar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyMiddle = true, string? previousPageTitle = null, global::Doroti.Framework.Widgets.Widget? middle = null, global::Doroti.Framework.Widgets.Widget? trailing = null, global::Doroti.Framework.Painting.Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, global::Doroti.Framework.Widgets.PreferredSizeWidget? bottom = null) : base(key: key)
+    public CupertinoNavigationBar(Key? key = null, Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyMiddle = true, string? previousPageTitle = null, Widget? middle = null, Widget? trailing = null, Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, PreferredSizeWidget? bottom = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
+        Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
         object __heroTag = heroTag ?? Nav_barLibrary._defaultHeroTag;
         this.leading = leading;
         this.automaticallyImplyLeading = automaticallyImplyLeading;
@@ -250,10 +250,10 @@ public class CupertinoNavigationBar : global::Doroti.Framework.Widgets.StatefulW
         System.Diagnostics.Debug.Assert(!transitionBetweenRoutes || DartRuntimePrimitives.Identical(__heroTag, Nav_barLibrary._defaultHeroTag));
     }
 
-    public static CupertinoNavigationBar CreateLarge(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? largeTitle = null, global::Doroti.Framework.Widgets.Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, string? previousPageTitle = null, global::Doroti.Framework.Widgets.Widget? trailing = null, global::Doroti.Framework.Painting.Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, global::Doroti.Framework.Widgets.PreferredSizeWidget? bottom = null)
+    public static CupertinoNavigationBar CreateLarge(Key? key = null, Widget? largeTitle = null, Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, string? previousPageTitle = null, Widget? trailing = null, Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, PreferredSizeWidget? bottom = null)
     {
         var __instance = new CupertinoNavigationBar(key: key, leading: leading, automaticallyImplyLeading: automaticallyImplyLeading, previousPageTitle: previousPageTitle, trailing: trailing, border: border, backgroundColor: backgroundColor, automaticBackgroundVisibility: automaticBackgroundVisibility, enableBackgroundFilterBlur: enableBackgroundFilterBlur, brightness: brightness, padding: padding, transitionBetweenRoutes: transitionBetweenRoutes, heroTag: heroTag, bottom: bottom);
-        global::Doroti.Framework.Painting.Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
+        Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
         object __heroTag = heroTag ?? Nav_barLibrary._defaultHeroTag;
         __instance.largeTitle = largeTitle;
         __instance.leading = leading;
@@ -274,9 +274,9 @@ public class CupertinoNavigationBar : global::Doroti.Framework.Widgets.StatefulW
         return __instance;
     }
 
-    public virtual bool shouldFullyObstruct(global::Doroti.Framework.Widgets.BuildContext context)
+    public virtual bool shouldFullyObstruct(BuildContext context)
     {
-        global::Doroti.Ui.Color backgroundColorLocal = CupertinoDynamicColor.maybeResolve(backgroundColor, context) ?? CupertinoTheme.of(context).barBackgroundColor;
+        Color backgroundColorLocal = CupertinoDynamicColor.maybeResolve(backgroundColor, context) ?? CupertinoTheme.of(context).barBackgroundColor;
         return backgroundColorLocal.alpha == 255L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -287,16 +287,16 @@ public class CupertinoNavigationBar : global::Doroti.Framework.Widgets.StatefulW
         {
             double bottomHeight = bottom?.preferredSize.height ?? 0.0;
             double effectiveLargeHeight = (largeTitle is not null) ? Nav_barLibrary._kNavBarLargeTitleHeightExtension : 0.0;
-            return new global::Doroti.Ui.Size(Nav_barLibrary._kNavBarPersistentHeight + bottomHeight + effectiveLargeHeight);
+            return new Size(Nav_barLibrary._kNavBarPersistentHeight + bottomHeight + effectiveLargeHeight);
         }
     }
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoNavigationBarState__nav_bar());
 }
 
-internal class _CupertinoNavigationBarState__nav_bar : global::Doroti.Framework.Widgets.State<CupertinoNavigationBar>
+internal class _CupertinoNavigationBarState__nav_bar : State<CupertinoNavigationBar>
 {
     public virtual _NavigationBarStaticComponentsKeys__nav_bar keys { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Widgets.ScrollNotificationObserverState? _scrollNotificationObserver { get; set; } = default;
+    internal virtual ScrollNotificationObserverState? _scrollNotificationObserver { get; set; } = default;
     internal virtual double _scrollAnimationValue { get; set; } = 0.0;
 
     public override void didChangeDependencies()
@@ -323,12 +323,12 @@ internal class _CupertinoNavigationBarState__nav_bar : global::Doroti.Framework.
         keys = new _NavigationBarStaticComponentsKeys__nav_bar();
     }
 
-    internal virtual void _handleScrollNotification(global::Doroti.Framework.Widgets.ScrollNotification notification)
+    internal virtual void _handleScrollNotification(ScrollNotification notification)
     {
-        if ((notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification) && (((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification).depth == 0L))
+        if ((notification is ScrollUpdateNotification) && (((ScrollUpdateNotification)notification).depth == 0L))
         {
-            global::Doroti.Framework.Widgets.ScrollUpdateNotification notification__as27250 = (global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification;
-            global::Doroti.Framework.Widgets.ScrollMetrics metricsLocal = notification__as27250.metrics;
+            ScrollUpdateNotification notification__as27250 = (ScrollUpdateNotification)notification;
+            ScrollMetrics metricsLocal = notification__as27250.metrics;
             double oldScrollAnimationValue = _scrollAnimationValue;
             var scrollExtent = 0.0;
             switch (metricsLocal.axisDirection)
@@ -379,35 +379,35 @@ internal class _CupertinoNavigationBarState__nav_bar : global::Doroti.Framework.
         }
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => (widget.middle is null) || (widget.largeTitle is null));
-        global::Doroti.Ui.Color backgroundColorLocal = CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context) ?? CupertinoTheme.of(context).barBackgroundColor;
-        global::Doroti.Ui.Color? parentPageScaffoldBackgroundColor = CupertinoPageScaffoldBackgroundColor.maybeOf(context);
-        global::Doroti.Framework.Painting.Border? initialBorder = (widget.automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? Nav_barLibrary._kTransparentNavBarBorder : widget.border;
-        global::Doroti.Framework.Painting.Border? effectiveBorder = (widget.border is null) ? null : Border.lerp(initialBorder, widget.border, _scrollAnimationValue);
-        global::Doroti.Ui.Color effectiveBackgroundColor = (widget.automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? (Dart_uiLibrary.Color.lerp(parentPageScaffoldBackgroundColor, backgroundColorLocal, _scrollAnimationValue) ?? backgroundColorLocal) : backgroundColorLocal;
+        Color backgroundColorLocal = CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context) ?? CupertinoTheme.of(context).barBackgroundColor;
+        Color? parentPageScaffoldBackgroundColor = CupertinoPageScaffoldBackgroundColor.maybeOf(context);
+        Border? initialBorder = (widget.automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? Nav_barLibrary._kTransparentNavBarBorder : widget.border;
+        Border? effectiveBorder = (widget.border is null) ? null : Border.lerp(initialBorder, widget.border, _scrollAnimationValue);
+        Color effectiveBackgroundColor = (widget.automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? (Dart_uiLibrary.Color.lerp(parentPageScaffoldBackgroundColor, backgroundColorLocal, _scrollAnimationValue) ?? backgroundColorLocal) : backgroundColorLocal;
         double bottomHeight = widget.bottom?.preferredSize.height ?? 0.0;
         double persistentHeight = Nav_barLibrary._kNavBarPersistentHeight + bottomHeight + MediaQuery.paddingOf(context).top;
         double largeHeight = persistentHeight + Nav_barLibrary._kNavBarLargeTitleHeightExtension;
-        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: keys, route: ModalRoute<object>.untypedOf(context), userLeading: widget.leading, automaticallyImplyLeading: widget.automaticallyImplyLeading, automaticallyImplyTitle: widget.automaticallyImplyMiddle, previousPageTitle: widget.previousPageTitle, userMiddle: widget.middle, userTrailing: widget.trailing, padding: widget.padding, userLargeTitle: widget.largeTitle, userBottom: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(widget.bottom), large: widget.largeTitle is not null, staticBar: true, context: context);
-        global::Doroti.Framework.Widgets.Widget navBar = new _PersistentNavigationBar__nav_bar(components: componentsLocal, padding: widget.padding, middleVisible: widget.largeTitle is null);
+        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: keys, route: ModalRoute<object>.untypedOf(context), userLeading: widget.leading, automaticallyImplyLeading: widget.automaticallyImplyLeading, automaticallyImplyTitle: widget.automaticallyImplyMiddle, previousPageTitle: widget.previousPageTitle, userMiddle: widget.middle, userTrailing: widget.trailing, padding: widget.padding, userLargeTitle: widget.largeTitle, userBottom: DartRuntimePrimitives.ConvertValue<Widget>(widget.bottom), large: widget.largeTitle is not null, staticBar: true, context: context);
+        Widget navBar = new _PersistentNavigationBar__nav_bar(components: componentsLocal, padding: widget.padding, middleVisible: widget.largeTitle is null);
         if (widget.largeTitle is not null)
         {
-            navBar = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: largeHeight), child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31165 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection31165.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(navBar)); __collection31165.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new global::Doroti.Framework.Widgets.Semantics(header: true, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, maxLines: 1L, overflow: TextOverflow.ellipsis, child: new _LargeTitle__nav_bar(height: Nav_barLibrary._kNavBarLargeTitleHeightExtension, child: componentsLocal.largeTitle))))))); if (widget.bottom is not null) { __collection31165.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: bottomHeight, child: componentsLocal.navBarBottom))); } return __collection31165; }))())));
+            navBar = DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: new BoxConstraints(maxHeight: largeHeight), child: new Column(children: ((Func<List<Widget>>)(() => { var __collection31165 = new List<Widget>(); __collection31165.Add(DartRuntimePrimitives.ConvertValue<Widget>(navBar)); __collection31165.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new Widgets.Semantics(header: true, child: new DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, maxLines: 1L, overflow: TextOverflow.ellipsis, child: new _LargeTitle__nav_bar(height: Nav_barLibrary._kNavBarLargeTitleHeightExtension, child: componentsLocal.largeTitle))))))); if (widget.bottom is not null) { __collection31165.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: bottomHeight, child: componentsLocal.navBarBottom))); } return __collection31165; }))())));
         }
         else
         {
-            navBar = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: persistentHeight), child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection32281 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection32281.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(navBar)); if (widget.bottom is not null) { __collection32281.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: bottomHeight, child: componentsLocal.navBarBottom))); } return __collection32281; }))())));
+            navBar = DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: new BoxConstraints(maxHeight: persistentHeight), child: new Column(children: ((Func<List<Widget>>)(() => { var __collection32281 = new List<Widget>(); __collection32281.Add(DartRuntimePrimitives.ConvertValue<Widget>(navBar)); if (widget.bottom is not null) { __collection32281.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: bottomHeight, child: componentsLocal.navBarBottom))); } return __collection32281; }))())));
         }
-        navBar = Nav_barLibrary._wrapWithBackground(border: effectiveBorder, backgroundColor: effectiveBackgroundColor, brightness: widget.brightness, enableBackgroundFilterBlur: widget.enableBackgroundFilterBlur, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.textStyle, child: navBar));
+        navBar = Nav_barLibrary._wrapWithBackground(border: effectiveBorder, backgroundColor: effectiveBackgroundColor, brightness: widget.brightness, enableBackgroundFilterBlur: widget.enableBackgroundFilterBlur, child: new DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.textStyle, child: navBar));
         if (!widget.transitionBetweenRoutes || !Nav_barLibrary._isTransitionable(context))
         {
             return navBar;
         }
-        return new global::Doroti.Framework.Widgets.Builder(builder: (context) =>
+        return new Builder(builder: (context) =>
         {
-            return new global::Doroti.Framework.Widgets.Hero(tag: Equals(widget.heroTag, Nav_barLibrary._defaultHeroTag) ? new _HeroTag__nav_bar(Navigator.of(context)) : widget.heroTag, createRectTween: (global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.RectTween>)Nav_barLibrary._linearTranslateWithLargestRectSizeTween, placeholderBuilder: Nav_barLibrary._navBarHeroLaunchPadBuilder, flightShuttleBuilder: Nav_barLibrary._navBarHeroFlightShuttleBuilder, transitionOnUserGestures: true, child: new _TransitionableNavigationBar__nav_bar(componentsKeys: keys, backgroundColor: effectiveBackgroundColor, backButtonTextStyle: CupertinoTheme.of(context).textTheme.navActionTextStyle, titleTextStyle: CupertinoTheme.of(context).textTheme.navTitleTextStyle, largeTitleTextStyle: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, border: effectiveBorder, hasUserMiddle: widget.middle is not null, largeExpanded: widget.largeTitle is not null, searchable: false, automaticBackgroundVisibility: widget.automaticBackgroundVisibility, child: navBar));
+            return new Hero(tag: Equals(widget.heroTag, Nav_barLibrary._defaultHeroTag) ? new _HeroTag__nav_bar(Navigator.of(context)) : widget.heroTag, createRectTween: (Func<Rect?, Rect?, RectTween>)Nav_barLibrary._linearTranslateWithLargestRectSizeTween, placeholderBuilder: Nav_barLibrary._navBarHeroLaunchPadBuilder, flightShuttleBuilder: Nav_barLibrary._navBarHeroFlightShuttleBuilder, transitionOnUserGestures: true, child: new _TransitionableNavigationBar__nav_bar(componentsKeys: keys, backgroundColor: effectiveBackgroundColor, backButtonTextStyle: CupertinoTheme.of(context).textTheme.navActionTextStyle, titleTextStyle: CupertinoTheme.of(context).textTheme.navTitleTextStyle, largeTitleTextStyle: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, border: effectiveBorder, hasUserMiddle: widget.middle is not null, largeExpanded: widget.largeTitle is not null, searchable: false, automaticBackgroundVisibility: widget.automaticBackgroundVisibility, child: navBar));
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -415,34 +415,34 @@ internal class _CupertinoNavigationBarState__nav_bar : global::Doroti.Framework.
 
 }
 
-public class CupertinoSliverNavigationBar : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoSliverNavigationBar : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? largeTitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? leading { get; private set; }
+    public virtual Widget? largeTitle { get; private set; }
+    public virtual Widget? leading { get; private set; }
     public virtual bool automaticallyImplyLeading { get; private set; } = default!;
     public virtual bool automaticallyImplyTitle { get; private set; } = default!;
     public virtual bool alwaysShowMiddle { get; private set; } = default!;
     public virtual string? previousPageTitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? middle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? trailing { get; private set; }
+    public virtual Widget? middle { get; private set; }
+    public virtual Widget? trailing { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual bool automaticBackgroundVisibility { get; private set; } = default!;
     public virtual bool enableBackgroundFilterBlur { get; private set; } = default!;
     public virtual Brightness? brightness { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Border? border { get; private set; }
+    public virtual EdgeInsetsDirectional? padding { get; private set; }
+    public virtual Border? border { get; private set; }
     public virtual bool transitionBetweenRoutes { get; private set; } = default!;
     public virtual object heroTag { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.PreferredSizeWidget? bottom { get; private set; }
+    public virtual PreferredSizeWidget? bottom { get; private set; }
     public virtual NavigationBarBottomMode? bottomMode { get; private set; }
-    public virtual global::System.Action<bool>? onSearchableBottomTap { get; private set; }
+    public virtual System.Action<bool>? onSearchableBottomTap { get; private set; }
     public virtual bool stretch { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? searchField { get; private set; }
+    public virtual Widget? searchField { get; private set; }
     internal virtual bool _searchable { get; private set; } = default!;
 
-    public CupertinoSliverNavigationBar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? largeTitle = null, global::Doroti.Framework.Widgets.Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, bool alwaysShowMiddle = true, string? previousPageTitle = null, global::Doroti.Framework.Widgets.Widget? middle = null, global::Doroti.Framework.Widgets.Widget? trailing = null, global::Doroti.Framework.Painting.Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, bool stretch = false, global::Doroti.Framework.Widgets.PreferredSizeWidget? bottom = null, NavigationBarBottomMode? bottomMode = null) : base(key: key)
+    public CupertinoSliverNavigationBar(Key? key = null, Widget? largeTitle = null, Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, bool alwaysShowMiddle = true, string? previousPageTitle = null, Widget? middle = null, Widget? trailing = null, Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, bool stretch = false, PreferredSizeWidget? bottom = null, NavigationBarBottomMode? bottomMode = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
+        Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
         object __heroTag = heroTag ?? Nav_barLibrary._defaultHeroTag;
         this.largeTitle = largeTitle;
         this.leading = leading;
@@ -470,10 +470,10 @@ public class CupertinoSliverNavigationBar : global::Doroti.Framework.Widgets.Sta
         System.Diagnostics.Debug.Assert((bottomMode is null) || (bottom is not null));
     }
 
-    public static CupertinoSliverNavigationBar CreateSearch(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget searchField = default!, global::Doroti.Framework.Widgets.Widget? largeTitle = null, global::Doroti.Framework.Widgets.Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, bool alwaysShowMiddle = true, string? previousPageTitle = null, global::Doroti.Framework.Widgets.Widget? middle = null, global::Doroti.Framework.Widgets.Widget? trailing = null, global::Doroti.Framework.Painting.Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, bool stretch = false, NavigationBarBottomMode? bottomMode = NavigationBarBottomMode.automatic, global::System.Action<bool>? onSearchableBottomTap = null)
+    public static CupertinoSliverNavigationBar CreateSearch(Key? key = null, Widget searchField = default!, Widget? largeTitle = null, Widget? leading = null, bool automaticallyImplyLeading = true, bool automaticallyImplyTitle = true, bool alwaysShowMiddle = true, string? previousPageTitle = null, Widget? middle = null, Widget? trailing = null, Border? border = default!, Color? backgroundColor = null, bool automaticBackgroundVisibility = true, bool enableBackgroundFilterBlur = true, Brightness? brightness = null, EdgeInsetsDirectional? padding = null, bool transitionBetweenRoutes = true, object heroTag = default!, bool stretch = false, NavigationBarBottomMode? bottomMode = NavigationBarBottomMode.automatic, System.Action<bool>? onSearchableBottomTap = null)
     {
         var __instance = new CupertinoSliverNavigationBar(key: key, largeTitle: largeTitle, leading: leading, automaticallyImplyLeading: automaticallyImplyLeading, automaticallyImplyTitle: automaticallyImplyTitle, alwaysShowMiddle: alwaysShowMiddle, previousPageTitle: previousPageTitle, middle: middle, trailing: trailing, border: border, backgroundColor: backgroundColor, automaticBackgroundVisibility: automaticBackgroundVisibility, enableBackgroundFilterBlur: enableBackgroundFilterBlur, brightness: brightness, padding: padding, transitionBetweenRoutes: transitionBetweenRoutes, heroTag: heroTag, stretch: stretch, bottomMode: bottomMode);
-        global::Doroti.Framework.Painting.Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
+        Border? __border = border ?? Nav_barLibrary._kDefaultNavBarBorder;
         object __heroTag = heroTag ?? Nav_barLibrary._defaultHeroTag;
         __instance.searchField = searchField;
         __instance.largeTitle = largeTitle;
@@ -504,28 +504,28 @@ public class CupertinoSliverNavigationBar : global::Doroti.Framework.Widgets.Sta
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoSliverNavigationBarState__nav_bar());
 }
 
-internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Framework.Widgets.State<CupertinoSliverNavigationBar>, global::Doroti.Framework.Widgets.TickerProviderStateMixin<CupertinoSliverNavigationBar>
+internal class _CupertinoSliverNavigationBarState__nav_bar : State<CupertinoSliverNavigationBar>, TickerProviderStateMixin<CupertinoSliverNavigationBar>
 {
     public virtual _NavigationBarStaticComponentsKeys__nav_bar keys { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Widgets.ScrollableState? _scrollableState { get; set; } = default;
-    public virtual global::Doroti.Framework.Widgets.Widget? effectiveMiddle { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.AnimationController _animationController { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation _searchAnimation { get; set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<double> persistentHeightAnimation { get; set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<double> largeTitleHeightAnimation { get; set; } = default!;
+    internal virtual ScrollableState? _scrollableState { get; set; } = default;
+    public virtual Widget? effectiveMiddle { get; set; } = default;
+    internal virtual AnimationController _animationController { get; set; } = default!;
+    internal virtual CurvedAnimation _searchAnimation { get; set; } = default!;
+    public virtual Animation<double> persistentHeightAnimation { get; set; } = default!;
+    public virtual Animation<double> largeTitleHeightAnimation { get; set; } = default!;
     public virtual double scaledSearchFieldHeight { get; set; } = default!;
     public virtual double scaledLargeTitleHeight { get; set; } = default!;
     public virtual bool searchIsActive { get; set; } = false;
     public virtual bool isPortrait { get; set; } = true;
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
         keys = new _NavigationBarStaticComponentsKeys__nav_bar();
-        _animationController = new global::Doroti.Framework.Animation.AnimationController(vsync: this, duration: Nav_barLibrary._kNavBarSearchDuration);
-        _searchAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _animationController, curve: Nav_barLibrary._kNavBarSearchCurve);
+        _animationController = new AnimationController(vsync: this, duration: Nav_barLibrary._kNavBarSearchDuration);
+        _searchAnimation = new CurvedAnimation(parent: _animationController, curve: Nav_barLibrary._kNavBarSearchCurve);
     }
 
     public override void didUpdateWidget(CupertinoSliverNavigationBar oldWidget)
@@ -561,11 +561,11 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -602,27 +602,27 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
 
     internal virtual void _computeScaledHeights()
     {
-        global::Doroti.Framework.Painting.TextScaler textScaler = MediaQuery.textScalerOf(context);
+        TextScaler textScaler = MediaQuery.textScalerOf(context);
         scaledSearchFieldHeight = Nav_barLibrary._kSearchFieldHeight * Nav_barLibrary._dampScaleFactor(textScaler.scale(Nav_barLibrary._kSearchFieldHeight), Nav_barLibrary._kSearchFieldHeight, Nav_barLibrary._kMaxScaleFactor);
         scaledLargeTitleHeight = isPortrait ? (Nav_barLibrary._kNavBarLargeTitleHeightExtension * Nav_barLibrary._dampScaleFactor(textScaler.scale(Nav_barLibrary._kNavBarLargeTitleHeightExtension), Nav_barLibrary._kNavBarLargeTitleHeightExtension, Nav_barLibrary._kLargeTitleScaleDampingRatio)) : 0.0;
     }
 
     internal virtual void _setupSearchableAnimation()
     {
-        var persistentHeightTween = new global::Doroti.Framework.Animation.Tween<double>(begin: Nav_barLibrary._kNavBarPersistentHeight, end: 0.0);
-        persistentHeightAnimation = ((Func<global::Doroti.Framework.Animation.Animation<double>>)(() =>
+        var persistentHeightTween = new Tween<double>(begin: Nav_barLibrary._kNavBarPersistentHeight, end: 0.0);
+        persistentHeightAnimation = ((Func<Animation<double>>)(() =>
 {
     var __cascade = persistentHeightTween.animate(_animationController);
     __cascade.addStatusListener(_handleSearchFieldStatusChanged);
     return __cascade;
 }))();
-        var largeTitleHeightTween = new global::Doroti.Framework.Animation.Tween<double>(begin: scaledLargeTitleHeight, end: 0.0);
+        var largeTitleHeightTween = new Tween<double>(begin: scaledLargeTitleHeight, end: 0.0);
         largeTitleHeightAnimation = largeTitleHeightTween.animate(_animationController);
     }
 
     internal virtual void _handleScrollChange()
     {
-        global::Doroti.Framework.Widgets.ScrollPosition? positionLocal = _scrollableState?.position;
+        ScrollPosition? positionLocal = _scrollableState?.position;
         if ((positionLocal is null) || !positionLocal.hasPixels || (positionLocal.pixels <= 0.0))
         {
             return;
@@ -648,7 +648,7 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
         }
     }
 
-    internal virtual void _handleSearchFieldStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal virtual void _handleSearchFieldStatusChanged(AnimationStatus status)
     {
         setState(() =>
         {
@@ -680,27 +680,27 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
         _animationController.toggle();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: keys, route: ModalRoute<object>.untypedOf(context), userLeading: (widget.leading is not null) ? new global::Doroti.Framework.Widgets.Visibility(visible: !searchIsActive, child: widget.leading!) : null, automaticallyImplyLeading: widget.automaticallyImplyLeading, automaticallyImplyTitle: widget.automaticallyImplyTitle, previousPageTitle: widget.previousPageTitle, userMiddle: _animationController.isAnimating ? new global::Doroti.Framework.Widgets.Text("") : effectiveMiddle, userTrailing: (widget.trailing is not null) ? new global::Doroti.Framework.Widgets.Visibility(visible: !searchIsActive, child: widget.trailing!) : null, userLargeTitle: widget.largeTitle, userBottom: (widget._searchable ? (searchIsActive ? new _ActiveSearchableBottom__nav_bar(animationController: _animationController, animation: persistentHeightAnimation, searchField: widget.searchField, searchFieldHeight: scaledSearchFieldHeight, onSearchFieldTap: () => _onSearchFieldTap()) : new _InactiveSearchableBottom__nav_bar(animationController: _animationController, animation: persistentHeightAnimation, searchField: widget.searchField, searchFieldHeight: scaledSearchFieldHeight, onSearchFieldTap: () => _onSearchFieldTap())) : (global::Doroti.Framework.Widgets.Widget?)widget.bottom) ?? SizedBox.CreateShrink(), padding: widget.padding, large: isPortrait, staticBar: false, context: context);
-        return MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: _searchAnimation, builder: (context, child) =>
+        var componentsLocal = new _NavigationBarStaticComponents__nav_bar(keys: keys, route: ModalRoute<object>.untypedOf(context), userLeading: (widget.leading is not null) ? new Visibility(visible: !searchIsActive, child: widget.leading!) : null, automaticallyImplyLeading: widget.automaticallyImplyLeading, automaticallyImplyTitle: widget.automaticallyImplyTitle, previousPageTitle: widget.previousPageTitle, userMiddle: _animationController.isAnimating ? new Text("") : effectiveMiddle, userTrailing: (widget.trailing is not null) ? new Visibility(visible: !searchIsActive, child: widget.trailing!) : null, userLargeTitle: widget.largeTitle, userBottom: (widget._searchable ? (searchIsActive ? new _ActiveSearchableBottom__nav_bar(animationController: _animationController, animation: persistentHeightAnimation, searchField: widget.searchField, searchFieldHeight: scaledSearchFieldHeight, onSearchFieldTap: () => _onSearchFieldTap()) : new _InactiveSearchableBottom__nav_bar(animationController: _animationController, animation: persistentHeightAnimation, searchField: widget.searchField, searchFieldHeight: scaledSearchFieldHeight, onSearchFieldTap: () => _onSearchFieldTap())) : (Widget?)widget.bottom) ?? SizedBox.CreateShrink(), padding: widget.padding, large: isPortrait, staticBar: false, context: context);
+        return MediaQuery.withNoTextScaling(child: new AnimatedBuilder(animation: _searchAnimation, builder: (context, child) =>
         {
-            return new global::Doroti.Framework.Widgets.SliverPersistentHeader(pinned: true, @delegate: new _LargeTitleNavigationBarSliverDelegate__nav_bar(keys: keys, components: componentsLocal, userMiddle: effectiveMiddle, backgroundColor: CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context) ?? CupertinoTheme.of(context).barBackgroundColor, automaticBackgroundVisibility: widget.automaticBackgroundVisibility, brightness: widget.brightness, border: widget.border, padding: widget.padding, actionsForegroundColor: CupertinoTheme.of(context).primaryColor, transitionBetweenRoutes: widget.transitionBetweenRoutes, heroTag: widget.heroTag, persistentHeight: persistentHeightAnimation.value + MediaQuery.paddingOf(context).top, largeTitleHeight: largeTitleHeightAnimation.value, alwaysShowMiddle: widget.alwaysShowMiddle && (effectiveMiddle is not null), stretchConfiguration: (widget.stretch && !searchIsActive) ? new global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration() : null, enableBackgroundFilterBlur: widget.enableBackgroundFilterBlur, bottomMode: searchIsActive ? NavigationBarBottomMode.always : (widget.bottomMode ?? NavigationBarBottomMode.automatic), bottomHeight: _bottomHeight, controller: _animationController, searchable: widget._searchable));
+            return new SliverPersistentHeader(pinned: true, @delegate: new _LargeTitleNavigationBarSliverDelegate__nav_bar(keys: keys, components: componentsLocal, userMiddle: effectiveMiddle, backgroundColor: CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context) ?? CupertinoTheme.of(context).barBackgroundColor, automaticBackgroundVisibility: widget.automaticBackgroundVisibility, brightness: widget.brightness, border: widget.border, padding: widget.padding, actionsForegroundColor: CupertinoTheme.of(context).primaryColor, transitionBetweenRoutes: widget.transitionBetweenRoutes, heroTag: widget.heroTag, persistentHeight: persistentHeightAnimation.value + MediaQuery.paddingOf(context).top, largeTitleHeight: largeTitleHeightAnimation.value, alwaysShowMiddle: widget.alwaysShowMiddle && (effectiveMiddle is not null), stretchConfiguration: (widget.stretch && !searchIsActive) ? new OverScrollHeaderStretchConfiguration() : null, enableBackgroundFilterBlur: widget.enableBackgroundFilterBlur, bottomMode: searchIsActive ? NavigationBarBottomMode.always : (widget.bottomMode ?? NavigationBarBottomMode.automatic), bottomHeight: _bottomHeight, controller: _animationController, searchable: widget._searchable));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
     __cascade.muted = !values.enabled;
@@ -712,7 +712,7 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
+    public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
         DartRuntimePrimitives.Assert(() => _tickers is not null);
         DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
@@ -732,7 +732,7 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -742,7 +742,7 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -752,24 +752,24 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
 
-internal class _LargeTitleNavigationBarSliverDelegate__nav_bar : global::Doroti.Framework.Widgets.SliverPersistentHeaderDelegate
+internal class _LargeTitleNavigationBarSliverDelegate__nav_bar : SliverPersistentHeaderDelegate
 {
     public virtual _NavigationBarStaticComponentsKeys__nav_bar keys { get; private set; } = default!;
     public virtual _NavigationBarStaticComponents__nav_bar components { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? userMiddle { get; private set; }
+    public virtual Widget? userMiddle { get; private set; }
     public virtual Color backgroundColor { get; private set; } = default!;
     public virtual bool automaticBackgroundVisibility { get; private set; } = default!;
     public virtual Brightness? brightness { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Border? border { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding { get; private set; }
+    public virtual Border? border { get; private set; }
+    public virtual EdgeInsetsDirectional? padding { get; private set; }
     public virtual Color actionsForegroundColor { get; private set; } = default!;
     public virtual bool transitionBetweenRoutes { get; private set; } = default!;
     public virtual object heroTag { get; private set; } = default!;
@@ -779,12 +779,12 @@ internal class _LargeTitleNavigationBarSliverDelegate__nav_bar : global::Doroti.
     public virtual bool enableBackgroundFilterBlur { get; private set; } = default!;
     public virtual NavigationBarBottomMode bottomMode { get; private set; } = default!;
     public virtual double bottomHeight { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.AnimationController controller { get; private set; } = default!;
+    public virtual AnimationController controller { get; private set; } = default!;
     public virtual bool searchable { get; private set; } = default!;
-    private global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration? __field_stretchConfiguration = default;
-    public override global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration? stretchConfiguration => __field_stretchConfiguration;
+    private OverScrollHeaderStretchConfiguration? __field_stretchConfiguration = default;
+    public override OverScrollHeaderStretchConfiguration? stretchConfiguration => __field_stretchConfiguration;
 
-    internal _LargeTitleNavigationBarSliverDelegate__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar keys, _NavigationBarStaticComponents__nav_bar components, global::Doroti.Framework.Widgets.Widget? userMiddle, Color backgroundColor, bool automaticBackgroundVisibility, Brightness? brightness, global::Doroti.Framework.Painting.Border? border, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, Color actionsForegroundColor, bool transitionBetweenRoutes, object heroTag, double persistentHeight, double largeTitleHeight, bool alwaysShowMiddle, global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration? stretchConfiguration, bool enableBackgroundFilterBlur, NavigationBarBottomMode bottomMode, double bottomHeight, global::Doroti.Framework.Animation.AnimationController controller, bool searchable)
+    internal _LargeTitleNavigationBarSliverDelegate__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar keys, _NavigationBarStaticComponents__nav_bar components, Widget? userMiddle, Color backgroundColor, bool automaticBackgroundVisibility, Brightness? brightness, Border? border, EdgeInsetsDirectional? padding, Color actionsForegroundColor, bool transitionBetweenRoutes, object heroTag, double persistentHeight, double largeTitleHeight, bool alwaysShowMiddle, OverScrollHeaderStretchConfiguration? stretchConfiguration, bool enableBackgroundFilterBlur, NavigationBarBottomMode bottomMode, double bottomHeight, AnimationController controller, bool searchable)
     {
         this.keys = keys;
         this.components = components;
@@ -810,27 +810,27 @@ internal class _LargeTitleNavigationBarSliverDelegate__nav_bar : global::Doroti.
 
     public override double minExtent => DartRuntimePrimitives.ConvertValue<double>(persistentHeight + (Equals(bottomMode, NavigationBarBottomMode.always) ? bottomHeight : 0.0));
     public override double maxExtent => DartRuntimePrimitives.ConvertValue<double>(persistentHeight + largeTitleHeight + bottomHeight);
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context, double shrinkOffset, bool overlapsContent)
+    public override Widget build(BuildContext context, double shrinkOffset, bool overlapsContent)
     {
         double largeTitleThreshold = maxExtent - minExtent - Nav_barLibrary._kNavBarShowLargeTitleThreshold;
         bool showLargeTitle = shrinkOffset < largeTitleThreshold;
         double bottomShrinkFactor = Dart_uiLibrary.clampDouble(shrinkOffset / bottomHeight, 0, 1);
         double shrinkAnimationValue = Dart_uiLibrary.clampDouble((shrinkOffset - largeTitleThreshold - Nav_barLibrary._kNavBarScrollUnderAnimationExtent) / Nav_barLibrary._kNavBarScrollUnderAnimationExtent, 0, 1);
         var persistentNavigationBar = new _PersistentNavigationBar__nav_bar(components: components, padding: padding, middleVisible: alwaysShowMiddle ? null : !showLargeTitle);
-        global::Doroti.Ui.Color? parentPageScaffoldBackgroundColor = CupertinoPageScaffoldBackgroundColor.maybeOf(context);
-        global::Doroti.Framework.Painting.Border? initialBorder = (automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? Nav_barLibrary._kTransparentNavBarBorder : border;
-        global::Doroti.Framework.Painting.Border? effectiveBorder = (border is null) ? null : Border.lerp(initialBorder, border, shrinkAnimationValue);
-        global::Doroti.Ui.Color effectiveBackgroundColor = (automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? (Dart_uiLibrary.Color.lerp(parentPageScaffoldBackgroundColor, backgroundColor, shrinkAnimationValue) ?? backgroundColor) : backgroundColor;
-        global::Doroti.Framework.Widgets.Widget navBar = Nav_barLibrary._wrapWithBackground(border: effectiveBorder, backgroundColor: effectiveBackgroundColor, brightness: brightness, enableBackgroundFilterBlur: enableBackgroundFilterBlur, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.textStyle, child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection60282 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection60282.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection60368 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection60368.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: persistentHeight, left: 0.0, right: 0.0, bottom: Equals(bottomMode, NavigationBarBottomMode.automatic) ? (bottomHeight * (1.0 - bottomShrinkFactor)) : 0.0, child: new global::Doroti.Framework.Widgets.ClipRect(child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, bottom: false, child: new global::Doroti.Framework.Widgets.AnimatedOpacity(opacity: (showLargeTitle && !controller.isForwardOrCompleted) ? 1.0 : 0.0, duration: Nav_barLibrary._kNavBarTitleFadeDuration, child: new global::Doroti.Framework.Widgets.Semantics(header: true, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, maxLines: 1L, overflow: TextOverflow.ellipsis, child: new _LargeTitle__nav_bar(height: largeTitleHeight, child: components.largeTitle)))))))))); __collection60368.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(left: 0.0, right: 0.0, top: 0.0, child: persistentNavigationBar))); if (Equals(bottomMode, NavigationBarBottomMode.automatic)) { __collection60368.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(left: 0.0, right: 0.0, bottom: 0.0, child: new global::Doroti.Framework.Widgets.SizedBox(height: bottomHeight * (1.0 - bottomShrinkFactor), child: new global::Doroti.Framework.Widgets.ClipRect(child: components.navBarBottom))))); } return __collection60368; }))())))); if (Equals(bottomMode, NavigationBarBottomMode.always)) { __collection60282.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: bottomHeight, child: components.navBarBottom))); } return __collection60282; }))())));
+        Color? parentPageScaffoldBackgroundColor = CupertinoPageScaffoldBackgroundColor.maybeOf(context);
+        Border? initialBorder = (automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? Nav_barLibrary._kTransparentNavBarBorder : border;
+        Border? effectiveBorder = (border is null) ? null : Border.lerp(initialBorder, border, shrinkAnimationValue);
+        Color effectiveBackgroundColor = (automaticBackgroundVisibility && (parentPageScaffoldBackgroundColor is not null)) ? (Dart_uiLibrary.Color.lerp(parentPageScaffoldBackgroundColor, backgroundColor, shrinkAnimationValue) ?? backgroundColor) : backgroundColor;
+        Widget navBar = Nav_barLibrary._wrapWithBackground(border: effectiveBorder, backgroundColor: effectiveBackgroundColor, brightness: brightness, enableBackgroundFilterBlur: enableBackgroundFilterBlur, child: new DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.textStyle, child: new Column(children: ((Func<List<Widget>>)(() => { var __collection60282 = new List<Widget>(); __collection60282.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Stack(children: ((Func<List<Widget>>)(() => { var __collection60368 = new List<Widget>(); __collection60368.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Positioned(top: persistentHeight, left: 0.0, right: 0.0, bottom: Equals(bottomMode, NavigationBarBottomMode.automatic) ? (bottomHeight * (1.0 - bottomShrinkFactor)) : 0.0, child: new ClipRect(child: new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new SafeArea(top: false, bottom: false, child: new AnimatedOpacity(opacity: (showLargeTitle && !controller.isForwardOrCompleted) ? 1.0 : 0.0, duration: Nav_barLibrary._kNavBarTitleFadeDuration, child: new Widgets.Semantics(header: true, child: new DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, maxLines: 1L, overflow: TextOverflow.ellipsis, child: new _LargeTitle__nav_bar(height: largeTitleHeight, child: components.largeTitle)))))))))); __collection60368.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Positioned(left: 0.0, right: 0.0, top: 0.0, child: persistentNavigationBar))); if (Equals(bottomMode, NavigationBarBottomMode.automatic)) { __collection60368.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Positioned(left: 0.0, right: 0.0, bottom: 0.0, child: new SizedBox(height: bottomHeight * (1.0 - bottomShrinkFactor), child: new ClipRect(child: components.navBarBottom))))); } return __collection60368; }))())))); if (Equals(bottomMode, NavigationBarBottomMode.always)) { __collection60282.Add(DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(height: bottomHeight, child: components.navBarBottom))); } return __collection60282; }))())));
         if (!transitionBetweenRoutes || !Nav_barLibrary._isTransitionable(context))
         {
             return navBar;
         }
-        return new global::Doroti.Framework.Widgets.Hero(tag: Equals(heroTag, Nav_barLibrary._defaultHeroTag) ? new _HeroTag__nav_bar(Navigator.of(context)) : heroTag, createRectTween: (global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.RectTween>)Nav_barLibrary._linearTranslateWithLargestRectSizeTween, flightShuttleBuilder: Nav_barLibrary._navBarHeroFlightShuttleBuilder, placeholderBuilder: Nav_barLibrary._navBarHeroLaunchPadBuilder, transitionOnUserGestures: true, child: new _TransitionableNavigationBar__nav_bar(componentsKeys: keys, backgroundColor: effectiveBackgroundColor, backButtonTextStyle: CupertinoTheme.of(context).textTheme.navActionTextStyle, titleTextStyle: CupertinoTheme.of(context).textTheme.navTitleTextStyle, largeTitleTextStyle: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, border: effectiveBorder, hasUserMiddle: (userMiddle is not null) && (alwaysShowMiddle || !showLargeTitle), largeExpanded: showLargeTitle, searchable: searchable, automaticBackgroundVisibility: automaticBackgroundVisibility, child: navBar));
+        return new Hero(tag: Equals(heroTag, Nav_barLibrary._defaultHeroTag) ? new _HeroTag__nav_bar(Navigator.of(context)) : heroTag, createRectTween: (Func<Rect?, Rect?, RectTween>)Nav_barLibrary._linearTranslateWithLargestRectSizeTween, flightShuttleBuilder: Nav_barLibrary._navBarHeroFlightShuttleBuilder, placeholderBuilder: Nav_barLibrary._navBarHeroLaunchPadBuilder, transitionOnUserGestures: true, child: new _TransitionableNavigationBar__nav_bar(componentsKeys: keys, backgroundColor: effectiveBackgroundColor, backButtonTextStyle: CupertinoTheme.of(context).textTheme.navActionTextStyle, titleTextStyle: CupertinoTheme.of(context).textTheme.navTitleTextStyle, largeTitleTextStyle: CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle, border: effectiveBorder, hasUserMiddle: (userMiddle is not null) && (alwaysShowMiddle || !showLargeTitle), largeExpanded: showLargeTitle, searchable: searchable, automaticBackgroundVisibility: automaticBackgroundVisibility, child: navBar));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRebuild(global::Doroti.Framework.Widgets.SliverPersistentHeaderDelegate oldDelegate)
+    public override bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate)
     {
         var __oldDelegate = (_LargeTitleNavigationBarSliverDelegate__nav_bar)oldDelegate;
         return (!Equals(components, __oldDelegate.components)) || (!Equals(userMiddle, __oldDelegate.userMiddle)) || (!Equals(backgroundColor, __oldDelegate.backgroundColor)) || (automaticBackgroundVisibility != __oldDelegate.automaticBackgroundVisibility) || (!Equals(border, __oldDelegate.border)) || (!Equals(padding, __oldDelegate.padding)) || (!Equals(actionsForegroundColor, __oldDelegate.actionsForegroundColor)) || (transitionBetweenRoutes != __oldDelegate.transitionBetweenRoutes) || (persistentHeight != __oldDelegate.persistentHeight) || (largeTitleHeight != __oldDelegate.largeTitleHeight) || (alwaysShowMiddle != __oldDelegate.alwaysShowMiddle) || (!Equals(heroTag, __oldDelegate.heroTag)) || (enableBackgroundFilterBlur != __oldDelegate.enableBackgroundFilterBlur) || (!Equals(bottomMode, __oldDelegate.bottomMode)) || (bottomHeight != __oldDelegate.bottomHeight) || (!Equals(controller, __oldDelegate.controller)) || (searchable != __oldDelegate.searchable);
@@ -839,22 +839,22 @@ internal class _LargeTitleNavigationBarSliverDelegate__nav_bar : global::Doroti.
 
 }
 
-internal class _LargeTitle__nav_bar : global::Doroti.Framework.Widgets.SingleChildRenderObjectWidget
+internal class _LargeTitle__nav_bar : SingleChildRenderObjectWidget
 {
     public virtual double height { get; private set; } = default!;
 
-    internal _LargeTitle__nav_bar(global::Doroti.Framework.Widgets.Widget? child = null, double height = default!) : base(child: child)
+    internal _LargeTitle__nav_bar(Widget? child = null, double height = default!) : base(child: child)
     {
         this.height = height;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderLargeTitle__nav_bar(alignment: AlignmentDirectional.bottomStart.resolve(Directionality.of(context)), height: height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderLargeTitle__nav_bar)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderLargeTitle__nav_bar>)(() =>
@@ -868,19 +868,19 @@ internal class _LargeTitle__nav_bar : global::Doroti.Framework.Widgets.SingleChi
 
 }
 
-public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.RenderShiftedBox
+public class _RenderLargeTitle__nav_bar : RenderShiftedBox
 {
-    internal virtual global::Doroti.Framework.Painting.Alignment _alignment { get; set; } = default!;
+    internal virtual Alignment _alignment { get; set; } = default!;
     internal virtual double _height { get; set; } = default!;
     internal virtual double _scale { get; set; } = 1.0;
 
-    internal _RenderLargeTitle__nav_bar(global::Doroti.Framework.Painting.Alignment alignment, double height) : base(null)
+    internal _RenderLargeTitle__nav_bar(Alignment alignment, double height) : base(null)
     {
         _alignment = alignment;
         _height = height;
     }
 
-    public virtual global::Doroti.Framework.Painting.Alignment alignment
+    public virtual Alignment alignment
     {
         get => _alignment;
         set
@@ -908,7 +908,7 @@ public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.Ren
             markNeedsLayout();
         }
     }
-    internal static double _computeTitleScale(Size childSize, global::Doroti.Framework.Rendering.BoxConstraints constraints, double height)
+    internal static double _computeTitleScale(Size childSize, BoxConstraints constraints, double height)
     {
         double maxHeightLocal = height - Nav_barLibrary._kNavBarBottomPadding;
         double scale = 1.0 + (0.03 * (constraints.maxHeight - maxHeightLocal) / maxHeightLocal);
@@ -924,76 +924,76 @@ public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.Ren
         {
             return null;
         }
-        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)child!.parentData!)!;
+        var childParentData = ((BoxParentData?)child!.parentData!)!;
         return childParentData.offset.dy + (DartRuntimePrimitives.RequireValue(distance) * _scale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
+    public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = child;
+        RenderBox? childLocal = child;
         if (childLocal is null)
         {
             return null;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = constraints.widthConstraints().loosen();
+        BoxConstraints childConstraints = constraints.widthConstraints().loosen();
         double? result = childLocal.getDryBaseline(childConstraints, baseline);
         if (result is null)
         {
             return null;
         }
-        global::Doroti.Ui.Size childSize = childLocal.getDryLayout(childConstraints);
+        Size childSize = childLocal.getDryLayout(childConstraints);
         double scale = _computeTitleScale(childSize, constraints, height);
-        global::Doroti.Ui.Size scaledChildSize = childSize * scale;
+        Size scaledChildSize = childSize * scale;
         return (DartRuntimePrimitives.RequireValue(result) * scale) + alignment.alongOffset(constraints.biggest - scaledChildSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = child;
+        RenderBox? childLocal = child;
         size = constraints.biggest;
         if (childLocal is null)
         {
             return;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = constraints.widthConstraints().loosen();
+        BoxConstraints childConstraints = constraints.widthConstraints().loosen();
         childLocal.layout(childConstraints, parentUsesSize: true);
         _scale = _computeTitleScale(childLocal.size, constraints, height);
-        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)childLocal.parentData!)!;
+        var childParentData = ((BoxParentData?)childLocal.parentData!)!;
         childParentData.offset = alignment.alongOffset(size - childLocal.size * _scale);
     }
 
-    public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
+    public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __child = (RenderBox)child;
         DartRuntimePrimitives.Assert(() => Equals(__child, this.child));
         base.applyPaintTransform(__child, transform);
         transform.scaleByDouble(_scale, _scale, _scale, 1);
     }
 
-    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(PaintingContext context, Offset offset)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = child;
+        RenderBox? childLocal = child;
         if (childLocal is null)
         {
             layer = null;
         }
         else
         {
-            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)childLocal.parentData!)!;
-            layer = context.pushTransform(needsCompositing, offset + childParentData.offset, Matrix4.diagonal3Values(_scale, _scale, 1.0), (context, offset) => { context.paintChild(childLocal, offset); }, oldLayer: ((global::Doroti.Framework.Rendering.TransformLayer?)layer)!);
+            var childParentData = ((BoxParentData?)childLocal.parentData!)!;
+            layer = context.pushTransform(needsCompositing, offset + childParentData.offset, Matrix4.diagonal3Values(_scale, _scale, 1.0), (context, offset) => { context.paintChild(childLocal, offset); }, oldLayer: ((TransformLayer?)layer)!);
         }
     }
 
-    public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
+    public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = child;
+        RenderBox? childLocal = child;
         if (childLocal is null)
         {
             return false;
         }
-        global::Doroti.Ui.Offset childOffset = ((BoxParentData?)childLocal.parentData!)!.offset;
+        Offset childOffset = ((BoxParentData?)childLocal.parentData!)!.offset;
         var transformLocal = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();
@@ -1011,44 +1011,44 @@ public class _RenderLargeTitle__nav_bar : global::Doroti.Framework.Rendering.Ren
 
 }
 
-internal class _PersistentNavigationBar__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _PersistentNavigationBar__nav_bar : StatelessWidget
 {
     public virtual _NavigationBarStaticComponents__nav_bar components { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding { get; private set; }
+    public virtual EdgeInsetsDirectional? padding { get; private set; }
     public virtual bool? middleVisible { get; private set; }
 
-    internal _PersistentNavigationBar__nav_bar(_NavigationBarStaticComponents__nav_bar components, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding = null, bool? middleVisible = null)
+    internal _PersistentNavigationBar__nav_bar(_NavigationBarStaticComponents__nav_bar components, EdgeInsetsDirectional? padding = null, bool? middleVisible = null)
     {
         this.components = components;
         this.padding = padding;
         this.middleVisible = middleVisible;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget? middleLocal = components.middle;
+        Widget? middleLocal = components.middle;
         if (middleLocal is not null)
         {
-            middleLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.navTitleTextStyle, child: new global::Doroti.Framework.Widgets.Semantics(header: true, child: middleLocal)));
-            middleLocal = (middleVisible is null) ? middleLocal : new global::Doroti.Framework.Widgets.AnimatedOpacity(opacity: DartRuntimePrimitives.RequireValue(middleVisible) ? 1.0 : 0.0, duration: Nav_barLibrary._kNavBarTitleFadeDuration, child: middleLocal);
+            middleLocal = DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.navTitleTextStyle, child: new Widgets.Semantics(header: true, child: middleLocal)));
+            middleLocal = (middleVisible is null) ? middleLocal : new AnimatedOpacity(opacity: DartRuntimePrimitives.RequireValue(middleVisible) ? 1.0 : 0.0, duration: Nav_barLibrary._kNavBarTitleFadeDuration, child: middleLocal);
         }
-        global::Doroti.Framework.Widgets.Widget? leadingLocal = components.leading;
-        global::Doroti.Framework.Widgets.Widget? backChevronLocal = components.backChevron;
-        global::Doroti.Framework.Widgets.Widget? backLabelLocal = components.backLabel;
+        Widget? leadingLocal = components.leading;
+        Widget? backChevronLocal = components.backChevron;
+        Widget? backLabelLocal = components.backLabel;
         if ((leadingLocal is null) && (backChevronLocal is not null) && (backLabelLocal is not null) && !CupertinoSheetRoute<object>.hasParentSheet(context))
         {
-            leadingLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(CupertinoNavigationBarBackButton.Create_assemble(backChevronLocal, backLabelLocal));
+            leadingLocal = DartRuntimePrimitives.ConvertValue<Widget>(CupertinoNavigationBarBackButton.Create_assemble(backChevronLocal, backLabelLocal));
         }
         else
         {
-            leadingLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(widthFactor: 1.0, child: leadingLocal));
+            leadingLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Align(widthFactor: 1.0, child: leadingLocal));
         }
-        global::Doroti.Framework.Widgets.Widget paddedToolbar = new global::Doroti.Framework.Widgets.NavigationToolbar(leading: leadingLocal, middle: middleLocal, trailing: components.trailing, middleSpacing: 6.0);
+        Widget paddedToolbar = new NavigationToolbar(leading: leadingLocal, middle: middleLocal, trailing: components.trailing, middleSpacing: 6.0);
         if (padding is not null)
         {
-            paddedToolbar = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(top: padding!.top, bottom: padding!.bottom), child: paddedToolbar));
+            paddedToolbar = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsets.CreateOnly(top: padding!.top, bottom: padding!.bottom), child: paddedToolbar));
         }
-        return new global::Doroti.Framework.Widgets.SizedBox(height: Nav_barLibrary._kNavBarPersistentHeight + MediaQuery.paddingOf(context).top, child: new global::Doroti.Framework.Widgets.SafeArea(top: !CupertinoSheetRoute<object>.hasParentSheet(context), bottom: false, child: paddedToolbar));
+        return new SizedBox(height: Nav_barLibrary._kNavBarPersistentHeight + MediaQuery.paddingOf(context).top, child: new SafeArea(top: !CupertinoSheetRoute<object>.hasParentSheet(context), bottom: false, child: paddedToolbar));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1056,14 +1056,14 @@ internal class _PersistentNavigationBar__nav_bar : global::Doroti.Framework.Widg
 
 public class _NavigationBarStaticComponentsKeys__nav_bar
 {
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> navBarBoxKey { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> leadingKey { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> backChevronKey { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> backLabelKey { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> middleKey { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> trailingKey { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> largeTitleKey { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.GlobalKey<IState> navBarBottomKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> navBarBoxKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> leadingKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> backChevronKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> backLabelKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> middleKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> trailingKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> largeTitleKey { get; private set; } = default!;
+    public virtual GlobalKey<IState> navBarBottomKey { get; private set; } = default!;
 
     internal _NavigationBarStaticComponentsKeys__nav_bar()
     {
@@ -1081,15 +1081,15 @@ public class _NavigationBarStaticComponentsKeys__nav_bar
 
 public class _NavigationBarStaticComponents__nav_bar
 {
-    public virtual global::Doroti.Framework.Widgets.KeyedSubtree? leading { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.KeyedSubtree? backChevron { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.KeyedSubtree? backLabel { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.KeyedSubtree? middle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.KeyedSubtree? trailing { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.KeyedSubtree? largeTitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.KeyedSubtree? navBarBottom { get; private set; }
+    public virtual KeyedSubtree? leading { get; private set; }
+    public virtual KeyedSubtree? backChevron { get; private set; }
+    public virtual KeyedSubtree? backLabel { get; private set; }
+    public virtual KeyedSubtree? middle { get; private set; }
+    public virtual KeyedSubtree? trailing { get; private set; }
+    public virtual KeyedSubtree? largeTitle { get; private set; }
+    public virtual KeyedSubtree? navBarBottom { get; private set; }
 
-    internal _NavigationBarStaticComponents__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar keys, global::Doroti.Framework.Widgets.IModalRoute? route, global::Doroti.Framework.Widgets.Widget? userLeading, bool automaticallyImplyLeading, bool automaticallyImplyTitle, string? previousPageTitle, global::Doroti.Framework.Widgets.Widget? userMiddle, global::Doroti.Framework.Widgets.Widget? userTrailing, global::Doroti.Framework.Widgets.Widget? userLargeTitle, global::Doroti.Framework.Widgets.Widget? userBottom, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, bool large, bool staticBar, global::Doroti.Framework.Widgets.BuildContext context)
+    internal _NavigationBarStaticComponents__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar keys, IModalRoute? route, Widget? userLeading, bool automaticallyImplyLeading, bool automaticallyImplyTitle, string? previousPageTitle, Widget? userMiddle, Widget? userTrailing, Widget? userLargeTitle, Widget? userBottom, EdgeInsetsDirectional? padding, bool large, bool staticBar, BuildContext context)
     {
         leading = createLeading(leadingKey: keys.leadingKey, userLeading: userLeading, route: route, automaticallyImplyLeading: automaticallyImplyLeading, padding: padding, context: context);
         backChevron = createBackChevron(backChevronKey: keys.backChevronKey, userLeading: userLeading, route: route, automaticallyImplyLeading: automaticallyImplyLeading, context: context);
@@ -1100,20 +1100,20 @@ public class _NavigationBarStaticComponents__nav_bar
         navBarBottom = createNavBarBottom(navBarBottomKey: keys.navBarBottomKey, userBottom: userBottom, context: context);
     }
 
-    internal static global::Doroti.Framework.Widgets.Widget? _derivedTitle(bool automaticallyImplyTitle, global::Doroti.Framework.Widgets.IModalRoute? currentRoute = null)
+    internal static Widget? _derivedTitle(bool automaticallyImplyTitle, IModalRoute? currentRoute = null)
     {
         if (automaticallyImplyTitle && (currentRoute is ICupertinoRouteTitle) && (((ICupertinoRouteTitle)currentRoute).title is not null))
         {
             ICupertinoRouteTitle currentRoute__as76488 = (ICupertinoRouteTitle)currentRoute;
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.Text(currentRoute__as76488.title!);
+            return (Widget?)new Text(currentRoute__as76488.title!);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createLeading(global::Doroti.Framework.Widgets.GlobalKey<IState> leadingKey, global::Doroti.Framework.Widgets.Widget? userLeading, global::Doroti.Framework.Widgets.IModalRoute? route, bool automaticallyImplyLeading, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, global::Doroti.Framework.Widgets.BuildContext context)
+    public static KeyedSubtree? createLeading(GlobalKey<IState> leadingKey, Widget? userLeading, IModalRoute? route, bool automaticallyImplyLeading, EdgeInsetsDirectional? padding, BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget? leadingContent = default!;
+        Widget? leadingContent = default!;
         if (userLeading is not null)
         {
             leadingContent = userLeading;
@@ -1123,41 +1123,41 @@ public class _NavigationBarStaticComponents__nav_bar
             if (automaticallyImplyLeading && (route is IPageRoute) && route.canPop && route.fullscreenDialog)
             {
                 var route__as77104 = route;
-                leadingContent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new CupertinoButton(padding: EdgeInsets.zero, onPressed: () =>
+                leadingContent = DartRuntimePrimitives.ConvertValue<Widget>(new CupertinoButton(padding: EdgeInsets.zero, onPressed: () =>
                 {
                     DartRuntimePrimitives.Ignore(route__as77104.navigator!.maybePop<object>());
-                }, child: new global::Doroti.Framework.Widgets.Text(CupertinoLocalizations.of(context).cancelButtonLabel)));
+                }, child: new Text(CupertinoLocalizations.of(context).cancelButtonLabel)));
             }
         }
         if (leadingContent is null)
         {
             return null;
         }
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: leadingKey, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: padding?.start ?? Nav_barLibrary._kNavBarEdgePadding), child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(size: 32.0), child: leadingContent))));
+        return new KeyedSubtree(key: leadingKey, child: new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: padding?.start ?? Nav_barLibrary._kNavBarEdgePadding), child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: IconTheme.merge(data: new IconThemeData(size: 32.0), child: leadingContent))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createBackChevron(global::Doroti.Framework.Widgets.GlobalKey<IState> backChevronKey, global::Doroti.Framework.Widgets.Widget? userLeading, global::Doroti.Framework.Widgets.IModalRoute? route, bool automaticallyImplyLeading, global::Doroti.Framework.Widgets.BuildContext context)
+    public static KeyedSubtree? createBackChevron(GlobalKey<IState> backChevronKey, Widget? userLeading, IModalRoute? route, bool automaticallyImplyLeading, BuildContext context)
     {
         if ((userLeading is not null) || !automaticallyImplyLeading || (route is null) || !route.canPop || (route is IPageRoute) && route.fullscreenDialog)
         {
             return null;
         }
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: backChevronKey, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: new _BackChevron__nav_bar()));
+        return new KeyedSubtree(key: backChevronKey, child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: new _BackChevron__nav_bar()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createBackLabel(global::Doroti.Framework.Widgets.GlobalKey<IState> backLabelKey, global::Doroti.Framework.Widgets.Widget? userLeading, global::Doroti.Framework.Widgets.IModalRoute? route, bool automaticallyImplyLeading, string? previousPageTitle, global::Doroti.Framework.Widgets.BuildContext context)
+    public static KeyedSubtree? createBackLabel(GlobalKey<IState> backLabelKey, Widget? userLeading, IModalRoute? route, bool automaticallyImplyLeading, string? previousPageTitle, BuildContext context)
     {
         if ((userLeading is not null) || !automaticallyImplyLeading || (route is null) || !route.canPop || (route is IPageRoute) && route.fullscreenDialog)
         {
             return null;
         }
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: backLabelKey, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: new _BackLabel__nav_bar(specifiedPreviousTitle: previousPageTitle, route: route)));
+        return new KeyedSubtree(key: backLabelKey, child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: new _BackLabel__nav_bar(specifiedPreviousTitle: previousPageTitle, route: route)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createMiddle(global::Doroti.Framework.Widgets.GlobalKey<IState> middleKey, global::Doroti.Framework.Widgets.Widget? userMiddle, global::Doroti.Framework.Widgets.Widget? userLargeTitle, bool large, bool staticBar, bool automaticallyImplyTitle, global::Doroti.Framework.Widgets.IModalRoute? route, global::Doroti.Framework.Widgets.BuildContext context)
+    public static KeyedSubtree? createMiddle(GlobalKey<IState> middleKey, Widget? userMiddle, Widget? userLargeTitle, bool large, bool staticBar, bool automaticallyImplyTitle, IModalRoute? route, BuildContext context)
     {
         var middleContent = userMiddle;
         if (large && staticBar)
@@ -1173,39 +1173,39 @@ public class _NavigationBarStaticComponents__nav_bar
         {
             return null;
         }
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: middleKey, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: middleContent));
+        return new KeyedSubtree(key: middleKey, child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: middleContent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createTrailing(global::Doroti.Framework.Widgets.GlobalKey<IState> trailingKey, global::Doroti.Framework.Widgets.Widget? userTrailing, global::Doroti.Framework.Painting.EdgeInsetsDirectional? padding, global::Doroti.Framework.Widgets.BuildContext context)
+    public static KeyedSubtree? createTrailing(GlobalKey<IState> trailingKey, Widget? userTrailing, EdgeInsetsDirectional? padding, BuildContext context)
     {
         if (userTrailing is null)
         {
             return null;
         }
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: trailingKey, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(end: padding?.end ?? Nav_barLibrary._kNavBarEdgePadding), child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(size: 32.0), child: userTrailing))));
+        return new KeyedSubtree(key: trailingKey, child: new Padding(padding: EdgeInsetsDirectional.CreateOnly(end: padding?.end ?? Nav_barLibrary._kNavBarEdgePadding), child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: _clampedTextScaler(context)), child: IconTheme.merge(data: new IconThemeData(size: 32.0), child: userTrailing))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createLargeTitle(global::Doroti.Framework.Widgets.GlobalKey<IState> largeTitleKey, global::Doroti.Framework.Widgets.Widget? userLargeTitle, bool large, bool automaticImplyTitle, global::Doroti.Framework.Widgets.IModalRoute? route, global::Doroti.Framework.Widgets.BuildContext context)
+    public static KeyedSubtree? createLargeTitle(GlobalKey<IState> largeTitleKey, Widget? userLargeTitle, bool large, bool automaticImplyTitle, IModalRoute? route, BuildContext context)
     {
         if (!large)
         {
             return null;
         }
-        global::Doroti.Framework.Widgets.Widget? largeTitleContent = userLargeTitle ?? _derivedTitle(automaticallyImplyTitle: automaticImplyTitle, currentRoute: route);
+        Widget? largeTitleContent = userLargeTitle ?? _derivedTitle(automaticallyImplyTitle: automaticImplyTitle, currentRoute: route);
         DartRuntimePrimitives.Assert(() => largeTitleContent is not null, () => (object?)"largeTitle was not provided and there was no title from the route.");
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: largeTitleKey, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: TextScaler.CreateLinear(Nav_barLibrary._dampScaleFactor(MediaQuery.textScalerOf(context).scale(Nav_barLibrary._kNavBarLargeTitleHeightExtension), Nav_barLibrary._kNavBarLargeTitleHeightExtension, Nav_barLibrary._kLargeTitleScaleDampingRatio))), child: largeTitleContent!));
+        return new KeyedSubtree(key: largeTitleKey, child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: TextScaler.CreateLinear(Nav_barLibrary._dampScaleFactor(MediaQuery.textScalerOf(context).scale(Nav_barLibrary._kNavBarLargeTitleHeightExtension), Nav_barLibrary._kNavBarLargeTitleHeightExtension, Nav_barLibrary._kLargeTitleScaleDampingRatio))), child: largeTitleContent!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Framework.Widgets.KeyedSubtree? createNavBarBottom(global::Doroti.Framework.Widgets.GlobalKey<IState> navBarBottomKey, global::Doroti.Framework.Widgets.Widget? userBottom, global::Doroti.Framework.Widgets.BuildContext context)
+    public static KeyedSubtree? createNavBarBottom(GlobalKey<IState> navBarBottomKey, Widget? userBottom, BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: navBarBottomKey, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: MediaQuery.textScalerOf(context)), child: userBottom ?? SizedBox.CreateShrink()));
+        return new KeyedSubtree(key: navBarBottomKey, child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: MediaQuery.textScalerOf(context)), child: userBottom ?? SizedBox.CreateShrink()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Framework.Painting.TextScaler _clampedTextScaler(global::Doroti.Framework.Widgets.BuildContext context)
+    internal static TextScaler _clampedTextScaler(BuildContext context)
     {
         return MediaQuery.textScalerOf(context).clamp(minScaleFactor: 1.0, maxScaleFactor: Nav_barLibrary._kMaxScaleFactor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1213,15 +1213,15 @@ public class _NavigationBarStaticComponents__nav_bar
 
 }
 
-public class CupertinoNavigationBarBackButton : global::Doroti.Framework.Widgets.StatelessWidget
+public class CupertinoNavigationBarBackButton : StatelessWidget
 {
     public virtual Color? color { get; private set; }
     public virtual string? previousPageTitle { get; private set; }
-    public virtual global::System.Action? onPressed { get; private set; }
-    internal virtual global::Doroti.Framework.Widgets.Widget? _backChevron { get; private set; }
-    internal virtual global::Doroti.Framework.Widgets.Widget? _backLabel { get; private set; }
+    public virtual Action? onPressed { get; private set; }
+    internal virtual Widget? _backChevron { get; private set; }
+    internal virtual Widget? _backLabel { get; private set; }
 
-    public CupertinoNavigationBarBackButton(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, string? previousPageTitle = null, global::System.Action? onPressed = null) : base(key: key)
+    public CupertinoNavigationBarBackButton(Key? key = null, Color? color = null, string? previousPageTitle = null, Action? onPressed = null) : base(key: key)
     {
         this.color = color;
         this.previousPageTitle = previousPageTitle;
@@ -1230,7 +1230,7 @@ public class CupertinoNavigationBarBackButton : global::Doroti.Framework.Widgets
         _backLabel = null;
     }
 
-    public static CupertinoNavigationBarBackButton Create_assemble(global::Doroti.Framework.Widgets.Widget? _backChevron, global::Doroti.Framework.Widgets.Widget? _backLabel)
+    public static CupertinoNavigationBarBackButton Create_assemble(Widget? _backChevron, Widget? _backLabel)
     {
         var __instance = new CupertinoNavigationBarBackButton();
         __instance._backChevron = _backChevron;
@@ -1241,20 +1241,20 @@ public class CupertinoNavigationBarBackButton : global::Doroti.Framework.Widgets
         return __instance;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.IModalRoute? currentRoute = ModalRoute<object>.untypedOf(context);
+        IModalRoute? currentRoute = ModalRoute<object>.untypedOf(context);
         if (onPressed is null)
         {
             DartRuntimePrimitives.Assert(() => (currentRoute?.canPop) ?? false, () => (object?)"CupertinoNavigationBarBackButton should only be used in routes that can be popped");
         }
-        global::Doroti.Framework.Painting.TextStyle actionTextStyle = CupertinoTheme.of(context).textTheme.navActionTextStyle;
+        TextStyle actionTextStyle = CupertinoTheme.of(context).textTheme.navActionTextStyle;
         if (color is not null)
         {
             actionTextStyle = actionTextStyle.copyWith(color: CupertinoDynamicColor.maybeResolve(color, context));
         }
         CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
-        return new CupertinoButton(padding: EdgeInsets.zero, child: new global::Doroti.Framework.Widgets.Semantics(container: true, excludeSemantics: true, label: localizations.backButtonLabel, button: true, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: actionTextStyle, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: Nav_barLibrary._kNavBarBackButtonTapWidth), child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 8.0))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_backChevron ?? new _BackChevron__nav_bar()), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 6.0))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: _backLabel ?? new _BackLabel__nav_bar(specifiedPreviousTitle: previousPageTitle, route: currentRoute))) })))), onPressed: () =>
+        return new CupertinoButton(padding: EdgeInsets.zero, child: new Widgets.Semantics(container: true, excludeSemantics: true, label: localizations.backButtonLabel, button: true, child: new DefaultTextStyle(style: actionTextStyle, child: new ConstrainedBox(constraints: new BoxConstraints(minWidth: Nav_barLibrary._kNavBarBackButtonTapWidth), child: new Row(mainAxisSize: MainAxisSize.min, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 8.0))), DartRuntimePrimitives.ConvertValue<Widget>(_backChevron ?? new _BackChevron__nav_bar()), DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 6.0))), DartRuntimePrimitives.ConvertValue<Widget>(new Flexible(child: _backLabel ?? new _BackLabel__nav_bar(specifiedPreviousTitle: previousPageTitle, route: currentRoute))) })))), onPressed: () =>
         {
             if (onPressed is not null)
             {
@@ -1270,22 +1270,22 @@ public class CupertinoNavigationBarBackButton : global::Doroti.Framework.Widgets
 
 }
 
-internal class _BackChevron__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _BackChevron__nav_bar : StatelessWidget
 {
     internal _BackChevron__nav_bar()
     {
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
-        global::Doroti.Framework.Painting.TextStyle textStyle = DefaultTextStyle.of(context).style;
-        global::Doroti.Framework.Widgets.Widget iconWidget = new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 6, end: 2), child: Text.CreateRich(new global::Doroti.Framework.Painting.TextSpan(text: char.ConvertFromUtf32(checked((int)CupertinoIcons.back.codePoint)), style: new global::Doroti.Framework.Painting.TextStyle(inherit: false, color: textStyle.color, fontSize: 30.0, fontFamily: CupertinoIcons.back.fontFamily, package: CupertinoIcons.back.fontPackage))));
+        TextDirection textDirection = Directionality.of(context);
+        TextStyle textStyle = DefaultTextStyle.of(context).style;
+        Widget iconWidget = new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 6, end: 2), child: Text.CreateRich(new TextSpan(text: char.ConvertFromUtf32(checked((int)CupertinoIcons.back.codePoint)), style: new TextStyle(inherit: false, color: textStyle.color, fontSize: 30.0, fontFamily: CupertinoIcons.back.fontFamily, package: CupertinoIcons.back.fontPackage))));
         switch (textDirection)
         {
             case TextDirection.rtl:
                 {
-                    iconWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Transform(transform: ((Func<Matrix4>)(() =>
+                    iconWidget = DartRuntimePrimitives.ConvertValue<Widget>(new Transform(transform: ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();
     __cascade.scaleByDouble(-1.0, 1.0, 1.0, 1);
@@ -1298,39 +1298,39 @@ internal class _BackChevron__nav_bar : global::Doroti.Framework.Widgets.Stateles
                     break;
                 }
         }
-        return new global::Doroti.Framework.Widgets.KeyedSubtree(key: StandardComponentTypeMembers.key(StandardComponentType.backButton), child: iconWidget);
+        return new KeyedSubtree(key: StandardComponentTypeMembers.key(StandardComponentType.backButton), child: iconWidget);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _BackLabel__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _BackLabel__nav_bar : StatelessWidget
 {
     public virtual string? specifiedPreviousTitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.IModalRoute? route { get; private set; } = default!;
+    public virtual IModalRoute? route { get; private set; } = default!;
 
-    internal _BackLabel__nav_bar(string? specifiedPreviousTitle, global::Doroti.Framework.Widgets.IModalRoute? route)
+    internal _BackLabel__nav_bar(string? specifiedPreviousTitle, IModalRoute? route)
     {
         this.specifiedPreviousTitle = specifiedPreviousTitle;
         this.route = route;
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildPreviousTitleWidget(global::Doroti.Framework.Widgets.BuildContext context, string? previousTitle, global::Doroti.Framework.Widgets.Widget? child)
+    internal virtual Widget _buildPreviousTitleWidget(BuildContext context, string? previousTitle, Widget? child)
     {
         if (previousTitle is null)
         {
             return SizedBox.CreateShrink();
         }
-        var textWidget = new global::Doroti.Framework.Widgets.Text(previousTitle, maxLines: 1L, overflow: TextOverflow.ellipsis);
+        var textWidget = new Text(previousTitle, maxLines: 1L, overflow: TextOverflow.ellipsis);
         if (previousTitle.Length > 12L)
         {
-            textWidget = new global::Doroti.Framework.Widgets.Text(CupertinoLocalizations.of(context).backButtonLabel);
+            textWidget = new Text(CupertinoLocalizations.of(context).backButtonLabel);
         }
-        return new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, widthFactor: 1.0, child: textWidget);
+        return new Align(alignment: AlignmentDirectional.centerStart, widthFactor: 1.0, child: textWidget);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         if (specifiedPreviousTitle is not null)
         {
@@ -1342,7 +1342,7 @@ internal class _BackLabel__nav_bar : global::Doroti.Framework.Widgets.StatelessW
             {
                 ICupertinoRouteTitle route__as89428 = (ICupertinoRouteTitle)route;
                 var cupertinoRoute = ((ICupertinoRouteTitle?)route!)!;
-                return new global::Doroti.Framework.Widgets.ValueListenableBuilder<string?>(valueListenable: cupertinoRoute.previousTitle, builder: _buildPreviousTitleWidget);
+                return new ValueListenableBuilder<string?>(valueListenable: cupertinoRoute.previousTitle, builder: _buildPreviousTitleWidget);
             }
             else
             {
@@ -1354,35 +1354,35 @@ internal class _BackLabel__nav_bar : global::Doroti.Framework.Widgets.StatelessW
 
 }
 
-internal class _CancelButton__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _CancelButton__nav_bar : StatelessWidget
 {
-    public virtual global::System.Action? onPressed { get; private set; }
+    public virtual Action? onPressed { get; private set; }
     public virtual double opacity { get; private set; } = default!;
 
-    internal _CancelButton__nav_bar(double opacity = 1.0, global::System.Action? onPressed = default!)
+    internal _CancelButton__nav_bar(double opacity = 1.0, Action? onPressed = default!)
     {
         this.opacity = opacity;
         this.onPressed = onPressed;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
-        return MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.Align(alignment: Alignment.centerLeft, child: new global::Doroti.Framework.Widgets.Opacity(opacity: opacity, child: new CupertinoButton(padding: EdgeInsets.zero, onPressed: onPressed, child: new global::Doroti.Framework.Widgets.Text(localizations.cancelButtonLabel, maxLines: 1L, overflow: TextOverflow.clip)))));
+        return MediaQuery.withNoTextScaling(child: new Align(alignment: Alignment.centerLeft, child: new Opacity(opacity: opacity, child: new CupertinoButton(padding: EdgeInsets.zero, onPressed: onPressed, child: new Text(localizations.cancelButtonLabel, maxLines: 1L, overflow: TextOverflow.clip)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _InactiveSearchableBottom__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _InactiveSearchableBottom__nav_bar : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Animation.AnimationController animationController { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? searchField { get; private set; }
-    public virtual global::Doroti.Framework.Animation.Animation<double> animation { get; private set; } = default!;
+    public virtual AnimationController animationController { get; private set; } = default!;
+    public virtual Widget? searchField { get; private set; }
+    public virtual Animation<double> animation { get; private set; } = default!;
     public virtual double searchFieldHeight { get; private set; } = default!;
-    public virtual global::System.Action? onSearchFieldTap { get; private set; }
+    public virtual Action? onSearchFieldTap { get; private set; }
 
-    internal _InactiveSearchableBottom__nav_bar(global::Doroti.Framework.Animation.AnimationController animationController, global::Doroti.Framework.Widgets.Widget? searchField, global::Doroti.Framework.Animation.Animation<double> animation, double searchFieldHeight, global::System.Action? onSearchFieldTap)
+    internal _InactiveSearchableBottom__nav_bar(AnimationController animationController, Widget? searchField, Animation<double> animation, double searchFieldHeight, Action? onSearchFieldTap)
     {
         this.animationController = animationController;
         this.searchField = searchField;
@@ -1391,13 +1391,13 @@ internal class _InactiveSearchableBottom__nav_bar : global::Doroti.Framework.Wid
         this.onSearchFieldTap = onSearchFieldTap;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: animation, child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: onSearchFieldTap, child: new global::Doroti.Framework.Widgets.AbsorbPointer(child: new global::Doroti.Framework.Widgets.FocusableActionDetector(descendantsAreFocusable: false, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, end: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new global::Doroti.Framework.Widgets.SizedBox(height: searchFieldHeight, child: searchField))))), builder: (context, child) =>
+        return new AnimatedBuilder(animation: animation, child: new GestureDetector(onTap: onSearchFieldTap, child: new AbsorbPointer(child: new FocusableActionDetector(descendantsAreFocusable: false, child: new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, end: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new SizedBox(height: searchFieldHeight, child: searchField))))), builder: (context, child) =>
         {
-            return new global::Doroti.Framework.Widgets.LayoutBuilder(builder: (context, constraints) =>
+            return new LayoutBuilder(builder: (context, constraints) =>
             {
-                return new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: constraints.maxWidth - Nav_barLibrary._kSearchFieldCancelButtonWidth * animationController.value, child: child)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: animationController.value * Nav_barLibrary._kSearchFieldCancelButtonWidth, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(bottom: Nav_barLibrary._kNavBarBottomPadding), child: new _CancelButton__nav_bar(opacity: 0.4, onPressed: () => {
+                return new Row(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: constraints.maxWidth - Nav_barLibrary._kSearchFieldCancelButtonWidth * animationController.value, child: child)), DartRuntimePrimitives.ConvertValue<Widget>(new SizedBox(width: animationController.value * Nav_barLibrary._kSearchFieldCancelButtonWidth, child: new Padding(padding: EdgeInsets.CreateOnly(bottom: Nav_barLibrary._kNavBarBottomPadding), child: new _CancelButton__nav_bar(opacity: 0.4, onPressed: () => {
 })))) });
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -1408,15 +1408,15 @@ internal class _InactiveSearchableBottom__nav_bar : global::Doroti.Framework.Wid
 
 }
 
-internal class _ActiveSearchableBottom__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _ActiveSearchableBottom__nav_bar : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Animation.AnimationController animationController { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? searchField { get; private set; }
-    public virtual global::Doroti.Framework.Animation.Animation<double> animation { get; private set; } = default!;
+    public virtual AnimationController animationController { get; private set; } = default!;
+    public virtual Widget? searchField { get; private set; }
+    public virtual Animation<double> animation { get; private set; } = default!;
     public virtual double searchFieldHeight { get; private set; } = default!;
-    public virtual global::System.Action? onSearchFieldTap { get; private set; }
+    public virtual Action? onSearchFieldTap { get; private set; }
 
-    internal _ActiveSearchableBottom__nav_bar(global::Doroti.Framework.Animation.AnimationController animationController, global::Doroti.Framework.Widgets.Widget? searchField, global::Doroti.Framework.Animation.Animation<double> animation, double searchFieldHeight, global::System.Action? onSearchFieldTap)
+    internal _ActiveSearchableBottom__nav_bar(AnimationController animationController, Widget? searchField, Animation<double> animation, double searchFieldHeight, Action? onSearchFieldTap)
     {
         this.animationController = animationController;
         this.searchField = searchField;
@@ -1425,10 +1425,10 @@ internal class _ActiveSearchableBottom__nav_bar : global::Doroti.Framework.Widge
         this.onSearchFieldTap = onSearchFieldTap;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new global::Doroti.Framework.Widgets.Row(spacing: 12.0, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.SizedBox(height: searchFieldHeight, child: searchField ?? SizedBox.CreateShrink()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: animation, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0).animate(animationController), child: new _CancelButton__nav_bar(onPressed: onSearchFieldTap)), builder: (context, child) => {
-return new global::Doroti.Framework.Widgets.SizedBox(width: animationController.value * Nav_barLibrary._kSearchFieldCancelButtonWidth, child: child);
+        return new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: Nav_barLibrary._kNavBarEdgePadding, bottom: Nav_barLibrary._kNavBarBottomPadding), child: new Row(spacing: 12.0, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new SizedBox(height: searchFieldHeight, child: searchField ?? SizedBox.CreateShrink()))), DartRuntimePrimitives.ConvertValue<Widget>(new AnimatedBuilder(animation: animation, child: new FadeTransition(opacity: new Tween<double>(begin: 0.0, end: 1.0).animate(animationController), child: new _CancelButton__nav_bar(onPressed: onSearchFieldTap)), builder: (context, child) => {
+return new SizedBox(width: animationController.value * Nav_barLibrary._kSearchFieldCancelButtonWidth, child: child);
 throw new InvalidOperationException("Dart closure completed without a value.");
 })) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1436,21 +1436,21 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 }
 
-public class _TransitionableNavigationBar__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+public class _TransitionableNavigationBar__nav_bar : StatelessWidget
 {
     public virtual _NavigationBarStaticComponentsKeys__nav_bar componentsKeys { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle backButtonTextStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle titleTextStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle? largeTitleTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Border? border { get; private set; }
+    public virtual TextStyle backButtonTextStyle { get; private set; } = default!;
+    public virtual TextStyle titleTextStyle { get; private set; } = default!;
+    public virtual TextStyle? largeTitleTextStyle { get; private set; }
+    public virtual Border? border { get; private set; }
     public virtual bool hasUserMiddle { get; private set; } = default!;
     public virtual bool largeExpanded { get; private set; } = default!;
     public virtual bool searchable { get; private set; } = default!;
     public virtual bool automaticBackgroundVisibility { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _TransitionableNavigationBar__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar componentsKeys, Color? backgroundColor, global::Doroti.Framework.Painting.TextStyle backButtonTextStyle, global::Doroti.Framework.Painting.TextStyle titleTextStyle, global::Doroti.Framework.Painting.TextStyle? largeTitleTextStyle, global::Doroti.Framework.Painting.Border? border, bool hasUserMiddle, bool largeExpanded, bool searchable, bool automaticBackgroundVisibility, global::Doroti.Framework.Widgets.Widget child) : base(key: componentsKeys.navBarBoxKey)
+    internal _TransitionableNavigationBar__nav_bar(_NavigationBarStaticComponentsKeys__nav_bar componentsKeys, Color? backgroundColor, TextStyle backButtonTextStyle, TextStyle titleTextStyle, TextStyle? largeTitleTextStyle, Border? border, bool hasUserMiddle, bool largeExpanded, bool searchable, bool automaticBackgroundVisibility, Widget child) : base(key: componentsKeys.navBarBoxKey)
     {
         this.componentsKeys = componentsKeys;
         this.backgroundColor = backgroundColor;
@@ -1466,11 +1466,11 @@ public class _TransitionableNavigationBar__nav_bar : global::Doroti.Framework.Wi
         System.Diagnostics.Debug.Assert(!largeExpanded || (largeTitleTextStyle is not null));
     }
 
-    public virtual global::Doroti.Framework.Rendering.RenderBox renderBox
+    public virtual RenderBox renderBox
     {
         get
         {
-            var box = ((global::Doroti.Framework.Rendering.RenderBox?)componentsKeys.navBarBoxKey.currentContext!.findRenderObject()!)!;
+            var box = ((RenderBox?)componentsKeys.navBarBoxKey.currentContext!.findRenderObject()!)!;
             DartRuntimePrimitives.Assert(() => box.attached, () => (object?)"_TransitionableNavigationBar.renderBox should be called when building " + "hero flight shuttles when the from and the to nav bar boxes are already " + "laid out and painted.");
             return box;
         }
@@ -1482,17 +1482,17 @@ public class _TransitionableNavigationBar__nav_bar : global::Doroti.Framework.Wi
             return Navigator.of(componentsKeys.navBarBoxKey.currentContext!).userGestureInProgress;
         }
     }
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() =>
             {
                 var inHero = false;
                 context.visitAncestorElements((ancestor) =>
                 {
-                    if (ancestor is global::Doroti.Framework.Widgets.ComponentElement)
+                    if (ancestor is ComponentElement)
                     {
-                        DartRuntimePrimitives.Assert(() => !Equals(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Widgets.ComponentElement)ancestor).widget), typeof(_NavigationBarTransition__nav_bar)), () => (object?)"_TransitionableNavigationBar should never re-appear inside " + "_NavigationBarTransition. Keyed _TransitionableNavigationBar should " + "only serve as anchor points in routes rather than appearing inside " + "Hero flights themselves.");
-                        if (Equals(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Widgets.ComponentElement)ancestor).widget), typeof(global::Doroti.Framework.Widgets.Hero)))
+                        DartRuntimePrimitives.Assert(() => !Equals(DartRuntimePrimitives.RuntimeType(((ComponentElement)ancestor).widget), typeof(_NavigationBarTransition__nav_bar)), () => (object?)"_TransitionableNavigationBar should never re-appear inside " + "_NavigationBarTransition. Keyed _TransitionableNavigationBar should " + "only serve as anchor points in routes rather than appearing inside " + "Hero flights themselves.");
+                        if (Equals(DartRuntimePrimitives.RuntimeType(((ComponentElement)ancestor).widget), typeof(Hero)))
                         {
                             inHero = true;
                         }
@@ -1509,26 +1509,26 @@ public class _TransitionableNavigationBar__nav_bar : global::Doroti.Framework.Wi
 
 }
 
-internal class _NavigationBarTransition__nav_bar : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _NavigationBarTransition__nav_bar : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Animation.Animation<double> animation { get; private set; } = default!;
+    public virtual Animation<double> animation { get; private set; } = default!;
     public virtual _TransitionableNavigationBar__nav_bar topNavBar { get; private set; } = default!;
     public virtual _TransitionableNavigationBar__nav_bar bottomNavBar { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Tween<double> heightTween { get; private set; } = default!;
+    public virtual Tween<double> heightTween { get; private set; } = default!;
 
-    internal _NavigationBarTransition__nav_bar(global::Doroti.Framework.Animation.Animation<double> animation, _TransitionableNavigationBar__nav_bar topNavBar, _TransitionableNavigationBar__nav_bar bottomNavBar)
+    internal _NavigationBarTransition__nav_bar(Animation<double> animation, _TransitionableNavigationBar__nav_bar topNavBar, _TransitionableNavigationBar__nav_bar bottomNavBar)
     {
         this.animation = animation;
         this.topNavBar = topNavBar;
         this.bottomNavBar = bottomNavBar;
-        heightTween = new global::Doroti.Framework.Animation.Tween<double>(begin: bottomNavBar.renderBox.size.height, end: topNavBar.renderBox.size.height);
+        heightTween = new Tween<double>(begin: bottomNavBar.renderBox.size.height, end: topNavBar.renderBox.size.height);
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         var componentsTransition = new _NavigationBarComponentsTransition__nav_bar(animation: animation, bottomNavBar: bottomNavBar, topNavBar: topNavBar, directionality: Directionality.of(context));
-        var childrenLocal = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection98801 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement98817 = componentsTransition.bottomNavBarBackground; if (__collectionElement98817 is { } __nonNullCollectionElement98817) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement98817)); } var __collectionElement98869 = componentsTransition.bottomBackChevron; if (__collectionElement98869 is { } __nonNullCollectionElement98869) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement98869)); } var __collectionElement98916 = componentsTransition.bottomBackLabel; if (__collectionElement98916 is { } __nonNullCollectionElement98916) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement98916)); } var __collectionElement98961 = componentsTransition.bottomLeading; if (__collectionElement98961 is { } __nonNullCollectionElement98961) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement98961)); } var __collectionElement99004 = componentsTransition.bottomMiddle; if (__collectionElement99004 is { } __nonNullCollectionElement99004) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99004)); } var __collectionElement99046 = componentsTransition.bottomLargeTitle; if (__collectionElement99046 is { } __nonNullCollectionElement99046) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99046)); } var __collectionElement99092 = componentsTransition.bottomTrailing; if (__collectionElement99092 is { } __nonNullCollectionElement99092) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99092)); } var __collectionElement99136 = componentsTransition.bottomNavBarBottom; if (__collectionElement99136 is { } __nonNullCollectionElement99136) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99136)); } var __collectionElement99246 = componentsTransition.topNavBarBackground; if (__collectionElement99246 is { } __nonNullCollectionElement99246) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99246)); } var __collectionElement99295 = componentsTransition.topLeading; if (__collectionElement99295 is { } __nonNullCollectionElement99295) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99295)); } var __collectionElement99335 = componentsTransition.topBackChevron; if (__collectionElement99335 is { } __nonNullCollectionElement99335) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99335)); } var __collectionElement99379 = componentsTransition.topBackLabel; if (__collectionElement99379 is { } __nonNullCollectionElement99379) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99379)); } var __collectionElement99421 = componentsTransition.topMiddle; if (__collectionElement99421 is { } __nonNullCollectionElement99421) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99421)); } var __collectionElement99460 = componentsTransition.topLargeTitle; if (__collectionElement99460 is { } __nonNullCollectionElement99460) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99460)); } var __collectionElement99503 = componentsTransition.topTrailing; if (__collectionElement99503 is { } __nonNullCollectionElement99503) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99503)); } var __collectionElement99544 = componentsTransition.topNavBarBottom; if (__collectionElement99544 is { } __nonNullCollectionElement99544) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement99544)); } return __collection98801; }))();
-        return MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.SizedBox(height: Math.Max(DartRuntimePrimitives.RequireValue(heightTween.begin), DartRuntimePrimitives.RequireValue(heightTween.end)) + MediaQuery.paddingOf(context).top, width: double.PositiveInfinity, child: new global::Doroti.Framework.Widgets.Stack(children: childrenLocal)));
+        var childrenLocal = ((Func<List<Widget>>)(() => { var __collection98801 = new List<Widget>(); var __collectionElement98817 = componentsTransition.bottomNavBarBackground; if (__collectionElement98817 is { } __nonNullCollectionElement98817) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement98817)); } var __collectionElement98869 = componentsTransition.bottomBackChevron; if (__collectionElement98869 is { } __nonNullCollectionElement98869) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement98869)); } var __collectionElement98916 = componentsTransition.bottomBackLabel; if (__collectionElement98916 is { } __nonNullCollectionElement98916) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement98916)); } var __collectionElement98961 = componentsTransition.bottomLeading; if (__collectionElement98961 is { } __nonNullCollectionElement98961) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement98961)); } var __collectionElement99004 = componentsTransition.bottomMiddle; if (__collectionElement99004 is { } __nonNullCollectionElement99004) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99004)); } var __collectionElement99046 = componentsTransition.bottomLargeTitle; if (__collectionElement99046 is { } __nonNullCollectionElement99046) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99046)); } var __collectionElement99092 = componentsTransition.bottomTrailing; if (__collectionElement99092 is { } __nonNullCollectionElement99092) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99092)); } var __collectionElement99136 = componentsTransition.bottomNavBarBottom; if (__collectionElement99136 is { } __nonNullCollectionElement99136) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99136)); } var __collectionElement99246 = componentsTransition.topNavBarBackground; if (__collectionElement99246 is { } __nonNullCollectionElement99246) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99246)); } var __collectionElement99295 = componentsTransition.topLeading; if (__collectionElement99295 is { } __nonNullCollectionElement99295) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99295)); } var __collectionElement99335 = componentsTransition.topBackChevron; if (__collectionElement99335 is { } __nonNullCollectionElement99335) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99335)); } var __collectionElement99379 = componentsTransition.topBackLabel; if (__collectionElement99379 is { } __nonNullCollectionElement99379) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99379)); } var __collectionElement99421 = componentsTransition.topMiddle; if (__collectionElement99421 is { } __nonNullCollectionElement99421) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99421)); } var __collectionElement99460 = componentsTransition.topLargeTitle; if (__collectionElement99460 is { } __nonNullCollectionElement99460) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99460)); } var __collectionElement99503 = componentsTransition.topTrailing; if (__collectionElement99503 is { } __nonNullCollectionElement99503) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99503)); } var __collectionElement99544 = componentsTransition.topNavBarBottom; if (__collectionElement99544 is { } __nonNullCollectionElement99544) { __collection98801.Add(DartRuntimePrimitives.ConvertValue<Widget>(__nonNullCollectionElement99544)); } return __collection98801; }))();
+        return MediaQuery.withNoTextScaling(child: new SizedBox(height: Math.Max(DartRuntimePrimitives.RequireValue(heightTween.begin), DartRuntimePrimitives.RequireValue(heightTween.end)) + MediaQuery.paddingOf(context).top, width: double.PositiveInfinity, child: new Stack(children: childrenLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1536,19 +1536,19 @@ internal class _NavigationBarTransition__nav_bar : global::Doroti.Framework.Widg
 
 internal class _NavigationBarComponentsTransition__nav_bar
 {
-    public static global::Doroti.Framework.Animation.Animatable<double> fadeOut = new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0);
-    public static global::Doroti.Framework.Animation.Animatable<double> fadeIn = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0);
-    public virtual global::Doroti.Framework.Animation.Animation<double> animation { get; private set; } = default!;
+    public static Animatable<double> fadeOut = new Tween<double>(begin: 1.0, end: 0.0);
+    public static Animatable<double> fadeIn = new Tween<double>(begin: 0.0, end: 1.0);
+    public virtual Animation<double> animation { get; private set; } = default!;
     public virtual _NavigationBarStaticComponentsKeys__nav_bar bottomComponents { get; private set; } = default!;
     public virtual _NavigationBarStaticComponentsKeys__nav_bar topComponents { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.RenderBox bottomNavBarBox { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.RenderBox topNavBarBox { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle bottomBackButtonTextStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle topBackButtonTextStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle bottomTitleTextStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle topTitleTextStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle? bottomLargeTitleTextStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? topLargeTitleTextStyle { get; private set; }
+    public virtual RenderBox bottomNavBarBox { get; private set; } = default!;
+    public virtual RenderBox topNavBarBox { get; private set; } = default!;
+    public virtual TextStyle bottomBackButtonTextStyle { get; private set; } = default!;
+    public virtual TextStyle topBackButtonTextStyle { get; private set; } = default!;
+    public virtual TextStyle bottomTitleTextStyle { get; private set; } = default!;
+    public virtual TextStyle topTitleTextStyle { get; private set; } = default!;
+    public virtual TextStyle? bottomLargeTitleTextStyle { get; private set; }
+    public virtual TextStyle? topLargeTitleTextStyle { get; private set; }
     public virtual bool bottomHasUserMiddle { get; private set; } = default!;
     public virtual bool topHasUserMiddle { get; private set; } = default!;
     public virtual bool bottomLargeExpanded { get; private set; } = default!;
@@ -1558,12 +1558,12 @@ internal class _NavigationBarComponentsTransition__nav_bar
     public virtual bool bottomAutomaticBackgroundVisibility { get; private set; } = default!;
     public virtual Color? bottomBackgroundColor { get; private set; }
     public virtual Color? topBackgroundColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Border? bottomBorder { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Border? topBorder { get; private set; }
+    public virtual Border? bottomBorder { get; private set; }
+    public virtual Border? topBorder { get; private set; }
     public virtual Rect transitionBox { get; private set; } = default!;
     public virtual double forwardDirection { get; private set; } = default!;
 
-    internal _NavigationBarComponentsTransition__nav_bar(global::Doroti.Framework.Animation.Animation<double> animation, _TransitionableNavigationBar__nav_bar bottomNavBar, _TransitionableNavigationBar__nav_bar topNavBar, TextDirection directionality)
+    internal _NavigationBarComponentsTransition__nav_bar(Animation<double> animation, _TransitionableNavigationBar__nav_bar bottomNavBar, _TransitionableNavigationBar__nav_bar topNavBar, TextDirection directionality)
     {
         this.animation = animation;
         bottomComponents = bottomNavBar.componentsKeys;
@@ -1591,55 +1591,55 @@ internal class _NavigationBarComponentsTransition__nav_bar
         forwardDirection = Equals(directionality, TextDirection.ltr) ? 1.0 : -1.0;
     }
 
-    public virtual global::Doroti.Framework.Rendering.RelativeRect positionInTransitionBox(global::Doroti.Framework.Widgets.GlobalKey<IState> key, global::Doroti.Framework.Rendering.RenderBox from)
+    public virtual RelativeRect positionInTransitionBox(GlobalKey<IState> key, RenderBox from)
     {
-        var componentBox = ((global::Doroti.Framework.Rendering.RenderBox?)key.currentContext!.findRenderObject()!)!;
+        var componentBox = ((RenderBox?)key.currentContext!.findRenderObject()!)!;
         DartRuntimePrimitives.Assert(() => componentBox.attached);
         return RelativeRect.CreateFromRect(componentBox.localToGlobal(Offset.zero, ancestor: from) & componentBox.size, transitionBox);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual _FixedSizeSlidingTransition__nav_bar slideFromLeadingEdge(global::Doroti.Framework.Widgets.GlobalKey<IState> fromKey, global::Doroti.Framework.Rendering.RenderBox fromNavBarBox, global::Doroti.Framework.Widgets.GlobalKey<IState> toKey, global::Doroti.Framework.Rendering.RenderBox toNavBarBox, global::Doroti.Framework.Animation.Curve curve = default!, global::Doroti.Framework.Widgets.Widget child = default!)
+    public virtual _FixedSizeSlidingTransition__nav_bar slideFromLeadingEdge(GlobalKey<IState> fromKey, RenderBox fromNavBarBox, GlobalKey<IState> toKey, RenderBox toNavBarBox, Curve curve = default!, Widget child = default!)
     {
-        curve ??= new global::Doroti.Framework.Animation.Interval(0.0, 1.0);
-        var fromBox = ((global::Doroti.Framework.Rendering.RenderBox?)fromKey.currentContext!.findRenderObject()!)!;
-        var toBox = ((global::Doroti.Framework.Rendering.RenderBox?)toKey.currentContext!.findRenderObject()!)!;
+        curve ??= new Interval(0.0, 1.0);
+        var fromBox = ((RenderBox?)fromKey.currentContext!.findRenderObject()!)!;
+        var toBox = ((RenderBox?)toKey.currentContext!.findRenderObject()!)!;
         bool isLTRLocal = forwardDirection > 0L;
-        var fromAnchorLocal = new global::Doroti.Ui.Offset(isLTRLocal ? 0 : fromBox.size.width, fromBox.size.height / 2L);
-        var toAnchorLocal = new global::Doroti.Ui.Offset(isLTRLocal ? 0 : toBox.size.width, toBox.size.height / 2L);
-        global::Doroti.Ui.Offset fromAnchorInFromBox = fromBox.localToGlobal(fromAnchorLocal, ancestor: fromNavBarBox);
-        global::Doroti.Ui.Offset toAnchorInToBox = toBox.localToGlobal(toAnchorLocal, ancestor: toNavBarBox);
-        global::Doroti.Ui.Offset translation = isLTRLocal ? (toAnchorInToBox - fromAnchorInFromBox) : (new global::Doroti.Ui.Offset(toNavBarBox.size.width - toAnchorInToBox.dx, toAnchorInToBox.dy) - new global::Doroti.Ui.Offset(fromNavBarBox.size.width - fromAnchorInFromBox.dx, fromAnchorInFromBox.dy));
-        global::Doroti.Framework.Rendering.RelativeRect fromBoxMargin = positionInTransitionBox(fromKey, from: fromNavBarBox);
-        var fromOriginInTransitionBox = new global::Doroti.Ui.Offset(isLTRLocal ? fromBoxMargin.left : fromBoxMargin.right, fromBoxMargin.top);
-        var anchorMovementInTransitionBox = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: fromOriginInTransitionBox, end: fromOriginInTransitionBox + translation);
-        return new _FixedSizeSlidingTransition__nav_bar(isLTR: isLTRLocal, offsetAnimation: animation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curve)).drive(anchorMovementInTransitionBox), width: fromNavBarBox.size.width, height: fromBox.size.height, child: child);
+        var fromAnchorLocal = new Offset(isLTRLocal ? 0 : fromBox.size.width, fromBox.size.height / 2L);
+        var toAnchorLocal = new Offset(isLTRLocal ? 0 : toBox.size.width, toBox.size.height / 2L);
+        Offset fromAnchorInFromBox = fromBox.localToGlobal(fromAnchorLocal, ancestor: fromNavBarBox);
+        Offset toAnchorInToBox = toBox.localToGlobal(toAnchorLocal, ancestor: toNavBarBox);
+        Offset translation = isLTRLocal ? (toAnchorInToBox - fromAnchorInFromBox) : (new Offset(toNavBarBox.size.width - toAnchorInToBox.dx, toAnchorInToBox.dy) - new Offset(fromNavBarBox.size.width - fromAnchorInFromBox.dx, fromAnchorInFromBox.dy));
+        RelativeRect fromBoxMargin = positionInTransitionBox(fromKey, from: fromNavBarBox);
+        var fromOriginInTransitionBox = new Offset(isLTRLocal ? fromBoxMargin.left : fromBoxMargin.right, fromBoxMargin.top);
+        var anchorMovementInTransitionBox = new Tween<Offset>(begin: fromOriginInTransitionBox, end: fromOriginInTransitionBox + translation);
+        return new _FixedSizeSlidingTransition__nav_bar(isLTR: isLTRLocal, offsetAnimation: animation.drive(new CurveTween(curve: curve)).drive(anchorMovementInTransitionBox), width: fromNavBarBox.size.width, height: fromBox.size.height, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> fadeInFrom(double t, global::Doroti.Framework.Animation.Curve curve = default!)
+    public virtual Animation<double> fadeInFrom(double t, Curve curve = default!)
     {
         curve ??= Curves.easeIn;
-        return animation.drive(fadeIn.chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(t, 1.0, curve: curve))));
+        return animation.drive(fadeIn.chain(new CurveTween(curve: new Interval(t, 1.0, curve: curve))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> fadeOutBy(double t, global::Doroti.Framework.Animation.Curve curve = default!)
+    public virtual Animation<double> fadeOutBy(double t, Curve curve = default!)
     {
         curve ??= Curves.easeOut;
-        return animation.drive(fadeOut.chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, t, curve: curve))));
+        return animation.drive(fadeOut.chain(new CurveTween(curve: new Interval(0.0, t, curve: curve))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> routeAnimation
+    public virtual Animation<double> routeAnimation
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => animation is global::Doroti.Framework.Animation.CurvedAnimation);
-            return ((global::Doroti.Framework.Animation.CurvedAnimation?)animation)!.parent;
+            DartRuntimePrimitives.Assert(() => animation is CurvedAnimation);
+            return ((CurvedAnimation?)animation)!.parent;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomNavBarBackground
+    public virtual Widget? bottomNavBarBackground
     {
         get
         {
@@ -1647,125 +1647,125 @@ internal class _NavigationBarComponentsTransition__nav_bar
             {
                 return null;
             }
-            global::Doroti.Framework.Animation.Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Curves.fastEaseInToSlowEaseOut : Curves.fastEaseInToSlowEaseOut.flipped;
-            global::Doroti.Framework.Animation.Animation<double> pageTransitionAnimation = routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: userGestureInProgress ? Curves.linear : animationCurve));
-            global::Doroti.Framework.Rendering.RelativeRect fromLocal = positionInTransitionBox(bottomComponents.navBarBoxKey, from: bottomNavBarBox);
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(end: fromLocal.shift(new global::Doroti.Ui.Offset(forwardDirection * -bottomNavBarBox.size.width, 0.0)), begin: fromLocal);
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: pageTransitionAnimation.drive(positionTween), child: Nav_barLibrary._wrapWithBackground(updateSystemUiOverlay: false, backgroundColor: bottomBackgroundColor!, border: topBorder, child: new global::Doroti.Framework.Widgets.SizedBox(height: bottomNavBarBox.size.height, width: double.PositiveInfinity)));
+            Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Curves.fastEaseInToSlowEaseOut : Curves.fastEaseInToSlowEaseOut.flipped;
+            Animation<double> pageTransitionAnimation = routeAnimation.drive(new CurveTween(curve: userGestureInProgress ? Curves.linear : animationCurve));
+            RelativeRect fromLocal = positionInTransitionBox(bottomComponents.navBarBoxKey, from: bottomNavBarBox);
+            var positionTween = new RelativeRectTween(end: fromLocal.shift(new Offset(forwardDirection * -bottomNavBarBox.size.width, 0.0)), begin: fromLocal);
+            return (Widget?)new PositionedTransition(rect: pageTransitionAnimation.drive(positionTween), child: Nav_barLibrary._wrapWithBackground(updateSystemUiOverlay: false, backgroundColor: bottomBackgroundColor!, border: topBorder, child: new SizedBox(height: bottomNavBarBox.size.height, width: double.PositiveInfinity)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomLeading
+    public virtual Widget? bottomLeading
     {
         get
         {
-            var bottomLeading = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.leadingKey.currentWidget)!;
+            var bottomLeading = ((KeyedSubtree?)bottomComponents.leadingKey.currentWidget)!;
             if (bottomLeading is null)
             {
                 return null;
             }
-            return (global::Doroti.Framework.Widgets.Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.leadingKey, from: bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.4), child: bottomLeading.child));
+            return (Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.leadingKey, from: bottomNavBarBox), child: new FadeTransition(opacity: fadeOutBy(0.4), child: bottomLeading.child));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomBackChevron
+    public virtual Widget? bottomBackChevron
     {
         get
         {
-            var bottomBackChevron = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.backChevronKey.currentWidget)!;
+            var bottomBackChevron = ((KeyedSubtree?)bottomComponents.backChevronKey.currentWidget)!;
             if (bottomBackChevron is null)
             {
                 return null;
             }
-            return (global::Doroti.Framework.Widgets.Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.backChevronKey, from: bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.6), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: bottomBackButtonTextStyle, child: bottomBackChevron.child)));
+            return (Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.backChevronKey, from: bottomNavBarBox), child: new FadeTransition(opacity: fadeOutBy(0.6), child: new DefaultTextStyle(style: bottomBackButtonTextStyle, child: bottomBackChevron.child)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomBackLabel
+    public virtual Widget? bottomBackLabel
     {
         get
         {
-            var bottomBackLabel = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.backLabelKey.currentWidget)!;
+            var bottomBackLabel = ((KeyedSubtree?)bottomComponents.backLabelKey.currentWidget)!;
             if (bottomBackLabel is null)
             {
                 return null;
             }
-            global::Doroti.Framework.Rendering.RelativeRect fromLocal = positionInTransitionBox(bottomComponents.backLabelKey, from: bottomNavBarBox);
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new global::Doroti.Ui.Offset(forwardDirection * (-bottomNavBarBox.size.width / 2.0), 0.0)));
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: animation.drive(positionTween), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.2), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: bottomBackButtonTextStyle, child: bottomBackLabel.child)));
+            RelativeRect fromLocal = positionInTransitionBox(bottomComponents.backLabelKey, from: bottomNavBarBox);
+            var positionTween = new RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new Offset(forwardDirection * (-bottomNavBarBox.size.width / 2.0), 0.0)));
+            return (Widget?)new PositionedTransition(rect: animation.drive(positionTween), child: new FadeTransition(opacity: fadeOutBy(0.2), child: new DefaultTextStyle(style: bottomBackButtonTextStyle, child: bottomBackLabel.child)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomMiddle
+    public virtual Widget? bottomMiddle
     {
         get
         {
-            var bottomMiddle = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.middleKey.currentWidget)!;
-            var topBackLabel = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.backLabelKey.currentWidget)!;
-            var topLeading = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.leadingKey.currentWidget)!;
+            var bottomMiddle = ((KeyedSubtree?)bottomComponents.middleKey.currentWidget)!;
+            var topBackLabel = ((KeyedSubtree?)topComponents.backLabelKey.currentWidget)!;
+            var topLeading = ((KeyedSubtree?)topComponents.leadingKey.currentWidget)!;
             if (!bottomHasUserMiddle && bottomLargeExpanded)
             {
                 return null;
             }
             if ((bottomMiddle is not null) && (topBackLabel is not null))
             {
-                return (global::Doroti.Framework.Widgets.Widget?)slideFromLeadingEdge(fromKey: bottomComponents.middleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(bottomHasUserMiddle ? 0.4 : 0.7), child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.DefaultTextStyleTransition(style: animation.drive(new global::Doroti.Framework.Widgets.TextStyleTween(begin: bottomTitleTextStyle, end: topBackButtonTextStyle)), child: bottomMiddle.child))));
+                return (Widget?)slideFromLeadingEdge(fromKey: bottomComponents.middleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, child: new FadeTransition(opacity: fadeOutBy(bottomHasUserMiddle ? 0.4 : 0.7), child: new Align(alignment: AlignmentDirectional.centerStart, child: new DefaultTextStyleTransition(style: animation.drive(new TextStyleTween(begin: bottomTitleTextStyle, end: topBackButtonTextStyle)), child: bottomMiddle.child))));
             }
             if ((bottomMiddle is not null) && (topLeading is not null))
             {
-                return (global::Doroti.Framework.Widgets.Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.middleKey, from: bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(bottomHasUserMiddle ? 0.4 : 0.7), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: bottomTitleTextStyle, child: bottomMiddle.child)));
+                return (Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.middleKey, from: bottomNavBarBox), child: new FadeTransition(opacity: fadeOutBy(bottomHasUserMiddle ? 0.4 : 0.7), child: new DefaultTextStyle(style: bottomTitleTextStyle, child: bottomMiddle.child)));
             }
             return null;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomLargeTitle
+    public virtual Widget? bottomLargeTitle
     {
         get
         {
-            var bottomLargeTitle = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.largeTitleKey.currentWidget)!;
-            var topBackLabel = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.backLabelKey.currentWidget)!;
+            var bottomLargeTitle = ((KeyedSubtree?)bottomComponents.largeTitleKey.currentWidget)!;
+            var topBackLabel = ((KeyedSubtree?)topComponents.backLabelKey.currentWidget)!;
             if ((bottomLargeTitle is null) || !bottomLargeExpanded)
             {
                 return null;
             }
             if (topBackLabel is not null)
             {
-                return (global::Doroti.Framework.Widgets.Widget?)slideFromLeadingEdge(fromKey: bottomComponents.largeTitleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, curve: new global::Doroti.Framework.Animation.Interval(0.0, Equals(animation.status, AnimationStatus.forward) ? 0.7 : 1.0), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.6), child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.DefaultTextStyleTransition(style: animation.drive(new global::Doroti.Framework.Widgets.TextStyleTween(begin: bottomLargeTitleTextStyle, end: topBackButtonTextStyle)), maxLines: 1L, overflow: TextOverflow.ellipsis, child: bottomLargeTitle.child))));
+                return (Widget?)slideFromLeadingEdge(fromKey: bottomComponents.largeTitleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, curve: new Interval(0.0, Equals(animation.status, AnimationStatus.forward) ? 0.7 : 1.0), child: new FadeTransition(opacity: fadeOutBy(0.6), child: new Align(alignment: AlignmentDirectional.centerStart, child: new DefaultTextStyleTransition(style: animation.drive(new TextStyleTween(begin: bottomLargeTitleTextStyle, end: topBackButtonTextStyle)), maxLines: 1L, overflow: TextOverflow.ellipsis, child: bottomLargeTitle.child))));
             }
-            global::Doroti.Framework.Rendering.RelativeRect fromLocal = positionInTransitionBox(bottomComponents.largeTitleKey, from: bottomNavBarBox);
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new global::Doroti.Ui.Offset(forwardDirection * bottomNavBarBox.size.width / 4.0, 0.0)));
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: animation.drive(positionTween), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.4), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: bottomLargeTitleTextStyle!, child: bottomLargeTitle.child)));
+            RelativeRect fromLocal = positionInTransitionBox(bottomComponents.largeTitleKey, from: bottomNavBarBox);
+            var positionTween = new RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new Offset(forwardDirection * bottomNavBarBox.size.width / 4.0, 0.0)));
+            return (Widget?)new PositionedTransition(rect: animation.drive(positionTween), child: new FadeTransition(opacity: fadeOutBy(0.4), child: new DefaultTextStyle(style: bottomLargeTitleTextStyle!, child: bottomLargeTitle.child)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomTrailing
+    public virtual Widget? bottomTrailing
     {
         get
         {
-            var bottomTrailing = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.trailingKey.currentWidget)!;
+            var bottomTrailing = ((KeyedSubtree?)bottomComponents.trailingKey.currentWidget)!;
             if (bottomTrailing is null)
             {
                 return null;
             }
-            return (global::Doroti.Framework.Widgets.Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.trailingKey, from: bottomNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.6), child: bottomTrailing.child));
+            return (Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(bottomComponents.trailingKey, from: bottomNavBarBox), child: new FadeTransition(opacity: fadeOutBy(0.6), child: bottomTrailing.child));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? bottomNavBarBottom
+    public virtual Widget? bottomNavBarBottom
     {
         get
         {
-            var bottomNavBarBottom = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.navBarBottomKey.currentWidget)!;
+            var bottomNavBarBottom = ((KeyedSubtree?)bottomComponents.navBarBottomKey.currentWidget)!;
             if (bottomNavBarBottom is null)
             {
                 return null;
             }
-            global::Doroti.Framework.Rendering.RelativeRect fromLocal = positionInTransitionBox(bottomComponents.navBarBottomKey, from: bottomNavBarBox);
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new global::Doroti.Ui.Offset(forwardDirection * -bottomNavBarBox.size.width, 0.0)));
-            global::Doroti.Framework.Widgets.Widget childLocal = bottomNavBarBottom.child;
-            global::Doroti.Framework.Animation.Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Nav_barLibrary._kBottomNavBarHeaderTransitionCurve : Nav_barLibrary._kBottomNavBarHeaderTransitionCurve.flipped;
+            RelativeRect fromLocal = positionInTransitionBox(bottomComponents.navBarBottomKey, from: bottomNavBarBox);
+            var positionTween = new RelativeRectTween(begin: fromLocal, end: fromLocal.shift(new Offset(forwardDirection * -bottomNavBarBox.size.width, 0.0)));
+            Widget childLocal = bottomNavBarBottom.child;
+            Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Nav_barLibrary._kBottomNavBarHeaderTransitionCurve : Nav_barLibrary._kBottomNavBarHeaderTransitionCurve.flipped;
             if (!searchable)
             {
-                childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeOutBy(0.8, curve: animationCurve), child: childLocal));
+                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new FadeTransition(opacity: fadeOutBy(0.8, curve: animationCurve), child: childLocal));
             }
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: userGestureInProgress ? routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.linear)).drive(positionTween) : animation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: animationCurve)).drive(positionTween), child: new global::Doroti.Framework.Widgets.ClipRect(child: childLocal));
+            return (Widget?)new PositionedTransition(rect: userGestureInProgress ? routeAnimation.drive(new CurveTween(curve: Curves.linear)).drive(positionTween) : animation.drive(new CurveTween(curve: animationCurve)).drive(positionTween), child: new ClipRect(child: childLocal));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topNavBarBackground
+    public virtual Widget? topNavBarBackground
     {
         get
         {
@@ -1773,44 +1773,44 @@ internal class _NavigationBarComponentsTransition__nav_bar
             {
                 return null;
             }
-            global::Doroti.Framework.Animation.Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Curves.fastEaseInToSlowEaseOut : Curves.fastEaseInToSlowEaseOut.flipped;
-            global::Doroti.Framework.Animation.Animation<double> pageTransitionAnimation = routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: userGestureInProgress ? Curves.linear : animationCurve));
-            global::Doroti.Framework.Rendering.RelativeRect to = positionInTransitionBox(topComponents.navBarBoxKey, from: topNavBarBox);
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: to.shift(new global::Doroti.Ui.Offset(forwardDirection * topNavBarBox.size.width, 0.0)), end: to);
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: pageTransitionAnimation.drive(positionTween), child: Nav_barLibrary._wrapWithBackground(updateSystemUiOverlay: false, backgroundColor: topBackgroundColor!, border: topBorder, child: new global::Doroti.Framework.Widgets.SizedBox(height: topNavBarBox.size.height, width: double.PositiveInfinity)));
+            Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Curves.fastEaseInToSlowEaseOut : Curves.fastEaseInToSlowEaseOut.flipped;
+            Animation<double> pageTransitionAnimation = routeAnimation.drive(new CurveTween(curve: userGestureInProgress ? Curves.linear : animationCurve));
+            RelativeRect to = positionInTransitionBox(topComponents.navBarBoxKey, from: topNavBarBox);
+            var positionTween = new RelativeRectTween(begin: to.shift(new Offset(forwardDirection * topNavBarBox.size.width, 0.0)), end: to);
+            return (Widget?)new PositionedTransition(rect: pageTransitionAnimation.drive(positionTween), child: Nav_barLibrary._wrapWithBackground(updateSystemUiOverlay: false, backgroundColor: topBackgroundColor!, border: topBorder, child: new SizedBox(height: topNavBarBox.size.height, width: double.PositiveInfinity)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topLeading
+    public virtual Widget? topLeading
     {
         get
         {
-            var topLeading = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.leadingKey.currentWidget)!;
+            var topLeading = ((KeyedSubtree?)topComponents.leadingKey.currentWidget)!;
             if (topLeading is null)
             {
                 return null;
             }
-            return (global::Doroti.Framework.Widgets.Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(topComponents.leadingKey, from: topNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.6), child: topLeading.child));
+            return (Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(topComponents.leadingKey, from: topNavBarBox), child: new FadeTransition(opacity: fadeInFrom(0.6), child: topLeading.child));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topBackChevron
+    public virtual Widget? topBackChevron
     {
         get
         {
-            var topBackChevron = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.backChevronKey.currentWidget)!;
-            var bottomBackChevron = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.backChevronKey.currentWidget)!;
+            var topBackChevron = ((KeyedSubtree?)topComponents.backChevronKey.currentWidget)!;
+            var bottomBackChevron = ((KeyedSubtree?)bottomComponents.backChevronKey.currentWidget)!;
             if (topBackChevron is null)
             {
                 return null;
             }
-            global::Doroti.Framework.Rendering.RelativeRect to = positionInTransitionBox(topComponents.backChevronKey, from: topNavBarBox);
+            RelativeRect to = positionInTransitionBox(topComponents.backChevronKey, from: topNavBarBox);
             var fromLocal = to;
-            global::Doroti.Framework.Widgets.Widget childLocal = topBackChevron.child;
-            global::Doroti.Framework.Animation.Curve forwardScaleCurve = new global::Doroti.Framework.Animation.Interval(0.0, 0.2);
-            global::Doroti.Framework.Animation.Curve backwardScaleCurve = new global::Doroti.Framework.Animation.Interval(0.8, 1.0);
-            global::Doroti.Framework.Animation.Curve forwardPositionCurve = new global::Doroti.Framework.Animation.Interval(0.0, 0.5);
-            global::Doroti.Framework.Animation.Curve backwardPositionCurve = new global::Doroti.Framework.Animation.Interval(0.5, 1.0);
-            global::Doroti.Framework.Animation.Curve effectiveScaleCurve = default!;
-            global::Doroti.Framework.Animation.Curve effectivePositionCurve = default!;
+            Widget childLocal = topBackChevron.child;
+            Curve forwardScaleCurve = new Interval(0.0, 0.2);
+            Curve backwardScaleCurve = new Interval(0.8, 1.0);
+            Curve forwardPositionCurve = new Interval(0.0, 0.5);
+            Curve backwardPositionCurve = new Interval(0.5, 1.0);
+            Curve effectiveScaleCurve = default!;
+            Curve effectivePositionCurve = default!;
             if (Equals(animation.status, AnimationStatus.forward))
             {
                 effectiveScaleCurve = forwardScaleCurve;
@@ -1823,47 +1823,47 @@ internal class _NavigationBarComponentsTransition__nav_bar
             }
             if (bottomBackChevron is null)
             {
-                var topBackChevronBox = ((global::Doroti.Framework.Rendering.RenderBox?)topComponents.backChevronKey.currentContext!.findRenderObject()!)!;
-                fromLocal = to.shift(new global::Doroti.Ui.Offset(forwardDirection * topBackChevronBox.size.width * 2.0, 0.0));
-                childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScaleTransition(scale: routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: effectiveScaleCurve)), child: childLocal));
+                var topBackChevronBox = ((RenderBox?)topComponents.backChevronKey.currentContext!.findRenderObject()!)!;
+                fromLocal = to.shift(new Offset(forwardDirection * topBackChevronBox.size.width * 2.0, 0.0));
+                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new ScaleTransition(scale: routeAnimation.drive(new CurveTween(curve: effectiveScaleCurve)), child: childLocal));
             }
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: fromLocal, end: to);
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: effectivePositionCurve)).drive(positionTween), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(((bottomBackChevron is null) && (!Equals(animation.status, AnimationStatus.forward))) ? 0.9 : 0.4, 1.0))), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: topBackButtonTextStyle, child: childLocal)));
+            var positionTween = new RelativeRectTween(begin: fromLocal, end: to);
+            return (Widget?)new PositionedTransition(rect: routeAnimation.drive(new CurveTween(curve: effectivePositionCurve)).drive(positionTween), child: new FadeTransition(opacity: routeAnimation.drive(new CurveTween(curve: new Interval(((bottomBackChevron is null) && (!Equals(animation.status, AnimationStatus.forward))) ? 0.9 : 0.4, 1.0))), child: new DefaultTextStyle(style: topBackButtonTextStyle, child: childLocal)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topBackLabel
+    public virtual Widget? topBackLabel
     {
         get
         {
-            var bottomMiddle = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.middleKey.currentWidget)!;
-            var bottomLargeTitle = ((global::Doroti.Framework.Widgets.KeyedSubtree?)bottomComponents.largeTitleKey.currentWidget)!;
-            var topBackLabel = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.backLabelKey.currentWidget)!;
+            var bottomMiddle = ((KeyedSubtree?)bottomComponents.middleKey.currentWidget)!;
+            var bottomLargeTitle = ((KeyedSubtree?)bottomComponents.largeTitleKey.currentWidget)!;
+            var topBackLabel = ((KeyedSubtree?)topComponents.backLabelKey.currentWidget)!;
             if (topBackLabel is null)
             {
                 return null;
             }
-            global::Doroti.Framework.Rendering.RenderAnimatedOpacity? topBackLabelOpacity = topComponents.backLabelKey.currentContext?.findAncestorRenderObjectOfType<global::Doroti.Framework.Rendering.RenderAnimatedOpacity>();
-            global::Doroti.Framework.Animation.Animation<double>? midClickOpacity = default!;
+            RenderAnimatedOpacity? topBackLabelOpacity = topComponents.backLabelKey.currentContext?.findAncestorRenderObjectOfType<RenderAnimatedOpacity>();
+            Animation<double>? midClickOpacity = default!;
             if ((topBackLabelOpacity is not null) && (topBackLabelOpacity.opacity.value < 1.0))
             {
-                midClickOpacity = animation.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: topBackLabelOpacity.opacity.value));
+                midClickOpacity = animation.drive(new Tween<double>(begin: 0.0, end: topBackLabelOpacity.opacity.value));
             }
             if ((bottomLargeTitle is not null) && bottomLargeExpanded)
             {
-                return (global::Doroti.Framework.Widgets.Widget?)slideFromLeadingEdge(fromKey: bottomComponents.largeTitleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, curve: new global::Doroti.Framework.Animation.Interval(0.0, Equals(animation.status, AnimationStatus.forward) ? 0.7 : 1.0), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: midClickOpacity ?? fadeInFrom(0.4), child: new global::Doroti.Framework.Widgets.DefaultTextStyleTransition(style: animation.drive(new global::Doroti.Framework.Widgets.TextStyleTween(begin: bottomLargeTitleTextStyle, end: topBackButtonTextStyle)), maxLines: 1L, overflow: TextOverflow.ellipsis, child: topBackLabel.child)));
+                return (Widget?)slideFromLeadingEdge(fromKey: bottomComponents.largeTitleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, curve: new Interval(0.0, Equals(animation.status, AnimationStatus.forward) ? 0.7 : 1.0), child: new FadeTransition(opacity: midClickOpacity ?? fadeInFrom(0.4), child: new DefaultTextStyleTransition(style: animation.drive(new TextStyleTween(begin: bottomLargeTitleTextStyle, end: topBackButtonTextStyle)), maxLines: 1L, overflow: TextOverflow.ellipsis, child: topBackLabel.child)));
             }
             if (bottomMiddle is not null)
             {
-                return (global::Doroti.Framework.Widgets.Widget?)slideFromLeadingEdge(fromKey: bottomComponents.middleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: midClickOpacity ?? fadeInFrom(0.3), child: new global::Doroti.Framework.Widgets.DefaultTextStyleTransition(style: animation.drive(new global::Doroti.Framework.Widgets.TextStyleTween(begin: bottomTitleTextStyle, end: topBackButtonTextStyle)), child: topBackLabel.child)));
+                return (Widget?)slideFromLeadingEdge(fromKey: bottomComponents.middleKey, fromNavBarBox: bottomNavBarBox, toKey: topComponents.backLabelKey, toNavBarBox: topNavBarBox, child: new FadeTransition(opacity: midClickOpacity ?? fadeInFrom(0.3), child: new DefaultTextStyleTransition(style: animation.drive(new TextStyleTween(begin: bottomTitleTextStyle, end: topBackButtonTextStyle)), child: topBackLabel.child)));
             }
             return null;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topMiddle
+    public virtual Widget? topMiddle
     {
         get
         {
-            var topMiddle = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.middleKey.currentWidget)!;
+            var topMiddle = ((KeyedSubtree?)topComponents.middleKey.currentWidget)!;
             if (topMiddle is null)
             {
                 return null;
@@ -1872,91 +1872,91 @@ internal class _NavigationBarComponentsTransition__nav_bar
             {
                 return null;
             }
-            global::Doroti.Framework.Rendering.RelativeRect to = positionInTransitionBox(topComponents.middleKey, from: topNavBarBox);
-            var toBox = ((global::Doroti.Framework.Rendering.RenderBox?)topComponents.middleKey.currentContext!.findRenderObject()!)!;
+            RelativeRect to = positionInTransitionBox(topComponents.middleKey, from: topNavBarBox);
+            var toBox = ((RenderBox?)topComponents.middleKey.currentContext!.findRenderObject()!)!;
             bool isLTRLocal = forwardDirection > 0L;
-            var toAnchorInTransitionBox = new global::Doroti.Ui.Offset(isLTRLocal ? to.left : to.right, to.top);
-            var anchorMovementInTransitionBox = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(topNavBarBox.size.width - (toBox.size.width / 2L), to.top), end: toAnchorInTransitionBox);
-            return (global::Doroti.Framework.Widgets.Widget?)new _FixedSizeSlidingTransition__nav_bar(isLTR: isLTRLocal, offsetAnimation: animation.drive(anchorMovementInTransitionBox), width: toBox.size.width, height: toBox.size.height, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.25), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: topTitleTextStyle, child: topMiddle.child)));
+            var toAnchorInTransitionBox = new Offset(isLTRLocal ? to.left : to.right, to.top);
+            var anchorMovementInTransitionBox = new Tween<Offset>(begin: new Offset(topNavBarBox.size.width - (toBox.size.width / 2L), to.top), end: toAnchorInTransitionBox);
+            return (Widget?)new _FixedSizeSlidingTransition__nav_bar(isLTR: isLTRLocal, offsetAnimation: animation.drive(anchorMovementInTransitionBox), width: toBox.size.width, height: toBox.size.height, child: new FadeTransition(opacity: fadeInFrom(0.25), child: new DefaultTextStyle(style: topTitleTextStyle, child: topMiddle.child)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topTrailing
+    public virtual Widget? topTrailing
     {
         get
         {
-            var topTrailing = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.trailingKey.currentWidget)!;
+            var topTrailing = ((KeyedSubtree?)topComponents.trailingKey.currentWidget)!;
             if (topTrailing is null)
             {
                 return null;
             }
-            return (global::Doroti.Framework.Widgets.Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(topComponents.trailingKey, from: topNavBarBox), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.4), child: topTrailing.child));
+            return (Widget?)Positioned.CreateFromRelativeRect(rect: positionInTransitionBox(topComponents.trailingKey, from: topNavBarBox), child: new FadeTransition(opacity: fadeInFrom(0.4), child: topTrailing.child));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topLargeTitle
+    public virtual Widget? topLargeTitle
     {
         get
         {
-            var topLargeTitle = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.largeTitleKey.currentWidget)!;
+            var topLargeTitle = ((KeyedSubtree?)topComponents.largeTitleKey.currentWidget)!;
             if ((topLargeTitle is null) || !topLargeExpanded)
             {
                 return null;
             }
-            global::Doroti.Framework.Rendering.RelativeRect to = positionInTransitionBox(topComponents.largeTitleKey, from: topNavBarBox);
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: to.shift(new global::Doroti.Ui.Offset(forwardDirection * topNavBarBox.size.width, 0.0)), end: to);
-            global::Doroti.Framework.Animation.Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Nav_barLibrary._kTopNavBarHeaderTransitionCurve : Nav_barLibrary._kTopNavBarHeaderTransitionCurve.flipped;
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: userGestureInProgress ? routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.linear)).drive(positionTween) : animation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: animationCurve)).drive(positionTween), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.0, curve: animationCurve), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: topLargeTitleTextStyle!, maxLines: 1L, overflow: TextOverflow.ellipsis, child: topLargeTitle.child)));
+            RelativeRect to = positionInTransitionBox(topComponents.largeTitleKey, from: topNavBarBox);
+            var positionTween = new RelativeRectTween(begin: to.shift(new Offset(forwardDirection * topNavBarBox.size.width, 0.0)), end: to);
+            Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Nav_barLibrary._kTopNavBarHeaderTransitionCurve : Nav_barLibrary._kTopNavBarHeaderTransitionCurve.flipped;
+            return (Widget?)new PositionedTransition(rect: userGestureInProgress ? routeAnimation.drive(new CurveTween(curve: Curves.linear)).drive(positionTween) : animation.drive(new CurveTween(curve: animationCurve)).drive(positionTween), child: new FadeTransition(opacity: fadeInFrom(0.0, curve: animationCurve), child: new DefaultTextStyle(style: topLargeTitleTextStyle!, maxLines: 1L, overflow: TextOverflow.ellipsis, child: topLargeTitle.child)));
         }
     }
-    public virtual global::Doroti.Framework.Widgets.Widget? topNavBarBottom
+    public virtual Widget? topNavBarBottom
     {
         get
         {
-            var topNavBarBottom = ((global::Doroti.Framework.Widgets.KeyedSubtree?)topComponents.navBarBottomKey.currentWidget)!;
+            var topNavBarBottom = ((KeyedSubtree?)topComponents.navBarBottomKey.currentWidget)!;
             if (topNavBarBottom is null)
             {
                 return null;
             }
-            global::Doroti.Framework.Rendering.RelativeRect to = positionInTransitionBox(topComponents.navBarBottomKey, from: topNavBarBox);
-            var positionTween = new global::Doroti.Framework.Widgets.RelativeRectTween(begin: to.shift(new global::Doroti.Ui.Offset(forwardDirection * topNavBarBox.size.width, 0.0)), end: to);
-            global::Doroti.Framework.Widgets.Widget childLocal = topNavBarBottom.child;
-            global::Doroti.Framework.Animation.Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Nav_barLibrary._kTopNavBarHeaderTransitionCurve : Nav_barLibrary._kTopNavBarHeaderTransitionCurve.flipped;
+            RelativeRect to = positionInTransitionBox(topComponents.navBarBottomKey, from: topNavBarBox);
+            var positionTween = new RelativeRectTween(begin: to.shift(new Offset(forwardDirection * topNavBarBox.size.width, 0.0)), end: to);
+            Widget childLocal = topNavBarBottom.child;
+            Curve animationCurve = Equals(animation.status, AnimationStatus.forward) ? Nav_barLibrary._kTopNavBarHeaderTransitionCurve : Nav_barLibrary._kTopNavBarHeaderTransitionCurve.flipped;
             if (!searchable)
             {
-                childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeInFrom(0.0, curve: animationCurve), child: childLocal));
+                childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new FadeTransition(opacity: fadeInFrom(0.0, curve: animationCurve), child: childLocal));
             }
-            return (global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.PositionedTransition(rect: userGestureInProgress ? routeAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.linear)).drive(positionTween) : animation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: animationCurve)).drive(positionTween), child: new global::Doroti.Framework.Widgets.ClipRect(child: childLocal));
+            return (Widget?)new PositionedTransition(rect: userGestureInProgress ? routeAnimation.drive(new CurveTween(curve: Curves.linear)).drive(positionTween) : animation.drive(new CurveTween(curve: animationCurve)).drive(positionTween), child: new ClipRect(child: childLocal));
         }
     }
 }
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Animation.RectTween _linearTranslateWithLargestRectSizeTween(Rect? begin, Rect? end)
+    internal static RectTween _linearTranslateWithLargestRectSizeTween(Rect? begin, Rect? end)
     {
-        var largestSize = new global::Doroti.Ui.Size(Math.Max(DartRuntimePrimitives.RequireValue(begin).size.width, DartRuntimePrimitives.RequireValue(end).size.width), Math.Max(DartRuntimePrimitives.RequireValue(begin).size.height, DartRuntimePrimitives.RequireValue(end).size.height));
-        return new global::Doroti.Framework.Animation.RectTween(begin: DartRuntimePrimitives.RequireValue(begin).topLeft & largestSize, end: DartRuntimePrimitives.RequireValue(end).topLeft & largestSize);
+        var largestSize = new Size(Math.Max(DartRuntimePrimitives.RequireValue(begin).size.width, DartRuntimePrimitives.RequireValue(end).size.width), Math.Max(DartRuntimePrimitives.RequireValue(begin).size.height, DartRuntimePrimitives.RequireValue(end).size.height));
+        return new RectTween(begin: DartRuntimePrimitives.RequireValue(begin).topLeft & largestSize, end: DartRuntimePrimitives.RequireValue(end).topLeft & largestSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Widgets.Widget _navBarHeroLaunchPadBuilder(global::Doroti.Framework.Widgets.BuildContext context, Size heroSize, global::Doroti.Framework.Widgets.Widget child)
+    internal static Widget _navBarHeroLaunchPadBuilder(BuildContext context, Size heroSize, Widget child)
     {
         DartRuntimePrimitives.Assert(() => child is _TransitionableNavigationBar__nav_bar);
-        return new global::Doroti.Framework.Widgets.Visibility(maintainSize: true, maintainAnimation: true, maintainState: true, visible: false, child: child);
+        return new Visibility(maintainSize: true, maintainAnimation: true, maintainState: true, visible: false, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Nav_barLibrary
 {
-    internal static global::Doroti.Framework.Widgets.Widget _navBarHeroFlightShuttleBuilder(global::Doroti.Framework.Widgets.BuildContext flightContext, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Widgets.HeroFlightDirection flightDirection, global::Doroti.Framework.Widgets.BuildContext fromHeroContext, global::Doroti.Framework.Widgets.BuildContext toHeroContext)
+    internal static Widget _navBarHeroFlightShuttleBuilder(BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext)
     {
-        DartRuntimePrimitives.Assert(() => fromHeroContext.widget is global::Doroti.Framework.Widgets.Hero);
-        DartRuntimePrimitives.Assert(() => toHeroContext.widget is global::Doroti.Framework.Widgets.Hero);
-        var fromHeroWidget = ((global::Doroti.Framework.Widgets.Hero?)fromHeroContext.widget)!;
-        var toHeroWidget = ((global::Doroti.Framework.Widgets.Hero?)toHeroContext.widget)!;
+        DartRuntimePrimitives.Assert(() => fromHeroContext.widget is Hero);
+        DartRuntimePrimitives.Assert(() => toHeroContext.widget is Hero);
+        var fromHeroWidget = ((Hero?)fromHeroContext.widget)!;
+        var toHeroWidget = ((Hero?)toHeroContext.widget)!;
         DartRuntimePrimitives.Assert(() => fromHeroWidget.child is _TransitionableNavigationBar__nav_bar);
         DartRuntimePrimitives.Assert(() => toHeroWidget.child is _TransitionableNavigationBar__nav_bar);
         var fromNavBar = ((_TransitionableNavigationBar__nav_bar?)fromHeroWidget.child)!;

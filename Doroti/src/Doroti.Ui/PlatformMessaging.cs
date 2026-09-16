@@ -276,56 +276,56 @@ public static class Dart_uiLibrary
 
     public static class PluginUtilities
     {
-        public static global::Doroti.Ui.CallbackHandle? getCallbackHandle(Delegate callback) =>
+        public static CallbackHandle? getCallbackHandle(Delegate callback) =>
             Ui.PluginUtilities.getCallbackHandle(callback);
 
-        public static Delegate? getCallbackFromHandle(global::Doroti.Ui.CallbackHandle handle) =>
+        public static Delegate? getCallbackFromHandle(CallbackHandle handle) =>
             Ui.PluginUtilities.getCallbackFromHandle(handle);
     }
 
     public static class SemanticsHitTestBehavior
     {
-        public static global::Doroti.Ui.SemanticsHitTestBehavior defer =>
+        public static Ui.SemanticsHitTestBehavior defer =>
             Ui.SemanticsHitTestBehavior.defer;
-        public static global::Doroti.Ui.SemanticsHitTestBehavior opaque =>
+        public static Ui.SemanticsHitTestBehavior opaque =>
             Ui.SemanticsHitTestBehavior.opaque;
-        public static global::Doroti.Ui.SemanticsHitTestBehavior transparent =>
+        public static Ui.SemanticsHitTestBehavior transparent =>
             Ui.SemanticsHitTestBehavior.transparent;
     }
 
     public static class SemanticsInputType
     {
-        public const global::Doroti.Ui.SemanticsInputType none = Ui.SemanticsInputType.none;
-        public const global::Doroti.Ui.SemanticsInputType text = Ui.SemanticsInputType.text;
-        public const global::Doroti.Ui.SemanticsInputType url = Ui.SemanticsInputType.url;
-        public const global::Doroti.Ui.SemanticsInputType phone = Ui.SemanticsInputType.phone;
-        public const global::Doroti.Ui.SemanticsInputType search = Ui.SemanticsInputType.search;
-        public const global::Doroti.Ui.SemanticsInputType email = Ui.SemanticsInputType.email;
+        public const Ui.SemanticsInputType none = Ui.SemanticsInputType.none;
+        public const Ui.SemanticsInputType text = Ui.SemanticsInputType.text;
+        public const Ui.SemanticsInputType url = Ui.SemanticsInputType.url;
+        public const Ui.SemanticsInputType phone = Ui.SemanticsInputType.phone;
+        public const Ui.SemanticsInputType search = Ui.SemanticsInputType.search;
+        public const Ui.SemanticsInputType email = Ui.SemanticsInputType.email;
     }
 
-    public static Future<global::Doroti.Ui.Codec> instantiateImageCodecFromBuffer(
-        global::Doroti.Ui.ImmutableBuffer buffer,
+    public static Future<Codec> instantiateImageCodecFromBuffer(
+        Ui.ImmutableBuffer buffer,
         long? targetWidth = null,
         long? targetHeight = null,
         bool allowUpscaling = false) =>
-        Future<global::Doroti.Ui.Codec>.fromTask(DecodeImageCodecAsync(
+        Future<Codec>.fromTask(DecodeImageCodecAsync(
             buffer,
-            (width, height) => new global::Doroti.Ui.TargetImageSize(targetWidth, targetHeight),
+            (width, height) => new TargetImageSize(targetWidth, targetHeight),
             allowUpscaling,
             "dart:ui#instantiateImageCodecFromBuffer"));
 
-    public static Future<global::Doroti.Ui.Codec> instantiateImageCodecWithSize(
-        global::Doroti.Ui.ImmutableBuffer buffer,
-        Func<long, long, global::Doroti.Ui.TargetImageSize>? getTargetSize = null) =>
-        Future<global::Doroti.Ui.Codec>.fromTask(DecodeImageCodecAsync(
+    public static Future<Codec> instantiateImageCodecWithSize(
+        Ui.ImmutableBuffer buffer,
+        Func<long, long, TargetImageSize>? getTargetSize = null) =>
+        Future<Codec>.fromTask(DecodeImageCodecAsync(
             buffer,
             (width, height) => getTargetSize?.Invoke(width, height),
             allowUpscaling: true,
             "dart:ui#instantiateImageCodecWithSize"));
 
-    private static async Task<global::Doroti.Ui.Codec> DecodeImageCodecAsync(
-        global::Doroti.Ui.ImmutableBuffer buffer,
-        Func<long, long, global::Doroti.Ui.TargetImageSize?> targetSize,
+    private static async Task<Codec> DecodeImageCodecAsync(
+        Ui.ImmutableBuffer buffer,
+        Func<long, long, TargetImageSize?> targetSize,
         bool allowUpscaling,
         string elementId)
     {
@@ -338,8 +338,8 @@ public static class Dart_uiLibrary
                 DartUiInvocation.Managed(elementId),
                 "image decoding requires an attached DorotiView");
         var image = await view.DecodeSizedImageAsync(buffer.asMemory(), targetSize, allowUpscaling, DartUiInvocation.Managed(elementId));
-        return new global::Doroti.Ui.Codec([
-            new global::Doroti.Ui.FrameInfo(image, Duration.zero),
+        return new Codec([
+            new FrameInfo(image, Duration.zero),
         ]);
     }
 
@@ -362,14 +362,14 @@ public static class Dart_uiLibrary
         public static long getAlphaFromOpacity(double opacity) =>
             (long)Math.Round(Math.Clamp(opacity, 0.0, 1.0) * 255.0);
 
-        public static global::Doroti.Ui.Color? lerp(
-            global::Doroti.Ui.Color? a,
-            global::Doroti.Ui.Color? b,
+        public static Ui.Color? lerp(
+            Ui.Color? a,
+            Ui.Color? b,
             double t)
         {
             if (a is null && b is null) return null;
-            var left = a ?? new global::Doroti.Ui.Color(0U);
-            var right = b ?? new global::Doroti.Ui.Color(0U);
+            var left = a ?? new Ui.Color(0U);
+            var right = b ?? new Ui.Color(0U);
             return Ui.Color.fromARGB(
                 LerpChannel(left.alpha, right.alpha, t),
                 LerpChannel(left.red, right.red, t),
@@ -377,9 +377,9 @@ public static class Dart_uiLibrary
                 LerpChannel(left.blue, right.blue, t));
         }
 
-        public static global::Doroti.Ui.Color alphaBlend(
-            global::Doroti.Ui.Color foreground,
-            global::Doroti.Ui.Color background)
+        public static Ui.Color alphaBlend(
+            Ui.Color foreground,
+            Ui.Color background)
         {
             var foregroundAlpha = foreground.alpha / 255.0;
             var backgroundAlpha = background.alpha / 255.0;
@@ -400,7 +400,7 @@ public static class Dart_uiLibrary
 
     public static class Offset
     {
-        public static global::Doroti.Ui.Offset? lerp(global::Doroti.Ui.Offset? a, global::Doroti.Ui.Offset? b, double t)
+        public static Ui.Offset? lerp(Ui.Offset? a, Ui.Offset? b, double t)
         {
             if (a is null && b is null) return null;
             var left = a ?? Ui.Offset.zero;
@@ -411,7 +411,7 @@ public static class Dart_uiLibrary
 
     public static class Radius
     {
-        public static global::Doroti.Ui.Radius? lerp(global::Doroti.Ui.Radius? a, global::Doroti.Ui.Radius? b, double t)
+        public static Ui.Radius? lerp(Ui.Radius? a, Ui.Radius? b, double t)
         {
             if (a is null && b is null) return null;
             var left = a ?? Ui.Radius.zero;
@@ -422,12 +422,12 @@ public static class Dart_uiLibrary
 
     public static class Path
     {
-        public static global::Doroti.Ui.Path combine(
-            global::Doroti.Ui.PathOperation operation,
-            global::Doroti.Ui.Path path1,
-            global::Doroti.Ui.Path path2)
+        public static Ui.Path combine(
+            PathOperation operation,
+            Ui.Path path1,
+            Ui.Path path2)
         {
-            var result = new global::Doroti.Ui.Path();
+            var result = new Ui.Path();
             result.addPath(path1, Ui.Offset.zero);
             result.addPath(path2, Ui.Offset.zero);
             return result;
@@ -436,7 +436,7 @@ public static class Dart_uiLibrary
 
     public static class FontWeight
     {
-        public static global::Doroti.Ui.FontWeight? lerp(global::Doroti.Ui.FontWeight? a, global::Doroti.Ui.FontWeight? b, double t)
+        public static Ui.FontWeight? lerp(Ui.FontWeight? a, Ui.FontWeight? b, double t)
         {
             if (a is null && b is null) return null;
             var left = a?.value ?? 0;
@@ -447,17 +447,17 @@ public static class Dart_uiLibrary
 
     public static class Shadow
     {
-        public static List<global::Doroti.Ui.Shadow>? lerpList(
-            IReadOnlyList<global::Doroti.Ui.Shadow>? a,
-            IReadOnlyList<global::Doroti.Ui.Shadow>? b,
+        public static List<Ui.Shadow>? lerpList(
+            IReadOnlyList<Ui.Shadow>? a,
+            IReadOnlyList<Ui.Shadow>? b,
             double t) => (t < 0.5 ? a : b)?.ToList();
     }
 
     public static class FontVariation
     {
-        public static global::Doroti.Ui.FontVariation? lerp(
-            global::Doroti.Ui.FontVariation? a,
-            global::Doroti.Ui.FontVariation? b,
+        public static Ui.FontVariation? lerp(
+            Ui.FontVariation? a,
+            Ui.FontVariation? b,
             double t)
         {
             if (a is null && b is null) return null;
@@ -470,43 +470,43 @@ public static class Dart_uiLibrary
 
     public static class PlaceholderAlignment
     {
-        public const global::Doroti.Ui.PlaceholderAlignment baseline = Ui.PlaceholderAlignment.baseline;
-        public const global::Doroti.Ui.PlaceholderAlignment aboveBaseline = Ui.PlaceholderAlignment.aboveBaseline;
-        public const global::Doroti.Ui.PlaceholderAlignment belowBaseline = Ui.PlaceholderAlignment.belowBaseline;
-        public const global::Doroti.Ui.PlaceholderAlignment top = Ui.PlaceholderAlignment.top;
-        public const global::Doroti.Ui.PlaceholderAlignment bottom = Ui.PlaceholderAlignment.bottom;
-        public const global::Doroti.Ui.PlaceholderAlignment middle = Ui.PlaceholderAlignment.middle;
+        public const Ui.PlaceholderAlignment baseline = Ui.PlaceholderAlignment.baseline;
+        public const Ui.PlaceholderAlignment aboveBaseline = Ui.PlaceholderAlignment.aboveBaseline;
+        public const Ui.PlaceholderAlignment belowBaseline = Ui.PlaceholderAlignment.belowBaseline;
+        public const Ui.PlaceholderAlignment top = Ui.PlaceholderAlignment.top;
+        public const Ui.PlaceholderAlignment bottom = Ui.PlaceholderAlignment.bottom;
+        public const Ui.PlaceholderAlignment middle = Ui.PlaceholderAlignment.middle;
     }
 
     public static class BoxHeightStyle
     {
-        public const global::Doroti.Ui.BoxHeightStyle tight = Ui.BoxHeightStyle.tight;
-        public const global::Doroti.Ui.BoxHeightStyle max = Ui.BoxHeightStyle.max;
-        public const global::Doroti.Ui.BoxHeightStyle includeLineSpacingMiddle = Ui.BoxHeightStyle.includeLineSpacingMiddle;
-        public const global::Doroti.Ui.BoxHeightStyle includeLineSpacingTop = Ui.BoxHeightStyle.includeLineSpacingTop;
-        public const global::Doroti.Ui.BoxHeightStyle includeLineSpacingBottom = Ui.BoxHeightStyle.includeLineSpacingBottom;
-        public const global::Doroti.Ui.BoxHeightStyle strut = Ui.BoxHeightStyle.strut;
+        public const Ui.BoxHeightStyle tight = Ui.BoxHeightStyle.tight;
+        public const Ui.BoxHeightStyle max = Ui.BoxHeightStyle.max;
+        public const Ui.BoxHeightStyle includeLineSpacingMiddle = Ui.BoxHeightStyle.includeLineSpacingMiddle;
+        public const Ui.BoxHeightStyle includeLineSpacingTop = Ui.BoxHeightStyle.includeLineSpacingTop;
+        public const Ui.BoxHeightStyle includeLineSpacingBottom = Ui.BoxHeightStyle.includeLineSpacingBottom;
+        public const Ui.BoxHeightStyle strut = Ui.BoxHeightStyle.strut;
     }
 
     public static class BoxWidthStyle
     {
-        public const global::Doroti.Ui.BoxWidthStyle tight = Ui.BoxWidthStyle.tight;
-        public const global::Doroti.Ui.BoxWidthStyle max = Ui.BoxWidthStyle.max;
+        public const Ui.BoxWidthStyle tight = Ui.BoxWidthStyle.tight;
+        public const Ui.BoxWidthStyle max = Ui.BoxWidthStyle.max;
     }
 
     public static class TileMode
     {
-        public const global::Doroti.Ui.TileMode clamp = Ui.TileMode.clamp;
-        public const global::Doroti.Ui.TileMode repeated = Ui.TileMode.repeated;
-        public const global::Doroti.Ui.TileMode mirror = Ui.TileMode.mirror;
-        public const global::Doroti.Ui.TileMode decal = Ui.TileMode.decal;
+        public const Ui.TileMode clamp = Ui.TileMode.clamp;
+        public const Ui.TileMode repeated = Ui.TileMode.repeated;
+        public const Ui.TileMode mirror = Ui.TileMode.mirror;
+        public const Ui.TileMode decal = Ui.TileMode.decal;
     }
 
     public static class Size
     {
-        public static global::Doroti.Ui.Size? lerp(
-            global::Doroti.Ui.Size? a,
-            global::Doroti.Ui.Size? b,
+        public static Ui.Size? lerp(
+            Ui.Size? a,
+            Ui.Size? b,
             double t)
         {
             if (a is null && b is null) return null;
@@ -518,9 +518,9 @@ public static class Dart_uiLibrary
 
     public static class Rect
     {
-        public static global::Doroti.Ui.Rect? lerp(
-            global::Doroti.Ui.Rect? a,
-            global::Doroti.Ui.Rect? b,
+        public static Ui.Rect? lerp(
+            Ui.Rect? a,
+            Ui.Rect? b,
             double t)
         {
             if (a is null && b is null) return null;
@@ -536,8 +536,8 @@ public static class Dart_uiLibrary
 
     public static ChannelBuffers channelBuffers => Ui.PlatformDispatcher.instance.channelBuffers;
 
-    public static async Doroti.Runtime.Future loadFontFromList(
-        Doroti.Runtime.Uint8List list,
+    public static async Future loadFontFromList(
+        Uint8List list,
         string? fontFamily = null)
     {
         ArgumentNullException.ThrowIfNull(list);
@@ -545,94 +545,94 @@ public static class Dart_uiLibrary
         var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
             ?? throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsFont, null, DartUiInvocation.Managed("loadFontFromList"), "font loading requires an attached view");
         await view.RequireCapability<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, DartUiInvocation.Managed("loadFontFromList"))
-            .RegisterFontAsync(new Doroti.Runtime.ByteData(list).asMemory(), fontFamily);
+            .RegisterFontAsync(new ByteData(list).asMemory(), fontFamily);
         var notification = dispatcher.channelBuffers.NotifyFramework("flutter/system",
-            new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(System.Text.Encoding.UTF8.GetBytes("{\"type\":\"fontsChange\"}"))));
+            new ByteData(new Uint8List(System.Text.Encoding.UTF8.GetBytes("{\"type\":\"fontsChange\"}"))));
         if (notification is not null) await notification;
     }
 
     public static class RootIsolateToken
     {
-        public static global::Doroti.Ui.RootIsolateToken instance => Ui.RootIsolateToken.instance;
+        public static Ui.RootIsolateToken instance => Ui.RootIsolateToken.instance;
     }
 
     public static class KeyEventType
     {
-        public const global::Doroti.Ui.KeyEventType down = Ui.KeyEventType.down;
-        public const global::Doroti.Ui.KeyEventType up = Ui.KeyEventType.up;
-        public const global::Doroti.Ui.KeyEventType repeat = Ui.KeyEventType.repeat;
+        public const Ui.KeyEventType down = Ui.KeyEventType.down;
+        public const Ui.KeyEventType up = Ui.KeyEventType.up;
+        public const Ui.KeyEventType repeat = Ui.KeyEventType.repeat;
     }
 
     public static class PointerChange
     {
-        public const global::Doroti.Ui.PointerChange cancel = Ui.PointerChange.cancel;
-        public const global::Doroti.Ui.PointerChange add = Ui.PointerChange.add;
-        public const global::Doroti.Ui.PointerChange remove = Ui.PointerChange.remove;
-        public const global::Doroti.Ui.PointerChange hover = Ui.PointerChange.hover;
-        public const global::Doroti.Ui.PointerChange down = Ui.PointerChange.down;
-        public const global::Doroti.Ui.PointerChange move = Ui.PointerChange.move;
-        public const global::Doroti.Ui.PointerChange up = Ui.PointerChange.up;
-        public const global::Doroti.Ui.PointerChange panZoomStart = Ui.PointerChange.panZoomStart;
-        public const global::Doroti.Ui.PointerChange panZoomUpdate = Ui.PointerChange.panZoomUpdate;
-        public const global::Doroti.Ui.PointerChange panZoomEnd = Ui.PointerChange.panZoomEnd;
+        public const Ui.PointerChange cancel = Ui.PointerChange.cancel;
+        public const Ui.PointerChange add = Ui.PointerChange.add;
+        public const Ui.PointerChange remove = Ui.PointerChange.remove;
+        public const Ui.PointerChange hover = Ui.PointerChange.hover;
+        public const Ui.PointerChange down = Ui.PointerChange.down;
+        public const Ui.PointerChange move = Ui.PointerChange.move;
+        public const Ui.PointerChange up = Ui.PointerChange.up;
+        public const Ui.PointerChange panZoomStart = Ui.PointerChange.panZoomStart;
+        public const Ui.PointerChange panZoomUpdate = Ui.PointerChange.panZoomUpdate;
+        public const Ui.PointerChange panZoomEnd = Ui.PointerChange.panZoomEnd;
     }
 
     public static class PointerSignalKind
     {
-        public const global::Doroti.Ui.PointerSignalKind none = Ui.PointerSignalKind.none;
-        public const global::Doroti.Ui.PointerSignalKind scroll = Ui.PointerSignalKind.scroll;
-        public const global::Doroti.Ui.PointerSignalKind scrollInertiaCancel = Ui.PointerSignalKind.scrollInertiaCancel;
-        public const global::Doroti.Ui.PointerSignalKind scale = Ui.PointerSignalKind.scale;
-        public const global::Doroti.Ui.PointerSignalKind unknown = Ui.PointerSignalKind.unknown;
+        public const Ui.PointerSignalKind none = Ui.PointerSignalKind.none;
+        public const Ui.PointerSignalKind scroll = Ui.PointerSignalKind.scroll;
+        public const Ui.PointerSignalKind scrollInertiaCancel = Ui.PointerSignalKind.scrollInertiaCancel;
+        public const Ui.PointerSignalKind scale = Ui.PointerSignalKind.scale;
+        public const Ui.PointerSignalKind unknown = Ui.PointerSignalKind.unknown;
     }
 
     public static class ImmutableBuffer
     {
-        public static Future<global::Doroti.Ui.ImmutableBuffer> fromUint8List(Uint8List bytes) =>
+        public static Future<Ui.ImmutableBuffer> fromUint8List(Uint8List bytes) =>
             Ui.ImmutableBuffer.fromUint8List(bytes);
-        public static Future<global::Doroti.Ui.ImmutableBuffer> fromAsset(string key) =>
+        public static Future<Ui.ImmutableBuffer> fromAsset(string key) =>
             Ui.ImmutableBuffer.fromAsset(key);
-        public static Future<global::Doroti.Ui.ImmutableBuffer> fromFilePath(string path) =>
+        public static Future<Ui.ImmutableBuffer> fromFilePath(string path) =>
             Ui.ImmutableBuffer.fromFilePath(path);
     }
 
     public static class FragmentProgram
     {
-        public static Future<global::Doroti.Ui.FragmentProgram> fromAsset(string assetKey) =>
+        public static Future<Ui.FragmentProgram> fromAsset(string assetKey) =>
             Ui.FragmentProgram.fromAsset(assetKey);
     }
 
     public static class PointMode
     {
-        public const global::Doroti.Ui.PointMode points = Ui.PointMode.points;
-        public const global::Doroti.Ui.PointMode lines = Ui.PointMode.lines;
-        public const global::Doroti.Ui.PointMode polygon = Ui.PointMode.polygon;
+        public const Ui.PointMode points = Ui.PointMode.points;
+        public const Ui.PointMode lines = Ui.PointMode.lines;
+        public const Ui.PointMode polygon = Ui.PointMode.polygon;
     }
 
     public static class KeyEventDeviceType
     {
-        public const global::Doroti.Ui.KeyEventDeviceType keyboard = Ui.KeyEventDeviceType.keyboard;
-        public const global::Doroti.Ui.KeyEventDeviceType directionalPad = Ui.KeyEventDeviceType.directionalPad;
-        public const global::Doroti.Ui.KeyEventDeviceType gamepad = Ui.KeyEventDeviceType.gamepad;
-        public const global::Doroti.Ui.KeyEventDeviceType joystick = Ui.KeyEventDeviceType.joystick;
-        public const global::Doroti.Ui.KeyEventDeviceType hdmi = Ui.KeyEventDeviceType.hdmi;
+        public const Ui.KeyEventDeviceType keyboard = Ui.KeyEventDeviceType.keyboard;
+        public const Ui.KeyEventDeviceType directionalPad = Ui.KeyEventDeviceType.directionalPad;
+        public const Ui.KeyEventDeviceType gamepad = Ui.KeyEventDeviceType.gamepad;
+        public const Ui.KeyEventDeviceType joystick = Ui.KeyEventDeviceType.joystick;
+        public const Ui.KeyEventDeviceType hdmi = Ui.KeyEventDeviceType.hdmi;
     }
 
     public static class AppExitResponse
     {
-        public const global::Doroti.Ui.AppExitResponse exit = Ui.AppExitResponse.exit;
-        public const global::Doroti.Ui.AppExitResponse cancel = Ui.AppExitResponse.cancel;
+        public const Ui.AppExitResponse exit = Ui.AppExitResponse.exit;
+        public const Ui.AppExitResponse cancel = Ui.AppExitResponse.cancel;
     }
 
     public static class PlatformDispatcher
     {
-        public static global::Doroti.Ui.PlatformDispatcher instance => Ui.PlatformDispatcher.instance;
+        public static Ui.PlatformDispatcher instance => Ui.PlatformDispatcher.instance;
     }
 
     public static HitTestResponse HitTestResponse(bool hasPlatformView) =>
         new(hasPlatformView: hasPlatformView);
 
-    public static HitTestRequest HitTestRequest(DorotiView view, global::Doroti.Ui.Offset offset) =>
+    public static HitTestRequest HitTestRequest(DorotiView view, Ui.Offset offset) =>
         new(view: view, offset: offset);
 }
 

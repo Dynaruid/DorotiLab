@@ -40,7 +40,7 @@ public static partial class Platform_viewLibrary
 {
     internal static HashSet<Type> _factoriesTypeSet<T>(HashSet<Factory<T>> factories)
     {
-        return factories.map<Factory<T>, Type>((factory) => factory.type).toSet();
+        return factories.map((factory) => factory.type).toSet();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -83,7 +83,7 @@ public class RenderAndroidView : PlatformViewRenderBox
             _viewController.addOnPlatformViewCreatedListener(_onPlatformViewCreated);
         }
     }
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -126,7 +126,7 @@ public class RenderAndroidView : PlatformViewRenderBox
         }
         _state = _PlatformViewState__platform_view.resizing;
         markNeedsPaint();
-        global::Doroti.Ui.Size targetSize = default!;
+        Size targetSize = default!;
         do
         {
             targetSize = size;
@@ -194,7 +194,7 @@ public class RenderAndroidView : PlatformViewRenderBox
         context.addLayer(new TextureLayer(rect: offset & DartRuntimePrimitives.RequireValue(_currentTextureSize), textureId: DartRuntimePrimitives.RequireValue(_viewController.textureId)));
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         config.isSemanticBoundary = true;
         if (_viewController.isCreated)
@@ -210,7 +210,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
 {
     internal virtual T _viewController { get; set; } = default!;
     public virtual PlatformViewHitTestBehavior hitTestBehavior { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Gestures.PointerEvent? _lastPointerDownEvent { get; set; } = default;
+    internal virtual PointerEvent? _lastPointerDownEvent { get; set; } = default;
     internal virtual _UiKitViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; } = default;
 
     protected RenderDarwinPlatformView(T viewController, PlatformViewHitTestBehavior hitTestBehavior, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
@@ -264,7 +264,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
     }
 
     public override bool hitTestSelf(Offset position) => !Equals(hitTestBehavior, PlatformViewHitTestBehavior.transparent);
-    internal virtual void _handleGlobalPointerEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
+    internal virtual void _handleGlobalPointerEvent(PointerEvent @event)
     {
         if (!hasSize)
         {
@@ -285,7 +285,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
         _lastPointerDownEvent = null;
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = true;
@@ -326,13 +326,13 @@ public class RenderUiKitView : RenderDarwinPlatformView<UiKitViewController>
         _gestureRecognizer = new _UiKitViewGestureRecognizer__platform_view(viewController, gestureRecognizers);
     }
 
-    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
+    public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         if (@event is not Gestures.PointerDownEvent)
         {
             return;
         }
-        _gestureRecognizer!.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
+        _gestureRecognizer!.addPointer((Gestures.PointerDownEvent)(object)@event);
         _lastPointerDownEvent = @event.original ?? @event;
     }
 
@@ -374,12 +374,12 @@ internal class _UiKitViewGestureRecognizer__platform_view : OneSequenceGestureRe
         this.gestureRecognizerFactories = gestureRecognizerFactories;
     }
 
-    public override void addAllowedPointer(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    public override void addAllowedPointer(Gestures.PointerDownEvent @event)
     {
         base.addAllowedPointer(@event);
         foreach (OneSequenceGestureRecognizer recognizer in _gestureRecognizers)
         {
-            recognizer.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
+            recognizer.addPointer((Gestures.PointerDownEvent)(object)@event);
         }
     }
 
@@ -388,7 +388,7 @@ internal class _UiKitViewGestureRecognizer__platform_view : OneSequenceGestureRe
     {
     }
 
-    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
+    public override void handleEvent(PointerEvent @event)
     {
         stopTrackingIfPointerNoLongerDown(@event);
     }
@@ -410,27 +410,27 @@ internal class _UiKitViewGestureRecognizer__platform_view : OneSequenceGestureRe
 
 }
 
-internal delegate Future _HandlePointerEvent__platform_view(global::Doroti.Framework.Gestures.PointerEvent @event);
+internal delegate Future _HandlePointerEvent__platform_view(PointerEvent @event);
 
 public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureRecognizer
 {
-    internal virtual Func<global::Doroti.Framework.Gestures.PointerEvent, Future> _handlePointerEvent { get; set; } = default!;
-    public virtual DartMap<long, List<global::Doroti.Framework.Gestures.PointerEvent>> cachedEvents { get; private set; } = new DartMap<long, List<global::Doroti.Framework.Gestures.PointerEvent>>();
+    internal virtual Func<PointerEvent, Future> _handlePointerEvent { get; set; } = default!;
+    public virtual DartMap<long, List<PointerEvent>> cachedEvents { get; private set; } = new DartMap<long, List<PointerEvent>>();
     public virtual HashSet<long> forwardedPointers { get; private set; } = new HashSet<long>();
     public virtual HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories { get; private set; } = default!;
     internal virtual HashSet<OneSequenceGestureRecognizer> _gestureRecognizers { get; set; } = default!;
 
-    internal _PlatformViewGestureRecognizer__platform_view(Func<global::Doroti.Framework.Gestures.PointerEvent, Future> handlePointerEvent, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories)
+    internal _PlatformViewGestureRecognizer__platform_view(Func<PointerEvent, Future> handlePointerEvent, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizerFactories)
     {
         this.gestureRecognizerFactories = gestureRecognizerFactories;
     }
 
-    public override void addAllowedPointer(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    public override void addAllowedPointer(Gestures.PointerDownEvent @event)
     {
         base.addAllowedPointer(@event);
         foreach (OneSequenceGestureRecognizer recognizer in _gestureRecognizers)
         {
-            recognizer.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
+            recognizer.addPointer((Gestures.PointerDownEvent)(object)@event);
         }
     }
 
@@ -439,7 +439,7 @@ public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureR
     {
     }
 
-    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
+    public override void handleEvent(PointerEvent @event)
     {
         if (!forwardedPointers.Contains(@event.pointer))
         {
@@ -464,11 +464,11 @@ public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureR
         cachedEvents.remove(pointer);
     }
 
-    internal virtual void _cacheEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
+    internal virtual void _cacheEvent(PointerEvent @event)
     {
         if (!cachedEvents.ContainsKey(@event.pointer))
         {
-            cachedEvents[@event.pointer] = new List<global::Doroti.Framework.Gestures.PointerEvent>();
+            cachedEvents[@event.pointer] = new List<PointerEvent>();
         }
         cachedEvents.GetValueOrDefault(@event.pointer)!.Add(@event);
     }
@@ -499,7 +499,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
 {
     internal virtual PlatformViewController _controller { get; set; } = default!;
     public virtual PlatformViewHitTestBehavior? _hitTestBehavior { get; set; } = default;
-    public virtual Func<global::Doroti.Framework.Gestures.PointerEvent, Future>? _handlePointerEvent { get; set; } = default;
+    public virtual Func<PointerEvent, Future>? _handlePointerEvent { get; set; } = default;
     public virtual _PlatformViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; } = default;
 
     public PlatformViewRenderBox(PlatformViewController controller, PlatformViewHitTestBehavior hitTestBehavior, HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
@@ -530,7 +530,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
     }
     public virtual void updateGestureRecognizers(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
     {
-        _updateGestureRecognizersWithCallBack(gestureRecognizers, (__event) => _controller.dispatchPointerEvent(Ui.PointerEvent.FromFrameworkEvent(__event is global::Doroti.Framework.Gestures.PointerDownEvent ? 1L : __event is global::Doroti.Framework.Gestures.PointerUpEvent ? 2L : __event is global::Doroti.Framework.Gestures.PointerCancelEvent ? 3L : __event is global::Doroti.Framework.Gestures.PointerHoverEvent ? 4L : __event is global::Doroti.Framework.Gestures.PointerMoveEvent ? 5L : 0L, __event.pointer, __event.embedderId, __event.platformData, __event.timeStamp, __event.position, __event.kind, __event.orientation, __event.pressure, __event.size, __event.radiusMajor, __event.radiusMinor)));
+        _updateGestureRecognizersWithCallBack(gestureRecognizers, (__event) => _controller.dispatchPointerEvent(Ui.PointerEvent.FromFrameworkEvent(__event is Gestures.PointerDownEvent ? 1L : __event is Gestures.PointerUpEvent ? 2L : __event is Gestures.PointerCancelEvent ? 3L : __event is Gestures.PointerHoverEvent ? 4L : __event is Gestures.PointerMoveEvent ? 5L : 0L, __event.pointer, __event.embedderId, __event.platformData, __event.timeStamp, __event.position, __event.kind, __event.orientation, __event.pressure, __event.size, __event.radiusMajor, __event.radiusMinor)));
     }
 
     public override bool sizedByParent => true;
@@ -547,7 +547,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
         context.addLayer(new PlatformViewLayer(rect: offset & size, viewId: _controller.viewId));
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = true;
@@ -570,7 +570,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
             }
         }
     }
-    public virtual void _updateGestureRecognizersWithCallBack(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers, Func<global::Doroti.Framework.Gestures.PointerEvent, Future> handlePointerEvent)
+    public virtual void _updateGestureRecognizersWithCallBack(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers, Func<PointerEvent, Future> handlePointerEvent)
     {
         DartRuntimePrimitives.Assert(() => checked(Platform_viewLibrary._factoriesTypeSet(gestureRecognizers).Count) == checked((long)gestureRecognizers.Count));
         if (Platform_viewLibrary._factoryTypesSetEquals(gestureRecognizers, _gestureRecognizer?.gestureRecognizerFactories))
@@ -594,17 +594,17 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
     }
 
     public override bool hitTestSelf(Offset position) => !Equals(_hitTestBehavior, PlatformViewHitTestBehavior.transparent);
-    public virtual Action<global::Doroti.Framework.Gestures.PointerEnterEvent>? onEnter => null;
-    public virtual Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit => null;
+    public virtual Action<Gestures.PointerEnterEvent>? onEnter => null;
+    public virtual Action<Gestures.PointerExitEvent>? onExit => null;
     public virtual MouseCursor cursor => Foundation.ConstantsLibrary.kIsWeb ? MouseCursor.defer : MouseCursor.uncontrolled;
     public virtual bool validForMouseTracker => true;
-    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
+    public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
-        if (@event is global::Doroti.Framework.Gestures.PointerDownEvent)
+        if (@event is Gestures.PointerDownEvent)
         {
-            _gestureRecognizer!.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
+            _gestureRecognizer!.addPointer((Gestures.PointerDownEvent)(object)@event);
         }
-        if (@event is global::Doroti.Framework.Gestures.PointerHoverEvent)
+        if (@event is Gestures.PointerHoverEvent)
         {
             _ = _handlePointerEvent?.Invoke(@event);
         }
@@ -627,18 +627,18 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
 public interface _PlatformViewGestureMixin__platform_view
 {
     PlatformViewHitTestBehavior? _hitTestBehavior { get; set; }
-    Func<global::Doroti.Framework.Gestures.PointerEvent, Future>? _handlePointerEvent { get; set; }
+    Func<PointerEvent, Future>? _handlePointerEvent { get; set; }
     _PlatformViewGestureRecognizer__platform_view? _gestureRecognizer { get; set; }
 
     public PlatformViewHitTestBehavior hitTestBehavior { set; }
-    public void _updateGestureRecognizersWithCallBack(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers, Func<global::Doroti.Framework.Gestures.PointerEvent, Future> handlePointerEvent);
+    public void _updateGestureRecognizersWithCallBack(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers, Func<PointerEvent, Future> handlePointerEvent);
     public bool hitTest(BoxHitTestResult result, Offset position);
     public bool hitTestSelf(Offset position);
-    public Action<global::Doroti.Framework.Gestures.PointerEnterEvent>? onEnter { get; }
-    public Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit { get; }
+    public Action<Gestures.PointerEnterEvent>? onEnter { get; }
+    public Action<Gestures.PointerExitEvent>? onExit { get; }
     public MouseCursor cursor { get; }
     public bool validForMouseTracker { get; }
-    public void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry);
+    public void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry);
     public void detach();
     public void dispose();
 }

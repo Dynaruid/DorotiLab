@@ -12,7 +12,7 @@ public static partial class Focus_managerLibrary
 
 public static partial class Focus_managerLibrary
 {
-    internal static bool _focusDebug(global::System.Func<string> messageFunc, global::System.Func<IEnumerable<object>>? detailsFunc = null)
+    internal static bool _focusDebug(Func<string> messageFunc, Func<IEnumerable<object>>? detailsFunc = null)
     {
         if (Foundation.ConstantsLibrary.kReleaseMode)
         {
@@ -72,11 +72,11 @@ public static partial class Focus_managerLibrary
     }
 }
 
-public delegate KeyEventResult FocusOnKeyCallback(FocusNode node, global::Doroti.Framework.Services.RawKeyEvent @event);
+public delegate KeyEventResult FocusOnKeyCallback(FocusNode node, RawKeyEvent @event);
 
-public delegate KeyEventResult FocusOnKeyEventCallback(FocusNode node, global::Doroti.Framework.Services.KeyEvent @event);
+public delegate KeyEventResult FocusOnKeyEventCallback(FocusNode node, KeyEvent @event);
 
-public delegate KeyEventResult OnKeyEventCallback(global::Doroti.Framework.Services.KeyEvent @event);
+public delegate KeyEventResult OnKeyEventCallback(KeyEvent @event);
 
 internal class _Autofocus__focus_manager
 {
@@ -159,8 +159,8 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     internal virtual bool _descendantsAreFocusable { get; set; } = default!;
     internal virtual bool _descendantsAreTraversable { get; set; } = default!;
     internal virtual BuildContext? _context { get; set; } = default;
-    public virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey { get; set; } = default;
-    public virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent { get; set; } = default;
+    public virtual Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey { get; set; } = default;
+    public virtual Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent { get; set; } = default;
     internal virtual FocusManager? _manager { get; set; } = default;
     internal virtual List<FocusNode>? _ancestors { get; set; } = default;
     internal virtual List<FocusNode>? _descendants { get; set; } = default;
@@ -172,7 +172,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     internal virtual FocusScopeNode? _enclosingScope { get; set; } = default;
     internal virtual bool _requestFocusWhenReparented { get; set; } = false;
 
-    public FocusNode(string? debugLabel = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, bool skipTraversal = false, bool canRequestFocus = true, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true)
+    public FocusNode(string? debugLabel = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, bool skipTraversal = false, bool canRequestFocus = true, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true)
     {
         this.onKey = onKey;
         this.onKeyEvent = onKeyEvent;
@@ -366,24 +366,24 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             return enclosingScope;
         }
     }
-    public virtual global::Doroti.Ui.Size size => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(rect.size);
-    public virtual global::Doroti.Ui.Offset offset
+    public virtual Size size => DartRuntimePrimitives.ConvertValue<Size>(rect.size);
+    public virtual Offset offset
     {
         get
         {
             DartRuntimePrimitives.Assert(() => context is not null, () => (object?)"Tried to get the offset of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
-            global::Doroti.Framework.Rendering.RenderObject @object = context!.findRenderObject()!;
+            RenderObject @object = context!.findRenderObject()!;
             return MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.topLeft);
         }
     }
-    public virtual global::Doroti.Ui.Rect rect
+    public virtual Rect rect
     {
         get
         {
             DartRuntimePrimitives.Assert(() => context is not null, () => (object?)"Tried to get the bounds of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
-            global::Doroti.Framework.Rendering.RenderObject @object = context!.findRenderObject()!;
-            global::Doroti.Ui.Offset topLeftLocal = MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.topLeft);
-            global::Doroti.Ui.Offset bottomRightLocal = MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.bottomRight);
+            RenderObject @object = context!.findRenderObject()!;
+            Offset topLeftLocal = MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.topLeft);
+            Offset bottomRightLocal = MatrixUtils.transformPoint(@object.getTransformTo(null), @object.semanticBounds.bottomRight);
             return Rect.fromLTRB(topLeftLocal.dx, topLeftLocal.dy, bottomRightLocal.dx, bottomRightLocal.dy);
         }
     }
@@ -532,7 +532,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         }
     }
 
-    public virtual FocusAttachment attach(BuildContext? context, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null)
+    public virtual FocusAttachment attach(BuildContext? context, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null)
     {
         _context = context;
         this.onKey = onKey ?? this.onKey;
@@ -618,22 +618,22 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
     public virtual bool nextFocus() => FocusTraversalGroup.of(context!).next(this);
     public virtual bool previousFocus() => FocusTraversalGroup.of(context!).previous(this);
     public virtual bool focusInDirection(TraversalDirection direction) => FocusTraversalGroup.of(context!).inDirection(this, direction);
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BuildContext>("context", context, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("descendantsAreFocusable", value: descendantsAreFocusable, ifFalse: "DESCENDANTS UNFOCUSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("descendantsAreTraversable", value: descendantsAreTraversable, ifFalse: "DESCENDANTS UNTRAVERSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("canRequestFocus", value: canRequestFocus, ifFalse: "NOT FOCUSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("hasFocus", value: hasFocus && !hasPrimaryFocus, ifTrue: "IN FOCUS PATH", defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("hasPrimaryFocus", value: hasPrimaryFocus, ifTrue: "PRIMARY FOCUS", defaultValue: false));
+        properties.add(new DiagnosticsProperty<BuildContext>("context", context, defaultValue: null));
+        properties.add(new FlagProperty("descendantsAreFocusable", value: descendantsAreFocusable, ifFalse: "DESCENDANTS UNFOCUSABLE", defaultValue: true));
+        properties.add(new FlagProperty("descendantsAreTraversable", value: descendantsAreTraversable, ifFalse: "DESCENDANTS UNTRAVERSABLE", defaultValue: true));
+        properties.add(new FlagProperty("canRequestFocus", value: canRequestFocus, ifFalse: "NOT FOCUSABLE", defaultValue: true));
+        properties.add(new FlagProperty("hasFocus", value: hasFocus && !hasPrimaryFocus, ifTrue: "IN FOCUS PATH", defaultValue: false));
+        properties.add(new FlagProperty("hasPrimaryFocus", value: hasPrimaryFocus, ifTrue: "PRIMARY FOCUS", defaultValue: false));
     }
 
     IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() => debugDescribeChildren();
 
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
         var count = 1L;
-        return _children.map<FocusNode, global::Doroti.Framework.Foundation.DiagnosticsNode>((child) =>
+        return _children.map((child) =>
         {
             return ((Diagnosticable)child).toDiagnosticsNode(name: $"Child {count++}");
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -657,7 +657,7 @@ public class FocusScopeNode : FocusNode
     public virtual TraversalEdgeBehavior directionalTraversalEdgeBehavior { get; set; } = default!;
     internal virtual List<FocusNode> _focusedChildren { get; private set; } = new List<FocusNode>();
 
-    public FocusScopeNode(string? debugLabel = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, bool skipTraversal = false, bool canRequestFocus = true, TraversalEdgeBehavior traversalEdgeBehavior = TraversalEdgeBehavior.closedLoop, TraversalEdgeBehavior directionalTraversalEdgeBehavior = TraversalEdgeBehavior.stop) : base(debugLabel: debugLabel, onKeyEvent: onKeyEvent, onKey: onKey, skipTraversal: skipTraversal, canRequestFocus: canRequestFocus, descendantsAreFocusable: true)
+    public FocusScopeNode(string? debugLabel = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, bool skipTraversal = false, bool canRequestFocus = true, TraversalEdgeBehavior traversalEdgeBehavior = TraversalEdgeBehavior.closedLoop, TraversalEdgeBehavior directionalTraversalEdgeBehavior = TraversalEdgeBehavior.stop) : base(debugLabel: debugLabel, onKeyEvent: onKeyEvent, onKey: onKey, skipTraversal: skipTraversal, canRequestFocus: canRequestFocus, descendantsAreFocusable: true)
     {
         this.traversalEdgeBehavior = traversalEdgeBehavior;
         this.directionalTraversalEdgeBehavior = directionalTraversalEdgeBehavior;
@@ -736,7 +736,7 @@ public class FocusScopeNode : FocusNode
     {
         while (Enumerable.Any(_focusedChildren) && (!_focusedChildren.Last().canRequestFocus || (_focusedChildren.Last().enclosingScope is null)))
         {
-            _focusedChildren.removeLast<FocusNode>();
+            _focusedChildren.removeLast();
         }
         FocusNode? focusedChildLocal = focusedChild;
         if (!findFirstFocus || (focusedChildLocal is null))
@@ -751,20 +751,20 @@ public class FocusScopeNode : FocusNode
         focusedChildLocal._doRequestFocus(findFirstFocus: true);
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         if (!Enumerable.Any(_focusedChildren))
         {
             return;
         }
-        List<string> childList = Enumerable.Reverse(_focusedChildren).map<FocusNode, string>((child) =>
+        List<string> childList = Enumerable.Reverse(_focusedChildren).map((child) =>
         {
             return ((Diagnosticable)child).toStringShort();
             throw new InvalidOperationException("Dart closure completed without a value.");
         }).ToList().ToList();
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("focusedChildren", childList.Cast<string>(), defaultValue: Enumerable.Empty<string>()));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TraversalEdgeBehavior>("traversalEdgeBehavior", traversalEdgeBehavior, defaultValue: TraversalEdgeBehavior.closedLoop));
+        properties.add(new IterableProperty<string>("focusedChildren", childList.Cast<string>(), defaultValue: Enumerable.Empty<string>()));
+        properties.add(new DiagnosticsProperty<TraversalEdgeBehavior>("traversalEdgeBehavior", traversalEdgeBehavior, defaultValue: TraversalEdgeBehavior.closedLoop));
     }
 
 }
@@ -784,9 +784,9 @@ public enum FocusHighlightStrategy
 
 internal class _AppLifecycleListener__focus_manager : WidgetsBindingObserver
 {
-    public virtual global::System.Action<AppLifecycleState> onLifecycleStateChanged { get; private set; } = default!;
+    public virtual System.Action<AppLifecycleState> onLifecycleStateChanged { get; private set; } = default!;
 
-    internal _AppLifecycleListener__focus_manager(global::System.Action<AppLifecycleState> onLifecycleStateChanged)
+    internal _AppLifecycleListener__focus_manager(System.Action<AppLifecycleState> onLifecycleStateChanged)
     {
         this.onLifecycleStateChanged = onLifecycleStateChanged;
     }
@@ -840,24 +840,24 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
         }
     }
     public virtual FocusHighlightMode highlightMode => _highlightManager.highlightMode;
-    public virtual void addHighlightModeListener(global::System.Action<FocusHighlightMode> listener) => _highlightManager.addListener(listener);
-    public virtual void removeHighlightModeListener(global::System.Action<FocusHighlightMode> listener) => _highlightManager.removeListener(listener);
-    public virtual void addEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void addHighlightModeListener(System.Action<FocusHighlightMode> listener) => _highlightManager.addListener(listener);
+    public virtual void removeHighlightModeListener(System.Action<FocusHighlightMode> listener) => _highlightManager.removeListener(listener);
+    public virtual void addEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> handler)
     {
         _highlightManager.addEarlyKeyEventHandler(handler);
     }
 
-    public virtual void removeEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void removeEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> handler)
     {
         _highlightManager.removeEarlyKeyEventHandler(handler);
     }
 
-    public virtual void addLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void addLateKeyEventHandler(Func<KeyEvent, KeyEventResult> handler)
     {
         _highlightManager.addLateKeyEventHandler(handler);
     }
 
-    public virtual void removeLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void removeLateKeyEventHandler(Func<KeyEvent, KeyEventResult> handler)
     {
         _highlightManager.removeLateKeyEventHandler(handler);
     }
@@ -968,8 +968,8 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
             {
                 HashSet<FocusNode> previousPath = previousFocus?.ancestors.toSet() ?? new HashSet<FocusNode>();
                 HashSet<FocusNode> nextPath = _markedForFocus!.ancestors.toSet();
-                _dirtyNodes.UnionWith(nextPath.difference<FocusNode>(previousPath));
-                _dirtyNodes.UnionWith(previousPath.difference<FocusNode>(nextPath));
+                _dirtyNodes.UnionWith(nextPath.difference(previousPath));
+                _dirtyNodes.UnionWith(previousPath.difference(nextPath));
                 _primaryFocus = _markedForFocus;
                 _markedForFocus = null;
             }
@@ -1019,21 +1019,21 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
 
     IEnumerable<DiagnosticsNode> DiagnosticableTree.debugDescribeChildren() => debugDescribeChildren();
 
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
-        return new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)rootScope).toDiagnosticsNode(name: "rootScope") };
+        return new List<DiagnosticsNode> { ((Diagnosticable)rootScope).toDiagnosticsNode(name: "rootScope") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("haveScheduledUpdate", value: _haveScheduledUpdate, ifTrue: "UPDATE SCHEDULED"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("primaryFocus", primaryFocus, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("nextFocus", _markedForFocus, defaultValue: null));
+        properties.add(new FlagProperty("haveScheduledUpdate", value: _haveScheduledUpdate, ifTrue: "UPDATE SCHEDULED"));
+        properties.add(new DiagnosticsProperty<FocusNode>("primaryFocus", primaryFocus, defaultValue: null));
+        properties.add(new DiagnosticsProperty<FocusNode>("nextFocus", _markedForFocus, defaultValue: null));
         var element = ((Element?)primaryFocus?.context)!;
         if (element is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("primaryFocusCreator", element.debugGetCreatorChain(20L)));
+            properties.add(new DiagnosticsProperty<string>("primaryFocusCreator", element.debugGetCreatorChain(20L)));
         }
     }
 
@@ -1044,9 +1044,9 @@ internal class _HighlightModeManager__focus_manager
     internal virtual bool? _lastInteractionRequiresTraditionalHighlights { get; set; } = default;
     internal virtual FocusHighlightMode? _highlightMode { get; set; } = default;
     internal virtual FocusHighlightStrategy _strategy { get; set; } = FocusHighlightStrategy.automatic;
-    internal virtual global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>> _earlyKeyEventHandlers { get; private set; } = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>>();
-    internal virtual global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>> _lateKeyEventHandlers { get; private set; } = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>>();
-    internal virtual global::Doroti.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>> _listeners { get; set; } = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>();
+    internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _earlyKeyEventHandlers { get; private set; } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
+    internal virtual HashedObserverList<Func<KeyEvent, KeyEventResult>> _lateKeyEventHandlers { get; private set; } = new HashedObserverList<Func<KeyEvent, KeyEventResult>>();
+    internal virtual HashedObserverList<System.Action<FocusHighlightMode>> _listeners { get; set; } = new HashedObserverList<System.Action<FocusHighlightMode>>();
     internal const long _kAndroidSoftKeyboardFlag = 2L;
     internal static long _kAndroidVirtualKeyboardDeviceId = -1L;
 
@@ -1069,12 +1069,12 @@ internal class _HighlightModeManager__focus_manager
             updateMode();
         }
     }
-    public virtual void addEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => _earlyKeyEventHandlers.add(callback);
-    public virtual void removeEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => _earlyKeyEventHandlers.remove(callback);
-    public virtual void addLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.add(callback);
-    public virtual void removeLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.remove(callback);
-    public virtual void addListener(global::System.Action<FocusHighlightMode> listener) => _listeners.add(listener);
-    public virtual void removeListener(global::System.Action<FocusHighlightMode> listener) => _listeners.remove(listener);
+    public virtual void addEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _earlyKeyEventHandlers.add(callback);
+    public virtual void removeEarlyKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _earlyKeyEventHandlers.remove(callback);
+    public virtual void addLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.add(callback);
+    public virtual void removeLateKeyEventHandler(Func<KeyEvent, KeyEventResult> callback) => _lateKeyEventHandlers.remove(callback);
+    public virtual void addListener(System.Action<FocusHighlightMode> listener) => _listeners.add(listener);
+    public virtual void removeListener(System.Action<FocusHighlightMode> listener) => _listeners.remove(listener);
     public virtual void registerGlobalHandlers()
     {
         DartRuntimePrimitives.Assert(() => ServicesBinding.instance.keyEventManager.keyMessageHandler is null);
@@ -1086,13 +1086,13 @@ internal class _HighlightModeManager__focus_manager
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        if (Equals(ServicesBinding.instance.keyEventManager.keyMessageHandler, (global::System.Func<global::Doroti.Framework.Services.KeyMessage, bool>)handleKeyMessage))
+        if (Equals(ServicesBinding.instance.keyEventManager.keyMessageHandler, (Func<KeyMessage, bool>)handleKeyMessage))
         {
             GestureBinding.instance.pointerRouter.removeGlobalRoute(handlePointerEvent);
             ServicesBinding.instance.keyEventManager.keyMessageHandler = null;
             Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener(handleSemanticsAction);
         }
-        _listeners = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>();
+        _listeners = new HashedObserverList<System.Action<FocusHighlightMode>>();
     }
 
     public virtual void notifyListeners()
@@ -1101,7 +1101,7 @@ internal class _HighlightModeManager__focus_manager
         {
             return;
         }
-        var localListeners = new List<global::System.Action<FocusHighlightMode>>(_listeners);
+        var localListeners = new List<System.Action<FocusHighlightMode>>(_listeners);
         foreach (var listener in localListeners)
         {
             try
@@ -1117,16 +1117,16 @@ internal class _HighlightModeManager__focus_manager
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = () => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<_HighlightModeManager__focus_manager>($"The {GetType()} sending notification was", this, style: DiagnosticsTreeStyle.errorProperty) };
+                        collector = () => new List<DiagnosticsNode> { new DiagnosticsProperty<_HighlightModeManager__focus_manager>($"The {GetType()} sending notification was", this, style: DiagnosticsTreeStyle.errorProperty) };
                         return true;
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     });
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {GetType()}"), informationCollector: (InformationCollector?)collector));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new ErrorDescription($"while dispatching notifications for {GetType()}"), informationCollector: (InformationCollector?)collector));
             }
         }
     }
 
-    public virtual void handlePointerEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
+    public virtual void handlePointerEvent(PointerEvent @event)
     {
         switch (@event.kind)
         {
@@ -1148,23 +1148,23 @@ internal class _HighlightModeManager__focus_manager
         }
     }
 
-    internal virtual bool _isKeyMessageFromAndroidIME(global::Doroti.Framework.Services.KeyMessage message)
+    internal virtual bool _isKeyMessageFromAndroidIME(KeyMessage message)
     {
-        global::Doroti.Framework.Services.RawKeyEvent? rawEventLocal = message.rawEvent;
+        RawKeyEvent? rawEventLocal = message.rawEvent;
         if (rawEventLocal is null)
         {
             return false;
         }
-        global::Doroti.Framework.Services.RawKeyEventData dataLocal = rawEventLocal.data;
+        RawKeyEventData dataLocal = rawEventLocal.data;
         if (dataLocal is not RawKeyEventDataAndroid)
         {
             return false;
         }
-        return ((((global::Doroti.Framework.Services.RawKeyEventDataAndroid)dataLocal).flags & _kAndroidSoftKeyboardFlag) != 0L) || (((global::Doroti.Framework.Services.RawKeyEventDataAndroid)dataLocal).deviceId == _kAndroidVirtualKeyboardDeviceId);
+        return ((((RawKeyEventDataAndroid)dataLocal).flags & _kAndroidSoftKeyboardFlag) != 0L) || (((RawKeyEventDataAndroid)dataLocal).deviceId == _kAndroidVirtualKeyboardDeviceId);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool handleKeyMessage(global::Doroti.Framework.Services.KeyMessage message)
+    public virtual bool handleKeyMessage(KeyMessage message)
     {
         if (_lastInteractionRequiresTraditionalHighlights != false)
         {

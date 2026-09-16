@@ -7,19 +7,19 @@ namespace Doroti.Framework.Widgets;
 
 public class DefaultSelectionStyle : InheritedTheme
 {
-    public static Color defaultColor = new global::Doroti.Ui.Color(2155905152L);
+    public static Color defaultColor = new Color(2155905152L);
     public virtual Color? cursorColor { get; private set; }
     public virtual Color? selectionColor { get; private set; }
-    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual MouseCursor? mouseCursor { get; private set; }
 
-    public DefaultSelectionStyle(global::Doroti.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!) : base(key: key, child: child)
+    public DefaultSelectionStyle(Key? key = null, Color? cursorColor = null, Color? selectionColor = null, MouseCursor? mouseCursor = null, Widget child = default!) : base(key: key, child: child)
     {
         this.cursorColor = cursorColor;
         this.selectionColor = selectionColor;
         this.mouseCursor = mouseCursor;
     }
 
-    public static DefaultSelectionStyle CreateFallback(global::Doroti.Framework.Foundation.Key? key = null)
+    public static DefaultSelectionStyle CreateFallback(Key? key = null)
     {
         var __instance = new DefaultSelectionStyle(key, default!, default!, default!, default!);
         __instance.cursorColor = null;
@@ -28,7 +28,7 @@ public class DefaultSelectionStyle : InheritedTheme
         return __instance;
     }
 
-    public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!)
+    public static Widget merge(Key? key = null, Color? cursorColor = null, Color? selectionColor = null, MouseCursor? mouseCursor = null, Widget child = default!)
     {
         return new Builder(builder: (context) =>
         {

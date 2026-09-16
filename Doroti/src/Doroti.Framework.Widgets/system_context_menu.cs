@@ -9,16 +9,16 @@ public class SystemContextMenu : StatefulWidget
 {
     public virtual Rect anchor { get; private set; } = default!;
     public virtual List<IOSSystemContextMenuItem> items { get; private set; } = default!;
-    public virtual global::System.Action? onSystemHide { get; private set; }
+    public virtual Action? onSystemHide { get; private set; }
 
-    public SystemContextMenu(global::Doroti.Framework.Foundation.Key? key = null, Rect anchor = default!, List<IOSSystemContextMenuItem> items = default!, global::System.Action? onSystemHide = null) : base(key: key)
+    public SystemContextMenu(Key? key = null, Rect anchor = default!, List<IOSSystemContextMenuItem> items = default!, Action? onSystemHide = null) : base(key: key)
     {
         this.anchor = anchor;
         this.items = items;
         this.onSystemHide = onSystemHide;
     }
 
-    public static SystemContextMenu CreateEditableText(global::Doroti.Framework.Foundation.Key? key = null, EditableTextState editableTextState = default!, List<IOSSystemContextMenuItem>? items = null)
+    public static SystemContextMenu CreateEditableText(Key? key = null, EditableTextState editableTextState = default!, List<IOSSystemContextMenuItem>? items = null)
     {
         var (startGlyphHeight, endGlyphHeight) = editableTextState.getGlyphHeights();
         return new SystemContextMenu(key: key, anchor: TextSelectionToolbarAnchors.getSelectionRect(editableTextState.renderEditable, startGlyphHeight, endGlyphHeight, editableTextState.renderEditable.getEndpointsForSelection(editableTextState.textEditingValue.selection)), items: items ?? getDefaultItems(editableTextState), onSystemHide: () => { editableTextState.hideToolbar(false); });
@@ -97,12 +97,12 @@ public class SystemContextMenu : StatefulWidget
 
 internal class _SystemContextMenuState__system_context_menu : State<SystemContextMenu>
 {
-    internal virtual global::Doroti.Framework.Services.SystemContextMenuController _systemContextMenuController { get; private set; } = default!;
+    internal virtual SystemContextMenuController _systemContextMenuController { get; private set; } = default!;
 
     public override void initState()
     {
         base.initState();
-        _systemContextMenuController = new global::Doroti.Framework.Services.SystemContextMenuController(onSystemHide: () => widget.onSystemHide?.Invoke());
+        _systemContextMenuController = new SystemContextMenuController(onSystemHide: () => widget.onSystemHide?.Invoke());
     }
 
     public override void dispose()
@@ -117,7 +117,7 @@ internal class _SystemContextMenuState__system_context_menu : State<SystemContex
         if (Enumerable.Any(widget.items))
         {
             WidgetsLocalizations localizations = WidgetsLocalizations.of(context);
-            List<global::Doroti.Framework.Services.IOSSystemContextMenuItemData> itemDatas = widget.items.map<IOSSystemContextMenuItem, global::Doroti.Framework.Services.IOSSystemContextMenuItemData>((item) => item.getData(localizations)).ToList().ToList();
+            List<IOSSystemContextMenuItemData> itemDatas = widget.items.map((item) => item.getData(localizations)).ToList().ToList();
             DartRuntimePrimitives.Ignore(_systemContextMenuController.showWithItems(widget.anchor, itemDatas));
         }
         return SizedBox.CreateShrink();
@@ -133,7 +133,7 @@ public abstract class IOSSystemContextMenuItem
     }
 
     public virtual string? title => DartRuntimePrimitives.ConvertValue<string>(null);
-    public abstract global::Doroti.Framework.Services.IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations);
+    public abstract IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations);
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(title?.GetHashCode() ?? 0);
     public override bool Equals(object? other)
     {
@@ -158,9 +158,9 @@ public class IOSSystemContextMenuItemCopy : IOSSystemContextMenuItem
     {
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataCopy getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemDataCopy getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataCopy();
+        return new IOSSystemContextMenuItemDataCopy();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -172,9 +172,9 @@ public class IOSSystemContextMenuItemCut : IOSSystemContextMenuItem
     {
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataCut getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemDataCut getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataCut();
+        return new IOSSystemContextMenuItemDataCut();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -186,9 +186,9 @@ public class IOSSystemContextMenuItemPaste : IOSSystemContextMenuItem
     {
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataPaste getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemDataPaste getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataPaste();
+        return new IOSSystemContextMenuItemDataPaste();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -200,15 +200,15 @@ public class IOSSystemContextMenuItemSelectAll : IOSSystemContextMenuItem
     {
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataSelectAll getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemDataSelectAll getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataSelectAll();
+        return new IOSSystemContextMenuItemDataSelectAll();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class IOSSystemContextMenuItemLookUp : IOSSystemContextMenuItem, global::Doroti.Framework.Foundation.Diagnosticable
+public class IOSSystemContextMenuItemLookUp : IOSSystemContextMenuItem, Diagnosticable
 {
     private string? __field_title = default!;
     public override string? title { get => __field_title; }
@@ -218,15 +218,15 @@ public class IOSSystemContextMenuItemLookUp : IOSSystemContextMenuItem, global::
         __field_title = title;
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLookUp getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemDataLookUp getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLookUp(title: title ?? localizations.lookUpButtonLabel);
+        return new IOSSystemContextMenuItemDataLookUp(title: title ?? localizations.lookUpButtonLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("title", title));
+        properties.add(new DiagnosticsProperty<string>("title", title));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -253,7 +253,7 @@ public class IOSSystemContextMenuItemLookUp : IOSSystemContextMenuItem, global::
 
 }
 
-public class IOSSystemContextMenuItemSearchWeb : IOSSystemContextMenuItem, global::Doroti.Framework.Foundation.Diagnosticable
+public class IOSSystemContextMenuItemSearchWeb : IOSSystemContextMenuItem, Diagnosticable
 {
     private string? __field_title = default!;
     public override string? title { get => __field_title; }
@@ -263,15 +263,15 @@ public class IOSSystemContextMenuItemSearchWeb : IOSSystemContextMenuItem, globa
         __field_title = title;
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataSearchWeb getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemDataSearchWeb getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataSearchWeb(title: title ?? localizations.searchWebButtonLabel);
+        return new IOSSystemContextMenuItemDataSearchWeb(title: title ?? localizations.searchWebButtonLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("title", title));
+        properties.add(new DiagnosticsProperty<string>("title", title));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -298,7 +298,7 @@ public class IOSSystemContextMenuItemSearchWeb : IOSSystemContextMenuItem, globa
 
 }
 
-public class IOSSystemContextMenuItemShare : IOSSystemContextMenuItem, global::Doroti.Framework.Foundation.Diagnosticable
+public class IOSSystemContextMenuItemShare : IOSSystemContextMenuItem, Diagnosticable
 {
     private string? __field_title = default!;
     public override string? title { get => __field_title; }
@@ -308,15 +308,15 @@ public class IOSSystemContextMenuItemShare : IOSSystemContextMenuItem, global::D
         __field_title = title;
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemDataShare getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemDataShare getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataShare(title: title ?? localizations.shareButtonLabel);
+        return new IOSSystemContextMenuItemDataShare(title: title ?? localizations.shareButtonLabel);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("title", title));
+        properties.add(new StringProperty("title", title));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -349,29 +349,29 @@ public class IOSSystemContextMenuItemLiveText : IOSSystemContextMenuItem
     {
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataLiveText();
+        return new IOSSystemContextMenuItemDataLiveText();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class IOSSystemContextMenuItemCustom : IOSSystemContextMenuItem, global::Doroti.Framework.Foundation.Diagnosticable
+public class IOSSystemContextMenuItemCustom : IOSSystemContextMenuItem, Diagnosticable
 {
     private string? __field_title = default!;
     public override string? title { get => __field_title; }
-    public virtual global::System.Action onPressed { get; private set; } = default!;
+    public virtual Action onPressed { get; private set; } = default!;
 
-    public IOSSystemContextMenuItemCustom(string title, global::System.Action onPressed)
+    public IOSSystemContextMenuItemCustom(string title, Action onPressed)
     {
         __field_title = title;
         this.onPressed = onPressed;
     }
 
-    public override global::Doroti.Framework.Services.IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations)
+    public override IOSSystemContextMenuItemData getData(WidgetsLocalizations localizations)
     {
-        return new global::Doroti.Framework.Services.IOSSystemContextMenuItemDataCustom(title: DartRuntimePrimitives.RequireReference(title), onPressed: () => onPressed());
+        return new IOSSystemContextMenuItemDataCustom(title: DartRuntimePrimitives.RequireReference(title), onPressed: () => onPressed());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -387,9 +387,9 @@ public class IOSSystemContextMenuItemCustom : IOSSystemContextMenuItem, global::
         return (__other is IOSSystemContextMenuItemCustom) && (__other.title == title) && Equals(__other.onPressed, onPressed);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("title", title));
+        properties.add(new StringProperty("title", title));
         properties.add(ObjectFlagProperty<Action>.CreateHas("onPressed", onPressed));
     }
 

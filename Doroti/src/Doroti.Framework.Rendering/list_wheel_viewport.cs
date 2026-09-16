@@ -233,7 +233,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
             markNeedsSemanticsUpdate();
         }
     }
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -430,7 +430,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         child.layout(constraints, parentUsesSize: true);
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         double crossPosition = (size.width / 2.0) - (child.size.width / 2.0);
-        childParentData.offset = new global::Doroti.Ui.Offset(crossPosition, indexToScrollOffset(index));
+        childParentData.offset = new Offset(crossPosition, indexToScrollOffset(index));
     }
 
     public override void performLayout()
@@ -573,7 +573,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     internal virtual void _paintTransformedChild(RenderBox child, PaintingContext context, Offset offset, Offset layoutOffset, bool? center)
     {
-        global::Doroti.Ui.Offset untransformedPaintingCoordinates = offset + new global::Doroti.Ui.Offset(layoutOffset.dx, _getUntransformedPaintingCoordinateY(layoutOffset.dy));
+        Offset untransformedPaintingCoordinates = offset + new Offset(layoutOffset.dx, _getUntransformedPaintingCoordinateY(layoutOffset.dy));
         double fractionalY = (untransformedPaintingCoordinates.dy + (_itemExtent / 2.0)) / size.height;
         double angleLocal = -(fractionalY - 0.5) * 2.0 * _maxVisibleRadian / squeeze;
         if ((angleLocal > (Dart_mathLibrary.pi / 2.0)) || (angleLocal < (-Dart_mathLibrary.pi / 2.0)) || double.IsNaN(angleLocal))
@@ -581,7 +581,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
             return;
         }
         Matrix4 transform = MatrixUtils.createCylindricalProjectionTransform(radius: size.height * _diameterRatio / 2.0, angle: angleLocal, perspective: _perspective);
-        var offsetToCenter = new global::Doroti.Ui.Offset(untransformedPaintingCoordinates.dx, -_topScrollMarginExtent);
+        var offsetToCenter = new Offset(untransformedPaintingCoordinates.dx, -_topScrollMarginExtent);
         bool shouldApplyOffCenterDim = overAndUnderCenterOpacity < 1L;
         if (useMagnifier || shouldApplyOffCenterDim)
         {
@@ -629,7 +629,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     internal virtual void _paintChildCylindrically(PaintingContext context, Offset offset, RenderBox child, Matrix4 cylindricalTransform, Offset offsetToCenter)
     {
-        global::Doroti.Ui.Offset paintOriginOffset = offset + offsetToCenter;
+        Offset paintOriginOffset = offset + offsetToCenter;
         void painter(PaintingContext context, Offset offset)
         {
             context.paintChild(child, paintOriginOffset);
@@ -661,7 +661,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     internal virtual Matrix4 _centerOriginTransform(Matrix4 originalMatrix)
     {
         var result = Matrix4.identity();
-        global::Doroti.Ui.Offset centerOriginTranslation = Alignment.center.alongSize(size);
+        Offset centerOriginTranslation = Alignment.center.alongSize(size);
         result.translateByDouble(centerOriginTranslation.dx * ((-_offAxisFraction * 2L) + 1L), centerOriginTranslation.dy, 0, 1);
         result.multiply(originalMatrix);
         result.translateByDouble(-centerOriginTranslation.dx * ((-_offAxisFraction * 2L) + 1L), -centerOriginTranslation.dy, 0, 1);
@@ -733,7 +733,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, global::Doroti.Framework.Painting.Axis? axis = null)
+    public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, Axis? axis = null)
     {
         rect ??= target.paintBounds;
         var child = target;
@@ -744,8 +744,8 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         var parentDataLocal = ((ListWheelParentData?)(object?)child.parentData!)!;
         double targetOffset = parentDataLocal.offset.dy;
         Matrix4 transform = target.getTransformTo(child);
-        global::Doroti.Ui.Rect bounds = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
-        global::Doroti.Ui.Rect targetRect = bounds.translate(0.0, (size.height - itemExtent) / 2L);
+        Rect bounds = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
+        Rect targetRect = bounds.translate(0.0, (size.height - itemExtent) / 2L);
         return new RevealedOffset(offset: targetOffset, rect: targetRect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

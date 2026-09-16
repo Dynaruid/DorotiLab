@@ -5,7 +5,7 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class IconThemeData : Diagnosticable
 {
     public virtual double? size { get; private set; }
     public virtual double? fill { get; private set; }
@@ -41,7 +41,7 @@ public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         __instance.weight = 400.0;
         __instance.grade = 0.0;
         __instance.opticalSize = 48.0;
-        __instance.color = new global::Doroti.Ui.Color(4278190080L);
+        __instance.color = new Color(4278190080L);
         __instance._opacity = 1.0;
         __instance.shadows = null;
         __instance.applyTextScaling = false;
@@ -89,17 +89,17 @@ public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(size, fill, weight, grade, opticalSize, color, opacity, (shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(shadows!), applyTextScaling));
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", size, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fill", fill, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("weight", weight, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("grade", grade, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opticalSize", opticalSize, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", opacity, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<global::Doroti.Ui.Shadow>("shadows", shadows, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyTextScaling", applyTextScaling, defaultValue: null));
+        properties.add(new DoubleProperty("size", size, defaultValue: null));
+        properties.add(new DoubleProperty("fill", fill, defaultValue: null));
+        properties.add(new DoubleProperty("weight", weight, defaultValue: null));
+        properties.add(new DoubleProperty("grade", grade, defaultValue: null));
+        properties.add(new DoubleProperty("opticalSize", opticalSize, defaultValue: null));
+        properties.add(new ColorProperty("color", color, defaultValue: null));
+        properties.add(new DoubleProperty("opacity", opacity, defaultValue: null));
+        properties.add(new IterableProperty<Shadow>("shadows", shadows, defaultValue: null));
+        properties.add(new DiagnosticsProperty<bool>("applyTextScaling", applyTextScaling, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);

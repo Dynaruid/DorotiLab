@@ -41,19 +41,19 @@ public static partial class ScrollbarLibrary
     internal static Duration _kScrollbarTimeToFade = Duration.Create(milliseconds: 600L);
 }
 
-public class Scrollbar : global::Doroti.Framework.Widgets.StatelessWidget
+public class Scrollbar : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.ScrollController? controller { get; private set; }
+    public virtual Widget child { get; private set; } = default!;
+    public virtual ScrollController? controller { get; private set; }
     public virtual bool? thumbVisibility { get; private set; }
     public virtual bool? trackVisibility { get; private set; }
     public virtual double? thickness { get; private set; }
     public virtual Radius? radius { get; private set; }
     public virtual bool? interactive { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>? notificationPredicate { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.ScrollbarOrientation? scrollbarOrientation { get; private set; }
+    public virtual Func<ScrollNotification, bool>? notificationPredicate { get; private set; }
+    public virtual ScrollbarOrientation? scrollbarOrientation { get; private set; }
 
-    public Scrollbar(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget child = default!, global::Doroti.Framework.Widgets.ScrollController? controller = null, bool? thumbVisibility = null, bool? trackVisibility = null, double? thickness = null, Radius? radius = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>? notificationPredicate = null, bool? interactive = null, global::Doroti.Framework.Widgets.ScrollbarOrientation? scrollbarOrientation = null) : base(key: key)
+    public Scrollbar(Key? key = null, Widget child = default!, ScrollController? controller = null, bool? thumbVisibility = null, bool? trackVisibility = null, double? thickness = null, Radius? radius = null, Func<ScrollNotification, bool>? notificationPredicate = null, bool? interactive = null, ScrollbarOrientation? scrollbarOrientation = null) : base(key: key)
     {
         this.child = child;
         this.controller = controller;
@@ -66,7 +66,7 @@ public class Scrollbar : global::Doroti.Framework.Widgets.StatelessWidget
         this.scrollbarOrientation = scrollbarOrientation;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         if (Equals(Theme.of(context).platform, TargetPlatform.iOS))
         {
@@ -78,18 +78,18 @@ public class Scrollbar : global::Doroti.Framework.Widgets.StatelessWidget
 
 }
 
-internal class _MaterialScrollbar__scrollbar : global::Doroti.Framework.Widgets.RawScrollbar
+internal class _MaterialScrollbar__scrollbar : RawScrollbar
 {
-    internal _MaterialScrollbar__scrollbar(global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollController? controller = null, bool? thumbVisibility = null, bool? trackVisibility = null, double? thickness = null, Radius? radius = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>? notificationPredicate = null, bool? interactive = null, global::Doroti.Framework.Widgets.ScrollbarOrientation? scrollbarOrientation = null) : base(child: child, controller: controller, thumbVisibility: thumbVisibility, trackVisibility: trackVisibility, thickness: thickness, radius: radius, interactive: interactive, scrollbarOrientation: scrollbarOrientation, fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration, timeToFade: ScrollbarLibrary._kScrollbarTimeToFade, pressDuration: Duration.zero, notificationPredicate: notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate)
+    internal _MaterialScrollbar__scrollbar(Widget child, ScrollController? controller = null, bool? thumbVisibility = null, bool? trackVisibility = null, double? thickness = null, Radius? radius = null, Func<ScrollNotification, bool>? notificationPredicate = null, bool? interactive = null, ScrollbarOrientation? scrollbarOrientation = null) : base(child: child, controller: controller, thumbVisibility: thumbVisibility, trackVisibility: trackVisibility, thickness: thickness, radius: radius, interactive: interactive, scrollbarOrientation: scrollbarOrientation, fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration, timeToFade: ScrollbarLibrary._kScrollbarTimeToFade, pressDuration: Duration.zero, notificationPredicate: notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate)
     {
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialScrollbarState__scrollbar());
 }
 
-internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Widgets.RawScrollbarState<_MaterialScrollbar__scrollbar>
+internal class _MaterialScrollbarState__scrollbar : RawScrollbarState<_MaterialScrollbar__scrollbar>
 {
-    internal virtual global::Doroti.Framework.Animation.AnimationController _hoverAnimationController { get; set; } = default!;
+    internal virtual AnimationController _hoverAnimationController { get; set; } = default!;
     internal virtual bool _dragIsActive { get; set; } = false;
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual bool _hoverIsActive { get; set; } = false;
@@ -99,21 +99,21 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
 
     public override bool showScrollbar => widget.thumbVisibility ?? _scrollbarTheme.thumbVisibility?.resolve(_states) ?? false;
     public override bool enableGestures => DartRuntimePrimitives.ConvertValue<bool>((widget.interactive ?? _scrollbarTheme.interactive) ?? !_useAndroidScrollbar);
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<bool> _trackVisibility => WidgetStateProperty.resolveWith((states) =>
+    internal virtual WidgetStateProperty<bool> _trackVisibility => WidgetStateProperty.resolveWith((states) =>
     {
         return widget.trackVisibility ?? _scrollbarTheme.trackVisibility?.resolve(states) ?? false;
         throw new InvalidOperationException("Dart closure completed without a value.");
     });
-    internal virtual HashSet<global::Doroti.Framework.Widgets.WidgetState> _states => ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection8725 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (_dragIsActive) { __collection8725.Add(WidgetState.dragged); } if (_hoverIsActive) { __collection8725.Add(WidgetState.hovered); } return __collection8725; }))();
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _thumbColor
+    internal virtual HashSet<WidgetState> _states => ((Func<HashSet<WidgetState>>)(() => { var __collection8725 = new HashSet<WidgetState>(); if (_dragIsActive) { __collection8725.Add(WidgetState.dragged); } if (_hoverIsActive) { __collection8725.Add(WidgetState.hovered); } return __collection8725; }))();
+    internal virtual WidgetStateProperty<Color> _thumbColor
     {
         get
         {
-            global::Doroti.Ui.Color onSurfaceLocal = _colorScheme.onSurface;
-            global::Doroti.Ui.Brightness brightnessLocal = _colorScheme.brightness;
-            global::Doroti.Ui.Color dragColor = default!;
-            global::Doroti.Ui.Color hoverColor = default!;
-            global::Doroti.Ui.Color idleColor = default!;
+            Color onSurfaceLocal = _colorScheme.onSurface;
+            Brightness brightnessLocal = _colorScheme.brightness;
+            Color dragColor = default!;
+            Color hoverColor = default!;
+            Color idleColor = default!;
             switch (brightnessLocal)
             {
                 case Brightness.light:
@@ -131,7 +131,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
                         break;
                     }
             }
-            return WidgetStateProperty.resolveWith<Color>((states) =>
+            return WidgetStateProperty.resolveWith((states) =>
             {
                 if (states.Contains(WidgetState.dragged))
                 {
@@ -146,41 +146,41 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
             });
         }
     }
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _trackColor
+    internal virtual WidgetStateProperty<Color> _trackColor
     {
         get
         {
-            global::Doroti.Ui.Color onSurfaceLocal = _colorScheme.onSurface;
-            global::Doroti.Ui.Brightness brightnessLocal = _colorScheme.brightness;
-            return WidgetStateProperty.resolveWith<Color>((states) =>
+            Color onSurfaceLocal = _colorScheme.onSurface;
+            Brightness brightnessLocal = _colorScheme.brightness;
+            return WidgetStateProperty.resolveWith((states) =>
             {
                 if (showScrollbar && _trackVisibility.resolve(states))
                 {
                     return _scrollbarTheme.trackColor?.resolve(states) ?? (brightnessLocal switch { Brightness.light => onSurfaceLocal.withOpacity(0.03), Brightness.dark => onSurfaceLocal.withOpacity(0.05), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 }
-                return new global::Doroti.Ui.Color(0L);
+                return new Color(0L);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         }
     }
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _trackBorderColor
+    internal virtual WidgetStateProperty<Color> _trackBorderColor
     {
         get
         {
-            global::Doroti.Ui.Color onSurfaceLocal = _colorScheme.onSurface;
-            global::Doroti.Ui.Brightness brightnessLocal = _colorScheme.brightness;
-            return WidgetStateProperty.resolveWith<Color>((states) =>
+            Color onSurfaceLocal = _colorScheme.onSurface;
+            Brightness brightnessLocal = _colorScheme.brightness;
+            return WidgetStateProperty.resolveWith((states) =>
             {
                 if (showScrollbar && _trackVisibility.resolve(states))
                 {
                     return _scrollbarTheme.trackBorderColor?.resolve(states) ?? (brightnessLocal switch { Brightness.light => onSurfaceLocal.withOpacity(0.1), Brightness.dark => onSurfaceLocal.withOpacity(0.25), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 }
-                return new global::Doroti.Ui.Color(0L);
+                return new Color(0L);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         }
     }
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double> _thickness
+    internal virtual WidgetStateProperty<double> _thickness
     {
         get
         {
@@ -198,7 +198,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     public override void initState()
     {
         base.initState();
-        _hoverAnimationController = new global::Doroti.Framework.Animation.AnimationController(vsync: this, duration: Duration.Create(milliseconds: 200L));
+        _hoverAnimationController = new AnimationController(vsync: this, duration: Duration.Create(milliseconds: 200L));
         _hoverAnimationController.addListener(() =>
         {
             updateScrollbarPainter();
@@ -232,7 +232,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
 
     public override void updateScrollbarPainter()
     {
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.ScrollbarPainter>)(() =>
+        DartRuntimePrimitives.Ignore(((Func<ScrollbarPainter>)(() =>
 {
     var __cascade = scrollbarPainter;
     __cascade.color = _thumbColor.resolve(_states);
@@ -260,7 +260,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
         });
     }
 
-    public override void handleThumbPressEnd(Offset localPosition, global::Doroti.Framework.Gestures.Velocity velocity)
+    public override void handleThumbPressEnd(Offset localPosition, Gestures.Velocity velocity)
     {
         base.handleThumbPressEnd(localPosition, velocity);
         setState(() =>
@@ -269,7 +269,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
         });
     }
 
-    public override void handleHover(global::Doroti.Framework.Gestures.PointerHoverEvent @event)
+    public override void handleHover(Gestures.PointerHoverEvent @event)
     {
         base.handleHover(@event);
         if (isPointerOverScrollbar(@event.position, @event.kind, forHover: true))
@@ -293,7 +293,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
         }
     }
 
-    public override void handleHoverExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
+    public override void handleHoverExit(Gestures.PointerExitEvent @event)
     {
         base.handleHoverExit(@event);
         setState(() =>

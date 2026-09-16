@@ -7,13 +7,13 @@ namespace Doroti.Framework.Widgets;
 
 public class ImageIcon : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Painting.IImageProvider image { get; private set; } = default!;
+    public virtual IImageProvider image { get; private set; } = default!;
     public virtual double? size { get; private set; }
     public virtual Color? color { get; private set; }
     public virtual string? semanticLabel { get; private set; }
     public virtual bool useOriginalColors { get; private set; } = default!;
 
-    public ImageIcon(global::Doroti.Framework.Painting.IImageProvider image, global::Doroti.Framework.Foundation.Key? key = null, double? size = null, Color? color = null, string? semanticLabel = null, bool useOriginalColors = false) : base(key: key)
+    public ImageIcon(IImageProvider image, Key? key = null, double? size = null, Color? color = null, string? semanticLabel = null, bool useOriginalColors = false) : base(key: key)
     {
         this.image = image;
         this.size = size;
@@ -32,7 +32,7 @@ public class ImageIcon : StatelessWidget
             return new Semantics(label: semanticLabel, child: new SizedBox(width: iconSize, height: iconSize));
         }
         double? iconOpacity = iconTheme.opacity;
-        global::Doroti.Ui.Color iconColor = color ?? iconTheme.color!;
+        Color iconColor = color ?? iconTheme.color!;
         if ((iconOpacity is not null) && (DartRuntimePrimitives.RequireValue(iconOpacity) != 1.0))
         {
             double iconOpacity__3341__value3432 = DartRuntimePrimitives.RequireValue(iconOpacity);
@@ -42,12 +42,12 @@ public class ImageIcon : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("image", image, ifNull: "<empty>", showName: false));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", size, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", color, defaultValue: null));
+        properties.add(new DiagnosticsProperty<object>("image", image, ifNull: "<empty>", showName: false));
+        properties.add(new DoubleProperty("size", size, defaultValue: null));
+        properties.add(new ColorProperty("color", color, defaultValue: null));
     }
 
 }

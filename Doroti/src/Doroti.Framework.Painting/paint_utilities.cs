@@ -19,7 +19,7 @@ public static partial class Paint_utilitiesLibrary
         double spacing = length / (zigs * 2.0);
         var path = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.moveTo(0.0, 0.0);
     return __cascade;
 }))();

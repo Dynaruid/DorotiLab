@@ -238,7 +238,7 @@ public class TextEditingValue
     {
         var text = ((string?)encoded.GetValueOrDefault("text"))!;
         var selection = new TextSelection(baseOffset: ((long?)encoded.GetValueOrDefault("selectionBase")) ?? -1L, extentOffset: ((long?)encoded.GetValueOrDefault("selectionExtent")) ?? -1L, affinity: Text_inputLibrary._toTextAffinity(((string?)encoded.GetValueOrDefault("selectionAffinity"))!) ?? TextAffinity.downstream, isDirectional: ((bool?)encoded.GetValueOrDefault("selectionIsDirectional")) ?? false);
-        var composing = new global::Doroti.Ui.TextRange(start: ((long?)encoded.GetValueOrDefault("composingBase")) ?? -1L, end: ((long?)encoded.GetValueOrDefault("composingExtent")) ?? -1L);
+        var composing = new TextRange(start: ((long?)encoded.GetValueOrDefault("composingBase")) ?? -1L, end: ((long?)encoded.GetValueOrDefault("composingExtent")) ?? -1L);
         DartRuntimePrimitives.Assert(() => _textRangeIsValid(selection, text));
         DartRuntimePrimitives.Assert(() => _textRangeIsValid(composing, text));
         return new TextEditingValue(text: text, selection: selection, composing: composing);
@@ -270,7 +270,7 @@ public class TextEditingValue
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         var adjustedSelection = new TextSelection(baseOffset: adjustIndex(selection.baseOffset), extentOffset: adjustIndex(selection.extentOffset));
-        var adjustedComposing = new global::Doroti.Ui.TextRange(start: adjustIndex(composing.start), end: adjustIndex(composing.end));
+        var adjustedComposing = new TextRange(start: adjustIndex(composing.start), end: adjustIndex(composing.end));
         DartRuntimePrimitives.Assert(() => _textRangeIsValid(adjustedSelection, newText));
         DartRuntimePrimitives.Assert(() => _textRangeIsValid(adjustedComposing, newText));
         return new TextEditingValue(text: newText, selection: adjustedSelection, composing: adjustedComposing);
@@ -479,9 +479,9 @@ public class TextInputStyle : Diagnosticable
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.Add(new StringProperty("fontFamily", fontFamily, defaultValue: null));
         properties.Add(new DoubleProperty("fontSize", fontSize, defaultValue: null));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.FontWeight>("fontWeight", fontWeight, defaultValue: null));
-        properties.Add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection));
-        properties.Add(new EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", textAlign));
+        properties.Add(new DiagnosticsProperty<FontWeight>("fontWeight", fontWeight, defaultValue: null));
+        properties.Add(new EnumProperty<TextDirection>("textDirection", textDirection));
+        properties.Add(new EnumProperty<TextAlign>("textAlign", textAlign));
         properties.Add(new DoubleProperty("letterSpacing", letterSpacing, defaultValue: null));
         properties.Add(new DoubleProperty("wordSpacing", wordSpacing, defaultValue: null));
         properties.Add(new DoubleProperty("lineHeight", lineHeight, defaultValue: null));
@@ -558,7 +558,7 @@ public class TextInputConnection
             return;
         }
         _cachedRect = rect;
-        global::Doroti.Ui.Rect validRect = rect.isFinite ? rect : (Offset.zero & new global::Doroti.Ui.Size(-1, -1));
+        Rect validRect = rect.isFinite ? rect : (Offset.zero & new Size(-1, -1));
         TextInput._instance._setComposingTextRect(validRect);
     }
 
@@ -569,7 +569,7 @@ public class TextInputConnection
             return;
         }
         _cachedCaretRect = rect;
-        global::Doroti.Ui.Rect validRect = rect.isFinite ? rect : (Offset.zero & new global::Doroti.Ui.Size(-1, -1));
+        Rect validRect = rect.isFinite ? rect : (Offset.zero & new Size(-1, -1));
         TextInput._instance._setCaretRect(validRect);
     }
 
@@ -641,7 +641,7 @@ public static partial class Text_inputLibrary
         };
         DartRuntimePrimitives.Assert(() => encoded.GetValueOrDefault("X") is not null);
         DartRuntimePrimitives.Assert(() => encoded.GetValueOrDefault("Y") is not null);
-        global::Doroti.Ui.Offset offset = Equals(state, FloatingCursorDragState.Update) ? new global::Doroti.Ui.Offset(ReadCoordinate("X"), ReadCoordinate("Y")) : Offset.zero;
+        Offset offset = Equals(state, FloatingCursorDragState.Update) ? new Offset(ReadCoordinate("X"), ReadCoordinate("Y")) : Offset.zero;
         return new RawFloatingCursorPoint(offset: offset, state: state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -797,7 +797,7 @@ public class TextInput
         }
         catch (Exception exception)
         {
-            var stack = new System.Diagnostics.StackTrace();
+            var stack = new StackTrace();
             Text_inputLibrary._reportError(exception, stack, $"during method call {call.method}", () => new List<DiagnosticsNode> { new DiagnosticsProperty<MethodCall>("call", call, style: DiagnosticsTreeStyle.errorProperty) });
             throw;
         }
@@ -812,7 +812,7 @@ public class TextInput
             case var __case81975 when Equals(__case81975, "TextInputClient.focusElement"):
                 {
                     var argsLocal = ((List<object>?)methodCall.arguments)!;
-                    _scribbleClients.GetValueOrDefault(argsLocal[(int)0L])?.onScribbleFocus(new global::Doroti.Ui.Offset(((double)argsLocal[(int)1L]).toDouble(), ((double)argsLocal[(int)2L]).toDouble()));
+                    _scribbleClients.GetValueOrDefault(argsLocal[(int)0L])?.onScribbleFocus(new Offset(((double)argsLocal[(int)1L]).toDouble(), ((double)argsLocal[(int)2L]).toDouble()));
                     return default!;
                 }
             case var __case82233 when Equals(__case82233, "TextInputClient.requestElementsInRect"):
@@ -820,16 +820,16 @@ public class TextInput
                     List<double> argsAlternate = ((List<object>?)methodCall.arguments)!.cast<double>().map((value) => value.toDouble()).ToList();
                     return _scribbleClients.Keys.where((elementIdentifier) =>
                     {
-                        var rect = new global::Doroti.Ui.Rect(argsAlternate[(int)0L], argsAlternate[(int)1L], argsAlternate[(int)2L], argsAlternate[(int)3L]);
+                        var rect = new Rect(argsAlternate[(int)0L], argsAlternate[(int)1L], argsAlternate[(int)2L], argsAlternate[(int)3L]);
                         if (!(_scribbleClients.GetValueOrDefault(elementIdentifier)?.isInScribbleRect(rect) ?? false))
                         {
                             return false;
                         }
-                        global::Doroti.Ui.Rect boundsLocal = _scribbleClients.GetValueOrDefault(elementIdentifier)?.bounds ?? Rect.zero;
+                        Rect boundsLocal = _scribbleClients.GetValueOrDefault(elementIdentifier)?.bounds ?? Rect.zero;
                         return !(Equals(boundsLocal, Rect.zero) || boundsLocal.hasNaN || boundsLocal.isInfinite);
                     }).map((elementIdentifier) =>
                     {
-                        global::Doroti.Ui.Rect boundsLocal = _scribbleClients.GetValueOrDefault(elementIdentifier)!.bounds;
+                        Rect boundsLocal = _scribbleClients.GetValueOrDefault(elementIdentifier)!.bounds;
                         return new List<object> { elementIdentifier };
                     }).ToList();
                 }
@@ -965,7 +965,7 @@ public class TextInput
                 }
             case var __case88204 when Equals(__case88204, "TextInputClient.insertTextPlaceholder"):
                 {
-                    _currentConnection!._client.insertTextPlaceholder(new global::Doroti.Ui.Size(((double)args[(int)1L]).toDouble(), ((double)args[(int)2L]).toDouble()));
+                    _currentConnection!._client.insertTextPlaceholder(new Size(((double)args[(int)1L]).toDouble(), ((double)args[(int)2L]).toDouble()));
                     break;
                 }
             case var __case88400 when Equals(__case88400, "TextInputClient.removeTextPlaceholder"):

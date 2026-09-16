@@ -3,21 +3,21 @@
 namespace Doroti.Framework.Foundation;
 
 /// <summary>A completed value whose continuation is invoked synchronously, matching Flutter's SynchronousFuture.</summary>
-public sealed class SynchronousFuture<T> : Doroti.Runtime.Future<T>
+public sealed class SynchronousFuture<T> : Runtime.Future<T>
 {
     private readonly T _value;
 
     public SynchronousFuture(T value) : base(Task.FromResult(value)) => _value = value;
 
-    public override Doroti.Runtime.Future<TResult> then<TResult>(Func<T, TResult> onValue) =>
+    public override Runtime.Future<TResult> then<TResult>(Func<T, TResult> onValue) =>
         new SynchronousFuture<TResult>(onValue(_value));
 
     // Localizations keeps heterogeneous delegate results as Future. Preserve
     // synchronous delivery through that base reference as well as Future<T>.
-    public override Doroti.Runtime.Future<TResult> then<TResult>(Func<object?, object?> onValue, Delegate? onError = null)
+    public override Runtime.Future<TResult> then<TResult>(Func<object?, object?> onValue, Delegate? onError = null)
     {
         var result = onValue(_value);
-        return result is Doroti.Runtime.Future<TResult> future
+        return result is Runtime.Future<TResult> future
             ? future
             : new SynchronousFuture<TResult>((TResult)result!);
     }

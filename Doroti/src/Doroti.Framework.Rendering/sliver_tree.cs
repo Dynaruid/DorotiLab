@@ -38,19 +38,19 @@ internal delegate void _PaintSegment__sliver_tree();
 
 public class RenderTreeSliver : RenderSliverVariedExtentList
 {
-    internal virtual DartMap<UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation> _activeAnimations { get; set; } = default!;
+    internal virtual DartMap<UniqueKey, TreeSliverNodesAnimation> _activeAnimations { get; set; } = default!;
     internal virtual double _indentation { get; set; } = default!;
     internal virtual DartMap<long, UniqueKey> _animationLeadingIndices { get; private set; } = new DartMap<long, UniqueKey>();
     internal virtual DartMap<UniqueKey, double> _animationOffsets { get; private set; } = new DartMap<UniqueKey, double>();
     internal virtual DartMap<UniqueKey, LayerHandle<ClipRectLayer>> _clipHandles { get; private set; } = new DartMap<UniqueKey, LayerHandle<ClipRectLayer>>();
 
-    public RenderTreeSliver(RenderSliverBoxChildManager childManager, ItemExtentBuilder itemExtentBuilder, DartMap<UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation> activeAnimations, double indentation) : base(childManager: childManager, itemExtentBuilder: itemExtentBuilder)
+    public RenderTreeSliver(RenderSliverBoxChildManager childManager, ItemExtentBuilder itemExtentBuilder, DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations, double indentation) : base(childManager: childManager, itemExtentBuilder: itemExtentBuilder)
     {
         _activeAnimations = activeAnimations;
         _indentation = indentation;
     }
 
-    public virtual DartMap<UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation> activeAnimations
+    public virtual DartMap<UniqueKey, TreeSliverNodesAnimation> activeAnimations
     {
         get => _activeAnimations;
         set
@@ -247,7 +247,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             {
                 double mainAxisDelta = childMainAxisPosition(child);
                 var parentDataLocal = ((TreeSliverNodeParentData?)child.parentData!)!;
-                global::Doroti.Ui.Offset childOffset = new global::Doroti.Ui.Offset(parentDataLocal.depth * indentation, DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) - constraints.scrollOffset) + offset;
+                Offset childOffset = new Offset(parentDataLocal.depth * indentation, DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) - constraints.scrollOffset) + offset;
                 if ((mainAxisDelta < constraints.remainingPaintExtent) && ((mainAxisDelta + paintExtentOf(child)) > 0L))
                 {
                     context.paintChild(child, childOffset);
@@ -283,7 +283,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             long parentIndex = Math.Max(segment.leadingIndex - 1L, 0L);
             double leadingOffset = indexToLayoutOffset(0.0, parentIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(parentIndex, layoutDimensions));
             double trailingOffset = indexToLayoutOffset(0.0, segment.trailingIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(segment.trailingIndex, layoutDimensions));
-            var rect = Rect.fromPoints(new global::Doroti.Ui.Offset(0.0, leadingOffset), new global::Doroti.Ui.Offset(constraints.crossAxisExtent, trailingOffset));
+            var rect = Rect.fromPoints(new Offset(0.0, leadingOffset), new Offset(constraints.crossAxisExtent, trailingOffset));
             UniqueKey key = _animationLeadingIndices.GetValueOrDefault(parentIndex)!;
             var clipHandle = _clipHandles.putIfAbsent(key, () => new LayerHandle<ClipRectLayer>());
             clipHandle.layer = context.pushClipRect(needsCompositing, offset, rect, (context, offset) =>

@@ -49,7 +49,7 @@ public class StrutStyle : Diagnosticable
         {
             if ((_package is not null) && (_fontFamilyFallback is not null))
             {
-                return _fontFamilyFallback.map<string, string>((family) => $"packages/{_package}/{family}").ToList();
+                return _fontFamilyFallback.map((family) => $"packages/{_package}/{family}").ToList();
             }
             return _fontFamilyFallback;
         }
@@ -119,14 +119,14 @@ public class StrutStyle : Diagnosticable
         {
             weightDescription = $"w{FoundationRuntimePorts.EnumIndex(fontWeight!) + 1L}00";
         }
-        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.FontWeight>($"{prefix}weight", fontWeight, description: weightDescription, defaultValue: null));
-        styles.Add(new EnumProperty<global::Doroti.Ui.FontStyle>($"{prefix}style", fontStyle, defaultValue: null));
+        styles.Add(new DiagnosticsProperty<FontWeight>($"{prefix}weight", fontWeight, description: weightDescription, defaultValue: null));
+        styles.Add(new EnumProperty<FontStyle>($"{prefix}style", fontStyle, defaultValue: null));
         styles.Add(new DoubleProperty($"{prefix}height", height, unit: "x", defaultValue: null));
         styles.Add(new FlagProperty($"{prefix}forceStrutHeight", value: forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
         if (height is not null)
         {
             double height__value26382 = DartRuntimePrimitives.RequireValue(height);
-            styles.Add(new EnumProperty<global::Doroti.Ui.TextLeadingDistribution>($"{prefix}leadingDistribution", leadingDistribution, defaultValue: null));
+            styles.Add(new EnumProperty<TextLeadingDistribution>($"{prefix}leadingDistribution", leadingDistribution, defaultValue: null));
         }
         bool styleSpecified = styles.any((n) => !n.isFiltered(DiagnosticLevel.info));
         styles.forEach(properties.add);

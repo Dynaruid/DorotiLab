@@ -33,8 +33,8 @@ public abstract class ImageFilterConfig
     public static ImageFilterConfig CreateCompose(ImageFilterConfig outer, ImageFilterConfig inner)
         => new _ComposeImageFilterConfig__image_filter_config(outer, inner);
 
-    public abstract global::Doroti.Ui.ImageFilter resolve(ImageFilterContext context);
-    public virtual global::Doroti.Ui.ImageFilter? filter => null;
+    public abstract ImageFilter resolve(ImageFilterContext context);
+    public virtual ImageFilter? filter => null;
     public abstract string debugShortDescription { get; }
     public override string ToString() => $"ImageFilterConfig.{debugShortDescription}";
 }
@@ -92,7 +92,7 @@ internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
 
     public override ImageFilter resolve(ImageFilterContext context)
     {
-        return new global::Doroti.Ui.ImageFilter(sigmaX: sigmaX, sigmaY: sigmaY, tileMode: tileMode, bounds: bounded ? context.bounds : null);
+        return new ImageFilter(sigmaX: sigmaX, sigmaY: sigmaY, tileMode: tileMode, bounds: bounded ? context.bounds : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -155,7 +155,7 @@ internal class _ComposeImageFilterConfig__image_filter_config : ImageFilterConfi
 
     public override ImageFilter resolve(ImageFilterContext context)
     {
-        return new global::Doroti.Ui.ImageFilter(outer: outer.resolve(context), inner: inner.resolve(context));
+        return new ImageFilter(outer: outer.resolve(context), inner: inner.resolve(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

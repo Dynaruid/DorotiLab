@@ -8,7 +8,7 @@ namespace Doroti.Framework.Cupertino;
 
 public static partial class Menu_anchorLibrary
 {
-    internal static DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> _kMenuTraversalShortcuts = new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.arrowUp)] = new _FocusUpIntent__menu_anchor(), [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.arrowDown)] = new _FocusDownIntent__menu_anchor(), [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.home)] = new _FocusFirstIntent__menu_anchor(), [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.end)] = new _FocusLastIntent__menu_anchor() };
+    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp)] = new _FocusUpIntent__menu_anchor(), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = new _FocusDownIntent__menu_anchor(), [new SingleActivator(LogicalKeyboardKey.home)] = new _FocusFirstIntent__menu_anchor(), [new SingleActivator(LogicalKeyboardKey.end)] = new _FocusLastIntent__menu_anchor() };
 }
 
 public static partial class Menu_anchorLibrary
@@ -55,7 +55,7 @@ public static partial class Menu_anchorLibrary
 
 public static partial class Menu_anchorLibrary
 {
-    internal static double _normalizeTextScale(global::Doroti.Framework.Painting.TextScaler textScaler)
+    internal static double _normalizeTextScale(TextScaler textScaler)
     {
         if (Equals(textScaler, TextScaler.noScaling))
         {
@@ -83,9 +83,9 @@ public static partial class Menu_anchorLibrary
 
 public static partial class Menu_anchorLibrary
 {
-    internal static bool _largeTextModeEnabled(global::Doroti.Framework.Widgets.BuildContext context)
+    internal static bool _largeTextModeEnabled(BuildContext context)
     {
-        global::Doroti.Framework.Painting.TextScaler? textScaler = MediaQuery.maybeTextScalerOf(context);
+        TextScaler? textScaler = MediaQuery.maybeTextScalerOf(context);
         if (textScaler is null)
         {
             return false;
@@ -130,11 +130,11 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
     private static readonly List<long> _normalizedBodyScales = new() { -3, -2, -1, 0, 2, 4, 6, 11, 16, 23, 30, 36 };
     private static readonly double[] _bodySizes = { 14, 15, 16, 17, 19, 21, 23, 28, 33, 40, 47, 53 };
     private static readonly double[] _subheadSizes = { 12, 13, 14, 15, 17, 19, 21, 26, 31, 38, 45, 51 };
-    private static List<global::Doroti.Framework.Painting.TextStyle> styles(this _DynamicTypeStyle__menu_anchor value) =>
+    private static List<TextStyle> styles(this _DynamicTypeStyle__menu_anchor value) =>
         (value == _DynamicTypeStyle__menu_anchor.body ? _bodySizes : _subheadSizes)
-            .Select(size => new global::Doroti.Framework.Painting.TextStyle(fontSize: size)).ToList();
+            .Select(size => new TextStyle(fontSize: size)).ToList();
     private static double _interpolateUnits(double value, double min, double max) => (value - min) / (max - min);
-    public static global::Doroti.Framework.Painting.TextStyle resolveTextStyle(this _DynamicTypeStyle__menu_anchor value, global::Doroti.Framework.Painting.TextScaler textScaler)
+    public static TextStyle resolveTextStyle(this _DynamicTypeStyle__menu_anchor value, TextScaler textScaler)
     {
         DartRuntimePrimitives.Assert(() => checked(value.styles().Count) == _kScaleCount);
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
@@ -186,20 +186,20 @@ public static partial class Menu_anchorLibrary
 
 public interface CupertinoMenuEntry
 {
-    public bool hasLeading(global::Doroti.Framework.Widgets.BuildContext context);
+    public bool hasLeading(BuildContext context);
     public bool isDivider { get; }
 }
 
-internal class _AnchorScope__menu_anchor : global::Doroti.Framework.Widgets.InheritedWidget
+internal class _AnchorScope__menu_anchor : InheritedWidget
 {
     public virtual bool hasLeading { get; private set; } = default!;
 
-    internal _AnchorScope__menu_anchor(bool hasLeading, global::Doroti.Framework.Widgets.Widget child) : base(child: child)
+    internal _AnchorScope__menu_anchor(bool hasLeading, Widget child) : base(child: child)
     {
         this.hasLeading = hasLeading;
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
+    public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (_AnchorScope__menu_anchor)oldWidget;
         return hasLeading != __oldWidget.hasLeading;
@@ -208,29 +208,29 @@ internal class _AnchorScope__menu_anchor : global::Doroti.Framework.Widgets.Inhe
 
 }
 
-public delegate void CupertinoMenuAnimationStatusChangedCallback(global::Doroti.Framework.Animation.AnimationStatus status);
+public delegate void CupertinoMenuAnimationStatusChangedCallback(AnimationStatus status);
 
-public class CupertinoMenuAnchor : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoMenuAnchor : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Widgets.MenuController? controller { get; private set; }
-    public virtual global::System.Action? onOpen { get; private set; }
-    public virtual global::System.Action? onClose { get; private set; }
+    public virtual MenuController? controller { get; private set; }
+    public virtual Action? onOpen { get; private set; }
+    public virtual Action? onClose { get; private set; }
     public virtual AnimationStatusListener? onAnimationStatusChanged { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
     public virtual bool constrainCrossAxis { get; private set; } = default!;
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual bool enableSwipe { get; private set; } = default!;
     public virtual bool enableLongPressToOpen { get; private set; } = default!;
     public virtual bool useRootOverlay { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry overlayPadding { get; private set; } = default!;
-    public virtual List<global::Doroti.Framework.Widgets.Widget> menuChildren { get; private set; } = default!;
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? builder { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.FocusNode? childFocusNode { get; private set; }
+    public virtual EdgeInsetsGeometry overlayPadding { get; private set; } = default!;
+    public virtual List<Widget> menuChildren { get; private set; } = default!;
+    public virtual Func<BuildContext, MenuController, Widget?, Widget>? builder { get; private set; }
+    public virtual Widget? child { get; private set; }
+    public virtual FocusNode? childFocusNode { get; private set; }
 
-    public CupertinoMenuAnchor(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.MenuController? controller = null, global::System.Action? onOpen = null, global::System.Action? onClose = null, AnimationStatusListener? onAnimationStatusChanged = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool constrainCrossAxis = false, bool consumeOutsideTaps = false, bool enableSwipe = true, bool enableLongPressToOpen = false, bool useRootOverlay = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry overlayPadding = default!, List<global::Doroti.Framework.Widgets.Widget> menuChildren = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? builder = null, global::Doroti.Framework.Widgets.Widget? child = null, global::Doroti.Framework.Widgets.FocusNode? childFocusNode = null) : base(key: key)
+    public CupertinoMenuAnchor(Key? key = null, MenuController? controller = null, Action? onOpen = null, Action? onClose = null, AnimationStatusListener? onAnimationStatusChanged = null, BoxConstraints? constraints = null, bool constrainCrossAxis = false, bool consumeOutsideTaps = false, bool enableSwipe = true, bool enableLongPressToOpen = false, bool useRootOverlay = false, EdgeInsetsGeometry overlayPadding = default!, List<Widget> menuChildren = default!, Func<BuildContext, MenuController, Widget?, Widget>? builder = null, Widget? child = null, FocusNode? childFocusNode = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __overlayPadding = overlayPadding ?? EdgeInsets.CreateAll(8);
+        EdgeInsetsGeometry __overlayPadding = overlayPadding ?? EdgeInsets.CreateAll(8);
         this.controller = controller;
         this.onOpen = onOpen;
         this.onClose = onClose;
@@ -249,49 +249,49 @@ public class CupertinoMenuAnchor : global::Doroti.Framework.Widgets.StatefulWidg
         System.Diagnostics.Debug.Assert(enableSwipe || !enableLongPressToOpen);
     }
 
-    public static bool? maybeHasLeadingOf(global::Doroti.Framework.Widgets.BuildContext context)
+    public static bool? maybeHasLeadingOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<_AnchorScope__menu_anchor>()?.hasLeading;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoMenuAnchorState__menu_anchor());
-    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return menuChildren.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Foundation.DiagnosticsNode>((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
+        return menuChildren.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.FocusNode?>("childFocusNode", childFocusNode));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints?>("constraints", constraints));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("constrainCrossAxis", value: constrainCrossAxis, ifTrue: "constrains cross axis"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enableSwipe", value: enableSwipe, ifTrue: "swipe enabled", ifFalse: "swipe disabled"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("consumeOutsideTaps", value: consumeOutsideTaps, ifTrue: "consumes outside taps"));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("useRootOverlay", value: useRootOverlay, ifTrue: "uses root overlay"));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("overlayPadding", overlayPadding));
+        properties.add(new DiagnosticsProperty<FocusNode?>("childFocusNode", childFocusNode));
+        properties.add(new DiagnosticsProperty<BoxConstraints?>("constraints", constraints));
+        properties.add(new FlagProperty("constrainCrossAxis", value: constrainCrossAxis, ifTrue: "constrains cross axis"));
+        properties.add(new FlagProperty("enableSwipe", value: enableSwipe, ifTrue: "swipe enabled", ifFalse: "swipe disabled"));
+        properties.add(new FlagProperty("consumeOutsideTaps", value: consumeOutsideTaps, ifTrue: "consumes outside taps"));
+        properties.add(new FlagProperty("useRootOverlay", value: useRootOverlay, ifTrue: "uses root overlay"));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("overlayPadding", overlayPadding));
     }
 
 }
 
-internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework.Widgets.State<CupertinoMenuAnchor>, global::Doroti.Framework.Widgets.TickerProviderStateMixin<CupertinoMenuAnchor>
+internal class _CupertinoMenuAnchorState__menu_anchor : State<CupertinoMenuAnchor>, TickerProviderStateMixin<CupertinoMenuAnchor>
 {
     internal static Duration _kLongPressToOpenDuration = Duration.Create(milliseconds: 400L);
-    internal static global::Doroti.Framework.Physics.Tolerance _kSpringTolerance = new global::Doroti.Framework.Physics.Tolerance(velocity: 0.1);
-    public static global::Doroti.Framework.Physics.SpringDescription forwardSpring = Physics.SpringDescription.CreateWithDurationAndBounce(duration: Duration.Create(milliseconds: 337L), bounce: 0.2);
-    public static global::Doroti.Framework.Physics.SpringDescription reverseSpring = Physics.SpringDescription.CreateWithDurationAndBounce(duration: Duration.Create(milliseconds: 409L));
-    internal virtual global::Doroti.Framework.Animation.AnimationController _animationController { get; private set; } = default!;
-    internal virtual global::Doroti.Framework.Widgets.FocusScopeNode _menuScopeNode { get; private set; } = new global::Doroti.Framework.Widgets.FocusScopeNode(debugLabel: "Menu Scope");
-    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<double> _swipeDistanceNotifier { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<double>(0);
+    internal static Physics.Tolerance _kSpringTolerance = new Physics.Tolerance(velocity: 0.1);
+    public static Physics.SpringDescription forwardSpring = Physics.SpringDescription.CreateWithDurationAndBounce(duration: Duration.Create(milliseconds: 337L), bounce: 0.2);
+    public static Physics.SpringDescription reverseSpring = Physics.SpringDescription.CreateWithDurationAndBounce(duration: Duration.Create(milliseconds: 409L));
+    internal virtual AnimationController _animationController { get; private set; } = default!;
+    internal virtual FocusScopeNode _menuScopeNode { get; private set; } = new FocusScopeNode(debugLabel: "Menu Scope");
+    internal virtual ValueNotifier<double> _swipeDistanceNotifier { get; private set; } = new ValueNotifier<double>(0);
     internal virtual bool? _hasLeadingWidget { get; set; } = default;
-    internal virtual global::Doroti.Framework.Widgets.MenuController? _internalMenuController { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.AnimationStatus _animationStatus { get; set; } = AnimationStatus.dismissed;
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal virtual MenuController? _internalMenuController { get; set; } = default;
+    internal virtual AnimationStatus _animationStatus { get; set; } = AnimationStatus.dismissed;
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual global::Doroti.Framework.Widgets.MenuController _menuController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.MenuController>(widget.controller ?? _internalMenuController!);
+    internal virtual MenuController _menuController => DartRuntimePrimitives.ConvertValue<MenuController>(widget.controller ?? _internalMenuController!);
     public virtual bool isOpenOrOpening => AnimationStatusMembers.isForwardOrCompleted(_animationStatus);
     public virtual bool enableSwipe => DartRuntimePrimitives.ConvertValue<bool>(widget.enableSwipe && (_animationStatus switch { AnimationStatus.forward or AnimationStatus.completed => true, AnimationStatus.dismissed => true, AnimationStatus.reverse => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
     public override void initState()
@@ -299,7 +299,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         base.initState();
         if (widget.controller is null)
         {
-            _internalMenuController = new global::Doroti.Framework.Widgets.MenuController();
+            _internalMenuController = new MenuController();
         }
         _animationController = AnimationController.CreateUnbounded(vsync: this);
         _animationController.addStatusListener(_handleAnimationStatusChange);
@@ -317,7 +317,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
             else
             {
                 DartRuntimePrimitives.Assert(() => _internalMenuController is null);
-                _internalMenuController = new global::Doroti.Framework.Widgets.MenuController();
+                _internalMenuController = new MenuController();
             }
         }
         if (!Equals(oldWidget.menuChildren, widget.menuChildren))
@@ -335,7 +335,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
     public override void dispose()
     {
         _menuScopeNode.dispose();
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
 {
     var __cascade = _animationController;
     __cascade.stop();
@@ -348,11 +348,11 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -373,7 +373,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleAnimationStatusChange(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal virtual void _handleAnimationStatusChange(AnimationStatus status)
     {
         setState(() =>
         {
@@ -400,35 +400,35 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         _menuController.open();
     }
 
-    internal virtual void _handleCloseRequested(global::System.Action hideMenu)
+    internal virtual void _handleCloseRequested(Action hideMenu)
     {
         if (_animationStatus is AnimationStatus.reverse or AnimationStatus.dismissed)
         {
             return;
         }
-        DartRuntimePrimitives.Ignore(_animationController.animateBackWith(new global::Doroti.Framework.Physics.ClampedSimulation(new global::Doroti.Framework.Physics.SpringSimulation(reverseSpring, _animationController.value, 0.0, 0.0, tolerance: _kSpringTolerance), xMin: 0.0, xMax: 1.0)).whenComplete(() => { hideMenu(); return default!; }));
+        DartRuntimePrimitives.Ignore(_animationController.animateBackWith(new Physics.ClampedSimulation(new Physics.SpringSimulation(reverseSpring, _animationController.value, 0.0, 0.0, tolerance: _kSpringTolerance), xMin: 0.0, xMax: 1.0)).whenComplete(() => { hideMenu(); return default!; }));
     }
 
-    internal virtual void _handleOpenRequested(Offset? position, global::System.Action showOverlay)
+    internal virtual void _handleOpenRequested(Offset? position, Action showOverlay)
     {
         showOverlay();
         if (_animationStatus is AnimationStatus.completed or AnimationStatus.forward)
         {
             return;
         }
-        _animationController.animateWith(new global::Doroti.Framework.Physics.SpringSimulation(forwardSpring, _animationController.value, 1, 0.5));
+        _animationController.animateWith(new Physics.SpringSimulation(forwardSpring, _animationController.value, 1, 0.5));
         FocusScope.of(context).setFirstFocus(_menuScopeNode);
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildMenuOverlay(global::Doroti.Framework.Widgets.BuildContext childContext, global::Doroti.Framework.Widgets.RawMenuOverlayInfo info)
+    internal virtual Widget _buildMenuOverlay(BuildContext childContext, RawMenuOverlayInfo info)
     {
-        return new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: !isOpenOrOpening, child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: !isOpenOrOpening, child: new global::Doroti.Framework.Widgets.ExcludeFocus(excluding: !isOpenOrOpening, child: new _MenuOverlay__menu_anchor(constrainCrossAxis: widget.constrainCrossAxis, visibilityAnimation: _animationController.view, swipeDistanceListenable: _swipeDistanceNotifier, constraints: widget.constraints, consumeOutsideTaps: widget.consumeOutsideTaps, overlaySize: info.overlaySize, anchorRect: info.anchorRect, anchorPosition: info.position, tapRegionGroupId: info.tapRegionGroupId, focusScopeNode: _menuScopeNode, overlayPadding: widget.overlayPadding, children: widget.menuChildren))));
+        return new ExcludeSemantics(excluding: !isOpenOrOpening, child: new IgnorePointer(ignoring: !isOpenOrOpening, child: new ExcludeFocus(excluding: !isOpenOrOpening, child: new _MenuOverlay__menu_anchor(constrainCrossAxis: widget.constrainCrossAxis, visibilityAnimation: _animationController.view, swipeDistanceListenable: _swipeDistanceNotifier, constraints: widget.constraints, consumeOutsideTaps: widget.consumeOutsideTaps, overlaySize: info.overlaySize, anchorRect: info.anchorRect, anchorPosition: info.position, tapRegionGroupId: info.tapRegionGroupId, focusScopeNode: _menuScopeNode, overlayPadding: widget.overlayPadding, children: widget.menuChildren))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildChild(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.MenuController controller, global::Doroti.Framework.Widgets.Widget? child)
+    internal virtual Widget _buildChild(BuildContext context, MenuController controller, Widget? child)
     {
-        global::Doroti.Framework.Widgets.Widget anchor = (widget.builder is null ? widget.child : widget.builder.Invoke(context, _menuController, widget.child)) ?? SizedBox.CreateShrink();
+        Widget anchor = (widget.builder is null ? widget.child : widget.builder.Invoke(context, _menuController, widget.child)) ?? SizedBox.CreateShrink();
         if (!widget.enableLongPressToOpen || !enableSwipe)
         {
             return anchor;
@@ -437,22 +437,22 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new _SwipeRegion__menu_anchor(onDistanceChanged: _handleSwipeDistanceChange, enabled: enableSwipe, child: new _AnchorScope__menu_anchor(hasLeading: DartRuntimePrimitives.RequireValue(_hasLeadingWidget), child: new global::Doroti.Framework.Widgets.RawMenuAnchor(useRootOverlay: widget.useRootOverlay, onCloseRequested: _handleCloseRequested, onOpenRequested: _handleOpenRequested, overlayBuilder: _buildMenuOverlay, builder: _buildChild, controller: _menuController, childFocusNode: widget.childFocusNode, consumeOutsideTaps: widget.consumeOutsideTaps, onClose: widget.onClose, onOpen: widget.onOpen)));
+        return new _SwipeRegion__menu_anchor(onDistanceChanged: _handleSwipeDistanceChange, enabled: enableSwipe, child: new _AnchorScope__menu_anchor(hasLeading: DartRuntimePrimitives.RequireValue(_hasLeadingWidget), child: new RawMenuAnchor(useRootOverlay: widget.useRootOverlay, onCloseRequested: _handleCloseRequested, onOpenRequested: _handleOpenRequested, overlayBuilder: _buildMenuOverlay, builder: _buildChild, controller: _menuController, childFocusNode: widget.childFocusNode, consumeOutsideTaps: widget.consumeOutsideTaps, onClose: widget.onClose, onOpen: widget.onOpen)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
     __cascade.muted = !values.enabled;
@@ -464,7 +464,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
+    public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
         DartRuntimePrimitives.Assert(() => _tickers is not null);
         DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
@@ -484,7 +484,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -494,7 +494,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -504,30 +504,30 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
 
-public class _MenuOverlay__menu_anchor : global::Doroti.Framework.Widgets.StatefulWidget
+public class _MenuOverlay__menu_anchor : StatefulWidget
 {
-    public virtual List<global::Doroti.Framework.Widgets.Widget> children { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.FocusScopeNode focusScopeNode { get; private set; } = default!;
+    public virtual List<Widget> children { get; private set; } = default!;
+    public virtual FocusScopeNode focusScopeNode { get; private set; } = default!;
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual bool constrainCrossAxis { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
     public virtual Size overlaySize { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry overlayPadding { get; private set; } = default!;
+    public virtual EdgeInsetsGeometry overlayPadding { get; private set; } = default!;
     public virtual Rect anchorRect { get; private set; } = default!;
     public virtual Offset? anchorPosition { get; private set; }
     public virtual object tapRegionGroupId { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<double> visibilityAnimation { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<double> swipeDistanceListenable { get; private set; } = default!;
+    public virtual Animation<double> visibilityAnimation { get; private set; } = default!;
+    public virtual ValueListenable<double> swipeDistanceListenable { get; private set; } = default!;
 
-    internal _MenuOverlay__menu_anchor(List<global::Doroti.Framework.Widgets.Widget> children, global::Doroti.Framework.Widgets.FocusScopeNode focusScopeNode, bool consumeOutsideTaps, bool constrainCrossAxis, global::Doroti.Framework.Rendering.BoxConstraints? constraints, Size overlaySize, global::Doroti.Framework.Painting.EdgeInsetsGeometry overlayPadding, Rect anchorRect, Offset? anchorPosition, object tapRegionGroupId, global::Doroti.Framework.Animation.Animation<double> visibilityAnimation, global::Doroti.Framework.Foundation.ValueListenable<double> swipeDistanceListenable)
+    internal _MenuOverlay__menu_anchor(List<Widget> children, FocusScopeNode focusScopeNode, bool consumeOutsideTaps, bool constrainCrossAxis, BoxConstraints? constraints, Size overlaySize, EdgeInsetsGeometry overlayPadding, Rect anchorRect, Offset? anchorPosition, object tapRegionGroupId, Animation<double> visibilityAnimation, ValueListenable<double> swipeDistanceListenable)
     {
         this.children = children;
         this.focusScopeNode = focusScopeNode;
@@ -546,26 +546,26 @@ public class _MenuOverlay__menu_anchor : global::Doroti.Framework.Widgets.Statef
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MenuOverlayState__menu_anchor());
 }
 
-internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets.State<_MenuOverlay__menu_anchor>, global::Doroti.Framework.Widgets.TickerProviderStateMixin<_MenuOverlay__menu_anchor>, global::Doroti.Framework.Widgets.WidgetsBindingObserver
+internal class _MenuOverlayState__menu_anchor : State<_MenuOverlay__menu_anchor>, TickerProviderStateMixin<_MenuOverlay__menu_anchor>, WidgetsBindingObserver
 {
-    internal static Offset _kAttachmentOffset = new global::Doroti.Ui.Offset(0, 8);
+    internal static Offset _kAttachmentOffset = new Offset(0, 8);
     internal static DartMap<Type, dynamic> _kActions = new DartMap<Type, dynamic> { [typeof(_FocusDownIntent__menu_anchor)] = new _FocusDownAction__menu_anchor(), [typeof(_FocusUpIntent__menu_anchor)] = new _FocusUpAction__menu_anchor(), [typeof(_FocusFirstIntent__menu_anchor)] = new _FocusFirstAction__menu_anchor(), [typeof(_FocusLastIntent__menu_anchor)] = new _FocusLastAction__menu_anchor() };
-    internal virtual global::Doroti.Framework.Animation.AnimationController _swipeAnimationController { get; private set; } = default!;
-    internal virtual global::Doroti.Framework.Widgets.ScrollController _scrollController { get; private set; } = new global::Doroti.Framework.Widgets.ScrollController();
-    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _scaleAnimation { get; private set; } = new global::Doroti.Framework.Animation.ProxyAnimation();
-    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _fadeAnimation { get; private set; } = new global::Doroti.Framework.Animation.ProxyAnimation();
-    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _sizeAnimation { get; private set; } = new global::Doroti.Framework.Animation.ProxyAnimation();
-    internal virtual global::Doroti.Framework.Painting.Alignment _attachmentPointAlignment { get; set; } = default!;
+    internal virtual AnimationController _swipeAnimationController { get; private set; } = default!;
+    internal virtual ScrollController _scrollController { get; private set; } = new ScrollController();
+    internal virtual ProxyAnimation _scaleAnimation { get; private set; } = new ProxyAnimation();
+    internal virtual ProxyAnimation _fadeAnimation { get; private set; } = new ProxyAnimation();
+    internal virtual ProxyAnimation _sizeAnimation { get; private set; } = new ProxyAnimation();
+    internal virtual Alignment _attachmentPointAlignment { get; set; } = default!;
     internal virtual Offset _attachmentPoint { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.Alignment _menuAlignment { get; set; } = default!;
-    internal virtual List<global::Doroti.Framework.Widgets.Widget> _children { get; set; } = new List<global::Doroti.Framework.Widgets.Widget>();
+    internal virtual Alignment _menuAlignment { get; set; } = default!;
+    internal virtual List<Widget> _children { get; set; } = new List<Widget>();
     internal virtual TextDirection? _textDirection { get; set; } = default;
     internal virtual double _swipeTargetDistance { get; set; } = 0;
     internal virtual double _swipeCurrentDistance { get; set; } = 0;
     internal virtual double _swipeVelocity { get; set; } = 0;
-    internal virtual global::Doroti.Framework.Scheduler.Ticker? _swipeTicker { get; set; } = default;
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal virtual Scheduler.Ticker? _swipeTicker { get; set; } = default;
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
@@ -579,7 +579,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Ui.TextDirection newTextDirection = Directionality.of(context);
+        TextDirection newTextDirection = Directionality.of(context);
         if (!Equals(_textDirection, newTextDirection))
         {
             _textDirection = newTextDirection;
@@ -620,14 +620,14 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
     {
         _scrollController.dispose();
         widget.swipeDistanceListenable.removeListener(_handleSwipeDistanceChanged);
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Scheduler.Ticker?>)(() =>
+        DartRuntimePrimitives.Ignore(((Func<Scheduler.Ticker?>)(() =>
 {
     var __cascade = _swipeTicker;
     __cascade?.stop();
     __cascade?.dispose();
     return __cascade;
 }))());
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
 {
     var __cascade = _swipeAnimationController;
     __cascade.stop();
@@ -642,11 +642,11 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -661,11 +661,11 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
     {
         if (!Enumerable.Any(widget.children))
         {
-            _children = new List<global::Doroti.Framework.Widgets.Widget>();
+            _children = new List<Widget>();
             return;
         }
-        var childrenLocal = new List<global::Doroti.Framework.Widgets.Widget>();
-        global::Doroti.Framework.Widgets.Widget child = widget.children.First();
+        var childrenLocal = new List<Widget>();
+        Widget child = widget.children.First();
         for (var i = 0L; i < checked(widget.children.Count); i++)
         {
             childrenLocal.Add(child);
@@ -690,28 +690,28 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
 
     internal virtual void _resolveMotion()
     {
-        global::Doroti.Ui.AccessibilityFeatures accessibilityFeaturesLocal = View.of(context).platformDispatcher.accessibilityFeatures;
+        AccessibilityFeatures accessibilityFeaturesLocal = View.of(context).platformDispatcher.accessibilityFeatures;
         switch (accessibilityFeaturesLocal)
         {
-            case global::Doroti.Ui.AccessibilityFeatures { disableAnimations: true } __object32475:
+            case AccessibilityFeatures { disableAnimations: true } __object32475:
                 {
                     _scaleAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
                     _fadeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
                     _sizeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
                     break;
                 }
-            case global::Doroti.Ui.AccessibilityFeatures { reduceMotion: true } __object32712:
+            case AccessibilityFeatures { reduceMotion: true } __object32712:
                 {
-                    _scaleAnimation.parent = _swipeAnimationController.view.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 0.8, end: 1));
+                    _scaleAnimation.parent = _swipeAnimationController.view.drive(new Tween<double>(begin: 0.8, end: 1));
                     _sizeAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
-                    _fadeAnimation.parent = widget.visibilityAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeIn).chain(new _ClampTween__menu_anchor(begin: 0, end: 1)));
+                    _fadeAnimation.parent = widget.visibilityAnimation.drive(new CurveTween(curve: Curves.easeIn).chain(new _ClampTween__menu_anchor(begin: 0, end: 1)));
                     break;
                 }
             default:
                 {
-                    _scaleAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new _AnimationProduct__menu_anchor(first: widget.visibilityAnimation, next: _swipeAnimationController.view.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 0.8, end: 1))));
-                    _sizeAnimation.parent = widget.visibilityAnimation.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 0.8, end: 1));
-                    _fadeAnimation.parent = widget.visibilityAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeIn).chain(new _ClampTween__menu_anchor(begin: 0, end: 1)));
+                    _scaleAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new _AnimationProduct__menu_anchor(first: widget.visibilityAnimation, next: _swipeAnimationController.view.drive(new Tween<double>(begin: 0.8, end: 1))));
+                    _sizeAnimation.parent = widget.visibilityAnimation.drive(new Tween<double>(begin: 0.8, end: 1));
+                    _fadeAnimation.parent = widget.visibilityAnimation.drive(new CurveTween(curve: Curves.easeIn).chain(new _ClampTween__menu_anchor(begin: 0, end: 1)));
                     break;
                 }
         }
@@ -719,7 +719,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
 
     internal virtual void _resolvePosition()
     {
-        global::Doroti.Ui.Offset anchorMidpoint = default!;
+        Offset anchorMidpoint = default!;
         if (widget.anchorPosition is not null)
         {
             anchorMidpoint = widget.anchorRect.topLeft + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
@@ -732,8 +732,8 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         double yMidpointRatio = anchorMidpoint.dy / widget.overlaySize.height;
         double dyLocal = (yMidpointRatio < 0.55) ? 1 : -1;
         double dxLocal = xMidpointRatio switch { < 0.4 => -1.0, > 0.6 => 1.0, _ => 0.0 };
-        _menuAlignment = new global::Doroti.Framework.Painting.Alignment(dxLocal, -dyLocal);
-        global::Doroti.Ui.Offset transformOrigin = default!;
+        _menuAlignment = new Alignment(dxLocal, -dyLocal);
+        Offset transformOrigin = default!;
         if (widget.anchorPosition is not null)
         {
             _attachmentPoint = widget.anchorRect.topLeft + DartRuntimePrimitives.RequireValue(widget.anchorPosition);
@@ -741,16 +741,16 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         }
         else
         {
-            global::Doroti.Ui.Offset offset = _kAttachmentOffset * dyLocal;
-            _attachmentPoint = new global::Doroti.Framework.Painting.Alignment(dxLocal, dyLocal).withinRect(widget.anchorRect) + offset;
-            transformOrigin = new global::Doroti.Framework.Painting.Alignment(0, dyLocal).withinRect(widget.anchorRect) + offset;
+            Offset offset = _kAttachmentOffset * dyLocal;
+            _attachmentPoint = new Alignment(dxLocal, dyLocal).withinRect(widget.anchorRect) + offset;
+            transformOrigin = new Alignment(0, dyLocal).withinRect(widget.anchorRect) + offset;
         }
         double xOriginRatio = transformOrigin.dx / widget.overlaySize.width;
         double yOriginRatio = transformOrigin.dy / widget.overlaySize.height;
-        _attachmentPointAlignment = new global::Doroti.Framework.Painting.Alignment((xOriginRatio * 2L) - 1L, (yOriginRatio * 2L) - 1L);
+        _attachmentPointAlignment = new Alignment((xOriginRatio * 2L) - 1L, (yOriginRatio * 2L) - 1L);
     }
 
-    internal virtual void _handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    internal virtual void _handleOutsideTap(Gestures.PointerDownEvent @event)
     {
         MenuController.maybeOf(context)!.close();
     }
@@ -798,15 +798,15 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         _swipeAnimationController.value = 1L - (_swipeCurrentDistance / maxSwipeDistance);
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildAlign(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
+    internal virtual Widget _buildAlign(BuildContext context, Widget? child)
     {
-        return new global::Doroti.Framework.Widgets.Align(heightFactor: _sizeAnimation.value, widthFactor: 1.0, alignment: Alignment.topCenter, child: child);
+        return new Align(heightFactor: _sizeAnimation.value, widthFactor: 1.0, alignment: Alignment.topCenter, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = default!;
+        BoxConstraints constraintsLocal = default!;
         if (widget.constraints is not null)
         {
             constraintsLocal = widget.constraints!;
@@ -818,22 +818,22 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
             var menuWidth = _CupertinoMenuWidth__menu_anchorMembers.CreateFromScreenWidth(isLargeTextModeEnabled: isLargeTextModeEnabledLocal, screenWidth: screenWidthLocal);
             constraintsLocal = BoxConstraints.CreateTightFor(width: menuWidth.points());
         }
-        global::Doroti.Framework.Widgets.Widget childLocal = new _SwipeSurface__menu_anchor(child: new global::Doroti.Framework.Widgets.TapRegion(groupId: widget.tapRegionGroupId, consumeOutsideTaps: widget.consumeOutsideTaps, onTapOutside: _handleOutsideTap, child: new global::Doroti.Framework.Widgets.Actions(actions: _kActions, child: new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: Menu_anchorLibrary._kMenuTraversalShortcuts, child: new global::Doroti.Framework.Widgets.FocusScope(node: widget.focusScopeNode, descendantsAreFocusable: true, descendantsAreTraversable: true, canRequestFocus: true, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _ShadowPainter__menu_anchor(brightness: CupertinoTheme.maybeBrightnessOf(context) ?? Brightness.light, repaint: _fadeAnimation), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: _fadeAnimation, alwaysIncludeSemantics: true, child: new CupertinoPopupSurface(child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: _sizeAnimation, builder: _buildAlign, child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, scopesRoute: true, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraintsLocal, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(clipBehavior: Clip.none, child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, children: _children)))))))))))));
+        Widget childLocal = new _SwipeSurface__menu_anchor(child: new TapRegion(groupId: widget.tapRegionGroupId, consumeOutsideTaps: widget.consumeOutsideTaps, onTapOutside: _handleOutsideTap, child: new Actions(actions: _kActions, child: new Shortcuts(shortcuts: Menu_anchorLibrary._kMenuTraversalShortcuts, child: new FocusScope(node: widget.focusScopeNode, descendantsAreFocusable: true, descendantsAreTraversable: true, canRequestFocus: true, child: new CustomPaint(painter: new _ShadowPainter__menu_anchor(brightness: CupertinoTheme.maybeBrightnessOf(context) ?? Brightness.light, repaint: _fadeAnimation), child: new FadeTransition(opacity: _fadeAnimation, alwaysIncludeSemantics: true, child: new CupertinoPopupSurface(child: new AnimatedBuilder(animation: _sizeAnimation, builder: _buildAlign, child: new Widgets.Semantics(explicitChildNodes: true, scopesRoute: true, child: new ConstrainedBox(constraints: constraintsLocal, child: new SingleChildScrollView(clipBehavior: Clip.none, child: new Column(mainAxisSize: MainAxisSize.min, children: _children)))))))))))));
         if (!widget.constrainCrossAxis)
         {
-            childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.UnconstrainedBox(clipBehavior: Clip.hardEdge, alignment: AlignmentDirectional.centerStart, constrainedAxis: Axis.vertical, child: childLocal));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new UnconstrainedBox(clipBehavior: Clip.hardEdge, alignment: AlignmentDirectional.centerStart, constrainedAxis: Axis.vertical, child: childLocal));
         }
-        return new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: BoxConstraints.CreateLoose(widget.overlaySize), child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: _scaleAnimation, alignment: _attachmentPointAlignment, child: new global::Doroti.Framework.Widgets.ValueListenableBuilder<double>(valueListenable: _sizeAnimation, child: childLocal, builder: (context, value, child) =>
+        return new ConstrainedBox(constraints: BoxConstraints.CreateLoose(widget.overlaySize), child: new ScaleTransition(scale: _scaleAnimation, alignment: _attachmentPointAlignment, child: new ValueListenableBuilder<double>(valueListenable: _sizeAnimation, child: childLocal, builder: (context, value, child) =>
         {
-            global::Doroti.Ui.Rect effectiveAnchorRect = (widget.anchorPosition is not null) ? (_attachmentPoint & Size.zero) : widget.anchorRect;
-            List<global::Doroti.Ui.DisplayFeature>? displayFeatures = MediaQuery.maybeDisplayFeaturesOf(context);
-            return new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new _MenuLayoutDelegate__menu_anchor(anchorRect: effectiveAnchorRect, attachmentPoint: _attachmentPoint, avoidBounds: (displayFeatures is not null) ? avoidBounds(displayFeatures) : new HashSet<Rect>(), heightFactor: value, menuAlignment: _menuAlignment, overlayPadding: widget.overlayPadding.resolve(_textDirection)), child: child);
+            Rect effectiveAnchorRect = (widget.anchorPosition is not null) ? (_attachmentPoint & Size.zero) : widget.anchorRect;
+            List<DisplayFeature>? displayFeatures = MediaQuery.maybeDisplayFeaturesOf(context);
+            return new CustomSingleChildLayout(@delegate: new _MenuLayoutDelegate__menu_anchor(anchorRect: effectiveAnchorRect, attachmentPoint: _attachmentPoint, avoidBounds: (displayFeatures is not null) ? avoidBounds(displayFeatures) : new HashSet<Rect>(), heightFactor: value, menuAlignment: _menuAlignment, overlayPadding: widget.overlayPadding.resolve(_textDirection)), child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static HashSet<global::Doroti.Ui.Rect> avoidBounds(List<global::Doroti.Ui.DisplayFeature> displayFeatures)
+    public static HashSet<Rect> avoidBounds(List<DisplayFeature> displayFeatures)
     {
         var boundsLocal = new HashSet<Rect>();
         foreach (var feature in displayFeatures)
@@ -847,16 +847,16 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
-        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider(onTick, this, debugLabel: Foundation.ConstantsLibrary.kDebugMode ? $"created by {DiagnosticsLibrary.describeIdentity(this)}" : null);
     __cascade.muted = !values.enabled;
@@ -868,7 +868,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
+    public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
     {
         DartRuntimePrimitives.Assert(() => _tickers is not null);
         DartRuntimePrimitives.Assert(() => _tickers!.Contains(ticker));
@@ -888,7 +888,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -898,7 +898,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -908,22 +908,22 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
 
-internal class _ShadowPainter__menu_anchor : global::Doroti.Framework.Rendering.CustomPainter
+internal class _ShadowPainter__menu_anchor : CustomPainter
 {
     internal static Radius _kRadius = Radius.circular(13);
     internal const double _kShadowOpacity = 0.12;
-    public virtual global::Doroti.Framework.Animation.Animation<double> repaint { get; private set; } = default!;
+    public virtual Animation<double> repaint { get; private set; } = default!;
     public virtual Brightness brightness { get; private set; } = default!;
 
-    internal _ShadowPainter__menu_anchor(Brightness brightness, global::Doroti.Framework.Animation.Animation<double> repaint) : base(repaint: repaint)
+    internal _ShadowPainter__menu_anchor(Brightness brightness, Animation<double> repaint) : base(repaint: repaint)
     {
         this.brightness = brightness;
         this.repaint = repaint;
@@ -933,20 +933,20 @@ internal class _ShadowPainter__menu_anchor : global::Doroti.Framework.Rendering.
     public override void paint(Canvas canvas, Size size)
     {
         DartRuntimePrimitives.Assert(() => (shadowAnimation >= 0L) && (shadowAnimation <= 1L));
-        var centerLocal = new global::Doroti.Ui.Offset(size.width / 2L, size.height / 2L);
+        var centerLocal = new Offset(size.width / 2L, size.height / 2L);
         var rect = Rect.fromCenter(center: centerLocal, width: size.width, height: size.height);
         var roundedRect = RSuperellipse.fromRectAndRadius(rect, _kRadius);
         double blurSigma = shadowAnimation * 50L;
         var shadowPaint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
     __cascade.color = Color.fromRGBO(0L, 0L, 10L, shadowAnimation * shadowAnimation * _kShadowOpacity);
     return __cascade;
 }))();
         var maskPath = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.fillType = PathFillType.evenOdd;
     __cascade.addRect(rect.inflate(200));
     __cascade.addRRect(RRect.fromRectAndRadius(rect, _kRadius));
@@ -963,26 +963,26 @@ internal class _ShadowPainter__menu_anchor : global::Doroti.Framework.Rendering.
 }))());
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_ShadowPainter__menu_anchor)oldDelegate;
         return (!Equals(__oldDelegate.brightness, brightness)) || (!Equals(__oldDelegate.repaint, repaint));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRebuildSemantics(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
+    public override bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
 }
 
-internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
+internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
 {
     public virtual Rect anchorRect { get; private set; } = default!;
     public virtual Offset attachmentPoint { get; private set; } = default!;
     public virtual HashSet<Rect> avoidBounds { get; private set; } = default!;
     public virtual double heightFactor { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.Alignment menuAlignment { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets overlayPadding { get; private set; } = default!;
+    public virtual Alignment menuAlignment { get; private set; } = default!;
+    public virtual EdgeInsets overlayPadding { get; private set; } = default!;
 
-    internal _MenuLayoutDelegate__menu_anchor(Rect anchorRect, Offset attachmentPoint, HashSet<Rect> avoidBounds, double heightFactor, global::Doroti.Framework.Painting.Alignment menuAlignment, global::Doroti.Framework.Painting.EdgeInsets overlayPadding)
+    internal _MenuLayoutDelegate__menu_anchor(Rect anchorRect, Offset attachmentPoint, HashSet<Rect> avoidBounds, double heightFactor, Alignment menuAlignment, EdgeInsets overlayPadding)
     {
         this.anchorRect = anchorRect;
         this.attachmentPoint = attachmentPoint;
@@ -992,7 +992,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
         this.overlayPadding = overlayPadding;
     }
 
-    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return BoxConstraints.CreateLoose(constraints.biggest).deflate(overlayPadding);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1002,22 +1002,22 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
     {
         double inverseHeightFactor = (heightFactor > 0.01) ? (1L / heightFactor) : 0;
         double finalHeight = Math.Min(childSize.height * inverseHeightFactor, size.height);
-        var finalSize = new global::Doroti.Ui.Size(childSize.width, finalHeight);
-        global::Doroti.Ui.Offset desiredPosition = attachmentPoint - menuAlignment.alongSize(finalSize);
-        global::Doroti.Ui.Rect screen = _findClosestScreen(size, anchorRect.center, avoidBounds);
-        global::Doroti.Ui.Offset finalPosition = _positionChild(screen, finalSize, desiredPosition, anchorRect);
+        var finalSize = new Size(childSize.width, finalHeight);
+        Offset desiredPosition = attachmentPoint - menuAlignment.alongSize(finalSize);
+        Rect screen = _findClosestScreen(size, anchorRect.center, avoidBounds);
+        Offset finalPosition = _positionChild(screen, finalSize, desiredPosition, anchorRect);
         bool growsUp = (finalPosition.dy + finalSize.height) <= anchorRect.center.dy;
         if (growsUp)
         {
             double dyLocal = finalHeight - childSize.height;
-            return new global::Doroti.Ui.Offset(finalPosition.dx, finalPosition.dy + dyLocal);
+            return new Offset(finalPosition.dx, finalPosition.dy + dyLocal);
         }
-        var initialPosition = new global::Doroti.Ui.Offset(finalPosition.dx, anchorRect.bottom);
+        var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
         return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Offset _positionChild(Rect screen, Size childSize, Offset position, Rect anchor)
+    internal virtual Offset _positionChild(Rect screen, Size childSize, Offset position, Rect anchor)
     {
         double xLocal = position.dx;
         double yLocal = position.dy;
@@ -1080,7 +1080,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
         }
         if (childSize.height >= screen.height)
         {
-            return new global::Doroti.Ui.Offset(xLocal, screen.top + overlayPadding.top);
+            return new Offset(xLocal, screen.top + overlayPadding.top);
         }
         if (hasHorizontalAnchorOverlap && !anchor.isEmpty)
         {
@@ -1125,14 +1125,14 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
                 }
             }
         }
-        return new global::Doroti.Ui.Offset(xLocal, yLocal);
+        return new Offset(xLocal, yLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Rect _findClosestScreen(Size parentSize, Offset point, HashSet<Rect> avoidBounds)
+    internal virtual Rect _findClosestScreen(Size parentSize, Offset point, HashSet<Rect> avoidBounds)
     {
-        IEnumerable<global::Doroti.Ui.Rect> screens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & parentSize, avoidBounds);
-        global::Doroti.Ui.Rect? closest = default!;
+        IEnumerable<Rect> screens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & parentSize, avoidBounds);
+        Rect? closest = default!;
         double closestSquaredDistance = 0;
         foreach (var screen in screens)
         {
@@ -1157,7 +1157,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_MenuLayoutDelegate__menu_anchor)oldDelegate;
         return (!Equals(anchorRect, __oldDelegate.anchorRect)) || (!Equals(attachmentPoint, __oldDelegate.attachmentPoint)) || !CollectionsLibrary.setEquals(avoidBounds, __oldDelegate.avoidBounds) || (heightFactor != __oldDelegate.heightFactor) || (!Equals(menuAlignment, __oldDelegate.menuAlignment)) || (!Equals(overlayPadding, __oldDelegate.overlayPadding));
@@ -1166,7 +1166,7 @@ internal class _MenuLayoutDelegate__menu_anchor : global::Doroti.Framework.Rende
 
 }
 
-internal class _FocusUpIntent__menu_anchor : global::Doroti.Framework.Widgets.DirectionalFocusIntent
+internal class _FocusUpIntent__menu_anchor : DirectionalFocusIntent
 {
     internal _FocusUpIntent__menu_anchor() : base(TraversalDirection.up)
     {
@@ -1174,7 +1174,7 @@ internal class _FocusUpIntent__menu_anchor : global::Doroti.Framework.Widgets.Di
 
 }
 
-internal class _FocusDownIntent__menu_anchor : global::Doroti.Framework.Widgets.DirectionalFocusIntent
+internal class _FocusDownIntent__menu_anchor : DirectionalFocusIntent
 {
     internal _FocusDownIntent__menu_anchor() : base(TraversalDirection.down)
     {
@@ -1182,22 +1182,22 @@ internal class _FocusDownIntent__menu_anchor : global::Doroti.Framework.Widgets.
 
 }
 
-internal class _FocusUpAction__menu_anchor : global::Doroti.Framework.Widgets.ContextAction<global::Doroti.Framework.Widgets.DirectionalFocusIntent>
+internal class _FocusUpAction__menu_anchor : ContextAction<DirectionalFocusIntent>
 {
     internal _FocusUpAction__menu_anchor()
     {
     }
 
-    public override object? invoke(global::Doroti.Framework.Widgets.DirectionalFocusIntent intent, global::Doroti.Framework.Widgets.BuildContext? context = null)
+    public override object? invoke(DirectionalFocusIntent intent, BuildContext? context = null)
     {
-        global::Doroti.Framework.Widgets.FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new global::Doroti.Framework.Widgets.ReadingOrderTraversalPolicy();
+        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
         if (Menu_anchorLibrary._isCupertino && !Foundation.ConstantsLibrary.kIsWeb)
         {
             policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
             return default!;
         }
-        global::Doroti.Framework.Widgets.FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
-        global::Doroti.Framework.Widgets.FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
         if (lastFocus.context is not null)
         {
             if (Equals(Focus_managerLibrary.primaryFocus, lastFocus.enclosingScope) || Equals(Focus_managerLibrary.primaryFocus, firstFocus))
@@ -1212,22 +1212,22 @@ internal class _FocusUpAction__menu_anchor : global::Doroti.Framework.Widgets.Co
 
 }
 
-internal class _FocusDownAction__menu_anchor : global::Doroti.Framework.Widgets.ContextAction<global::Doroti.Framework.Widgets.DirectionalFocusIntent>
+internal class _FocusDownAction__menu_anchor : ContextAction<DirectionalFocusIntent>
 {
     internal _FocusDownAction__menu_anchor()
     {
     }
 
-    public override object? invoke(global::Doroti.Framework.Widgets.DirectionalFocusIntent intent, global::Doroti.Framework.Widgets.BuildContext? context = null)
+    public override object? invoke(DirectionalFocusIntent intent, BuildContext? context = null)
     {
-        global::Doroti.Framework.Widgets.FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new global::Doroti.Framework.Widgets.ReadingOrderTraversalPolicy();
+        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
         if (Menu_anchorLibrary._isCupertino && !Foundation.ConstantsLibrary.kIsWeb)
         {
             policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
             return default!;
         }
-        global::Doroti.Framework.Widgets.FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
-        global::Doroti.Framework.Widgets.FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
         if (firstFocus?.context is not null)
         {
             if (Equals(Focus_managerLibrary.primaryFocus, firstFocus!.enclosingScope) || Equals(Focus_managerLibrary.primaryFocus, lastFocus))
@@ -1242,7 +1242,7 @@ internal class _FocusDownAction__menu_anchor : global::Doroti.Framework.Widgets.
 
 }
 
-public class _FocusFirstIntent__menu_anchor : global::Doroti.Framework.Widgets.Intent
+public class _FocusFirstIntent__menu_anchor : Intent
 {
     internal _FocusFirstIntent__menu_anchor()
     {
@@ -1250,16 +1250,16 @@ public class _FocusFirstIntent__menu_anchor : global::Doroti.Framework.Widgets.I
 
 }
 
-internal class _FocusFirstAction__menu_anchor : global::Doroti.Framework.Widgets.ContextAction<_FocusFirstIntent__menu_anchor>
+internal class _FocusFirstAction__menu_anchor : ContextAction<_FocusFirstIntent__menu_anchor>
 {
     internal _FocusFirstAction__menu_anchor()
     {
     }
 
-    public override object? invoke(_FocusFirstIntent__menu_anchor intent, global::Doroti.Framework.Widgets.BuildContext? context = null)
+    public override object? invoke(_FocusFirstIntent__menu_anchor intent, BuildContext? context = null)
     {
-        global::Doroti.Framework.Widgets.FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new global::Doroti.Framework.Widgets.ReadingOrderTraversalPolicy();
-        global::Doroti.Framework.Widgets.FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
+        FocusNode? firstFocus = policy.findFirstFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
         if ((firstFocus is null) || (firstFocus.context is null))
         {
             return default!;
@@ -1270,7 +1270,7 @@ internal class _FocusFirstAction__menu_anchor : global::Doroti.Framework.Widgets
 
 }
 
-public class _FocusLastIntent__menu_anchor : global::Doroti.Framework.Widgets.Intent
+public class _FocusLastIntent__menu_anchor : Intent
 {
     internal _FocusLastIntent__menu_anchor()
     {
@@ -1278,16 +1278,16 @@ public class _FocusLastIntent__menu_anchor : global::Doroti.Framework.Widgets.In
 
 }
 
-internal class _FocusLastAction__menu_anchor : global::Doroti.Framework.Widgets.ContextAction<_FocusLastIntent__menu_anchor>
+internal class _FocusLastAction__menu_anchor : ContextAction<_FocusLastIntent__menu_anchor>
 {
     internal _FocusLastAction__menu_anchor()
     {
     }
 
-    public override object? invoke(_FocusLastIntent__menu_anchor intent, global::Doroti.Framework.Widgets.BuildContext? context = null)
+    public override object? invoke(_FocusLastIntent__menu_anchor intent, BuildContext? context = null)
     {
-        global::Doroti.Framework.Widgets.FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new global::Doroti.Framework.Widgets.ReadingOrderTraversalPolicy();
-        global::Doroti.Framework.Widgets.FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
+        FocusTraversalPolicy policy = FocusTraversalGroup.maybeOf(context!) ?? new ReadingOrderTraversalPolicy();
+        FocusNode lastFocus = policy.findLastFocus(Focus_managerLibrary.primaryFocus!, ignoreCurrentFocus: true);
         if (lastFocus.context is null)
         {
             return default!;
@@ -1298,7 +1298,7 @@ internal class _FocusLastAction__menu_anchor : global::Doroti.Framework.Widgets.
 
 }
 
-internal class _CupertinoMenuImplicitDivider__menu_anchor : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _CupertinoMenuImplicitDivider__menu_anchor : StatelessWidget
 {
     public static CupertinoDynamicColor kOverlayColor = new CupertinoDynamicColor(color: Color.fromRGBO(140L, 140L, 140L, 0.3), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.25));
     public static CupertinoDynamicColor kDividerColor = new CupertinoDynamicColor(color: Color.fromRGBO(0L, 0L, 0L, 0.25), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.25));
@@ -1307,39 +1307,39 @@ internal class _CupertinoMenuImplicitDivider__menu_anchor : global::Doroti.Frame
     {
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         double pixelRatio = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0;
         double displacement = 1L / pixelRatio;
-        return new global::Doroti.Framework.Widgets.CustomPaint(size: new global::Doroti.Ui.Size(double.PositiveInfinity, displacement), painter: new _CupertinoDividerPainter__menu_anchor(color: CupertinoDynamicColor.resolve(kDividerColor, context), overlayColor: CupertinoDynamicColor.resolve(kOverlayColor, context), antiAlias: pixelRatio < 1.0));
+        return new CustomPaint(size: new Size(double.PositiveInfinity, displacement), painter: new _CupertinoDividerPainter__menu_anchor(color: CupertinoDynamicColor.resolve(kDividerColor, context), overlayColor: CupertinoDynamicColor.resolve(kOverlayColor, context), antiAlias: pixelRatio < 1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class CupertinoMenuDivider : global::Doroti.Framework.Widgets.StatelessWidget, CupertinoMenuEntry
+public class CupertinoMenuDivider : StatelessWidget, CupertinoMenuEntry
 {
     public virtual Color color { get; private set; } = default!;
     public static CupertinoDynamicColor kDefaultColor = new CupertinoDynamicColor(color: Color.fromRGBO(0L, 0L, 0L, 0.08), darkColor: Color.fromRGBO(0L, 0L, 0L, 0.16));
     internal const double _kDividerHeight = 8.0;
 
-    public CupertinoMenuDivider(global::Doroti.Framework.Foundation.Key? key = null, Color color = default!) : base(key: key)
+    public CupertinoMenuDivider(Key? key = null, Color color = default!) : base(key: key)
     {
         Color __color = color ?? kDefaultColor;
         this.color = __color;
     }
 
     public virtual bool isDivider => true;
-    public virtual bool hasLeading(global::Doroti.Framework.Widgets.BuildContext context) => false;
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public virtual bool hasLeading(BuildContext context) => false;
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.ColoredBox(color: CupertinoDynamicColor.resolve(color, context), child: new global::Doroti.Framework.Widgets.SizedBox(height: _kDividerHeight, width: double.PositiveInfinity));
+        return new ColoredBox(color: CupertinoDynamicColor.resolve(color, context), child: new SizedBox(height: _kDividerHeight, width: double.PositiveInfinity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _CupertinoDividerPainter__menu_anchor : global::Doroti.Framework.Rendering.CustomPainter
+internal class _CupertinoDividerPainter__menu_anchor : CustomPainter
 {
     public virtual Color color { get; private set; } = default!;
     public virtual Color overlayColor { get; private set; } = default!;
@@ -1354,13 +1354,13 @@ internal class _CupertinoDividerPainter__menu_anchor : global::Doroti.Framework.
 
     public override void paint(Canvas canvas, Size size)
     {
-        global::Doroti.Ui.Offset p1 = size.centerLeft(Offset.zero);
-        global::Doroti.Ui.Offset p2 = size.centerRight(Offset.zero);
+        Offset p1 = size.centerLeft(Offset.zero);
+        Offset p2 = size.centerRight(Offset.zero);
         if (!Foundation.ConstantsLibrary.kIsWeb)
         {
             var overlayPainter = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.color = overlayColor;
     __cascade.isAntiAlias = antiAlias;
@@ -1371,7 +1371,7 @@ internal class _CupertinoDividerPainter__menu_anchor : global::Doroti.Framework.
         }
         var colorPainter = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.color = color;
     __cascade.isAntiAlias = antiAlias;
@@ -1380,7 +1380,7 @@ internal class _CupertinoDividerPainter__menu_anchor : global::Doroti.Framework.
         canvas.drawLine(p1, p2, colorPainter);
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_CupertinoDividerPainter__menu_anchor)oldDelegate;
         return (!Equals(color, __oldDelegate.color)) || (!Equals(overlayColor, __oldDelegate.overlayColor)) || (antiAlias != __oldDelegate.antiAlias);
@@ -1389,31 +1389,31 @@ internal class _CupertinoDividerPainter__menu_anchor : global::Doroti.Framework.
 
 }
 
-public class CupertinoMenuItem : global::Doroti.Framework.Widgets.StatelessWidget, CupertinoMenuEntry
+public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
 {
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? leading { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? trailing { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? subtitle { get; private set; }
-    public virtual global::System.Action? onPressed { get; private set; }
-    public virtual global::System.Action<bool>? onHover { get; private set; }
-    public virtual global::System.Action<bool>? onFocusChange { get; private set; }
+    public virtual Widget child { get; private set; } = default!;
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
+    public virtual Widget? leading { get; private set; }
+    public virtual Widget? trailing { get; private set; }
+    public virtual Widget? subtitle { get; private set; }
+    public virtual Action? onPressed { get; private set; }
+    public virtual System.Action<bool>? onHover { get; private set; }
+    public virtual System.Action<bool>? onFocusChange { get; private set; }
     public virtual bool requestFocusOnHover { get; private set; } = default!;
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BoxDecoration>? decoration { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior behavior { get; private set; } = default!;
+    public virtual FocusNode? focusNode { get; private set; }
+    public virtual WidgetStateProperty<BoxDecoration>? decoration { get; private set; }
+    public virtual WidgetStateProperty<MouseCursor>? mouseCursor { get; private set; }
+    public virtual HitTestBehavior behavior { get; private set; } = default!;
     public virtual bool requestCloseOnActivate { get; private set; } = default!;
     public virtual bool isDestructiveAction { get; private set; } = default!;
     public virtual double? leadingWidth { get; private set; }
     public virtual double? trailingWidth { get; private set; }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? leadingMidpointAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? trailingMidpointAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
-    public static global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BoxDecoration> kDefaultDecoration = WidgetStateProperty<BoxDecoration>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Framework.Painting.BoxDecoration> { [WidgetState.dragged.asConstraint()] = new global::Doroti.Framework.Painting.BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.1), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1))), [WidgetState.pressed.asConstraint()] = new global::Doroti.Framework.Painting.BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.1), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1))), [WidgetState.focused.asConstraint()] = new global::Doroti.Framework.Painting.BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.075), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.075))), [WidgetState.hovered.asConstraint()] = new global::Doroti.Framework.Painting.BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.05), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.05))), [WidgetStateMembers.any] = new global::Doroti.Framework.Painting.BoxDecoration() });
-    internal static global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> _kDefaultCursor = WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) =>
+    public virtual AlignmentGeometry? leadingMidpointAlignment { get; private set; }
+    public virtual AlignmentGeometry? trailingMidpointAlignment { get; private set; }
+    public virtual BoxConstraints? constraints { get; private set; }
+    public static WidgetStateProperty<BoxDecoration> kDefaultDecoration = WidgetStateProperty<BoxDecoration>.CreateFromMap(new DartMap<WidgetStatesConstraint, BoxDecoration> { [WidgetState.dragged.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.1), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1))), [WidgetState.pressed.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.1), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.1))), [WidgetState.focused.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.075), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.075))), [WidgetState.hovered.asConstraint()] = new BoxDecoration(color: new CupertinoDynamicColor(color: Color.fromRGBO(50L, 50L, 50L, 0.05), darkColor: Color.fromRGBO(255L, 255L, 255L, 0.05))), [WidgetStateMembers.any] = new BoxDecoration() });
+    internal static WidgetStateProperty<MouseCursor> _kDefaultCursor = WidgetStateProperty.resolveWith((states) =>
     {
         return (!states.Contains(WidgetState.disabled) && Foundation.ConstantsLibrary.kIsWeb) ? SystemMouseCursors.click : MouseCursor.defer;
         throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1422,12 +1422,12 @@ public class CupertinoMenuItem : global::Doroti.Framework.Widgets.StatelessWidge
     internal static Color _kDefaultSubtitleTextColor = new CupertinoDynamicColor(color: Color.from(alpha: 0.55, red: 0, green: 0, blue: 0), darkColor: Color.from(alpha: 0.4, red: 1, green: 1, blue: 1));
     internal const long _kDefaultMaxLines = 2L;
     internal const long _kDefaultLargeTextModeMaxLines = 100L;
-    internal static global::Doroti.Framework.Painting.TextStyle _kLeadingDefaultTextStyle = new global::Doroti.Framework.Painting.TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
-    internal static global::Doroti.Framework.Widgets.IconThemeData _kLeadingDefaultIconTheme = new global::Doroti.Framework.Widgets.IconThemeData(size: 15, weight: 600, applyTextScaling: true);
-    internal static global::Doroti.Framework.Painting.TextStyle _kTrailingDefaultTextStyle = new global::Doroti.Framework.Painting.TextStyle(fontSize: 21);
-    internal static global::Doroti.Framework.Widgets.IconThemeData _kTrailingDefaultIconTheme = new global::Doroti.Framework.Widgets.IconThemeData(size: 21, applyTextScaling: true);
+    internal static TextStyle _kLeadingDefaultTextStyle = new TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
+    internal static IconThemeData _kLeadingDefaultIconTheme = new IconThemeData(size: 15, weight: 600, applyTextScaling: true);
+    internal static TextStyle _kTrailingDefaultTextStyle = new TextStyle(fontSize: 21);
+    internal static IconThemeData _kTrailingDefaultIconTheme = new IconThemeData(size: 21, applyTextScaling: true);
 
-    public CupertinoMenuItem(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget child = default!, global::Doroti.Framework.Widgets.Widget? subtitle = null, global::Doroti.Framework.Widgets.Widget? leading = null, double? leadingWidth = null, global::Doroti.Framework.Painting.AlignmentGeometry? leadingMidpointAlignment = null, global::Doroti.Framework.Widgets.Widget? trailing = null, double? trailingWidth = null, global::Doroti.Framework.Painting.AlignmentGeometry? trailingMidpointAlignment = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool autofocus = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, global::System.Action<bool>? onHover = null, global::System.Action? onPressed = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BoxDecoration>? decoration = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, global::Doroti.Framework.Rendering.HitTestBehavior behavior = HitTestBehavior.opaque, bool requestCloseOnActivate = true, bool requestFocusOnHover = true, bool isDestructiveAction = false) : base(key: key)
+    public CupertinoMenuItem(Key? key = null, Widget child = default!, Widget? subtitle = null, Widget? leading = null, double? leadingWidth = null, AlignmentGeometry? leadingMidpointAlignment = null, Widget? trailing = null, double? trailingWidth = null, AlignmentGeometry? trailingMidpointAlignment = null, EdgeInsetsGeometry? padding = null, BoxConstraints? constraints = null, bool autofocus = false, FocusNode? focusNode = null, System.Action<bool>? onFocusChange = null, System.Action<bool>? onHover = null, Action? onPressed = null, WidgetStateProperty<BoxDecoration>? decoration = null, WidgetStateProperty<MouseCursor>? mouseCursor = null, HitTestBehavior behavior = HitTestBehavior.opaque, bool requestCloseOnActivate = true, bool requestFocusOnHover = true, bool isDestructiveAction = false) : base(key: key)
     {
         this.child = child;
         this.subtitle = subtitle;
@@ -1452,11 +1452,11 @@ public class CupertinoMenuItem : global::Doroti.Framework.Widgets.StatelessWidge
         this.isDestructiveAction = isDestructiveAction;
     }
 
-    public virtual bool hasLeading(global::Doroti.Framework.Widgets.BuildContext context) => DartRuntimePrimitives.ConvertValue<bool>(leading is not null);
+    public virtual bool hasLeading(BuildContext context) => DartRuntimePrimitives.ConvertValue<bool>(leading is not null);
     public virtual bool isDivider => false;
-    internal virtual global::Doroti.Framework.Painting.TextStyle _resolveDefaultTextStyle(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Painting.TextScaler textScaler)
+    internal virtual TextStyle _resolveDefaultTextStyle(BuildContext context, TextScaler textScaler)
     {
-        global::Doroti.Ui.Color colorLocal = default!;
+        Color colorLocal = default!;
         if (onPressed is null)
         {
             colorLocal = DartRuntimePrimitives.ConvertValue<Color>(CupertinoColors.systemGrey);
@@ -1476,12 +1476,12 @@ public class CupertinoMenuItem : global::Doroti.Framework.Widgets.StatelessWidge
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Painting.TextStyle _resolveDefaultSubtitleStyle(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Painting.TextScaler textScaler)
+    internal virtual TextStyle _resolveDefaultSubtitleStyle(BuildContext context, TextScaler textScaler)
     {
         var isDark = Equals(CupertinoTheme.maybeBrightnessOf(context), Brightness.dark);
         return _DynamicTypeStyle__menu_anchor.subhead.resolveTextStyle(textScaler).copyWith(fontSize: 15, textBaseline: TextBaseline.alphabetic, foreground: ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.blendMode = isDark ? BlendMode.plus : BlendMode.hardLight;
     __cascade.color = CupertinoDynamicColor.resolve(_kDefaultSubtitleTextColor, context);
     return __cascade;
@@ -1489,7 +1489,7 @@ public class CupertinoMenuItem : global::Doroti.Framework.Widgets.StatelessWidge
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleSelect(global::Doroti.Framework.Widgets.BuildContext context)
+    internal virtual void _handleSelect(BuildContext context)
     {
         if (requestCloseOnActivate)
         {
@@ -1498,13 +1498,13 @@ public class CupertinoMenuItem : global::Doroti.Framework.Widgets.StatelessWidge
         onPressed?.Invoke();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Painting.TextScaler textScaler = MediaQuery.maybeTextScalerOf(context) ?? TextScaler.CreateLinear(MediaQuery.maybeTextScaleFactorOf(context) ?? 1);
-        global::Doroti.Framework.Painting.TextStyle defaultTextStyle = _resolveDefaultTextStyle(context, textScaler);
+        TextScaler textScaler = MediaQuery.maybeTextScalerOf(context) ?? TextScaler.CreateLinear(MediaQuery.maybeTextScaleFactorOf(context) ?? 1);
+        TextStyle defaultTextStyle = _resolveDefaultTextStyle(context, textScaler);
         bool isLargeTextModeEnabled = Menu_anchorLibrary._largeTextModeEnabled(context);
-        global::Doroti.Framework.Widgets.Widget? leadingWidget = default!;
-        global::Doroti.Framework.Widgets.Widget? trailingWidget = default!;
+        Widget? leadingWidget = default!;
+        Widget? trailingWidget = default!;
         if (leading is not null)
         {
             leadingWidget = DefaultTextStyle.merge(style: _kLeadingDefaultTextStyle, child: IconTheme.merge(data: _kLeadingDefaultIconTheme, child: leading!));
@@ -1513,36 +1513,36 @@ public class CupertinoMenuItem : global::Doroti.Framework.Widgets.StatelessWidge
         {
             trailingWidget = DefaultTextStyle.merge(style: _kTrailingDefaultTextStyle, child: IconTheme.merge(data: _kTrailingDefaultIconTheme, child: trailing!));
         }
-        return MediaQuery.withClampedTextScaling(minScaleFactor: Menu_anchorLibrary._kMinimumTextScaleFactor, maxScaleFactor: Menu_anchorLibrary._kMaximumTextScaleFactor, child: new _CupertinoMenuItemInteractionHandler__menu_anchor(mouseCursor: mouseCursor ?? _kDefaultCursor, requestFocusOnHover: requestFocusOnHover, onPressed: (onPressed is not null) ? (() => { _handleSelect(context); }) : null, onHover: onHover, onFocusChange: onFocusChange, autofocus: autofocus, focusNode: focusNode, decoration: decoration ?? kDefaultDecoration, behavior: behavior, child: DefaultTextStyle.merge(maxLines: isLargeTextModeEnabled ? _kDefaultLargeTextModeMaxLines : _kDefaultMaxLines, overflow: TextOverflow.ellipsis, softWrap: true, style: new global::Doroti.Framework.Painting.TextStyle(color: defaultTextStyle.color), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(color: defaultTextStyle.color), child: new _CupertinoMenuItemLabel__menu_anchor(padding: padding, constraints: constraints, trailing: trailingWidget, leading: leadingWidget, leadingMidpointAlignment: leadingMidpointAlignment, trailingMidpointAlignment: trailingMidpointAlignment, leadingWidth: leadingWidth, trailingWidth: trailingWidth, subtitle: (subtitle is not null) ? DefaultTextStyle.merge(style: _resolveDefaultSubtitleStyle(context, textScaler), child: subtitle!) : null, child: DefaultTextStyle.merge(style: defaultTextStyle, child: child))))));
+        return MediaQuery.withClampedTextScaling(minScaleFactor: Menu_anchorLibrary._kMinimumTextScaleFactor, maxScaleFactor: Menu_anchorLibrary._kMaximumTextScaleFactor, child: new _CupertinoMenuItemInteractionHandler__menu_anchor(mouseCursor: mouseCursor ?? _kDefaultCursor, requestFocusOnHover: requestFocusOnHover, onPressed: (onPressed is not null) ? (() => { _handleSelect(context); }) : null, onHover: onHover, onFocusChange: onFocusChange, autofocus: autofocus, focusNode: focusNode, decoration: decoration ?? kDefaultDecoration, behavior: behavior, child: DefaultTextStyle.merge(maxLines: isLargeTextModeEnabled ? _kDefaultLargeTextModeMaxLines : _kDefaultMaxLines, overflow: TextOverflow.ellipsis, softWrap: true, style: new TextStyle(color: defaultTextStyle.color), child: IconTheme.merge(data: new IconThemeData(color: defaultTextStyle.color), child: new _CupertinoMenuItemLabel__menu_anchor(padding: padding, constraints: constraints, trailing: trailingWidget, leading: leadingWidget, leadingMidpointAlignment: leadingMidpointAlignment, trailingMidpointAlignment: trailingMidpointAlignment, leadingWidth: leadingWidth, trailingWidth: trailingWidth, subtitle: (subtitle is not null) ? DefaultTextStyle.merge(style: _resolveDefaultSubtitleStyle(context, textScaler), child: subtitle!) : null, child: DefaultTextStyle.merge(style: defaultTextStyle, child: child))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.Widget?>("child", child));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("requestCloseOnActivate", value: requestCloseOnActivate, ifTrue: "closes on press", ifFalse: "does not close on press", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("requestFocusOnHover", value: requestFocusOnHover, ifFalse: "does not request focus on hover", ifTrue: "requests focus on hover", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("hitTestBehavior", behavior));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.FocusNode?>("focusNode", focusNode, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: onPressed is not null, ifFalse: "DISABLED"));
+        properties.add(new DiagnosticsProperty<Widget?>("child", child));
+        properties.add(new FlagProperty("requestCloseOnActivate", value: requestCloseOnActivate, ifTrue: "closes on press", ifFalse: "does not close on press", defaultValue: true));
+        properties.add(new FlagProperty("requestFocusOnHover", value: requestFocusOnHover, ifFalse: "does not request focus on hover", ifTrue: "requests focus on hover", defaultValue: true));
+        properties.add(new EnumProperty<HitTestBehavior>("hitTestBehavior", behavior));
+        properties.add(new DiagnosticsProperty<FocusNode?>("focusNode", focusNode, defaultValue: null));
+        properties.add(new FlagProperty("enabled", value: onPressed is not null, ifFalse: "DISABLED"));
         if (subtitle is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.Widget?>("subtitle", subtitle));
+            properties.add(new DiagnosticsProperty<Widget?>("subtitle", subtitle));
         }
         if (leading is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.Widget?>("leading", leading));
+            properties.add(new DiagnosticsProperty<Widget?>("leading", leading));
         }
         if (trailing is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.Widget?>("trailing", trailing));
+            properties.add(new DiagnosticsProperty<Widget?>("trailing", trailing));
         }
     }
 
 }
 
-internal class _CupertinoMenuItemLabel__menu_anchor : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
 {
     internal const double _kDefaultHorizontalWidth = 16;
     internal static double _kLeadingWidthSlope = -311L / 1000L;
@@ -1553,18 +1553,18 @@ internal class _CupertinoMenuItemLabel__menu_anchor : global::Doroti.Framework.W
     internal const double _kTrailingWidthYIntercept = 22;
     internal static double _kFirstBaselineToTopSlope = 14L / 11L;
     internal static double _kLastBaselineToBottomSlope = 71L / 100L;
-    public virtual global::Doroti.Framework.Widgets.Widget? leading { get; private set; }
+    public virtual Widget? leading { get; private set; }
     public virtual double? leadingWidth { get; private set; }
-    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry? _leadingAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? trailing { get; private set; }
+    internal virtual AlignmentGeometry? _leadingAlignment { get; private set; }
+    public virtual Widget? trailing { get; private set; }
     public virtual double? trailingWidth { get; private set; }
-    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry? _trailingAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? subtitle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    internal virtual global::Doroti.Framework.Rendering.BoxConstraints? _constraints { get; private set; }
+    internal virtual AlignmentGeometry? _trailingAlignment { get; private set; }
+    public virtual Widget child { get; private set; } = default!;
+    public virtual Widget? subtitle { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
+    internal virtual BoxConstraints? _constraints { get; private set; }
 
-    internal _CupertinoMenuItemLabel__menu_anchor(global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.Widget? subtitle = null, global::Doroti.Framework.Widgets.Widget? leading = null, double? leadingWidth = null, global::Doroti.Framework.Painting.AlignmentGeometry? leadingMidpointAlignment = null, global::Doroti.Framework.Widgets.Widget? trailing = null, double? trailingWidth = null, global::Doroti.Framework.Painting.AlignmentGeometry? trailingMidpointAlignment = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null)
+    internal _CupertinoMenuItemLabel__menu_anchor(Widget child, Widget? subtitle = null, Widget? leading = null, double? leadingWidth = null, AlignmentGeometry? leadingMidpointAlignment = null, Widget? trailing = null, double? trailingWidth = null, AlignmentGeometry? trailingMidpointAlignment = null, BoxConstraints? constraints = null, EdgeInsetsGeometry? padding = null)
     {
         this.child = child;
         this.subtitle = subtitle;
@@ -1578,7 +1578,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : global::Doroti.Framework.W
         _constraints = constraints;
     }
 
-    internal virtual double _resolveLeadingWidth(global::Doroti.Framework.Painting.TextScaler textScaler, double pixelRatio, double lineHeight)
+    internal virtual double _resolveLeadingWidth(TextScaler textScaler, double pixelRatio, double lineHeight)
     {
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double value = (_kLeadingWidthSlope * units) + _kLeadingWidthYIntercept;
@@ -1586,7 +1586,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _resolveTrailingWidth(global::Doroti.Framework.Painting.TextScaler textScaler, double pixelRatio, double lineHeight)
+    internal virtual double _resolveTrailingWidth(TextScaler textScaler, double pixelRatio, double lineHeight)
     {
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double value = (_kTrailingWidthSlope * units) + _kTrailingWidthYIntercept;
@@ -1594,21 +1594,21 @@ internal class _CupertinoMenuItemLabel__menu_anchor : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _resolveTrailingAlignment(double trailingWidth)
+    internal virtual AlignmentGeometry _resolveTrailingAlignment(double trailingWidth)
     {
         double horizontalOffset = (DartRuntimePrimitives.RequireValue(trailingWidth) / 2L) + 6L;
         double horizontalRatio = (DartRuntimePrimitives.RequireValue(trailingWidth) - horizontalOffset) / DartRuntimePrimitives.RequireValue(trailingWidth);
         double horizontalAlignment = horizontalRatio * 2L - 1L;
-        return new global::Doroti.Framework.Painting.AlignmentDirectional(horizontalAlignment, 0.0);
+        return new AlignmentDirectional(horizontalAlignment, 0.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _resolveLeadingAlignment(double leadingWidth, global::Doroti.Framework.Painting.TextScaler textScaler)
+    internal virtual AlignmentGeometry _resolveLeadingAlignment(double leadingWidth, TextScaler textScaler)
     {
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double horizontalRatio = (_kLeadingMidpointSlope * units) + _kLeadingMidpointYIntercept;
         double horizontalAlignment = horizontalRatio * 2L - 1L;
-        return new global::Doroti.Framework.Painting.AlignmentDirectional(horizontalAlignment, 0.0);
+        return new AlignmentDirectional(horizontalAlignment, 0.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1624,49 +1624,49 @@ internal class _CupertinoMenuItemLabel__menu_anchor : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Painting.EdgeInsets _resolvePadding(double minimumHeight, double lineHeight)
+    internal virtual EdgeInsets _resolvePadding(double minimumHeight, double lineHeight)
     {
         double padding = Math.Max(0, minimumHeight - lineHeight);
         return EdgeInsets.CreateSymmetric(vertical: DartRuntimePrimitives.RequireValue(padding) / 2L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.maybeOf(context) ?? TextDirection.ltr;
-        global::Doroti.Framework.Painting.TextScaler textScaler = MediaQuery.maybeTextScalerOf(context) ?? TextScaler.noScaling;
+        TextDirection textDirectionLocal = Directionality.maybeOf(context) ?? TextDirection.ltr;
+        TextScaler textScaler = MediaQuery.maybeTextScalerOf(context) ?? TextScaler.noScaling;
         double pixelRatio = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0;
-        global::Doroti.Framework.Painting.TextStyle dynamicBodyText = _DynamicTypeStyle__menu_anchor.body.resolveTextStyle(textScaler);
+        TextStyle dynamicBodyText = _DynamicTypeStyle__menu_anchor.body.resolveTextStyle(textScaler);
         DartRuntimePrimitives.Assert(() => (dynamicBodyText.fontSize is not null) && (dynamicBodyText.height is not null));
         double lineHeight = DartRuntimePrimitives.RequireValue(dynamicBodyText.fontSize) * DartRuntimePrimitives.RequireValue(dynamicBodyText.height);
         bool showLeadingWidget = (leading is not null) || (CupertinoMenuAnchor.maybeHasLeadingOf(context) ?? false);
         double minimumHeight = _resolveFirstBaselineToTop(lineHeight, pixelRatio) + _resolveLastBaselineToBottom(lineHeight, pixelRatio);
-        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = _constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: minimumHeight);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry resolvedPadding = padding ?? _resolvePadding(minimumHeight, lineHeight);
+        BoxConstraints constraintsLocal = _constraints ?? new BoxConstraints(minHeight: minimumHeight);
+        EdgeInsetsGeometry resolvedPadding = padding ?? _resolvePadding(minimumHeight, lineHeight);
         double resolvedLeadingWidth = leadingWidth ?? (showLeadingWidget ? _resolveLeadingWidth(textScaler, pixelRatio, lineHeight) : _kDefaultHorizontalWidth);
         double resolvedTrailingWidth = trailingWidth ?? ((trailing is not null) ? _resolveTrailingWidth(textScaler, pixelRatio, lineHeight) : _kDefaultHorizontalWidth);
-        return new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraintsLocal, child: new global::Doroti.Framework.Widgets.Padding(padding: resolvedPadding, child: new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection83239 = new List<global::Doroti.Framework.Widgets.Widget>(); if (showLeadingWidget) { __collection83239.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateDirectional(textDirection: textDirectionLocal, start: 0, top: 0, bottom: 0, width: resolvedLeadingWidth, child: new _AlignMidpoint__menu_anchor(alignment: _leadingAlignment ?? _resolveLeadingAlignment(resolvedLeadingWidth, textScaler), child: leading)))); } __collection83239.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: resolvedLeadingWidth, end: resolvedTrailingWidth), child: (subtitle is null) ? new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: child) : new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 1)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(subtitle!) })))); if (trailing is not null) { __collection83239.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateDirectional(textDirection: textDirectionLocal, end: 0, top: 0, bottom: 0, width: resolvedTrailingWidth, child: new _AlignMidpoint__menu_anchor(alignment: _trailingAlignment ?? _resolveTrailingAlignment(resolvedTrailingWidth), child: trailing)))); } return __collection83239; }))())));
+        return new ConstrainedBox(constraints: constraintsLocal, child: new Padding(padding: resolvedPadding, child: new Stack(children: ((Func<List<Widget>>)(() => { var __collection83239 = new List<Widget>(); if (showLeadingWidget) { __collection83239.Add(DartRuntimePrimitives.ConvertValue<Widget>(Positioned.CreateDirectional(textDirection: textDirectionLocal, start: 0, top: 0, bottom: 0, width: resolvedLeadingWidth, child: new _AlignMidpoint__menu_anchor(alignment: _leadingAlignment ?? _resolveLeadingAlignment(resolvedLeadingWidth, textScaler), child: leading)))); } __collection83239.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: resolvedLeadingWidth, end: resolvedTrailingWidth), child: (subtitle is null) ? new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: child) : new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 1)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(subtitle!) })))); if (trailing is not null) { __collection83239.Add(DartRuntimePrimitives.ConvertValue<Widget>(Positioned.CreateDirectional(textDirection: textDirectionLocal, end: 0, top: 0, bottom: 0, width: resolvedTrailingWidth, child: new _AlignMidpoint__menu_anchor(alignment: _trailingAlignment ?? _resolveTrailingAlignment(resolvedTrailingWidth), child: trailing)))); } return __collection83239; }))())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _AlignMidpoint__menu_anchor : global::Doroti.Framework.Widgets.SingleChildRenderObjectWidget
+internal class _AlignMidpoint__menu_anchor : SingleChildRenderObjectWidget
 {
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual AlignmentGeometry alignment { get; private set; } = default!;
 
-    internal _AlignMidpoint__menu_anchor(global::Doroti.Framework.Painting.AlignmentGeometry alignment, global::Doroti.Framework.Widgets.Widget? child) : base(child: child)
+    internal _AlignMidpoint__menu_anchor(AlignmentGeometry alignment, Widget? child) : base(child: child)
     {
         this.alignment = alignment;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderAlignMidpoint__menu_anchor(alignment: alignment, textDirection: Directionality.maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderAlignMidpoint__menu_anchor)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderAlignMidpoint__menu_anchor>)(() =>
@@ -1680,9 +1680,9 @@ internal class _AlignMidpoint__menu_anchor : global::Doroti.Framework.Widgets.Si
 
 }
 
-public class _RenderAlignMidpoint__menu_anchor : global::Doroti.Framework.Rendering.RenderPositionedBox
+public class _RenderAlignMidpoint__menu_anchor : RenderPositionedBox
 {
-    internal _RenderAlignMidpoint__menu_anchor(global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(alignment: alignment ?? Alignment.center, textDirection: textDirection)
+    internal _RenderAlignMidpoint__menu_anchor(AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(alignment: alignment ?? Alignment.center, textDirection: textDirection)
     {
     }
 
@@ -1692,29 +1692,29 @@ public class _RenderAlignMidpoint__menu_anchor : global::Doroti.Framework.Render
         DartRuntimePrimitives.Assert(() => !child!.debugNeedsLayout);
         DartRuntimePrimitives.Assert(() => child!.hasSize);
         DartRuntimePrimitives.Assert(() => hasSize);
-        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)child!.parentData!)!;
-        global::Doroti.Ui.Offset offsetLocal = resolvedAlignment.alongSize(size) - child!.size.center(Offset.zero);
+        var childParentData = ((BoxParentData?)child!.parentData!)!;
+        Offset offsetLocal = resolvedAlignment.alongSize(size) - child!.size.center(Offset.zero);
         double dxLocal = Dart_uiLibrary.clampDouble(offsetLocal.dx, 0.0, size.width - child!.size.width);
         double dyLocal = Dart_uiLibrary.clampDouble(offsetLocal.dy, 0.0, size.height - child!.size.height);
-        childParentData.offset = new global::Doroti.Ui.Offset(dxLocal, dyLocal);
+        childParentData.offset = new Offset(dxLocal, dyLocal);
     }
 
 }
 
-public class _CupertinoMenuItemInteractionHandler__menu_anchor : global::Doroti.Framework.Widgets.StatefulWidget
+public class _CupertinoMenuItemInteractionHandler__menu_anchor : StatefulWidget
 {
-    public virtual global::System.Action<bool>? onHover { get; private set; }
-    public virtual global::System.Action? onPressed { get; private set; }
-    public virtual global::System.Action<bool>? onFocusChange { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
+    public virtual System.Action<bool>? onHover { get; private set; }
+    public virtual Action? onPressed { get; private set; }
+    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    public virtual FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool requestFocusOnHover { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior behavior { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BoxDecoration> decoration { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual HitTestBehavior behavior { get; private set; } = default!;
+    public virtual WidgetStateProperty<MouseCursor> mouseCursor { get; private set; } = default!;
+    public virtual WidgetStateProperty<BoxDecoration> decoration { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _CupertinoMenuItemInteractionHandler__menu_anchor(global::System.Action<bool>? onHover, global::System.Action? onPressed, global::System.Action<bool>? onFocusChange, global::Doroti.Framework.Widgets.FocusNode? focusNode, bool autofocus, bool requestFocusOnHover, global::Doroti.Framework.Rendering.HitTestBehavior behavior, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BoxDecoration> decoration, global::Doroti.Framework.Widgets.Widget child)
+    internal _CupertinoMenuItemInteractionHandler__menu_anchor(System.Action<bool>? onHover, Action? onPressed, System.Action<bool>? onFocusChange, FocusNode? focusNode, bool autofocus, bool requestFocusOnHover, HitTestBehavior behavior, WidgetStateProperty<MouseCursor> mouseCursor, WidgetStateProperty<BoxDecoration> decoration, Widget child)
     {
         this.onHover = onHover;
         this.onPressed = onPressed;
@@ -1731,7 +1731,7 @@ public class _CupertinoMenuItemInteractionHandler__menu_anchor : global::Doroti.
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoMenuItemInteractionHandlerState__menu_anchor());
 }
 
-internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::Doroti.Framework.Widgets.State<_CupertinoMenuItemInteractionHandler__menu_anchor>
+internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : State<_CupertinoMenuItemInteractionHandler__menu_anchor>
 {
     private bool __late__actions_initialized;
     private DartMap<Type, dynamic> __late__actions = default!;
@@ -1741,18 +1741,18 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
         {
             if (!__late__actions_initialized)
             {
-                __late__actions = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.ActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ActivateIntent>(onInvoke: _handleActivation), [typeof(global::Doroti.Framework.Widgets.ButtonActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ButtonActivateIntent>(onInvoke: _handleActivation) };
+                __late__actions = new DartMap<Type, dynamic> { [typeof(ActivateIntent)] = new CallbackAction<ActivateIntent>(onInvoke: _handleActivation), [typeof(ButtonActivateIntent)] = new CallbackAction<ButtonActivateIntent>(onInvoke: _handleActivation) };
                 __late__actions_initialized = true;
             }
             return __late__actions;
         }
     }
     internal virtual DartMap<Type, dynamic>? _gestures { get; set; } = default;
-    internal virtual global::Doroti.Framework.Gestures.DeviceGestureSettings? _gestureSettings { get; set; } = default;
-    internal virtual global::Doroti.Framework.Widgets.FocusNode? _internalFocusNode { get; set; } = default;
-    internal virtual global::Doroti.Framework.Widgets.WidgetStatesController _statesController { get; private set; } = new global::Doroti.Framework.Widgets.WidgetStatesController();
+    internal virtual Gestures.DeviceGestureSettings? _gestureSettings { get; set; } = default;
+    internal virtual FocusNode? _internalFocusNode { get; set; } = default;
+    internal virtual WidgetStatesController _statesController { get; private set; } = new WidgetStatesController();
 
-    internal virtual global::Doroti.Framework.Widgets.FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FocusNode>(widget.focusNode ?? _internalFocusNode!);
+    internal virtual FocusNode _focusNode => DartRuntimePrimitives.ConvertValue<FocusNode>(widget.focusNode ?? _internalFocusNode!);
     public virtual bool isHovered
     {
         get => _statesController.value.Contains(WidgetState.hovered);
@@ -1803,7 +1803,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
         base.initState();
         if (widget.focusNode is null)
         {
-            _internalFocusNode = new global::Doroti.Framework.Widgets.FocusNode();
+            _internalFocusNode = new FocusNode();
         }
         isEnabled = widget.onPressed is not null;
         isFocused = _focusNode.hasPrimaryFocus;
@@ -1822,7 +1822,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
             else
             {
                 DartRuntimePrimitives.Assert(() => _internalFocusNode is null);
-                _internalFocusNode = new global::Doroti.Framework.Widgets.FocusNode();
+                _internalFocusNode = new FocusNode();
             }
             isFocused = _focusNode.hasPrimaryFocus;
         }
@@ -1853,18 +1853,18 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
         widget.onFocusChange?.Invoke(isFocused);
     }
 
-    internal virtual void _handleActivation(global::Doroti.Framework.Widgets.Intent? intent = null)
+    internal virtual void _handleActivation(Intent? intent = null)
     {
         isSwiped = isPressed = false;
         widget.onPressed?.Invoke();
     }
 
-    internal virtual void _handleTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
+    internal virtual void _handleTapDown(Gestures.TapDownDetails details)
     {
         isPressed = true;
     }
 
-    internal virtual void _handleTapUp(global::Doroti.Framework.Gestures.TapUpDetails? details)
+    internal virtual void _handleTapUp(Gestures.TapUpDetails? details)
     {
         isPressed = false;
         widget.onPressed?.Invoke();
@@ -1875,7 +1875,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
         isPressed = false;
     }
 
-    internal virtual void _handlePointerExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
+    internal virtual void _handlePointerExit(Gestures.PointerExitEvent @event)
     {
         if (isHovered)
         {
@@ -1884,7 +1884,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
         }
     }
 
-    internal virtual void _handlePointerHover(global::Doroti.Framework.Gestures.PointerHoverEvent @event)
+    internal virtual void _handlePointerHover(Gestures.PointerHoverEvent @event)
     {
         if (!isHovered)
         {
@@ -1900,7 +1900,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
 
     internal virtual void _handleDismissMenu()
     {
-        Actions.invoke(context, new global::Doroti.Framework.Widgets.DismissIntent());
+        Actions.invoke(context, new DismissIntent());
     }
 
     internal virtual void _handleSwipeEnter()
@@ -1944,18 +1944,18 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
         }
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildStatefulAppearance(global::Doroti.Framework.Widgets.BuildContext context, HashSet<global::Doroti.Framework.Widgets.WidgetState> value, global::Doroti.Framework.Widgets.Widget? child)
+    internal virtual Widget _buildStatefulAppearance(BuildContext context, HashSet<WidgetState> value, Widget? child)
     {
-        global::Doroti.Framework.Services.MouseCursor cursorLocal = widget.mouseCursor.resolve(value);
-        global::Doroti.Framework.Painting.BoxDecoration decorationLocal = widget.decoration.resolve(value);
+        MouseCursor cursorLocal = widget.mouseCursor.resolve(value);
+        BoxDecoration decorationLocal = widget.decoration.resolve(value);
         bool hasBackground = (decorationLocal.color is not null) || (decorationLocal.gradient is not null);
-        return new global::Doroti.Framework.Widgets.MouseRegion(onHover: isEnabled ? _handlePointerHover : null, onExit: isEnabled ? _handlePointerExit : null, hitTestBehavior: HitTestBehavior.deferToChild, cursor: cursorLocal, child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: decorationLocal.copyWith(color: CupertinoDynamicColor.maybeResolve(decorationLocal.color, context), backgroundBlendMode: (Foundation.ConstantsLibrary.kIsWeb || !hasBackground || (decorationLocal.backgroundBlendMode is not null)) ? decorationLocal.backgroundBlendMode : (Equals(CupertinoTheme.maybeBrightnessOf(context), Brightness.light) ? BlendMode.multiply : BlendMode.plus)), child: child));
+        return new MouseRegion(onHover: isEnabled ? _handlePointerHover : null, onExit: isEnabled ? _handlePointerExit : null, hitTestBehavior: HitTestBehavior.deferToChild, cursor: cursorLocal, child: new DecoratedBox(decoration: decorationLocal.copyWith(color: CupertinoDynamicColor.maybeResolve(decorationLocal.color, context), backgroundBlendMode: (Foundation.ConstantsLibrary.kIsWeb || !hasBackground || (decorationLocal.backgroundBlendMode is not null)) ? decorationLocal.backgroundBlendMode : (Equals(CupertinoTheme.maybeBrightnessOf(context), Brightness.light) ? BlendMode.multiply : BlendMode.plus)), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Gestures.DeviceGestureSettings? newGestureSettings = MediaQuery.maybeGestureSettingsOf(context);
+        Gestures.DeviceGestureSettings? newGestureSettings = MediaQuery.maybeGestureSettingsOf(context);
         if (!Equals(_gestureSettings, newGestureSettings))
         {
             _gestureSettings = newGestureSettings;
@@ -1963,9 +1963,9 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
         }
         _gestures ??= new DartMap<Type, dynamic>
         {
-            [typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new global::Doroti.Framework.Widgets.GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this), (instance) =>
+            [typeof(Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<Gestures.TapGestureRecognizer>(() => new Gestures.TapGestureRecognizer(debugOwner: this), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<Gestures.TapGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onTapDown = _handleTapDown;
@@ -1976,20 +1976,20 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor : global::
                 }))());
             })
         };
-        return new global::Doroti.Framework.Widgets.MergeSemantics(child: Widgets.Semantics.CreateFromProperties(properties: new global::Doroti.Framework.Semantics.SemanticsProperties(enabled: isEnabled, onDismiss: isEnabled ? _handleDismissMenu : null), child: new global::Doroti.Framework.Widgets.Actions(actions: isEnabled ? _actions : new DartMap<Type, dynamic>(), child: new global::Doroti.Framework.Widgets.Focus(autofocus: isEnabled && widget.autofocus, focusNode: _focusNode, canRequestFocus: isEnabled, skipTraversal: !isEnabled, onFocusChange: value => _handleFocusChange(value), child: new _SwipeTarget__menu_anchor(onEnter: () => _handleSwipeEnter(), onExit: () => _handleSwipeExit(), onCompletion: () => _handleSwipeCompleted(), child: new global::Doroti.Framework.Widgets.ValueListenableBuilder<HashSet<global::Doroti.Framework.Widgets.WidgetState>>(valueListenable: _statesController, builder: _buildStatefulAppearance, child: new global::Doroti.Framework.Widgets.RawGestureDetector(behavior: widget.behavior, gestures: isEnabled ? _gestures! : new DartMap<Type, dynamic>(), child: widget.child)))))));
+        return new MergeSemantics(child: Widgets.Semantics.CreateFromProperties(properties: new Semantics.SemanticsProperties(enabled: isEnabled, onDismiss: isEnabled ? _handleDismissMenu : null), child: new Actions(actions: isEnabled ? _actions : new DartMap<Type, dynamic>(), child: new Focus(autofocus: isEnabled && widget.autofocus, focusNode: _focusNode, canRequestFocus: isEnabled, skipTraversal: !isEnabled, onFocusChange: value => _handleFocusChange(value), child: new _SwipeTarget__menu_anchor(onEnter: () => _handleSwipeEnter(), onExit: () => _handleSwipeExit(), onCompletion: () => _handleSwipeCompleted(), child: new ValueListenableBuilder<HashSet<WidgetState>>(valueListenable: _statesController, builder: _buildStatefulAppearance, child: new RawGestureDetector(behavior: widget.behavior, gestures: isEnabled ? _gestures! : new DartMap<Type, dynamic>(), child: widget.child)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _SwipeTarget__menu_anchor : global::Doroti.Framework.Widgets.StatelessWidget
+internal class _SwipeTarget__menu_anchor : StatelessWidget
 {
-    public virtual global::System.Action? onEnter { get; private set; }
-    public virtual global::System.Action? onExit { get; private set; }
-    public virtual global::System.Action? onCompletion { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Action? onEnter { get; private set; }
+    public virtual Action? onExit { get; private set; }
+    public virtual Action? onCompletion { get; private set; }
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _SwipeTarget__menu_anchor(global::System.Action? onEnter, global::System.Action? onExit, global::System.Action? onCompletion, global::Doroti.Framework.Widgets.Widget child)
+    internal _SwipeTarget__menu_anchor(Action? onEnter, Action? onExit, Action? onCompletion, Widget child)
     {
         this.onEnter = onEnter;
         this.onExit = onExit;
@@ -1998,24 +1998,24 @@ internal class _SwipeTarget__menu_anchor : global::Doroti.Framework.Widgets.Stat
     }
 
     public virtual bool isOpaque => true;
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.MetaData(metaData: this, child: child);
+        return new MetaData(metaData: this, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _SwipeScope__menu_anchor : global::Doroti.Framework.Widgets.InheritedWidget
+internal class _SwipeScope__menu_anchor : InheritedWidget
 {
     public virtual _SwipeRegionState__menu_anchor state { get; private set; } = default!;
 
-    internal _SwipeScope__menu_anchor(global::Doroti.Framework.Widgets.Widget child, _SwipeRegionState__menu_anchor state) : base(child: child)
+    internal _SwipeScope__menu_anchor(Widget child, _SwipeRegionState__menu_anchor state) : base(child: child)
     {
         this.state = state;
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
+    public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (_SwipeScope__menu_anchor)oldWidget;
         return !Equals(state, __oldWidget.state);
@@ -2024,20 +2024,20 @@ internal class _SwipeScope__menu_anchor : global::Doroti.Framework.Widgets.Inher
 
 }
 
-public class _SwipeRegion__menu_anchor : global::Doroti.Framework.Widgets.StatefulWidget
+public class _SwipeRegion__menu_anchor : StatefulWidget
 {
     public virtual bool enabled { get; private set; } = default!;
-    public virtual global::System.Action<double> onDistanceChanged { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual System.Action<double> onDistanceChanged { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _SwipeRegion__menu_anchor(bool enabled = true, global::System.Action<double> onDistanceChanged = default!, global::Doroti.Framework.Widgets.Widget child = default!)
+    internal _SwipeRegion__menu_anchor(bool enabled = true, System.Action<double> onDistanceChanged = default!, Widget child = default!)
     {
         this.enabled = enabled;
         this.onDistanceChanged = onDistanceChanged;
         this.child = child;
     }
 
-    public static _SwipeRegionState__menu_anchor? of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static _SwipeRegionState__menu_anchor? of(BuildContext context)
     {
         _SwipeScope__menu_anchor? scope = context.dependOnInheritedWidgetOfExactType<_SwipeScope__menu_anchor>();
         return scope?.state;
@@ -2047,10 +2047,10 @@ public class _SwipeRegion__menu_anchor : global::Doroti.Framework.Widgets.Statef
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SwipeRegionState__menu_anchor());
 }
 
-public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.State<_SwipeRegion__menu_anchor>
+public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
 {
     internal virtual HashSet<_RenderSwipeSurface__menu_anchor> _surfaces { get; private set; } = new HashSet<_RenderSwipeSurface__menu_anchor>();
-    internal virtual global::Doroti.Framework.Gestures.MultiDragGestureRecognizer? _recognizer { get; set; } = default;
+    internal virtual Gestures.MultiDragGestureRecognizer? _recognizer { get; set; } = default;
     internal virtual Offset? _position { get; set; } = default;
 
     public virtual bool isSwiping => DartRuntimePrimitives.ConvertValue<bool>(_position is not null);
@@ -2093,7 +2093,7 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
         _surfaces.Remove(surface);
     }
 
-    public virtual void beginSwipe(global::Doroti.Framework.Gestures.PointerDownEvent @event, Duration delay = default, global::System.Action? onStart = null)
+    public virtual void beginSwipe(Gestures.PointerDownEvent @event, Duration delay = default, Action? onStart = null)
     {
         if (isSwiping || !widget.enabled)
         {
@@ -2101,7 +2101,7 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
         }
         _recognizer?.dispose();
         _recognizer = null;
-        global::Doroti.Framework.Gestures.Drag handleStart(Offset position)
+        Gestures.Drag handleStart(Offset position)
         {
             onStart?.Invoke();
             return _createSwipeHandle(position);
@@ -2109,18 +2109,18 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
         }
         if (Equals(delay, Duration.zero))
         {
-            _recognizer = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>(((Func<global::Doroti.Framework.Gestures.ImmediateMultiDragGestureRecognizer>)(() =>
+            _recognizer = DartRuntimePrimitives.ConvertValue<Gestures.MultiDragGestureRecognizer>(((Func<Gestures.ImmediateMultiDragGestureRecognizer>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Gestures.ImmediateMultiDragGestureRecognizer(allowedButtonsFilter: (button) => button == Gestures.EventsLibrary.kPrimaryButton);
+    var __cascade = new Gestures.ImmediateMultiDragGestureRecognizer(allowedButtonsFilter: (button) => button == Gestures.EventsLibrary.kPrimaryButton);
     __cascade.onStart = handleStart;
     return __cascade;
 }))());
         }
         else
         {
-            _recognizer = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>(((Func<global::Doroti.Framework.Gestures.DelayedMultiDragGestureRecognizer>)(() =>
+            _recognizer = DartRuntimePrimitives.ConvertValue<Gestures.MultiDragGestureRecognizer>(((Func<Gestures.DelayedMultiDragGestureRecognizer>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Gestures.DelayedMultiDragGestureRecognizer(delay: delay, allowedButtonsFilter: (button) => button == Gestures.EventsLibrary.kPrimaryButton);
+    var __cascade = new Gestures.DelayedMultiDragGestureRecognizer(delay: delay, allowedButtonsFilter: (button) => button == Gestures.EventsLibrary.kPrimaryButton);
     __cascade.onStart = handleStart;
     return __cascade;
 }))());
@@ -2129,7 +2129,7 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
         _recognizer!.addPointer(@event);
     }
 
-    internal virtual global::Doroti.Framework.Gestures.Drag _createSwipeHandle(Offset position)
+    internal virtual Gestures.Drag _createSwipeHandle(Offset position)
     {
         DartRuntimePrimitives.Assert(() => !isSwiping, () => (object?)"A new swipe should not begin while a swipe is active.");
         _position = position;
@@ -2137,7 +2137,7 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleSwipeUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails updateDetails)
+    internal virtual void _handleSwipeUpdate(Gestures.DragUpdateDetails updateDetails)
     {
         _position = DartRuntimePrimitives.RequireValue(_position) + updateDetails.delta;
         double minimumSquaredDistance = double.MaxValue;
@@ -2155,7 +2155,7 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
         widget.onDistanceChanged(distance);
     }
 
-    internal virtual void _handleSwipeEnd(global::Doroti.Framework.Gestures.DragEndDetails updateDetails)
+    internal virtual void _handleSwipeEnd(Gestures.DragEndDetails updateDetails)
     {
         _completeSwipe();
     }
@@ -2176,7 +2176,7 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
         }
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         return new _SwipeScope__menu_anchor(state: this, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2184,24 +2184,24 @@ public class _SwipeRegionState__menu_anchor : global::Doroti.Framework.Widgets.S
 
 }
 
-internal class _SwipeSurface__menu_anchor : global::Doroti.Framework.Widgets.SingleChildRenderObjectWidget
+internal class _SwipeSurface__menu_anchor : SingleChildRenderObjectWidget
 {
     public virtual Duration delay { get; private set; } = default!;
-    public virtual global::System.Action? onStart { get; private set; }
+    public virtual Action? onStart { get; private set; }
 
-    internal _SwipeSurface__menu_anchor(global::Doroti.Framework.Widgets.Widget? child, Duration delay = default, global::System.Action? onStart = null) : base(child: child)
+    internal _SwipeSurface__menu_anchor(Widget? child, Duration delay = default, Action? onStart = null) : base(child: child)
     {
         this.delay = delay;
         this.onStart = onStart;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderSwipeSurface__menu_anchor(region: _SwipeRegion__menu_anchor.of(context)!, delay: delay, onStart: onStart);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderSwipeSurface__menu_anchor)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSwipeSurface__menu_anchor>)(() =>
@@ -2216,13 +2216,13 @@ internal class _SwipeSurface__menu_anchor : global::Doroti.Framework.Widgets.Sin
 
 }
 
-public class _RenderSwipeSurface__menu_anchor : global::Doroti.Framework.Rendering.RenderProxyBoxWithHitTestBehavior
+public class _RenderSwipeSurface__menu_anchor : RenderProxyBoxWithHitTestBehavior
 {
     internal virtual _SwipeRegionState__menu_anchor _region { get; set; } = default!;
     public virtual Duration delay { get; set; } = default!;
-    public virtual global::System.Action? onStart { get; set; } = default;
+    public virtual Action? onStart { get; set; } = default;
 
-    internal _RenderSwipeSurface__menu_anchor(_SwipeRegionState__menu_anchor region, Duration delay, global::System.Action? onStart) : base(behavior: HitTestBehavior.opaque)
+    internal _RenderSwipeSurface__menu_anchor(_SwipeRegionState__menu_anchor region, Duration delay, Action? onStart) : base(behavior: HitTestBehavior.opaque)
     {
         this.delay = delay;
         this.onStart = onStart;
@@ -2244,7 +2244,7 @@ public class _RenderSwipeSurface__menu_anchor : global::Doroti.Framework.Renderi
             }
         }
     }
-    public virtual global::Doroti.Ui.Rect computeRect() => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Rect>(localToGlobal(Offset.zero) & size);
+    public virtual Rect computeRect() => DartRuntimePrimitives.ConvertValue<Rect>(localToGlobal(Offset.zero) & size);
     public override void detach()
     {
         _region.detachSurface(this);
@@ -2257,28 +2257,28 @@ public class _RenderSwipeSurface__menu_anchor : global::Doroti.Framework.Renderi
         base.dispose();
     }
 
-    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget> entry)
+    public override void handleEvent(Gestures.PointerEvent @event, Gestures.HitTestEntry<Gestures.HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() => debugHandleEvent(@event, entry));
-        if (@event is global::Doroti.Framework.Gestures.PointerDownEvent)
+        if (@event is Gestures.PointerDownEvent)
         {
-            global::Doroti.Framework.Gestures.PointerDownEvent @event__as103538 = (global::Doroti.Framework.Gestures.PointerDownEvent)@event;
+            Gestures.PointerDownEvent @event__as103538 = (Gestures.PointerDownEvent)@event;
             _region.beginSwipe(@event__as103538, delay: delay, onStart: onStart);
         }
     }
 
 }
 
-internal class _SwipeHandle__menu_anchor : global::Doroti.Framework.Gestures.Drag
+internal class _SwipeHandle__menu_anchor : Gestures.Drag
 {
     public virtual long viewId { get; private set; } = default!;
     internal virtual List<_SwipeTarget__menu_anchor> _enteredTargets { get; private set; } = new List<_SwipeTarget__menu_anchor>();
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails> onSwipeUpdate { get; private set; } = default!;
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails> onSwipeEnd { get; private set; } = default!;
-    public virtual global::System.Action onSwipeCanceled { get; private set; } = default!;
+    public virtual System.Action<Gestures.DragUpdateDetails> onSwipeUpdate { get; private set; } = default!;
+    public virtual System.Action<Gestures.DragEndDetails> onSwipeEnd { get; private set; } = default!;
+    public virtual Action onSwipeCanceled { get; private set; } = default!;
     internal virtual Offset _position { get; set; } = default!;
 
-    internal _SwipeHandle__menu_anchor(Offset initialPosition, long viewId, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails> onSwipeEnd, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails> onSwipeUpdate, global::System.Action onSwipeCanceled)
+    internal _SwipeHandle__menu_anchor(Offset initialPosition, long viewId, System.Action<Gestures.DragEndDetails> onSwipeEnd, System.Action<Gestures.DragUpdateDetails> onSwipeUpdate, Action onSwipeCanceled)
     {
         this.viewId = viewId;
         this.onSwipeEnd = onSwipeEnd;
@@ -2288,9 +2288,9 @@ internal class _SwipeHandle__menu_anchor : global::Doroti.Framework.Gestures.Dra
         _updateSwipe();
     }
 
-    public override void update(global::Doroti.Framework.Gestures.DragUpdateDetails details)
+    public override void update(Gestures.DragUpdateDetails details)
     {
-        global::Doroti.Ui.Offset oldPosition = _position;
+        Offset oldPosition = _position;
         _position += details.delta;
         if (!Equals(_position, oldPosition))
         {
@@ -2299,7 +2299,7 @@ internal class _SwipeHandle__menu_anchor : global::Doroti.Framework.Gestures.Dra
         }
     }
 
-    public override void end(global::Doroti.Framework.Gestures.DragEndDetails details)
+    public override void end(Gestures.DragEndDetails details)
     {
         _leaveAllEntered(pointerUp: true);
         onSwipeEnd?.Invoke(details);
@@ -2313,12 +2313,12 @@ internal class _SwipeHandle__menu_anchor : global::Doroti.Framework.Gestures.Dra
 
     internal virtual void _updateSwipe()
     {
-        var result = new global::Doroti.Framework.Gestures.HitTestResult();
+        var result = new Gestures.HitTestResult();
         WidgetsBinding.instance.hitTestInView(result, _position, viewId);
         var targets = new List<_SwipeTarget__menu_anchor>();
-        foreach (global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget> entry in result.path)
+        foreach (Gestures.HitTestEntry<Gestures.HitTestTarget> entry in result.path)
         {
-            if (entry.target is global::Doroti.Framework.Rendering.RenderMetaData { metaData: _SwipeTarget__menu_anchor metaDataLocal } __object105049)
+            if (entry.target is RenderMetaData { metaData: _SwipeTarget__menu_anchor metaDataLocal } __object105049)
             {
                 targets.Add(metaDataLocal);
             }
@@ -2390,16 +2390,16 @@ internal class _SwipeHandle__menu_anchor : global::Doroti.Framework.Gestures.Dra
 
 }
 
-internal class _AnimationProduct__menu_anchor : global::Doroti.Framework.Animation.CompoundAnimation<double>
+internal class _AnimationProduct__menu_anchor : CompoundAnimation<double>
 {
-    internal _AnimationProduct__menu_anchor(global::Doroti.Framework.Animation.Animation<double> first, global::Doroti.Framework.Animation.Animation<double> next) : base(first: first, next: next)
+    internal _AnimationProduct__menu_anchor(Animation<double> first, Animation<double> next) : base(first: first, next: next)
     {
     }
 
     public override double value => DartRuntimePrimitives.ConvertValue<double>(base.first.value * base.next.value);
 }
 
-internal class _ClampTween__menu_anchor : global::Doroti.Framework.Animation.Animatable<double>
+internal class _ClampTween__menu_anchor : Animatable<double>
 {
     public virtual double begin { get; private set; } = default!;
     public virtual double end { get; private set; } = default!;

@@ -218,7 +218,7 @@ public class Ticker
     {
         SchedulerBinding.instance.platformDispatcher.frameTrace.RecordTicker(
             phase,
-            global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this),
+            System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this),
             debugLabel ?? _onTick.Target?.GetType().Name ?? "Ticker");
     }
 

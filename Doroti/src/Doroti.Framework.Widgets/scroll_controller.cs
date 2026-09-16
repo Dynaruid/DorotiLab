@@ -6,16 +6,16 @@ namespace Doroti.Framework.Widgets;
 
 public delegate void ScrollControllerCallback(ScrollPosition position);
 
-public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifier
+public class ScrollController : ChangeNotifier
 {
     internal virtual double _initialScrollOffset { get; private set; } = default!;
     public virtual bool keepScrollOffset { get; private set; } = default!;
-    public virtual global::System.Action<ScrollPosition>? onAttach { get; private set; }
-    public virtual global::System.Action<ScrollPosition>? onDetach { get; private set; }
+    public virtual System.Action<ScrollPosition>? onAttach { get; private set; }
+    public virtual System.Action<ScrollPosition>? onDetach { get; private set; }
     public virtual string? debugLabel { get; private set; }
     internal virtual List<ScrollPosition> _positions { get; private set; } = new List<ScrollPosition>();
 
-    public ScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, global::System.Action<ScrollPosition>? onAttach = null, global::System.Action<ScrollPosition>? onDetach = null)
+    public ScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, System.Action<ScrollPosition>? onAttach = null, System.Action<ScrollPosition>? onDetach = null)
     {
         this.keepScrollOffset = keepScrollOffset;
         this.debugLabel = debugLabel;
@@ -37,7 +37,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
         }
     }
     public virtual double offset => position.pixels;
-    public async virtual Future animateTo(double offset, Duration duration, global::Doroti.Framework.Animation.Curve curve)
+    public async virtual Future animateTo(double offset, Duration duration, Curve curve)
     {
         DartRuntimePrimitives.Assert(() => Enumerable.Any(_positions), () => (object?)"ScrollController not attached to any scroll views.");
         // Snapshot before starting an animation. A position may detach while a
@@ -130,11 +130,11 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
 
 public class TrackingScrollController : ScrollController
 {
-    internal virtual DartMap<ScrollPosition, global::System.Action> _positionToListener { get; private set; } = new DartMap<ScrollPosition, global::System.Action>();
+    internal virtual DartMap<ScrollPosition, Action> _positionToListener { get; private set; } = new DartMap<ScrollPosition, Action>();
     internal virtual ScrollPosition? _lastUpdated { get; set; } = default;
     internal virtual double? _lastUpdatedOffset { get; set; } = default;
 
-    public TrackingScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, global::System.Action<ScrollPosition>? onAttach = null, global::System.Action<ScrollPosition>? onDetach = null) : base(initialScrollOffset: initialScrollOffset, keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
+    public TrackingScrollController(double initialScrollOffset = 0.0, bool keepScrollOffset = true, string? debugLabel = null, System.Action<ScrollPosition>? onAttach = null, System.Action<ScrollPosition>? onDetach = null) : base(initialScrollOffset: initialScrollOffset, keepScrollOffset: keepScrollOffset, debugLabel: debugLabel, onAttach: onAttach, onDetach: onDetach)
     {
     }
 

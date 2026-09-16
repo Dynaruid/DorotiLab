@@ -8,22 +8,22 @@ public class PerformanceOverlay : LeafRenderObjectWidget
 {
     public virtual long optionsMask { get; private set; } = default!;
 
-    public PerformanceOverlay(global::Doroti.Framework.Foundation.Key? key = null, long optionsMask = 0) : base(key: key)
+    public PerformanceOverlay(Key? key = null, long optionsMask = 0) : base(key: key)
     {
         this.optionsMask = optionsMask;
     }
 
-    public static PerformanceOverlay CreateAllEnabled(global::Doroti.Framework.Foundation.Key? key = null)
+    public static PerformanceOverlay CreateAllEnabled(Key? key = null)
     {
         var __instance = new PerformanceOverlay(key, default!);
         __instance.optionsMask = (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayRasterizerStatistics)) | (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeRasterizerStatistics)) | (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayEngineStatistics)) | (1L << (int)FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeEngineStatistics));
         return __instance;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderPerformanceOverlay(optionsMask: optionsMask));
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new RenderPerformanceOverlay(optionsMask: optionsMask));
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderPerformanceOverlay)renderObject;
+        var __renderObject = (RenderPerformanceOverlay)renderObject;
         __renderObject.optionsMask = optionsMask;
     }
 

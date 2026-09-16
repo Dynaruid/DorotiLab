@@ -23,9 +23,9 @@ public class TapDownDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
     }
 
 }
@@ -50,9 +50,9 @@ public class TapUpDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
     }
 
 }
@@ -249,8 +249,8 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new FlagProperty("wonArenaForPrimaryPointer", value: _wonArenaForPrimaryPointer, ifTrue: "won arena"));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("finalPosition", _up?.position, defaultValue: null));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("finalLocalPosition", _up?.localPosition, defaultValue: _up?.position));
+        properties.add(new DiagnosticsProperty<Offset>("finalPosition", _up?.position, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Offset>("finalLocalPosition", _up?.localPosition, defaultValue: _up?.position));
         properties.add(new IntProperty("button", _down?.buttons, defaultValue: null));
         properties.add(new FlagProperty("sentTapDown", value: _sentTapDown, ifTrue: "sent tap down"));
     }

@@ -40,7 +40,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         if (@event is PointerDownEvent)
         {
             PointerDownEvent @event__as9792 = (PointerDownEvent)@event;
-            recognizer?.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event__as9792);
+            recognizer?.addPointer((PointerDownEvent)(object)@event__as9792);
         }
     }
 
@@ -124,7 +124,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return null;
         }
-        global::Doroti.Ui.TextAffinity affinityLocal = position.affinity;
+        TextAffinity affinityLocal = position.affinity;
         long targetOffset = position.offset;
         long endOffset = offset.value + textLocal.Length;
         if (((offset.value == targetOffset) && Equals(affinityLocal, TextAffinity.downstream)) || ((offset.value < targetOffset) && (targetOffset < endOffset)) || ((endOffset == targetOffset) && Equals(affinityLocal, TextAffinity.upstream)))
@@ -162,12 +162,12 @@ public class TextSpan : InlineSpan, HitTestTarget
     public override void computeSemanticsInformation(List<InlineSpanSemanticsInformation> collector, Locale? inheritedLocale = null, bool inheritedSpellOut = false)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        global::Doroti.Ui.Locale? effectiveLocale = locale ?? inheritedLocale;
+        Locale? effectiveLocale = locale ?? inheritedLocale;
         bool effectiveSpellOut = spellOut ?? inheritedSpellOut;
         if (text is not null)
         {
             long textLength = semanticsLabel?.Length ?? text!.Length;
-            collector.Add(new InlineSpanSemanticsInformation(text!, stringAttributes: new List<global::Doroti.Ui.StringAttribute>(), semanticsLabel: semanticsLabel, semanticsIdentifier: semanticsIdentifier, recognizer: recognizer));
+            collector.Add(new InlineSpanSemanticsInformation(text!, stringAttributes: new List<StringAttribute>(), semanticsLabel: semanticsLabel, semanticsIdentifier: semanticsIdentifier, recognizer: recognizer));
         }
         List<InlineSpan>? childrenLocal = children;
         if (childrenLocal is not null)
@@ -281,7 +281,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return false;
         }
-        return (__other is TextSpan) && (__other.text == text) && Equals(__other.recognizer, recognizer) && (__other.semanticsLabel == semanticsLabel) && (__other.semanticsIdentifier == semanticsIdentifier) && Equals(onEnter, __other.onEnter) && Equals(onExit, __other.onExit) && Equals(mouseCursor, __other.mouseCursor) && CollectionsLibrary.listEquals<InlineSpan>(__other.children, children);
+        return (__other is TextSpan) && (__other.text == text) && Equals(__other.recognizer, recognizer) && (__other.semanticsLabel == semanticsLabel) && (__other.semanticsIdentifier == semanticsIdentifier) && Equals(onEnter, __other.onEnter) && Equals(onExit, __other.onExit) && Equals(mouseCursor, __other.mouseCursor) && CollectionsLibrary.listEquals(__other.children, children);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(base.GetHashCode(), text, recognizer, semanticsLabel, semanticsIdentifier, onEnter, onExit, mouseCursor, (children is null) ? null : FoundationRuntimePorts.ObjectHashAll(children!));
@@ -309,7 +309,7 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
-        return children?.map<InlineSpan, DiagnosticsNode>((child) =>
+        return children?.map((child) =>
         {
             return ((Diagnosticable)child).toDiagnosticsNode();
         }).ToList() ?? new List<DiagnosticsNode>();

@@ -537,7 +537,7 @@ public sealed class Characters : IReadOnlyCollection<string>
     }
     public static implicit operator Characters(string value) => new(value);
     public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)_elements).GetEnumerator();
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
 public sealed class CharacterRange

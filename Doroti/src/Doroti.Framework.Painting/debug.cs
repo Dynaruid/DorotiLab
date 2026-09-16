@@ -10,11 +10,11 @@ public static partial class DebugLibrary
     public static bool debugDisableShadows = false;
 }
 
-public delegate global::Doroti.Runtime.HttpClient HttpClientProvider();
+public delegate Runtime.HttpClient HttpClientProvider();
 
 public static partial class DebugLibrary
 {
-    public static Func<global::Doroti.Runtime.HttpClient>? debugNetworkImageHttpClientProvider;
+    public static Func<Runtime.HttpClient>? debugNetworkImageHttpClientProvider;
 }
 
 public delegate void PaintImageCallback(ImageSizeInfo info);

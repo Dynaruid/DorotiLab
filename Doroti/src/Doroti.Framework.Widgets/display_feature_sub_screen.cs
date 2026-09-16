@@ -10,7 +10,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
     public virtual Offset? anchorPoint { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public DisplayFeatureSubScreen(global::Doroti.Framework.Foundation.Key? key = null, Offset? anchorPoint = null, Widget child = default!) : base(key: key)
+    public DisplayFeatureSubScreen(Key? key = null, Offset? anchorPoint = null, Widget child = default!) : base(key: key)
     {
         this.anchorPoint = anchorPoint;
         this.child = child;
@@ -20,30 +20,30 @@ public class DisplayFeatureSubScreen : StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => (anchorPoint is not null) || DebugLibrary.debugCheckHasDirectionality(context, why: "to determine which sub-screen DisplayFeatureSubScreen uses", alternative: "Alternatively, consider specifying the 'anchorPoint' argument on the DisplayFeatureSubScreen."));
         MediaQueryData mediaQuery = MediaQuery.of(context);
-        global::Doroti.Ui.Size parentSize = mediaQuery.size;
-        global::Doroti.Ui.Rect wantedBounds = Offset.zero & parentSize;
-        global::Doroti.Ui.Offset resolvedAnchorPoint = _capOffset(anchorPoint ?? _fallbackAnchorPoint(context), parentSize);
-        IEnumerable<global::Doroti.Ui.Rect> subScreens = subScreensInBounds(wantedBounds, avoidBounds(mediaQuery));
-        global::Doroti.Ui.Rect closestSubScreen = _closestToAnchorPoint(subScreens.Cast<Rect>(), resolvedAnchorPoint);
+        Size parentSize = mediaQuery.size;
+        Rect wantedBounds = Offset.zero & parentSize;
+        Offset resolvedAnchorPoint = _capOffset(anchorPoint ?? _fallbackAnchorPoint(context), parentSize);
+        IEnumerable<Rect> subScreens = subScreensInBounds(wantedBounds, avoidBounds(mediaQuery));
+        Rect closestSubScreen = _closestToAnchorPoint(subScreens.Cast<Rect>(), resolvedAnchorPoint);
         return new Padding(padding: EdgeInsets.CreateOnly(left: closestSubScreen.left, top: closestSubScreen.top, right: parentSize.width - closestSubScreen.right, bottom: parentSize.height - closestSubScreen.bottom), child: new MediaQuery(data: mediaQuery.removeDisplayFeatures(closestSubScreen), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Offset _fallbackAnchorPoint(BuildContext context)
+    internal static Offset _fallbackAnchorPoint(BuildContext context)
     {
-        return Directionality.of(context) switch { TextDirection.rtl => new global::Doroti.Ui.Offset(double.MaxValue, 0), TextDirection.ltr => Offset.zero, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return Directionality.of(context) switch { TextDirection.rtl => new Offset(double.MaxValue, 0), TextDirection.ltr => Offset.zero, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static IEnumerable<global::Doroti.Ui.Rect> avoidBounds(MediaQueryData mediaQuery)
+    public static IEnumerable<Rect> avoidBounds(MediaQueryData mediaQuery)
     {
-        return mediaQuery.displayFeatures.where((d) => (d.bounds.shortestSide > 0L) || Equals(d.state, DisplayFeatureState.postureHalfOpened)).map<global::Doroti.Ui.DisplayFeature, Rect>((d) => d.bounds);
+        return mediaQuery.displayFeatures.where((d) => (d.bounds.shortestSide > 0L) || Equals(d.state, DisplayFeatureState.postureHalfOpened)).map((d) => d.bounds);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Rect _closestToAnchorPoint(IEnumerable<Rect> subScreens, Offset anchorPoint)
+    internal static Rect _closestToAnchorPoint(IEnumerable<Rect> subScreens, Offset anchorPoint)
     {
-        global::Doroti.Ui.Rect closestScreen = subScreens.First();
+        Rect closestScreen = subScreens.First();
         double closestDistance = _distanceFromPointToRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorPoint)), closestScreen);
         foreach (var screen in subScreens)
         {
@@ -120,12 +120,12 @@ public class DisplayFeatureSubScreen : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static IEnumerable<global::Doroti.Ui.Rect> subScreensInBounds(Rect wantedBounds, IEnumerable<Rect> avoidBounds)
+    public static IEnumerable<Rect> subScreensInBounds(Rect wantedBounds, IEnumerable<Rect> avoidBounds)
     {
-        IEnumerable<global::Doroti.Ui.Rect> subScreens = new List<global::Doroti.Ui.Rect> { wantedBounds };
+        IEnumerable<Rect> subScreens = new List<Rect> { wantedBounds };
         foreach (var bounds in avoidBounds)
         {
-            var newSubScreens = new List<global::Doroti.Ui.Rect>();
+            var newSubScreens = new List<Rect>();
             foreach (var screen in subScreens)
             {
                 if ((screen.top >= bounds.top) && (screen.bottom <= bounds.bottom))
@@ -164,7 +164,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Offset _capOffset(Offset offset, Size maximum)
+    internal static Offset _capOffset(Offset offset, Size maximum)
     {
         if ((offset.dx >= 0L) && (offset.dx <= maximum.width) && (offset.dy >= 0L) && (offset.dy <= maximum.height))
         {
@@ -172,7 +172,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
         }
         else
         {
-            return new global::Doroti.Ui.Offset(Math.Min(Math.Max(0, offset.dx), maximum.width), Math.Min(Math.Max(0, offset.dy), maximum.height));
+            return new Offset(Math.Min(Math.Max(0, offset.dx), maximum.width), Math.Min(Math.Max(0, offset.dy), maximum.height));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

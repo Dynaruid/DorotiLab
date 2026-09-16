@@ -32,8 +32,8 @@ public class ForcePressDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new DoubleProperty("pressure", pressure));
     }
 

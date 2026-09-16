@@ -9,11 +9,11 @@ public abstract class MatrixUtils
 {
     internal static Float64List _minMax = new Float64List(4L);
 
-    public static global::Doroti.Ui.Offset? getAsTranslation(Matrix4 transform)
+    public static Offset? getAsTranslation(Matrix4 transform)
     {
         if (transform.storage is [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, double dx, double dy, 0.0, 1.0])
         {
-            return new global::Doroti.Ui.Offset(dx, dy);
+            return new Offset(dx, dy);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -108,7 +108,7 @@ public abstract class MatrixUtils
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Offset transformPoint(Matrix4 transform, Offset point)
+    public static Offset transformPoint(Matrix4 transform, Offset point)
     {
         Float64List storageLocal = transform.storage;
         double x = point.dx;
@@ -118,16 +118,16 @@ public abstract class MatrixUtils
         double rw = (storageLocal[3L] * x) + (storageLocal[7L] * y) + storageLocal[15L];
         if (rw == 1.0)
         {
-            return new global::Doroti.Ui.Offset(rx, ry);
+            return new Offset(rx, ry);
         }
         else
         {
-            return new global::Doroti.Ui.Offset(rx / rw, ry / rw);
+            return new Offset(rx / rw, ry / rw);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Rect _safeTransformRect(Matrix4 transform, Rect rect)
+    internal static Rect _safeTransformRect(Matrix4 transform, Rect rect)
     {
         Float64List storageLocal = transform.storage;
         bool isAffine = (storageLocal[3L] == 0.0) && (storageLocal[7L] == 0.0) && (storageLocal[15L] == 1.0);
@@ -170,7 +170,7 @@ public abstract class MatrixUtils
         }
     }
 
-    public static global::Doroti.Ui.Rect transformRect(Matrix4 transform, Rect rect)
+    public static Rect transformRect(Matrix4 transform, Rect rect)
     {
         Float64List storageLocal = transform.storage;
         double x = rect.left;
@@ -261,7 +261,7 @@ public abstract class MatrixUtils
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Rect inverseTransformRect(Matrix4 transform, Rect rect)
+    public static Rect inverseTransformRect(Matrix4 transform, Rect rect)
     {
         if (isIdentity(transform))
         {

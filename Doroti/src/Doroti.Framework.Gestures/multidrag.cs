@@ -26,7 +26,7 @@ public abstract class MultiDragPointerState
         _velocityTracker = new VelocityTracker(kind);
     }
 
-    public virtual global::Doroti.Ui.Offset? pendingDelta => _pendingDelta;
+    public virtual Offset? pendingDelta => _pendingDelta;
     internal virtual void _setArenaEntry(GestureArenaEntry entry)
     {
         DartRuntimePrimitives.Assert(() => _arenaEntry is null);
@@ -218,7 +218,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
         Drag? drag = default!;
         if (onStart is not null)
         {
-            drag = invokeCallback<Drag?>("onStart", () => onStart!(initialPosition));
+            drag = invokeCallback("onStart", () => onStart!(initialPosition));
         }
         if (drag is not null)
         {

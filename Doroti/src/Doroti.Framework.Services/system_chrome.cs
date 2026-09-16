@@ -51,8 +51,8 @@ public class SystemUiOverlayStyle : Diagnosticable
     public virtual Brightness? statusBarBrightness { get; private set; }
     public virtual Brightness? statusBarIconBrightness { get; private set; }
     public virtual bool? systemStatusBarContrastEnforced { get; private set; }
-    public static SystemUiOverlayStyle light = new SystemUiOverlayStyle(systemNavigationBarColor: new global::Doroti.Ui.Color(4278190080L), systemNavigationBarIconBrightness: Brightness.light, statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.dark);
-    public static SystemUiOverlayStyle dark = new SystemUiOverlayStyle(systemNavigationBarColor: new global::Doroti.Ui.Color(4278190080L), systemNavigationBarIconBrightness: Brightness.light, statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.light);
+    public static SystemUiOverlayStyle light = new SystemUiOverlayStyle(systemNavigationBarColor: new Color(4278190080L), systemNavigationBarIconBrightness: Brightness.light, statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.dark);
+    public static SystemUiOverlayStyle dark = new SystemUiOverlayStyle(systemNavigationBarColor: new Color(4278190080L), systemNavigationBarIconBrightness: Brightness.light, statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.light);
 
     public SystemUiOverlayStyle(Color? systemNavigationBarColor = null, Color? systemNavigationBarDividerColor = null, Brightness? systemNavigationBarIconBrightness = null, bool? systemNavigationBarContrastEnforced = null, Color? statusBarColor = null, Brightness? statusBarBrightness = null, Brightness? statusBarIconBrightness = null, bool? systemStatusBarContrastEnforced = null)
     {
@@ -93,13 +93,13 @@ public class SystemUiOverlayStyle : Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.Color>("systemNavigationBarColor", systemNavigationBarColor));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.Color>("systemNavigationBarDividerColor", systemNavigationBarDividerColor));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.Brightness>("systemNavigationBarIconBrightness", systemNavigationBarIconBrightness));
+        properties.Add(new DiagnosticsProperty<Color>("systemNavigationBarColor", systemNavigationBarColor));
+        properties.Add(new DiagnosticsProperty<Color>("systemNavigationBarDividerColor", systemNavigationBarDividerColor));
+        properties.Add(new DiagnosticsProperty<Brightness>("systemNavigationBarIconBrightness", systemNavigationBarIconBrightness));
         properties.Add(new DiagnosticsProperty<bool>("systemNavigationBarContrastEnforced", systemNavigationBarContrastEnforced));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.Color>("statusBarColor", statusBarColor));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.Brightness>("statusBarBrightness", statusBarBrightness));
-        properties.Add(new DiagnosticsProperty<global::Doroti.Ui.Brightness>("statusBarIconBrightness", statusBarIconBrightness));
+        properties.Add(new DiagnosticsProperty<Color>("statusBarColor", statusBarColor));
+        properties.Add(new DiagnosticsProperty<Brightness>("statusBarBrightness", statusBarBrightness));
+        properties.Add(new DiagnosticsProperty<Brightness>("statusBarIconBrightness", statusBarIconBrightness));
         properties.Add(new DiagnosticsProperty<bool>("systemStatusBarContrastEnforced", systemStatusBarContrastEnforced));
     }
 

@@ -13,12 +13,12 @@ internal delegate double _ChildSizingFunction__list_body(RenderBox child);
 
 public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, ListBodyParentData>, RenderBoxContainerDefaultsMixin<RenderBox, ListBodyParentData>
 {
-    internal virtual global::Doroti.Framework.Painting.AxisDirection _axisDirection { get; set; } = default!;
+    internal virtual AxisDirection _axisDirection { get; set; } = default!;
     public virtual long _childCount { get; set; } = 0L;
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    public RenderListBody(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down)
+    public RenderListBody(List<RenderBox>? children = null, AxisDirection axisDirection = AxisDirection.down)
     {
         _axisDirection = axisDirection;
     }
@@ -32,7 +32,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         }
     }
 
-    public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection
+    public virtual AxisDirection axisDirection
     {
         get => _axisDirection;
         set
@@ -46,7 +46,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Painting.Axis mainAxis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
+    public virtual Axis mainAxis => Basic_typesLibrary.axisDirectionToAxis(axisDirection);
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckConstraints(constraints));
@@ -107,11 +107,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     var innerConstraints = BoxConstraints.CreateTightFor(height: constraints.maxHeight);
                     while (child is not null)
                     {
-                        global::Doroti.Ui.Size childSize = child.getDryLayout(innerConstraints);
+                        Size childSize = child.getDryLayout(innerConstraints);
                         mainAxisExtent += childSize.width;
                         child = childAfter(child);
                     }
-                    return constraints.constrain(new global::Doroti.Ui.Size(mainAxisExtent, constraints.maxHeight));
+                    return constraints.constrain(new Size(mainAxisExtent, constraints.maxHeight));
                 }
             case AxisDirection.up:
             case AxisDirection.down:
@@ -119,11 +119,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     var innerConstraintsLocal = BoxConstraints.CreateTightFor(width: constraints.maxWidth);
                     while (child is not null)
                     {
-                        global::Doroti.Ui.Size childSizeLocal = child.getDryLayout(innerConstraintsLocal);
+                        Size childSizeLocal = child.getDryLayout(innerConstraintsLocal);
                         mainAxisExtent += childSizeLocal.height;
                         child = childAfter(child);
                     }
-                    return constraints.constrain(new global::Doroti.Ui.Size(constraints.maxWidth, mainAxisExtent));
+                    return constraints.constrain(new Size(constraints.maxWidth, mainAxisExtent));
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -196,12 +196,12 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     {
                         child.layout(innerConstraints, parentUsesSize: true);
                         var childParentData = ((ListBodyParentData?)(object?)child.parentData!)!;
-                        childParentData.offset = new global::Doroti.Ui.Offset(mainAxisExtent, 0.0);
+                        childParentData.offset = new Offset(mainAxisExtent, 0.0);
                         mainAxisExtent += child.size.width;
                         DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentData));
                         child = childParentData.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(mainAxisExtent, constraintsLocal.maxHeight));
+                    size = constraintsLocal.constrain(new Size(mainAxisExtent, constraintsLocal.maxHeight));
                     break;
                 }
             case AxisDirection.left:
@@ -221,11 +221,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     {
                         var childParentDataAlternate = ((ListBodyParentData?)(object?)child.parentData!)!;
                         position += child.size.width;
-                        childParentDataAlternate.offset = new global::Doroti.Ui.Offset(mainAxisExtent - position, 0.0);
+                        childParentDataAlternate.offset = new Offset(mainAxisExtent - position, 0.0);
                         DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataAlternate));
                         child = childParentDataAlternate.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(mainAxisExtent, constraintsLocal.maxHeight));
+                    size = constraintsLocal.constrain(new Size(mainAxisExtent, constraintsLocal.maxHeight));
                     break;
                 }
             case AxisDirection.down:
@@ -235,12 +235,12 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     {
                         child.layout(innerConstraintsAlternate, parentUsesSize: true);
                         var childParentDataNested = ((ListBodyParentData?)(object?)child.parentData!)!;
-                        childParentDataNested.offset = new global::Doroti.Ui.Offset(0.0, mainAxisExtent);
+                        childParentDataNested.offset = new Offset(0.0, mainAxisExtent);
                         mainAxisExtent += child.size.height;
                         DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataNested));
                         child = childParentDataNested.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(constraintsLocal.maxWidth, mainAxisExtent));
+                    size = constraintsLocal.constrain(new Size(constraintsLocal.maxWidth, mainAxisExtent));
                     break;
                 }
             case AxisDirection.up:
@@ -260,11 +260,11 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     {
                         var childParentDataNext = ((ListBodyParentData?)(object?)child.parentData!)!;
                         positionLocal += child.size.height;
-                        childParentDataNext.offset = new global::Doroti.Ui.Offset(0.0, mainAxisExtent - positionLocal);
+                        childParentDataNext.offset = new Offset(0.0, mainAxisExtent - positionLocal);
                         DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentDataNext));
                         child = childParentDataNext.nextSibling;
                     }
-                    size = constraintsLocal.constrain(new global::Doroti.Ui.Size(constraintsLocal.maxWidth, mainAxisExtent));
+                    size = constraintsLocal.constrain(new Size(constraintsLocal.maxWidth, mainAxisExtent));
                     break;
                 }
         }
@@ -274,7 +274,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", axisDirection));
+        properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
     }
 
     internal virtual double _getIntrinsicCrossAxis(Func<RenderBox, double> childSize)

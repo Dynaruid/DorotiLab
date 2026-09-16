@@ -100,8 +100,8 @@ public static class DartRuntimePrimitives
     public static Action? AdaptAsyncCallback(Func<Future>? callback) =>
         callback is null ? null : () => Observe(callback(), "adapted async callback");
 
-    public static System.Diagnostics.StackTrace StackTraceFrom(object? value) =>
-        value is System.Diagnostics.StackTrace stackTrace ? stackTrace : new System.Diagnostics.StackTrace(true);
+    public static StackTrace StackTraceFrom(object? value) =>
+        value is StackTrace stackTrace ? stackTrace : new StackTrace(true);
 
     public static long MillisecondsSinceEpoch(DateTime value) => new DateTimeOffset(value).ToUnixTimeMilliseconds();
 
@@ -232,11 +232,11 @@ public static class DartRuntimePrimitives
             var result = (float)((float)(object)begin! + (((float)(object)end! - (float)(object)begin!) * (float)t));
             return (T)(object)result;
         }
-        if (typeof(T) == typeof(global::System.Numerics.Vector2))
+        if (typeof(T) == typeof(System.Numerics.Vector2))
         {
-            var beginVector = (global::System.Numerics.Vector2)(object)begin!;
-            var endVector = (global::System.Numerics.Vector2)(object)end!;
-            return (T)(object)global::System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
+            var beginVector = (System.Numerics.Vector2)(object)begin!;
+            var endVector = (System.Numerics.Vector2)(object)end!;
+            return (T)(object)System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
         }
         throw new TypeError($"Tween<{typeof(T).Name}> requires a typed IDartTweenValue<T> implementation.");
     }

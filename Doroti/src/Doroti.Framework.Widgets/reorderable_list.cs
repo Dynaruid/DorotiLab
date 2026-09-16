@@ -7,21 +7,21 @@ namespace Doroti.Framework.Widgets;
 
 public delegate void ReorderCallback(long oldIndex, long newIndex);
 
-public delegate Widget ReorderItemProxyDecorator(Widget child, long index, global::Doroti.Framework.Animation.Animation<double> animation);
+public delegate Widget ReorderItemProxyDecorator(Widget child, long index, Animation<double> animation);
 
 public delegate DragBoundaryDelegate<Rect>? ReorderDragBoundaryProvider(BuildContext context);
 
 public class ReorderableList : StatefulWidget
 {
-    public virtual global::System.Func<BuildContext, long, Widget> itemBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, long, Widget> itemBuilder { get; private set; } = default!;
     public virtual long itemCount { get; private set; } = default!;
-    public virtual global::System.Action<long, long>? onReorder { get; private set; }
-    public virtual global::System.Action<long, long>? onReorderItem { get; private set; }
-    public virtual global::System.Action<long>? onReorderStart { get; private set; }
-    public virtual global::System.Action<long>? onReorderEnd { get; private set; }
-    public virtual global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.Axis scrollDirection { get; private set; } = default!;
+    public virtual Action<long, long>? onReorder { get; private set; }
+    public virtual Action<long, long>? onReorderItem { get; private set; }
+    public virtual System.Action<long>? onReorderStart { get; private set; }
+    public virtual System.Action<long>? onReorderEnd { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
+    public virtual Axis scrollDirection { get; private set; } = default!;
     public virtual bool reverse { get; private set; } = default!;
     public virtual ScrollController? controller { get; private set; }
     public virtual bool? primary { get; private set; }
@@ -29,8 +29,8 @@ public class ReorderableList : StatefulWidget
     public virtual bool shrinkWrap { get; private set; } = default!;
     public virtual double anchor { get; private set; } = default!;
     public virtual double? cacheExtent { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent { get; private set; }
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual ScrollCacheExtent? scrollCacheExtent { get; private set; }
+    public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior { get; private set; }
     public virtual string? restorationId { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
@@ -38,9 +38,9 @@ public class ReorderableList : StatefulWidget
     public virtual ItemExtentBuilder? itemExtentBuilder { get; private set; }
     public virtual Widget? prototypeItem { get; private set; }
     public virtual double? autoScrollerVelocityScalar { get; private set; }
-    public virtual global::System.Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
+    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
 
-    public ReorderableList(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, Widget> itemBuilder = default!, long itemCount = default!, global::System.Action<long, long>? onReorder = null, global::System.Action<long, long>? onReorderItem = null, global::System.Action<long>? onReorderStart = null, global::System.Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, double anchor = 0.0, double? cacheExtent = null, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, double? autoScrollerVelocityScalar = null, global::System.Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null) : base(key: key)
+    public ReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, System.Action<long>? onReorderStart = null, System.Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, EdgeInsetsGeometry? padding = null, Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, double anchor = 0.0, double? cacheExtent = null, ScrollCacheExtent? scrollCacheExtent = null, DragStartBehavior dragStartBehavior = DragStartBehavior.start, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, double? autoScrollerVelocityScalar = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null) : base(key: key)
     {
         this.itemBuilder = itemBuilder;
         this.itemCount = itemCount;
@@ -80,7 +80,7 @@ public class ReorderableList : StatefulWidget
             {
                 if (result is null)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("ReorderableList.of() called with a context that does not contain a ReorderableList."), new global::Doroti.Framework.Foundation.ErrorDescription("No ReorderableList ancestor could be found starting from the context that was passed to ReorderableList.of()."), new global::Doroti.Framework.Foundation.ErrorHint("This can happen when the context provided is from the same StatefulWidget that " + "built the ReorderableList. Please see the ReorderableList documentation for examples " + "of how to refer to an ReorderableListState object:\n" + "  https://api.flutter.dev/flutter/widgets/ReorderableListState-class.html"), context.describeElement("The context used was") }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("ReorderableList.of() called with a context that does not contain a ReorderableList."), new ErrorDescription("No ReorderableList ancestor could be found starting from the context that was passed to ReorderableList.of()."), new ErrorHint("This can happen when the context provided is from the same StatefulWidget that " + "built the ReorderableList. Please see the ReorderableList documentation for examples " + "of how to refer to an ReorderableListState object:\n" + "  https://api.flutter.dev/flutter/widgets/ReorderableListState-class.html"), context.describeElement("The context used was") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -102,7 +102,7 @@ public class ReorderableListState : State<ReorderableList>
 {
     internal virtual GlobalKey<SliverReorderableListState> _sliverReorderableListKey { get; private set; } = GlobalKey<SliverReorderableListState>.Create();
 
-    internal virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? _effectiveScrollCacheExtent
+    internal virtual ScrollCacheExtent? _effectiveScrollCacheExtent
     {
         get
         {
@@ -117,7 +117,7 @@ public class ReorderableListState : State<ReorderableList>
             return null;
         }
     }
-    public virtual void startItemDragReorder(long index, global::Doroti.Framework.Gestures.PointerDownEvent @event, global::Doroti.Framework.Gestures.MultiDragGestureRecognizer recognizer)
+    public virtual void startItemDragReorder(long index, Gestures.PointerDownEvent @event, MultiDragGestureRecognizer recognizer)
     {
         _sliverReorderableListKey.currentState!.startItemDragReorder(index: index, @event: @event, recognizer: recognizer);
     }
@@ -138,21 +138,21 @@ public class ReorderableListState : State<ReorderableList>
 public class SliverReorderableList : StatefulWidget
 {
     internal const double _kDefaultAutoScrollVelocityScalar = 50;
-    public virtual global::System.Func<BuildContext, long, Widget> itemBuilder { get; private set; } = default!;
-    public virtual global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback { get; private set; }
+    public virtual Func<BuildContext, long, Widget> itemBuilder { get; private set; } = default!;
+    public virtual Func<Key, long?>? findChildIndexCallback { get; private set; }
     public virtual long itemCount { get; private set; } = default!;
-    public virtual global::System.Action<long, long>? onReorder { get; private set; }
-    public virtual global::System.Action<long, long>? onReorderItem { get; private set; }
-    public virtual global::System.Action<long>? onReorderStart { get; private set; }
-    public virtual global::System.Action<long>? onReorderEnd { get; private set; }
-    public virtual global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual Action<long, long>? onReorder { get; private set; }
+    public virtual Action<long, long>? onReorderItem { get; private set; }
+    public virtual System.Action<long>? onReorderStart { get; private set; }
+    public virtual System.Action<long>? onReorderEnd { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
     public virtual double? itemExtent { get; private set; }
     public virtual ItemExtentBuilder? itemExtentBuilder { get; private set; }
     public virtual Widget? prototypeItem { get; private set; }
     public virtual double autoScrollerVelocityScalar { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
+    public virtual Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider { get; private set; }
 
-    public SliverReorderableList(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, Widget> itemBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long itemCount = default!, global::System.Action<long, long>? onReorder = null, global::System.Action<long, long>? onReorderItem = null, global::System.Action<long>? onReorderStart = null, global::System.Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator = null, global::System.Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null, double? autoScrollerVelocityScalar = null) : base(key: key)
+    public SliverReorderableList(Key? key = null, Func<BuildContext, long, Widget> itemBuilder = default!, Func<Key, long?>? findChildIndexCallback = null, long itemCount = default!, Action<long, long>? onReorder = null, Action<long, long>? onReorderItem = null, System.Action<long>? onReorderStart = null, System.Action<long>? onReorderEnd = null, double? itemExtent = null, ItemExtentBuilder? itemExtentBuilder = null, Widget? prototypeItem = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Func<BuildContext, DragBoundaryDelegate<Rect>?>? dragBoundaryProvider = null, double? autoScrollerVelocityScalar = null) : base(key: key)
     {
         this.itemBuilder = itemBuilder;
         this.findChildIndexCallback = findChildIndexCallback;
@@ -180,7 +180,7 @@ public class SliverReorderableList : StatefulWidget
             {
                 if (result is null)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("SliverReorderableList.of() called with a context that does not contain a SliverReorderableList."), new global::Doroti.Framework.Foundation.ErrorDescription("No SliverReorderableList ancestor could be found starting from the context that was passed to SliverReorderableList.of()."), new global::Doroti.Framework.Foundation.ErrorHint("This can happen when the context provided is from the same StatefulWidget that " + "built the SliverReorderableList. Please see the SliverReorderableList documentation for examples " + "of how to refer to an SliverReorderableList object:\n" + "  https://api.flutter.dev/flutter/widgets/SliverReorderableListState-class.html"), context.describeElement("The context used was") }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("SliverReorderableList.of() called with a context that does not contain a SliverReorderableList."), new ErrorDescription("No SliverReorderableList ancestor could be found starting from the context that was passed to SliverReorderableList.of()."), new ErrorHint("This can happen when the context provided is from the same StatefulWidget that " + "built the SliverReorderableList. Please see the SliverReorderableList documentation for examples " + "of how to refer to an SliverReorderableList object:\n" + "  https://api.flutter.dev/flutter/widgets/SliverReorderableListState-class.html"), context.describeElement("The context used was") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -205,14 +205,14 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     internal virtual _DragInfo__reorderable_list? _dragInfo { get; set; } = default;
     internal virtual long? _insertIndex { get; set; } = default;
     internal virtual Offset? _finalDropPosition { get; set; } = default;
-    internal virtual global::Doroti.Framework.Gestures.MultiDragGestureRecognizer? _recognizer { get; set; } = default;
+    internal virtual MultiDragGestureRecognizer? _recognizer { get; set; } = default;
     internal virtual long? _recognizerPointer { get; set; } = default;
     internal virtual EdgeDraggingAutoScroller? _autoScroller { get; set; } = default;
     internal virtual ScrollableState _scrollable { get; set; } = default!;
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    internal virtual global::Doroti.Framework.Painting.Axis _scrollDirection => Basic_typesLibrary.axisDirectionToAxis(_scrollable.axisDirection);
+    internal virtual Axis _scrollDirection => Basic_typesLibrary.axisDirectionToAxis(_scrollable.axisDirection);
     internal virtual bool _reverse => Basic_typesLibrary.axisDirectionIsReversed(_scrollable.axisDirection);
     public override void didChangeDependencies()
     {
@@ -247,11 +247,11 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -263,7 +263,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         base.dispose();
     }
 
-    public virtual void startItemDragReorder(long index, global::Doroti.Framework.Gestures.PointerDownEvent @event, global::Doroti.Framework.Gestures.MultiDragGestureRecognizer recognizer)
+    public virtual void startItemDragReorder(long index, Gestures.PointerDownEvent @event, MultiDragGestureRecognizer recognizer)
     {
         DartRuntimePrimitives.Assert(() => (0L <= index) && (index < widget.itemCount));
         setState(() =>
@@ -284,7 +284,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             if (_items.ContainsKey(index))
             {
                 _dragIndex = index;
-                _recognizer = ((Func<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>)(() =>
+                _recognizer = ((Func<MultiDragGestureRecognizer>)(() =>
             {
                 var __cascade = recognizer;
                 __cascade.onStart = _dragStart;
@@ -331,7 +331,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         }
     }
 
-    internal virtual global::Doroti.Framework.Gestures.Drag? _dragStart(Offset position)
+    internal virtual Drag? _dragStart(Offset position)
     {
         DartRuntimePrimitives.Assert(() => _dragInfo is null);
         _ReorderableItemState__reorderable_list itemLocal = _items.GetValueOrDefault(DartRuntimePrimitives.RequireValue(_dragIndex))!;
@@ -353,7 +353,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             }
             childItem.updateForGap(DartRuntimePrimitives.RequireValue(_insertIndex), DartRuntimePrimitives.RequireValue(_insertIndex), _dragInfo!.itemExtent, false, _reverse);
         }
-        return (global::Doroti.Framework.Gestures.Drag?)_dragInfo;
+        return (Drag?)_dragInfo;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -503,7 +503,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             {
                 continue;
             }
-            global::Doroti.Ui.Rect geometry = item.targetGeometry();
+            Rect geometry = item.targetGeometry();
             double itemStart = Equals(_scrollDirection, Axis.vertical) ? geometry.top : geometry.left;
             double itemExtentLocal = Equals(_scrollDirection, Axis.vertical) ? geometry.height : geometry.width;
             double itemEnd = itemStart + itemExtentLocal;
@@ -593,15 +593,15 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         }
     }
 
-    internal virtual global::Doroti.Ui.Rect _dragTargetRect
+    internal virtual Rect _dragTargetRect
     {
         get
         {
-            global::Doroti.Ui.Offset origin = _dragInfo!.dragPosition - _dragInfo!.dragOffset;
+            Offset origin = _dragInfo!.dragPosition - _dragInfo!.dragOffset;
             return Rect.fromLTWH(origin.dx, origin.dy, _dragInfo!.itemSize.width, _dragInfo!.itemSize.height);
         }
     }
-    internal virtual global::Doroti.Ui.Offset _itemOffsetAt(long index)
+    internal virtual Offset _itemOffsetAt(long index)
     {
         return _items.GetValueOrDefault(index)!.targetGeometry().topLeft;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -628,7 +628,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
 
     internal virtual Widget _wrapWithSemantics(Widget child, long index)
     {
-        var semanticsActions = new DartMap<global::Doroti.Framework.Semantics.CustomSemanticsAction, global::System.Action>();
+        var semanticsActions = new DartMap<CustomSemanticsAction, Action>();
         void moveToStart()
         {
             _handleReorderItem(index, 0L);
@@ -649,13 +649,13 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         var isHorizontal = Equals(_scrollDirection, Axis.horizontal);
         if (index > 0L)
         {
-            semanticsActions[new global::Doroti.Framework.Semantics.CustomSemanticsAction(label: localizations.reorderItemToStart)] = moveToStart;
+            semanticsActions[new CustomSemanticsAction(label: localizations.reorderItemToStart)] = moveToStart;
             string reorderItemBefore = localizations.reorderItemUp;
             if (isHorizontal)
             {
                 reorderItemBefore = Equals(Directionality.of(context), TextDirection.ltr) ? localizations.reorderItemLeft : localizations.reorderItemRight;
             }
-            semanticsActions[new global::Doroti.Framework.Semantics.CustomSemanticsAction(label: reorderItemBefore)] = moveBefore;
+            semanticsActions[new CustomSemanticsAction(label: reorderItemBefore)] = moveBefore;
         }
         if (index < (widget.itemCount - 1L))
         {
@@ -664,8 +664,8 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
             {
                 reorderItemAfter = Equals(Directionality.of(context), TextDirection.ltr) ? localizations.reorderItemRight : localizations.reorderItemLeft;
             }
-            semanticsActions[new global::Doroti.Framework.Semantics.CustomSemanticsAction(label: reorderItemAfter)] = moveAfter;
-            semanticsActions[new global::Doroti.Framework.Semantics.CustomSemanticsAction(label: localizations.reorderItemToEnd)] = moveToEnd;
+            semanticsActions[new CustomSemanticsAction(label: reorderItemAfter)] = moveAfter;
+            semanticsActions[new CustomSemanticsAction(label: localizations.reorderItemToEnd)] = moveToEnd;
         }
         return new Semantics(container: true, customSemanticsActions: semanticsActions, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -697,14 +697,14 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
@@ -738,7 +738,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -748,7 +748,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -758,10 +758,10 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
@@ -772,7 +772,7 @@ public class _ReorderableItem__reorderable_list : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual CapturedThemes capturedThemes { get; private set; } = default!;
 
-    internal _ReorderableItem__reorderable_list(global::Doroti.Framework.Foundation.Key key, long index, Widget child, CapturedThemes capturedThemes) : base(key: key)
+    internal _ReorderableItem__reorderable_list(Key key, long index, Widget child, CapturedThemes capturedThemes) : base(key: key)
     {
         this.index = index;
         this.child = child;
@@ -787,10 +787,10 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
     internal virtual SliverReorderableListState _listState { get; set; } = default!;
     internal virtual Offset _startOffset { get; set; } = Offset.zero;
     internal virtual Offset _targetOffset { get; set; } = Offset.zero;
-    internal virtual global::Doroti.Framework.Animation.AnimationController? _offsetAnimation { get; set; } = default;
+    internal virtual AnimationController? _offsetAnimation { get; set; } = default;
     internal virtual bool _dragging { get; set; } = false;
 
-    public virtual global::Doroti.Framework.Foundation.Key key => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.Key>(widget.key!);
+    public virtual Key key => DartRuntimePrimitives.ConvertValue<Key>(widget.key!);
     public virtual long index => widget.index;
     public virtual bool dragging
     {
@@ -835,7 +835,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
     {
         if (_dragging)
         {
-            global::Doroti.Ui.Size sizeLocal = Reorderable_listLibrary._extentSize(_listState._dragInfo!.itemExtent, _listState._scrollDirection);
+            Size sizeLocal = Reorderable_listLibrary._extentSize(_listState._dragInfo!.itemExtent, _listState._scrollDirection);
             return SizedBox.CreateFromSize(size: sizeLocal);
         }
         _listState._registerItem(this);
@@ -849,7 +849,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
         base.deactivate();
     }
 
-    public virtual global::Doroti.Ui.Offset offset
+    public virtual Offset offset
     {
         get
         {
@@ -863,7 +863,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
     }
     public virtual void updateForGap(long dragIndex, long gapIndex, double gapExtent, bool animate, bool reverse)
     {
-        global::Doroti.Ui.Offset newTargetOffset = default!;
+        Offset newTargetOffset = default!;
         if ((gapIndex < dragIndex) && (index < dragIndex) && (index >= gapIndex))
         {
             newTargetOffset = Reorderable_listLibrary._extentOffset(reverse ? -gapExtent : gapExtent, _listState._scrollDirection);
@@ -881,15 +881,15 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
         }
         if (!Equals(newTargetOffset, _targetOffset))
         {
-            global::Doroti.Ui.Offset previousTarget = _targetOffset;
+            Offset previousTarget = _targetOffset;
             _targetOffset = newTargetOffset;
             if (animate)
             {
                 if (_offsetAnimation is null)
                 {
-                    _offsetAnimation = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+                    _offsetAnimation = ((Func<AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: _listState, duration: Duration.Create(milliseconds: 250L));
+    var __cascade = new AnimationController(vsync: _listState, duration: Duration.Create(milliseconds: 250L));
     __cascade.addListener(rebuild);
     __cascade.addStatusListener((status) =>
     {
@@ -907,7 +907,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
                 else
                 {
                     double currentAnimValue = Curves.easeInOut.transform(_offsetAnimation!.value);
-                    global::Doroti.Ui.Offset currentPosition = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue));
+                    Offset currentPosition = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue));
                     _startOffset = currentPosition;
                     _offsetAnimation!.forward(from: 0.0);
                 }
@@ -937,10 +937,10 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
         rebuild();
     }
 
-    public virtual global::Doroti.Ui.Rect targetGeometry()
+    public virtual Rect targetGeometry()
     {
-        var itemRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset itemPosition = itemRenderBox.localToGlobal(Offset.zero) + _targetOffset;
+        var itemRenderBox = ((RenderBox?)context.findRenderObject()!)!;
+        Offset itemPosition = itemRenderBox.localToGlobal(Offset.zero) + _targetOffset;
         return itemPosition & itemRenderBox.size;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -963,7 +963,7 @@ public class ReorderableDragStartListener : StatelessWidget
     public virtual long index { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    public ReorderableDragStartListener(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, long index = default!, bool enabled = true) : base(key: key)
+    public ReorderableDragStartListener(Key? key = null, Widget child = default!, long index = default!, bool enabled = true) : base(key: key)
     {
         this.child = child;
         this.index = index;
@@ -976,17 +976,17 @@ public class ReorderableDragStartListener : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Gestures.MultiDragGestureRecognizer createRecognizer()
+    public virtual MultiDragGestureRecognizer createRecognizer()
     {
-        return new global::Doroti.Framework.Gestures.ImmediateMultiDragGestureRecognizer(debugOwner: this);
+        return new ImmediateMultiDragGestureRecognizer(debugOwner: this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _startDragging(BuildContext context, global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    internal virtual void _startDragging(BuildContext context, Gestures.PointerDownEvent @event)
     {
-        global::Doroti.Framework.Gestures.DeviceGestureSettings? gestureSettingsLocal = MediaQuery.maybeGestureSettingsOf(context);
+        DeviceGestureSettings? gestureSettingsLocal = MediaQuery.maybeGestureSettingsOf(context);
         SliverReorderableListState? list = SliverReorderableList.maybeOf(context);
-        list?.startItemDragReorder(index: index, @event: @event, recognizer: ((Func<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>)(() =>
+        list?.startItemDragReorder(index: index, @event: @event, recognizer: ((Func<MultiDragGestureRecognizer>)(() =>
 {
     var __cascade = createRecognizer();
     __cascade.gestureSettings = gestureSettingsLocal;
@@ -998,13 +998,13 @@ public class ReorderableDragStartListener : StatelessWidget
 
 public class ReorderableDelayedDragStartListener : ReorderableDragStartListener
 {
-    public ReorderableDelayedDragStartListener(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, long index = default!, bool enabled = true) : base(key: key, child: child, index: index, enabled: enabled)
+    public ReorderableDelayedDragStartListener(Key? key = null, Widget child = default!, long index = default!, bool enabled = true) : base(key: key, child: child, index: index, enabled: enabled)
     {
     }
 
-    public override global::Doroti.Framework.Gestures.MultiDragGestureRecognizer createRecognizer()
+    public override MultiDragGestureRecognizer createRecognizer()
     {
-        return new global::Doroti.Framework.Gestures.DelayedMultiDragGestureRecognizer(debugOwner: this);
+        return new DelayedMultiDragGestureRecognizer(debugOwner: this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1014,15 +1014,15 @@ internal delegate void _DragItemUpdate__reorderable_list(_DragInfo__reorderable_
 
 internal delegate void _DragItemCallback__reorderable_list(_DragInfo__reorderable_list item);
 
-internal class _DragInfo__reorderable_list : global::Doroti.Framework.Gestures.Drag
+internal class _DragInfo__reorderable_list : Drag
 {
-    public virtual global::Doroti.Framework.Painting.Axis scrollDirection { get; private set; } = default!;
-    public virtual global::System.Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate { get; private set; }
-    public virtual global::System.Action<_DragInfo__reorderable_list>? onEnd { get; private set; }
-    public virtual global::System.Action<_DragInfo__reorderable_list>? onCancel { get; private set; }
-    public virtual global::System.Action? onDropCompleted { get; private set; }
-    public virtual global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator { get; private set; }
-    public virtual global::Doroti.Framework.Scheduler.TickerProvider tickerProvider { get; private set; } = default!;
+    public virtual Axis scrollDirection { get; private set; } = default!;
+    public virtual Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate { get; private set; }
+    public virtual System.Action<_DragInfo__reorderable_list>? onEnd { get; private set; }
+    public virtual System.Action<_DragInfo__reorderable_list>? onCancel { get; private set; }
+    public virtual Action? onDropCompleted { get; private set; }
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual Scheduler.TickerProvider tickerProvider { get; private set; } = default!;
     public virtual DragBoundaryDelegate<Rect>? boundary { get; set; } = default;
     public virtual SliverReorderableListState listState { get; set; } = default!;
     public virtual long index { get; set; } = default!;
@@ -1030,14 +1030,14 @@ internal class _DragInfo__reorderable_list : global::Doroti.Framework.Gestures.D
     public virtual Offset dragPosition { get; set; } = default!;
     public virtual Offset dragOffset { get; set; } = default!;
     public virtual Size itemSize { get; set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints itemLayoutConstraints { get; set; } = default!;
+    public virtual BoxConstraints itemLayoutConstraints { get; set; } = default!;
     public virtual double itemExtent { get; set; } = default!;
     public virtual CapturedThemes capturedThemes { get; set; } = default!;
     public virtual ScrollableState? scrollable { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.AnimationController? _proxyAnimation { get; set; } = default;
+    internal virtual AnimationController? _proxyAnimation { get; set; } = default;
     internal virtual Offset _rawDragPosition { get; set; } = default!;
 
-    internal _DragInfo__reorderable_list(_ReorderableItemState__reorderable_list item, Offset initialPosition = default, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, global::System.Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate = null, global::System.Action<_DragInfo__reorderable_list>? onEnd = null, global::System.Action<_DragInfo__reorderable_list>? onCancel = null, global::System.Action? onDropCompleted = null, global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator = null, global::Doroti.Framework.Scheduler.TickerProvider tickerProvider = default!)
+    internal _DragInfo__reorderable_list(_ReorderableItemState__reorderable_list item, Offset initialPosition = default, Axis scrollDirection = Axis.vertical, Action<_DragInfo__reorderable_list, Offset, Offset>? onUpdate = null, System.Action<_DragInfo__reorderable_list>? onEnd = null, System.Action<_DragInfo__reorderable_list>? onCancel = null, Action? onDropCompleted = null, Func<Widget, long, Animation<double>, Widget>? proxyDecorator = null, Scheduler.TickerProvider tickerProvider = default!)
     {
         this.scrollDirection = scrollDirection;
         this.onUpdate = onUpdate;
@@ -1056,9 +1056,9 @@ internal class _DragInfo__reorderable_list : global::Doroti.Framework.Gestures.D
 
     public virtual void startDrag()
     {
-        _proxyAnimation = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        _proxyAnimation = ((Func<AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: tickerProvider, duration: Duration.Create(milliseconds: 250L));
+    var __cascade = new AnimationController(vsync: tickerProvider, duration: Duration.Create(milliseconds: 250L));
     __cascade.addStatusListener((status) =>
     {
         if (AnimationStatusMembers.isDismissed(status))
@@ -1071,15 +1071,15 @@ internal class _DragInfo__reorderable_list : global::Doroti.Framework.Gestures.D
 }))();
     }
 
-    public override void update(global::Doroti.Framework.Gestures.DragUpdateDetails details)
+    public override void update(DragUpdateDetails details)
     {
-        global::Doroti.Ui.Offset deltaLocal = Reorderable_listLibrary._restrictAxis(details.delta, scrollDirection);
+        Offset deltaLocal = Reorderable_listLibrary._restrictAxis(details.delta, scrollDirection);
         _rawDragPosition += deltaLocal;
         dragPosition = _adjustedDragOffset(_rawDragPosition);
         onUpdate?.Invoke(this, dragPosition, details.delta);
     }
 
-    public override void end(global::Doroti.Framework.Gestures.DragEndDetails details)
+    public override void end(DragEndDetails details)
     {
         _proxyAnimation!.reverse();
         onEnd?.Invoke(this);
@@ -1092,13 +1092,13 @@ internal class _DragInfo__reorderable_list : global::Doroti.Framework.Gestures.D
         onCancel?.Invoke(this);
     }
 
-    internal virtual global::Doroti.Ui.Offset _adjustedDragOffset(Offset offset)
+    internal virtual Offset _adjustedDragOffset(Offset offset)
     {
         if (boundary is null)
         {
             return offset;
         }
-        global::Doroti.Ui.Offset adjOffset = boundary!.nearestPositionWithinBoundary(offset - dragOffset & itemSize).shift(dragOffset).topLeft;
+        Offset adjOffset = boundary!.nearestPositionWithinBoundary(offset - dragOffset & itemSize).shift(dragOffset).topLeft;
         return adjOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1123,7 +1123,7 @@ public static partial class Reorderable_listLibrary
     internal static Offset _overlayOrigin(BuildContext context)
     {
         OverlayState overlay = Overlay.of(context, debugRequiredFor: context.widget);
-        var overlayBox = ((global::Doroti.Framework.Rendering.RenderBox?)overlay.context.findRenderObject()!)!;
+        var overlayBox = ((RenderBox?)overlay.context.findRenderObject()!)!;
         return overlayBox.localToGlobal(Offset.zero);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1136,11 +1136,11 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Offset position { get; private set; } = default!;
     public virtual Size size { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.AnimationController animation { get; private set; } = default!;
-    public virtual global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator { get; private set; }
+    public virtual BoxConstraints constraints { get; private set; } = default!;
+    public virtual AnimationController animation { get; private set; } = default!;
+    public virtual Func<Widget, long, Animation<double>, Widget>? proxyDecorator { get; private set; }
 
-    internal _DragItemProxy__reorderable_list(SliverReorderableListState listState, long index, Widget child, Offset position, Size size, global::Doroti.Framework.Rendering.BoxConstraints constraints, global::Doroti.Framework.Animation.AnimationController animation, global::System.Func<Widget, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? proxyDecorator)
+    internal _DragItemProxy__reorderable_list(SliverReorderableListState listState, long index, Widget child, Offset position, Size size, BoxConstraints constraints, AnimationController animation, Func<Widget, long, Animation<double>, Widget>? proxyDecorator)
     {
         this.listState = listState;
         this.index = index;
@@ -1155,11 +1155,11 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
     public override Widget build(BuildContext context)
     {
         Widget proxyChild = proxyDecorator is null ? child : proxyDecorator.Invoke(child, index, animation.view);
-        global::Doroti.Ui.Offset overlayOrigin = Reorderable_listLibrary._overlayOrigin(context);
+        Offset overlayOrigin = Reorderable_listLibrary._overlayOrigin(context);
         return new MediaQuery(data: MediaQuery.of(context).removePadding(removeTop: true), child: new AnimatedBuilder(animation: animation, builder: (context, child) =>
         {
-            global::Doroti.Ui.Offset effectivePosition = position;
-            global::Doroti.Ui.Offset? dropPosition = listState._finalDropPosition;
+            Offset effectivePosition = position;
+            Offset? dropPosition = listState._finalDropPosition;
             if (dropPosition is not null)
             {
                 Offset dropPosition__58071__value58130 = DartRuntimePrimitives.RequireValue(dropPosition);
@@ -1175,7 +1175,7 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
 
 public static partial class Reorderable_listLibrary
 {
-    internal static double _sizeExtent(Size size, global::Doroti.Framework.Painting.Axis scrollDirection)
+    internal static double _sizeExtent(Size size, Axis scrollDirection)
     {
         return scrollDirection switch { Axis.horizontal => size.width, Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1184,16 +1184,16 @@ public static partial class Reorderable_listLibrary
 
 public static partial class Reorderable_listLibrary
 {
-    internal static Size _extentSize(double extent, global::Doroti.Framework.Painting.Axis scrollDirection)
+    internal static Size _extentSize(double extent, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => new global::Doroti.Ui.Size(extent, 0), Axis.vertical => new global::Doroti.Ui.Size(0, extent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch { Axis.horizontal => new Size(extent, 0), Axis.vertical => new Size(0, extent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Reorderable_listLibrary
 {
-    internal static double _offsetExtent(Offset offset, global::Doroti.Framework.Painting.Axis scrollDirection)
+    internal static double _offsetExtent(Offset offset, Axis scrollDirection)
     {
         return scrollDirection switch { Axis.horizontal => offset.dx, Axis.vertical => offset.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1202,29 +1202,29 @@ public static partial class Reorderable_listLibrary
 
 public static partial class Reorderable_listLibrary
 {
-    internal static Offset _extentOffset(double extent, global::Doroti.Framework.Painting.Axis scrollDirection)
+    internal static Offset _extentOffset(double extent, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => new global::Doroti.Ui.Offset(extent, 0.0), Axis.vertical => new global::Doroti.Ui.Offset(0.0, extent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch { Axis.horizontal => new Offset(extent, 0.0), Axis.vertical => new Offset(0.0, extent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Reorderable_listLibrary
 {
-    internal static Offset _restrictAxis(Offset offset, global::Doroti.Framework.Painting.Axis scrollDirection)
+    internal static Offset _restrictAxis(Offset offset, Axis scrollDirection)
     {
-        return scrollDirection switch { Axis.horizontal => new global::Doroti.Ui.Offset(offset.dx, 0.0), Axis.vertical => new global::Doroti.Ui.Offset(0.0, offset.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        return scrollDirection switch { Axis.horizontal => new Offset(offset.dx, 0.0), Axis.vertical => new Offset(0.0, offset.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 internal class _ReorderableItemGlobalKey__reorderable_list : GlobalObjectKey<IState>
 {
-    public virtual global::Doroti.Framework.Foundation.Key subKey { get; private set; } = default!;
+    public virtual Key subKey { get; private set; } = default!;
     public virtual long index { get; private set; } = default!;
     public virtual SliverReorderableListState state { get; private set; } = default!;
 
-    internal _ReorderableItemGlobalKey__reorderable_list(global::Doroti.Framework.Foundation.Key subKey, long index, SliverReorderableListState state) : base(subKey)
+    internal _ReorderableItemGlobalKey__reorderable_list(Key subKey, long index, SliverReorderableListState state) : base(subKey)
     {
         this.subKey = subKey;
         this.index = index;
@@ -1243,6 +1243,6 @@ internal class _ReorderableItemGlobalKey__reorderable_list : GlobalObjectKey<ISt
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(subKey, index, state));
-    internal static _ReorderableItemGlobalKey__reorderable_list Create(global::Doroti.Framework.Foundation.Key key, long index, SliverReorderableListState state) => new(key, index, state);
+    internal static _ReorderableItemGlobalKey__reorderable_list Create(Key key, long index, SliverReorderableListState state) => new(key, index, state);
 }
 

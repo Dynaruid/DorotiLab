@@ -7,10 +7,10 @@ public class KeyboardListener : StatelessWidget
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool includeSemantics { get; private set; } = default!;
-    public virtual global::System.Action<global::Doroti.Framework.Services.KeyEvent>? onKeyEvent { get; private set; }
+    public virtual System.Action<KeyEvent>? onKeyEvent { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public KeyboardListener(global::Doroti.Framework.Foundation.Key? key = null, FocusNode focusNode = default!, bool autofocus = false, bool includeSemantics = true, global::System.Action<global::Doroti.Framework.Services.KeyEvent>? onKeyEvent = null, Widget child = default!) : base(key: key)
+    public KeyboardListener(Key? key = null, FocusNode focusNode = default!, bool autofocus = false, bool includeSemantics = true, System.Action<KeyEvent>? onKeyEvent = null, Widget child = default!) : base(key: key)
     {
         this.focusNode = focusNode;
         this.autofocus = autofocus;
@@ -30,10 +30,10 @@ public class KeyboardListener : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", focusNode));
+        properties.add(new DiagnosticsProperty<FocusNode>("focusNode", focusNode));
     }
 
 }

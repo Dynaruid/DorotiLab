@@ -24,7 +24,7 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     public override double childCrossAxisPosition(RenderObject child)
     {
         var __child = (RenderSliver)(object)child;
-        global::Doroti.Ui.Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)__child.parentData!)!.paintOffset;
+        Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)__child.parentData!)!.paintOffset;
         return constraints.axis switch { Axis.vertical => paintOffsetLocal.dx, Axis.horizontal => paintOffsetLocal.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -88,7 +88,7 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
             double remainingExtentLocal = geometry!.scrollExtent - constraints.scrollOffset;
             double paintCorrection = (childLayoutGeometryLocal.paintExtent > remainingExtentLocal) ? (childLayoutGeometryLocal.paintExtent - remainingExtentLocal) : 0.0;
             double childExtentLocal = child.geometry!.crossAxisExtent ?? (extentPerFlexValue * (childParentDataAlternate.crossAxisFlex ?? 0L));
-            childParentDataAlternate.paintOffset = constraints.axis switch { Axis.vertical => new global::Doroti.Ui.Offset(offset, -paintCorrection), Axis.horizontal => new global::Doroti.Ui.Offset(-paintCorrection, offset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            childParentDataAlternate.paintOffset = constraints.axis switch { Axis.vertical => new Offset(offset, -paintCorrection), Axis.horizontal => new Offset(-paintCorrection, offset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             offset += childExtentLocal;
             child = childAfter(child);
         }
@@ -120,7 +120,7 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
         RenderSliver? child = lastChild;
         while (child is not null)
         {
-            global::Doroti.Ui.Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
+            Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
             bool isHit = result.addWithAxisOffset(mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition, paintOffset: paintOffsetLocal, mainAxisOffset: childMainAxisPosition(child), crossAxisOffset: childCrossAxisPosition(child), hitTest: child.hitTest);
             if (isHit)
             {
@@ -529,7 +529,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
             DartRuntimePrimitives.Assert(() => childLayoutGeometry.debugAssertIsValid());
             double childPaintOffset = layoutOffset + childLayoutGeometry.paintOrigin;
             var childParentData = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-            childParentData.paintOffset = constraints.axis switch { Axis.vertical => new global::Doroti.Ui.Offset(0.0, childPaintOffset), Axis.horizontal => new global::Doroti.Ui.Offset(childPaintOffset, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            childParentData.paintOffset = constraints.axis switch { Axis.vertical => new Offset(0.0, childPaintOffset), Axis.horizontal => new Offset(childPaintOffset, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             scrollOffsetLocal += childLayoutGeometry.scrollExtent;
             layoutOffset += childLayoutGeometry.layoutExtent;
             maxPaintExtentLocal += childLayoutGeometry.maxPaintExtent;
@@ -566,7 +566,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
                 bool childIsPinned = childLayoutGeometryLocal.maxScrollObstructionExtent > 0L;
                 if ((childPaintEnd > remainingExtent) || pinnedChildrenOverflow && childIsPinned)
                 {
-                    childParentDataLocal.paintOffset = constraints.axis switch { Axis.vertical => new global::Doroti.Ui.Offset(0.0, childParentDataLocal.paintOffset.dy - paintCorrection), Axis.horizontal => new global::Doroti.Ui.Offset(childParentDataLocal.paintOffset.dx - paintCorrection, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                    childParentDataLocal.paintOffset = constraints.axis switch { Axis.vertical => new Offset(0.0, childParentDataLocal.paintOffset.dy - paintCorrection), Axis.horizontal => new Offset(childParentDataLocal.paintOffset.dx - paintCorrection, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
                 }
                 child = childAfter(child);
             }
@@ -578,7 +578,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
         while (child is not null)
         {
             var childParentDataAlternate = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
-            childParentDataAlternate.paintOffset = SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, paintExtentLocal - childParentDataAlternate.paintOffset.dy - child.geometry!.paintExtent), AxisDirection.left => new global::Doroti.Ui.Offset(paintExtentLocal - childParentDataAlternate.paintOffset.dx - child.geometry!.paintExtent, 0.0), AxisDirection.right => childParentDataAlternate.paintOffset, AxisDirection.down => childParentDataAlternate.paintOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            childParentDataAlternate.paintOffset = SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => new Offset(0.0, paintExtentLocal - childParentDataAlternate.paintOffset.dy - child.geometry!.paintExtent), AxisDirection.left => new Offset(paintExtentLocal - childParentDataAlternate.paintOffset.dx - child.geometry!.paintExtent, 0.0), AxisDirection.right => childParentDataAlternate.paintOffset, AxisDirection.down => childParentDataAlternate.paintOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             child = advance(child);
         }
     }
@@ -609,7 +609,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
         RenderSliver? child = firstChild;
         while (child is not null)
         {
-            global::Doroti.Ui.Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
+            Offset paintOffsetLocal = ((SliverPhysicalParentData?)(object?)child.parentData!)!.paintOffset;
             bool isHit = result.addWithAxisOffset(mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition, paintOffset: paintOffsetLocal, mainAxisOffset: childMainAxisPosition(child), crossAxisOffset: childCrossAxisPosition(child), hitTest: child.hitTest);
             if (isHit)
             {

@@ -10,17 +10,17 @@ public enum CupertinoUserInterfaceLevelData
     elevated
 }
 
-public class CupertinoUserInterfaceLevel : global::Doroti.Framework.Widgets.InheritedWidget
+public class CupertinoUserInterfaceLevel : InheritedWidget
 {
     internal virtual CupertinoUserInterfaceLevelData _data { get; private set; } = default!;
 
-    public CupertinoUserInterfaceLevel(global::Doroti.Framework.Foundation.Key? key = null, CupertinoUserInterfaceLevelData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public CupertinoUserInterfaceLevel(Key? key = null, CupertinoUserInterfaceLevelData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         _data = data;
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(((CupertinoUserInterfaceLevel)oldWidget)._data, _data));
-    public static CupertinoUserInterfaceLevelData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(((CupertinoUserInterfaceLevel)oldWidget)._data, _data));
+    public static CupertinoUserInterfaceLevelData of(BuildContext context)
     {
         CupertinoUserInterfaceLevel? query = context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>();
         if (query is not null)
@@ -31,17 +31,17 @@ public class CupertinoUserInterfaceLevel : global::Doroti.Framework.Widgets.Inhe
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static CupertinoUserInterfaceLevelData? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
+    public static CupertinoUserInterfaceLevelData? maybeOf(BuildContext context)
     {
         CupertinoUserInterfaceLevel? query = context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>();
         return query?._data;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<CupertinoUserInterfaceLevelData>("user interface level", _data));
+        properties.add(new EnumProperty<CupertinoUserInterfaceLevelData>("user interface level", _data));
     }
 
 }

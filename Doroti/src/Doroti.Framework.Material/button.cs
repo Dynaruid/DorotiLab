@@ -6,13 +6,13 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class RawMaterialButton : global::Doroti.Framework.Widgets.StatefulWidget
+public class RawMaterialButton : StatefulWidget
 {
-    public virtual global::System.Action? onPressed { get; private set; }
-    public virtual global::System.Action? onLongPress { get; private set; }
-    public virtual global::System.Action<bool>? onHighlightChanged { get; private set; }
-    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? textStyle { get; private set; }
+    public virtual Action? onPressed { get; private set; }
+    public virtual Action? onLongPress { get; private set; }
+    public virtual System.Action<bool>? onHighlightChanged { get; private set; }
+    public virtual MouseCursor? mouseCursor { get; private set; }
+    public virtual TextStyle? textStyle { get; private set; }
     public virtual Color? fillColor { get; private set; }
     public virtual Color? focusColor { get; private set; }
     public virtual Color? hoverColor { get; private set; }
@@ -23,24 +23,24 @@ public class RawMaterialButton : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual double focusElevation { get; private set; } = default!;
     public virtual double highlightElevation { get; private set; } = default!;
     public virtual double disabledElevation { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual VisualDensity visualDensity { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.ShapeBorder shape { get; private set; } = default!;
+    public virtual BoxConstraints constraints { get; private set; } = default!;
+    public virtual ShapeBorder shape { get; private set; } = default!;
     public virtual Duration animationDuration { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
+    public virtual Widget? child { get; private set; }
     public virtual MaterialTapTargetSize materialTapTargetSize { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
+    public virtual FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual bool enableFeedback { get; private set; } = default!;
 
-    public RawMaterialButton(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = default!, global::System.Action? onLongPress = null, global::System.Action<bool>? onHighlightChanged = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color? fillColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, double elevation = 2.0, double focusElevation = 4.0, double hoverElevation = 4.0, double highlightElevation = 8.0, double disabledElevation = 0.0, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, VisualDensity visualDensity = default!, global::Doroti.Framework.Rendering.BoxConstraints constraints = default!, global::Doroti.Framework.Painting.ShapeBorder shape = default!, Duration? animationDuration = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, MaterialTapTargetSize? materialTapTargetSize = null, global::Doroti.Framework.Widgets.Widget? child = null, bool enableFeedback = true) : base(key: key)
+    public RawMaterialButton(Key? key = null, Action? onPressed = default!, Action? onLongPress = null, System.Action<bool>? onHighlightChanged = null, MouseCursor? mouseCursor = null, TextStyle? textStyle = null, Color? fillColor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, Color? splashColor = null, double elevation = 2.0, double focusElevation = 4.0, double hoverElevation = 4.0, double highlightElevation = 8.0, double disabledElevation = 0.0, EdgeInsetsGeometry padding = default!, VisualDensity visualDensity = default!, BoxConstraints constraints = default!, ShapeBorder shape = default!, Duration? animationDuration = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, MaterialTapTargetSize? materialTapTargetSize = null, Widget? child = null, bool enableFeedback = true) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? EdgeInsets.zero;
+        EdgeInsetsGeometry __padding = padding ?? EdgeInsets.zero;
         VisualDensity __visualDensity = visualDensity ?? VisualDensity.standard;
-        global::Doroti.Framework.Rendering.BoxConstraints __constraints = constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 88.0, minHeight: 36.0);
-        global::Doroti.Framework.Painting.ShapeBorder __shape = shape ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder();
+        BoxConstraints __constraints = constraints ?? new BoxConstraints(minWidth: 88.0, minHeight: 36.0);
+        ShapeBorder __shape = shape ?? new RoundedRectangleBorder();
         Duration __animationDuration = animationDuration ?? ConstantsLibrary.kThemeChangeDuration;
         this.onPressed = onPressed;
         this.onLongPress = onLongPress;
@@ -79,9 +79,9 @@ public class RawMaterialButton : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMaterialButtonState__button());
 }
 
-internal class _RawMaterialButtonState__button : global::Doroti.Framework.Widgets.State<RawMaterialButton>, MaterialStateMixin<RawMaterialButton>
+internal class _RawMaterialButtonState__button : State<RawMaterialButton>, MaterialStateMixin<RawMaterialButton>
 {
-    public virtual HashSet<global::Doroti.Framework.Widgets.WidgetState> materialStates { get; set; } = new HashSet<global::Doroti.Framework.Widgets.WidgetState>();
+    public virtual HashSet<WidgetState> materialStates { get; set; } = new HashSet<WidgetState>();
 
     public override void initState()
     {
@@ -122,21 +122,21 @@ internal class _RawMaterialButtonState__button : global::Doroti.Framework.Widget
             return widget.elevation;
         }
     }
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Ui.Color? effectiveTextColor = WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(widget.textStyle?.color, materialStates);
-        global::Doroti.Framework.Painting.ShapeBorder? effectiveShape = WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.ShapeBorder?>(widget.shape, materialStates);
-        global::Doroti.Ui.Offset densityAdjustment = widget.visualDensity.baseSizeAdjustment;
-        global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraintsLocal = widget.visualDensity.effectiveConstraints(widget.constraints);
-        global::Doroti.Framework.Services.MouseCursor? effectiveMouseCursor = WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(widget.mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable, materialStates);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = widget.padding.add(EdgeInsets.CreateOnly(left: densityAdjustment.dx, top: densityAdjustment.dy, right: densityAdjustment.dx, bottom: densityAdjustment.dy)).clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity);
-        global::Doroti.Framework.Widgets.Widget result = new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: effectiveConstraintsLocal, child: new Material(elevation: _effectiveElevation, textStyle: widget.textStyle?.copyWith(color: effectiveTextColor), shape: effectiveShape, color: widget.fillColor, shadowColor: Theme.of(context).shadowColor, type: (widget.fillColor is null) ? MaterialType.transparency : MaterialType.button, animationDuration: widget.animationDuration, clipBehavior: widget.clipBehavior, child: new InkWell(focusNode: widget.focusNode, canRequestFocus: widget.enabled, onFocusChange: updateMaterialState(WidgetState.focused), autofocus: widget.autofocus, onHighlightChanged: updateMaterialState(WidgetState.pressed, onChanged: widget.onHighlightChanged), splashColor: widget.splashColor, highlightColor: widget.highlightColor, focusColor: widget.focusColor, hoverColor: widget.hoverColor, onHover: updateMaterialState(WidgetState.hovered), onTap: widget.onPressed, onLongPress: widget.onLongPress, enableFeedback: widget.enableFeedback, customBorder: effectiveShape, mouseCursor: effectiveMouseCursor, child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(color: effectiveTextColor), child: new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, heightFactor: 1.0, child: widget.child))))));
-        global::Doroti.Ui.Size minSizeLocal = default!;
+        Color? effectiveTextColor = WidgetStateProperty.resolveAs(widget.textStyle?.color, materialStates);
+        ShapeBorder? effectiveShape = WidgetStateProperty.resolveAs<ShapeBorder?>(widget.shape, materialStates);
+        Offset densityAdjustment = widget.visualDensity.baseSizeAdjustment;
+        BoxConstraints effectiveConstraintsLocal = widget.visualDensity.effectiveConstraints(widget.constraints);
+        MouseCursor? effectiveMouseCursor = WidgetStateProperty.resolveAs<MouseCursor?>(widget.mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable, materialStates);
+        EdgeInsetsGeometry paddingLocal = widget.padding.add(EdgeInsets.CreateOnly(left: densityAdjustment.dx, top: densityAdjustment.dy, right: densityAdjustment.dx, bottom: densityAdjustment.dy)).clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity);
+        Widget result = new ConstrainedBox(constraints: effectiveConstraintsLocal, child: new Material(elevation: _effectiveElevation, textStyle: widget.textStyle?.copyWith(color: effectiveTextColor), shape: effectiveShape, color: widget.fillColor, shadowColor: Theme.of(context).shadowColor, type: (widget.fillColor is null) ? MaterialType.transparency : MaterialType.button, animationDuration: widget.animationDuration, clipBehavior: widget.clipBehavior, child: new InkWell(focusNode: widget.focusNode, canRequestFocus: widget.enabled, onFocusChange: updateMaterialState(WidgetState.focused), autofocus: widget.autofocus, onHighlightChanged: updateMaterialState(WidgetState.pressed, onChanged: widget.onHighlightChanged), splashColor: widget.splashColor, highlightColor: widget.highlightColor, focusColor: widget.focusColor, hoverColor: widget.hoverColor, onHover: updateMaterialState(WidgetState.hovered), onTap: widget.onPressed, onLongPress: widget.onLongPress, enableFeedback: widget.enableFeedback, customBorder: effectiveShape, mouseCursor: effectiveMouseCursor, child: IconTheme.merge(data: new IconThemeData(color: effectiveTextColor), child: new Padding(padding: paddingLocal, child: new Center(widthFactor: 1.0, heightFactor: 1.0, child: widget.child))))));
+        Size minSizeLocal = default!;
         switch (widget.materialTapTargetSize)
         {
             case var __constant15001 when Equals(__constant15001, MaterialTapTargetSize.padded):
                 {
-                    minSizeLocal = new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dx, ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy);
+                    minSizeLocal = new Size(ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dx, ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy);
                     DartRuntimePrimitives.Assert(() => minSizeLocal.width >= 0.0);
                     DartRuntimePrimitives.Assert(() => minSizeLocal.height >= 0.0);
                     break;
@@ -147,10 +147,10 @@ internal class _RawMaterialButtonState__button : global::Doroti.Framework.Widget
                     break;
                 }
         }
-        return new global::Doroti.Framework.Widgets.Semantics(container: true, button: true, enabled: widget.enabled, child: new _InputPadding__button(minSize: minSizeLocal, child: result));
+        return new Widgets.Semantics(container: true, button: true, enabled: widget.enabled, child: new _InputPadding__button(minSize: minSizeLocal, child: result));
     }
 
-    public virtual global::System.Action<bool> updateMaterialState(global::Doroti.Framework.Widgets.WidgetState key, global::System.Action<bool>? onChanged = null)
+    public virtual System.Action<bool> updateMaterialState(WidgetState key, System.Action<bool>? onChanged = null)
     {
         return (value) =>
         {
@@ -164,13 +164,13 @@ internal class _RawMaterialButtonState__button : global::Doroti.Framework.Widget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void setMaterialState(global::Doroti.Framework.Widgets.WidgetState state, bool isSet)
+    public virtual void setMaterialState(WidgetState state, bool isSet)
     {
         if (isSet) { addMaterialState(state); } else { removeMaterialState(state); }
         return;
     }
 
-    public virtual void addMaterialState(global::Doroti.Framework.Widgets.WidgetState state)
+    public virtual void addMaterialState(WidgetState state)
     {
         if (materialStates.Add(state))
         {
@@ -180,7 +180,7 @@ internal class _RawMaterialButtonState__button : global::Doroti.Framework.Widget
         }
     }
 
-    public virtual void removeMaterialState(global::Doroti.Framework.Widgets.WidgetState state)
+    public virtual void removeMaterialState(WidgetState state)
     {
         if (materialStates.Remove(state))
         {
@@ -198,30 +198,30 @@ internal class _RawMaterialButtonState__button : global::Doroti.Framework.Widget
     public virtual bool isPressed => materialStates.Contains(WidgetState.pressed);
     public virtual bool isScrolledUnder => materialStates.Contains(WidgetState.scrolledUnder);
     public virtual bool isSelected => materialStates.Contains(WidgetState.selected);
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Widgets.WidgetState>>("materialStates", materialStates, defaultValue: new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));
+        properties.add(new DiagnosticsProperty<HashSet<WidgetState>>("materialStates", materialStates, defaultValue: new HashSet<WidgetState>()));
     }
 
 }
 
-internal class _InputPadding__button : global::Doroti.Framework.Widgets.SingleChildRenderObjectWidget
+internal class _InputPadding__button : SingleChildRenderObjectWidget
 {
     public virtual Size minSize { get; private set; } = default!;
 
-    internal _InputPadding__button(global::Doroti.Framework.Widgets.Widget? child = null, Size minSize = default!) : base(child: child)
+    internal _InputPadding__button(Widget? child = null, Size minSize = default!) : base(child: child)
     {
         this.minSize = minSize;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderInputPadding__button(minSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_RenderInputPadding__button)renderObject;
         __renderObject.minSize = minSize;
@@ -229,16 +229,16 @@ internal class _InputPadding__button : global::Doroti.Framework.Widgets.SingleCh
 
 }
 
-public class _RenderInputPadding__button : global::Doroti.Framework.Rendering.RenderShiftedBox
+public class _RenderInputPadding__button : RenderShiftedBox
 {
     internal virtual Size _minSize { get; set; } = default!;
 
-    internal _RenderInputPadding__button(Size _minSize, global::Doroti.Framework.Rendering.RenderBox? child = null) : base(child)
+    internal _RenderInputPadding__button(Size _minSize, RenderBox? child = null) : base(child)
     {
         this._minSize = _minSize;
     }
 
-    public virtual global::Doroti.Ui.Size minSize
+    public virtual Size minSize
     {
         get => _minSize;
         set
@@ -292,28 +292,28 @@ public class _RenderInputPadding__button : global::Doroti.Framework.Rendering.Re
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Size _computeSize(global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild)
+    internal virtual Size _computeSize(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
     {
         if (child is not null)
         {
-            global::Doroti.Ui.Size childSize = layoutChild(child!, constraints);
+            Size childSize = layoutChild(child!, constraints);
             double widthLocal = Math.Max(childSize.width, minSize.width);
             double heightLocal = Math.Max(childSize.height, minSize.height);
-            return constraints.constrain(new global::Doroti.Ui.Size(widthLocal, heightLocal));
+            return constraints.constrain(new Size(widthLocal, heightLocal));
         }
         return Size.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.dryLayoutChild);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
+    public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = child;
+        RenderBox? childLocal = child;
         if (childLocal is null)
         {
             return null;
@@ -323,7 +323,7 @@ public class _RenderInputPadding__button : global::Doroti.Framework.Rendering.Re
         {
             return null;
         }
-        global::Doroti.Ui.Size childSize = childLocal.getDryLayout(constraints);
+        Size childSize = childLocal.getDryLayout(constraints);
         return DartRuntimePrimitives.RequireValue(result) + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -333,18 +333,18 @@ public class _RenderInputPadding__button : global::Doroti.Framework.Rendering.Re
         size = _computeSize(constraints: constraints, layoutChild: ChildLayoutHelper.layoutChild);
         if (child is not null)
         {
-            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)child!.parentData!)!;
+            var childParentData = ((BoxParentData?)child!.parentData!)!;
             childParentData.offset = Alignment.center.alongOffset(size - child!.size);
         }
     }
 
-    public override bool hitTest(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
+    public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         if (base.hitTest(result, position: position))
         {
             return true;
         }
-        global::Doroti.Ui.Offset centerLocal = child!.size.center(Offset.zero);
+        Offset centerLocal = child!.size.center(Offset.zero);
         return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(centerLocal), position: centerLocal, hitTest: (result, position) =>
         {
             DartRuntimePrimitives.Assert(() => Equals(position, centerLocal));

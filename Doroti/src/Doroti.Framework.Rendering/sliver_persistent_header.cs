@@ -139,12 +139,12 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
     {
         if ((child is not null) && geometry!.visible)
         {
-            offset += SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, geometry!.paintExtent - childMainAxisPosition(child!) - childExtent), AxisDirection.left => new global::Doroti.Ui.Offset(geometry!.paintExtent - childMainAxisPosition(child!) - childExtent, 0.0), AxisDirection.right => new global::Doroti.Ui.Offset(childMainAxisPosition(child!), 0.0), AxisDirection.down => new global::Doroti.Ui.Offset(0.0, childMainAxisPosition(child!)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            offset += SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => new Offset(0.0, geometry!.paintExtent - childMainAxisPosition(child!) - childExtent), AxisDirection.left => new Offset(geometry!.paintExtent - childMainAxisPosition(child!) - childExtent, 0.0), AxisDirection.right => new Offset(childMainAxisPosition(child!), 0.0), AxisDirection.down => new Offset(0.0, childMainAxisPosition(child!)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             context.paintChild(child!, offset);
         }
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.addTagForChildren(RenderViewport.excludeFromScrolling);
@@ -236,8 +236,8 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
         double crossAxisDelta = childCrossAxisPosition(child);
         double absolutePosition = mainAxisPosition - delta;
         double absoluteCrossAxisPosition = crossAxisPosition - crossAxisDelta;
-        global::Doroti.Ui.Offset paintOffsetLocal = default!;
-        global::Doroti.Ui.Offset transformedPosition = default!;
+        Offset paintOffsetLocal = default!;
+        Offset transformedPosition = default!;
         switch (constraints.axis)
         {
             case Axis.horizontal:
@@ -247,8 +247,8 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
                         absolutePosition = child.size.width - absolutePosition;
                         delta = geometry!.paintExtent - child.size.width - delta;
                     }
-                    paintOffsetLocal = new global::Doroti.Ui.Offset(delta, crossAxisDelta);
-                    transformedPosition = new global::Doroti.Ui.Offset(absolutePosition, absoluteCrossAxisPosition);
+                    paintOffsetLocal = new Offset(delta, crossAxisDelta);
+                    transformedPosition = new Offset(absolutePosition, absoluteCrossAxisPosition);
                     break;
                 }
             case Axis.vertical:
@@ -258,8 +258,8 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
                         absolutePosition = child.size.height - absolutePosition;
                         delta = geometry!.paintExtent - child.size.height - delta;
                     }
-                    paintOffsetLocal = new global::Doroti.Ui.Offset(crossAxisDelta, delta);
-                    transformedPosition = new global::Doroti.Ui.Offset(absoluteCrossAxisPosition, absolutePosition);
+                    paintOffsetLocal = new Offset(crossAxisDelta, delta);
+                    transformedPosition = new Offset(absoluteCrossAxisPosition, absolutePosition);
                     break;
                 }
         }
@@ -365,8 +365,8 @@ public abstract class RenderSliverPinnedPersistentHeader : RenderSliverPersisten
     public override double childMainAxisPosition(RenderObject child) => 0.0;
     public override void showOnScreen(RenderObject? descendant = null, Rect? rect = null, Duration duration = default, Curve curve = default!)
     {
-        global::Doroti.Ui.Rect? localBounds = (descendant is not null) ? MatrixUtils.transformRect(descendant.getTransformTo(this), rect ?? descendant.paintBounds) : rect;
-        global::Doroti.Ui.Rect? newRect = SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => Sliver_persistent_headerLibrary._trim(localBounds, bottom: childExtent), AxisDirection.left => Sliver_persistent_headerLibrary._trim(localBounds, right: childExtent), AxisDirection.right => Sliver_persistent_headerLibrary._trim(localBounds, left: 0), AxisDirection.down => Sliver_persistent_headerLibrary._trim(localBounds, top: 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        Rect? localBounds = (descendant is not null) ? MatrixUtils.transformRect(descendant.getTransformTo(this), rect ?? descendant.paintBounds) : rect;
+        Rect? newRect = SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection) switch { AxisDirection.up => Sliver_persistent_headerLibrary._trim(localBounds, bottom: childExtent), AxisDirection.left => Sliver_persistent_headerLibrary._trim(localBounds, right: childExtent), AxisDirection.right => Sliver_persistent_headerLibrary._trim(localBounds, left: 0), AxisDirection.down => Sliver_persistent_headerLibrary._trim(localBounds, top: 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         base.showOnScreen(descendant: this, rect: newRect, duration: duration, curve: curve);
     }
 
@@ -542,9 +542,9 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             return;
         }
         DartRuntimePrimitives.Assert(() => (child is not null) || (descendant is null));
-        global::Doroti.Ui.Rect? childBounds = (descendant is not null) ? MatrixUtils.transformRect(descendant.getTransformTo(child), rect ?? descendant.paintBounds) : rect;
+        Rect? childBounds = (descendant is not null) ? MatrixUtils.transformRect(descendant.getTransformTo(child), rect ?? descendant.paintBounds) : rect;
         double targetExtent = default!;
-        global::Doroti.Ui.Rect? targetRect = default!;
+        Rect? targetRect = default!;
         switch (SliverLibrary.applyGrowthDirectionToAxisDirection(constraints.axisDirection, constraints.growthDirection))
         {
             case AxisDirection.up:

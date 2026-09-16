@@ -5,7 +5,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class MenuButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class MenuButtonThemeData : Diagnosticable
 {
     public virtual ButtonStyle? style { get; private set; }
 
@@ -40,9 +40,9 @@ public class MenuButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
         return (__other is MenuButtonThemeData) && Equals(__other.style, style);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -68,27 +68,27 @@ public class MenuButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
 }
 
-public class MenuButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class MenuButtonTheme : InheritedTheme
 {
     public virtual MenuButtonThemeData data { get; private set; } = default!;
 
-    public MenuButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, MenuButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public MenuButtonTheme(Key? key = null, MenuButtonThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static MenuButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static MenuButtonThemeData of(BuildContext context)
     {
         MenuButtonTheme? buttonTheme = context.dependOnInheritedWidgetOfExactType<MenuButtonTheme>();
         return buttonTheme?.data ?? Theme.of(context).menuButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new MenuButtonTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MenuButtonTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MenuButtonTheme)oldWidget).data));
 }

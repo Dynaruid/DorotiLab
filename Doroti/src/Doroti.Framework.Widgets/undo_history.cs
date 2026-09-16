@@ -6,15 +6,15 @@ namespace Doroti.Framework.Widgets;
 
 public class UndoHistory<T> : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Foundation.ValueNotifier<T> value { get; private set; } = default!;
-    public virtual global::System.Func<T?, T, bool>? shouldChangeUndoStack { get; private set; }
-    public virtual global::System.Func<T, T>? undoStackModifier { get; private set; }
-    public virtual global::System.Action<T> onTriggered { get; private set; } = default!;
+    public virtual ValueNotifier<T> value { get; private set; } = default!;
+    public virtual Func<T?, T, bool>? shouldChangeUndoStack { get; private set; }
+    public virtual Func<T, T>? undoStackModifier { get; private set; }
+    public virtual System.Action<T> onTriggered { get; private set; } = default!;
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual UndoHistoryController? controller { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public UndoHistory(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<T?, T, bool>? shouldChangeUndoStack = null, global::Doroti.Framework.Foundation.ValueNotifier<T> value = default!, global::System.Action<T> onTriggered = default!, FocusNode focusNode = default!, global::System.Func<T, T>? undoStackModifier = null, UndoHistoryController? controller = null, Widget child = default!) : base(key: key)
+    public UndoHistory(Key? key = null, Func<T?, T, bool>? shouldChangeUndoStack = null, ValueNotifier<T> value = default!, System.Action<T> onTriggered = default!, FocusNode focusNode = default!, Func<T, T>? undoStackModifier = null, UndoHistoryController? controller = null, Widget child = default!) : base(key: key)
     {
         this.shouldChangeUndoStack = shouldChangeUndoStack;
         this.value = value;
@@ -28,10 +28,10 @@ public class UndoHistory<T> : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new UndoHistoryState<T>());
 }
 
-public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framework.Services.UndoManagerClient
+public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
 {
     internal virtual _UndoStack__undo_history<T> _stack { get; private set; } = new _UndoStack__undo_history<T>();
-    internal virtual global::System.Func<T, Timer> _throttledPush { get; private set; } = default!;
+    internal virtual Func<T, Timer> _throttledPush { get; private set; } = default!;
     internal virtual Timer? _throttleTimer { get; set; } = default;
     internal virtual bool _duringTrigger { get; set; } = false;
     internal static Duration _kThrottleDuration = Duration.Create(milliseconds: 500L);
@@ -148,7 +148,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
         _updateState();
     }
 
-    public virtual void handlePlatformUndo(global::Doroti.Framework.Services.UndoDirection direction)
+    public virtual void handlePlatformUndo(UndoDirection direction)
     {
         switch (direction)
         {
@@ -223,7 +223,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
 
     public override Widget build(BuildContext context)
     {
-        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(UndoTextIntent)] = Action<UndoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<UndoTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<UndoTextIntent>)_undoFromIntent)(__arg0); return default!; })), [typeof(RedoTextIntent)] = Action<RedoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<RedoTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<RedoTextIntent>)_redoFromIntent)(__arg0); return default!; })) }, child: widget.child);
+        return new Actions(actions: new DartMap<Type, dynamic> { [typeof(UndoTextIntent)] = Action<UndoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<UndoTextIntent>(onInvoke: (__arg0) => { ((System.Action<UndoTextIntent>)_undoFromIntent)(__arg0); return default!; })), [typeof(RedoTextIntent)] = Action<RedoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<RedoTextIntent>(onInvoke: (__arg0) => { ((System.Action<RedoTextIntent>)_redoFromIntent)(__arg0); return default!; })) }, child: widget.child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -256,10 +256,10 @@ public class UndoHistoryValue
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(canUndo.GetHashCode(), canRedo.GetHashCode()));
 }
 
-public class UndoHistoryController : global::Doroti.Framework.Foundation.ValueNotifier<UndoHistoryValue>
+public class UndoHistoryController : ValueNotifier<UndoHistoryValue>
 {
-    public virtual global::Doroti.Framework.Foundation.ChangeNotifier onUndo { get; private set; } = new global::Doroti.Framework.Foundation.ChangeNotifier();
-    public virtual global::Doroti.Framework.Foundation.ChangeNotifier onRedo { get; private set; } = new global::Doroti.Framework.Foundation.ChangeNotifier();
+    public virtual ChangeNotifier onUndo { get; private set; } = new ChangeNotifier();
+    public virtual ChangeNotifier onRedo { get; private set; } = new ChangeNotifier();
 
     public UndoHistoryController(UndoHistoryValue? value = null) : base(value ?? UndoHistoryValue.empty)
     {
@@ -375,7 +375,7 @@ internal delegate Timer _Throttled__undo_history<T>(T currentArg);
 
 public static partial class Undo_historyLibrary
 {
-    internal static global::System.Func<T, Timer> _throttle<T>(Duration duration, global::System.Action<T> function)
+    internal static Func<T, Timer> _throttle<T>(Duration duration, System.Action<T> function)
     {
         Timer? timer = default!;
         T arg = default!;

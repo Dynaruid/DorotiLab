@@ -6,9 +6,9 @@ namespace Doroti.Framework.Widgets;
 
 public abstract class StatusTransitionWidget : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Animation.Animation<double> animation { get; private set; } = default!;
+    public virtual Animation<double> animation { get; private set; } = default!;
 
-    protected StatusTransitionWidget(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> animation = default!) : base(key: key)
+    protected StatusTransitionWidget(Key? key = null, Animation<double> animation = default!) : base(key: key)
     {
         this.animation = animation;
     }
@@ -41,7 +41,7 @@ internal class _StatusTransitionState__status_transitions : State<StatusTransiti
         base.dispose();
     }
 
-    internal virtual void _animationStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal virtual void _animationStatusChanged(AnimationStatus status)
     {
         setState(() =>
         {

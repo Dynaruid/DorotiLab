@@ -6,15 +6,15 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class GridTileBar : global::Doroti.Framework.Widgets.StatelessWidget
+public class GridTileBar : StatelessWidget
 {
     public virtual Color? backgroundColor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? leading { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? title { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? subtitle { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? trailing { get; private set; }
+    public virtual Widget? leading { get; private set; }
+    public virtual Widget? title { get; private set; }
+    public virtual Widget? subtitle { get; private set; }
+    public virtual Widget? trailing { get; private set; }
 
-    public GridTileBar(global::Doroti.Framework.Foundation.Key? key = null, Color? backgroundColor = null, global::Doroti.Framework.Widgets.Widget? leading = null, global::Doroti.Framework.Widgets.Widget? title = null, global::Doroti.Framework.Widgets.Widget? subtitle = null, global::Doroti.Framework.Widgets.Widget? trailing = null) : base(key: key)
+    public GridTileBar(Key? key = null, Color? backgroundColor = null, Widget? leading = null, Widget? title = null, Widget? subtitle = null, Widget? trailing = null) : base(key: key)
     {
         this.backgroundColor = backgroundColor;
         this.leading = leading;
@@ -23,16 +23,16 @@ public class GridTileBar : global::Doroti.Framework.Widgets.StatelessWidget
         this.trailing = trailing;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Painting.BoxDecoration? decorationLocal = default!;
+        BoxDecoration? decorationLocal = default!;
         if (backgroundColor is not null)
         {
-            decorationLocal = new global::Doroti.Framework.Painting.BoxDecoration(color: backgroundColor);
+            decorationLocal = new BoxDecoration(color: backgroundColor);
         }
         var paddingLocal = EdgeInsetsDirectional.CreateOnly(start: (leading is not null) ? 8.0 : 16.0, end: (trailing is not null) ? 8.0 : 16.0);
         var darkTheme = ThemeData.Create();
-        return new global::Doroti.Framework.Widgets.Container(padding: paddingLocal, decoration: decorationLocal, height: ((title is not null) && (subtitle is not null)) ? 68.0 : 48.0, child: new Theme(data: darkTheme, child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(color: Colors.white), child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection2284 = new List<global::Doroti.Framework.Widgets.Widget>(); if (leading is not null) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(end: 8.0), child: leading))); } if ((title is not null) && (subtitle is not null)) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: darkTheme.textTheme.titleMedium!, softWrap: false, overflow: TextOverflow.ellipsis, child: title!)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: darkTheme.textTheme.bodySmall!, softWrap: false, overflow: TextOverflow.ellipsis, child: subtitle!)) })))); } else { if ((title is not null) || (subtitle is not null)) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: darkTheme.textTheme.titleMedium!, softWrap: false, overflow: TextOverflow.ellipsis, child: title ?? subtitle!)))); } } if (trailing is not null) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 8.0), child: trailing))); } return __collection2284; }))()))));
+        return new Container(padding: paddingLocal, decoration: decorationLocal, height: ((title is not null) && (subtitle is not null)) ? 68.0 : 48.0, child: new Theme(data: darkTheme, child: IconTheme.merge(data: new IconThemeData(color: Colors.white), child: new Row(children: ((Func<List<Widget>>)(() => { var __collection2284 = new List<Widget>(); if (leading is not null) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(end: 8.0), child: leading))); } if ((title is not null) && (subtitle is not null)) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: darkTheme.textTheme.titleMedium!, softWrap: false, overflow: TextOverflow.ellipsis, child: title!)), DartRuntimePrimitives.ConvertValue<Widget>(new DefaultTextStyle(style: darkTheme.textTheme.bodySmall!, softWrap: false, overflow: TextOverflow.ellipsis, child: subtitle!)) })))); } else { if ((title is not null) || (subtitle is not null)) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: new DefaultTextStyle(style: darkTheme.textTheme.titleMedium!, softWrap: false, overflow: TextOverflow.ellipsis, child: title ?? subtitle!)))); } } if (trailing is not null) { __collection2284.Add(DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 8.0), child: trailing))); } return __collection2284; }))()))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

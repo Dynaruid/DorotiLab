@@ -206,7 +206,7 @@ public class RestorableDateTimeN : RestorableValue<DateTime?>
     public override object? toPrimitives() => DartRuntimePrimitives.MillisecondsSinceEpoch(value);
 }
 
-public abstract class RestorableListenable<T> : RestorableProperty<T> where T : global::Doroti.Framework.Foundation.Listenable
+public abstract class RestorableListenable<T> : RestorableProperty<T> where T : Listenable
 {
     internal virtual T? _value { get; set; } = default;
 
@@ -233,7 +233,7 @@ public abstract class RestorableListenable<T> : RestorableProperty<T> where T : 
 
 }
 
-public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> where T : global::Doroti.Framework.Foundation.ChangeNotifier
+public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> where T : ChangeNotifier
 {
     public override void initWithValue(T value)
     {
@@ -259,11 +259,11 @@ public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> wher
 
 public class RestorableTextEditingController : RestorableChangeNotifier<TextEditingController>
 {
-    internal virtual global::Doroti.Framework.Services.TextEditingValue _initialValue { get; private set; } = default!;
+    internal virtual TextEditingValue _initialValue { get; private set; } = default!;
 
-    public static RestorableTextEditingController Create(string? text = null) => new RestorableTextEditingController((text is null) ? TextEditingValue.empty : new global::Doroti.Framework.Services.TextEditingValue(text: text));
+    public static RestorableTextEditingController Create(string? text = null) => new RestorableTextEditingController((text is null) ? TextEditingValue.empty : new TextEditingValue(text: text));
 
-    public RestorableTextEditingController(global::Doroti.Framework.Services.TextEditingValue value)
+    public RestorableTextEditingController(TextEditingValue value)
     {
         _initialValue = value;
     }
@@ -306,7 +306,7 @@ public class RestorableEnumN<T> : RestorableValue<T?> where T : struct, Enum
         set
         {
             var newValue = value;
-            DartRuntimePrimitives.Assert(() => newValue is null || values.Contains(newValue.Value), () => (object?)$"Attempted to set an unknown enum value \"{newValue}\" that is not null, or " + $"in the valid set of enum values for the {typeof(T)} type: " + $"{values.map<T, string>((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(() => newValue is null || values.Contains(newValue.Value), () => (object?)$"Attempted to set an unknown enum value \"{newValue}\" that is not null, or " + $"in the valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
             base.value = newValue;
         }
     }
@@ -331,7 +331,7 @@ public class RestorableEnumN<T> : RestorableValue<T?> where T : struct, Enum
                     return allowed;
                 }
             }
-            DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to set an unknown enum value \"{data__as18369}\" that is not null, or " + $"in the valid set of enum values for the {typeof(T)} type: " + $"{values.map<T, string>((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to set an unknown enum value \"{data__as18369}\" that is not null, or " + $"in the valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
         }
         return _defaultValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -358,7 +358,7 @@ public class RestorableEnum<T> : RestorableValue<T> where T : Enum
         set
         {
             var newValue = value;
-            DartRuntimePrimitives.Assert(() => values.Contains(newValue), () => (object?)$"Attempted to set an unknown enum value \"{newValue}\" that is not in the " + $"valid set of enum values for the {typeof(T)} type: " + $"{values.map<T, string>((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(() => values.Contains(newValue), () => (object?)$"Attempted to set an unknown enum value \"{newValue}\" that is not in the " + $"valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
             base.value = newValue;
         }
     }
@@ -379,7 +379,7 @@ public class RestorableEnum<T> : RestorableValue<T> where T : Enum
                     return allowed;
                 }
             }
-            DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to restore an unknown enum value \"{data__as21037}\" that is not in the " + $"valid set of enum values for the {typeof(T)} type: " + $"{values.map<T, string>((value) => value.ToString()).toSet()}");
+            DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to restore an unknown enum value \"{data__as21037}\" that is not in the " + $"valid set of enum values for the {typeof(T)} type: " + $"{values.map((value) => value.ToString()).toSet()}");
         }
         return _defaultValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");

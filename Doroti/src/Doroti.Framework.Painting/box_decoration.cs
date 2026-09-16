@@ -49,12 +49,12 @@ public class BoxDecoration : Decoration
         {
             case BoxShape.circle:
                 {
-                    global::Doroti.Ui.Offset centerLocal = rect.center;
+                    Offset centerLocal = rect.center;
                     double radiusLocal = rect.shortestSide / 2.0;
                     var square = Rect.fromCircle(center: centerLocal, radius: radiusLocal);
                     return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addOval(square);
     return __cascade;
 }))();
@@ -65,14 +65,14 @@ public class BoxDecoration : Decoration
                     {
                         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(borderRadius!.resolve(DartRuntimePrimitives.RequireValue(textDirection)).toRRect(rect));
     return __cascade;
 }))();
                     }
                     return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(rect);
     return __cascade;
 }))();
@@ -128,7 +128,7 @@ public class BoxDecoration : Decoration
         {
             return false;
         }
-        return (__other is BoxDecoration) && Equals(__other.color, color) && Equals(__other.image, image) && Equals(__other.border, border) && Equals(__other.borderRadius, borderRadius) && CollectionsLibrary.listEquals<BoxShadow>(__other.boxShadow, boxShadow) && Equals(__other.gradient, gradient) && Equals(__other.backgroundBlendMode, backgroundBlendMode) && Equals(__other.shape, shape);
+        return (__other is BoxDecoration) && Equals(__other.color, color) && Equals(__other.image, image) && Equals(__other.border, border) && Equals(__other.borderRadius, borderRadius) && CollectionsLibrary.listEquals(__other.boxShadow, boxShadow) && Equals(__other.gradient, gradient) && Equals(__other.backgroundBlendMode, backgroundBlendMode) && Equals(__other.shape, shape);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(color, image, border, borderRadius, (boxShadow is null) ? null : FoundationRuntimePorts.ObjectHashAll(boxShadow!), gradient, backgroundBlendMode, shape);
@@ -160,14 +160,14 @@ public class BoxDecoration : Decoration
                 {
                     if (borderRadius is not null)
                     {
-                        global::Doroti.Ui.RRect bounds = borderRadius!.resolve(textDirection).toRRect(Offset.zero & size);
+                        RRect bounds = borderRadius!.resolve(textDirection).toRRect(Offset.zero & size);
                         return bounds.contains(position);
                     }
                     return true;
                 }
             case BoxShape.circle:
                 {
-                    global::Doroti.Ui.Offset centerLocal = size.center(Offset.zero);
+                    Offset centerLocal = size.center(Offset.zero);
                     double radius = Math.Min(size.width, size.height) / 2.0;
                     return (position - centerLocal).distanceSquared <= (radius * radius);
                 }
@@ -196,12 +196,12 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         this._decoration = _decoration;
     }
 
-    internal virtual global::Doroti.Ui.Paint _getBackgroundPaint(Rect rect, TextDirection? textDirection)
+    internal virtual Paint _getBackgroundPaint(Rect rect, TextDirection? textDirection)
     {
         DartRuntimePrimitives.Assert(() => (_decoration.gradient is not null) || (_rectForCachedBackgroundPaint is null));
         if ((_cachedBackgroundPaint is null) || (_decoration.gradient is not null) && (!Equals(_rectForCachedBackgroundPaint, rect)))
         {
-            var paint = new global::Doroti.Ui.Paint();
+            var paint = new Paint();
             if (_decoration.backgroundBlendMode is not null)
             {
                 paint.blendMode = DartRuntimePrimitives.RequireValue(_decoration.backgroundBlendMode);
@@ -228,7 +228,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             case BoxShape.circle:
                 {
                     DartRuntimePrimitives.Assert(() => _decoration.borderRadius is null);
-                    global::Doroti.Ui.Offset centerLocal = rect.center;
+                    Offset centerLocal = rect.center;
                     double radius = rect.shortestSide / 2.0;
                     canvas.drawCircle(centerLocal, radius, paint);
                     break;
@@ -256,8 +256,8 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         }
         foreach (BoxShadow boxShadowLocal in _decoration.boxShadow!)
         {
-            global::Doroti.Ui.Paint paint = boxShadowLocal.toPaint();
-            global::Doroti.Ui.Rect bounds = rect.shift(boxShadowLocal.offset).inflate(boxShadowLocal.spreadRadius);
+            Paint paint = boxShadowLocal.toPaint();
+            Rect bounds = rect.shift(boxShadowLocal.offset).inflate(boxShadowLocal.spreadRadius);
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (DebugLibrary.debugDisableShadows && Equals(boxShadowLocal.blurStyle, BlurStyle.outer))
@@ -283,7 +283,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
     {
         if ((_decoration.color is not null) || (_decoration.gradient is not null))
         {
-            global::Doroti.Ui.Rect adjustedRect = _adjustedRectOnOutlinedBorder(rect, textDirection);
+            Rect adjustedRect = _adjustedRectOnOutlinedBorder(rect, textDirection);
             _paintBox(canvas, adjustedRect, _getBackgroundPaint(rect, textDirection), textDirection);
         }
     }
@@ -298,7 +298,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Rect _adjustedRectOnOutlinedBorder(Rect rect, TextDirection? textDirection)
+    internal virtual Rect _adjustedRectOnOutlinedBorder(Rect rect, TextDirection? textDirection)
     {
         if (_decoration.border is null)
         {
@@ -333,18 +333,18 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             return;
         }
         _imagePainter ??= _decoration.image!.createPainter(onChanged!);
-        global::Doroti.Ui.Path? clipPath = default!;
+        Path? clipPath = default!;
         switch (_decoration.shape)
         {
             case BoxShape.circle:
                 {
                     DartRuntimePrimitives.Assert(() => _decoration.borderRadius is null);
-                    global::Doroti.Ui.Offset centerLocal = rect.center;
+                    Offset centerLocal = rect.center;
                     double radiusLocal = rect.shortestSide / 2.0;
                     var square = Rect.fromCircle(center: centerLocal, radius: radiusLocal);
                     clipPath = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addOval(square);
     return __cascade;
 }))();
@@ -356,7 +356,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
                     {
                         clipPath = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRRect(_decoration.borderRadius!.resolve(configuration.textDirection).toRRect(rect));
     return __cascade;
 }))();
@@ -376,8 +376,8 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => configuration.size is not null);
-        global::Doroti.Ui.Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
-        global::Doroti.Ui.TextDirection? textDirectionLocal = configuration.textDirection;
+        Rect rect = offset & DartRuntimePrimitives.RequireValue(configuration.size);
+        TextDirection? textDirectionLocal = configuration.textDirection;
         _paintShadows(canvas, rect, textDirectionLocal);
         _paintBackgroundColor(canvas, rect, textDirectionLocal);
         _paintBackgroundImage(canvas, rect, configuration);

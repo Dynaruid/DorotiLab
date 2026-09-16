@@ -1,5 +1,6 @@
 #if IOS && !MACCATALYST
 using CoreAnimation;
+using CoreGraphics;
 using Foundation;
 using Microsoft.Maui;
 using Microsoft.Maui.Handlers;
@@ -153,7 +154,7 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
 
     private sealed class DorotiIosMetalView : SKMetalView
     {
-        private CoreGraphics.CGSize _lastLayoutSize;
+        private CGSize _lastLayoutSize;
 
         internal bool IgnorePixelScaling { get; set; }
 

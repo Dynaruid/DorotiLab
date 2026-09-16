@@ -42,13 +42,13 @@ internal sealed unsafe partial class VulkanObserver
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     public delegate void CmdPipelineBarrierDelegate(CommandBuffer cb, PipelineStageFlags src, PipelineStageFlags dst, DependencyFlags flags, uint memoryCount, MemoryBarrier* memory, uint bufferCount, BufferMemoryBarrier* buffers, uint imageCount, ImageMemoryBarrier* images);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    public delegate void CmdWaitEventsDelegate(CommandBuffer cb, uint count, Silk.NET.Vulkan.Event* events, PipelineStageFlags src, PipelineStageFlags dst, uint memoryCount, MemoryBarrier* memory, uint bufferCount, BufferMemoryBarrier* buffers, uint imageCount, ImageMemoryBarrier* images);
+    public delegate void CmdWaitEventsDelegate(CommandBuffer cb, uint count, Event* events, PipelineStageFlags src, PipelineStageFlags dst, uint memoryCount, MemoryBarrier* memory, uint bufferCount, BufferMemoryBarrier* buffers, uint imageCount, ImageMemoryBarrier* images);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     public delegate void CmdPipelineBarrier2Delegate(CommandBuffer cb, DependencyInfo* dependency);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    public delegate void CmdWaitEvents2Delegate(CommandBuffer cb, uint count, Silk.NET.Vulkan.Event* events, DependencyInfo* dependencies);
+    public delegate void CmdWaitEvents2Delegate(CommandBuffer cb, uint count, Event* events, DependencyInfo* dependencies);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    public delegate void CmdSetEvent2Delegate(CommandBuffer cb, Silk.NET.Vulkan.Event e, DependencyInfo* dependency);
+    public delegate void CmdSetEvent2Delegate(CommandBuffer cb, Event e, DependencyInfo* dependency);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     public delegate void CmdBeginRenderPassDelegate(CommandBuffer cb, RenderPassBeginInfo* p, SubpassContents contents);
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]

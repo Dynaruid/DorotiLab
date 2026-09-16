@@ -35,7 +35,7 @@ public delegate void PlatformViewCreatedCallback(long id);
 public class PlatformViewsService
 {
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<DorotiView, PlatformViewsService> _owners = new();
-    private static readonly System.Threading.AsyncLocal<DorotiView?> _activeOwner = new();
+    private static readonly AsyncLocal<DorotiView?> _activeOwner = new();
     internal static PlatformViewsService _instance
     {
         get
@@ -346,7 +346,7 @@ internal class _AndroidMotionEventConverter
 
     public virtual void updatePointerPositions(PointerEvent @event)
     {
-        global::Doroti.Ui.Offset position = pointTransformer(@event.position);
+        Offset position = pointTransformer(@event.position);
         pointerPositions[@event.pointer] = new AndroidPointerCoords(orientation: @event.orientation, pressure: @event.pressure, size: @event.size, toolMajor: @event.radiusMajor, toolMinor: @event.radiusMinor, touchMajor: @event.radiusMajor, touchMinor: @event.radiusMinor, x: position.dx, y: position.dy);
     }
 
@@ -831,7 +831,7 @@ public class TextureAndroidViewController : AndroidViewController
     {
         if (_internals.requiresViewComposition)
         {
-            return Future<global::Doroti.Ui.Size>.value(size);
+            return Future<Size>.value(size);
         }
         return _internals.setSize(size, viewId: viewId, viewState: _state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -891,7 +891,7 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
         DartRuntimePrimitives.Assert(() => meta is not null);
         DartRuntimePrimitives.Assert(() => meta!.ContainsKey("width"));
         DartRuntimePrimitives.Assert(() => meta!.ContainsKey("height"));
-        return new global::Doroti.Ui.Size((double)meta!.GetValueOrDefault("width")!, (double)meta.GetValueOrDefault("height")!);
+        return new Size((double)meta!.GetValueOrDefault("width")!, (double)meta.GetValueOrDefault("height")!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

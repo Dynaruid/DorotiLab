@@ -33,8 +33,8 @@ public abstract class PlaceholderSpan : InlineSpan
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Ui.PlaceholderAlignment>("alignment", alignment, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextBaseline>("baseline", baseline, defaultValue: null));
+        properties.add(new EnumProperty<PlaceholderAlignment>("alignment", alignment, defaultValue: null));
+        properties.add(new EnumProperty<TextBaseline>("baseline", baseline, defaultValue: null));
     }
 
     public override bool debugAssertIsValid()

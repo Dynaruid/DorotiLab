@@ -11,7 +11,7 @@ internal interface IWidgetStateMapping<T>
 
 internal static class WidgetStateMapping
 {
-    internal static Exception Unresolved(string member) => new global::Doroti.Framework.Foundation.FlutterError(
+    internal static Exception Unresolved(string member) => new FlutterError(
         $"Resolve the WidgetStateProperty before accessing {member}.");
 
     internal static T ResolveRequired<T>(WidgetStateMapper<T> mapper, HashSet<WidgetState> states) where T : class =>
@@ -34,17 +34,17 @@ internal sealed class _WidgetStateColorMapper__widget_state : WidgetStateColor, 
     public override bool Equals(Color? other) => mapper.Equals(other);
 }
 
-internal sealed class _WidgetMouseCursorMapper__widget_state : WidgetStateMouseCursor, IWidgetStateMapping<global::Doroti.Framework.Services.MouseCursor>
+internal sealed class _WidgetMouseCursorMapper__widget_state : WidgetStateMouseCursor, IWidgetStateMapping<MouseCursor>
 {
-    private readonly WidgetStateMapper<global::Doroti.Framework.Services.MouseCursor> mapper;
-    DartMap<WidgetStatesConstraint, global::Doroti.Framework.Services.MouseCursor> IWidgetStateMapping<global::Doroti.Framework.Services.MouseCursor>.Mapping => ((IWidgetStateMapping<global::Doroti.Framework.Services.MouseCursor>)mapper).Mapping;
-    internal _WidgetMouseCursorMapper__widget_state(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Services.MouseCursor> map) => mapper = new(map);
-    public override global::Doroti.Framework.Services.MouseCursor resolve(HashSet<WidgetState> states) => WidgetStateMapping.ResolveRequired(mapper, states);
+    private readonly WidgetStateMapper<MouseCursor> mapper;
+    DartMap<WidgetStatesConstraint, MouseCursor> IWidgetStateMapping<MouseCursor>.Mapping => ((IWidgetStateMapping<MouseCursor>)mapper).Mapping;
+    internal _WidgetMouseCursorMapper__widget_state(DartMap<WidgetStatesConstraint, MouseCursor> map) => mapper = new(map);
+    public override MouseCursor resolve(HashSet<WidgetState> states) => WidgetStateMapping.ResolveRequired(mapper, states);
     public override bool Equals(object? other) => mapper.Equals(other);
     public override int GetHashCode() => mapper.GetHashCode();
     public override string ToString() => mapper.ToString();
     public override string debugDescription => throw WidgetStateMapping.Unresolved(nameof(debugDescription));
-    public override global::Doroti.Framework.Services.MouseCursorSession createSession(long device) => throw WidgetStateMapping.Unresolved(nameof(createSession));
+    public override MouseCursorSession createSession(long device) => throw WidgetStateMapping.Unresolved(nameof(createSession));
 }
 
 internal sealed class _WidgetBorderSideMapper__widget_state : WidgetStateBorderSide, IWidgetStateMapping<BorderSide?>
@@ -56,14 +56,14 @@ internal sealed class _WidgetBorderSideMapper__widget_state : WidgetStateBorderS
     public override bool Equals(object? other) => mapper.Equals(other);
     public override int GetHashCode() => mapper.GetHashCode();
     public override string ToString() => mapper.ToString();
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties) => mapper.debugFillProperties(properties);
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties) => mapper.debugFillProperties(properties);
     public override Color color => throw WidgetStateMapping.Unresolved(nameof(color));
     public override double width => throw WidgetStateMapping.Unresolved(nameof(width));
     public override BorderStyle style => throw WidgetStateMapping.Unresolved(nameof(style));
     public override double strokeAlign => throw WidgetStateMapping.Unresolved(nameof(strokeAlign));
     public override BorderSide copyWith(Color? color = null, double? width = null, BorderStyle? style = null, double? strokeAlign = null) => throw WidgetStateMapping.Unresolved(nameof(copyWith));
     public override BorderSide scale(double t) => throw WidgetStateMapping.Unresolved(nameof(scale));
-    public override global::Doroti.Ui.Paint toPaint() => throw WidgetStateMapping.Unresolved(nameof(toPaint));
+    public override Paint toPaint() => throw WidgetStateMapping.Unresolved(nameof(toPaint));
     public override double strokeInset => throw WidgetStateMapping.Unresolved(nameof(strokeInset));
     public override double strokeOutset => throw WidgetStateMapping.Unresolved(nameof(strokeOutset));
     public override double strokeOffset => throw WidgetStateMapping.Unresolved(nameof(strokeOffset));
@@ -84,8 +84,8 @@ internal sealed class _WidgetOutlinedBorderMapper__widget_state : WidgetStateOut
     public override ShapeBorder scale(double t) => throw WidgetStateMapping.Unresolved(nameof(scale));
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t) => throw WidgetStateMapping.Unresolved(nameof(lerpFrom));
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t) => throw WidgetStateMapping.Unresolved(nameof(lerpTo));
-    public override global::Doroti.Ui.Path getOuterPath(Rect rect, TextDirection? textDirection = null) => throw WidgetStateMapping.Unresolved(nameof(getOuterPath));
-    public override global::Doroti.Ui.Path getInnerPath(Rect rect, TextDirection? textDirection = null) => throw WidgetStateMapping.Unresolved(nameof(getInnerPath));
+    public override Path getOuterPath(Rect rect, TextDirection? textDirection = null) => throw WidgetStateMapping.Unresolved(nameof(getOuterPath));
+    public override Path getInnerPath(Rect rect, TextDirection? textDirection = null) => throw WidgetStateMapping.Unresolved(nameof(getInnerPath));
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null) => throw WidgetStateMapping.Unresolved(nameof(hitTest));
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null) => throw WidgetStateMapping.Unresolved(nameof(paintInterior));
     public override bool preferPaintInterior => throw WidgetStateMapping.Unresolved(nameof(preferPaintInterior));
@@ -103,7 +103,7 @@ internal sealed class _WidgetTextStyleMapper__widget_state : WidgetStateTextStyl
     public override bool Equals(object? other) => mapper.Equals(other);
     public override int GetHashCode() => mapper.GetHashCode();
     public override string ToString() => mapper.ToString();
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties, string prefix = "") => mapper.debugFillProperties(properties);
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties, string prefix = "") => mapper.debugFillProperties(properties);
     public override bool inherit => throw WidgetStateMapping.Unresolved(nameof(inherit));
     public override Color? color => throw WidgetStateMapping.Unresolved(nameof(color));
     public override Color? backgroundColor => throw WidgetStateMapping.Unresolved(nameof(backgroundColor));
@@ -132,8 +132,8 @@ internal sealed class _WidgetTextStyleMapper__widget_state : WidgetStateTextStyl
     public override TextStyle copyWith(bool? inherit = null, Color? color = null, Color? backgroundColor = null, double? fontSize = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, double? letterSpacing = null, double? wordSpacing = null, TextBaseline? textBaseline = null, double? height = null, TextLeadingDistribution? leadingDistribution = null, Locale? locale = null, Paint? foreground = null, Paint? background = null, List<Shadow>? shadows = null, List<FontFeature>? fontFeatures = null, List<FontVariation>? fontVariations = null, TextDecoration? decoration = null, Color? decorationColor = null, TextDecorationStyle? decorationStyle = null, double? decorationThickness = null, string? debugLabel = null, string? fontFamily = null, List<string>? fontFamilyFallback = null, string? package = null, TextOverflow? overflow = null) => throw WidgetStateMapping.Unresolved(nameof(copyWith));
     public override TextStyle apply(Color? color = null, Color? backgroundColor = null, TextDecoration? decoration = null, Color? decorationColor = null, TextDecorationStyle? decorationStyle = null, double decorationThicknessFactor = 1.0, double decorationThicknessDelta = 0.0, string? fontFamily = null, List<string>? fontFamilyFallback = null, double fontSizeFactor = 1.0, double fontSizeDelta = 0.0, long fontWeightDelta = 0, FontStyle? fontStyle = null, double letterSpacingFactor = 1.0, double letterSpacingDelta = 0.0, double wordSpacingFactor = 1.0, double wordSpacingDelta = 0.0, double heightFactor = 1.0, double heightDelta = 0.0, TextBaseline? textBaseline = null, TextLeadingDistribution? leadingDistribution = null, Locale? locale = null, List<Shadow>? shadows = null, List<FontFeature>? fontFeatures = null, List<FontVariation>? fontVariations = null, string? package = null, TextOverflow? overflow = null) => throw WidgetStateMapping.Unresolved(nameof(apply));
     public override TextStyle merge(TextStyle? other) => throw WidgetStateMapping.Unresolved(nameof(merge));
-    public override global::Doroti.Ui.TextStyle getTextStyle(double textScaleFactor = 1.0, TextScaler textScaler = default!) => throw WidgetStateMapping.Unresolved(nameof(getTextStyle));
-    public override global::Doroti.Ui.ParagraphStyle getParagraphStyle(TextAlign? textAlign = null, TextDirection? textDirection = null, TextScaler textScaler = default!, string? ellipsis = null, long? maxLines = null, TextHeightBehavior? textHeightBehavior = null, Locale? locale = null, string? fontFamily = null, double? fontSize = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, double? height = null, Doroti.Framework.Painting.StrutStyle? strutStyle = null) => throw WidgetStateMapping.Unresolved(nameof(getParagraphStyle));
+    public override Ui.TextStyle getTextStyle(double textScaleFactor = 1.0, TextScaler textScaler = default!) => throw WidgetStateMapping.Unresolved(nameof(getTextStyle));
+    public override ParagraphStyle getParagraphStyle(TextAlign? textAlign = null, TextDirection? textDirection = null, TextScaler textScaler = default!, string? ellipsis = null, long? maxLines = null, TextHeightBehavior? textHeightBehavior = null, Locale? locale = null, string? fontFamily = null, double? fontSize = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null, double? height = null, Painting.StrutStyle? strutStyle = null) => throw WidgetStateMapping.Unresolved(nameof(getParagraphStyle));
     public override RenderComparison compareTo(TextStyle other) => throw WidgetStateMapping.Unresolved(nameof(compareTo));
 }
 
@@ -144,8 +144,8 @@ internal sealed class _WidgetStateOutlinedBorder__widget_state : WidgetStateOutl
     internal _WidgetStateOutlinedBorder__widget_state(Func<HashSet<WidgetState>, OutlinedBorder?> resolver) => this.resolver = resolver;
     public override OutlinedBorder? resolve(HashSet<WidgetState> states) => resolver(states);
     public override EdgeInsetsGeometry dimensions => shape.dimensions;
-    public override global::Doroti.Ui.Path getOuterPath(Rect rect, TextDirection? textDirection = null) => shape.getOuterPath(rect, textDirection);
-    public override global::Doroti.Ui.Path getInnerPath(Rect rect, TextDirection? textDirection = null) => shape.getInnerPath(rect, textDirection);
+    public override Path getOuterPath(Rect rect, TextDirection? textDirection = null) => shape.getOuterPath(rect, textDirection);
+    public override Path getInnerPath(Rect rect, TextDirection? textDirection = null) => shape.getInnerPath(rect, textDirection);
     public override ShapeBorder scale(double t) => shape.scale(t);
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null) => this.shape.paint(canvas, rect, textDirection, shape, borderRadius);
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null) => shape.paintInterior(canvas, rect, paint, textDirection);

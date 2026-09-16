@@ -84,7 +84,7 @@ public static partial class EventsLibrary
     public static bool isSingleButton(long buttons) => (buttons != 0L) && smallestButton(buttons) == buttons;
 }
 
-public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagnosticable
+public abstract class PointerEvent : IPointerEvent, Diagnosticable
 {
     public virtual long viewId { get; private set; } = default!;
     public virtual long embedderId { get; private set; } = default!;
@@ -147,12 +147,12 @@ public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagn
         this.original = original;
     }
 
-    public virtual global::Doroti.Ui.Offset localPosition => position;
-    public virtual global::Doroti.Ui.Offset localDelta => delta;
+    public virtual Offset localPosition => position;
+    public virtual Offset localDelta => delta;
     public virtual double distanceMin => 0.0;
     public abstract PointerEvent transformed(Matrix4? transform);
     public abstract PointerEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
-    public static global::Doroti.Ui.Offset transformPosition(Matrix4? transform, Offset position)
+    public static Offset transformPosition(Matrix4? transform, Offset position)
     {
         if (transform is null)
         {
@@ -160,25 +160,25 @@ public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagn
         }
         var position3 = new Vector3(DartRuntimePrimitives.RequireValue(position).dx, DartRuntimePrimitives.RequireValue(position).dy, 0.0);
         Vector3 transformed3 = transform.perspectiveTransform(position3);
-        return new global::Doroti.Ui.Offset(transformed3.x, transformed3.y);
+        return new Offset(transformed3.x, transformed3.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Offset transformDeltaViaPositions(Offset untransformedEndPosition, Offset? transformedEndPosition = null, Offset untransformedDelta = default!, Matrix4? transform = default!)
+    public static Offset transformDeltaViaPositions(Offset untransformedEndPosition, Offset? transformedEndPosition = null, Offset untransformedDelta = default!, Matrix4? transform = default!)
     {
         if (transform is null)
         {
             return untransformedDelta;
         }
         transformedEndPosition ??= transformPosition(transform, untransformedEndPosition);
-        global::Doroti.Ui.Offset transformedStartPosition = transformPosition(transform, untransformedEndPosition - untransformedDelta);
+        Offset transformedStartPosition = transformPosition(transform, untransformedEndPosition - untransformedDelta);
         return DartRuntimePrimitives.RequireValue(transformedEndPosition) - transformedStartPosition;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Matrix4 removePerspectiveTransform(Matrix4 transform)
     {
-        var vector = new global::System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0));
+        var vector = new System.Numerics.Vector4(checked(0), checked(0), checked(1), checked(0));
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = transform.clone();
@@ -266,13 +266,13 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -331,13 +331,13 @@ public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events,
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -478,13 +478,13 @@ public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__event
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -625,13 +625,13 @@ public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events,
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -775,13 +775,13 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -817,7 +817,7 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static implicit operator global::Doroti.Ui.PointerEnterEvent(PointerEnterEvent value) => new()
+    public static implicit operator Ui.PointerEnterEvent(PointerEnterEvent value) => new()
     {
         pointer = value.pointer,
         embedderId = value.embedderId,
@@ -939,13 +939,13 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -981,7 +981,7 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static implicit operator global::Doroti.Ui.PointerExitEvent(PointerExitEvent value) => new()
+    public static implicit operator Ui.PointerExitEvent(PointerExitEvent value) => new()
     {
         pointer = value.pointer,
         embedderId = value.embedderId,
@@ -1101,13 +1101,13 @@ public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", DartRuntimePrimitives.RequireValue(buttons), defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -1249,13 +1249,13 @@ public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", DartRuntimePrimitives.RequireValue(buttons), defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -1397,13 +1397,13 @@ public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _C
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -1539,7 +1539,7 @@ public interface _RespondablePointerEvent__events
 
 public interface _CopyPointerScrollEvent__events
 {
-    public global::Doroti.Ui.Offset scrollDelta { get; }
+    public Offset scrollDelta { get; }
     public PointerScrollEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
 }
 
@@ -1569,13 +1569,13 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -1597,7 +1597,7 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
         properties.add(new FlagProperty("synthesized", value: synthesized, ifTrue: "synthesized", level: DiagnosticLevel.debug));
         properties.add(new IntProperty("embedderId", embedderId, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("viewId", viewId, defaultValue: 0L, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("scrollDelta", scrollDelta));
+        properties.add(new DiagnosticsProperty<Offset>("scrollDelta", scrollDelta));
     }
 
     public override void respond(bool allowPlatformDefault)
@@ -1665,7 +1665,7 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("scrollDelta", scrollDelta));
+        properties.add(new DiagnosticsProperty<Offset>("scrollDelta", scrollDelta));
     }
 
     internal override Action<bool>? _onRespond => original._onRespond;
@@ -1735,13 +1735,13 @@ public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEvent
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -1889,13 +1889,13 @@ public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__e
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -2041,13 +2041,13 @@ public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -2165,10 +2165,10 @@ internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStar
 
 public interface _CopyPointerPanZoomUpdateEvent__events
 {
-    public global::Doroti.Ui.Offset pan { get; }
-    public global::Doroti.Ui.Offset localPan { get; }
-    public global::Doroti.Ui.Offset panDelta { get; }
-    public global::Doroti.Ui.Offset localPanDelta { get; }
+    public Offset pan { get; }
+    public Offset localPan { get; }
+    public Offset panDelta { get; }
+    public Offset localPanDelta { get; }
     public double scale { get; }
     public double rotation { get; }
     public PointerPanZoomUpdateEvent copyWith(long? viewId = null, Duration? timeStamp = null, long? pointer = null, PointerDeviceKind? kind = null, long? device = null, Offset? position = null, Offset? delta = null, long? buttons = null, bool? obscured = null, double? pressure = null, double? pressureMin = null, double? pressureMax = null, double? distance = null, double? distanceMax = null, double? size = null, double? radiusMajor = null, double? radiusMinor = null, double? radiusMin = null, double? radiusMax = null, double? orientation = null, double? tilt = null, bool? synthesized = null, long? embedderId = null, Offset? pan = null, Offset? localPan = null, Offset? panDelta = null, Offset? localPanDelta = null, double? scale = null, double? rotation = null, Action<bool>? onRespond = null, Offset? localPosition = null);
@@ -2206,13 +2206,13 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -2387,13 +2387,13 @@ public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__ev
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));
@@ -2537,13 +2537,13 @@ public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("position", position));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("position", position));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition, defaultValue: position, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta, defaultValue: Offset.zero, level: DiagnosticLevel.debug));
+        properties.add(new DiagnosticsProperty<Offset>("localDelta", localDelta, defaultValue: delta, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<Duration>("timeStamp", timeStamp, defaultValue: Duration.zero, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("pointer", pointer, level: DiagnosticLevel.debug));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("device", device, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new IntProperty("buttons", buttons, defaultValue: 0L, level: DiagnosticLevel.debug));
         properties.add(new DiagnosticsProperty<bool>("down", down, level: DiagnosticLevel.debug));

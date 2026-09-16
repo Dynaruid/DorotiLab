@@ -5,23 +5,23 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public delegate Widget SliverLayoutWidgetBuilder(BuildContext context, global::Doroti.Framework.Rendering.SliverConstraints constraints);
+public delegate Widget SliverLayoutWidgetBuilder(BuildContext context, SliverConstraints constraints);
 
-public class SliverLayoutBuilder : ConstrainedLayoutBuilder<global::Doroti.Framework.Rendering.SliverConstraints>
+public class SliverLayoutBuilder : ConstrainedLayoutBuilder<SliverConstraints>
 {
-    public SliverLayoutBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.SliverConstraints, Widget> builder = default!) : base(key: key, builder: builder)
+    public SliverLayoutBuilder(Key? key = null, Func<BuildContext, SliverConstraints, Widget> builder = default!) : base(key: key, builder: builder)
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _RenderSliverLayoutBuilder__sliver_layout_builder());
+    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new _RenderSliverLayoutBuilder__sliver_layout_builder());
 }
 
-internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Doroti.Framework.Rendering.RenderSliver, global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<global::Doroti.Framework.Rendering.RenderSliver>, RenderAbstractLayoutBuilderMixin<global::Doroti.Framework.Rendering.SliverConstraints, global::Doroti.Framework.Rendering.RenderSliver>, global::Doroti.Framework.Rendering.IRenderLayoutCallback
+internal class _RenderSliverLayoutBuilder__sliver_layout_builder : RenderSliver, RenderObjectWithChildMixin<RenderSliver>, RenderAbstractLayoutBuilderMixin<SliverConstraints, RenderSliver>, IRenderLayoutCallback
 {
     public virtual RenderSliver? _child { get; set; } = default;
-    public virtual global::System.Action<global::Doroti.Framework.Rendering.Constraints>? _callback { get; set; } = default;
+    public virtual System.Action<Constraints>? _callback { get; set; } = default;
 
-    public override double childMainAxisPosition(global::Doroti.Framework.Rendering.RenderObject child)
+    public override double childMainAxisPosition(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child, this.child));
         return 0;
@@ -35,12 +35,12 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
         geometry = child?.geometry ?? SliverGeometry.zero;
     }
 
-    public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
+    public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
         DartRuntimePrimitives.Assert(() => Equals(child, this.child));
     }
 
-    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(PaintingContext context, Offset offset)
     {
         if (child?.geometry?.visible ?? false)
         {
@@ -48,7 +48,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
         }
     }
 
-    public override bool hitTestChildren(global::Doroti.Framework.Rendering.SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
+    public override bool hitTestChildren(SliverHitTestResult result, double mainAxisPosition, double crossAxisPosition)
     {
         return (child is not null) && (child!.geometry!.hitTestExtent > 0L) && child!.hitTest(result, mainAxisPosition: mainAxisPosition, crossAxisPosition: crossAxisPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -60,7 +60,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
             {
                 if (child is not RenderSliver)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {GetType()} that expected a {typeof(RenderSliver)} child was created by", debugCreator, style: DiagnosticsTreeStyle.errorProperty), new ErrorSpacer(), new DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -106,7 +106,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
         }
     }
 
-    public override void visitChildren(global::System.Action<RenderObject> visitor)
+    public override void visitChildren(System.Action<RenderObject> visitor)
     {
         if (_child is not null)
         {
@@ -114,13 +114,13 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
         }
     }
 
-    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        return (child is not null) ? new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+        return (child is not null) ? new List<DiagnosticsNode> { ((Diagnosticable)child!).toDiagnosticsNode(name: "child") } : new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateCallback(global::System.Action<global::Doroti.Framework.Rendering.Constraints> value)
+    public virtual void _updateCallback(System.Action<Constraints> value)
     {
         if (Equals(value, _callback))
         {
@@ -131,5 +131,5 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder : global::Dorot
     }
 
     public virtual void layoutCallback() => _callback!(constraints);
-    public virtual global::Doroti.Framework.Rendering.SliverConstraints layoutInfo => constraints!;
+    public virtual SliverConstraints layoutInfo => constraints!;
 }

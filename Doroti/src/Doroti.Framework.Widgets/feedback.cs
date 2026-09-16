@@ -8,7 +8,7 @@ public abstract class Feedback
 {
     public static async Future forTap(BuildContext context)
     {
-        context.findRenderObject()!.sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        context.findRenderObject()!.sendSemanticsEvent(new TapSemanticEvent());
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.android:
@@ -30,7 +30,7 @@ public abstract class Feedback
         }
     }
 
-    public static global::System.Action? wrapForTap(global::System.Action? callback, BuildContext context)
+    public static Action? wrapForTap(Action? callback, BuildContext context)
     {
         if (callback is null)
         {
@@ -46,7 +46,7 @@ public abstract class Feedback
 
     public static Future forLongPress(BuildContext context)
     {
-        context.findRenderObject()!.sendSemanticsEvent(new global::Doroti.Framework.Semantics.LongPressSemanticsEvent());
+        context.findRenderObject()!.sendSemanticsEvent(new LongPressSemanticsEvent());
         switch (PlatformLibrary.defaultTargetPlatform)
         {
             case TargetPlatform.android:
@@ -70,7 +70,7 @@ public abstract class Feedback
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::System.Action? wrapForLongPress(global::System.Action? callback, BuildContext context)
+    public static Action? wrapForLongPress(Action? callback, BuildContext context)
     {
         if (callback is null)
         {

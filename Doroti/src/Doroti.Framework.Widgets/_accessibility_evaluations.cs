@@ -12,10 +12,10 @@ public static partial class _accessibility_evaluationsLibrary
 
 public class ViolationIo
 {
-    public virtual global::Doroti.Framework.Semantics.SemanticsNode node { get; private set; } = default!;
+    public virtual SemanticsNode node { get; private set; } = default!;
     public virtual string reason { get; private set; } = default!;
 
-    public ViolationIo(global::Doroti.Framework.Semantics.SemanticsNode node, string reason)
+    public ViolationIo(SemanticsNode node, string reason)
     {
         this.node = node;
         this.reason = reason;
@@ -66,7 +66,7 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
     internal override object _evaluate(WidgetsBinding binding)
     {
         var violations = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView view in binding.renderViews)
+        foreach (RenderView view in binding.renderViews)
         {
             violations.AddRange(_traverse(view.flutterView, view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
@@ -74,7 +74,7 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual List<ViolationIo> _traverse(DorotiView view, global::Doroti.Framework.Semantics.SemanticsNode node)
+    internal virtual List<ViolationIo> _traverse(DorotiView view, SemanticsNode node)
     {
         var violations = new List<ViolationIo>();
         node.visitChildren((child) =>
@@ -91,8 +91,8 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
         {
             return violations;
         }
-        global::Doroti.Ui.Rect paintBounds = node.rect;
-        global::Doroti.Framework.Semantics.SemanticsNode? current = node;
+        Rect paintBounds = node.rect;
+        SemanticsNode? current = node;
         while (current is not null)
         {
             Matrix4? transformLocal = current.transform;
@@ -106,12 +106,12 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
             }
             current = current.parent;
         }
-        global::Doroti.Ui.Rect viewRect = Offset.zero & view.physicalSize;
+        Rect viewRect = Offset.zero & view.physicalSize;
         if (_isAtBoundary(paintBounds, viewRect))
         {
             return violations;
         }
-        global::Doroti.Ui.Size candidateSize = paintBounds.size / view.devicePixelRatio;
+        Size candidateSize = paintBounds.size / view.devicePixelRatio;
         if ((candidateSize.width < (size.width - Foundation.ConstantsLibrary.precisionErrorTolerance)) || (candidateSize.height < (size.height - Foundation.ConstantsLibrary.precisionErrorTolerance)))
         {
             violations.Add(new ViolationIo(node, $"{node}: expected tap target size of at least {size}, " + $"but found {candidateSize}\n"));
@@ -130,9 +130,9 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool shouldSkipNode(global::Doroti.Framework.Semantics.SemanticsNode node)
+    public virtual bool shouldSkipNode(SemanticsNode node)
     {
-        global::Doroti.Framework.Semantics.SemanticsData data = node.getSemanticsData();
+        SemanticsData data = node.getSemanticsData();
         if (!data.hasAction(SemanticsAction.longPress) && !data.hasAction(SemanticsAction.tap) || data.flagsCollection.isHidden)
         {
             return true;
@@ -156,7 +156,7 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
     internal override object _evaluate(WidgetsBinding binding)
     {
         var violations = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView view in binding.renderViews)
+        foreach (RenderView view in binding.renderViews)
         {
             violations.AddRange(_traverse(view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
@@ -164,7 +164,7 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual List<ViolationIo> _traverse(global::Doroti.Framework.Semantics.SemanticsNode node)
+    internal virtual List<ViolationIo> _traverse(SemanticsNode node)
     {
         var violations = new List<ViolationIo>();
         node.visitChildren((child) =>
@@ -177,7 +177,7 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
         {
             return violations;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data = node.getSemanticsData();
+        SemanticsData data = node.getSemanticsData();
         if (!data.hasAction(SemanticsAction.longPress) && !data.hasAction(SemanticsAction.tap))
         {
             return violations;
@@ -203,12 +203,12 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
     internal async override Future<EvaluationResultIo> _evaluate(WidgetsBinding binding)
     {
         var violations = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView renderView in binding.renderViews)
+        foreach (RenderView renderView in binding.renderViews)
         {
-            var layer = ((global::Doroti.Framework.Rendering.OffsetLayer?)renderView.debugLayer!)!;
-            global::Doroti.Framework.Semantics.SemanticsNode root = renderView.owner!.semanticsOwner!.rootSemanticsNode!;
+            var layer = ((OffsetLayer?)renderView.debugLayer!)!;
+            SemanticsNode root = renderView.owner!.semanticsOwner!.rootSemanticsNode!;
             double ratio = 1L / renderView.flutterView.devicePixelRatio;
-            global::Doroti.Ui.Image image = await layer.toImage(renderView.paintBounds, pixelRatio: ratio);
+            Ui.Image image = await layer.toImage(renderView.paintBounds, pixelRatio: ratio);
             ByteData byteData = (await image.toByteData())!;
             violations.AddRange((await _evaluateNode(root, image, byteData, renderView)).Cast<ViolationIo>());
             image.dispose();
@@ -217,15 +217,15 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future<List<ViolationIo>> _evaluateNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
+    internal async virtual Future<List<ViolationIo>> _evaluateNode(SemanticsNode node, Ui.Image image, ByteData byteData, RenderView renderView)
     {
         var violations = new List<ViolationIo>();
         if (_shouldSkipNodeTraversal(node))
         {
             return violations;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data = node.getSemanticsData();
-        var children = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        SemanticsData data = node.getSemanticsData();
+        var children = new List<SemanticsNode>();
         node.visitChildren((child) =>
         {
             children.Add(child);
@@ -244,18 +244,18 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _shouldSkipNodeTraversal(global::Doroti.Framework.Semantics.SemanticsNode node)
+    internal virtual bool _shouldSkipNodeTraversal(SemanticsNode node)
     {
         var isDisabled = Equals(node.flagsCollection.isEnabled, Tristate.isFalse);
         return node.isInvisible || node.isMergedIntoParent || node.flagsCollection.isHidden || isDisabled;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal abstract bool _shouldSkipNodeEvaluation(global::Doroti.Framework.Semantics.SemanticsData data);
-    public abstract Future<List<ViolationIo>> evaluateNodeContent(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsData data, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView);
+    internal abstract bool _shouldSkipNodeEvaluation(SemanticsData data);
+    public abstract Future<List<ViolationIo>> evaluateNodeContent(SemanticsNode node, SemanticsData data, Ui.Image image, ByteData byteData, RenderView renderView);
     internal virtual bool _isNodeOffScreen(Rect paintBounds, DorotiView window)
     {
-        global::Doroti.Ui.Size windowLogicalSize = window.physicalSize / window.devicePixelRatio;
+        Size windowLogicalSize = window.physicalSize / window.devicePixelRatio;
         return (paintBounds.top < -50.0) || (paintBounds.left < -50.0) || (paintBounds.bottom > (windowLogicalSize.height + 50.0)) || (paintBounds.right > (windowLogicalSize.width + 50.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -278,8 +278,8 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
         this.minLargeTextContrastRatio = minLargeTextContrastRatio;
     }
 
-    internal override bool _shouldSkipNodeEvaluation(global::Doroti.Framework.Semantics.SemanticsData data) => DartRuntimePrimitives.ConvertValue<bool>(data.flagsCollection.scopesRoute || (data.label.Trim().Length == 0) && (data.value.Trim().Length == 0));
-    public async override Future<List<ViolationIo>> evaluateNodeContent(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsData data, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
+    internal override bool _shouldSkipNodeEvaluation(SemanticsData data) => DartRuntimePrimitives.ConvertValue<bool>(data.flagsCollection.scopesRoute || (data.label.Trim().Length == 0) && (data.value.Trim().Length == 0));
+    public async override Future<List<ViolationIo>> evaluateNodeContent(SemanticsNode node, SemanticsData data, Ui.Image image, ByteData byteData, RenderView renderView)
     {
         var violations = new List<ViolationIo>();
         string text = (data.label.Length == 0) ? data.value : data.label;
@@ -292,25 +292,25 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future<List<ViolationIo>> _evaluateElement(global::Doroti.Framework.Semantics.SemanticsNode node, Element element, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
+    internal async virtual Future<List<ViolationIo>> _evaluateElement(SemanticsNode node, Element element, Ui.Image image, ByteData byteData, RenderView renderView)
     {
         bool isBold = default!;
         double? fontSizeLocal = default!;
-        global::Doroti.Ui.Rect screenBounds = default!;
-        global::Doroti.Ui.Rect paintBoundsWithOffset = default!;
-        global::Doroti.Framework.Rendering.RenderObject? renderBox = element.renderObject;
+        Rect screenBounds = default!;
+        Rect paintBoundsWithOffset = default!;
+        RenderObject? renderBox = element.renderObject;
         if (renderBox is not RenderBox)
         {
             throw new InvalidOperationException($"Unexpected renderObject type: {renderBox}");
         }
-        Matrix4 globalTransform = ((global::Doroti.Framework.Rendering.RenderBox)renderBox).getTransformTo(null);
-        paintBoundsWithOffset = MatrixUtils.transformRect(globalTransform, ((global::Doroti.Framework.Rendering.RenderBox)renderBox).paintBounds.inflate(4.0));
+        Matrix4 globalTransform = ((RenderBox)renderBox).getTransformTo(null);
+        paintBoundsWithOffset = MatrixUtils.transformRect(globalTransform, ((RenderBox)renderBox).paintBounds.inflate(4.0));
         var rootTransform = Matrix4.identity();
         renderView.applyPaintTransform(renderView.child!, rootTransform);
         rootTransform.multiply(globalTransform);
-        screenBounds = MatrixUtils.transformRect(rootTransform, ((global::Doroti.Framework.Rendering.RenderBox)renderBox).paintBounds);
-        global::Doroti.Ui.Rect nodeBounds = node.rect;
-        global::Doroti.Framework.Semantics.SemanticsNode? current = node;
+        screenBounds = MatrixUtils.transformRect(rootTransform, ((RenderBox)renderBox).paintBounds);
+        Rect nodeBounds = node.rect;
+        SemanticsNode? current = node;
         while (current is not null)
         {
             Matrix4? transformLocal = current.transform;
@@ -320,7 +320,7 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
             }
             current = current.parent;
         }
-        global::Doroti.Ui.Rect intersection = nodeBounds.intersect(screenBounds);
+        Rect intersection = nodeBounds.intersect(screenBounds);
         if ((intersection.width <= 0L) || (intersection.height <= 0L))
         {
             return new List<ViolationIo>();
@@ -330,8 +330,8 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
         if (widgetLocal is Text)
         {
             Text widget__14684__as14793 = (Text)widgetLocal;
-            global::Doroti.Framework.Painting.TextStyle? styleLocal = widget__14684__as14793.style;
-            global::Doroti.Framework.Painting.TextStyle effectiveTextStyle = ((styleLocal is null) || styleLocal.inherit) ? defaultTextStyle.style.merge(widget__14684__as14793.style) : styleLocal;
+            TextStyle? styleLocal = widget__14684__as14793.style;
+            TextStyle effectiveTextStyle = ((styleLocal is null) || styleLocal.inherit) ? defaultTextStyle.style.merge(widget__14684__as14793.style) : styleLocal;
             isBold = Equals(effectiveTextStyle.fontWeight, FontWeight.bold);
             fontSizeLocal = effectiveTextStyle.fontSize;
         }
@@ -352,7 +352,7 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
         {
             return new List<ViolationIo>();
         }
-        DartMap<global::Doroti.Ui.Color, long> colorHistogram = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, paintBoundsWithOffset, DartRuntimePrimitives.RequireValue(image.width), DartRuntimePrimitives.RequireValue(image.height)).cast<global::Doroti.Ui.Color, long>();
+        DartMap<Color, long> colorHistogram = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, paintBoundsWithOffset, DartRuntimePrimitives.RequireValue(image.width), DartRuntimePrimitives.RequireValue(image.height)).cast<Color, long>();
         if (!Enumerable.Any(colorHistogram))
         {
             return new List<ViolationIo>();
@@ -389,7 +389,7 @@ public class MinimumNonTextContrastEvaluationIo : _ContrastEvaluation___accessib
     {
     }
 
-    internal override bool _shouldSkipNodeEvaluation(global::Doroti.Framework.Semantics.SemanticsData data)
+    internal override bool _shouldSkipNodeEvaluation(SemanticsData data)
     {
         if (data.flagsCollection.scopesRoute)
         {
@@ -400,11 +400,11 @@ public class MinimumNonTextContrastEvaluationIo : _ContrastEvaluation___accessib
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async override Future<List<ViolationIo>> evaluateNodeContent(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsData data, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
+    public async override Future<List<ViolationIo>> evaluateNodeContent(SemanticsNode node, SemanticsData data, Ui.Image image, ByteData byteData, RenderView renderView)
     {
         var violations = new List<ViolationIo>();
-        global::Doroti.Ui.Rect nodeBounds = node.rect;
-        global::Doroti.Framework.Semantics.SemanticsNode? current = node;
+        Rect nodeBounds = node.rect;
+        SemanticsNode? current = node;
         while (current is not null)
         {
             Matrix4? transformLocal = current.transform;
@@ -416,12 +416,12 @@ public class MinimumNonTextContrastEvaluationIo : _ContrastEvaluation___accessib
         }
         double devicePixelRatioLocal = renderView.flutterView.devicePixelRatio;
         var logicalBounds = Rect.fromLTRB(nodeBounds.left / devicePixelRatioLocal, nodeBounds.top / devicePixelRatioLocal, nodeBounds.right / devicePixelRatioLocal, nodeBounds.bottom / devicePixelRatioLocal);
-        global::Doroti.Ui.Rect inflatedBounds = logicalBounds.inflate(4.0);
+        Rect inflatedBounds = logicalBounds.inflate(4.0);
         if (_isNodeOffScreen(inflatedBounds, renderView.flutterView))
         {
             return violations;
         }
-        DartMap<global::Doroti.Ui.Color, long> colorHistogram = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, inflatedBounds, DartRuntimePrimitives.RequireValue(image.width), DartRuntimePrimitives.RequireValue(image.height)).cast<global::Doroti.Ui.Color, long>();
+        DartMap<Color, long> colorHistogram = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, inflatedBounds, DartRuntimePrimitives.RequireValue(image.width), DartRuntimePrimitives.RequireValue(image.height)).cast<Color, long>();
         if (checked(colorHistogram.Count) <= 1L)
         {
             return violations;
@@ -448,16 +448,16 @@ internal class _ContrastReport___accessibility_evaluations
     {
         var totalLightness = 0.0;
         var count = 0L;
-        foreach (MapEntry<global::Doroti.Ui.Color, long> entry in colorHistogram.entries)
+        foreach (MapEntry<Color, long> entry in colorHistogram.entries)
         {
             totalLightness += HSLColor.CreateFromColor(entry.key).lightness * entry.value;
             count += entry.value;
         }
         double averageLightness = totalLightness / count;
         DartRuntimePrimitives.Assert(() => !double.IsNaN(averageLightness));
-        MapEntry<global::Doroti.Ui.Color, long>? lightColor = default!;
-        MapEntry<global::Doroti.Ui.Color, long>? darkColor = default!;
-        foreach (MapEntry<global::Doroti.Ui.Color, long> entryLocal in colorHistogram.entries)
+        MapEntry<Color, long>? lightColor = default!;
+        MapEntry<Color, long>? darkColor = default!;
+        foreach (MapEntry<Color, long> entryLocal in colorHistogram.entries)
         {
             double lightnessLocal = HSLColor.CreateFromColor(entryLocal.key).lightness;
             long countLocal = entryLocal.value;
@@ -492,7 +492,7 @@ public static partial class _accessibility_evaluationsLibrary
 {
     internal static DartMap<Color, long> _colorsWithinRect(ByteData data, Rect paintBounds, long width, long height)
     {
-        global::Doroti.Ui.Rect truePaintBounds = paintBounds.intersect(Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()));
+        Rect truePaintBounds = paintBounds.intersect(Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()));
         long leftX = truePaintBounds.left.floor();
         long rightX = truePaintBounds.right.ceil();
         long topY = truePaintBounds.top.floor();
@@ -511,10 +511,10 @@ public static partial class _accessibility_evaluationsLibrary
                 rgbaToCount.update(getPixel(data, xLocal, yLocal), (count) => count + 1L, ifAbsent: () => 1L);
             }
         }
-        return rgbaToCount.map<long, long, Color, long>((rgba, count) =>
+        return rgbaToCount.map((rgba, count) =>
         {
             long argb = rgba << (int)24L | (rgba >> (int)8L & 4294967295L);
-            return new MapEntry<global::Doroti.Ui.Color, long>(new global::Doroti.Ui.Color(argb), count);
+            return new MapEntry<Color, long>(new Color(argb), count);
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -546,13 +546,13 @@ public static partial class _accessibility_evaluationsLibrary
 
 public static partial class _accessibility_evaluationsLibrary
 {
-    internal static bool _isImportantForAccessibility(global::Doroti.Framework.Semantics.SemanticsNode node)
+    internal static bool _isImportantForAccessibility(SemanticsNode node)
     {
         if (node.isMergedIntoParent)
         {
             return false;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data = node.getSemanticsData();
+        SemanticsData data = node.getSemanticsData();
         if (data.flagsCollection.scopesRoute)
         {
             return false;
@@ -586,7 +586,7 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
     internal override object _evaluate(WidgetsBinding binding)
     {
         var violations = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView view in binding.renderViews)
+        foreach (RenderView view in binding.renderViews)
         {
             violations.AddRange(_traverse(view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
@@ -594,7 +594,7 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual List<ViolationIo> _traverse(global::Doroti.Framework.Semantics.SemanticsNode node)
+    internal virtual List<ViolationIo> _traverse(SemanticsNode node)
     {
         var violations = new List<ViolationIo>();
         var hasChildren = false;
@@ -617,7 +617,7 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
         {
             return violations;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data = node.getSemanticsData();
+        SemanticsData data = node.getSemanticsData();
         if ((data.label.Trim().Length == 0) && (data.value.Trim().Length == 0) && (data.hint.Trim().Length == 0) && (data.tooltip.Trim().Length == 0))
         {
             violations.Add(new ViolationIo(node, $"{node}: expected leaf semantics node to have a label, value, hint, or tooltip, " + "but none was found."));
@@ -639,7 +639,7 @@ public class TitleEvaluationIo : AccessibilityEvaluationIo
         var violations = new List<ViolationIo>();
         if ((binding.rootElement is not null) && !_hasTitleWidget(binding.rootElement!))
         {
-            global::Doroti.Framework.Semantics.SemanticsNode rootNode = binding.renderViews.First().owner!.semanticsOwner!.rootSemanticsNode!;
+            SemanticsNode rootNode = binding.renderViews.First().owner!.semanticsOwner!.rootSemanticsNode!;
             violations.Add(new ViolationIo(rootNode, "Expected to find at least one Title widget, but none was found."));
         }
         return new EvaluationResultIo(violations);

@@ -61,7 +61,7 @@ internal class _GestureArena__arena
         }
         else
         {
-            buffer.write(string.Join(", ", members.map<GestureArenaMember, string>((member) =>
+            buffer.write(string.Join(", ", members.map((member) =>
             {
                 if (Equals(member, eagerWinner))
                 {

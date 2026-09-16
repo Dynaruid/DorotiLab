@@ -43,7 +43,7 @@ public class CircleBorder : OutlinedBorder
     {
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addOval(_adjustRect(rect).deflate(side.strokeInset));
     return __cascade;
 }))();
@@ -54,7 +54,7 @@ public class CircleBorder : OutlinedBorder
     {
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addOval(_adjustRect(rect));
     return __cascade;
 }))();
@@ -63,7 +63,7 @@ public class CircleBorder : OutlinedBorder
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Rect adjustedRect = _adjustRect(rect);
+        Rect adjustedRect = _adjustRect(rect);
         return RRect.fromRectAndRadius(adjustedRect, Radius.elliptical(adjustedRect.width / 2.0, adjustedRect.height / 2.0)).contains(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -103,7 +103,7 @@ public class CircleBorder : OutlinedBorder
                     }
                     else
                     {
-                        global::Doroti.Ui.Rect borderRect = _adjustRect(rect);
+                        Rect borderRect = _adjustRect(rect);
                         canvas.drawOval(borderRect.inflate(side.strokeOffset / 2L), side.toPaint());
                     }
                     break;
@@ -111,7 +111,7 @@ public class CircleBorder : OutlinedBorder
         }
     }
 
-    internal virtual global::Doroti.Ui.Rect _adjustRect(Rect rect)
+    internal virtual Rect _adjustRect(Rect rect)
     {
         if ((eccentricity == 0.0) || (rect.width == rect.height))
         {

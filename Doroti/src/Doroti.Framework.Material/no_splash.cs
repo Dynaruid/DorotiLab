@@ -11,7 +11,7 @@ internal class _NoSplashFactory__no_splash : InteractiveInkFeatureFactory
     {
     }
 
-    public virtual InteractiveInkFeature create(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null)
+    public virtual InteractiveInkFeature create(MaterialInkController controller, RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, Func<Rect>? rectCallback = null, BorderRadius? borderRadius = null, ShapeBorder? customBorder = null, double? radius = null, Action? onRemoved = null)
     {
         return new NoSplash(controller: controller, referenceBox: referenceBox, color: color, onRemoved: onRemoved);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -23,7 +23,7 @@ public class NoSplash : InteractiveInkFeature
 {
     public static InteractiveInkFeatureFactory splashFactory = new _NoSplashFactory__no_splash();
 
-    public NoSplash(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Color color, global::System.Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, color: color, onRemoved: onRemoved)
+    public NoSplash(MaterialInkController controller, RenderBox referenceBox, Color color, Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, color: color, onRemoved: onRemoved)
     {
     }
 

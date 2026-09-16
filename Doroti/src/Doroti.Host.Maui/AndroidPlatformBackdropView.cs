@@ -39,7 +39,7 @@ internal sealed class AndroidPlatformBackdropView : NativeView
         Invalidate();
     }
 
-    protected override void OnDraw(Android.Graphics.Canvas canvas)
+    protected override void OnDraw(Canvas canvas)
     {
         if (_sampleBounds.IsEmpty || _effect is null) return;
         if (!canvas.IsHardwareAccelerated)

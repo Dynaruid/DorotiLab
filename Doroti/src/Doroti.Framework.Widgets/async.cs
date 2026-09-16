@@ -8,7 +8,7 @@ public abstract class StreamBuilderBase<T, S> : StatefulWidget
 {
     public virtual Stream<T>? stream { get; private set; }
 
-    protected StreamBuilderBase(global::Doroti.Framework.Foundation.Key? key = null, Stream<T>? stream = default!) : base(key: key)
+    protected StreamBuilderBase(Key? key = null, Stream<T>? stream = default!) : base(key: key)
     {
         this.stream = stream;
     }
@@ -16,7 +16,7 @@ public abstract class StreamBuilderBase<T, S> : StatefulWidget
     public abstract S initial();
     public virtual S afterConnected(S current) => current;
     public abstract S afterData(S current, T data);
-    public virtual S afterError(S current, object error, global::System.Diagnostics.StackTrace? stackTrace) => current;
+    public virtual S afterError(S current, object error, System.Diagnostics.StackTrace? stackTrace) => current;
     public virtual S afterDone(S current) => current;
     public virtual S afterDisconnected(S current) => current;
     public abstract Widget build(BuildContext context, S currentSummary);
@@ -107,9 +107,9 @@ public class AsyncSnapshot<T>
     public virtual ConnectionState connectionState { get; private set; } = default!;
     public virtual T? data { get; private set; }
     public virtual object? error { get; private set; }
-    public virtual global::System.Diagnostics.StackTrace? stackTrace { get; private set; }
+    public virtual System.Diagnostics.StackTrace? stackTrace { get; private set; }
 
-    public AsyncSnapshot(ConnectionState connectionState, T? data, object? error, global::System.Diagnostics.StackTrace? stackTrace)
+    public AsyncSnapshot(ConnectionState connectionState, T? data, object? error, System.Diagnostics.StackTrace? stackTrace)
     {
         this.connectionState = connectionState;
         this.data = data;
@@ -134,7 +134,7 @@ public class AsyncSnapshot<T>
         return new AsyncSnapshot<T>(state, data, default, default);
     }
 
-    public static AsyncSnapshot<T> CreateWithError(ConnectionState state, object error, global::System.Diagnostics.StackTrace? stackTrace = default!)
+    public static AsyncSnapshot<T> CreateWithError(ConnectionState state, object error, System.Diagnostics.StackTrace? stackTrace = default!)
     {
         return new AsyncSnapshot<T>(state, default, error, stackTrace);
     }
@@ -176,10 +176,10 @@ public delegate Widget AsyncWidgetBuilder<T>(BuildContext context, AsyncSnapshot
 
 public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
 {
-    public virtual global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, AsyncSnapshot<T>, Widget> builder { get; private set; } = default!;
     public virtual T? initialData { get; private set; }
 
-    public StreamBuilder(global::Doroti.Framework.Foundation.Key? key = null, T? initialData = default, Stream<T>? stream = default!, global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key, stream: stream)
+    public StreamBuilder(Key? key = null, T? initialData = default, Stream<T>? stream = default!, Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key, stream: stream)
     {
         this.initialData = initialData;
         this.builder = builder;
@@ -193,7 +193,7 @@ public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override AsyncSnapshot<T> afterError(AsyncSnapshot<T> current, object error, global::System.Diagnostics.StackTrace? stackTrace)
+    public override AsyncSnapshot<T> afterError(AsyncSnapshot<T> current, object error, System.Diagnostics.StackTrace? stackTrace)
     {
         return AsyncSnapshot<T>.CreateWithError(ConnectionState.active, error, stackTrace);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -207,11 +207,11 @@ public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
 public class FutureBuilder<T> : StatefulWidget
 {
     public virtual Future<T>? future { get; private set; }
-    public virtual global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, AsyncSnapshot<T>, Widget> builder { get; private set; } = default!;
     public virtual T? initialData { get; private set; }
     public static bool debugRethrowError = false;
 
-    public FutureBuilder(global::Doroti.Framework.Foundation.Key? key = null, Future<T>? future = default!, T? initialData = default, global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key)
+    public FutureBuilder(Key? key = null, Future<T>? future = default!, T? initialData = default, Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key)
     {
         this.future = future;
         this.initialData = initialData;

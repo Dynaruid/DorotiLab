@@ -4,6 +4,10 @@ using SKGLView = Doroti.Host.Maui.DorotiSkiaView;
 #if !MACOS
 using Doroti.Ui;
 using SkiaSharp.Views.Maui.Controls;
+#if IOS || MACCATALYST
+using Foundation;
+using UIKit;
+#endif
 
 namespace Doroti.Host.Maui;
 
@@ -88,7 +92,7 @@ internal static class MauiNativeInput
             args.Handled = true;
         }
 
-        private void HandleUnfocused(object? sender, Microsoft.Maui.Controls.FocusEventArgs args)
+        private void HandleUnfocused(object? sender, FocusEventArgs args)
             => ReleasePressed();
 
         private void ReleasePressed()
@@ -230,7 +234,7 @@ internal static class MauiNativeInput
         }
 
         private void HandleHandlerChanged(object? sender, EventArgs args) => AttachCurrent();
-        private void HandleFocused(object? sender, Microsoft.Maui.Controls.FocusEventArgs args) =>
+        private void HandleFocused(object? sender, FocusEventArgs args) =>
             FocusHardwareKeyboardViewIfAvailable();
 
         private void FocusHardwareKeyboardViewIfAvailable()
@@ -245,7 +249,7 @@ internal static class MauiNativeInput
             _keyboardView?.RemoveFromSuperview();
             _keyboardView?.Dispose();
             _keyboardView = null;
-            if (_view.Handler?.PlatformView is not UIKit.UIView native) return;
+            if (_view.Handler?.PlatformView is not UIView native) return;
             _keyboardView = new DorotiKeyboardView(_viewId, _dispatch)
             {
                 Frame = native.Bounds,
@@ -267,23 +271,23 @@ internal static class MauiNativeInput
         }
     }
 
-    private sealed class DorotiKeyboardView(ulong viewId, Action<KeyData> dispatch) : UIKit.UIView
+    private sealed class DorotiKeyboardView(ulong viewId, Action<KeyData> dispatch) : UIView
     {
         public override bool CanBecomeFirstResponder => true;
 
-        public override void PressesBegan(Foundation.NSSet<UIKit.UIPress> presses, UIKit.UIPressesEvent evt)
+        public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
         {
             Dispatch(presses, KeyEventType.down);
             base.PressesBegan(presses, evt);
         }
 
-        public override void PressesEnded(Foundation.NSSet<UIKit.UIPress> presses, UIKit.UIPressesEvent evt)
+        public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
         {
             Dispatch(presses, KeyEventType.up);
             base.PressesEnded(presses, evt);
         }
 
-        private void Dispatch(Foundation.NSSet<UIKit.UIPress> presses, KeyEventType type)
+        private void Dispatch(NSSet<UIPress> presses, KeyEventType type)
         {
             foreach (var press in presses)
             {
@@ -299,36 +303,36 @@ internal static class MauiNativeInput
 
     private static class NativeCursor
     {
-        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<UIKit.UIView, CursorState> States = new();
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<UIView, CursorState> States = new();
 
         internal static void Set(SKGLView view, DorotiMouseCursorKind cursor)
         {
-            if (view.Handler?.PlatformView is not UIKit.UIView native) return;
+            if (view.Handler?.PlatformView is not UIView native) return;
             var state = States.GetValue(native, static value => new CursorState(value));
             state.Cursor = cursor;
             state.Interaction.Invalidate();
         }
 
-        private sealed class CursorState : UIKit.UIPointerInteractionDelegate
+        private sealed class CursorState : UIPointerInteractionDelegate
         {
-            internal CursorState(UIKit.UIView view)
+            internal CursorState(UIView view)
             {
                 View = view;
-                Interaction = new UIKit.UIPointerInteraction(this);
+                Interaction = new UIPointerInteraction(this);
                 view.AddInteraction(Interaction);
             }
 
-            internal UIKit.UIView View { get; }
-            internal UIKit.UIPointerInteraction Interaction { get; }
+            internal UIView View { get; }
+            internal UIPointerInteraction Interaction { get; }
             internal DorotiMouseCursorKind Cursor { get; set; }
 
-            public override UIKit.UIPointerStyle? GetStyleForRegion(
-                UIKit.UIPointerInteraction interaction, UIKit.UIPointerRegion region)
+            public override UIPointerStyle? GetStyleForRegion(
+                UIPointerInteraction interaction, UIPointerRegion region)
             {
                 _ = interaction;
                 _ = region;
                 if (Cursor == DorotiMouseCursorKind.none) return UIKit.UIPointerStyle.CreateHiddenPointerStyle();
-                UIKit.UIAxis? axis = Cursor switch
+                UIAxis? axis = Cursor switch
                 {
                     DorotiMouseCursorKind.text or DorotiMouseCursorKind.resizeUpDown => UIKit.UIAxis.Vertical,
                     DorotiMouseCursorKind.verticalText or DorotiMouseCursorKind.resizeLeftRight => UIKit.UIAxis.Horizontal,
@@ -336,7 +340,7 @@ internal static class MauiNativeInput
                 };
                 if (axis is null) return UIKit.UIPointerStyle.CreateSystemPointerStyle();
                 var actualAxis = axis.Value;
-                var length = (System.Runtime.InteropServices.NFloat)Math.Max(12, actualAxis == UIKit.UIAxis.Vertical
+                var length = (nfloat)Math.Max(12, actualAxis == UIKit.UIAxis.Vertical
                     ? View.Bounds.Height : View.Bounds.Width);
                 var shape = UIKit.UIPointerShape.CreateBeam(length, actualAxis);
                 return UIKit.UIPointerStyle.Create(shape, actualAxis);

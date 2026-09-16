@@ -39,13 +39,13 @@ public class IconData
     public override string ToString() => $"IconData(U+{codePoint.toRadixString(16L).toUpperCase().padLeft(5L, "0")})";
 }
 
-public class IconDataProperty : global::Doroti.Framework.Foundation.DiagnosticsProperty<IconData>
+public class IconDataProperty : DiagnosticsProperty<IconData>
 {
-    public IconDataProperty(string name, IconData? value, string? ifNull = null, bool showName = true, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, global::Doroti.Framework.Foundation.DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, ifNull: ifNull, showName: showName, style: style, level: level)
+    public IconDataProperty(string name, IconData? value, string? ifNull = null, bool showName = true, DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, ifNull: ifNull, showName: showName, style: style, level: level)
     {
     }
 
-    public override DartMap<string, object?> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate? @delegate = null)
+    public override DartMap<string, object?> toJsonMap(DiagnosticsSerializationDelegate? @delegate = null)
     {
         DartMap<string, object?> json = base.toJsonMap(@delegate);
         if (value is not null)

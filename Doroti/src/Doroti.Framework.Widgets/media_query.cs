@@ -50,12 +50,12 @@ public class MediaQueryData
     public virtual Size size { get; private set; } = default!;
     public virtual double devicePixelRatio { get; private set; } = default!;
     internal virtual double _textScaleFactor { get; private set; } = default!;
-    internal virtual global::Doroti.Framework.Painting.TextScaler _textScaler { get; private set; } = default!;
+    internal virtual TextScaler _textScaler { get; private set; } = default!;
     public virtual Brightness platformBrightness { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets viewInsets { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets padding { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets viewPadding { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets systemGestureInsets { get; private set; } = default!;
+    public virtual EdgeInsets viewInsets { get; private set; } = default!;
+    public virtual EdgeInsets padding { get; private set; } = default!;
+    public virtual EdgeInsets viewPadding { get; private set; } = default!;
+    public virtual EdgeInsets systemGestureInsets { get; private set; } = default!;
     public virtual bool alwaysUse24HourFormat { get; private set; } = default!;
     public virtual bool accessibleNavigation { get; private set; } = default!;
     public virtual bool invertColors { get; private set; } = default!;
@@ -66,24 +66,24 @@ public class MediaQueryData
     public virtual bool boldText { get; private set; } = default!;
     public virtual bool supportsAnnounce { get; private set; } = default!;
     public virtual NavigationMode navigationMode { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Gestures.DeviceGestureSettings gestureSettings { get; private set; } = default!;
-    public virtual List<global::Doroti.Ui.DisplayFeature> displayFeatures { get; private set; } = default!;
+    public virtual DeviceGestureSettings gestureSettings { get; private set; } = default!;
+    public virtual List<DisplayFeature> displayFeatures { get; private set; } = default!;
     public virtual bool supportsShowingSystemContextMenu { get; private set; } = default!;
     public virtual double? lineHeightScaleFactorOverride { get; private set; }
     public virtual double? letterSpacingOverride { get; private set; }
     public virtual double? wordSpacingOverride { get; private set; }
     public virtual double? paragraphSpacingOverride { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderRadius? displayCornerRadii { get; private set; }
+    public virtual BorderRadius? displayCornerRadii { get; private set; }
 
-    public MediaQueryData(Size? size = null, double devicePixelRatio = 1.0, double textScaleFactor = 1.0, global::Doroti.Framework.Painting.TextScaler textScaler = default!, Brightness platformBrightness = Brightness.light, global::Doroti.Framework.Painting.EdgeInsets padding = default!, global::Doroti.Framework.Painting.EdgeInsets viewInsets = default!, global::Doroti.Framework.Painting.EdgeInsets systemGestureInsets = default!, global::Doroti.Framework.Painting.EdgeInsets viewPadding = default!, bool alwaysUse24HourFormat = false, bool accessibleNavigation = false, bool invertColors = false, bool highContrast = false, bool onOffSwitchLabels = false, bool disableAnimations = false, bool reduceMotion = false, bool boldText = false, bool supportsAnnounce = false, NavigationMode navigationMode = NavigationMode.traditional, global::Doroti.Framework.Gestures.DeviceGestureSettings gestureSettings = default!, List<global::Doroti.Ui.DisplayFeature> displayFeatures = default!, bool supportsShowingSystemContextMenu = false, double? lineHeightScaleFactorOverride = null, double? letterSpacingOverride = null, double? wordSpacingOverride = null, double? paragraphSpacingOverride = null, global::Doroti.Framework.Painting.BorderRadius? displayCornerRadii = null)
+    public MediaQueryData(Size? size = null, double devicePixelRatio = 1.0, double textScaleFactor = 1.0, TextScaler textScaler = default!, Brightness platformBrightness = Brightness.light, EdgeInsets padding = default!, EdgeInsets viewInsets = default!, EdgeInsets systemGestureInsets = default!, EdgeInsets viewPadding = default!, bool alwaysUse24HourFormat = false, bool accessibleNavigation = false, bool invertColors = false, bool highContrast = false, bool onOffSwitchLabels = false, bool disableAnimations = false, bool reduceMotion = false, bool boldText = false, bool supportsAnnounce = false, NavigationMode navigationMode = NavigationMode.traditional, DeviceGestureSettings gestureSettings = default!, List<DisplayFeature> displayFeatures = default!, bool supportsShowingSystemContextMenu = false, double? lineHeightScaleFactorOverride = null, double? letterSpacingOverride = null, double? wordSpacingOverride = null, double? paragraphSpacingOverride = null, BorderRadius? displayCornerRadii = null)
     {
-        global::Doroti.Framework.Painting.TextScaler __textScaler = textScaler ?? Media_queryLibrary._kUnspecifiedTextScaler;
-        global::Doroti.Framework.Painting.EdgeInsets __padding = padding ?? EdgeInsets.zero;
-        global::Doroti.Framework.Painting.EdgeInsets __viewInsets = viewInsets ?? EdgeInsets.zero;
-        global::Doroti.Framework.Painting.EdgeInsets __systemGestureInsets = systemGestureInsets ?? EdgeInsets.zero;
-        global::Doroti.Framework.Painting.EdgeInsets __viewPadding = viewPadding ?? EdgeInsets.zero;
-        global::Doroti.Framework.Gestures.DeviceGestureSettings __gestureSettings = gestureSettings ?? new global::Doroti.Framework.Gestures.DeviceGestureSettings(touchSlop: Gestures.ConstantsLibrary.kTouchSlop);
-        List<global::Doroti.Ui.DisplayFeature> __displayFeatures = displayFeatures ?? new List<global::Doroti.Ui.DisplayFeature>();
+        TextScaler __textScaler = textScaler ?? Media_queryLibrary._kUnspecifiedTextScaler;
+        EdgeInsets __padding = padding ?? EdgeInsets.zero;
+        EdgeInsets __viewInsets = viewInsets ?? EdgeInsets.zero;
+        EdgeInsets __systemGestureInsets = systemGestureInsets ?? EdgeInsets.zero;
+        EdgeInsets __viewPadding = viewPadding ?? EdgeInsets.zero;
+        DeviceGestureSettings __gestureSettings = gestureSettings ?? new DeviceGestureSettings(touchSlop: Gestures.ConstantsLibrary.kTouchSlop);
+        List<DisplayFeature> __displayFeatures = displayFeatures ?? new List<DisplayFeature>();
         this.size = size ?? Size.zero;
         this.devicePixelRatio = devicePixelRatio;
         this.platformBrightness = platformBrightness;
@@ -142,7 +142,7 @@ public class MediaQueryData
         __instance.onOffSwitchLabels = platformData?.onOffSwitchLabels ?? accessibility.onOffSwitchLabels;
         __instance.alwaysUse24HourFormat = platformData?.alwaysUse24HourFormat ?? configuration?.alwaysUse24HourFormat ?? view.platformDispatcher.alwaysUse24HourFormat;
         __instance.navigationMode = platformData?.navigationMode ?? NavigationMode.traditional;
-        __instance.gestureSettings = new global::Doroti.Framework.Gestures.DeviceGestureSettings(metrics.gestureSettings.physicalTouchSlop / metrics.devicePixelRatio);
+        __instance.gestureSettings = new DeviceGestureSettings(metrics.gestureSettings.physicalTouchSlop / metrics.devicePixelRatio);
         __instance.displayFeatures = metrics.displayFeatures.ToList();
         __instance.supportsShowingSystemContextMenu = platformData?.supportsShowingSystemContextMenu ?? configuration?.supportsShowingSystemContextMenu ?? view.platformDispatcher.supportsShowingSystemContextMenu;
         __instance.lineHeightScaleFactorOverride = platformData?.lineHeightScaleFactorOverride ?? configuration?.lineHeightScaleFactorOverride ?? view.platformDispatcher.lineHeightScaleFactorOverride;
@@ -153,18 +153,18 @@ public class MediaQueryData
         return __instance;
     }
 
-    internal static global::Doroti.Framework.Painting.TextScaler _textScalerFromView(DorotiView view, MediaQueryData? platformData)
+    internal static TextScaler _textScalerFromView(DorotiView view, MediaQueryData? platformData)
     {
         return platformData?.textScaler ?? new SystemTextScaler(view.environmentConfiguration ?? view.platformDispatcher.configurationSnapshot, view.platformDispatcher);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Framework.Painting.BorderRadius? _displayCornerRadiiFromView(DorotiView view)
+    internal static BorderRadius? _displayCornerRadiiFromView(DorotiView view)
     {
         return _displayCornerRadiiFromMetrics(view.metrics);
     }
 
-    private static global::Doroti.Framework.Painting.BorderRadius? _displayCornerRadiiFromMetrics(ViewMetrics metrics)
+    private static BorderRadius? _displayCornerRadiiFromMetrics(ViewMetrics metrics)
     {
         var displayCornerRadiiLocal = metrics.displayCornerRadii;
         if (displayCornerRadiiLocal is null)
@@ -172,12 +172,12 @@ public class MediaQueryData
             return null;
         }
         double devicePixelRatioLocal = metrics.devicePixelRatio;
-        return new global::Doroti.Framework.Painting.BorderRadius(topLeft: Radius.circular(displayCornerRadiiLocal.topLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)), topRight: Radius.circular(displayCornerRadiiLocal.topRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)), bottomRight: Radius.circular(displayCornerRadiiLocal.bottomRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)), bottomLeft: Radius.circular(displayCornerRadiiLocal.bottomLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)));
+        return new BorderRadius(topLeft: Radius.circular(displayCornerRadiiLocal.topLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)), topRight: Radius.circular(displayCornerRadiiLocal.topRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)), bottomRight: Radius.circular(displayCornerRadiiLocal.bottomRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)), bottomLeft: Radius.circular(displayCornerRadiiLocal.bottomLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double textScaleFactor => textScaler.textScaleFactor;
-    public virtual global::Doroti.Framework.Painting.TextScaler textScaler
+    public virtual TextScaler textScaler
     {
         get
         {
@@ -195,7 +195,7 @@ public class MediaQueryData
             return (size.width > size.height) ? Orientation.landscape : Orientation.portrait;
         }
     }
-    public virtual MediaQueryData copyWith(Size? size = null, double? devicePixelRatio = null, double? textScaleFactor = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, Brightness? platformBrightness = null, global::Doroti.Framework.Painting.EdgeInsets? padding = null, global::Doroti.Framework.Painting.EdgeInsets? viewPadding = null, global::Doroti.Framework.Painting.EdgeInsets? viewInsets = null, global::Doroti.Framework.Painting.EdgeInsets? systemGestureInsets = null, bool? alwaysUse24HourFormat = null, bool? highContrast = null, bool? onOffSwitchLabels = null, bool? disableAnimations = null, bool? reduceMotion = null, bool? invertColors = null, bool? accessibleNavigation = null, bool? boldText = null, bool? supportsAnnounce = null, NavigationMode? navigationMode = null, global::Doroti.Framework.Gestures.DeviceGestureSettings? gestureSettings = null, List<global::Doroti.Ui.DisplayFeature>? displayFeatures = null, bool? supportsShowingSystemContextMenu = null)
+    public virtual MediaQueryData copyWith(Size? size = null, double? devicePixelRatio = null, double? textScaleFactor = null, TextScaler? textScaler = null, Brightness? platformBrightness = null, EdgeInsets? padding = null, EdgeInsets? viewPadding = null, EdgeInsets? viewInsets = null, EdgeInsets? systemGestureInsets = null, bool? alwaysUse24HourFormat = null, bool? highContrast = null, bool? onOffSwitchLabels = null, bool? disableAnimations = null, bool? reduceMotion = null, bool? invertColors = null, bool? accessibleNavigation = null, bool? boldText = null, bool? supportsAnnounce = null, NavigationMode? navigationMode = null, DeviceGestureSettings? gestureSettings = null, List<DisplayFeature>? displayFeatures = null, bool? supportsShowingSystemContextMenu = null)
     {
         DartRuntimePrimitives.Assert(() => (textScaleFactor is null) || (textScaler is null));
         if (textScaleFactor is not null)
@@ -213,7 +213,7 @@ public class MediaQueryData
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual MediaQueryData applyDisplayCornerRadii(global::Doroti.Framework.Painting.BorderRadius? displayCornerRadii)
+    public virtual MediaQueryData applyDisplayCornerRadii(BorderRadius? displayCornerRadii)
     {
         return new MediaQueryData(size: DartRuntimePrimitives.RequireValue(size), devicePixelRatio: DartRuntimePrimitives.RequireValue(devicePixelRatio), textScaler: textScaler, platformBrightness: DartRuntimePrimitives.RequireValue(platformBrightness), padding: padding, viewPadding: viewPadding, viewInsets: viewInsets, systemGestureInsets: systemGestureInsets, alwaysUse24HourFormat: DartRuntimePrimitives.RequireValue(alwaysUse24HourFormat), invertColors: DartRuntimePrimitives.RequireValue(invertColors), highContrast: DartRuntimePrimitives.RequireValue(highContrast), onOffSwitchLabels: DartRuntimePrimitives.RequireValue(onOffSwitchLabels), disableAnimations: DartRuntimePrimitives.RequireValue(disableAnimations), reduceMotion: DartRuntimePrimitives.RequireValue(reduceMotion), accessibleNavigation: DartRuntimePrimitives.RequireValue(accessibleNavigation), boldText: DartRuntimePrimitives.RequireValue(boldText), supportsAnnounce: DartRuntimePrimitives.RequireValue(supportsAnnounce), navigationMode: DartRuntimePrimitives.RequireValue(navigationMode), gestureSettings: gestureSettings, displayFeatures: displayFeatures, supportsShowingSystemContextMenu: DartRuntimePrimitives.RequireValue(supportsShowingSystemContextMenu), lineHeightScaleFactorOverride: lineHeightScaleFactorOverride, letterSpacingOverride: letterSpacingOverride, wordSpacingOverride: wordSpacingOverride, paragraphSpacingOverride: paragraphSpacingOverride, displayCornerRadii: displayCornerRadii);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -287,33 +287,33 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
 {
     public virtual MediaQueryData data { get; private set; } = default!;
 
-    public MediaQuery(global::Doroti.Framework.Foundation.Key? key = null, MediaQueryData data = default!, Widget child = default!) : base(key: key, child: child)
+    public MediaQuery(Key? key = null, MediaQueryData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static MediaQuery CreateRemovePadding(global::Doroti.Framework.Foundation.Key? key = null, BuildContext context = default!, bool removeLeft = false, bool removeTop = false, bool removeRight = false, bool removeBottom = false, Widget child = default!)
+    public static MediaQuery CreateRemovePadding(Key? key = null, BuildContext context = default!, bool removeLeft = false, bool removeTop = false, bool removeRight = false, bool removeBottom = false, Widget child = default!)
     {
         var __instance = new MediaQuery(key: key, child: child);
         __instance.data = of(context).removePadding(removeLeft: removeLeft, removeTop: removeTop, removeRight: removeRight, removeBottom: removeBottom);
         return __instance;
     }
 
-    public static MediaQuery CreateRemoveViewInsets(global::Doroti.Framework.Foundation.Key? key = null, BuildContext context = default!, bool removeLeft = false, bool removeTop = false, bool removeRight = false, bool removeBottom = false, Widget child = default!)
+    public static MediaQuery CreateRemoveViewInsets(Key? key = null, BuildContext context = default!, bool removeLeft = false, bool removeTop = false, bool removeRight = false, bool removeBottom = false, Widget child = default!)
     {
         var __instance = new MediaQuery(key: key, child: child);
         __instance.data = of(context).removeViewInsets(removeLeft: removeLeft, removeTop: removeTop, removeRight: removeRight, removeBottom: removeBottom);
         return __instance;
     }
 
-    public static MediaQuery CreateRemoveViewPadding(global::Doroti.Framework.Foundation.Key? key = null, BuildContext context = default!, bool removeLeft = false, bool removeTop = false, bool removeRight = false, bool removeBottom = false, Widget child = default!)
+    public static MediaQuery CreateRemoveViewPadding(Key? key = null, BuildContext context = default!, bool removeLeft = false, bool removeTop = false, bool removeRight = false, bool removeBottom = false, Widget child = default!)
     {
         var __instance = new MediaQuery(key: key, child: child);
         __instance.data = of(context).removeViewPadding(removeLeft: removeLeft, removeTop: removeTop, removeRight: removeRight, removeBottom: removeBottom);
         return __instance;
     }
 
-    public static Widget applyTextStyleOverrides(global::Doroti.Framework.Foundation.Key? key = null, double? lineHeightScaleFactorOverride = default!, double? letterSpacingOverride = default!, double? wordSpacingOverride = default!, double? paragraphSpacingOverride = default!, Widget child = default!)
+    public static Widget applyTextStyleOverrides(Key? key = null, double? lineHeightScaleFactorOverride = default!, double? letterSpacingOverride = default!, double? wordSpacingOverride = default!, double? paragraphSpacingOverride = default!, Widget child = default!)
     {
         return new Builder(key: key, builder: (context) =>
         {
@@ -324,19 +324,19 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Widget fromWindow(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
+    public static Widget fromWindow(Key? key = null, Widget child = default!)
     {
         return new _MediaQueryFromView__media_query(key: key, view: WidgetsBinding.instance.window, ignoreParentData: true, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Widget fromView(global::Doroti.Framework.Foundation.Key? key = null, DorotiView view = default!, Widget child = default!)
+    public static Widget fromView(Key? key = null, DorotiView view = default!, Widget child = default!)
     {
         return new _MediaQueryFromView__media_query(key: key, view: view, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Widget withNoTextScaling(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
+    public static Widget withNoTextScaling(Key? key = null, Widget child = default!)
     {
         return new Builder(key: key, builder: (context) =>
         {
@@ -347,7 +347,7 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Widget withClampedTextScaling(global::Doroti.Framework.Foundation.Key? key = null, double minScaleFactor = 0.0, double maxScaleFactor = double.PositiveInfinity, Widget child = default!)
+    public static Widget withClampedTextScaling(Key? key = null, double minScaleFactor = 0.0, double maxScaleFactor = double.PositiveInfinity, Widget child = default!)
     {
         DartRuntimePrimitives.Assert(() => maxScaleFactor >= minScaleFactor);
         DartRuntimePrimitives.Assert(() => !double.IsNaN(maxScaleFactor));
@@ -388,8 +388,8 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Size sizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(_of(context, _MediaQueryAspect__media_query.size).size);
-    public static global::Doroti.Ui.Size? maybeSizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(_maybeOf(context, _MediaQueryAspect__media_query.size)?.size);
+    public static Size sizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<Size>(_of(context, _MediaQueryAspect__media_query.size).size);
+    public static Size? maybeSizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<Size>(_maybeOf(context, _MediaQueryAspect__media_query.size)?.size);
     public static double widthOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.width).size.width;
     public static double? maybeWidthOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.width)?.size.width;
     public static double heightOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.height).size.height;
@@ -400,18 +400,18 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
     public static double? maybeDevicePixelRatioOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.devicePixelRatio)?.devicePixelRatio;
     public static double textScaleFactorOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<double>(maybeTextScaleFactorOf(context) ?? 1.0);
     public static double? maybeTextScaleFactorOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.textScaleFactor)?.textScaleFactor;
-    public static global::Doroti.Framework.Painting.TextScaler textScalerOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextScaler>(maybeTextScalerOf(context) ?? TextScaler.noScaling);
-    public static global::Doroti.Framework.Painting.TextScaler? maybeTextScalerOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.textScaler)?.textScaler;
-    public static global::Doroti.Ui.Brightness platformBrightnessOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Brightness>(maybePlatformBrightnessOf(context) ?? Brightness.light);
-    public static global::Doroti.Ui.Brightness? maybePlatformBrightnessOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Brightness>(_maybeOf(context, _MediaQueryAspect__media_query.platformBrightness)?.platformBrightness);
-    public static global::Doroti.Framework.Painting.EdgeInsets paddingOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.padding).padding;
-    public static global::Doroti.Framework.Painting.EdgeInsets? maybePaddingOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.padding)?.padding;
-    public static global::Doroti.Framework.Painting.EdgeInsets viewInsetsOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.viewInsets).viewInsets;
-    public static global::Doroti.Framework.Painting.EdgeInsets? maybeViewInsetsOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.viewInsets)?.viewInsets;
-    public static global::Doroti.Framework.Painting.EdgeInsets systemGestureInsetsOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.systemGestureInsets).systemGestureInsets;
-    public static global::Doroti.Framework.Painting.EdgeInsets? maybeSystemGestureInsetsOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.systemGestureInsets)?.systemGestureInsets;
-    public static global::Doroti.Framework.Painting.EdgeInsets viewPaddingOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.viewPadding).viewPadding;
-    public static global::Doroti.Framework.Painting.EdgeInsets? maybeViewPaddingOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.viewPadding)?.viewPadding;
+    public static TextScaler textScalerOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<TextScaler>(maybeTextScalerOf(context) ?? TextScaler.noScaling);
+    public static TextScaler? maybeTextScalerOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.textScaler)?.textScaler;
+    public static Brightness platformBrightnessOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<Brightness>(maybePlatformBrightnessOf(context) ?? Brightness.light);
+    public static Brightness? maybePlatformBrightnessOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<Brightness>(_maybeOf(context, _MediaQueryAspect__media_query.platformBrightness)?.platformBrightness);
+    public static EdgeInsets paddingOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.padding).padding;
+    public static EdgeInsets? maybePaddingOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.padding)?.padding;
+    public static EdgeInsets viewInsetsOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.viewInsets).viewInsets;
+    public static EdgeInsets? maybeViewInsetsOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.viewInsets)?.viewInsets;
+    public static EdgeInsets systemGestureInsetsOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.systemGestureInsets).systemGestureInsets;
+    public static EdgeInsets? maybeSystemGestureInsetsOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.systemGestureInsets)?.systemGestureInsets;
+    public static EdgeInsets viewPaddingOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.viewPadding).viewPadding;
+    public static EdgeInsets? maybeViewPaddingOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.viewPadding)?.viewPadding;
     public static bool alwaysUse24HourFormatOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.alwaysUse24HourFormat).alwaysUse24HourFormat;
     public static bool? maybeAlwaysUse24HourFormatOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.alwaysUse24HourFormat)?.alwaysUse24HourFormat;
     public static bool accessibleNavigationOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.accessibleNavigation).accessibleNavigation;
@@ -432,23 +432,23 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
     public static bool? maybeSupportsAnnounceOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.supportsAnnounce)?.supportsAnnounce;
     public static NavigationMode navigationModeOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.navigationMode).navigationMode;
     public static NavigationMode? maybeNavigationModeOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.navigationMode)?.navigationMode;
-    public static global::Doroti.Framework.Gestures.DeviceGestureSettings gestureSettingsOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.gestureSettings).gestureSettings;
-    public static global::Doroti.Framework.Gestures.DeviceGestureSettings? maybeGestureSettingsOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.gestureSettings)?.gestureSettings;
-    public static List<global::Doroti.Ui.DisplayFeature> displayFeaturesOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.displayFeatures).displayFeatures;
-    public static List<global::Doroti.Ui.DisplayFeature>? maybeDisplayFeaturesOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.displayFeatures)?.displayFeatures;
+    public static DeviceGestureSettings gestureSettingsOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.gestureSettings).gestureSettings;
+    public static DeviceGestureSettings? maybeGestureSettingsOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.gestureSettings)?.gestureSettings;
+    public static List<DisplayFeature> displayFeaturesOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.displayFeatures).displayFeatures;
+    public static List<DisplayFeature>? maybeDisplayFeaturesOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.displayFeatures)?.displayFeatures;
     public static bool supportsShowingSystemContextMenu(BuildContext context) => _of(context, _MediaQueryAspect__media_query.supportsShowingSystemContextMenu).supportsShowingSystemContextMenu;
     public static bool? maybeSupportsShowingSystemContextMenu(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.supportsShowingSystemContextMenu)?.supportsShowingSystemContextMenu;
     public static double? maybeLineHeightScaleFactorOverrideOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.lineHeightScaleFactorOverride)?.lineHeightScaleFactorOverride;
     public static double? maybeLetterSpacingOverrideOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.letterSpacingOverride)?.letterSpacingOverride;
     public static double? maybeWordSpacingOverrideOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.wordSpacingOverride)?.wordSpacingOverride;
     public static double? maybeParagraphSpacingOverrideOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.paragraphSpacingOverride)?.paragraphSpacingOverride;
-    public static global::Doroti.Framework.Painting.BorderRadius? displayCornerRadiiOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.displayCornerRadii).displayCornerRadii;
-    public static global::Doroti.Framework.Painting.BorderRadius? maybeDisplayCornerRadiiOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.displayCornerRadii)?.displayCornerRadii;
+    public static BorderRadius? displayCornerRadiiOf(BuildContext context) => _of(context, _MediaQueryAspect__media_query.displayCornerRadii).displayCornerRadii;
+    public static BorderRadius? maybeDisplayCornerRadiiOf(BuildContext context) => _maybeOf(context, _MediaQueryAspect__media_query.displayCornerRadii)?.displayCornerRadii;
     public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((MediaQuery)oldWidget).data));
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MediaQueryData>("data", data, showName: false));
+        properties.add(new DiagnosticsProperty<MediaQueryData>("data", data, showName: false));
     }
 
     public override bool updateShouldNotifyDependent(InheritedModel<_MediaQueryAspect__media_query> oldWidget, HashSet<_MediaQueryAspect__media_query> dependencies)
@@ -517,7 +517,7 @@ public class _MediaQueryFromView__media_query : StatefulWidget
     public virtual bool ignoreParentData { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _MediaQueryFromView__media_query(global::Doroti.Framework.Foundation.Key? key = null, DorotiView view = default!, bool ignoreParentData = false, Widget child = default!) : base(key: key)
+    internal _MediaQueryFromView__media_query(Key? key = null, DorotiView view = default!, bool ignoreParentData = false, Widget child = default!) : base(key: key)
     {
         this.view = view;
         this.ignoreParentData = ignoreParentData;
@@ -639,21 +639,21 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
 
 public static partial class Media_queryLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextScaler _kUnspecifiedTextScaler = new _UnspecifiedTextScaler__media_query();
+    internal static TextScaler _kUnspecifiedTextScaler = new _UnspecifiedTextScaler__media_query();
 }
 
-internal class _UnspecifiedTextScaler__media_query : global::Doroti.Framework.Painting.TextScaler
+internal class _UnspecifiedTextScaler__media_query : TextScaler
 {
     internal _UnspecifiedTextScaler__media_query()
     {
     }
 
-    public override global::Doroti.Framework.Painting.TextScaler clamp(double minScaleFactor = 0, double maxScaleFactor = double.PositiveInfinity) => throw new NotImplementedException();
+    public override TextScaler clamp(double minScaleFactor = 0, double maxScaleFactor = double.PositiveInfinity) => throw new NotImplementedException();
     public override double scale(double fontSize) => throw new NotImplementedException();
     public override double textScaleFactor => throw new NotImplementedException();
 }
 
-public class SystemTextScaler : global::Doroti.Framework.Painting.TextScaler
+public class SystemTextScaler : TextScaler
 {
     internal virtual PlatformDispatcher _platformDispatcher { get; private set; } = default!;
     private double __field_textScaleFactor = default!;

@@ -85,7 +85,7 @@ public abstract class BoxBorder : ShapeBorder
         DartRuntimePrimitives.Assert(() => textDirection is not null);
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(dimensions.resolve(textDirection).deflateRect(rect));
     return __cascade;
 }))();
@@ -97,7 +97,7 @@ public abstract class BoxBorder : ShapeBorder
         DartRuntimePrimitives.Assert(() => textDirection is not null);
         return ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.addRect(rect);
     return __cascade;
 }))();
@@ -122,7 +122,7 @@ public abstract class BoxBorder : ShapeBorder
         DartRuntimePrimitives.Assert(() => !Equals(side.style, BorderStyle.none));
         var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = side.color;
     return __cascade;
 }))();
@@ -140,16 +140,16 @@ public abstract class BoxBorder : ShapeBorder
         }
         else
         {
-            global::Doroti.Ui.RRect borderRect = borderRadius.toRRect(rect);
-            global::Doroti.Ui.RRect inner = borderRect.deflate(side.strokeInset);
-            global::Doroti.Ui.RRect outer = borderRect.inflate(side.strokeOutset);
+            RRect borderRect = borderRadius.toRRect(rect);
+            RRect inner = borderRect.deflate(side.strokeInset);
+            RRect outer = borderRect.inflate(side.strokeOutset);
             canvas.drawDRRect(outer, inner, paint);
         }
     }
 
     public static void paintNonUniformBorder(Canvas canvas, Rect rect, BorderRadius? borderRadius, TextDirection? textDirection, BoxShape shape = BoxShape.rectangle, BorderSide top = default!, BorderSide right = default!, BorderSide bottom = default!, BorderSide left = default!, Color color = default!)
     {
-        global::Doroti.Ui.RRect borderRect = default!;
+        RRect borderRect = default!;
         switch (shape)
         {
             case BoxShape.rectangle:
@@ -166,12 +166,12 @@ public abstract class BoxBorder : ShapeBorder
         }
         var paint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color;
     return __cascade;
 }))();
-        global::Doroti.Ui.RRect inner = new EdgeInsets(left.strokeInset, top.strokeInset, right.strokeInset, bottom.strokeInset).deflateRRect(borderRect);
-        global::Doroti.Ui.RRect outer = new EdgeInsets(left.strokeOutset, top.strokeOutset, right.strokeOutset, bottom.strokeOutset).inflateRRect(borderRect);
+        RRect inner = new EdgeInsets(left.strokeInset, top.strokeInset, right.strokeInset, bottom.strokeInset).deflateRRect(borderRect);
+        RRect outer = new EdgeInsets(left.strokeOutset, top.strokeOutset, right.strokeOutset, bottom.strokeOutset).inflateRRect(borderRect);
         canvas.drawDRRect(outer, inner, paint);
     }
 
@@ -261,7 +261,7 @@ public class Border : BoxBorder
     {
         get
         {
-            global::Doroti.Ui.Color topColor = top.color;
+            Color topColor = top.color;
             return Equals(left.color, topColor) && Equals(bottom.color, topColor) && Equals(right.color, topColor);
         }
     }
@@ -289,7 +289,7 @@ public class Border : BoxBorder
             return (left.strokeAlign == topStrokeAlign) && (bottom.strokeAlign == topStrokeAlign) && (right.strokeAlign == topStrokeAlign);
         }
     }
-    internal virtual HashSet<global::Doroti.Ui.Color> _distinctVisibleColors()
+    internal virtual HashSet<Color> _distinctVisibleColors()
     {
         return new HashSet<Color>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -392,7 +392,7 @@ public class Border : BoxBorder
         {
             return;
         }
-        HashSet<global::Doroti.Ui.Color> visibleColors = _distinctVisibleColors();
+        HashSet<Color> visibleColors = _distinctVisibleColors();
         bool hasHairlineBorder = _hasHairlineBorder;
         if ((checked(visibleColors.Count) == 1L) && !hasHairlineBorder && (Equals(shape, BoxShape.circle) || (borderRadius is not null) && (!Equals(borderRadius, BorderRadius.zero))))
         {
@@ -502,7 +502,7 @@ public class BorderDirectional : BoxBorder
     {
         get
         {
-            global::Doroti.Ui.Color topColor = top.color;
+            Color topColor = top.color;
             return Equals(start.color, topColor) && Equals(bottom.color, topColor) && Equals(end.color, topColor);
         }
     }
@@ -530,7 +530,7 @@ public class BorderDirectional : BoxBorder
             return (start.strokeAlign == topStrokeAlign) && (bottom.strokeAlign == topStrokeAlign) && (end.strokeAlign == topStrokeAlign);
         }
     }
-    internal virtual HashSet<global::Doroti.Ui.Color> _distinctVisibleColors()
+    internal virtual HashSet<Color> _distinctVisibleColors()
     {
         return new HashSet<Color>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -662,7 +662,7 @@ public class BorderDirectional : BoxBorder
         }
         DartRuntimePrimitives.Assert(() => textDirection is not null);
         var (leftLocal, rightLocal) = DartRuntimePrimitives.RequireValue(textDirection) switch { TextDirection.rtl => ((BorderSide, BorderSide))(end, start), TextDirection.ltr => ((BorderSide, BorderSide))(start, end), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        HashSet<global::Doroti.Ui.Color> visibleColors = _distinctVisibleColors();
+        HashSet<Color> visibleColors = _distinctVisibleColors();
         bool hasHairlineBorder = _hasHairlineBorder;
         if ((checked(visibleColors.Count) == 1L) && !hasHairlineBorder && (Equals(shape, BoxShape.circle) || (borderRadius is not null) && (!Equals(borderRadius, BorderRadius.zero))))
         {

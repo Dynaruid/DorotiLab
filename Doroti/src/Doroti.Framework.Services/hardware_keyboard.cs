@@ -501,7 +501,7 @@ public class KeyEventManager
         LogicalKeyboardKey? recordedLogicalMain = _hardwareKeyboard.lookUpLayout(physicalKey);
         Duration timeStamp = ServicesBinding.instance.currentSystemFrameTimeStamp;
         string? character = (rawEvent.character == "") ? null : rawEvent.character;
-        global::Doroti.Ui.KeyEventDeviceType deviceType = _convertDeviceType(rawEvent);
+        KeyEventDeviceType deviceType = _convertDeviceType(rawEvent);
         if (rawEvent is RawKeyDownEvent rawEvent__as53392)
         {
             if (recordedLogicalMain is null)

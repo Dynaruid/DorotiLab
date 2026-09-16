@@ -4,7 +4,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
 
-public class PageStorageKey<T> : global::Doroti.Framework.Foundation.ValueKey<T>
+public class PageStorageKey<T> : ValueKey<T>
 {
     public PageStorageKey(T value) : base(value)
     {
@@ -30,7 +30,7 @@ internal class _StorageEntryIdentifier__page_storage
         {
             return false;
         }
-        return (__other is _StorageEntryIdentifier__page_storage) && CollectionsLibrary.listEquals<PageStorageKey<object>>(__other.keys, keys);
+        return (__other is _StorageEntryIdentifier__page_storage) && CollectionsLibrary.listEquals(__other.keys, keys);
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHashAll(keys));
@@ -49,7 +49,7 @@ public class PageStorageBucket
     internal static bool _maybeAddKey(BuildContext context, List<PageStorageKey<object>> keys)
     {
         Widget widgetLocal = context.widget;
-        global::Doroti.Framework.Foundation.Key? keyLocal = widgetLocal.key;
+        Key? keyLocal = widgetLocal.key;
         if (keyLocal is PageStorageKey<object>)
         {
             PageStorageKey<object> key__2231__as2257 = (PageStorageKey<object>)keyLocal;
@@ -119,7 +119,7 @@ public class PageStorage : StatelessWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual PageStorageBucket bucket { get; private set; } = default!;
 
-    public PageStorage(global::Doroti.Framework.Foundation.Key? key = null, PageStorageBucket bucket = default!, Widget child = default!) : base(key: key)
+    public PageStorage(Key? key = null, PageStorageBucket bucket = default!, Widget child = default!) : base(key: key)
     {
         this.bucket = bucket;
         this.child = child;

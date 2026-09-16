@@ -37,9 +37,9 @@ public class LongPressDownDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
     }
 
 }
@@ -60,8 +60,8 @@ public class LongPressStartDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
     }
 
 }
@@ -86,10 +86,10 @@ public class LongPressMoveUpdateDetails : PositionedGestureDetails, Diagnosticab
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offsetFromOrigin", offsetFromOrigin));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localOffsetFromOrigin", localOffsetFromOrigin));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("offsetFromOrigin", offsetFromOrigin));
+        properties.add(new DiagnosticsProperty<Offset>("localOffsetFromOrigin", localOffsetFromOrigin));
     }
 
 }
@@ -113,8 +113,8 @@ public class LongPressEndDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new DiagnosticsProperty<Velocity>("velocity", velocity));
     }
 

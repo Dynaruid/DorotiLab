@@ -10,7 +10,7 @@ public static partial class Tap_and_dragLibrary
     internal static double _getGlobalDistance(PointerEvent @event, OffsetPair? originPosition)
     {
         DartRuntimePrimitives.Assert(() => originPosition is not null);
-        global::Doroti.Ui.Offset offset = @event.position - originPosition!.global;
+        Offset offset = @event.position - originPosition!.global;
         return offset.distance;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -45,9 +45,9 @@ public class TapDragDownDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
         properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
@@ -75,9 +75,9 @@ public class TapDragUpDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
         properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
@@ -107,10 +107,10 @@ public class TapDragStartDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
         properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
@@ -149,14 +149,14 @@ public class TapDragUpdateDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new DiagnosticsProperty<Duration?>("sourceTimeStamp", sourceTimeStamp));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("delta", delta));
+        properties.add(new DiagnosticsProperty<Offset>("delta", delta));
         properties.add(new DoubleProperty("primaryDelta", primaryDelta));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("offsetFromOrigin", offsetFromOrigin));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localOffsetFromOrigin", localOffsetFromOrigin));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("offsetFromOrigin", offsetFromOrigin));
+        properties.add(new DiagnosticsProperty<Offset>("localOffsetFromOrigin", localOffsetFromOrigin));
         properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
     }
 
@@ -188,8 +188,8 @@ public class TapDragEndDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
         properties.add(new DiagnosticsProperty<Velocity>("velocity", velocity));
         properties.add(new DoubleProperty("primaryVelocity", primaryVelocity));
         properties.add(new IntProperty("consecutiveTapCount", consecutiveTapCount));
@@ -273,7 +273,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         dragStartBehavior = DragStartBehavior.start;
     }
 
-    internal abstract global::Doroti.Ui.Offset _getDeltaForDetails(Offset delta);
+    internal abstract Offset _getDeltaForDetails(Offset delta);
     internal abstract double? _getPrimaryValueFromOffset(Offset value);
     internal abstract bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind);
     internal virtual void _handleDragUpdateThrottled()
@@ -579,13 +579,13 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
             _currentPosition = _initialPosition;
         }
         _checkDragStart(@event);
-        global::Doroti.Ui.Offset localDeltaLocal = @event.localDelta;
+        Offset localDeltaLocal = @event.localDelta;
         if (!Equals(localDeltaLocal, Offset.zero))
         {
             _currentPosition = OffsetPair.CreateFromEventPosition(@event);
-            global::Doroti.Ui.Offset correctedLocalPosition = _initialPosition.local + localDeltaLocal;
+            Offset correctedLocalPosition = _initialPosition.local + localDeltaLocal;
             Matrix4? localToGlobalTransform = (@event.transform is null) ? null : Matrix4.tryInvert(@event.transform!);
-            global::Doroti.Ui.Offset globalUpdateDelta = PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: localDeltaLocal, untransformedEndPosition: correctedLocalPosition);
+            Offset globalUpdateDelta = PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: localDeltaLocal, untransformedEndPosition: correctedLocalPosition);
             var updateDelta = new OffsetPair(local: localDeltaLocal, global: globalUpdateDelta);
             _checkDragUpdate(@event, corrected: _initialPosition.op_Add(updateDelta));
         }
@@ -594,7 +594,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
     internal virtual void _checkDrag(PointerMoveEvent @event)
     {
         Matrix4? localToGlobalTransform = (@event.transform is null) ? null : Matrix4.tryInvert(@event.transform!);
-        global::Doroti.Ui.Offset movedLocally = _getDeltaForDetails(@event.localDelta);
+        Offset movedLocally = _getDeltaForDetails(@event.localDelta);
         _globalDistanceMoved += PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: movedLocally, untransformedEndPosition: @event.localPosition).distance * Math.Sign(_getPrimaryValueFromOffset(movedLocally) ?? 1);
         _globalDistanceMovedAllAxes += PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: @event.localDelta, untransformedEndPosition: @event.localPosition).distance * Math.Sign(1L);
         if (_hasSufficientGlobalDistanceToAccept(@event.kind) || _wonArenaForPrimaryPointer && (_globalDistanceMovedAllAxes.abs() > EventsLibrary.computePanSlop(@event.kind, gestureSettings)))
@@ -655,8 +655,8 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual void _checkDragUpdate(PointerEvent @event, OffsetPair? corrected = null)
     {
-        global::Doroti.Ui.Offset globalPositionLocal = corrected?.global ?? @event.position;
-        global::Doroti.Ui.Offset localPositionLocal = corrected?.local ?? @event.localPosition;
+        Offset globalPositionLocal = corrected?.global ?? @event.position;
+        Offset localPositionLocal = corrected?.local ?? @event.localPosition;
         var details = new TapDragUpdateDetails(sourceTimeStamp: @event.timeStamp, delta: @event.localDelta, globalPosition: globalPositionLocal, kind: getKindForPointer(@event.pointer), localPosition: localPositionLocal, offsetFromOrigin: globalPositionLocal - _initialPosition.global, localOffsetFromOrigin: localPositionLocal - _initialPosition.local, consecutiveTapCount: consecutiveTapCount);
         if (dragUpdateThrottleFrequency is not null)
         {
@@ -674,8 +674,8 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual void _checkDragEnd()
     {
-        global::Doroti.Ui.Offset globalPositionLocal = _currentPosition.global;
-        global::Doroti.Ui.Offset localPositionLocal = _currentPosition.local;
+        Offset globalPositionLocal = _currentPosition.global;
+        Offset localPositionLocal = _currentPosition.local;
         if (_dragUpdateThrottleTimer is not null)
         {
             _dragUpdateThrottleTimer!.cancel();
@@ -792,7 +792,7 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         {
             return false;
         }
-        global::Doroti.Ui.Offset difference = secondTapOffset - DartRuntimePrimitives.RequireValue(_lastTapOffset);
+        Offset difference = secondTapOffset - DartRuntimePrimitives.RequireValue(_lastTapOffset);
         return difference.distance <= ConstantsLibrary.kDoubleTapSlop;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -847,7 +847,7 @@ public class TapAndHorizontalDragGestureRecognizer : BaseTapAndDragGestureRecogn
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal override Offset _getDeltaForDetails(Offset delta) => new global::Doroti.Ui.Offset(delta.dx, 0.0);
+    internal override Offset _getDeltaForDetails(Offset delta) => new Offset(delta.dx, 0.0);
     internal override double? _getPrimaryValueFromOffset(Offset value) => value.dx;
     public override string debugDescription => "tap and horizontal drag";
 }

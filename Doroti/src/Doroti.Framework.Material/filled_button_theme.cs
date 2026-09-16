@@ -5,7 +5,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class FilledButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class FilledButtonThemeData : Diagnosticable
 {
     public virtual ButtonStyle? style { get; private set; }
 
@@ -40,9 +40,9 @@ public class FilledButtonThemeData : global::Doroti.Framework.Foundation.Diagnos
         return (__other is FilledButtonThemeData) && Equals(__other.style, style);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -68,27 +68,27 @@ public class FilledButtonThemeData : global::Doroti.Framework.Foundation.Diagnos
 
 }
 
-public class FilledButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class FilledButtonTheme : InheritedTheme
 {
     public virtual FilledButtonThemeData data { get; private set; } = default!;
 
-    public FilledButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, FilledButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public FilledButtonTheme(Key? key = null, FilledButtonThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static FilledButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static FilledButtonThemeData of(BuildContext context)
     {
         FilledButtonTheme? buttonTheme = context.dependOnInheritedWidgetOfExactType<FilledButtonTheme>();
         return buttonTheme?.data ?? Theme.of(context).filledButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new FilledButtonTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((FilledButtonTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((FilledButtonTheme)oldWidget).data));
 }

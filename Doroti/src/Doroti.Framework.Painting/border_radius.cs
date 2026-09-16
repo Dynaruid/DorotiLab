@@ -38,14 +38,14 @@ public abstract class BorderRadiusGeometry
     public static BorderRadiusGeometry CreateVertical(Radius top = default!, Radius bottom = default!)
         => BorderRadius.CreateVertical(top, bottom);
 
-    internal abstract global::Doroti.Ui.Radius _topLeft { get; }
-    internal abstract global::Doroti.Ui.Radius _topRight { get; }
-    internal abstract global::Doroti.Ui.Radius _bottomLeft { get; }
-    internal abstract global::Doroti.Ui.Radius _bottomRight { get; }
-    internal abstract global::Doroti.Ui.Radius _topStart { get; }
-    internal abstract global::Doroti.Ui.Radius _topEnd { get; }
-    internal abstract global::Doroti.Ui.Radius _bottomStart { get; }
-    internal abstract global::Doroti.Ui.Radius _bottomEnd { get; }
+    internal abstract Radius _topLeft { get; }
+    internal abstract Radius _topRight { get; }
+    internal abstract Radius _bottomLeft { get; }
+    internal abstract Radius _bottomRight { get; }
+    internal abstract Radius _topStart { get; }
+    internal abstract Radius _topEnd { get; }
+    internal abstract Radius _bottomStart { get; }
+    internal abstract Radius _bottomEnd { get; }
     public virtual BorderRadiusGeometry subtract(BorderRadiusGeometry other)
     {
         return new _MixedBorderRadius__border_radius(_topLeft - other._topLeft, _topRight - other._topRight, _bottomLeft - other._bottomLeft, _bottomRight - other._bottomRight, _topStart - other._topStart, _topEnd - other._topEnd, _bottomStart - other._bottomStart, _bottomEnd - other._bottomEnd);
@@ -262,13 +262,13 @@ public class BorderRadius : BorderRadiusGeometry
     internal override Radius _topEnd => Radius.zero;
     internal override Radius _bottomStart => Radius.zero;
     internal override Radius _bottomEnd => Radius.zero;
-    public virtual global::Doroti.Ui.RRect toRRect(Rect rect)
+    public virtual RRect toRRect(Rect rect)
     {
         return RRect.fromRectAndCorners(rect, topLeft: topLeft.clamp(minimum: Radius.zero), topRight: topRight.clamp(minimum: Radius.zero), bottomLeft: bottomLeft.clamp(minimum: Radius.zero), bottomRight: bottomRight.clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.RSuperellipse toRSuperellipse(Rect rect)
+    public virtual RSuperellipse toRSuperellipse(Rect rect)
     {
         return RSuperellipse.fromRectAndCorners(rect, topLeft: topLeft.clamp(minimum: Radius.zero), topRight: topRight.clamp(minimum: Radius.zero), bottomLeft: bottomLeft.clamp(minimum: Radius.zero), bottomRight: bottomRight.clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");

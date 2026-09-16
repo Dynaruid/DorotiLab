@@ -194,7 +194,7 @@ public class StarBorder : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Rect adjustedRect = rect.deflate(side.strokeInset);
+        Rect adjustedRect = rect.deflate(side.strokeInset);
         return new _StarGenerator__star_border(points: points, rotation: _rotationRadians, innerRadiusRatio: innerRadiusRatio, pointRounding: pointRounding, valleyRounding: valleyRounding, squash: squash).generate(adjustedRect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -215,8 +215,8 @@ public class StarBorder : OutlinedBorder
                 }
             case BorderStyle.solid:
                 {
-                    global::Doroti.Ui.Rect adjustedRect = rect.inflate(side.strokeOffset / 2L);
-                    global::Doroti.Ui.Path path = new _StarGenerator__star_border(points: points, rotation: _rotationRadians, innerRadiusRatio: innerRadiusRatio, pointRounding: pointRounding, valleyRounding: valleyRounding, squash: squash).generate(adjustedRect);
+                    Rect adjustedRect = rect.inflate(side.strokeOffset / 2L);
+                    Path path = new _StarGenerator__star_border(points: points, rotation: _rotationRadians, innerRadiusRatio: innerRadiusRatio, pointRounding: pointRounding, valleyRounding: valleyRounding, squash: squash).generate(adjustedRect);
                     canvas.drawPath(path, side.toPaint());
                     break;
                 }
@@ -293,24 +293,24 @@ internal class _StarGenerator__star_border
         System.Diagnostics.Debug.Assert((pointRounding + valleyRounding) <= 1L);
     }
 
-    public virtual global::Doroti.Ui.Path generate(Rect rect)
+    public virtual Path generate(Rect rect)
     {
         double radiusLocal = rect.shortestSide / 2L;
-        global::Doroti.Ui.Offset centerLocal = rect.center;
+        Offset centerLocal = rect.center;
         var minInnerRadiusRatio = 0.002;
         double mappedInnerRadiusRatio = innerRadiusRatio * (1.0 - minInnerRadiusRatio) + minInnerRadiusRatio;
         var points = new List<_PointInfo__star_border>();
         double maxDiameter = 2.0 * _generatePoints(pointList: points, center: centerLocal, radius: radiusLocal, innerRadius: radiusLocal * mappedInnerRadiusRatio);
-        var path = new global::Doroti.Ui.Path();
+        var path = new Path();
         _drawPoints(path, points);
-        var scale = new global::Doroti.Ui.Offset(rect.width / maxDiameter, rect.height / maxDiameter);
+        var scale = new Offset(rect.width / maxDiameter, rect.height / maxDiameter);
         if (rect.shortestSide == rect.width)
         {
-            scale = new global::Doroti.Ui.Offset(scale.dx, (squash * scale.dy) + ((1L - squash) * scale.dx));
+            scale = new Offset(scale.dx, (squash * scale.dy) + ((1L - squash) * scale.dx));
         }
         else
         {
-            scale = new global::Doroti.Ui.Offset((squash * scale.dx) + ((1L - squash) * scale.dy), scale.dy);
+            scale = new Offset((squash * scale.dx) + ((1L - squash) * scale.dy), scale.dy);
         }
         var squashMatrix = Matrix4.translationValues(rect.center.dx, rect.center.dy, 0);
         squashMatrix.multiply(Matrix4.diagonal3Values(scale.dx, scale.dy, 1));
@@ -324,7 +324,7 @@ internal class _StarGenerator__star_border
     {
         double step = Dart_mathLibrary.pi / points;
         double angle = (-Dart_mathLibrary.pi / 2L) - step;
-        var valleyLocal = new global::Doroti.Ui.Offset(center.dx + (Dart_mathLibrary.cos(angle) * innerRadius), center.dy + (Dart_mathLibrary.sin(angle) * innerRadius));
+        var valleyLocal = new Offset(center.dx + (Dart_mathLibrary.cos(angle) * innerRadius), center.dy + (Dart_mathLibrary.sin(angle) * innerRadius));
         Offset getCurveMidpoint(Offset a, Offset b, Offset c, Offset a1, Offset c1)
         {
             double angleLocal = _getAngle(a, b, c);
@@ -335,13 +335,13 @@ internal class _StarGenerator__star_border
         double addPoint(double pointAngle, double pointStep, double pointRadius, double pointInnerRadius)
         {
             pointAngle += pointStep;
-            var pointLocal = new global::Doroti.Ui.Offset(center.dx + (Dart_mathLibrary.cos(pointAngle) * pointRadius), center.dy + (Dart_mathLibrary.sin(pointAngle) * pointRadius));
+            var pointLocal = new Offset(center.dx + (Dart_mathLibrary.cos(pointAngle) * pointRadius), center.dy + (Dart_mathLibrary.sin(pointAngle) * pointRadius));
             pointAngle += pointStep;
-            var nextValley = new global::Doroti.Ui.Offset(center.dx + (Dart_mathLibrary.cos(pointAngle) * pointInnerRadius), center.dy + (Dart_mathLibrary.sin(pointAngle) * pointInnerRadius));
-            global::Doroti.Ui.Offset valleyArc1Local = valleyLocal + ((pointLocal - valleyLocal) * valleyRounding);
-            global::Doroti.Ui.Offset pointArc1Local = pointLocal + ((valleyLocal - pointLocal) * pointRounding);
-            global::Doroti.Ui.Offset pointArc2Local = pointLocal + ((nextValley - pointLocal) * pointRounding);
-            global::Doroti.Ui.Offset valleyArc2Local = nextValley + ((pointLocal - nextValley) * valleyRounding);
+            var nextValley = new Offset(center.dx + (Dart_mathLibrary.cos(pointAngle) * pointInnerRadius), center.dy + (Dart_mathLibrary.sin(pointAngle) * pointInnerRadius));
+            Offset valleyArc1Local = valleyLocal + ((pointLocal - valleyLocal) * valleyRounding);
+            Offset pointArc1Local = pointLocal + ((valleyLocal - pointLocal) * pointRounding);
+            Offset pointArc2Local = pointLocal + ((nextValley - pointLocal) * pointRounding);
+            Offset valleyArc2Local = nextValley + ((pointLocal - nextValley) * valleyRounding);
             pointList.Add(new _PointInfo__star_border(valley: valleyLocal, point: pointLocal, valleyArc1: valleyArc1Local, pointArc1: pointArc1Local, pointArc2: pointArc2Local, valleyArc2: valleyArc2Local));
             valleyLocal = nextValley;
             return pointAngle;
@@ -358,8 +358,8 @@ internal class _StarGenerator__star_border
         double pointRadiusLocal = 0;
         _PointInfo__star_border thisPoint = pointList[(int)0L];
         _PointInfo__star_border nextPoint = pointList[(int)1L];
-        global::Doroti.Ui.Offset pointMidpoint = getCurveMidpoint(thisPoint.valley, thisPoint.point, nextPoint.valley, thisPoint.pointArc1, thisPoint.pointArc2);
-        global::Doroti.Ui.Offset valleyMidpoint = getCurveMidpoint(thisPoint.point, nextPoint.valley, nextPoint.point, thisPoint.valleyArc2, nextPoint.valleyArc1);
+        Offset pointMidpoint = getCurveMidpoint(thisPoint.valley, thisPoint.point, nextPoint.valley, thisPoint.pointArc1, thisPoint.pointArc2);
+        Offset valleyMidpoint = getCurveMidpoint(thisPoint.point, nextPoint.valley, nextPoint.point, thisPoint.valleyArc2, nextPoint.valleyArc1);
         valleyRadius = (valleyMidpoint - center).distance;
         pointRadiusLocal = (pointMidpoint - center).distance;
         if (!hasIntegerSides)
@@ -374,7 +374,7 @@ internal class _StarGenerator__star_border
 
     internal virtual void _drawPoints(Path path, List<_PointInfo__star_border> points)
     {
-        global::Doroti.Ui.Offset startingPoint = points.First().pointArc1;
+        Offset startingPoint = points.First().pointArc1;
         path.moveTo(startingPoint.dx, startingPoint.dy);
         double pointAngle = _getAngle(points[(int)0L].valley, points[(int)0L].point, points[(int)1L].valley);
         double pointWeight = _getWeight(pointAngle);
@@ -418,8 +418,8 @@ internal class _StarGenerator__star_border
         {
             return 0;
         }
-        global::Doroti.Ui.Offset u = a - b;
-        global::Doroti.Ui.Offset v = c - b;
+        Offset u = a - b;
+        Offset v = c - b;
         double dot = (u.dx * v.dx) + (u.dy * v.dy);
         double m1 = (b.dx == a.dx) ? double.PositiveInfinity : (-u.dy / -u.dx);
         double m2 = (b.dx == c.dx) ? double.PositiveInfinity : (-v.dy / -v.dx);

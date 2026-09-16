@@ -12,36 +12,36 @@ internal enum _ChipVariant__action_chip
     elevated
 }
 
-public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, ChipAttributes, TappableChipAttributes, DisabledChipAttributes
+public class ActionChip : StatelessWidget, ChipAttributes, TappableChipAttributes, DisabledChipAttributes
 {
-    public virtual global::Doroti.Framework.Widgets.Widget? avatar { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget label { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.TextStyle? labelStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding { get; private set; }
-    public virtual global::System.Action? onPressed { get; private set; }
+    public virtual Widget? avatar { get; private set; }
+    public virtual Widget label { get; private set; } = default!;
+    public virtual TextStyle? labelStyle { get; private set; }
+    public virtual EdgeInsetsGeometry? labelPadding { get; private set; }
+    public virtual Action? onPressed { get; private set; }
     public virtual double? pressElevation { get; private set; }
     public virtual string? tooltip { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderSide? side { get; private set; }
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder? shape { get; private set; }
+    public virtual BorderSide? side { get; private set; }
+    public virtual OutlinedBorder? shape { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
+    public virtual FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color { get; private set; }
+    public virtual WidgetStateProperty<Color?>? color { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? disabledColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
     public virtual VisualDensity? visualDensity { get; private set; }
     public virtual MaterialTapTargetSize? materialTapTargetSize { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.IconThemeData? iconTheme { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints { get; private set; }
+    public virtual IconThemeData? iconTheme { get; private set; }
+    public virtual BoxConstraints? avatarBoxConstraints { get; private set; }
     public virtual ChipAnimationStyle? chipAnimationStyle { get; private set; }
-    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual MouseCursor? mouseCursor { get; private set; }
     internal virtual _ChipVariant__action_chip _chipVariant { get; private set; } = default!;
 
-    public ActionChip(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? avatar = null, global::Doroti.Framework.Widgets.Widget label = default!, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::System.Action? onPressed = null, double? pressElevation = null, string? tooltip = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, Color? disabledColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
+    public ActionChip(Key? key = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Action? onPressed = null, double? pressElevation = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, Color? disabledColor = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null) : base(key: key)
     {
         this.avatar = avatar;
         this.label = label;
@@ -73,7 +73,7 @@ public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
         System.Diagnostics.Debug.Assert((elevation is null) || (elevation >= 0.0));
     }
 
-    public static ActionChip CreateElevated(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? avatar = null, global::Doroti.Framework.Widgets.Widget label = default!, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::System.Action? onPressed = null, double? pressElevation = null, string? tooltip = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, Color? disabledColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null)
+    public static ActionChip CreateElevated(Key? key = null, Widget? avatar = null, Widget label = default!, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Action? onPressed = null, double? pressElevation = null, string? tooltip = null, BorderSide? side = null, OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, FocusNode? focusNode = null, bool autofocus = false, WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, Color? disabledColor = null, EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, IconThemeData? iconTheme = null, BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, MouseCursor? mouseCursor = null)
     {
         var __instance = new ActionChip(key: key, avatar: avatar, label: label, labelStyle: labelStyle, labelPadding: labelPadding, onPressed: onPressed, pressElevation: pressElevation, tooltip: tooltip, side: side, shape: shape, clipBehavior: clipBehavior, focusNode: focusNode, autofocus: autofocus, color: color, backgroundColor: backgroundColor, disabledColor: disabledColor, padding: padding, visualDensity: visualDensity, materialTapTargetSize: materialTapTargetSize, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, iconTheme: iconTheme, avatarBoxConstraints: avatarBoxConstraints, chipAnimationStyle: chipAnimationStyle, mouseCursor: mouseCursor);
         __instance.avatar = avatar;
@@ -106,7 +106,7 @@ public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
     }
 
     public virtual bool isEnabled => DartRuntimePrimitives.ConvertValue<bool>(onPressed is not null);
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         ChipThemeData? defaults = (ChipThemeData?)new _ActionChipDefaultsM3__action_chip(context, isEnabled, _chipVariant);
@@ -117,7 +117,7 @@ public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
 
 internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
     public virtual bool isEnabled { get; private set; } = default!;
     internal virtual _ChipVariant__action_chip _chipVariant { get; private set; } = default!;
     private bool __late__colors_initialized;
@@ -149,7 +149,7 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
         }
     }
 
-    internal _ActionChipDefaultsM3__action_chip(global::Doroti.Framework.Widgets.BuildContext context, bool isEnabled, _ChipVariant__action_chip _chipVariant) : base(shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(8.0))), showCheckmark: true)
+    internal _ActionChipDefaultsM3__action_chip(BuildContext context, bool isEnabled, _ChipVariant__action_chip _chipVariant) : base(shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(8.0))), showCheckmark: true)
     {
         this.context = context;
         this.isEnabled = isEnabled;
@@ -158,8 +158,8 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
 
     public override double? elevation => Equals(_chipVariant, _ChipVariant__action_chip.flat) ? 0.0 : (isEnabled ? 1.0 : 0.0);
     public override double? pressElevation => 1.0;
-    public override global::Doroti.Framework.Painting.TextStyle? labelStyle => _textTheme.labelLarge?.copyWith(color: isEnabled ? _colors.onSurface : _colors.onSurface);
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override TextStyle? labelStyle => _textTheme.labelLarge?.copyWith(color: isEnabled ? _colors.onSurface : _colors.onSurface);
+    public override WidgetStateProperty<Color?>? color => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(WidgetState.disabled))
         {
@@ -168,14 +168,14 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
         return Equals(_chipVariant, _ChipVariant__action_chip.flat) ? null : _colors.surfaceContainerLow;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Equals(_chipVariant, _ChipVariant__action_chip.flat) ? Colors.transparent : _colors.shadow);
-    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Ui.Color? checkmarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(null);
-    public override global::Doroti.Ui.Color? deleteIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(null);
-    public override global::Doroti.Framework.Painting.BorderSide? side => Equals(_chipVariant, _ChipVariant__action_chip.flat) ? (isEnabled ? new global::Doroti.Framework.Painting.BorderSide(color: _colors.outlineVariant) : new global::Doroti.Framework.Painting.BorderSide(color: _colors.onSurface.withOpacity(0.12))) : new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent);
-    public override global::Doroti.Framework.Widgets.IconThemeData? iconTheme => new global::Doroti.Framework.Widgets.IconThemeData(color: isEnabled ? _colors.primary : _colors.onSurface, size: 18.0);
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0));
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding
+    public override Color? shadowColor => DartRuntimePrimitives.ConvertValue<Color>(Equals(_chipVariant, _ChipVariant__action_chip.flat) ? Colors.transparent : _colors.shadow);
+    public override Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<Color>(Colors.transparent);
+    public override Color? checkmarkColor => DartRuntimePrimitives.ConvertValue<Color>(null);
+    public override Color? deleteIconColor => DartRuntimePrimitives.ConvertValue<Color>(null);
+    public override BorderSide? side => Equals(_chipVariant, _ChipVariant__action_chip.flat) ? (isEnabled ? new BorderSide(color: _colors.outlineVariant) : new BorderSide(color: _colors.onSurface.withOpacity(0.12))) : new BorderSide(color: Colors.transparent);
+    public override IconThemeData? iconTheme => new IconThemeData(color: isEnabled ? _colors.primary : _colors.onSurface, size: 18.0);
+    public override EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(EdgeInsets.CreateAll(8.0));
+    public override EdgeInsetsGeometry? labelPadding
     {
         get
         {

@@ -136,7 +136,7 @@ public static partial class BindingLibrary
     internal static Duration _samplingInterval = Duration.Create(microseconds: 16667L);
 }
 
-public abstract class GestureBinding : global::Doroti.Framework.Services.ServicesBinding, HitTestable, HitTestDispatcher, HitTestTarget
+public abstract class GestureBinding : Services.ServicesBinding, HitTestable, HitTestDispatcher, HitTestTarget
 {
     internal static GestureBinding? _instance = default;
     internal virtual Queue<PointerEvent> _pendingPointerEvents { get; private set; } = new Queue<PointerEvent>();
@@ -198,17 +198,17 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
         }
         catch (Exception error)
         {
-            var stackLocal = new System.Diagnostics.StackTrace();
+            var stackLocal = new StackTrace();
             FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stackLocal, library: "gestures library", context: new ErrorDescription("while handling a pointer data packet")));
         }
     }
 
-    internal virtual global::Doroti.Ui.HitTestResponse _handleHitTest(HitTestRequest request)
+    internal virtual HitTestResponse _handleHitTest(HitTestRequest request)
     {
         var result = new HitTestResult();
         hitTestInView(result, request.offset, checked((long)request.view.viewId));
         bool hasPlatformViewLocal = result.path.any((entry) => entry.target is NativeHitTestTarget);
-        return new global::Doroti.Ui.HitTestResponse(hasPlatformView: hasPlatformViewLocal);
+        return new HitTestResponse(hasPlatformView: hasPlatformViewLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -321,7 +321,7 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
             }
             catch (Exception exceptionLocal)
             {
-                var stackLocal = new System.Diagnostics.StackTrace();
+                var stackLocal = new StackTrace();
                 FlutterError.reportError(new FlutterErrorDetailsForPointerEventDispatcher(exception: exceptionLocal, stack: stackLocal, library: "gesture library", context: new ErrorDescription("while dispatching a non-hit-tested pointer event"), @event: @event, informationCollector: () => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) }));
             }
             return;
@@ -334,7 +334,7 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
             }
             catch (Exception exceptionAlternate)
             {
-                var stackAlternate = new System.Diagnostics.StackTrace();
+                var stackAlternate = new StackTrace();
                 FlutterError.reportError(new FlutterErrorDetailsForPointerEventDispatcher(exception: exceptionAlternate, stack: stackAlternate, library: "gesture library", context: new ErrorDescription("while dispatching a pointer event"), @event: @event, hitTestEntry: entry, informationCollector: () => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<HitTestTarget>("Target", entry.target, style: DiagnosticsTreeStyle.errorProperty) }));
             }
         }
@@ -409,7 +409,7 @@ public class FlutterErrorDetailsForPointerEventDispatcher : FlutterErrorDetails
     public virtual PointerEvent? @event { get; private set; }
     public virtual HitTestEntry<HitTestTarget>? hitTestEntry { get; private set; }
 
-    public FlutterErrorDetailsForPointerEventDispatcher(object exception, global::System.Diagnostics.StackTrace? stack = null, string? library = "Flutter framework", DiagnosticsNode? context = null, PointerEvent? @event = null, HitTestEntry<HitTestTarget>? hitTestEntry = null, InformationCollector? informationCollector = null, bool silent = false) : base(exception: exception, stack: stack, library: library, context: context, informationCollector: informationCollector, silent: silent)
+    public FlutterErrorDetailsForPointerEventDispatcher(object exception, StackTrace? stack = null, string? library = "Flutter framework", DiagnosticsNode? context = null, PointerEvent? @event = null, HitTestEntry<HitTestTarget>? hitTestEntry = null, InformationCollector? informationCollector = null, bool silent = false) : base(exception: exception, stack: stack, library: library, context: context, informationCollector: informationCollector, silent: silent)
     {
         this.@event = @event;
         this.hitTestEntry = hitTestEntry;

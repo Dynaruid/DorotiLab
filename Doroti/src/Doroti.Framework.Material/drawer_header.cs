@@ -10,21 +10,21 @@ public static partial class Drawer_headerLibrary
     internal static double _kDrawerHeaderHeight = 160.0 + 1.0;
 }
 
-public class DrawerHeader : global::Doroti.Framework.Widgets.StatelessWidget
+public class DrawerHeader : StatelessWidget
 {
-    public virtual global::Doroti.Framework.Painting.Decoration? decoration { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
+    public virtual Decoration? decoration { get; private set; }
+    public virtual EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual EdgeInsetsGeometry? margin { get; private set; }
     public virtual Duration duration { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Curve curve { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
+    public virtual Curve curve { get; private set; } = default!;
+    public virtual Widget? child { get; private set; }
 
-    public DrawerHeader(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, Duration? duration = null, global::Doroti.Framework.Animation.Curve curve = default!, global::Doroti.Framework.Widgets.Widget? child = default!) : base(key: key)
+    public DrawerHeader(Key? key = null, Decoration? decoration = null, EdgeInsetsGeometry? margin = default!, EdgeInsetsGeometry padding = default!, Duration? duration = null, Curve curve = default!, Widget? child = default!) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? __margin = margin ?? EdgeInsets.CreateOnly(bottom: 8.0);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? new global::Doroti.Framework.Painting.EdgeInsets(16.0, 16.0, 16.0, 8.0);
+        EdgeInsetsGeometry? __margin = margin ?? EdgeInsets.CreateOnly(bottom: 8.0);
+        EdgeInsetsGeometry __padding = padding ?? new EdgeInsets(16.0, 16.0, 16.0, 8.0);
         Duration __duration = duration ?? Duration.Create(milliseconds: 250);
-        global::Doroti.Framework.Animation.Curve __curve = curve ?? Curves.fastOutSlowIn;
+        Curve __curve = curve ?? Curves.fastOutSlowIn;
         this.decoration = decoration;
         this.margin = __margin;
         this.padding = __padding;
@@ -33,13 +33,13 @@ public class DrawerHeader : global::Doroti.Framework.Widgets.StatelessWidget
         this.child = child;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         ThemeData theme = Theme.of(context);
         double statusBarHeight = MediaQuery.paddingOf(context).top;
-        return new global::Doroti.Framework.Widgets.Container(height: statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight, margin: margin, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context))), child: new global::Doroti.Framework.Widgets.AnimatedContainer(padding: padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: decoration, duration: DartRuntimePrimitives.RequireValue(duration), curve: curve, child: (child is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: child!))));
+        return new Container(height: statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight, margin: margin, decoration: new BoxDecoration(border: new Border(bottom: Divider.createBorderSide(context))), child: new AnimatedContainer(padding: padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: decoration, duration: DartRuntimePrimitives.RequireValue(duration), curve: curve, child: (child is null) ? null : new DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: child!))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

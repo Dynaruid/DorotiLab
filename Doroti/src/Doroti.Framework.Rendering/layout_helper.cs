@@ -11,13 +11,13 @@ public delegate double? ChildBaselineGetter(RenderBox child, BoxConstraints cons
 
 public abstract class ChildLayoutHelper
 {
-    public static global::Doroti.Ui.Size dryLayoutChild(RenderBox child, BoxConstraints constraints)
+    public static Size dryLayoutChild(RenderBox child, BoxConstraints constraints)
     {
         return child.getDryLayout(constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Size layoutChild(RenderBox child, BoxConstraints constraints)
+    public static Size layoutChild(RenderBox child, BoxConstraints constraints)
     {
         child.layout(constraints, parentUsesSize: true);
         return child.size;

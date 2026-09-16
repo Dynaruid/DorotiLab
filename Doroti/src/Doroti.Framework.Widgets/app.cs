@@ -17,11 +17,11 @@ public static partial class AppLibrary
         {
             return supportedLocales.First();
         }
-        DartMap<string, global::Doroti.Ui.Locale> allSupportedLocales = new DartMap<string, global::Doroti.Ui.Locale>().cast<string, global::Doroti.Ui.Locale>();
-        DartMap<string, global::Doroti.Ui.Locale> languageAndCountryLocales = new DartMap<string, global::Doroti.Ui.Locale>().cast<string, global::Doroti.Ui.Locale>();
-        DartMap<string, global::Doroti.Ui.Locale> languageAndScriptLocales = new DartMap<string, global::Doroti.Ui.Locale>().cast<string, global::Doroti.Ui.Locale>();
-        DartMap<string, global::Doroti.Ui.Locale> languageLocales = new DartMap<string, global::Doroti.Ui.Locale>().cast<string, global::Doroti.Ui.Locale>();
-        DartMap<string?, global::Doroti.Ui.Locale> countryLocales = new DartMap<string?, global::Doroti.Ui.Locale>().cast<string?, global::Doroti.Ui.Locale>();
+        DartMap<string, Locale> allSupportedLocales = new DartMap<string, Locale>().cast<string, Locale>();
+        DartMap<string, Locale> languageAndCountryLocales = new DartMap<string, Locale>().cast<string, Locale>();
+        DartMap<string, Locale> languageAndScriptLocales = new DartMap<string, Locale>().cast<string, Locale>();
+        DartMap<string, Locale> languageLocales = new DartMap<string, Locale>().cast<string, Locale>();
+        DartMap<string?, Locale> countryLocales = new DartMap<string?, Locale>().cast<string?, Locale>();
         foreach (var locale in supportedLocales)
         {
             allSupportedLocales.putIfAbsent($"{locale.languageCode}_{locale.scriptCode}_{locale.countryCode}", () => locale);
@@ -30,18 +30,18 @@ public static partial class AppLibrary
             languageLocales.putIfAbsent(locale.languageCode, () => locale);
             countryLocales.putIfAbsent(locale.countryCode, () => locale);
         }
-        global::Doroti.Ui.Locale? matchesLanguageCode = default!;
-        global::Doroti.Ui.Locale? matchesCountryCode = default!;
+        Locale? matchesLanguageCode = default!;
+        Locale? matchesCountryCode = default!;
         for (var localeIndex = 0L; localeIndex < checked(preferredLocales.Count); localeIndex += 1L)
         {
-            global::Doroti.Ui.Locale userLocale = preferredLocales[(int)localeIndex];
+            Locale userLocale = preferredLocales[(int)localeIndex];
             if (allSupportedLocales.ContainsKey($"{userLocale.languageCode}_{userLocale.scriptCode}_{userLocale.countryCode}"))
             {
                 return userLocale;
             }
             if (userLocale.scriptCode is not null)
             {
-                global::Doroti.Ui.Locale? match = DartCollectionRuntime.NullableMapValue<Locale>(languageAndScriptLocales, $"{userLocale.languageCode}_{userLocale.scriptCode}");
+                Locale? match = DartCollectionRuntime.NullableMapValue<Locale>(languageAndScriptLocales, $"{userLocale.languageCode}_{userLocale.scriptCode}");
                 if (match is not null)
                 {
                     Locale match__8388__value8497 = DartRuntimePrimitives.RequireValue(match);
@@ -50,7 +50,7 @@ public static partial class AppLibrary
             }
             if (userLocale.countryCode is not null)
             {
-                global::Doroti.Ui.Locale? matchLocal = DartCollectionRuntime.NullableMapValue<Locale>(languageAndCountryLocales, $"{userLocale.languageCode}_{userLocale.countryCode}");
+                Locale? matchLocal = DartCollectionRuntime.NullableMapValue<Locale>(languageAndCountryLocales, $"{userLocale.languageCode}_{userLocale.countryCode}");
                 if (matchLocal is not null)
                 {
                     Locale match__8652__value8763 = DartRuntimePrimitives.RequireValue(matchLocal);
@@ -62,7 +62,7 @@ public static partial class AppLibrary
                 Locale matchesLanguageCode__7850__value9013 = DartRuntimePrimitives.RequireValue(matchesLanguageCode);
                 return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(matchesLanguageCode__7850__value9013));
             }
-            global::Doroti.Ui.Locale? matchAlternate = DartCollectionRuntime.NullableMapValue<Locale>(languageLocales, userLocale.languageCode);
+            Locale? matchAlternate = DartCollectionRuntime.NullableMapValue<Locale>(languageLocales, userLocale.languageCode);
             if (matchAlternate is not null)
             {
                 Locale match__9139__value9197 = DartRuntimePrimitives.RequireValue(matchAlternate);
@@ -82,7 +82,7 @@ public static partial class AppLibrary
                 }
             }
         }
-        global::Doroti.Ui.Locale resolvedLocale = (matchesLanguageCode ?? matchesCountryCode) ?? supportedLocales.First();
+        Locale resolvedLocale = (matchesLanguageCode ?? matchesCountryCode) ?? supportedLocales.First();
         return resolvedLocale;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -90,36 +90,36 @@ public static partial class AppLibrary
 
 public delegate string GenerateAppTitle(BuildContext context);
 
-public delegate Route<object> PageRouteFactory(RouteSettings settings, global::System.Func<BuildContext, Widget> builder);
+public delegate Route<object> PageRouteFactory(RouteSettings settings, Func<BuildContext, Widget> builder);
 
 public delegate List<dynamic> InitialRouteListFactory(string initialRoute);
 
 public class WidgetsApp : StatefulWidget
 {
     public virtual GlobalKey<NavigatorState>? navigatorKey { get; private set; }
-    public virtual global::System.Func<RouteSettings, dynamic?>? onGenerateRoute { get; private set; }
-    public virtual global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes { get; private set; }
+    public virtual Func<RouteSettings, dynamic?>? onGenerateRoute { get; private set; }
+    public virtual Func<string, List<dynamic>>? onGenerateInitialRoutes { get; private set; }
     public virtual PageRouteFactory? pageRouteBuilder { get; private set; }
     public virtual object? routeInformationParser { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.IRouterDelegate? routerDelegate { get; private set; } = default!;
+    public virtual IRouterDelegate? routerDelegate { get; private set; } = default!;
     public virtual BackButtonDispatcher? backButtonDispatcher { get; private set; }
     public virtual RouteInformationProvider? routeInformationProvider { get; private set; }
     public virtual IRouterConfig? routerConfig { get; private set; }
     public virtual Widget? home { get; private set; }
-    public virtual DartMap<string, global::System.Func<BuildContext, Widget>>? routes { get; private set; }
-    public virtual global::System.Func<RouteSettings, dynamic?>? onUnknownRoute { get; private set; }
-    public virtual global::System.Func<NavigationNotification, bool>? onNavigationNotification { get; private set; }
+    public virtual DartMap<string, Func<BuildContext, Widget>>? routes { get; private set; }
+    public virtual Func<RouteSettings, dynamic?>? onUnknownRoute { get; private set; }
+    public virtual Func<NavigationNotification, bool>? onNavigationNotification { get; private set; }
     public virtual string? initialRoute { get; private set; }
     public virtual List<NavigatorObserver>? navigatorObservers { get; private set; }
-    public virtual global::System.Func<BuildContext, Widget?, Widget>? builder { get; private set; }
+    public virtual Func<BuildContext, Widget?, Widget>? builder { get; private set; }
     public virtual string? title { get; private set; }
-    public virtual global::System.Func<BuildContext, string>? onGenerateTitle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? textStyle { get; private set; }
+    public virtual Func<BuildContext, string>? onGenerateTitle { get; private set; }
+    public virtual TextStyle? textStyle { get; private set; }
     public virtual Color color { get; private set; } = default!;
     public virtual Locale? locale { get; private set; }
     public virtual IEnumerable<dynamic>? localizationsDelegates { get; private set; }
-    public virtual global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback { get; private set; }
-    public virtual global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback { get; private set; }
+    public virtual Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback { get; private set; }
+    public virtual Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback { get; private set; }
     public virtual IEnumerable<Locale> supportedLocales { get; private set; } = default!;
     public virtual bool showPerformanceOverlay { get; private set; } = default!;
     public virtual bool showSemanticsDebugger { get; private set; } = default!;
@@ -148,10 +148,10 @@ public class WidgetsApp : StatefulWidget
     }
 
 
-    public WidgetsApp(global::Doroti.Framework.Foundation.Key? key = null, GlobalKey<NavigatorState>? navigatorKey = null, global::System.Func<RouteSettings, dynamic?>? onGenerateRoute = null, global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes = null, global::System.Func<RouteSettings, dynamic?>? onUnknownRoute = null, global::System.Func<NavigationNotification, bool>? onNavigationNotification = null, List<NavigatorObserver> navigatorObservers = default!, string? initialRoute = null, PageRouteFactory? pageRouteBuilder = null, Widget? home = null, DartMap<string, global::System.Func<BuildContext, Widget>> routes = default!, global::System.Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, global::System.Func<BuildContext, string>? onGenerateTitle = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false) : base(key: key)
+    public WidgetsApp(Key? key = null, GlobalKey<NavigatorState>? navigatorKey = null, Func<RouteSettings, dynamic?>? onGenerateRoute = null, Func<string, List<dynamic>>? onGenerateInitialRoutes = null, Func<RouteSettings, dynamic?>? onUnknownRoute = null, Func<NavigationNotification, bool>? onNavigationNotification = null, List<NavigatorObserver> navigatorObservers = default!, string? initialRoute = null, PageRouteFactory? pageRouteBuilder = null, Widget? home = null, DartMap<string, Func<BuildContext, Widget>> routes = default!, Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, Func<BuildContext, string>? onGenerateTitle = null, TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false) : base(key: key)
     {
         List<NavigatorObserver> __navigatorObservers = navigatorObservers ?? new List<NavigatorObserver>();
-        DartMap<string, global::System.Func<BuildContext, Widget>> __routes = routes ?? new DartMap<string, global::System.Func<BuildContext, Widget>>();
+        DartMap<string, Func<BuildContext, Widget>> __routes = routes ?? new DartMap<string, Func<BuildContext, Widget>>();
         IEnumerable<Locale> __supportedLocales = supportedLocales ?? new List<Locale> { new Locale("en", "US") };
         this.navigatorKey = navigatorKey;
         this.onGenerateRoute = onGenerateRoute;
@@ -197,7 +197,7 @@ public class WidgetsApp : StatefulWidget
         System.Diagnostics.Debug.Assert(Enumerable.Any(__supportedLocales));
     }
 
-    public static WidgetsApp CreateRouter(global::Doroti.Framework.Foundation.Key? key = null, RouteInformationProvider? routeInformationProvider = null, object? routeInformationParser = null, global::Doroti.Framework.Widgets.IRouterDelegate? routerDelegate = null, IRouterConfig? routerConfig = null, BackButtonDispatcher? backButtonDispatcher = null, global::System.Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, global::System.Func<BuildContext, string>? onGenerateTitle = null, global::System.Func<NavigationNotification, bool>? onNavigationNotification = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false)
+    public static WidgetsApp CreateRouter(Key? key = null, RouteInformationProvider? routeInformationProvider = null, object? routeInformationParser = null, IRouterDelegate? routerDelegate = null, IRouterConfig? routerConfig = null, BackButtonDispatcher? backButtonDispatcher = null, Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, Func<BuildContext, string>? onGenerateTitle = null, Func<NavigationNotification, bool>? onNavigationNotification = null, TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false)
     {
         var __instance = new WidgetsApp(key, default!, default!, default!, default!, onNavigationNotification, default!, default!, default!, default!, default!, builder, title, onGenerateTitle, textStyle, color, locale, localizationsDelegates, localeListResolutionCallback, localeResolutionCallback, supportedLocales, showPerformanceOverlay, showSemanticsDebugger, debugShowWidgetInspector, debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder, shortcuts, actions, restorationScopeId, useInheritedMediaQuery);
         IEnumerable<Locale> __supportedLocales = supportedLocales ?? new List<Locale> { new Locale("en", "US") };
@@ -419,7 +419,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
     internal virtual dynamic? _onGenerateRoute(RouteSettings settings)
     {
         string? nameLocal = settings.name;
-        global::System.Func<BuildContext, Widget>? pageContentBuilder = ((nameLocal == Navigator.defaultRouteName) && (widget.home is not null)) ? ((context) => widget.home!) : widget.routes!.GetValueOrDefault(DartRuntimePrimitives.RequireReference(nameLocal));
+        Func<BuildContext, Widget>? pageContentBuilder = ((nameLocal == Navigator.defaultRouteName) && (widget.home is not null)) ? ((context) => widget.home!) : widget.routes!.GetValueOrDefault(DartRuntimePrimitives.RequireReference(nameLocal));
         if (pageContentBuilder is not null)
         {
             DartRuntimePrimitives.Assert(() => widget.pageRouteBuilder is not null, () => (object?)"The default onGenerateRoute handler for WidgetsApp must have a " + "pageRouteBuilder set if the home or routes properties are set.");

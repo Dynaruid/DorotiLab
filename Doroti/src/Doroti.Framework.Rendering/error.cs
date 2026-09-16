@@ -19,11 +19,11 @@ public class RenderErrorBox : RenderBox
 {
     public virtual string message { get; private set; } = default!;
     internal virtual Paragraph? _paragraph { get; private set; }
-    public static global::Doroti.Framework.Painting.EdgeInsets padding = new global::Doroti.Framework.Painting.EdgeInsets(64.0, 96.0, 64.0, 12.0);
+    public static EdgeInsets padding = new EdgeInsets(64.0, 96.0, 64.0, 12.0);
     public static double minimumWidth = 200.0;
-    public static global::Doroti.Ui.Color backgroundColor = _initBackgroundColor();
-    public static global::Doroti.Ui.TextStyle textStyle = _initTextStyle();
-    public static ParagraphStyle paragraphStyle = new global::Doroti.Ui.ParagraphStyle(textDirection: TextDirection.ltr, textAlign: TextAlign.left);
+    public static Color backgroundColor = _initBackgroundColor();
+    public static Ui.TextStyle textStyle = _initTextStyle();
+    public static ParagraphStyle paragraphStyle = new ParagraphStyle(textDirection: TextDirection.ltr, textAlign: TextAlign.left);
 
     public RenderErrorBox(string message = "")
     {
@@ -46,28 +46,28 @@ public class RenderErrorBox : RenderBox
     public override bool hitTestSelf(Offset position) => true;
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        return constraints.constrain(new global::Doroti.Ui.Size(ErrorLibrary._kMaxWidth, ErrorLibrary._kMaxHeight));
+        return constraints.constrain(new Size(ErrorLibrary._kMaxWidth, ErrorLibrary._kMaxHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Color _initBackgroundColor()
+    internal static Color _initBackgroundColor()
     {
-        var result = new global::Doroti.Ui.Color(4039164096L);
+        var result = new Color(4039164096L);
         DartRuntimePrimitives.Assert(() =>
             {
-                result = new global::Doroti.Ui.Color(4035969024L);
+                result = new Color(4035969024L);
                 return true;
             });
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.TextStyle _initTextStyle()
+    internal static Ui.TextStyle _initTextStyle()
     {
-        var result = new global::Doroti.Ui.TextStyle(color: new global::Doroti.Ui.Color(4281348144L), fontFamily: "sans-serif", fontSize: 18.0);
+        var result = new Ui.TextStyle(color: new Color(4281348144L), fontFamily: "sans-serif", fontSize: 18.0);
         DartRuntimePrimitives.Assert(() =>
             {
-                result = new global::Doroti.Ui.TextStyle(color: new global::Doroti.Ui.Color(4294967142L), fontFamily: "monospace", fontSize: 14.0, fontWeight: FontWeight.bold);
+                result = new Ui.TextStyle(color: new Color(4294967142L), fontFamily: "monospace", fontSize: 14.0, fontWeight: FontWeight.bold);
                 return true;
             });
         return result;
@@ -80,7 +80,7 @@ public class RenderErrorBox : RenderBox
         {
             context.canvas.drawRect(offset & size, ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = backgroundColor;
     return __cascade;
 }))());
@@ -94,12 +94,12 @@ public class RenderErrorBox : RenderBox
                     widthLocal -= padding.left + padding.right;
                     leftLocal += padding.left;
                 }
-                _paragraph.layout(new global::Doroti.Ui.ParagraphConstraints(width: widthLocal));
+                _paragraph.layout(new ParagraphConstraints(width: widthLocal));
                 if (size.height > (padding.top + _paragraph.height + padding.bottom))
                 {
                     topLocal += padding.top;
                 }
-                context.canvas.drawParagraph(_paragraph, offset + new global::Doroti.Ui.Offset(leftLocal, topLocal));
+                context.canvas.drawParagraph(_paragraph, offset + new Offset(leftLocal, topLocal));
             }
         }
         catch (Exception)

@@ -5,11 +5,11 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public delegate global::Doroti.Framework.Animation.Tween<Rect?> CreateRectTween(Rect? begin, Rect? end);
+public delegate Tween<Rect?> CreateRectTween(Rect? begin, Rect? end);
 
 public delegate Widget HeroPlaceholderBuilder(BuildContext context, Size heroSize, Widget child);
 
-public delegate Widget HeroFlightShuttleBuilder(BuildContext flightContext, global::Doroti.Framework.Animation.Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext);
+public delegate Widget HeroFlightShuttleBuilder(BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext);
 
 internal delegate void _OnFlightEnded__heroes(_HeroFlight__heroes flight);
 
@@ -22,17 +22,17 @@ public enum HeroFlightDirection
 public class Hero : StatefulWidget
 {
     public virtual object tag { get; private set; } = default!;
-    public virtual global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween { get; private set; }
+    public virtual Func<Rect?, Rect?, Tween<Rect?>>? createRectTween { get; private set; }
     public virtual Widget child { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget>? flightShuttleBuilder { get; private set; }
-    public virtual global::System.Func<BuildContext, Size, Widget, Widget>? placeholderBuilder { get; private set; }
+    public virtual Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget>? flightShuttleBuilder { get; private set; }
+    public virtual Func<BuildContext, Size, Widget, Widget>? placeholderBuilder { get; private set; }
     public virtual bool transitionOnUserGestures { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Curve curve { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Curve? reverseCurve { get; private set; }
+    public virtual Curve curve { get; private set; } = default!;
+    public virtual Curve? reverseCurve { get; private set; }
 
-    public Hero(global::Doroti.Framework.Foundation.Key? key = null, object tag = default!, global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween = null, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget>? flightShuttleBuilder = null, global::System.Func<BuildContext, Size, Widget, Widget>? placeholderBuilder = null, bool transitionOnUserGestures = false, global::Doroti.Framework.Animation.Curve curve = default!, global::Doroti.Framework.Animation.Curve? reverseCurve = null, Widget child = default!) : base(key: key)
+    public Hero(Key? key = null, object tag = default!, Func<Rect?, Rect?, Tween<Rect?>>? createRectTween = null, Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget>? flightShuttleBuilder = null, Func<BuildContext, Size, Widget, Widget>? placeholderBuilder = null, bool transitionOnUserGestures = false, Curve curve = default!, Curve? reverseCurve = null, Widget child = default!) : base(key: key)
     {
-        global::Doroti.Framework.Animation.Curve __curve = curve ?? Curves.fastOutSlowIn;
+        Curve __curve = curve ?? Curves.fastOutSlowIn;
         this.tag = tag;
         this.createRectTween = createRectTween;
         this.flightShuttleBuilder = flightShuttleBuilder;
@@ -52,7 +52,7 @@ public class Hero : StatefulWidget
                 {
                     if (result.ContainsKey(tag))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("There are multiple heroes that share the same tag within a subtree."), new global::Doroti.Framework.Foundation.ErrorDescription("Within each subtree for which heroes are to be animated (i.e. a PageRoute subtree), " + "each Hero must have a unique non-null tag.\n" + $"In this case, multiple heroes had the following tag: {tag}"), new global::Doroti.Framework.Foundation.DiagnosticsProperty<StatefulElement>("Here is the subtree for one of the offending heroes", hero, linePrefix: "# ", style: DiagnosticsTreeStyle.dense) }));
+                        throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("There are multiple heroes that share the same tag within a subtree."), new ErrorDescription("Within each subtree for which heroes are to be animated (i.e. a PageRoute subtree), " + "each Hero must have a unique non-null tag.\n" + $"In this case, multiple heroes had the following tag: {tag}"), new DiagnosticsProperty<StatefulElement>("Here is the subtree for one of the offending heroes", hero, linePrefix: "# ", style: DiagnosticsTreeStyle.dense) }));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -106,10 +106,10 @@ public class Hero : StatefulWidget
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _HeroState__heroes());
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("tag", tag));
+        properties.add(new DiagnosticsProperty<object>("tag", tag));
     }
 
 }
@@ -124,7 +124,7 @@ public class _HeroState__heroes : State<Hero>
     {
         _shouldIncludeChild = shouldIncludedChildInPlaceholder;
         DartRuntimePrimitives.Assert(() => mounted);
-        var box = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
+        var box = ((RenderBox?)context.findRenderObject()!)!;
         DartRuntimePrimitives.Assert(() => box.hasSize);
         setState(() =>
         {
@@ -174,14 +174,14 @@ public class _HeroFlightManifest__heroes
     public virtual IPageRoute toRoute { get; private set; } = default!;
     public virtual _HeroState__heroes fromHero { get; private set; } = default!;
     public virtual _HeroState__heroes toHero { get; private set; } = default!;
-    public virtual global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween { get; private set; }
-    public virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder { get; private set; } = default!;
+    public virtual Func<Rect?, Rect?, Tween<Rect?>>? createRectTween { get; private set; }
+    public virtual Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder { get; private set; } = default!;
     public virtual bool isUserGestureTransition { get; private set; } = default!;
     public virtual bool isDiverted { get; private set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _animation { get; set; } = default;
+    internal virtual CurvedAnimation? _animation { get; set; } = default;
     private bool __late_fromHeroLocation_initialized;
-    private global::Doroti.Ui.Rect __late_fromHeroLocation = default!;
-    public virtual global::Doroti.Ui.Rect fromHeroLocation
+    private Rect __late_fromHeroLocation = default!;
+    public virtual Rect fromHeroLocation
     {
         get
         {
@@ -194,8 +194,8 @@ public class _HeroFlightManifest__heroes
         }
     }
     private bool __late_toHeroLocation_initialized;
-    private global::Doroti.Ui.Rect __late_toHeroLocation = default!;
-    public virtual global::Doroti.Ui.Rect toHeroLocation
+    private Rect __late_toHeroLocation = default!;
+    public virtual Rect toHeroLocation
     {
         get
         {
@@ -222,7 +222,7 @@ public class _HeroFlightManifest__heroes
         }
     }
 
-    internal _HeroFlightManifest__heroes(HeroFlightDirection type, OverlayState overlay, Size navigatorSize, IPageRoute fromRoute, IPageRoute toRoute, _HeroState__heroes fromHero, _HeroState__heroes toHero, global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder, bool isUserGestureTransition, bool isDiverted)
+    internal _HeroFlightManifest__heroes(HeroFlightDirection type, OverlayState overlay, Size navigatorSize, IPageRoute fromRoute, IPageRoute toRoute, _HeroState__heroes fromHero, _HeroState__heroes toHero, Func<Rect?, Rect?, Tween<Rect?>>? createRectTween, Func<BuildContext, Animation<double>, HeroFlightDirection, BuildContext, BuildContext, Widget> shuttleBuilder, bool isUserGestureTransition, bool isDiverted)
     {
         this.type = type;
         this.overlay = overlay;
@@ -239,13 +239,13 @@ public class _HeroFlightManifest__heroes
     }
 
     public virtual object tag => fromHero.widget.tag;
-    public virtual global::Doroti.Framework.Animation.Animation<double> animation
+    public virtual Animation<double> animation
     {
         get
         {
-            global::Doroti.Framework.Animation.Curve curveLocal = default!;
-            global::Doroti.Framework.Animation.Curve reverseCurveLocal = default!;
-            global::Doroti.Framework.Animation.Animation<double> parentLocal = default!;
+            Curve curveLocal = default!;
+            Curve reverseCurveLocal = default!;
+            Animation<double> parentLocal = default!;
             switch (type)
             {
                 case HeroFlightDirection.push:
@@ -263,20 +263,20 @@ public class _HeroFlightManifest__heroes
                         break;
                     }
             }
-            return _animation ??= new global::Doroti.Framework.Animation.CurvedAnimation(parent: parentLocal, curve: curveLocal, reverseCurve: isDiverted ? null : reverseCurveLocal);
+            return _animation ??= new CurvedAnimation(parent: parentLocal, curve: curveLocal, reverseCurve: isDiverted ? null : reverseCurveLocal);
         }
     }
-    public virtual global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Rect?> createHeroRectTween(Rect? begin, Rect? end)
+    public virtual Tween<Rect?> createHeroRectTween(Rect? begin, Rect? end)
     {
-        global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTweenLocal = toHero.widget.createRectTween ?? createRectTween;
-        return createRectTweenLocal is null ? new global::Doroti.Framework.Animation.RectTween(begin: begin, end: end) : createRectTweenLocal.Invoke(begin, end);
+        Func<Rect?, Rect?, Tween<Rect?>>? createRectTweenLocal = toHero.widget.createRectTween ?? createRectTween;
+        return createRectTweenLocal is null ? new RectTween(begin: begin, end: end) : createRectTweenLocal.Invoke(begin, end);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Rect _boundingBoxFor(BuildContext context, BuildContext? ancestorContext)
+    internal static Rect _boundingBoxFor(BuildContext context, BuildContext? ancestorContext)
     {
         DartRuntimePrimitives.Assert(() => ancestorContext is not null);
-        var box = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
+        var box = ((RenderBox?)context.findRenderObject()!)!;
         DartRuntimePrimitives.Assert(() => box.hasSize && box.size.isFinite);
         return MatrixUtils.transformRect(box.getTransformTo(ancestorContext?.findRenderObject()), Offset.zero & box.size);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -297,18 +297,18 @@ public class _HeroFlightManifest__heroes
 
 internal class _HeroFlight__heroes
 {
-    public virtual global::System.Action<_HeroFlight__heroes> onFlightEnded { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Tween<Rect?> heroRectTween { get; set; } = default!;
+    public virtual System.Action<_HeroFlight__heroes> onFlightEnded { get; private set; } = default!;
+    public virtual Tween<Rect?> heroRectTween { get; set; } = default!;
     public virtual Widget? shuttle { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _heroOpacity { get; set; } = AnimationsLibrary.kAlwaysCompleteAnimation;
-    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _proxyAnimation { get; set; } = new global::Doroti.Framework.Animation.ProxyAnimation();
+    internal virtual Animation<double> _heroOpacity { get; set; } = AnimationsLibrary.kAlwaysCompleteAnimation;
+    internal virtual ProxyAnimation _proxyAnimation { get; set; } = new ProxyAnimation();
     internal virtual _HeroFlightManifest__heroes? _manifest { get; set; } = default;
     public virtual OverlayEntry? overlayEntry { get; set; } = default;
     internal virtual bool _aborted { get; set; } = false;
-    internal static global::Doroti.Framework.Animation.Animatable<double> _reverseTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0);
+    internal static Animatable<double> _reverseTween = new Tween<double>(begin: 1.0, end: 0.0);
     internal virtual bool _scheduledPerformAnimationUpdate { get; set; } = false;
 
-    internal _HeroFlight__heroes(global::System.Action<_HeroFlight__heroes> onFlightEnded)
+    internal _HeroFlight__heroes(System.Action<_HeroFlight__heroes> onFlightEnded)
     {
         this.onFlightEnded = onFlightEnded;
     }
@@ -329,7 +329,7 @@ internal class _HeroFlight__heroes
         DartRuntimePrimitives.Assert(() => shuttle is not null);
         return new AnimatedBuilder(animation: _proxyAnimation, child: shuttle, builder: (context, child) =>
         {
-            global::Doroti.Ui.Rect rect = DartRuntimePrimitives.RequireValue(heroRectTween.evaluate(_proxyAnimation));
+            Rect rect = DartRuntimePrimitives.RequireValue(heroRectTween.evaluate(_proxyAnimation));
             var offsets = RelativeRect.CreateFromSize(rect, manifest.navigatorSize);
             return new Positioned(top: offsets.top, right: offsets.right, bottom: offsets.bottom, left: offsets.left, child: new IgnorePointer(child: new FadeTransition(opacity: _heroOpacity, child: child)));
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -337,7 +337,7 @@ internal class _HeroFlight__heroes
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _performAnimationUpdate(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal virtual void _performAnimationUpdate(AnimationStatus status)
     {
         if (!AnimationStatusMembers.isAnimating(status))
         {
@@ -353,7 +353,7 @@ internal class _HeroFlight__heroes
         }
     }
 
-    internal virtual void _handleAnimationUpdate(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal virtual void _handleAnimationUpdate(AnimationStatus status)
     {
         if (manifest.fromRoute.navigator?.userGestureInProgress != true)
         {
@@ -395,14 +395,14 @@ internal class _HeroFlight__heroes
 
     public virtual void onTick()
     {
-        global::Doroti.Framework.Rendering.RenderBox? toHeroBox = (!_aborted && manifest.toHero.mounted) ? ((global::Doroti.Framework.Rendering.RenderBox?)manifest.toHero.context.findRenderObject())! : null;
-        global::Doroti.Ui.Offset? toHeroOrigin = (global::Doroti.Ui.Offset?)(object?)(((toHeroBox is not null) && toHeroBox.attached && toHeroBox.hasSize) ? toHeroBox.localToGlobal(Offset.zero, ancestor: ((global::Doroti.Framework.Rendering.RenderBox?)manifest.toRoute.subtreeContext?.findRenderObject())!) : null);
+        RenderBox? toHeroBox = (!_aborted && manifest.toHero.mounted) ? ((RenderBox?)manifest.toHero.context.findRenderObject())! : null;
+        Offset? toHeroOrigin = (Offset?)(object?)(((toHeroBox is not null) && toHeroBox.attached && toHeroBox.hasSize) ? toHeroBox.localToGlobal(Offset.zero, ancestor: ((RenderBox?)manifest.toRoute.subtreeContext?.findRenderObject())!) : null);
         if ((toHeroOrigin is not null) && DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite)
         {
             Offset toHeroOrigin__26130__value26392 = DartRuntimePrimitives.RequireValue(toHeroOrigin);
             if (!Equals(DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392), DartRuntimePrimitives.RequireValue(heroRectTween.end).topLeft))
             {
-                global::Doroti.Ui.Rect heroRectEnd = DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392) & DartRuntimePrimitives.RequireValue(heroRectTween.end).size;
+                Rect heroRectEnd = DartRuntimePrimitives.RequireValue(toHeroOrigin__26130__value26392) & DartRuntimePrimitives.RequireValue(heroRectTween.end).size;
                 heroRectTween = manifest.createHeroRectTween(begin: heroRectTween.begin, end: heroRectEnd);
             }
         }
@@ -410,7 +410,7 @@ internal class _HeroFlight__heroes
         {
             if (_heroOpacity.isCompleted)
             {
-                _heroOpacity = _proxyAnimation.drive(_reverseTween.chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(_proxyAnimation.value, 1.0))));
+                _heroOpacity = _proxyAnimation.drive(_reverseTween.chain(new CurveTween(curve: new Interval(_proxyAnimation.value, 1.0))));
             }
         }
         _aborted = (toHeroOrigin is null) || !DartRuntimePrimitives.RequireValue(toHeroOrigin).isFinite;
@@ -421,7 +421,7 @@ internal class _HeroFlight__heroes
         DartRuntimePrimitives.Assert(() => !_aborted);
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Framework.Animation.Animation<double> initial = initialManifest.animation;
+                Animation<double> initial = initialManifest.animation;
                 HeroFlightDirection typeLocal = initialManifest.type;
                 switch (typeLocal)
                 {
@@ -444,7 +444,7 @@ internal class _HeroFlight__heroes
         {
             case HeroFlightDirection.pop:
                 {
-                    _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(manifest.animation));
+                    _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new ReverseAnimation(manifest.animation));
                     shouldIncludeChildInPlaceholder = false;
                     break;
                 }
@@ -472,8 +472,8 @@ internal class _HeroFlight__heroes
             DartRuntimePrimitives.Assert(() => Equals(manifest.toHero, newManifest.fromHero));
             DartRuntimePrimitives.Assert(() => Equals(manifest.fromRoute, newManifest.toRoute));
             DartRuntimePrimitives.Assert(() => Equals(manifest.toRoute, newManifest.fromRoute));
-            _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(newManifest.animation));
-            heroRectTween = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Tween<Rect?>>(new global::Doroti.Framework.Animation.ReverseTween<global::Doroti.Ui.Rect?>(heroRectTween));
+            _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new ReverseAnimation(newManifest.animation));
+            heroRectTween = DartRuntimePrimitives.ConvertValue<Tween<Rect?>>(new ReverseTween<Rect?>(heroRectTween));
         }
         else
         {
@@ -482,7 +482,7 @@ internal class _HeroFlight__heroes
                 DartRuntimePrimitives.Assert(() => Equals(newManifest.animation.status, AnimationStatus.forward));
                 DartRuntimePrimitives.Assert(() => Equals(manifest.toHero, newManifest.fromHero));
                 DartRuntimePrimitives.Assert(() => Equals(manifest.toRoute, newManifest.fromRoute));
-                _proxyAnimation.parent = newManifest.animation.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: manifest.animation.value, end: 1.0));
+                _proxyAnimation.parent = newManifest.animation.drive(new Tween<double>(begin: manifest.animation.value, end: 1.0));
                 if (!Equals(manifest.fromHero, newManifest.toHero))
                 {
                     manifest.fromHero.endFlight(keepPlaceholder: true);
@@ -502,7 +502,7 @@ internal class _HeroFlight__heroes
                 shuttle = null;
                 if (Equals(newManifest.type, HeroFlightDirection.pop))
                 {
-                    _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(newManifest.animation));
+                    _proxyAnimation.parent = DartRuntimePrimitives.ConvertValue<Animation<double>>(new ReverseAnimation(newManifest.animation));
                 }
                 else
                 {
@@ -536,10 +536,10 @@ internal class _HeroFlight__heroes
 
 public class HeroController : NavigatorObserver
 {
-    public virtual global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween { get; private set; }
+    public virtual Func<Rect?, Rect?, Tween<Rect?>>? createRectTween { get; private set; }
     internal virtual DartMap<object, _HeroFlight__heroes> _flights { get; private set; } = new DartMap<object, _HeroFlight__heroes>();
 
-    public HeroController(global::System.Func<Rect?, Rect?, global::Doroti.Framework.Animation.Tween<Rect?>>? createRectTween = null)
+    public HeroController(Func<Rect?, Rect?, Tween<Rect?>>? createRectTween = null)
     {
         this.createRectTween = createRectTween;
     }
@@ -588,8 +588,8 @@ public class HeroController : NavigatorObserver
         {
             return;
         }
-        global::Doroti.Framework.Animation.Animation<double> newRouteAnimation = toRoute.animation!;
-        global::Doroti.Framework.Animation.Animation<double> oldRouteAnimation = fromRoute.animation!;
+        Animation<double> newRouteAnimation = toRoute.animation!;
+        Animation<double> oldRouteAnimation = fromRoute.animation!;
         HeroFlightDirection? flightType = default!;
         switch ((isUserGestureTransition, oldRouteAnimation.status, newRouteAnimation.status))
         {
@@ -633,7 +633,7 @@ public class HeroController : NavigatorObserver
                     }
             }
         }
-        var fromRouteRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)toRoute.subtreeContext?.findRenderObject())!;
+        var fromRouteRenderBox = ((RenderBox?)toRoute.subtreeContext?.findRenderObject())!;
         bool hasValidSize = (fromRouteRenderBox?.hasSize ?? false) && fromRouteRenderBox!.size.isFinite;
         if (isUserGestureTransition && Equals(flightType, HeroFlightDirection.pop) && toRoute.maintainState && hasValidSize)
         {
@@ -662,13 +662,13 @@ public class HeroController : NavigatorObserver
         {
             return;
         }
-        global::Doroti.Framework.Rendering.RenderObject? navigatorRenderObject = navigatorLocal.context.findRenderObject();
+        RenderObject? navigatorRenderObject = navigatorLocal.context.findRenderObject();
         if (navigatorRenderObject is not RenderBox)
         {
             DartRuntimePrimitives.Assert(() => false, () => (object?)$"Navigator {navigatorLocal} has an invalid RenderObject type {DartRuntimePrimitives.RuntimeType(navigatorRenderObject)}.");
             return;
         }
-        DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)navigatorRenderObject).hasSize);
+        DartRuntimePrimitives.Assert(() => ((RenderBox)navigatorRenderObject).hasSize);
         BuildContext? fromSubtreeContext = from.subtreeContext;
         DartMap<object, _HeroState__heroes> fromHeroes = (fromSubtreeContext is not null) ? Hero._allHeroesFor(fromSubtreeContext, isUserGestureTransition, navigatorLocal) : new DartMap<object, _HeroState__heroes>();
         BuildContext? toSubtreeContext = to.subtreeContext;
@@ -679,7 +679,7 @@ public class HeroController : NavigatorObserver
             _HeroState__heroes fromHeroLocal = fromHeroEntry.value;
             _HeroState__heroes? toHeroLocal = toHeroes.GetValueOrDefault(tag);
             _HeroFlight__heroes? existingFlight = _flights.GetValueOrDefault(tag);
-            _HeroFlightManifest__heroes? manifest = ((toHeroLocal is null) || (flightType is null)) ? null : new _HeroFlightManifest__heroes(type: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(flightType)), overlay: overlayLocal, navigatorSize: ((global::Doroti.Framework.Rendering.RenderBox)navigatorRenderObject).size, fromRoute: from, toRoute: to, fromHero: fromHeroLocal, toHero: toHeroLocal, createRectTween: createRectTween, shuttleBuilder: (toHeroLocal.widget.flightShuttleBuilder ?? fromHeroLocal.widget.flightShuttleBuilder) ?? _defaultHeroFlightShuttleBuilder, isUserGestureTransition: isUserGestureTransition, isDiverted: existingFlight is not null);
+            _HeroFlightManifest__heroes? manifest = ((toHeroLocal is null) || (flightType is null)) ? null : new _HeroFlightManifest__heroes(type: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(flightType)), overlay: overlayLocal, navigatorSize: ((RenderBox)navigatorRenderObject).size, fromRoute: from, toRoute: to, fromHero: fromHeroLocal, toHero: toHeroLocal, createRectTween: createRectTween, shuttleBuilder: (toHeroLocal.widget.flightShuttleBuilder ?? fromHeroLocal.widget.flightShuttleBuilder) ?? _defaultHeroFlightShuttleBuilder, isUserGestureTransition: isUserGestureTransition, isDiverted: existingFlight is not null);
             if ((manifest is not null) && manifest.isValid)
             {
                 toHeroes.remove(tag);
@@ -713,7 +713,7 @@ public class HeroController : NavigatorObserver
         _flights.remove(flight.manifest.tag)?.dispose();
     }
 
-    internal virtual Widget _defaultHeroFlightShuttleBuilder(BuildContext flightContext, global::Doroti.Framework.Animation.Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext)
+    internal virtual Widget _defaultHeroFlightShuttleBuilder(BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext)
     {
         var toHero = ((Hero?)toHeroContext.widget)!;
         MediaQueryData? toMediaQueryData = MediaQuery.maybeOf(toHeroContext);
@@ -722,8 +722,8 @@ public class HeroController : NavigatorObserver
         {
             return toHero.child;
         }
-        global::Doroti.Framework.Painting.EdgeInsets fromHeroPadding = fromMediaQueryData.padding;
-        global::Doroti.Framework.Painting.EdgeInsets toHeroPadding = toMediaQueryData.padding;
+        EdgeInsets fromHeroPadding = fromMediaQueryData.padding;
+        EdgeInsets toHeroPadding = toMediaQueryData.padding;
         return new AnimatedBuilder(animation: animation, builder: (context, child) =>
         {
             return new MediaQuery(data: toMediaQueryData.copyWith(padding: Equals(flightDirection, HeroFlightDirection.push) ? new EdgeInsetsTween(begin: fromHeroPadding, end: toHeroPadding).evaluate(animation) : new EdgeInsetsTween(begin: toHeroPadding, end: fromHeroPadding).evaluate(animation)), child: toHero.child);
@@ -748,17 +748,17 @@ public class HeroMode : StatelessWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    public HeroMode(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, bool enabled = true) : base(key: key)
+    public HeroMode(Key? key = null, Widget child = default!, bool enabled = true) : base(key: key)
     {
         this.child = child;
         this.enabled = enabled;
     }
 
     public override Widget build(BuildContext context) => child;
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("mode", value: enabled, ifTrue: "enabled", ifFalse: "disabled", showName: true));
+        properties.add(new FlagProperty("mode", value: enabled, ifTrue: "enabled", ifFalse: "disabled", showName: true));
     }
 
 }

@@ -7,18 +7,18 @@ namespace Doroti.Framework.Widgets;
 
 public class Viewport : MultiChildRenderObjectWidget
 {
-    public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.AxisDirection? crossAxisDirection { get; private set; }
+    public virtual AxisDirection axisDirection { get; private set; } = default!;
+    public virtual AxisDirection? crossAxisDirection { get; private set; }
     public virtual double anchor { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.ViewportOffset offset { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Foundation.Key? center { get; private set; }
+    public virtual ViewportOffset offset { get; private set; } = default!;
+    public virtual Key? center { get; private set; }
     public virtual double? cacheExtent { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.CacheExtentStyle cacheExtentStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.SliverPaintOrder paintOrder { get; private set; } = default!;
+    public virtual CacheExtentStyle cacheExtentStyle { get; private set; } = default!;
+    public virtual ScrollCacheExtent? scrollCacheExtent { get; private set; }
+    public virtual SliverPaintOrder paintOrder { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public Viewport(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection? crossAxisDirection = null, double anchor = 0.0, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, global::Doroti.Framework.Foundation.Key? center = null, double? cacheExtent = null, global::Doroti.Framework.Rendering.CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, global::Doroti.Framework.Rendering.SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, List<Widget> slivers = default!) : base(key: key, children: slivers)
+    public Viewport(Key? key = null, AxisDirection axisDirection = AxisDirection.down, AxisDirection? crossAxisDirection = null, double anchor = 0.0, ViewportOffset offset = default!, Key? center = null, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, List<Widget> slivers = default!) : base(key: key, children: slivers)
     {
         List<Widget> __slivers = slivers ?? new List<Widget>();
         this.axisDirection = axisDirection;
@@ -35,7 +35,7 @@ public class Viewport : MultiChildRenderObjectWidget
         System.Diagnostics.Debug.Assert((!Equals(cacheExtentStyle, CacheExtentStyle.viewport)) || (cacheExtent is not null));
     }
 
-    internal virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? _effectiveScrollCacheExtent
+    internal virtual ScrollCacheExtent? _effectiveScrollCacheExtent
     {
         get
         {
@@ -63,7 +63,7 @@ public class Viewport : MultiChildRenderObjectWidget
             return null;
         }
     }
-    public static global::Doroti.Framework.Painting.AxisDirection getDefaultCrossAxisDirection(BuildContext context, global::Doroti.Framework.Painting.AxisDirection axisDirection)
+    public static AxisDirection getDefaultCrossAxisDirection(BuildContext context, AxisDirection axisDirection)
     {
         switch (axisDirection)
         {
@@ -91,16 +91,16 @@ public class Viewport : MultiChildRenderObjectWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
-        return new global::Doroti.Framework.Rendering.RenderViewport(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection ?? getDefaultCrossAxisDirection(context, axisDirection), anchor: anchor, offset: offset, scrollCacheExtent: _effectiveScrollCacheExtent, paintOrder: paintOrder, clipBehavior: clipBehavior);
+        return new RenderViewport(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection ?? getDefaultCrossAxisDirection(context, axisDirection), anchor: anchor, offset: offset, scrollCacheExtent: _effectiveScrollCacheExtent, paintOrder: paintOrder, clipBehavior: clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderViewport)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderViewport>)(() =>
+        var __renderObject = (RenderViewport)renderObject;
+        DartRuntimePrimitives.Ignore(((Func<RenderViewport>)(() =>
 {
     var __cascade = __renderObject;
     __cascade.axisDirection = axisDirection;
@@ -115,25 +115,25 @@ public class Viewport : MultiChildRenderObjectWidget
     }
 
     public override MultiChildRenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<MultiChildRenderObjectElement>(new _ViewportElement__viewport(this));
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", axisDirection));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("crossAxisDirection", crossAxisDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("anchor", anchor));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ViewportOffset>("offset", offset));
+        properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
+        properties.add(new EnumProperty<AxisDirection>("crossAxisDirection", crossAxisDirection, defaultValue: null));
+        properties.add(new DoubleProperty("anchor", anchor));
+        properties.add(new DiagnosticsProperty<ViewportOffset>("offset", offset));
         if (center is not null)
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Foundation.Key>("center", center));
+            properties.add(new DiagnosticsProperty<Key>("center", center));
         }
         else
         {
             if (Enumerable.Any(children) && (children.First().key is not null))
             {
-                properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Foundation.Key>("center", children.First().key, tooltip: "implicit"));
+                properties.add(new DiagnosticsProperty<Key>("center", children.First().key, tooltip: "implicit"));
             }
         }
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent));
+        properties.add(new DiagnosticsProperty<ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent));
     }
 
 }
@@ -147,7 +147,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
     {
     }
 
-    public override global::Doroti.Framework.Rendering.RenderViewport renderObject => (global::Doroti.Framework.Rendering.RenderViewport)base.renderObject;
+    public override RenderViewport renderObject => (RenderViewport)base.renderObject;
     public override void mount(Element? parent, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => !_doingMountOrUpdate);
@@ -179,7 +179,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
             {
                 if (Equals(e.widget.key, viewport.center))
                 {
-                    renderObject.center = ((global::Doroti.Framework.Rendering.RenderSliver?)e.renderObject)!;
+                    renderObject.center = ((RenderSliver?)e.renderObject)!;
                     break;
                 }
                 elementIndex++;
@@ -191,7 +191,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         {
             if (Enumerable.Any(children))
             {
-                renderObject.center = ((global::Doroti.Framework.Rendering.RenderSliver?)children.First().renderObject)!;
+                renderObject.center = ((RenderSliver?)children.First().renderObject)!;
                 _centerSlotIndex = 0L;
             }
             else
@@ -202,17 +202,17 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         }
     }
 
-    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(RenderObject child, object? slot)
     {
         var __slot = (IndexedSlot<Element?>?)slot;
         base.insertRenderObjectChild(child, __slot);
         if (!_doingMountOrUpdate && (( __slot ?? throw new ArgumentException("A viewport child requires an indexed slot.", nameof(slot))).index == _centerSlotIndex))
         {
-            renderObject.center = ((global::Doroti.Framework.Rendering.RenderSliver?)child)!;
+            renderObject.center = ((RenderSliver?)child)!;
         }
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(RenderObject child, object? oldSlot, object? newSlot)
     {
         var __oldSlot = (IndexedSlot<Element?>?)oldSlot;
         var __newSlot = (IndexedSlot<Element?>?)newSlot;
@@ -220,7 +220,7 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         DartRuntimePrimitives.Assert(() => _doingMountOrUpdate);
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(RenderObject child, object? slot)
     {
         base.removeRenderObjectChild(child, slot);
         if (!_doingMountOrUpdate && Equals(renderObject.center, child))
@@ -229,11 +229,11 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
         }
     }
 
-    public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
+    public override void debugVisitOnstageChildren(System.Action<Element> visitor)
     {
         children.where((e) =>
         {
-            var renderSliver = ((global::Doroti.Framework.Rendering.RenderSliver?)e.renderObject!)!;
+            var renderSliver = ((RenderSliver?)e.renderObject!)!;
             return renderSliver.geometry!.visible;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }).forEach((__arg0) => visitor(__arg0));
@@ -258,16 +258,16 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
 
 public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
 {
-    public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.AxisDirection? crossAxisDirection { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.ViewportOffset offset { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.SliverPaintOrder paintOrder { get; private set; } = default!;
+    public virtual AxisDirection axisDirection { get; private set; } = default!;
+    public virtual AxisDirection? crossAxisDirection { get; private set; }
+    public virtual ViewportOffset offset { get; private set; } = default!;
+    public virtual SliverPaintOrder paintOrder { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual double? cacheExtent { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.CacheExtentStyle cacheExtentStyle { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent { get; private set; }
+    public virtual CacheExtentStyle cacheExtentStyle { get; private set; } = default!;
+    public virtual ScrollCacheExtent? scrollCacheExtent { get; private set; }
 
-    public ShrinkWrappingViewport(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection? crossAxisDirection = null, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, global::Doroti.Framework.Rendering.SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, double? cacheExtent = null, global::Doroti.Framework.Rendering.CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, List<Widget> slivers = default!) : base(key: key, children: slivers)
+    public ShrinkWrappingViewport(Key? key = null, AxisDirection axisDirection = AxisDirection.down, AxisDirection? crossAxisDirection = null, ViewportOffset offset = default!, SliverPaintOrder paintOrder = SliverPaintOrder.firstIsTop, Clip clipBehavior = Clip.hardEdge, double? cacheExtent = null, CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel, ScrollCacheExtent? scrollCacheExtent = null, List<Widget> slivers = default!) : base(key: key, children: slivers)
     {
         List<Widget> __slivers = slivers ?? new List<Widget>();
         this.axisDirection = axisDirection;
@@ -280,7 +280,7 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
         this.scrollCacheExtent = scrollCacheExtent;
     }
 
-    internal virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? _effectiveScrollCacheExtent
+    internal virtual ScrollCacheExtent? _effectiveScrollCacheExtent
     {
         get
         {
@@ -308,16 +308,16 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
             return null;
         }
     }
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
-        return new global::Doroti.Framework.Rendering.RenderShrinkWrappingViewport(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection ?? Viewport.getDefaultCrossAxisDirection(context, axisDirection), offset: offset, paintOrder: paintOrder, clipBehavior: clipBehavior, scrollCacheExtent: _effectiveScrollCacheExtent);
+        return new RenderShrinkWrappingViewport(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection ?? Viewport.getDefaultCrossAxisDirection(context, axisDirection), offset: offset, paintOrder: paintOrder, clipBehavior: clipBehavior, scrollCacheExtent: _effectiveScrollCacheExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderShrinkWrappingViewport)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderShrinkWrappingViewport>)(() =>
+        var __renderObject = (RenderShrinkWrappingViewport)renderObject;
+        DartRuntimePrimitives.Ignore(((Func<RenderShrinkWrappingViewport>)(() =>
 {
     var __cascade = __renderObject;
     __cascade.axisDirection = axisDirection;
@@ -330,13 +330,13 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
 }))());
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", axisDirection));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("crossAxisDirection", crossAxisDirection, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ViewportOffset>("offset", offset));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent, defaultValue: null));
+        properties.add(new EnumProperty<AxisDirection>("axisDirection", axisDirection));
+        properties.add(new EnumProperty<AxisDirection>("crossAxisDirection", crossAxisDirection, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ViewportOffset>("offset", offset));
+        properties.add(new DiagnosticsProperty<ScrollCacheExtent>("scrollCacheExtent", scrollCacheExtent, defaultValue: null));
     }
 
 }

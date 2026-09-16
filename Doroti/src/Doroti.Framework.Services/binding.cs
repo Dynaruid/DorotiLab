@@ -101,9 +101,9 @@ public abstract class ServicesBinding : SchedulerBinding
             {
                 ByteData licenseBytes = await Asset_bundleLibrary.rootBundle.load("NOTICES.Z");
                 List<long> unzippedBytes = await IsolatesLibrary.compute<List<long>, List<long>>(Dart_ioLibrary.gzip.decode, licenseBytes.buffer.asUint8List(), debugLabel: "decompressLicenses");
-                rawLicenses = await IsolatesLibrary.compute<List<long>, string>(Dart_convertLibrary.utf8.decode, unzippedBytes, debugLabel: "utf8DecodeLicenses");
+                rawLicenses = await IsolatesLibrary.compute(Dart_convertLibrary.utf8.decode, unzippedBytes, debugLabel: "utf8DecodeLicenses");
             }
-            List<LicenseEntry> licenses = await IsolatesLibrary.compute<string, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: "parseLicenses");
+            List<LicenseEntry> licenses = await IsolatesLibrary.compute(_parseLicenses, rawLicenses, debugLabel: "parseLicenses");
             licenses.forEach(controller.add);
             await controller.close();
         });
@@ -155,8 +155,8 @@ public abstract class ServicesBinding : SchedulerBinding
 
     internal async virtual Future<string?> _handleLifecycleMessage(string? message)
     {
-        global::Doroti.Ui.AppLifecycleState? state = _parseAppLifecycleMessage(message!);
-        List<global::Doroti.Ui.AppLifecycleState> generated = _generateStateTransitions(lifecycleState, DartRuntimePrimitives.RequireValue(state));
+        AppLifecycleState? state = _parseAppLifecycleMessage(message!);
+        List<AppLifecycleState> generated = _generateStateTransitions(lifecycleState, DartRuntimePrimitives.RequireValue(state));
         foreach (var stateChange in generated)
         {
             handleAppLifecycleStateChanged(stateChange);
@@ -170,9 +170,9 @@ public abstract class ServicesBinding : SchedulerBinding
     {
         if (Equals(previousState, state))
         {
-            return new List<global::Doroti.Ui.AppLifecycleState>();
+            return new List<AppLifecycleState>();
         }
-        var stateChanges = new List<global::Doroti.Ui.AppLifecycleState>();
+        var stateChanges = new List<AppLifecycleState>();
         if (previousState is null)
         {
             stateChanges.Add(state);

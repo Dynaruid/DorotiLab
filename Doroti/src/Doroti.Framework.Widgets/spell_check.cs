@@ -7,13 +7,13 @@ namespace Doroti.Framework.Widgets;
 
 public class SpellCheckConfiguration
 {
-    public virtual global::Doroti.Framework.Services.SpellCheckService? spellCheckService { get; private set; }
+    public virtual SpellCheckService? spellCheckService { get; private set; }
     public virtual Color? misspelledSelectionColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? misspelledTextStyle { get; private set; }
-    public virtual global::System.Func<BuildContext, EditableTextState, Widget>? spellCheckSuggestionsToolbarBuilder { get; private set; }
+    public virtual TextStyle? misspelledTextStyle { get; private set; }
+    public virtual Func<BuildContext, EditableTextState, Widget>? spellCheckSuggestionsToolbarBuilder { get; private set; }
     internal virtual bool _spellCheckEnabled { get; private set; } = default!;
 
-    public SpellCheckConfiguration(global::Doroti.Framework.Services.SpellCheckService? spellCheckService = null, Color? misspelledSelectionColor = null, global::Doroti.Framework.Painting.TextStyle? misspelledTextStyle = null, global::System.Func<BuildContext, EditableTextState, Widget>? spellCheckSuggestionsToolbarBuilder = null)
+    public SpellCheckConfiguration(SpellCheckService? spellCheckService = null, Color? misspelledSelectionColor = null, TextStyle? misspelledTextStyle = null, Func<BuildContext, EditableTextState, Widget>? spellCheckSuggestionsToolbarBuilder = null)
     {
         this.spellCheckService = spellCheckService;
         this.misspelledSelectionColor = misspelledSelectionColor;
@@ -34,7 +34,7 @@ public class SpellCheckConfiguration
     }
 
     public virtual bool spellCheckEnabled => _spellCheckEnabled;
-    public virtual SpellCheckConfiguration copyWith(global::Doroti.Framework.Services.SpellCheckService? spellCheckService = null, Color? misspelledSelectionColor = null, global::Doroti.Framework.Painting.TextStyle? misspelledTextStyle = null, global::System.Func<BuildContext, EditableTextState, Widget>? spellCheckSuggestionsToolbarBuilder = null)
+    public virtual SpellCheckConfiguration copyWith(SpellCheckService? spellCheckService = null, Color? misspelledSelectionColor = null, TextStyle? misspelledTextStyle = null, Func<BuildContext, EditableTextState, Widget>? spellCheckSuggestionsToolbarBuilder = null)
     {
         if (!_spellCheckEnabled)
         {
@@ -66,15 +66,15 @@ public class SpellCheckConfiguration
 
 public static partial class Spell_checkLibrary
 {
-    internal static List<global::Doroti.Framework.Services.SuggestionSpan> _correctSpellCheckResults(string newText, string resultsText, List<global::Doroti.Framework.Services.SuggestionSpan> results)
+    internal static List<SuggestionSpan> _correctSpellCheckResults(string newText, string resultsText, List<SuggestionSpan> results)
     {
-        var correctedSpellCheckResults = new List<global::Doroti.Framework.Services.SuggestionSpan>();
+        var correctedSpellCheckResults = new List<SuggestionSpan>();
         var spanPointer = 0L;
         var offset = 0L;
         var searchStart = 0L;
         while (spanPointer < checked(results.Count))
         {
-            global::Doroti.Framework.Services.SuggestionSpan currentSpan = results[(int)spanPointer];
+            SuggestionSpan currentSpan = results[(int)spanPointer];
             string currentSpanText = resultsText.substring(currentSpan.range.start, currentSpan.range.end);
             long spanLength = currentSpan.range.end - currentSpan.range.start;
             string escapedText = Dart_coreLibrary.escape(currentSpanText);
@@ -85,7 +85,7 @@ public static partial class Spell_checkLibrary
             bool currentSpanFoundElsewhere = foundIndex >= 0L;
             if (currentSpanFoundExactly || currentSpanFoundExactlyWithOffset)
             {
-                var adjustedSpan = new global::Doroti.Framework.Services.SuggestionSpan(new global::Doroti.Ui.TextRange(start: currentSpan.range.start + offset, end: currentSpan.range.end + offset), currentSpan.suggestions);
+                var adjustedSpan = new SuggestionSpan(new TextRange(start: currentSpan.range.start + offset, end: currentSpan.range.end + offset), currentSpan.suggestions);
                 searchStart = Math.Min(currentSpan.range.end + 1L + offset, newText.Length);
                 correctedSpellCheckResults.Add(adjustedSpan);
             }
@@ -95,7 +95,7 @@ public static partial class Spell_checkLibrary
                 {
                     long adjustedSpanStart = searchStart + foundIndex;
                     long adjustedSpanEnd = adjustedSpanStart + spanLength;
-                    var adjustedSpanLocal = new global::Doroti.Framework.Services.SuggestionSpan(new global::Doroti.Ui.TextRange(start: adjustedSpanStart, end: adjustedSpanEnd), currentSpan.suggestions);
+                    var adjustedSpanLocal = new SuggestionSpan(new TextRange(start: adjustedSpanStart, end: adjustedSpanEnd), currentSpan.suggestions);
                     searchStart = Math.Min(adjustedSpanEnd + 1L, newText.Length);
                     offset = adjustedSpanStart - currentSpan.range.start;
                     correctedSpellCheckResults.Add(adjustedSpanLocal);
@@ -110,9 +110,9 @@ public static partial class Spell_checkLibrary
 
 public static partial class Spell_checkLibrary
 {
-    public static global::Doroti.Framework.Painting.TextSpan buildTextSpanWithSpellCheckSuggestions(global::Doroti.Framework.Services.TextEditingValue value, bool composingWithinCurrentTextRange, global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Painting.TextStyle misspelledTextStyle, global::Doroti.Framework.Services.SpellCheckResults spellCheckResults)
+    public static TextSpan buildTextSpanWithSpellCheckSuggestions(TextEditingValue value, bool composingWithinCurrentTextRange, TextStyle? style, TextStyle misspelledTextStyle, SpellCheckResults spellCheckResults)
     {
-        List<global::Doroti.Framework.Services.SuggestionSpan> spellCheckResultsSpans = spellCheckResults.suggestionSpans.ToList();
+        List<SuggestionSpan> spellCheckResultsSpans = spellCheckResults.suggestionSpans.ToList();
         string spellCheckResultsText = spellCheckResults.spellCheckedText;
         if (spellCheckResultsText != value.text)
         {
@@ -121,40 +121,40 @@ public static partial class Spell_checkLibrary
         var shouldConsiderComposingRegion = Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android);
         if (shouldConsiderComposingRegion)
         {
-            return new global::Doroti.Framework.Painting.TextSpan(style: style, children: _buildSubtreesWithComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, composingWithinCurrentTextRange).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
+            return new TextSpan(style: style, children: _buildSubtreesWithComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, composingWithinCurrentTextRange).Cast<InlineSpan>().ToList());
         }
-        return new global::Doroti.Framework.Painting.TextSpan(style: style, children: _buildSubtreesWithoutComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, value.selection.baseOffset).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
+        return new TextSpan(style: style, children: _buildSubtreesWithoutComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, value.selection.baseOffset).Cast<InlineSpan>().ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Spell_checkLibrary
 {
-    internal static List<global::Doroti.Framework.Painting.TextSpan> _buildSubtreesWithoutComposingRegion(List<global::Doroti.Framework.Services.SuggestionSpan>? spellCheckSuggestions, global::Doroti.Framework.Services.TextEditingValue value, global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Painting.TextStyle misspelledStyle, long cursorIndex)
+    internal static List<TextSpan> _buildSubtreesWithoutComposingRegion(List<SuggestionSpan>? spellCheckSuggestions, TextEditingValue value, TextStyle? style, TextStyle misspelledStyle, long cursorIndex)
     {
-        var textSpanTreeChildren = new List<global::Doroti.Framework.Painting.TextSpan>();
+        var textSpanTreeChildren = new List<TextSpan>();
         var textPointer = 0L;
         var currentSpanPointer = 0L;
         long endIndex = default!;
         string textLocal = value.text;
-        global::Doroti.Framework.Painting.TextStyle misspelledJointStyle = style?.merge(misspelledStyle) ?? misspelledStyle;
+        TextStyle misspelledJointStyle = style?.merge(misspelledStyle) ?? misspelledStyle;
         var cursorInCurrentSpan = false;
         if (spellCheckSuggestions is not null)
         {
             while ((textPointer < textLocal.Length) && (currentSpanPointer < checked(spellCheckSuggestions.Count)))
             {
-                global::Doroti.Framework.Services.SuggestionSpan currentSpan = spellCheckSuggestions[(int)currentSpanPointer];
+                SuggestionSpan currentSpan = spellCheckSuggestions[(int)currentSpanPointer];
                 if (currentSpan.range.start > textPointer)
                 {
                     endIndex = (currentSpan.range.start < textLocal.Length) ? currentSpan.range.start : textLocal.Length;
-                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, endIndex)));
+                    textSpanTreeChildren.Add(new TextSpan(style: style, text: textLocal.substring(textPointer, endIndex)));
                     textPointer = endIndex;
                 }
                 else
                 {
                     endIndex = (currentSpan.range.end < textLocal.Length) ? currentSpan.range.end : textLocal.Length;
                     cursorInCurrentSpan = (currentSpan.range.start <= cursorIndex) && (currentSpan.range.end >= cursorIndex);
-                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: cursorInCurrentSpan ? style : misspelledJointStyle, text: textLocal.substring(currentSpan.range.start, endIndex)));
+                    textSpanTreeChildren.Add(new TextSpan(style: cursorInCurrentSpan ? style : misspelledJointStyle, text: textLocal.substring(currentSpan.range.start, endIndex)));
                     textPointer = endIndex;
                     currentSpanPointer++;
                 }
@@ -162,7 +162,7 @@ public static partial class Spell_checkLibrary
         }
         if (textPointer < textLocal.Length)
         {
-            textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, textLocal.Length)));
+            textSpanTreeChildren.Add(new TextSpan(style: style, text: textLocal.substring(textPointer, textLocal.Length)));
         }
         return textSpanTreeChildren;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -171,17 +171,17 @@ public static partial class Spell_checkLibrary
 
 public static partial class Spell_checkLibrary
 {
-    internal static List<global::Doroti.Framework.Painting.TextSpan> _buildSubtreesWithComposingRegion(List<global::Doroti.Framework.Services.SuggestionSpan>? spellCheckSuggestions, global::Doroti.Framework.Services.TextEditingValue value, global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Painting.TextStyle misspelledStyle, bool composingWithinCurrentTextRange)
+    internal static List<TextSpan> _buildSubtreesWithComposingRegion(List<SuggestionSpan>? spellCheckSuggestions, TextEditingValue value, TextStyle? style, TextStyle misspelledStyle, bool composingWithinCurrentTextRange)
     {
-        var textSpanTreeChildren = new List<global::Doroti.Framework.Painting.TextSpan>();
+        var textSpanTreeChildren = new List<TextSpan>();
         var textPointer = 0L;
         var currentSpanPointer = 0L;
         long endIndex = default!;
-        global::Doroti.Framework.Services.SuggestionSpan currentSpan = default!;
+        SuggestionSpan currentSpan = default!;
         string textLocal = value.text;
-        global::Doroti.Ui.TextRange composingRegion = value.composing;
-        global::Doroti.Framework.Painting.TextStyle composingTextStyle = style?.merge(new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline)) ?? new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline);
-        global::Doroti.Framework.Painting.TextStyle misspelledJointStyle = style?.merge(misspelledStyle) ?? misspelledStyle;
+        TextRange composingRegion = value.composing;
+        TextStyle composingTextStyle = style?.merge(new TextStyle(decoration: TextDecoration.underline)) ?? new TextStyle(decoration: TextDecoration.underline);
+        TextStyle misspelledJointStyle = style?.merge(misspelledStyle) ?? misspelledStyle;
         var textPointerWithinComposingRegion = false;
         var currentSpanIsComposingRegion = false;
         if (spellCheckSuggestions is not null)
@@ -196,11 +196,11 @@ public static partial class Spell_checkLibrary
                     if (textPointerWithinComposingRegion)
                     {
                         _addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
-                        textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(composingRegion.end, endIndex)));
+                        textSpanTreeChildren.Add(new TextSpan(style: style, text: textLocal.substring(composingRegion.end, endIndex)));
                     }
                     else
                     {
-                        textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, endIndex)));
+                        textSpanTreeChildren.Add(new TextSpan(style: style, text: textLocal.substring(textPointer, endIndex)));
                     }
                     textPointer = endIndex;
                 }
@@ -208,7 +208,7 @@ public static partial class Spell_checkLibrary
                 {
                     endIndex = (currentSpan.range.end < textLocal.Length) ? currentSpan.range.end : textLocal.Length;
                     currentSpanIsComposingRegion = (textPointer >= composingRegion.start) && (endIndex <= composingRegion.end) && !composingWithinCurrentTextRange;
-                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: currentSpanIsComposingRegion ? composingTextStyle : misspelledJointStyle, text: textLocal.substring(currentSpan.range.start, endIndex)));
+                    textSpanTreeChildren.Add(new TextSpan(style: currentSpanIsComposingRegion ? composingTextStyle : misspelledJointStyle, text: textLocal.substring(currentSpan.range.start, endIndex)));
                     textPointer = endIndex;
                     currentSpanPointer++;
                 }
@@ -221,12 +221,12 @@ public static partial class Spell_checkLibrary
                 _addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
                 if (composingRegion.end != textLocal.Length)
                 {
-                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(composingRegion.end, textLocal.Length)));
+                    textSpanTreeChildren.Add(new TextSpan(style: style, text: textLocal.substring(composingRegion.end, textLocal.Length)));
                 }
             }
             else
             {
-                textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, textLocal.Length)));
+                textSpanTreeChildren.Add(new TextSpan(style: style, text: textLocal.substring(textPointer, textLocal.Length)));
             }
         }
         return textSpanTreeChildren;
@@ -236,10 +236,10 @@ public static partial class Spell_checkLibrary
 
 public static partial class Spell_checkLibrary
 {
-    internal static void _addComposingRegionTextSpans(List<global::Doroti.Framework.Painting.TextSpan> treeChildren, string text, long start, TextRange composingRegion, global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Painting.TextStyle composingTextStyle)
+    internal static void _addComposingRegionTextSpans(List<TextSpan> treeChildren, string text, long start, TextRange composingRegion, TextStyle? style, TextStyle composingTextStyle)
     {
-        treeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: text.substring(start, composingRegion.start)));
-        treeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: composingTextStyle, text: text.substring(composingRegion.start, composingRegion.end)));
+        treeChildren.Add(new TextSpan(style: style, text: text.substring(start, composingRegion.start)));
+        treeChildren.Add(new TextSpan(style: composingTextStyle, text: text.substring(composingRegion.start, composingRegion.end)));
     }
 }
 

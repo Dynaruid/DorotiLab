@@ -5,7 +5,7 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class TextButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class TextButtonThemeData : Diagnosticable
 {
     public virtual ButtonStyle? style { get; private set; }
 
@@ -40,9 +40,9 @@ public class TextButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
         return (__other is TextButtonThemeData) && Equals(__other.style, style);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -68,27 +68,27 @@ public class TextButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
 }
 
-public class TextButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class TextButtonTheme : InheritedTheme
 {
     public virtual TextButtonThemeData data { get; private set; } = default!;
 
-    public TextButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, TextButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public TextButtonTheme(Key? key = null, TextButtonThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static TextButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static TextButtonThemeData of(BuildContext context)
     {
         TextButtonTheme? buttonTheme = context.dependOnInheritedWidgetOfExactType<TextButtonTheme>();
         return buttonTheme?.data ?? Theme.of(context).textButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new TextButtonTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((TextButtonTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((TextButtonTheme)oldWidget).data));
 }

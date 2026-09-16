@@ -10,14 +10,14 @@ public class ImageFiltered : SingleChildRenderObjectWidget
     public virtual ImageFilter imageFilter { get; private set; } = default!;
     public virtual bool enabled { get; private set; } = default!;
 
-    public ImageFiltered(global::Doroti.Framework.Foundation.Key? key = null, ImageFilter imageFilter = default!, Widget? child = null, bool enabled = true) : base(key: key, child: child)
+    public ImageFiltered(Key? key = null, ImageFilter imageFilter = default!, Widget? child = null, bool enabled = true) : base(key: key, child: child)
     {
         this.imageFilter = imageFilter;
         this.enabled = enabled;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _ImageFilterRenderObject__image_filter(imageFilter, enabled));
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<RenderObject>(new _ImageFilterRenderObject__image_filter(imageFilter, enabled));
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         DartRuntimePrimitives.Ignore(((Func<_ImageFilterRenderObject__image_filter>)(() =>
 {
@@ -28,15 +28,15 @@ public class ImageFiltered : SingleChildRenderObjectWidget
 }))());
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("imageFilter", imageFilter));
+        properties.add(new DiagnosticsProperty<ImageFilter>("imageFilter", imageFilter));
     }
 
 }
 
-internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework.Rendering.RenderProxyBox
+internal class _ImageFilterRenderObject__image_filter : RenderProxyBox
 {
     internal virtual bool _enabled { get; set; } = default!;
     internal virtual ImageFilter _imageFilter { get; set; } = default!;
@@ -66,7 +66,7 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
             markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Ui.ImageFilter imageFilter
+    public virtual ImageFilter imageFilter
     {
         get => _imageFilter;
         set
@@ -81,10 +81,10 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
     }
     public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>((child is not null) && enabled);
     public override bool isRepaintBoundary => alwaysNeedsCompositing;
-    public override global::Doroti.Framework.Rendering.OffsetLayer updateCompositedLayer(global::Doroti.Framework.Rendering.OffsetLayer? oldLayer)
+    public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
-        var __oldLayer = oldLayer is null ? null : (global::Doroti.Framework.Rendering.ImageFilterLayer)oldLayer;
-        global::Doroti.Framework.Rendering.ImageFilterLayer layer = __oldLayer ?? new global::Doroti.Framework.Rendering.ImageFilterLayer();
+        var __oldLayer = oldLayer is null ? null : (ImageFilterLayer)oldLayer;
+        ImageFilterLayer layer = __oldLayer ?? new ImageFilterLayer();
         layer.imageFilter = imageFilter;
         layer.bounds = paintBounds;
         return layer;

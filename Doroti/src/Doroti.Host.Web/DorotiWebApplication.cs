@@ -15,7 +15,7 @@ public sealed record BrowserFrameDiagnostics(
     long InputSequence,
     bool InvalidatePending,
     string BackendIdentity,
-    Doroti.Skia.Rendering.SkiaFrameDiagnostics? Skia = null);
+    Skia.Rendering.SkiaFrameDiagnostics? Skia = null);
 
 /// <summary>Composition-root boundary implemented by Doroti.Target.Web.browser-wasm.</summary>
 public interface IDorotiBrowserTarget : IDisposable

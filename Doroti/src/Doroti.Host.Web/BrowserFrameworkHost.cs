@@ -8,7 +8,7 @@ namespace Doroti.Host.Web;
 public sealed class BrowserFrameworkHost : IDisposable
 {
     private readonly string _targetIdentity;
-    private readonly Doroti.Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new();
+    private readonly Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new();
     private readonly Dictionary<ulong, (DorotiView View, BrowserHostAdapter Host, IBrowserGraphicsCapabilities Graphics)> _views = [];
     private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
     private bool _disposed;

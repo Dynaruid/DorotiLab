@@ -6,37 +6,37 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Cupertino;
 
-internal class _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection : CupertinoDesktopTextSelectionControls, global::Doroti.Framework.Widgets.TextSelectionHandleControls
+internal class _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection : CupertinoDesktopTextSelectionControls, TextSelectionHandleControls
 {
 
-    public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
-    public override bool canCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public override bool canCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public override bool canPaste(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public override bool canSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public override void handleCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) { }
+    public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<TextSelectionPoint> endpoints, TextSelectionDelegate @delegate, ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
+    public override bool canCut(TextSelectionDelegate @delegate) => false;
+    public override bool canCopy(TextSelectionDelegate @delegate) => false;
+    public override bool canPaste(TextSelectionDelegate @delegate) => false;
+    public override bool canSelectAll(TextSelectionDelegate @delegate) => false;
+    public override void handleCut(TextSelectionDelegate @delegate) { }
 
-    public virtual void handleCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
+    public virtual void handleCut(TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
     {
     }
 
-    public override void handleCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) { }
+    public override void handleCopy(TextSelectionDelegate @delegate) { }
 
-    public virtual void handleCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
+    public virtual void handleCopy(TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
     {
     }
 
-    public async override Future handlePaste(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
+    public async override Future handlePaste(TextSelectionDelegate @delegate)
     {
     }
 
-    public override void handleSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
+    public override void handleSelectAll(TextSelectionDelegate @delegate)
     {
     }
 
 }
 
-public class CupertinoDesktopTextSelectionControls : global::Doroti.Framework.Widgets.TextSelectionControls
+public class CupertinoDesktopTextSelectionControls : TextSelectionControls
 {
     public override Size getHandleSize(double textLineHeight)
     {
@@ -44,25 +44,25 @@ public class CupertinoDesktopTextSelectionControls : global::Doroti.Framework.Wi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildToolbar(global::Doroti.Framework.Widgets.BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<global::Doroti.Framework.Widgets.ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition)
+    public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<TextSelectionPoint> endpoints, TextSelectionDelegate @delegate, ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition)
     {
         return new _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(clipboardStatus: clipboardStatus, endpoints: endpoints, globalEditableRegion: globalEditableRegion, handleCut: canCut(@delegate) ? (() => { handleCut(@delegate); }) : null, handleCopy: canCopy(@delegate) ? (() => { handleCopy(@delegate); }) : null, handlePaste: canPaste(@delegate) ? (() => { _ = handlePaste(@delegate); }) : null, handleSelectAll: canSelectAll(@delegate) ? (() => { handleSelectAll(@delegate); }) : null, selectionMidpoint: selectionMidpoint, lastSecondaryTapDownPosition: lastSecondaryTapDownPosition, textLineHeight: textLineHeight);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget buildHandle(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.TextSelectionHandleType type, double textLineHeight, global::System.Action? onTap = null)
+    public override Widget buildHandle(BuildContext context, TextSelectionHandleType type, double textLineHeight, Action? onTap = null)
     {
         return SizedBox.CreateShrink();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Offset getHandleAnchor(global::Doroti.Framework.Rendering.TextSelectionHandleType type, double textLineHeight)
+    public override Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight)
     {
         return Offset.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void handleSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
+    public override void handleSelectAll(TextSelectionDelegate @delegate)
     {
         base.handleSelectAll(@delegate);
         @delegate.hideToolbar();
@@ -72,28 +72,28 @@ public class CupertinoDesktopTextSelectionControls : global::Doroti.Framework.Wi
 
 public static partial class Desktop_text_selectionLibrary
 {
-    public static global::Doroti.Framework.Widgets.TextSelectionControls cupertinoDesktopTextSelectionHandleControls = new _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection();
+    public static TextSelectionControls cupertinoDesktopTextSelectionHandleControls = new _CupertinoDesktopTextSelectionHandleControls__desktop_text_selection();
 }
 
 public static partial class Desktop_text_selectionLibrary
 {
-    public static global::Doroti.Framework.Widgets.TextSelectionControls cupertinoDesktopTextSelectionControls = new CupertinoDesktopTextSelectionControls();
+    public static TextSelectionControls cupertinoDesktopTextSelectionControls = new CupertinoDesktopTextSelectionControls();
 }
 
-public class _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection : global::Doroti.Framework.Widgets.StatefulWidget
+public class _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<global::Doroti.Framework.Widgets.ClipboardStatus>? clipboardStatus { get; private set; }
-    public virtual List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints { get; private set; } = default!;
+    public virtual ValueListenable<ClipboardStatus>? clipboardStatus { get; private set; }
+    public virtual List<TextSelectionPoint> endpoints { get; private set; } = default!;
     public virtual Rect globalEditableRegion { get; private set; } = default!;
-    public virtual global::System.Action? handleCopy { get; private set; }
-    public virtual global::System.Action? handleCut { get; private set; }
-    public virtual global::System.Action? handlePaste { get; private set; }
-    public virtual global::System.Action? handleSelectAll { get; private set; }
+    public virtual Action? handleCopy { get; private set; }
+    public virtual Action? handleCut { get; private set; }
+    public virtual Action? handlePaste { get; private set; }
+    public virtual Action? handleSelectAll { get; private set; }
     public virtual Offset? lastSecondaryTapDownPosition { get; private set; }
     public virtual Offset selectionMidpoint { get; private set; } = default!;
     public virtual double textLineHeight { get; private set; } = default!;
 
-    internal _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(global::Doroti.Framework.Foundation.ValueListenable<global::Doroti.Framework.Widgets.ClipboardStatus>? clipboardStatus, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, Rect globalEditableRegion, global::System.Action? handleCopy, global::System.Action? handleCut, global::System.Action? handlePaste, global::System.Action? handleSelectAll, Offset selectionMidpoint, double textLineHeight, Offset? lastSecondaryTapDownPosition)
+    internal _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection(ValueListenable<ClipboardStatus>? clipboardStatus, List<TextSelectionPoint> endpoints, Rect globalEditableRegion, Action? handleCopy, Action? handleCut, Action? handlePaste, Action? handleSelectAll, Offset selectionMidpoint, double textLineHeight, Offset? lastSecondaryTapDownPosition)
     {
         this.clipboardStatus = clipboardStatus;
         this.endpoints = endpoints;
@@ -110,7 +110,7 @@ public class _CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selecti
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_selection());
 }
 
-public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_selection : global::Doroti.Framework.Widgets.State<_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection>
+public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_selection : State<_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection>
 {
     internal virtual void _onChangedClipboardStatus()
     {
@@ -141,19 +141,19 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
         base.dispose();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         if ((widget.handlePaste is not null) && Equals(widget.clipboardStatus?.value, ClipboardStatus.unknown))
         {
             return SizedBox.CreateShrink();
         }
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
-        var midpointAnchor = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(widget.selectionMidpoint.dx - widget.globalEditableRegion.left, mediaQueryPadding.left, MediaQuery.widthOf(context) - mediaQueryPadding.right), widget.selectionMidpoint.dy - widget.globalEditableRegion.top);
-        var items = new List<global::Doroti.Framework.Widgets.Widget>();
+        EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
+        var midpointAnchor = new Offset(Dart_uiLibrary.clampDouble(widget.selectionMidpoint.dx - widget.globalEditableRegion.left, mediaQueryPadding.left, MediaQuery.widthOf(context) - mediaQueryPadding.right), widget.selectionMidpoint.dy - widget.globalEditableRegion.top);
+        var items = new List<Widget>();
         CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
-        global::Doroti.Framework.Widgets.Widget onePhysicalPixelVerticalDivider = new global::Doroti.Framework.Widgets.SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
-        void addToolbarButton(string text, global::System.Action onPressed)
+        Widget onePhysicalPixelVerticalDivider = new SizedBox(width: 1.0 / MediaQuery.devicePixelRatioOf(context));
+        void addToolbarButton(string text, Action onPressed)
         {
             if (Enumerable.Any(items))
             {

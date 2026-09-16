@@ -221,7 +221,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             result.CheckError();
             try
             {
-                _device = D3D12CreateDevice<ID3D12Device2>(candidate, FeatureLevel.Level110);
+                _device = D3D12CreateDevice<ID3D12Device2>(candidate!, FeatureLevel.Level110);
                 _adapter = candidate;
                 break;
             }

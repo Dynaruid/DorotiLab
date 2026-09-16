@@ -11,14 +11,14 @@ public interface SliderComponentShape
     public static SliderComponentShape noThumb = new _EmptySliderComponentShape__slider_value_indicator_shape();
     public static SliderComponentShape noOverlay = new _EmptySliderComponentShape__slider_value_indicator_shape();
 
-    public global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null);
-    public void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, global::Doroti.Framework.Rendering.RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow);
+    public Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null);
+    public void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow);
 }
 
 internal class _EmptySliderComponentShape__slider_value_indicator_shape : SliderComponentShape
 {
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null) => Size.zero;
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, global::Doroti.Framework.Rendering.RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
+    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null) => Size.zero;
+    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
     {
     }
 
@@ -33,19 +33,19 @@ public class RoundSliderOverlayShape : SliderComponentShape
         this.overlayRadius = overlayRadius;
     }
 
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null)
+    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null)
     {
         return Size.fromRadius(overlayRadius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, global::Doroti.Framework.Rendering.RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
+    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
     {
-        global::Doroti.Ui.Canvas canvasLocal = context.canvas;
-        var radiusTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: overlayRadius);
+        Canvas canvasLocal = context.canvas;
+        var radiusTween = new Tween<double>(begin: 0.0, end: overlayRadius);
         canvasLocal.drawCircle(center, radiusTween.evaluate(activationAnimation), ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = sliderTheme.overlayColor!;
     return __cascade;
 }))());
@@ -61,7 +61,7 @@ public class RectangularSliderValueIndicatorShape : SliderComponentShape
     {
     }
 
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null)
+    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null)
     {
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
         DartRuntimePrimitives.Assert(() => (textScaleFactor is not null) && (textScaleFactor >= 0L));
@@ -69,9 +69,9 @@ public class RectangularSliderValueIndicatorShape : SliderComponentShape
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, global::Doroti.Framework.Rendering.RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
+    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
     {
-        global::Doroti.Ui.Canvas canvasLocal = context.canvas;
+        Canvas canvasLocal = context.canvas;
         double scaleLocal = activationAnimation.value;
         _pathPainter.paint(parentBox: parentBox, canvas: canvasLocal, center: center, scale: scaleLocal, labelPainter: labelPainter, textScaleFactor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow: sizeWithOverflow, backgroundPaintColor: sliderTheme.valueIndicatorColor!, strokePaintColor: sliderTheme.valueIndicatorStrokeColor);
     }
@@ -86,22 +86,22 @@ public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicat
     {
     }
 
-    public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)
+    public override Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter labelPainter, double textScaleFactor)
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
         return _pathPainter.getPreferredSize(labelPainter, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double getHorizontalShift(global::Doroti.Framework.Rendering.RenderBox? parentBox = null, Offset? center = null, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, global::Doroti.Framework.Animation.Animation<double>? activationAnimation = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)
+    public override double getHorizontalShift(RenderBox? parentBox = null, Offset? center = null, TextPainter? labelPainter = null, Animation<double>? activationAnimation = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)
     {
         return _pathPainter.getHorizontalShift(parentBox: parentBox!, center: DartRuntimePrimitives.RequireValue(center), labelPainter: labelPainter!, textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor), sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow), scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)
+    public override void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)
     {
-        global::Doroti.Ui.Canvas canvasLocal = context.canvas;
+        Canvas canvasLocal = context.canvas;
         double scaleLocal = activationAnimation!.value;
         _pathPainter.paint(parentBox: parentBox!, canvas: canvasLocal, center: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)), scale: scaleLocal, labelPainter: labelPainter!, textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor), sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow), backgroundPaintColor: sliderTheme!.valueIndicatorColor!, strokePaintColor: DartRuntimePrimitives.RequireValue(isOnTop) ? sliderTheme.overlappingShapeStrokeColor : sliderTheme.valueIndicatorStrokeColor);
     }
@@ -122,18 +122,18 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
     {
     }
 
-    public virtual global::Doroti.Ui.Size getPreferredSize(global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)
+    public virtual Size getPreferredSize(TextPainter labelPainter, double textScaleFactor)
     {
-        return new global::Doroti.Ui.Size(_upperRectangleWidth(labelPainter, 1, textScaleFactor), labelPainter.height + _labelPadding);
+        return new Size(_upperRectangleWidth(labelPainter, 1, textScaleFactor), labelPainter.height + _labelPadding);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double getHorizontalShift(global::Doroti.Framework.Rendering.RenderBox parentBox, Offset center, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, double scale)
+    public virtual double getHorizontalShift(RenderBox parentBox, Offset center, TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, double scale)
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         var edgePadding = 8.0;
         double rectangleWidth = _upperRectangleWidth(labelPainter, scale, textScaleFactor);
-        global::Doroti.Ui.Offset globalCenter = parentBox.localToGlobal(center);
+        Offset globalCenter = parentBox.localToGlobal(center);
         double overflowLeft = Math.Max(0, (rectangleWidth / 2L) - globalCenter.dx + edgePadding);
         double overflowRight = Math.Max(0, (rectangleWidth / 2L) - (sizeWithOverflow.width - globalCenter.dx - edgePadding));
         if (rectangleWidth < sizeWithOverflow.width)
@@ -154,14 +154,14 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _upperRectangleWidth(global::Doroti.Framework.Painting.TextPainter labelPainter, double scale, double textScaleFactor)
+    internal virtual double _upperRectangleWidth(TextPainter labelPainter, double scale, double textScaleFactor)
     {
         double unscaledWidth = Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width) + (_labelPadding * 2L);
         return unscaledWidth * scale;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.RenderBox parentBox, Canvas canvas, Offset center, double scale, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, Color backgroundPaintColor, Color? strokePaintColor = null)
+    public virtual void paint(RenderBox parentBox, Canvas canvas, Offset center, double scale, TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, Color backgroundPaintColor, Color? strokePaintColor = null)
     {
         if (scale == 0.0)
         {
@@ -174,7 +174,7 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         var upperRect = Rect.fromLTWH((-rectangleWidth / 2L) + horizontalShift, -_triangleHeight - rectHeight, rectangleWidth, rectHeight);
         var trianglePath = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.lineTo(-_triangleHeight, -_triangleHeight);
     __cascade.lineTo(_triangleHeight, -_triangleHeight);
     __cascade.close();
@@ -182,7 +182,7 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
 }))();
         var fillPaint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = backgroundPaintColor;
     return __cascade;
 }))();
@@ -195,7 +195,7 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         {
             var strokePaint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = strokePaintColor;
     __cascade.strokeWidth = 1.0;
     __cascade.style = PaintingStyle.stroke;
@@ -206,9 +206,9 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         canvas.drawPath(trianglePath, fillPaint);
         double bottomTipToUpperRectTranslateY = (-_preferredHalfHeight / 2L) - upperRect.height;
         canvas.translate(0, bottomTipToUpperRectTranslateY);
-        var boxCenter = new global::Doroti.Ui.Offset(horizontalShift, upperRect.height / 2L);
-        var halfLabelPainterOffset = new global::Doroti.Ui.Offset(labelPainter.width / 2L, labelPainter.height / 2L);
-        global::Doroti.Ui.Offset labelOffset = boxCenter - halfLabelPainterOffset;
+        var boxCenter = new Offset(horizontalShift, upperRect.height / 2L);
+        var halfLabelPainterOffset = new Offset(labelPainter.width / 2L, labelPainter.height / 2L);
+        Offset labelOffset = boxCenter - halfLabelPainterOffset;
         labelPainter.paint(canvas, labelOffset);
         canvas.restore();
     }
@@ -223,7 +223,7 @@ public class PaddleSliderValueIndicatorShape : SliderComponentShape
     {
     }
 
-    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null)
+    public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter? labelPainter = null, double? textScaleFactor = null)
     {
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
         DartRuntimePrimitives.Assert(() => (textScaleFactor is not null) && (textScaleFactor >= 0L));
@@ -231,13 +231,13 @@ public class PaddleSliderValueIndicatorShape : SliderComponentShape
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, global::Doroti.Framework.Rendering.RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
+    public virtual void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete, TextPainter labelPainter, RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
-        var enableColor = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.valueIndicatorColor);
+        var enableColor = new ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.valueIndicatorColor);
         _pathPainter.paint(context.canvas, center, ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = enableColor.evaluate(enableAnimation)!;
     return __cascade;
 }))(), activationAnimation.value, labelPainter, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow, sliderTheme.valueIndicatorStrokeColor);
@@ -253,26 +253,26 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
     {
     }
 
-    public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)
+    public override Size getPreferredSize(bool isEnabled, bool isDiscrete, TextPainter labelPainter, double textScaleFactor)
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
         return _pathPainter.getPreferredSize(labelPainter, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double getHorizontalShift(global::Doroti.Framework.Rendering.RenderBox? parentBox = null, Offset? center = null, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, global::Doroti.Framework.Animation.Animation<double>? activationAnimation = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)
+    public override double getHorizontalShift(RenderBox? parentBox = null, Offset? center = null, TextPainter? labelPainter = null, Animation<double>? activationAnimation = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)
     {
         return _pathPainter.getHorizontalShift(center: DartRuntimePrimitives.RequireValue(center), labelPainter: labelPainter!, scale: DartRuntimePrimitives.RequireValue(activationAnimation!.value), textScaleFactor: DartRuntimePrimitives.RequireValue(textScaleFactor), sizeWithOverflow: DartRuntimePrimitives.RequireValue(sizeWithOverflow));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)
+    public override void paint(PaintingContext context, Offset center, Animation<double> activationAnimation, Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)
     {
         DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.RequireValue(sizeWithOverflow).isEmpty);
-        var enableColor = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.valueIndicatorColor);
+        var enableColor = new ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.valueIndicatorColor);
         _pathPainter.paint(context.canvas, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(center)), ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = enableColor.evaluate(enableAnimation)!;
     return __cascade;
 }))(), DartRuntimePrimitives.RequireValue(activationAnimation.value), labelPainter, DartRuntimePrimitives.RequireValue(textScaleFactor), DartRuntimePrimitives.RequireValue(sizeWithOverflow), isOnTop ? sliderTheme.overlappingShapeStrokeColor : sliderTheme.valueIndicatorStrokeColor);
@@ -292,7 +292,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
     internal static double _neckTriangleBase = _topNeckRadius + (_middleNeckWidth / 2L);
     internal static double _rightBottomNeckCenterX = (_middleNeckWidth / 2L) + _bottomNeckRadius;
     internal static double _rightBottomNeckAngleStart = Dart_mathLibrary.pi;
-    internal static Offset _topLobeCenter = new global::Doroti.Ui.Offset(0.0, -_distanceBetweenTopBottomCenters);
+    internal static Offset _topLobeCenter = new Offset(0.0, -_distanceBetweenTopBottomCenters);
     internal const double _topNeckRadius = 13.0;
     internal static double _neckTriangleHypotenuse = _topLobeRadius + _topNeckRadius;
     internal static double _twoSeventyDegrees = 3.0 * Dart_mathLibrary.pi / 2.0;
@@ -305,11 +305,11 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
     {
     }
 
-    public virtual global::Doroti.Ui.Size getPreferredSize(global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)
+    public virtual Size getPreferredSize(TextPainter labelPainter, double textScaleFactor)
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
         double widthLocal = Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width) + (_labelPadding * 2L * textScaleFactor);
-        return new global::Doroti.Ui.Size(widthLocal, _preferredHeight * textScaleFactor);
+        return new Size(widthLocal, _preferredHeight * textScaleFactor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -320,7 +320,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         path.arcTo(arcRect, startAngle, endAngle - startAngle, false);
     }
 
-    public virtual double getHorizontalShift(Offset center, global::Doroti.Framework.Painting.TextPainter labelPainter, double scale, double textScaleFactor, Size sizeWithOverflow)
+    public virtual double getHorizontalShift(Offset center, TextPainter labelPainter, double scale, double textScaleFactor, Size sizeWithOverflow)
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
         double inverseTextScale = (textScaleFactor != 0L) ? (1.0 / textScaleFactor) : 0.0;
@@ -335,8 +335,8 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
     {
         var edgeMargin = 8.0;
         var topLobeRect = Rect.fromLTWH(-_topLobeRadius - halfWidthNeeded, -_topLobeRadius - _distanceBetweenTopBottomCenters, 2.0 * (_topLobeRadius + halfWidthNeeded), 2.0 * _topLobeRadius);
-        global::Doroti.Ui.Offset topLeftLocal = topLobeRect.topLeft * scale + center;
-        global::Doroti.Ui.Offset bottomRightLocal = topLobeRect.bottomRight * scale + center;
+        Offset topLeftLocal = topLobeRect.topLeft * scale + center;
+        Offset bottomRightLocal = topLobeRect.bottomRight * scale + center;
         var shift = 0.0;
         if (topLeftLocal.dx < edgeMargin)
         {
@@ -360,7 +360,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(Canvas canvas, Offset center, Paint paint, double scale, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, Color? strokePaintColor)
+    public virtual void paint(Canvas canvas, Offset center, Paint paint, double scale, TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, Color? strokePaintColor)
     {
         if (scale == 0.0)
         {
@@ -378,13 +378,13 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         double rightBottomNeckAngleEnd = Dart_mathLibrary.pi + Dart_mathLibrary.atan(rightBottomNeckCenterY / _rightBottomNeckCenterX);
         var path = ((Func<Path>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Path();
+    var __cascade = new Path();
     __cascade.moveTo(_middleNeckWidth / 2L, rightBottomNeckCenterY);
     return __cascade;
 }))();
-        _addArc(path, new global::Doroti.Ui.Offset(_rightBottomNeckCenterX, rightBottomNeckCenterY), _bottomNeckRadius, _rightBottomNeckAngleStart, rightBottomNeckAngleEnd);
+        _addArc(path, new Offset(_rightBottomNeckCenterX, rightBottomNeckCenterY), _bottomNeckRadius, _rightBottomNeckAngleStart, rightBottomNeckAngleEnd);
         _addArc(path, Offset.zero, _bottomLobeRadius / overallScale, rightBottomNeckAngleEnd - Dart_mathLibrary.pi, (2L * Dart_mathLibrary.pi) - rightBottomNeckAngleEnd);
-        _addArc(path, new global::Doroti.Ui.Offset(-_rightBottomNeckCenterX, rightBottomNeckCenterY), _bottomNeckRadius, Dart_mathLibrary.pi - rightBottomNeckAngleEnd, 0);
+        _addArc(path, new Offset(-_rightBottomNeckCenterX, rightBottomNeckCenterY), _bottomNeckRadius, Dart_mathLibrary.pi - rightBottomNeckAngleEnd, 0);
         double halfWidthNeeded = Math.Max(0.0, (inverseTextScale * labelHalfWidth) - (_topLobeRadius - _labelPadding));
         double shift = _getIdealOffset(halfWidthNeeded, overallScale, center, sizeWithOverflow.width);
         double leftWidthNeeded = halfWidthNeeded - shift;
@@ -393,23 +393,23 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         double rightAmount = Math.Max(0.0, Math.Min(1.0, rightWidthNeeded / _neckTriangleBase));
         double leftTheta = (1.0 - leftAmount) * _thirtyDegrees;
         double rightTheta = (1.0 - rightAmount) * _thirtyDegrees;
-        var leftTopNeckCenter = new global::Doroti.Ui.Offset(-_neckTriangleBase, _topLobeCenter.dy + (Dart_mathLibrary.cos(leftTheta) * _neckTriangleHypotenuse));
-        var neckRightCenter = new global::Doroti.Ui.Offset(_neckTriangleBase, _topLobeCenter.dy + (Dart_mathLibrary.cos(rightTheta) * _neckTriangleHypotenuse));
+        var leftTopNeckCenter = new Offset(-_neckTriangleBase, _topLobeCenter.dy + (Dart_mathLibrary.cos(leftTheta) * _neckTriangleHypotenuse));
+        var neckRightCenter = new Offset(_neckTriangleBase, _topLobeCenter.dy + (Dart_mathLibrary.cos(rightTheta) * _neckTriangleHypotenuse));
         double leftNeckArcAngle = _ninetyDegrees - leftTheta;
         double rightNeckArcAngle = Dart_mathLibrary.pi + _ninetyDegrees - rightTheta;
         double neckStretchBaseline = Math.Max(0.0, rightBottomNeckCenterY - Math.Max(leftTopNeckCenter.dy, neckRightCenter.dy));
         var t = (double)Dart_mathLibrary.pow(inverseTextScale, 3.0);
         double stretch = Dart_uiLibrary.clampDouble(neckStretchBaseline * t, 0.0, 10.0 * neckStretchBaseline);
-        var neckStretch = new global::Doroti.Ui.Offset(0.0, neckStretchBaseline - stretch);
-        DartRuntimePrimitives.Assert(() => !_debuggingLabelLocation || ((global::System.Func<bool>)(() =>
+        var neckStretch = new Offset(0.0, neckStretchBaseline - stretch);
+        DartRuntimePrimitives.Assert(() => !_debuggingLabelLocation || ((Func<bool>)(() =>
         {
-            global::Doroti.Ui.Offset leftCenter = _topLobeCenter - new global::Doroti.Ui.Offset(leftWidthNeeded, 0.0) + neckStretch;
-            global::Doroti.Ui.Offset rightCenter = _topLobeCenter + new global::Doroti.Ui.Offset(rightWidthNeeded, 0.0) + neckStretch;
+            Offset leftCenter = _topLobeCenter - new Offset(leftWidthNeeded, 0.0) + neckStretch;
+            Offset rightCenter = _topLobeCenter + new Offset(rightWidthNeeded, 0.0) + neckStretch;
             var valueRect = Rect.fromLTRB(leftCenter.dx - _topLobeRadius, leftCenter.dy - _topLobeRadius, rightCenter.dx + _topLobeRadius, rightCenter.dy + _topLobeRadius);
             var outlinePaint = ((Func<Paint>)(() =>
             {
-                var __cascade = new global::Doroti.Ui.Paint();
-                __cascade.color = new global::Doroti.Ui.Color(4294901760L);
+                var __cascade = new Paint();
+                __cascade.color = new Color(4294901760L);
                 __cascade.style = PaintingStyle.stroke;
                 __cascade.strokeWidth = 1.0;
                 return __cascade;
@@ -419,14 +419,14 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))());
         _addArc(path, leftTopNeckCenter + neckStretch, _topNeckRadius, 0.0, -leftNeckArcAngle);
-        _addArc(path, _topLobeCenter - new global::Doroti.Ui.Offset(leftWidthNeeded, 0.0) + neckStretch, _topLobeRadius, _ninetyDegrees + leftTheta, _twoSeventyDegrees);
-        _addArc(path, _topLobeCenter + new global::Doroti.Ui.Offset(rightWidthNeeded, 0.0) + neckStretch, _topLobeRadius, _twoSeventyDegrees, _twoSeventyDegrees + Dart_mathLibrary.pi - rightTheta);
+        _addArc(path, _topLobeCenter - new Offset(leftWidthNeeded, 0.0) + neckStretch, _topLobeRadius, _ninetyDegrees + leftTheta, _twoSeventyDegrees);
+        _addArc(path, _topLobeCenter + new Offset(rightWidthNeeded, 0.0) + neckStretch, _topLobeRadius, _twoSeventyDegrees, _twoSeventyDegrees + Dart_mathLibrary.pi - rightTheta);
         _addArc(path, neckRightCenter + neckStretch, _topNeckRadius, rightNeckArcAngle, Dart_mathLibrary.pi);
         if (strokePaintColor is not null)
         {
             var strokePaint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = strokePaintColor;
     __cascade.strokeWidth = 1.0;
     __cascade.style = PaintingStyle.stroke;
@@ -438,7 +438,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
         canvas.save();
         canvas.translate(shift, -_distanceBetweenTopBottomCenters + neckStretch.dy);
         canvas.scale(inverseTextScale, inverseTextScale);
-        labelPainter.paint(canvas, Offset.zero - new global::Doroti.Ui.Offset(labelHalfWidth, labelPainter.height / 2.0));
+        labelPainter.paint(canvas, Offset.zero - new Offset(labelHalfWidth, labelPainter.height / 2.0));
         canvas.restore();
         canvas.restore();
     }

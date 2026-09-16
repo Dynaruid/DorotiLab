@@ -38,7 +38,7 @@ public class InlineSpanSemanticsInformation
 
     public InlineSpanSemanticsInformation(string text, bool isPlaceholder = false, string? semanticsLabel = null, string? semanticsIdentifier = null, List<StringAttribute> stringAttributes = default!, GestureRecognizer? recognizer = null)
     {
-        List<StringAttribute> __stringAttributes = stringAttributes ?? new List<global::Doroti.Ui.StringAttribute>();
+        List<StringAttribute> __stringAttributes = stringAttributes ?? new List<StringAttribute>();
         this.text = text;
         this.isPlaceholder = isPlaceholder;
         this.semanticsLabel = semanticsLabel;
@@ -53,7 +53,7 @@ public class InlineSpanSemanticsInformation
     {
         var __other = other as InlineSpanSemanticsInformation;
         if (__other is null) return false;
-        return (__other is InlineSpanSemanticsInformation) && (__other.text == text) && (__other.semanticsLabel == semanticsLabel) && (__other.semanticsIdentifier == semanticsIdentifier) && Equals(__other.recognizer, recognizer) && (__other.isPlaceholder == isPlaceholder) && CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(__other.stringAttributes, stringAttributes);
+        return (__other is InlineSpanSemanticsInformation) && (__other.text == text) && (__other.semanticsLabel == semanticsLabel) && (__other.semanticsIdentifier == semanticsIdentifier) && Equals(__other.recognizer, recognizer) && (__other.isPlaceholder == isPlaceholder) && CollectionsLibrary.listEquals(__other.stringAttributes, stringAttributes);
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(text, semanticsLabel, semanticsIdentifier, recognizer, isPlaceholder);
@@ -67,7 +67,7 @@ public static partial class Inline_spanLibrary
         var combined = new List<InlineSpanSemanticsInformation>();
         var workingText = "";
         var workingLabel = "";
-        var workingAttributes = new List<global::Doroti.Ui.StringAttribute>();
+        var workingAttributes = new List<StringAttribute>();
         foreach (var info in infoList)
         {
             if (info.requiresOwnNode)
@@ -75,16 +75,16 @@ public static partial class Inline_spanLibrary
                 combined.Add(new InlineSpanSemanticsInformation(workingText, semanticsLabel: workingLabel, stringAttributes: workingAttributes));
                 workingText = "";
                 workingLabel = "";
-                workingAttributes = new List<global::Doroti.Ui.StringAttribute>();
+                workingAttributes = new List<StringAttribute>();
                 combined.Add(info);
             }
             else
             {
                 workingText += info.text;
                 string effectiveLabel = info.semanticsLabel ?? info.text;
-                foreach (global::Doroti.Ui.StringAttribute infoAttribute in info.stringAttributes)
+                foreach (StringAttribute infoAttribute in info.stringAttributes)
                 {
-                    workingAttributes.Add(infoAttribute.copy(range: new global::Doroti.Ui.TextRange(start: infoAttribute.range.start + workingLabel.Length, end: infoAttribute.range.end + workingLabel.Length)));
+                    workingAttributes.Add(infoAttribute.copy(range: new TextRange(start: infoAttribute.range.start + workingLabel.Length, end: infoAttribute.range.end + workingLabel.Length)));
                 }
                 workingLabel += effectiveLabel;
             }

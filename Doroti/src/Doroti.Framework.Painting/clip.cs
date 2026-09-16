@@ -6,7 +6,7 @@ namespace Doroti.Framework.Painting;
 
 public abstract class ClipContext
 {
-    public abstract global::Doroti.Ui.Canvas canvas { get; }
+    public abstract Canvas canvas { get; }
     internal virtual void _clipAndPaint(Action<bool> canvasClipCall, Clip clipBehavior, Rect bounds, Action painter)
     {
         canvas.save();
@@ -29,7 +29,7 @@ public abstract class ClipContext
             case Clip.antiAliasWithSaveLayer:
                 {
                     canvasClipCall(true);
-                    canvas.saveLayer(bounds, new global::Doroti.Ui.Paint());
+                    canvas.saveLayer(bounds, new Paint());
                     break;
                 }
         }

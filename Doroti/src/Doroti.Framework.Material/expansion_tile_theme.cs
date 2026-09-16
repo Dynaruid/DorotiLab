@@ -6,23 +6,23 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class ExpansionTileThemeData : Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? collapsedBackgroundColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? tilePadding { get; private set; }
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? expandedAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? childrenPadding { get; private set; }
+    public virtual EdgeInsetsGeometry? tilePadding { get; private set; }
+    public virtual AlignmentGeometry? expandedAlignment { get; private set; }
+    public virtual EdgeInsetsGeometry? childrenPadding { get; private set; }
     public virtual Color? iconColor { get; private set; }
     public virtual Color? collapsedIconColor { get; private set; }
     public virtual Color? textColor { get; private set; }
     public virtual Color? collapsedTextColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Framework.Painting.ShapeBorder? collapsedShape { get; private set; }
+    public virtual ShapeBorder? shape { get; private set; }
+    public virtual ShapeBorder? collapsedShape { get; private set; }
     public virtual Clip? clipBehavior { get; private set; }
-    public virtual global::Doroti.Framework.Animation.AnimationStyle? expansionAnimationStyle { get; private set; }
+    public virtual AnimationStyle? expansionAnimationStyle { get; private set; }
 
-    public ExpansionTileThemeData(Color? backgroundColor = null, Color? collapsedBackgroundColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? tilePadding = null, global::Doroti.Framework.Painting.AlignmentGeometry? expandedAlignment = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? childrenPadding = null, Color? iconColor = null, Color? collapsedIconColor = null, Color? textColor = null, Color? collapsedTextColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.ShapeBorder? collapsedShape = null, Clip? clipBehavior = null, global::Doroti.Framework.Animation.AnimationStyle? expansionAnimationStyle = null)
+    public ExpansionTileThemeData(Color? backgroundColor = null, Color? collapsedBackgroundColor = null, EdgeInsetsGeometry? tilePadding = null, AlignmentGeometry? expandedAlignment = null, EdgeInsetsGeometry? childrenPadding = null, Color? iconColor = null, Color? collapsedIconColor = null, Color? textColor = null, Color? collapsedTextColor = null, ShapeBorder? shape = null, ShapeBorder? collapsedShape = null, Clip? clipBehavior = null, AnimationStyle? expansionAnimationStyle = null)
     {
         this.backgroundColor = backgroundColor;
         this.collapsedBackgroundColor = collapsedBackgroundColor;
@@ -39,7 +39,7 @@ public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagno
         this.expansionAnimationStyle = expansionAnimationStyle;
     }
 
-    public virtual ExpansionTileThemeData copyWith(Color? backgroundColor = null, Color? collapsedBackgroundColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? tilePadding = null, global::Doroti.Framework.Painting.AlignmentGeometry? expandedAlignment = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? childrenPadding = null, Color? iconColor = null, Color? collapsedIconColor = null, Color? textColor = null, Color? collapsedTextColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.ShapeBorder? collapsedShape = null, Clip? clipBehavior = null, global::Doroti.Framework.Animation.AnimationStyle? expansionAnimationStyle = null)
+    public virtual ExpansionTileThemeData copyWith(Color? backgroundColor = null, Color? collapsedBackgroundColor = null, EdgeInsetsGeometry? tilePadding = null, AlignmentGeometry? expandedAlignment = null, EdgeInsetsGeometry? childrenPadding = null, Color? iconColor = null, Color? collapsedIconColor = null, Color? textColor = null, Color? collapsedTextColor = null, ShapeBorder? shape = null, ShapeBorder? collapsedShape = null, Clip? clipBehavior = null, AnimationStyle? expansionAnimationStyle = null)
     {
         return new ExpansionTileThemeData(backgroundColor: backgroundColor ?? this.backgroundColor, collapsedBackgroundColor: collapsedBackgroundColor ?? this.collapsedBackgroundColor, tilePadding: tilePadding ?? this.tilePadding, expandedAlignment: expandedAlignment ?? this.expandedAlignment, childrenPadding: childrenPadding ?? this.childrenPadding, iconColor: iconColor ?? this.iconColor, collapsedIconColor: collapsedIconColor ?? this.collapsedIconColor, textColor: textColor ?? this.textColor, collapsedTextColor: collapsedTextColor ?? this.collapsedTextColor, shape: shape ?? this.shape, collapsedShape: collapsedShape ?? this.collapsedShape, clipBehavior: clipBehavior ?? this.clipBehavior, expansionAnimationStyle: expansionAnimationStyle ?? this.expansionAnimationStyle);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -74,21 +74,21 @@ public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagno
         return (__other is ExpansionTileThemeData) && Equals(__other.backgroundColor, backgroundColor) && Equals(__other.collapsedBackgroundColor, collapsedBackgroundColor) && Equals(__other.tilePadding, tilePadding) && Equals(__other.expandedAlignment, expandedAlignment) && Equals(__other.childrenPadding, childrenPadding) && Equals(__other.iconColor, iconColor) && Equals(__other.collapsedIconColor, collapsedIconColor) && Equals(__other.textColor, textColor) && Equals(__other.collapsedTextColor, collapsedTextColor) && Equals(__other.shape, shape) && Equals(__other.collapsedShape, collapsedShape) && Equals(__other.clipBehavior, clipBehavior) && Equals(__other.expansionAnimationStyle, expansionAnimationStyle);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("collapsedBackgroundColor", collapsedBackgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("tilePadding", tilePadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("expandedAlignment", expandedAlignment, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("childrenPadding", childrenPadding, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("iconColor", iconColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("collapsedIconColor", collapsedIconColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("textColor", textColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("collapsedTextColor", collapsedTextColor, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", shape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("collapsedShape", collapsedShape, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", clipBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationStyle>("expansionAnimationStyle", expansionAnimationStyle, defaultValue: null));
+        properties.add(new ColorProperty("backgroundColor", backgroundColor, defaultValue: null));
+        properties.add(new ColorProperty("collapsedBackgroundColor", collapsedBackgroundColor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("tilePadding", tilePadding, defaultValue: null));
+        properties.add(new DiagnosticsProperty<AlignmentGeometry>("expandedAlignment", expandedAlignment, defaultValue: null));
+        properties.add(new DiagnosticsProperty<EdgeInsetsGeometry>("childrenPadding", childrenPadding, defaultValue: null));
+        properties.add(new ColorProperty("iconColor", iconColor, defaultValue: null));
+        properties.add(new ColorProperty("collapsedIconColor", collapsedIconColor, defaultValue: null));
+        properties.add(new ColorProperty("textColor", textColor, defaultValue: null));
+        properties.add(new ColorProperty("collapsedTextColor", collapsedTextColor, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ShapeBorder>("shape", shape, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ShapeBorder>("collapsedShape", collapsedShape, defaultValue: null));
+        properties.add(new DiagnosticsProperty<Clip>("clipBehavior", clipBehavior, defaultValue: null));
+        properties.add(new DiagnosticsProperty<AnimationStyle>("expansionAnimationStyle", expansionAnimationStyle, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -114,27 +114,27 @@ public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagno
 
 }
 
-public class ExpansionTileTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class ExpansionTileTheme : InheritedTheme
 {
     public virtual ExpansionTileThemeData data { get; private set; } = default!;
 
-    public ExpansionTileTheme(global::Doroti.Framework.Foundation.Key? key = null, ExpansionTileThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public ExpansionTileTheme(Key? key = null, ExpansionTileThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static ExpansionTileThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static ExpansionTileThemeData of(BuildContext context)
     {
         ExpansionTileTheme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<ExpansionTileTheme>();
         return inheritedTheme?.data ?? Theme.of(context).expansionTileTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new ExpansionTileTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ExpansionTileTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((ExpansionTileTheme)oldWidget).data));
 }

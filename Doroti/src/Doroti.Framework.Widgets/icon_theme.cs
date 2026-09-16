@@ -8,12 +8,12 @@ public class IconTheme : InheritedTheme
 {
     public virtual IconThemeData data { get; private set; } = default!;
 
-    public IconTheme(global::Doroti.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!) : base(key: key, child: child)
+    public IconTheme(Key? key = null, IconThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!)
+    public static Widget merge(Key? key = null, IconThemeData data = default!, Widget child = default!)
     {
         return new Builder(builder: (context) =>
         {
@@ -44,7 +44,7 @@ public class IconTheme : InheritedTheme
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         data.debugFillProperties(properties);

@@ -5,18 +5,18 @@ using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
 
-public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
+public class SegmentedButtonThemeData : Diagnosticable
 {
     public virtual ButtonStyle? style { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? selectedIcon { get; private set; }
+    public virtual Widget? selectedIcon { get; private set; }
 
-    public SegmentedButtonThemeData(ButtonStyle? style = null, global::Doroti.Framework.Widgets.Widget? selectedIcon = null)
+    public SegmentedButtonThemeData(ButtonStyle? style = null, Widget? selectedIcon = null)
     {
         this.style = style;
         this.selectedIcon = selectedIcon;
     }
 
-    public virtual SegmentedButtonThemeData copyWith(ButtonStyle? style = null, global::Doroti.Framework.Widgets.Widget? selectedIcon = null)
+    public virtual SegmentedButtonThemeData copyWith(ButtonStyle? style = null, Widget? selectedIcon = null)
     {
         return new SegmentedButtonThemeData(style: style ?? this.style, selectedIcon: selectedIcon ?? this.selectedIcon);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -48,9 +48,9 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
         return (__other is SegmentedButtonThemeData) && Equals(__other.style, style) && Equals(__other.selectedIcon, selectedIcon);
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
+        properties.add(new DiagnosticsProperty<ButtonStyle>("style", style, defaultValue: null));
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -76,32 +76,32 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
 
 }
 
-public class SegmentedButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
+public class SegmentedButtonTheme : InheritedTheme
 {
     public virtual SegmentedButtonThemeData data { get; private set; } = default!;
 
-    public SegmentedButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, SegmentedButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public SegmentedButtonTheme(Key? key = null, SegmentedButtonThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static SegmentedButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
+    public static SegmentedButtonThemeData of(BuildContext context)
     {
         return maybeOf(context) ?? Theme.of(context).segmentedButtonTheme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static SegmentedButtonThemeData? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
+    public static SegmentedButtonThemeData? maybeOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<SegmentedButtonTheme>()?.data;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
+    public override Widget wrap(BuildContext context, Widget child)
     {
         return new SegmentedButtonTheme(data: data, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((SegmentedButtonTheme)oldWidget).data));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(!Equals(data, ((SegmentedButtonTheme)oldWidget).data));
 }

@@ -33,25 +33,25 @@ public class _OverflowRegionData__debug_overflow_indicator
 
 public interface DebugOverflowIndicatorMixin
 {
-    internal static Color _black = new global::Doroti.Ui.Color(3204448256L);
-    internal static Color _yellow = new global::Doroti.Ui.Color(3221225216L);
+    internal static Color _black = new Color(3204448256L);
+    internal static Color _yellow = new Color(3221225216L);
     internal const double _indicatorFraction = 0.1;
     internal const double _indicatorFontSizePixels = 7.5;
     internal const double _indicatorLabelPaddingPixels = 1.0;
-    internal static global::Doroti.Framework.Painting.TextStyle _indicatorTextStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4287627264L), fontSize: _indicatorFontSizePixels, fontWeight: FontWeight.w800);
+    internal static Painting.TextStyle _indicatorTextStyle = new Painting.TextStyle(color: new Color(4287627264L), fontSize: _indicatorFontSizePixels, fontWeight: FontWeight.w800);
     internal static Paint _indicatorPaint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.shader = Ui.Gradient.linear(Offset.zero, new global::Doroti.Ui.Offset(10.0, 10.0), new List<global::Doroti.Ui.Color> { _black, _yellow, _yellow, _black }, new List<double> { 0.25, 0.25, 0.75, 0.75 }, TileMode.repeated);
+    var __cascade = new Paint();
+    __cascade.shader = Ui.Gradient.linear(Offset.zero, new Offset(10.0, 10.0), new List<Color> { _black, _yellow, _yellow, _black }, new List<double> { 0.25, 0.25, 0.75, 0.75 }, TileMode.repeated);
     return __cascade;
 }))();
     internal static Paint _labelBackgroundPaint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = new global::Doroti.Ui.Color(4294967295L);
+    var __cascade = new Paint();
+    __cascade.color = new Color(4294967295L);
     return __cascade;
 }))();
-    List<global::Doroti.Framework.Painting.TextPainter> _indicatorLabel { get; }
+    List<TextPainter> _indicatorLabel { get; }
     bool _overflowReportNeeded { get; set; }
 
     public void dispose();

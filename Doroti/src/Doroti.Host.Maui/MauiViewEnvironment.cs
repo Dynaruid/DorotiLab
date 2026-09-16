@@ -1,6 +1,7 @@
 using Doroti.Ui;
 using Locale = Doroti.Ui.Locale;
 using Rect = Doroti.Ui.Rect;
+using Size = Doroti.Ui.Size;
 
 namespace Doroti.Host.Maui;
 
@@ -11,7 +12,7 @@ internal sealed partial class MauiViewEnvironment : IDisposable
     private readonly List<Action> _detach = [];
     private bool _disposed;
     private int _refreshPosted;
-    internal Doroti.Ui.Size? NativePhysicalSize { get; private set; }
+    internal Size? NativePhysicalSize { get; private set; }
     internal static double ValidScale(double value) => double.IsFinite(value) && value > 0 ? value : 1;
     internal ViewPadding Padding { get; private set; }
     internal ViewPadding Insets { get; private set; }

@@ -20,7 +20,7 @@ public sealed class MauiFrameworkHost : IDisposable
         (typeof(MauiFrameworkHost).Assembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName ?? "unknown") + "/" +
         (typeof(MauiFrameworkHost).Assembly.GetCustomAttribute<TargetPlatformAttribute>()?.PlatformName ?? "unknown");
     private static readonly string MauiPackageIdentity =
-        typeof(Microsoft.Maui.Controls.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "unknown";
+        typeof(Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "unknown";
     private static readonly string SkiaPackageIdentity =
         typeof(SkiaSharp.SKCanvas).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "unknown";
 
@@ -112,7 +112,7 @@ public sealed class MauiFrameworkHost : IDisposable
         {
             var coordinator = application.ConfigurePlatformViews(capabilities, viewId, new AppKitPlatformViewDispatcher());
             platformViews.Configure(coordinator);
-            var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+            var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
             messages = channel;
             graphics.AttachPlatformViews(platformViews, channel);
         }
@@ -122,13 +122,13 @@ public sealed class MauiFrameworkHost : IDisposable
         {
             var coordinator = application.ConfigurePlatformViews(capabilities, viewId, new AndroidPlatformViewDispatcher());
             platformViews.Configure(coordinator);
-            var channel = new Doroti.Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
+            var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
             messages = channel;
             graphics.AttachPlatformViews(platformViews, channel);
         }
 #endif
         if (application is null)
-            capabilities.Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, messages);
+            capabilities.Register(DorotiCapabilityIds.PlatformMessaging, messages);
         else
             application.Configure(capabilities, messages);
         DorotiView? view = null;

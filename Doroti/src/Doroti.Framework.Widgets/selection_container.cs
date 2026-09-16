@@ -7,18 +7,18 @@ namespace Doroti.Framework.Widgets;
 
 public class SelectionContainer : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Rendering.SelectionRegistrar? registrar { get; private set; }
+    public virtual SelectionRegistrar? registrar { get; private set; }
     public virtual Widget child { get; private set; } = default!;
     public virtual SelectionContainerDelegate? @delegate { get; private set; }
 
-    public SelectionContainer(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.SelectionRegistrar? registrar = null, SelectionContainerDelegate @delegate = default!, Widget child = default!) : base(key: key)
+    public SelectionContainer(Key? key = null, SelectionRegistrar? registrar = null, SelectionContainerDelegate @delegate = default!, Widget child = default!) : base(key: key)
     {
         this.registrar = registrar;
         this.@delegate = @delegate;
         this.child = child;
     }
 
-    public static SelectionContainer CreateDisabled(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
+    public static SelectionContainer CreateDisabled(Key? key = null, Widget child = default!)
     {
         var __instance = new SelectionContainer(key, default!, default!, child);
         __instance.child = child;
@@ -27,7 +27,7 @@ public class SelectionContainer : StatefulWidget
         return __instance;
     }
 
-    public static global::Doroti.Framework.Rendering.SelectionRegistrar? maybeOf(BuildContext context)
+    public static SelectionRegistrar? maybeOf(BuildContext context)
     {
         SelectionRegistrarScope? scope = context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>();
         return scope?.registrar;
@@ -38,10 +38,10 @@ public class SelectionContainer : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SelectionContainerState__selection_container());
 }
 
-internal class _SelectionContainerState__selection_container : State<SelectionContainer>, global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.SelectionRegistrant
+internal class _SelectionContainerState__selection_container : State<SelectionContainer>, Selectable, SelectionRegistrant
 {
-    internal virtual HashSet<global::System.Action> _listeners { get; private set; } = new HashSet<global::System.Action>();
-    internal static global::Doroti.Framework.Rendering.SelectionGeometry _disabledGeometry = new global::Doroti.Framework.Rendering.SelectionGeometry(status: SelectionStatus.none, hasContent: true);
+    internal virtual HashSet<Action> _listeners { get; private set; } = new HashSet<Action>();
+    internal static SelectionGeometry _disabledGeometry = new SelectionGeometry(status: SelectionStatus.none, hasContent: true);
     public virtual SelectionRegistrar? _registrar { get; set; } = default;
     public virtual bool _subscribedToSelectionRegistrar { get; set; } = false;
 
@@ -66,16 +66,16 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             if (!oldWidget._disabled)
             {
                 oldWidget.@delegate!._selectionContainerContext = null;
-                _listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)oldWidget.@delegate!.removeListener)(__arg0));
+                _listeners.forEach((__arg0) => ((System.Action<Action>)oldWidget.@delegate!.removeListener)(__arg0));
             }
             if (!widget._disabled)
             {
                 widget.@delegate!._selectionContainerContext = context;
-                _listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)widget.@delegate!.addListener)(__arg0));
+                _listeners.forEach((__arg0) => ((System.Action<Action>)widget.@delegate!.addListener)(__arg0));
             }
             if (!Equals(oldWidget.@delegate?.value, widget.@delegate?.value))
             {
-                foreach (global::System.Action listener in _listeners.ToList())
+                foreach (Action listener in _listeners.ToList())
                 {
                     listener();
                 }
@@ -105,47 +105,47 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
         DartRuntimePrimitives.Assert(() => !widget._disabled || (registrar is null));
     }
 
-    public virtual void addListener(global::System.Action listener)
+    public virtual void addListener(Action listener)
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         widget.@delegate!.addListener(listener);
         _listeners.Add(() => listener());
     }
 
-    public virtual void removeListener(global::System.Action listener)
+    public virtual void removeListener(Action listener)
     {
         widget.@delegate?.removeListener(listener);
         _listeners.Remove(listener);
     }
 
-    public virtual void pushHandleLayers(global::Doroti.Framework.Rendering.LayerLink? startHandle, global::Doroti.Framework.Rendering.LayerLink? endHandle)
+    public virtual void pushHandleLayers(LayerLink? startHandle, LayerLink? endHandle)
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         widget.@delegate!.pushHandleLayers(startHandle, endHandle);
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent()
+    public virtual SelectedContent? getSelectedContent()
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return widget.@delegate!.getSelectedContent();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectedContentRange? getSelection()
+    public virtual SelectedContentRange? getSelection()
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return widget.@delegate!.getSelection();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event)
+    public virtual SelectionResult dispatchSelectionEvent(SelectionEvent @event)
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return widget.@delegate!.dispatchSelectionEvent(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectionGeometry value
+    public virtual SelectionGeometry value
     {
         get
         {
@@ -156,7 +156,7 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             return widget.@delegate!.value;
         }
     }
-    public virtual Matrix4 getTransformTo(global::Doroti.Framework.Rendering.RenderObject? ancestor)
+    public virtual Matrix4 getTransformTo(RenderObject? ancestor)
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return context.findRenderObject()!.getTransformTo(ancestor);
@@ -164,14 +164,14 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
     }
 
     public virtual long contentLength => widget.@delegate!.contentLength;
-    public virtual Size size => ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!.size;
-    public virtual List<Rect> boundingBoxes => new List<global::Doroti.Ui.Rect> { ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!.paintBounds };
+    public virtual Size size => ((RenderBox?)context.findRenderObject()!)!.size;
+    public virtual List<Rect> boundingBoxes => new List<Rect> { ((RenderBox?)context.findRenderObject()!)!.paintBounds };
     public override void dispose()
     {
         if (!widget._disabled)
         {
             widget.@delegate!._selectionContainerContext = null;
-            _listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)widget.@delegate!.removeListener)(__arg0));
+            _listeners.forEach((__arg0) => ((System.Action<Action>)widget.@delegate!.removeListener)(__arg0));
         }
         _removeSelectionRegistrarSubscription();
         base.dispose();
@@ -248,9 +248,9 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
 
 public class SelectionRegistrarScope : InheritedWidget
 {
-    public virtual global::Doroti.Framework.Rendering.SelectionRegistrar? registrar { get; private set; }
+    public virtual SelectionRegistrar? registrar { get; private set; }
 
-    public SelectionRegistrarScope(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.SelectionRegistrar registrar = default!, Widget child = default!) : base(key: key, child: child)
+    public SelectionRegistrarScope(Key? key = null, SelectionRegistrar registrar = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.registrar = registrar;
     }
@@ -271,29 +271,29 @@ public class SelectionRegistrarScope : InheritedWidget
 
 }
 
-public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rendering.SelectionHandler, global::Doroti.Framework.Rendering.SelectionRegistrar
+public abstract class SelectionContainerDelegate : SelectionHandler, SelectionRegistrar
 {
     internal virtual BuildContext? _selectionContainerContext { get; set; } = default;
 
-    public virtual void pushHandleLayers(global::Doroti.Framework.Rendering.LayerLink? startHandle, global::Doroti.Framework.Rendering.LayerLink? endHandle) => throw new NotSupportedException();
-    public virtual global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent() => throw new NotSupportedException();
-    public virtual global::Doroti.Framework.Rendering.SelectedContentRange? getSelection() => throw new NotSupportedException();
-    public virtual global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event) => throw new NotSupportedException();
+    public virtual void pushHandleLayers(LayerLink? startHandle, LayerLink? endHandle) => throw new NotSupportedException();
+    public virtual SelectedContent? getSelectedContent() => throw new NotSupportedException();
+    public virtual SelectedContentRange? getSelection() => throw new NotSupportedException();
+    public virtual SelectionResult dispatchSelectionEvent(SelectionEvent @event) => throw new NotSupportedException();
     public virtual long contentLength => throw new NotSupportedException();
-    public virtual global::Doroti.Framework.Rendering.SelectionGeometry value => throw new NotSupportedException();
-    public virtual void add(global::Doroti.Framework.Rendering.Selectable selectable) => throw new NotSupportedException();
-    public virtual void remove(global::Doroti.Framework.Rendering.Selectable selectable) => throw new NotSupportedException();
-    public virtual Matrix4 getTransformFrom(global::Doroti.Framework.Rendering.Selectable child)
+    public virtual SelectionGeometry value => throw new NotSupportedException();
+    public virtual void add(Selectable selectable) => throw new NotSupportedException();
+    public virtual void remove(Selectable selectable) => throw new NotSupportedException();
+    public virtual Matrix4 getTransformFrom(Selectable child)
     {
         DartRuntimePrimitives.Assert(() => _selectionContainerContext?.findRenderObject() is not null, () => (object?)"getTransformFrom cannot be called before SelectionContainer is laid out.");
-        return child.getTransformTo(((global::Doroti.Framework.Rendering.RenderBox?)_selectionContainerContext!.findRenderObject()!)!);
+        return child.getTransformTo(((RenderBox?)_selectionContainerContext!.findRenderObject()!)!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Matrix4 getTransformTo(global::Doroti.Framework.Rendering.RenderObject? ancestor)
+    public virtual Matrix4 getTransformTo(RenderObject? ancestor)
     {
         DartRuntimePrimitives.Assert(() => _selectionContainerContext?.findRenderObject() is not null, () => (object?)"getTransformTo cannot be called before SelectionContainer is laid out.");
-        var box = ((global::Doroti.Framework.Rendering.RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
+        var box = ((RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
         return box.getTransformTo(ancestor);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -303,23 +303,23 @@ public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rend
         get
         {
             DartRuntimePrimitives.Assert(() => _selectionContainerContext?.findRenderObject() is not null, () => (object?)"The _selectionContainerContext must have a renderObject, such as after the first build has completed.");
-            var box = ((global::Doroti.Framework.Rendering.RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
+            var box = ((RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
             return box.hasSize;
         }
     }
-    public virtual global::Doroti.Ui.Size containerSize
+    public virtual Size containerSize
     {
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize, () => (object?)"containerSize cannot be called before SelectionContainer is laid out.");
-            var box = ((global::Doroti.Framework.Rendering.RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
+            var box = ((RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
             return box.size;
         }
     }
-    private readonly HashSet<global::System.Action> __listeners = new();
+    private readonly HashSet<Action> __listeners = new();
     public virtual bool hasListeners => __listeners.Count != 0;
-    public virtual void addListener(global::System.Action listener) => __listeners.Add(listener);
-    public virtual void removeListener(global::System.Action listener) => __listeners.Remove(listener);
+    public virtual void addListener(Action listener) => __listeners.Add(listener);
+    public virtual void removeListener(Action listener) => __listeners.Remove(listener);
     public virtual void notifyListeners() { foreach (var listener in __listeners.ToArray()) listener(); }
     public virtual void dispose() => __listeners.Clear();
 }

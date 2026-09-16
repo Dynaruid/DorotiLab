@@ -6,14 +6,14 @@ public delegate Widget OrientationWidgetBuilder(BuildContext context, Orientatio
 
 public class OrientationBuilder : StatelessWidget
 {
-    public virtual global::System.Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
 
-    public OrientationBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
+    public OrientationBuilder(Key? key = null, Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
     {
         this.builder = builder;
     }
 
-    internal virtual Widget _buildWithConstraints(BuildContext context, global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    internal virtual Widget _buildWithConstraints(BuildContext context, BoxConstraints constraints)
     {
         Orientation orientation = (constraints.maxWidth > constraints.maxHeight) ? Orientation.landscape : Orientation.portrait;
         return builder(context, orientation);
@@ -30,9 +30,9 @@ public class OrientationBuilder : StatelessWidget
 
 public class DeviceOrientationBuilder : StatelessWidget
 {
-    public virtual global::System.Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
 
-    public DeviceOrientationBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
+    public DeviceOrientationBuilder(Key? key = null, Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
     {
         this.builder = builder;
     }

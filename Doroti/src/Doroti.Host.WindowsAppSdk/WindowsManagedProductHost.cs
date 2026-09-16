@@ -34,8 +34,8 @@ internal sealed unsafe class WindowsManagedProductHost :
     private ulong _nextClipboardRequest;
     private long _nativeClockOrigin = -1;
     private TimeSpan _dorotiClockOrigin;
-    private readonly Doroti.Hosting.WindowsPrecisionTrackpad _trackpad;
-    private readonly Doroti.Hosting.WindowsNativePointerInput _nativePointers;
+    private readonly Hosting.WindowsPrecisionTrackpad _trackpad;
+    private readonly Hosting.WindowsNativePointerInput _nativePointers;
 
     internal WindowsManagedProductHost(in WindowsNativeV1.Host native, int logicalWidth, int logicalHeight)
     {
@@ -80,7 +80,7 @@ internal sealed unsafe class WindowsManagedProductHost :
         cancellationToken.ThrowIfCancellationRequested();
         try
         {
-            using var process = Process.Start(new System.Diagnostics.ProcessStartInfo(absoluteUrl) { UseShellExecute = true });
+            using var process = Process.Start(new ProcessStartInfo(absoluteUrl) { UseShellExecute = true });
             return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.opened));
         }
         catch (Exception error) { return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.failed, error.Message)); }

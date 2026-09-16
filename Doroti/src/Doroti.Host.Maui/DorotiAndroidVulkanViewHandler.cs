@@ -84,7 +84,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         _allocationProfileCallback = new(() =>
         {
             foreach (var entry in FrameworkWorkProfile.CaptureEntries())
-                global::Android.Util.Log.Info("DorotiAllocation", $"kind={entry.Kind} calls={entry.Calls} allocated={entry.AllocatedBytes} self={entry.SelfAllocatedBytes} type={entry.Type}");
+                Android.Util.Log.Info("DorotiAllocation", $"kind={entry.Kind} calls={entry.Calls} allocated={entry.AllocatedBytes} self={entry.SelfAllocatedBytes} type={entry.Type}");
         });
         // SurfaceView is composed below the MAUI semantics and IME overlay.
         Holder!.SetFormat(Format.Translucent);
@@ -167,7 +167,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
                     .Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE") == "1" || _inputTiming || _platformFrameTiming;
                 _window.ResourcesReleasing += ReleaseRendererResources;
                 _generation++;
-                global::Android.Util.Log.Info("DorotiGraphite", $"Vulkan device={_window.DeviceName} generation={_generation}");
+                Android.Util.Log.Info("DorotiGraphite", $"Vulkan device={_window.DeviceName} generation={_generation}");
             }
             var presented = _window.Render(_width, _height, (surface, width, height) =>
             {
@@ -179,10 +179,10 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             if (paint?.Completion is { } completion) _owner.CompleteGraphite(completion, !presented);
             if (presented && _window.EnableFrameTiming) RecordFrameTiming(_window.LastFrameTiming);
             if (presented && _platformFrameTiming)
-                global::Android.Util.Log.Info("DorotiPlatformTiming", FormattableString.Invariant(
+                Android.Util.Log.Info("DorotiPlatformTiming", FormattableString.Invariant(
                     $"frame={_window.SubmittedWindowFrames} ownerMs={Stopwatch.GetElapsedTime(frameStarted).TotalMilliseconds:F3} vulkanMs={_window.LastFrameTiming.TotalMs:F3} paintMs={_window.LastFrameTiming.PaintMs:F3} fenceMs={_window.LastFrameTiming.FenceMs:F3}"));
             if (presented && _inputTiming && _window.LastFrameTiming.TotalMs > 12)
-                global::Android.Util.Log.Info("DorotiInputTiming", $"frame={_window.LastFrameTiming}");
+                Android.Util.Log.Info("DorotiInputTiming", $"frame={_window.LastFrameTiming}");
             ScheduleGpuCompletion();
             if (!presented || paint?.Completion is null) RequestFrame();
         }
@@ -190,7 +190,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         {
             _owner?.PlatformViews?.Finish(false);
             _owner?.FailGraphite(paint?.Completion, exception);
-            global::Android.Util.Log.Error("DorotiGraphite", exception.ToString());
+            Android.Util.Log.Error("DorotiGraphite", exception.ToString());
             _faulted = true;
             if (_window is not null) ReleaseSurface();
             else if (_window is null && _nativeWindow != 0) { ANativeWindowRelease(_nativeWindow); _nativeWindow = 0; }
@@ -198,7 +198,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     }
 
     private void ReleaseRendererResources() => _owner?.ReleaseGraphiteResources();
-    internal Task<Doroti.Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
+    internal Task<Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
         (_window ?? throw new InvalidOperationException("Android Vulkan window is unavailable.")).RequestPlatformReadback(surface, info);
     private void ScheduleGpuCompletion()
     {
@@ -221,7 +221,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         catch (Exception exception)
         {
             _owner?.FailGraphite(null, exception);
-            global::Android.Util.Log.Error("DorotiGraphite", exception.ToString());
+            Android.Util.Log.Error("DorotiGraphite", exception.ToString());
             _faulted = true;
             ReleaseSurface();
         }
@@ -238,7 +238,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         if (++_timingFrames != 60) return;
         var means = string.Join(",", _timingSums.Select(value => (value / _timingFrames).ToString("F3", System.Globalization.CultureInfo.InvariantCulture)));
         var maxima = string.Join(",", _timingMaxima.Select(value => value.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)));
-        global::Android.Util.Log.Info("DorotiFrameTiming", $"frames={_timingFrames} phases=acquire,paint,submit,copy,fence,present,total meanMs={means} maxMs={maxima} submitted={_window?.SubmittedWindowFrames} completed={_window?.CompletedWindowFrames} busy={_window?.BusyWindowFrames} unavailable={_window?.UnavailableWindowImages} maxInFlight={_window?.MaximumWindowFramesInFlight}");
+        Android.Util.Log.Info("DorotiFrameTiming", $"frames={_timingFrames} phases=acquire,paint,submit,copy,fence,present,total meanMs={means} maxMs={maxima} submitted={_window?.SubmittedWindowFrames} completed={_window?.CompletedWindowFrames} busy={_window?.BusyWindowFrames} unavailable={_window?.UnavailableWindowImages} maxInFlight={_window?.MaximumWindowFramesInFlight}");
         _timingFrames = 0;
         Array.Clear(_timingSums); Array.Clear(_timingMaxima);
     }
@@ -272,12 +272,12 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         try
         {
             if (await Task.WhenAny(retirement, Task.Delay(TimeSpan.FromSeconds(5))).ConfigureAwait(false) != retirement)
-                global::Android.Util.Log.Error("DorotiGraphite", "Surface retirement exceeded five seconds; retaining generation and blocking replacement (not device loss).");
+                Android.Util.Log.Error("DorotiGraphite", "Surface retirement exceeded five seconds; retaining generation and blocking replacement (not device loss).");
             await retirement.ConfigureAwait(false);
             ANativeWindowRelease(nativeWindow);
             Interlocked.Decrement(ref _retiringGenerations);
             if (window.EnableFrameTiming)
-                global::Android.Util.Log.Info("DorotiFrameTiming", $"drained submitted={window.SubmittedWindowFrames} completed={window.CompletedWindowFrames} outstanding={window.WindowFramesInFlight}");
+                Android.Util.Log.Info("DorotiFrameTiming", $"drained submitted={window.SubmittedWindowFrames} completed={window.CompletedWindowFrames} outstanding={window.WindowFramesInFlight}");
             Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
             {
                 _retirement = null;
@@ -290,7 +290,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             // Keep the failed generation rooted. Neither its native window nor a
             // replacement renderer may be released/admitted on uncertain cleanup.
             lock (FailedRetirements) FailedRetirements.Add((window, nativeWindow));
-            global::Android.Util.Log.Error("DorotiGraphite", "Surface retirement failed; resources retained: " + exception);
+            Android.Util.Log.Error("DorotiGraphite", "Surface retirement failed; resources retained: " + exception);
         }
     }
     public override bool OnTouchEvent(MotionEvent? e)
@@ -313,7 +313,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             DispatchPointer(e, i, change.Value);
         }
         if (_inputTiming && (e.ActionMasked != MotionEventActions.Move || Stopwatch.GetElapsedTime(started).TotalMilliseconds > 8))
-            global::Android.Util.Log.Info("DorotiInputTiming", $"action={e.ActionMasked} eventMs={e.EventTime} dispatchMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
+            Android.Util.Log.Info("DorotiInputTiming", $"action={e.ActionMasked} eventMs={e.EventTime} dispatchMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
         if (FrameworkWorkProfile.AllocationEnabled && e.ActionMasked == MotionEventActions.Up)
         {
             RemoveCallbacks(_allocationProfileCallback);

@@ -1,6 +1,13 @@
 using Doroti.Ui;
+using Rect = Doroti.Ui.Rect;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
+#if IOS || MACCATALYST
+using CoreGraphics;
+using UIKit;
+#elif MACOS
+using AppKit;
+#endif
 
 namespace Doroti.Host.Maui;
 
@@ -28,10 +35,10 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private string? _pendingNativeText;
     private InputView? _pendingNativeInput;
     private readonly object _caretGate = new();
-    private Doroti.Ui.Rect _pendingCaretRect;
+    private Rect _pendingCaretRect;
     private bool _caretDispatchPending;
     private InputView? _lastCaretInput;
-    private Doroti.Ui.Rect _lastCaretRect;
+    private Rect _lastCaretRect;
     private bool _hasLastCaretRect;
 
     internal MauiTextInputBridge(
@@ -162,7 +169,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         }
     }
 
-    internal void SetCaretRect(Doroti.Ui.Rect rect)
+    internal void SetCaretRect(Rect rect)
     {
         if (_disposed || _active is null || !_hasClient) return;
         lock (_caretGate)
@@ -189,7 +196,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void ApplyPendingCaretRect()
     {
-        Doroti.Ui.Rect rect;
+        Rect rect;
         lock (_caretGate)
         {
             rect = _pendingCaretRect;
@@ -209,7 +216,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         {
             // UIKit clamps floating-cursor coordinates to the native view's
             // bounds. Keep the invisible proxy as large as the surface.
-            native.CaretRect = new CoreGraphics.CGRect(x, y, width, height);
+            native.CaretRect = new CGRect(x, y, width, height);
             active.TranslationX = active.TranslationY = 0;
             active.WidthRequest = Math.Max(1, _visualHost.Width);
             active.HeightRequest = Math.Max(1, _visualHost.Height);
@@ -630,7 +637,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
             if (start >= 0 && end > start && end <= textLength) return new(start, end);
         }
 #elif IOS || MACCATALYST
-        if (input.Handler?.PlatformView is UIKit.IUITextInput nativeInput &&
+        if (input.Handler?.PlatformView is IUITextInput nativeInput &&
             nativeInput.MarkedTextRange is { } markedRange)
         {
             var beginning = nativeInput.BeginningOfDocument;
@@ -639,11 +646,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
             if (start >= 0 && end > start && end <= textLength) return new(start, end);
         }
 #elif MACOS
-        AppKit.NSTextView? nativeTextView = input.Handler?.PlatformView switch
+        NSTextView? nativeTextView = input.Handler?.PlatformView switch
         {
-            AppKit.NSTextView textView => textView,
-            AppKit.NSTextField textField => textField.CurrentEditor as AppKit.NSTextView,
-            AppKit.NSScrollView scrollView => scrollView.DocumentView as AppKit.NSTextView,
+            NSTextView textView => textView,
+            NSTextField textField => textField.CurrentEditor as NSTextView,
+            NSScrollView scrollView => scrollView.DocumentView as NSTextView,
             _ => null,
         };
         if (nativeTextView is { HasMarkedText: true })

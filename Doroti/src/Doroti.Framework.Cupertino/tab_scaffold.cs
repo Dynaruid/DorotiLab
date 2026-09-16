@@ -6,7 +6,7 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Cupertino;
 
-public class CupertinoTabController : global::Doroti.Framework.Foundation.ChangeNotifier
+public class CupertinoTabController : ChangeNotifier
 {
     internal virtual bool _isDisposed { get; set; } = false;
     internal virtual long _index { get; set; } = default!;
@@ -40,16 +40,16 @@ public class CupertinoTabController : global::Doroti.Framework.Foundation.Change
 
 }
 
-public class CupertinoTabScaffold : global::Doroti.Framework.Widgets.StatefulWidget
+public class CupertinoTabScaffold : StatefulWidget
 {
     public virtual CupertinoTabBar tabBar { get; private set; } = default!;
     public virtual CupertinoTabController? controller { get; private set; }
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget> tabBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, long, Widget> tabBuilder { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual bool resizeToAvoidBottomInset { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
 
-    public CupertinoTabScaffold(global::Doroti.Framework.Foundation.Key? key = null, CupertinoTabBar tabBar = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget> tabBuilder = default!, CupertinoTabController? controller = null, Color? backgroundColor = null, bool resizeToAvoidBottomInset = true, string? restorationId = null) : base(key: key)
+    public CupertinoTabScaffold(Key? key = null, CupertinoTabBar tabBar = default!, Func<BuildContext, long, Widget> tabBuilder = default!, CupertinoTabController? controller = null, Color? backgroundColor = null, bool resizeToAvoidBottomInset = true, string? restorationId = null) : base(key: key)
     {
         this.tabBar = tabBar;
         this.tabBuilder = tabBuilder;
@@ -63,18 +63,18 @@ public class CupertinoTabScaffold : global::Doroti.Framework.Widgets.StatefulWid
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTabScaffoldState__tab_scaffold());
 }
 
-internal class _CupertinoTabScaffoldState__tab_scaffold : global::Doroti.Framework.Widgets.State<CupertinoTabScaffold>, global::Doroti.Framework.Widgets.RestorationMixin<CupertinoTabScaffold>
+internal class _CupertinoTabScaffoldState__tab_scaffold : State<CupertinoTabScaffold>, RestorationMixin<CupertinoTabScaffold>
 {
     internal virtual RestorableCupertinoTabController? _internalController { get; set; } = default;
-    public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
-    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual RestorationBucket? _bucket { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
-    public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
+    public virtual RestorationBucket? _currentParent { get; set; } = default;
 
     internal virtual CupertinoTabController _controller => DartRuntimePrimitives.ConvertValue<CupertinoTabController>(widget.controller ?? _internalController!.value);
     public virtual string? restorationId => widget.restorationId;
-    public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
+    public virtual void restoreState(RestorationBucket? oldBucket, bool initialRestore)
     {
         _restoreInternalController();
     }
@@ -145,12 +145,12 @@ internal class _CupertinoTabScaffoldState__tab_scaffold : global::Doroti.Framewo
         }
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.MediaQueryData existingMediaQuery = MediaQuery.of(context);
-        global::Doroti.Framework.Widgets.MediaQueryData newMediaQuery = MediaQuery.of(context);
-        global::Doroti.Framework.Widgets.Widget content = new _TabSwitchingView__tab_scaffold(currentTabIndex: _controller.index, tabCount: checked(widget.tabBar.items.Count), tabBuilder: widget.tabBuilder);
-        global::Doroti.Framework.Painting.EdgeInsets contentPadding = EdgeInsets.zero;
+        MediaQueryData existingMediaQuery = MediaQuery.of(context);
+        MediaQueryData newMediaQuery = MediaQuery.of(context);
+        Widget content = new _TabSwitchingView__tab_scaffold(currentTabIndex: _controller.index, tabCount: checked(widget.tabBar.items.Count), tabBuilder: widget.tabBuilder);
+        EdgeInsets contentPadding = EdgeInsets.zero;
         if (widget.resizeToAvoidBottomInset)
         {
             newMediaQuery = newMediaQuery.removeViewInsets(removeBottom: true);
@@ -169,8 +169,8 @@ internal class _CupertinoTabScaffoldState__tab_scaffold : global::Doroti.Framewo
                 newMediaQuery = newMediaQuery.copyWith(padding: newMediaQuery.padding.copyWith(bottom: bottomPadding));
             }
         }
-        content = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: newMediaQuery, child: new global::Doroti.Framework.Widgets.Padding(padding: contentPadding, child: content)));
-        return new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context) ?? CupertinoTheme.of(context).scaffoldBackgroundColor), child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(content), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.Align(alignment: Alignment.bottomCenter, child: widget.tabBar.copyWith(currentIndex: _controller.index, onTap: (newIndex) => {
+        content = DartRuntimePrimitives.ConvertValue<Widget>(new MediaQuery(data: newMediaQuery, child: new Padding(padding: contentPadding, child: content)));
+        return new DecoratedBox(decoration: new BoxDecoration(color: CupertinoDynamicColor.maybeResolve(widget.backgroundColor, context) ?? CupertinoTheme.of(context).scaffoldBackgroundColor), child: new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(content), DartRuntimePrimitives.ConvertValue<Widget>(MediaQuery.withNoTextScaling(child: new Align(alignment: Alignment.bottomCenter, child: widget.tabBar.copyWith(currentIndex: _controller.index, onTap: (newIndex) => {
 _controller.index = newIndex;
 widget.tabBar.onTap?.Invoke(newIndex);
 })))) }));
@@ -196,16 +196,16 @@ widget.tabBar.onTap?.Invoke(newIndex);
         base.dispose();
     }
 
-    public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => _bucket;
-    public virtual void didToggleBucket(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
+    public virtual RestorationBucket? bucket => _bucket;
+    public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
     }
 
-    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
+    public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
         DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
         object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
         if (!property.isRegistered)
@@ -235,7 +235,7 @@ widget.tabBar.onTap?.Invoke(newIndex);
             });
     }
 
-    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void unregisterFromRestoration(IRestorableProperty property)
     {
         DartRuntimePrimitives.Assert(() => Equals(property._owner, this));
         _bucket?.remove<object?>(property._restorationId!);
@@ -248,7 +248,7 @@ widget.tabBar.onTap?.Invoke(newIndex);
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
         bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
         if (didReplaceBucket)
@@ -271,7 +271,7 @@ widget.tabBar.onTap?.Invoke(newIndex);
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
+            RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
             return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
         }
     }
@@ -279,7 +279,7 @@ widget.tabBar.onTap?.Invoke(newIndex);
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
         bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
@@ -294,7 +294,7 @@ widget.tabBar.onTap?.Invoke(newIndex);
         }
     }
 
-    public virtual void _doRestore(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
+    public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -307,14 +307,14 @@ widget.tabBar.onTap?.Invoke(newIndex);
             {
                 if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(((Func<List<DiagnosticsNode>>)(() => { var __collection41817 = new List<DiagnosticsNode>(); __collection41817.Add(new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(_debugPropertiesWaitingForReregistration!.map<IRestorableProperty, DiagnosticsNode>((property) => new ErrorDescription($" * {property._restorationId}"))); return __collection41817; }))()));
                 }
                 _debugPropertiesWaitingForReregistration = null;
                 return true;
             });
     }
 
-    public virtual bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending)
+    public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
@@ -325,7 +325,7 @@ widget.tabBar.onTap?.Invoke(newIndex);
         DartRuntimePrimitives.Assert(() => restorationId is not null);
         if (restorePending || (_bucket is null))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
+            RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
@@ -338,19 +338,19 @@ widget.tabBar.onTap?.Invoke(newIndex);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
+    public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
     {
         if (Equals(newBucket, _bucket))
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         _bucket = newBucket;
         if (!restorePending)
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -358,7 +358,7 @@ widget.tabBar.onTap?.Invoke(newIndex);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void _updateProperty(IRestorableProperty property)
     {
         if (property.enabled)
         {
@@ -370,9 +370,9 @@ widget.tabBar.onTap?.Invoke(newIndex);
         }
     }
 
-    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void _unregister(IRestorableProperty property)
     {
-        global::System.Action listener = _properties.remove(property)!;
+        Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugPropertiesWaitingForReregistration?.Remove(property);
@@ -384,13 +384,13 @@ widget.tabBar.onTap?.Invoke(newIndex);
 
 }
 
-public class _TabSwitchingView__tab_scaffold : global::Doroti.Framework.Widgets.StatefulWidget
+public class _TabSwitchingView__tab_scaffold : StatefulWidget
 {
     public virtual long currentTabIndex { get; private set; } = default!;
     public virtual long tabCount { get; private set; } = default!;
-    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget> tabBuilder { get; private set; } = default!;
+    public virtual Func<BuildContext, long, Widget> tabBuilder { get; private set; } = default!;
 
-    internal _TabSwitchingView__tab_scaffold(long currentTabIndex, long tabCount, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget> tabBuilder)
+    internal _TabSwitchingView__tab_scaffold(long currentTabIndex, long tabCount, Func<BuildContext, long, Widget> tabBuilder)
     {
         this.currentTabIndex = currentTabIndex;
         this.tabCount = tabCount;
@@ -401,16 +401,16 @@ public class _TabSwitchingView__tab_scaffold : global::Doroti.Framework.Widgets.
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabSwitchingViewState__tab_scaffold());
 }
 
-public class _TabSwitchingViewState__tab_scaffold : global::Doroti.Framework.Widgets.State<_TabSwitchingView__tab_scaffold>
+public class _TabSwitchingViewState__tab_scaffold : State<_TabSwitchingView__tab_scaffold>
 {
     public virtual List<bool> shouldBuildTab { get; private set; } = new List<bool>();
-    public virtual List<global::Doroti.Framework.Widgets.FocusScopeNode> tabFocusNodes { get; private set; } = new List<global::Doroti.Framework.Widgets.FocusScopeNode>();
-    public virtual List<global::Doroti.Framework.Widgets.FocusScopeNode> discardedNodes { get; private set; } = new List<global::Doroti.Framework.Widgets.FocusScopeNode>();
+    public virtual List<FocusScopeNode> tabFocusNodes { get; private set; } = new List<FocusScopeNode>();
+    public virtual List<FocusScopeNode> discardedNodes { get; private set; } = new List<FocusScopeNode>();
 
     public override void initState()
     {
         base.initState();
-        shouldBuildTab.AddRange(new List<bool>(Enumerable.Repeat<bool>(false, checked((int)widget.tabCount))).Cast<bool>());
+        shouldBuildTab.AddRange(new List<bool>(Enumerable.Repeat(false, checked((int)widget.tabCount))).Cast<bool>());
     }
 
     public override void didChangeDependencies()
@@ -425,7 +425,7 @@ public class _TabSwitchingViewState__tab_scaffold : global::Doroti.Framework.Wid
         long lengthDiff = widget.tabCount - checked(shouldBuildTab.Count);
         if (lengthDiff > 0L)
         {
-            shouldBuildTab.AddRange(new List<bool>(Enumerable.Repeat<bool>(false, checked((int)lengthDiff))).Cast<bool>());
+            shouldBuildTab.AddRange(new List<bool>(Enumerable.Repeat(false, checked((int)lengthDiff))).Cast<bool>());
         }
         else
         {
@@ -443,12 +443,12 @@ public class _TabSwitchingViewState__tab_scaffold : global::Doroti.Framework.Wid
         {
             if (checked(tabFocusNodes.Count) > widget.tabCount)
             {
-                discardedNodes.AddRange(tabFocusNodes.Skip(checked((int)widget.tabCount)).ToList().Cast<global::Doroti.Framework.Widgets.FocusScopeNode>());
+                discardedNodes.AddRange(tabFocusNodes.Skip(checked((int)widget.tabCount)).ToList().Cast<FocusScopeNode>());
                 tabFocusNodes.RemoveRange(checked((int)widget.tabCount), checked((int)checked((long)tabFocusNodes.Count)));
             }
             else
             {
-                tabFocusNodes.AddRange(new List<global::Doroti.Framework.Widgets.FocusScopeNode>(Enumerable.Select(Enumerable.Range(0, checked((int)(widget.tabCount - checked(tabFocusNodes.Count)))), (index) => new global::Doroti.Framework.Widgets.FocusScopeNode(debugLabel: $"{typeof(CupertinoTabScaffold)} Tab {index + checked((long)tabFocusNodes.Count)}"))).Cast<global::Doroti.Framework.Widgets.FocusScopeNode>());
+                tabFocusNodes.AddRange(new List<FocusScopeNode>(Enumerable.Select(Enumerable.Range(0, checked((int)(widget.tabCount - checked(tabFocusNodes.Count)))), (index) => new FocusScopeNode(debugLabel: $"{typeof(CupertinoTabScaffold)} Tab {index + checked((long)tabFocusNodes.Count)}"))).Cast<FocusScopeNode>());
             }
         }
         FocusScope.of(context).setFirstFocus(tabFocusNodes[(int)widget.currentTabIndex]);
@@ -456,24 +456,24 @@ public class _TabSwitchingViewState__tab_scaffold : global::Doroti.Framework.Wid
 
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Widgets.FocusScopeNode focusScopeNode in tabFocusNodes)
+        foreach (FocusScopeNode focusScopeNode in tabFocusNodes)
         {
             focusScopeNode.dispose();
         }
-        foreach (global::Doroti.Framework.Widgets.FocusScopeNode focusScopeNodeLocal in discardedNodes)
+        foreach (FocusScopeNode focusScopeNodeLocal in discardedNodes)
         {
             focusScopeNodeLocal.dispose();
         }
         base.dispose();
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.Stack(fit: StackFit.expand, children: new List<global::Doroti.Framework.Widgets.Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)widget.tabCount)), (index) =>
+        return new Stack(fit: StackFit.expand, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)widget.tabCount)), (index) =>
         {
             var active = index == widget.currentTabIndex;
             shouldBuildTab[index] = active || shouldBuildTab[index];
-            return new global::Doroti.Framework.Widgets.HeroMode(enabled: active, child: new global::Doroti.Framework.Widgets.Offstage(offstage: !active, child: new global::Doroti.Framework.Widgets.TickerMode(enabled: active, child: new global::Doroti.Framework.Widgets.FocusScope(node: tabFocusNodes[index], child: new global::Doroti.Framework.Widgets.Builder(builder: (context) =>
+            return new HeroMode(enabled: active, child: new Offstage(offstage: !active, child: new TickerMode(enabled: active, child: new FocusScope(node: tabFocusNodes[index], child: new Builder(builder: (context) =>
             {
                 return shouldBuildTab[index] ? widget.tabBuilder(context, index) : SizedBox.CreateShrink();
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -485,7 +485,7 @@ public class _TabSwitchingViewState__tab_scaffold : global::Doroti.Framework.Wid
 
 }
 
-public class RestorableCupertinoTabController : global::Doroti.Framework.Widgets.RestorableChangeNotifier<CupertinoTabController>
+public class RestorableCupertinoTabController : RestorableChangeNotifier<CupertinoTabController>
 {
     internal virtual long _initialIndex { get; private set; } = default!;
 

@@ -1,0 +1,32 @@
+<Solution>
+  <!-- Managed editing scope; platform runners remain in Doroti.Product.slnx. -->
+  <Project Path="src/Doroti.Framework.Animation/Doroti.Framework.Animation.csproj" />
+  <Project Path="src/Doroti.Framework.Cupertino/Doroti.Framework.Cupertino.csproj" />
+  <Project Path="src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj" />
+  <Project Path="src/Doroti.Framework.Gestures/Doroti.Framework.Gestures.csproj" />
+  <Project Path="src/Doroti.Framework.Material/Doroti.Framework.Material.csproj" />
+  <Project Path="src/Doroti.Framework.Painting/Doroti.Framework.Painting.csproj" />
+  <Project Path="src/Doroti.Framework.Physics/Doroti.Framework.Physics.csproj" />
+  <Project Path="src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj" />
+  <Project Path="src/Doroti.Framework.Scheduler/Doroti.Framework.Scheduler.csproj" />
+  <Project Path="src/Doroti.Framework.Semantics/Doroti.Framework.Semantics.csproj" />
+  <Project Path="src/Doroti.Framework.Services/Doroti.Framework.Services.csproj" />
+  <Project Path="src/Doroti.Framework.WidgetPreviews/Doroti.Framework.WidgetPreviews.csproj" />
+  <Project Path="src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj" />
+  <Project Path="src/Doroti.Graphics.DirectX/Doroti.Graphics.DirectX.csproj" />
+  <Project Path="src/Doroti.Graphics.DisplayList/Doroti.Graphics.DisplayList.csproj" />
+  <Project Path="src/Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
+  <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
+  <Project Path="src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
+  <Project Path="src/Doroti.Hosting/Doroti.Hosting.csproj" />
+  <Project Path="src/Doroti.Runtime/Doroti.Runtime.csproj" />
+  <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
+  <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
+  <Project Path="src/Doroti.Skia.Vulkan/Doroti.Skia.Vulkan.csproj" />
+  <Project Path="src/Doroti.Ui/Doroti.Ui.csproj" />
+  <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
+  <Project Path="../DorotiTestbedApp/DorotiTestbedApp.csproj" />
+  <Project Path="../tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj" />
+  <Project Path="src/Doroti.Host.WindowsAppSdk.Diagnostics/Doroti.Host.WindowsAppSdk.Diagnostics.csproj" />
+  <Project Path="src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
+</Solution>

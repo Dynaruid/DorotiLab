@@ -41,15 +41,15 @@ public enum TabIndicatorAnimation
     elastic
 }
 
-public class Tab : global::Doroti.Framework.Widgets.StatelessWidget, global::Doroti.Framework.Widgets.PreferredSizeWidget
+public class Tab : StatelessWidget, PreferredSizeWidget
 {
     public virtual string? text { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.Widget? icon { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? iconMargin { get; private set; }
+    public virtual Widget? child { get; private set; }
+    public virtual Widget? icon { get; private set; }
+    public virtual EdgeInsetsGeometry? iconMargin { get; private set; }
     public virtual double? height { get; private set; }
 
-    public Tab(global::Doroti.Framework.Foundation.Key? key = null, string? text = null, global::Doroti.Framework.Widgets.Widget? icon = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? iconMargin = null, double? height = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key)
+    public Tab(Key? key = null, string? text = null, Widget? icon = null, EdgeInsetsGeometry? iconMargin = null, double? height = null, Widget? child = null) : base(key: key)
     {
         this.text = text;
         this.icon = icon;
@@ -60,17 +60,17 @@ public class Tab : global::Doroti.Framework.Widgets.StatelessWidget, global::Dor
         System.Diagnostics.Debug.Assert((text is null) || (child is null));
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildLabelText()
+    internal virtual Widget _buildLabelText()
     {
-        return child ?? new global::Doroti.Framework.Widgets.Text(text!, softWrap: false, overflow: TextOverflow.fade);
+        return child ?? new Text(text!, softWrap: false, overflow: TextOverflow.fade);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         double calculatedHeight = default!;
-        global::Doroti.Framework.Widgets.Widget label = default!;
+        Widget label = default!;
         if (icon is null)
         {
             calculatedHeight = TabsLibrary._kTabHeight;
@@ -86,17 +86,17 @@ public class Tab : global::Doroti.Framework.Widgets.StatelessWidget, global::Dor
             else
             {
                 calculatedHeight = TabsLibrary._kTextAndIconTabHeight;
-                global::Doroti.Framework.Painting.EdgeInsetsGeometry effectiveIconMargin = iconMargin ?? _TabsPrimaryDefaultsM3__tabs.iconMargin;
-                label = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: effectiveIconMargin, child: icon)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildLabelText()) }));
+                EdgeInsetsGeometry effectiveIconMargin = iconMargin ?? _TabsPrimaryDefaultsM3__tabs.iconMargin;
+                label = DartRuntimePrimitives.ConvertValue<Widget>(new Column(mainAxisAlignment: MainAxisAlignment.center, children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: effectiveIconMargin, child: icon)), DartRuntimePrimitives.ConvertValue<Widget>(_buildLabelText()) }));
             }
         }
-        return new global::Doroti.Framework.Widgets.SizedBox(height: height ?? calculatedHeight, child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, child: label));
+        return new SizedBox(height: height ?? calculatedHeight, child: new Center(widthFactor: 1.0, child: label));
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("text", text, defaultValue: null));
+        properties.add(new StringProperty("text", text, defaultValue: null));
     }
 
     public virtual Size preferredSize
@@ -106,35 +106,35 @@ public class Tab : global::Doroti.Framework.Widgets.StatelessWidget, global::Dor
             if (height is not null)
             {
                 double height__value7504 = DartRuntimePrimitives.RequireValue(height);
-                return new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(height));
+                return new Size(DartRuntimePrimitives.RequireValue(height));
             }
             else
             {
                 if (((text is not null) || (child is not null)) && (icon is not null))
                 {
-                    return new global::Doroti.Ui.Size(TabsLibrary._kTextAndIconTabHeight);
+                    return new Size(TabsLibrary._kTextAndIconTabHeight);
                 }
                 else
                 {
-                    return new global::Doroti.Ui.Size(TabsLibrary._kTabHeight);
+                    return new Size(TabsLibrary._kTabHeight);
                 }
             }
         }
     }
 }
 
-internal class _TabStyle__tabs : global::Doroti.Framework.Widgets.AnimatedWidget
+internal class _TabStyle__tabs : AnimatedWidget
 {
-    public virtual global::Doroti.Framework.Painting.TextStyle? labelStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle { get; private set; }
+    public virtual TextStyle? labelStyle { get; private set; }
+    public virtual TextStyle? unselectedLabelStyle { get; private set; }
     public virtual bool isSelected { get; private set; } = default!;
     public virtual bool isPrimary { get; private set; } = default!;
     public virtual Color? labelColor { get; private set; }
     public virtual Color? unselectedLabelColor { get; private set; }
     public virtual TabBarThemeData defaults { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual Widget child { get; private set; } = default!;
 
-    internal _TabStyle__tabs(global::Doroti.Framework.Animation.Animation<double> animation, bool isSelected, bool isPrimary, Color? labelColor, Color? unselectedLabelColor, global::Doroti.Framework.Painting.TextStyle? labelStyle, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle, TabBarThemeData defaults, global::Doroti.Framework.Widgets.Widget child) : base(listenable: animation)
+    internal _TabStyle__tabs(Animation<double> animation, bool isSelected, bool isPrimary, Color? labelColor, Color? unselectedLabelColor, TextStyle? labelStyle, TextStyle? unselectedLabelStyle, TabBarThemeData defaults, Widget child) : base(listenable: animation)
     {
         this.isSelected = isSelected;
         this.isPrimary = isPrimary;
@@ -146,18 +146,18 @@ internal class _TabStyle__tabs : global::Doroti.Framework.Widgets.AnimatedWidget
         this.child = child;
     }
 
-    internal virtual global::Doroti.Framework.Widgets.WidgetStateColor _resolveWithLabelColor(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null)
+    internal virtual WidgetStateColor _resolveWithLabelColor(BuildContext context, IconThemeData? iconTheme = null)
     {
         ThemeData themeData = Theme.of(context);
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
-        var animation = ((global::Doroti.Framework.Animation.Animation<double>?)listenable)!;
-        global::Doroti.Ui.Color selectedColor = (((labelColor ?? tabBarTheme.labelColor) ?? labelStyle?.color) ?? tabBarTheme.labelStyle?.color) ?? defaults.labelColor!;
-        global::Doroti.Ui.Color unselectedColor = default!;
-        if (selectedColor is global::Doroti.Framework.Widgets.WidgetStateColor)
+        var animation = ((Animation<double>?)listenable)!;
+        Color selectedColor = (((labelColor ?? tabBarTheme.labelColor) ?? labelStyle?.color) ?? tabBarTheme.labelStyle?.color) ?? defaults.labelColor!;
+        Color unselectedColor = default!;
+        if (selectedColor is WidgetStateColor)
         {
-            global::Doroti.Framework.Widgets.WidgetStateColor selectedColor__8913__as9128 = (global::Doroti.Framework.Widgets.WidgetStateColor)selectedColor;
-            unselectedColor = selectedColor__8913__as9128.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
-            selectedColor = selectedColor__8913__as9128.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState> { WidgetState.selected });
+            WidgetStateColor selectedColor__8913__as9128 = (WidgetStateColor)selectedColor;
+            unselectedColor = selectedColor__8913__as9128.resolve(new HashSet<WidgetState>());
+            selectedColor = selectedColor__8913__as9128.resolve(new HashSet<WidgetState> { WidgetState.selected });
         }
         else
         {
@@ -174,20 +174,20 @@ internal class _TabStyle__tabs : global::Doroti.Framework.Widgets.AnimatedWidget
         });
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
-        var animation = ((global::Doroti.Framework.Animation.Animation<double>?)listenable)!;
-        var states = isSelected ? new HashSet<global::Doroti.Framework.Widgets.WidgetState> { WidgetState.selected } : new HashSet<global::Doroti.Framework.Widgets.WidgetState>();
-        global::Doroti.Framework.Painting.TextStyle selectedStyle = defaults.labelStyle!.merge(labelStyle ?? tabBarTheme.labelStyle).copyWith(inherit: true);
-        global::Doroti.Framework.Painting.TextStyle unselectedStyle = defaults.unselectedLabelStyle!.merge((unselectedLabelStyle ?? tabBarTheme.unselectedLabelStyle) ?? labelStyle).copyWith(inherit: true);
-        global::Doroti.Framework.Painting.TextStyle textStyle = isSelected ? TextStyle.lerp(selectedStyle, unselectedStyle, animation.value)! : TextStyle.lerp(unselectedStyle, selectedStyle, animation.value)!;
-        global::Doroti.Ui.Color defaultIconColor = theme.colorScheme.brightness switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        global::Doroti.Framework.Widgets.IconThemeData? customIconTheme = IconTheme.of(context) switch { global::Doroti.Framework.Widgets.IconThemeData iconThemeLocal when !Equals(iconThemeLocal.color, defaultIconColor) => iconThemeLocal, _ => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.IconThemeData>(null) };
-        global::Doroti.Ui.Color iconColor = _resolveWithLabelColor(context, iconTheme: customIconTheme).resolve(states);
-        global::Doroti.Ui.Color labelColor = _resolveWithLabelColor(context).resolve(states);
-        return new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle.copyWith(color: labelColor), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(size: customIconTheme?.size ?? 24.0, color: iconColor), child: child));
+        var animation = ((Animation<double>?)listenable)!;
+        var states = isSelected ? new HashSet<WidgetState> { WidgetState.selected } : new HashSet<WidgetState>();
+        TextStyle selectedStyle = defaults.labelStyle!.merge(labelStyle ?? tabBarTheme.labelStyle).copyWith(inherit: true);
+        TextStyle unselectedStyle = defaults.unselectedLabelStyle!.merge((unselectedLabelStyle ?? tabBarTheme.unselectedLabelStyle) ?? labelStyle).copyWith(inherit: true);
+        TextStyle textStyle = isSelected ? TextStyle.lerp(selectedStyle, unselectedStyle, animation.value)! : TextStyle.lerp(unselectedStyle, selectedStyle, animation.value)!;
+        Color defaultIconColor = theme.colorScheme.brightness switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        IconThemeData? customIconTheme = IconTheme.of(context) switch { IconThemeData iconThemeLocal when !Equals(iconThemeLocal.color, defaultIconColor) => iconThemeLocal, _ => DartRuntimePrimitives.ConvertValue<IconThemeData>(null) };
+        Color iconColor = _resolveWithLabelColor(context, iconTheme: customIconTheme).resolve(states);
+        Color labelColor = _resolveWithLabelColor(context).resolve(states);
+        return new DefaultTextStyle(style: textStyle.copyWith(color: labelColor), child: IconTheme.merge(data: new IconThemeData(size: customIconTheme?.size ?? 24.0, color: iconColor), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -195,11 +195,11 @@ internal class _TabStyle__tabs : global::Doroti.Framework.Widgets.AnimatedWidget
 
 internal delegate void _LayoutCallback__tabs(List<double> xOffsets, TextDirection textDirection, double width);
 
-public class _TabLabelBarRenderer__tabs : global::Doroti.Framework.Rendering.RenderFlex
+public class _TabLabelBarRenderer__tabs : RenderFlex
 {
-    public virtual global::System.Action<List<double>, TextDirection, double> onPerformLayout { get; set; } = default!;
+    public virtual Action<List<double>, TextDirection, double> onPerformLayout { get; set; } = default!;
 
-    internal _TabLabelBarRenderer__tabs(global::Doroti.Framework.Painting.Axis direction, global::Doroti.Framework.Rendering.MainAxisSize mainAxisSize, global::Doroti.Framework.Rendering.MainAxisAlignment mainAxisAlignment, global::Doroti.Framework.Rendering.CrossAxisAlignment crossAxisAlignment, TextDirection textDirection, global::Doroti.Framework.Painting.VerticalDirection verticalDirection, global::System.Action<List<double>, TextDirection, double> onPerformLayout) : base(direction: direction, mainAxisSize: mainAxisSize, mainAxisAlignment: mainAxisAlignment, crossAxisAlignment: crossAxisAlignment, textDirection: textDirection, verticalDirection: verticalDirection)
+    internal _TabLabelBarRenderer__tabs(Axis direction, MainAxisSize mainAxisSize, MainAxisAlignment mainAxisAlignment, CrossAxisAlignment crossAxisAlignment, TextDirection textDirection, VerticalDirection verticalDirection, Action<List<double>, TextDirection, double> onPerformLayout) : base(direction: direction, mainAxisSize: mainAxisSize, mainAxisAlignment: mainAxisAlignment, crossAxisAlignment: crossAxisAlignment, textDirection: textDirection, verticalDirection: verticalDirection)
     {
         this.onPerformLayout = onPerformLayout;
     }
@@ -207,11 +207,11 @@ public class _TabLabelBarRenderer__tabs : global::Doroti.Framework.Rendering.Ren
     public override void performLayout()
     {
         base.performLayout();
-        global::Doroti.Framework.Rendering.RenderBox? child = firstChild;
+        RenderBox? child = firstChild;
         var xOffsets = new List<double>();
         while (child is not null)
         {
-            var childParentData = ((global::Doroti.Framework.Rendering.FlexParentData?)child.parentData!)!;
+            var childParentData = ((FlexParentData?)child.parentData!)!;
             xOffsets.Add(childParentData.offset.dx);
             DartRuntimePrimitives.Assert(() => Equals(child.parentData, childParentData));
             child = childParentData.nextSibling;
@@ -235,22 +235,22 @@ public class _TabLabelBarRenderer__tabs : global::Doroti.Framework.Rendering.Ren
 
 }
 
-internal class _TabLabelBar__tabs : global::Doroti.Framework.Widgets.Flex
+internal class _TabLabelBar__tabs : Flex
 {
-    public virtual global::System.Action<List<double>, TextDirection, double> onPerformLayout { get; private set; } = default!;
+    public virtual Action<List<double>, TextDirection, double> onPerformLayout { get; private set; } = default!;
 
-    internal _TabLabelBar__tabs(List<global::Doroti.Framework.Widgets.Widget> children = default!, global::System.Action<List<double>, TextDirection, double> onPerformLayout = default!, global::Doroti.Framework.Rendering.MainAxisSize mainAxisSize = default!) : base(children: children ?? new List<global::Doroti.Framework.Widgets.Widget>(), mainAxisSize: mainAxisSize, direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, verticalDirection: VerticalDirection.down)
+    internal _TabLabelBar__tabs(List<Widget> children = default!, Action<List<double>, TextDirection, double> onPerformLayout = default!, MainAxisSize mainAxisSize = default!) : base(children: children ?? new List<Widget>(), mainAxisSize: mainAxisSize, direction: Axis.horizontal, mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, verticalDirection: VerticalDirection.down)
     {
         this.onPerformLayout = onPerformLayout;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
         return new _TabLabelBarRenderer__tabs(direction: direction, mainAxisAlignment: mainAxisAlignment, mainAxisSize: mainAxisSize, crossAxisAlignment: crossAxisAlignment, textDirection: DartRuntimePrimitives.RequireValue(getEffectiveTextDirection(context)), verticalDirection: verticalDirection, onPerformLayout: onPerformLayout);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
         var __renderObject = (_TabLabelBarRenderer__tabs)renderObject;
         base.updateRenderObject(context, __renderObject);
@@ -275,7 +275,7 @@ public static partial class TabsLibrary
     }
 }
 
-internal class _DividerPainter__tabs : global::Doroti.Framework.Rendering.CustomPainter
+internal class _DividerPainter__tabs : CustomPainter
 {
     public virtual Color dividerColor { get; private set; } = default!;
     public virtual double dividerHeight { get; private set; } = default!;
@@ -294,15 +294,15 @@ internal class _DividerPainter__tabs : global::Doroti.Framework.Rendering.Custom
         }
         var paintLocal = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = dividerColor;
     __cascade.strokeWidth = dividerHeight;
     return __cascade;
 }))();
-        canvas.drawLine(new global::Doroti.Ui.Offset(0, size.height - paintLocal.strokeWidth / 2L), new global::Doroti.Ui.Offset(size.width, size.height - paintLocal.strokeWidth / 2L), paintLocal);
+        canvas.drawLine(new Offset(0, size.height - paintLocal.strokeWidth / 2L), new Offset(size.width, size.height - paintLocal.strokeWidth / 2L), paintLocal);
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __oldDelegate = (_DividerPainter__tabs)oldDelegate;
         return (!Equals(__oldDelegate.dividerColor, dividerColor)) || (__oldDelegate.dividerHeight != dividerHeight);
@@ -311,7 +311,7 @@ internal class _DividerPainter__tabs : global::Doroti.Framework.Rendering.Custom
 
 }
 
-internal class _IndicatorPainterNotifier__tabs : global::Doroti.Framework.Foundation.ChangeNotifier
+internal class _IndicatorPainterNotifier__tabs : ChangeNotifier
 {
     public virtual void notify()
     {
@@ -321,14 +321,14 @@ internal class _IndicatorPainterNotifier__tabs : global::Doroti.Framework.Founda
     public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
-internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.CustomPainter
+internal class _IndicatorPainter__tabs : CustomPainter
 {
     public virtual TabController controller { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.Decoration indicator { get; private set; } = default!;
+    public virtual Decoration indicator { get; private set; } = default!;
     public virtual TabBarIndicatorSize indicatorSize { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding { get; private set; } = default!;
-    public virtual List<global::Doroti.Framework.Widgets.GlobalKey<IState>> tabKeys { get; private set; } = default!;
-    public virtual List<global::Doroti.Framework.Painting.EdgeInsetsGeometry> labelPaddings { get; private set; } = default!;
+    public virtual EdgeInsetsGeometry indicatorPadding { get; private set; } = default!;
+    public virtual List<GlobalKey<IState>> tabKeys { get; private set; } = default!;
+    public virtual List<EdgeInsetsGeometry> labelPaddings { get; private set; } = default!;
     public virtual Color? dividerColor { get; private set; }
     public virtual double? dividerHeight { get; private set; }
     public virtual bool showDivider { get; private set; } = default!;
@@ -340,15 +340,15 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
     internal virtual List<double>? _currentTabOffsets { get; set; } = default;
     internal virtual TextDirection? _currentTextDirection { get; set; } = default;
     internal virtual Rect? _currentRect { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.BoxPainter? _painter { get; set; } = default;
+    internal virtual BoxPainter? _painter { get; set; } = default;
     internal virtual bool _needsPaint { get; set; } = false;
 
-    internal static _IndicatorPainter__tabs Create(TabController controller, global::Doroti.Framework.Painting.Decoration indicator, TabBarIndicatorSize indicatorSize, List<global::Doroti.Framework.Widgets.GlobalKey<IState>> tabKeys, _IndicatorPainter__tabs? old, global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding, List<global::Doroti.Framework.Painting.EdgeInsetsGeometry> labelPaddings, Color? dividerColor = null, double? dividerHeight = null, bool showDivider = default!, double? devicePixelRatio = null, TabIndicatorAnimation indicatorAnimation = default!, TextDirection textDirection = default!)
+    internal static _IndicatorPainter__tabs Create(TabController controller, Decoration indicator, TabBarIndicatorSize indicatorSize, List<GlobalKey<IState>> tabKeys, _IndicatorPainter__tabs? old, EdgeInsetsGeometry indicatorPadding, List<EdgeInsetsGeometry> labelPaddings, Color? dividerColor = null, double? dividerHeight = null, bool showDivider = default!, double? devicePixelRatio = null, TabIndicatorAnimation indicatorAnimation = default!, TextDirection textDirection = default!)
     {
         return new _IndicatorPainter__tabs(controller: controller, indicator: indicator, indicatorSize: indicatorSize, tabKeys: tabKeys, old: old, indicatorPadding: indicatorPadding, labelPaddings: labelPaddings, dividerColor: dividerColor, dividerHeight: dividerHeight, showDivider: showDivider, devicePixelRatio: devicePixelRatio, indicatorAnimation: indicatorAnimation, textDirection: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textDirection)), repaint: new _IndicatorPainterNotifier__tabs());
     }
 
-    internal _IndicatorPainter__tabs(TabController controller, global::Doroti.Framework.Painting.Decoration indicator, TabBarIndicatorSize indicatorSize, List<global::Doroti.Framework.Widgets.GlobalKey<IState>> tabKeys, _IndicatorPainter__tabs? old, global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding, List<global::Doroti.Framework.Painting.EdgeInsetsGeometry> labelPaddings, Color? dividerColor = null, double? dividerHeight = null, bool showDivider = default!, double? devicePixelRatio = null, TabIndicatorAnimation indicatorAnimation = default!, TextDirection textDirection = default!, _IndicatorPainterNotifier__tabs repaint = default!) : base(repaint: Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable?> { controller.animation, repaint }.Cast<global::Doroti.Framework.Foundation.Listenable?>()))
+    internal _IndicatorPainter__tabs(TabController controller, Decoration indicator, TabBarIndicatorSize indicatorSize, List<GlobalKey<IState>> tabKeys, _IndicatorPainter__tabs? old, EdgeInsetsGeometry indicatorPadding, List<EdgeInsetsGeometry> labelPaddings, Color? dividerColor = null, double? dividerHeight = null, bool showDivider = default!, double? devicePixelRatio = null, TabIndicatorAnimation indicatorAnimation = default!, TextDirection textDirection = default!, _IndicatorPainterNotifier__tabs repaint = default!) : base(repaint: Listenable.CreateMerge(new List<Listenable?> { controller.animation, repaint }.Cast<Listenable?>()))
     {
         this.controller = controller;
         this.indicator = indicator;
@@ -400,7 +400,7 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Ui.Rect indicatorRect(Size tabBarSize, long tabIndex)
+    public virtual Rect indicatorRect(Size tabBarSize, long tabIndex)
     {
         DartRuntimePrimitives.Assert(() => _currentTabOffsets is not null);
         DartRuntimePrimitives.Assert(() => _currentTextDirection is not null);
@@ -413,13 +413,13 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
         if (Equals(indicatorSize, TabBarIndicatorSize.label))
         {
             double tabWidth = DartRuntimePrimitives.RequireValue(tabKeys[(int)tabIndex].currentContext!.size).width;
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPadding = labelPaddings[(int)tabIndex];
-            global::Doroti.Framework.Painting.EdgeInsets insets = labelPadding.resolve(_currentTextDirection);
+            EdgeInsetsGeometry labelPadding = labelPaddings[(int)tabIndex];
+            EdgeInsets insets = labelPadding.resolve(_currentTextDirection);
             double delta = (tabRight - tabLeft - (tabWidth + insets.horizontal)) / 2.0;
             tabLeft += delta + insets.left;
             tabRight = tabLeft + tabWidth;
         }
-        global::Doroti.Framework.Painting.EdgeInsets insetsLocal = indicatorPadding.resolve(_currentTextDirection);
+        EdgeInsets insetsLocal = indicatorPadding.resolve(_currentTextDirection);
         var rect = Rect.fromLTWH(tabLeft, 0.0, tabRight - tabLeft, tabBarSize.height);
         if (!(rect.size >= insetsLocal.collapsedSize))
         {
@@ -436,31 +436,31 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
         double valueLocal = controller.animation!.value;
         _currentRect = indicatorAnimation switch { TabIndicatorAnimation.linear => _applyLinearEffect(size: size, value: valueLocal), TabIndicatorAnimation.elastic => _applyElasticEffect(size: size, value: valueLocal), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         DartRuntimePrimitives.Assert(() => _currentRect is not null);
-        var configuration = new global::Doroti.Framework.Painting.ImageConfiguration(size: DartRuntimePrimitives.RequireValue(_currentRect).size, textDirection: _currentTextDirection, devicePixelRatio: devicePixelRatio);
+        var configuration = new ImageConfiguration(size: DartRuntimePrimitives.RequireValue(_currentRect).size, textDirection: _currentTextDirection, devicePixelRatio: devicePixelRatio);
         if (showDivider && (DartRuntimePrimitives.RequireValue(dividerHeight) > 0L))
         {
             var dividerPaint = ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = dividerColor!;
     __cascade.strokeWidth = DartRuntimePrimitives.RequireValue(dividerHeight);
     return __cascade;
 }))();
-            var dividerP1 = new global::Doroti.Ui.Offset(0, size.height - dividerPaint.strokeWidth / 2L);
-            var dividerP2 = new global::Doroti.Ui.Offset(size.width, size.height - dividerPaint.strokeWidth / 2L);
+            var dividerP1 = new Offset(0, size.height - dividerPaint.strokeWidth / 2L);
+            var dividerP2 = new Offset(size.width, size.height - dividerPaint.strokeWidth / 2L);
             canvas.drawLine(dividerP1, dividerP2, dividerPaint);
         }
         _painter!.paint(canvas, DartRuntimePrimitives.RequireValue(_currentRect).topLeft, configuration);
     }
 
-    internal virtual global::Doroti.Ui.Rect? _applyLinearEffect(Size size, double value)
+    internal virtual Rect? _applyLinearEffect(Size size, double value)
     {
         double indexLocal = controller.index.toDouble();
         bool ltr = indexLocal > value;
         long @from = (ltr ? value.floor() : value.ceil()).clamp(0L, maxTabIndex);
         long to = (ltr ? (@from + 1L) : (@from - 1L)).clamp(0L, maxTabIndex);
-        global::Doroti.Ui.Rect fromRect = indicatorRect(size, @from);
-        global::Doroti.Ui.Rect toRect = indicatorRect(size, to);
+        Rect fromRect = indicatorRect(size, @from);
+        Rect toRect = indicatorRect(size, to);
         return Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -477,15 +477,15 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Rect? _applyElasticEffect(Size size, double value)
+    internal virtual Rect? _applyElasticEffect(Size size, double value)
     {
         double indexLocal = controller.index.toDouble();
         double progressLeft = (indexLocal - value).abs();
         long to = ((progressLeft == 0.0) || !controller.indexIsChanging) ? (textDirection switch { TextDirection.ltr => value.ceil(), TextDirection.rtl => value.floor(), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, maxTabIndex) : controller.index;
         long @from = ((progressLeft == 0.0) || !controller.indexIsChanging) ? (textDirection switch { TextDirection.ltr => to - 1L, TextDirection.rtl => to + 1L, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, maxTabIndex) : controller.previousIndex;
-        global::Doroti.Ui.Rect toRect = indicatorRect(size, to);
-        global::Doroti.Ui.Rect fromRect = indicatorRect(size, @from);
-        global::Doroti.Ui.Rect rect = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs()));
+        Rect toRect = indicatorRect(size, to);
+        Rect fromRect = indicatorRect(size, @from);
+        Rect rect = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs()));
         if (controller.animation!.isCompleted)
         {
             return rect;
@@ -537,7 +537,7 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(CustomPainter oldDelegate)
     {
         var __old = (_IndicatorPainter__tabs)oldDelegate;
         return _needsPaint || (!Equals(controller, __old.controller)) || (!Equals(indicator, __old.indicator)) || (checked(tabKeys.Count) != checked((long)__old.tabKeys.Count)) || (!CollectionsLibrary.listEquals(_currentTabOffsets, __old._currentTabOffsets)) || (!Equals(_currentTextDirection, __old._currentTextDirection));
@@ -546,7 +546,7 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
 
 }
 
-internal class _ChangeAnimation__tabs : global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.AnimationWithParentMixin<double>
+internal class _ChangeAnimation__tabs : Animation<double>, AnimationWithParentMixin<double>
 {
     public virtual TabController controller { get; private set; } = default!;
 
@@ -555,7 +555,7 @@ internal class _ChangeAnimation__tabs : global::Doroti.Framework.Animation.Anima
         this.controller = controller;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> parent => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(controller.animation!);
+    public virtual Animation<double> parent => DartRuntimePrimitives.ConvertValue<Animation<double>>(controller.animation!);
     public override void removeStatusListener(AnimationStatusListener listener)
     {
         if (controller.animation is not null)
@@ -564,7 +564,7 @@ internal class _ChangeAnimation__tabs : global::Doroti.Framework.Animation.Anima
         }
     }
 
-    public override void removeListener(global::System.Action listener)
+    public override void removeListener(Action listener)
     {
         if (controller.animation is not null)
         {
@@ -573,12 +573,12 @@ internal class _ChangeAnimation__tabs : global::Doroti.Framework.Animation.Anima
     }
 
     public override double value => TabsLibrary._indexChangeProgress(controller);
-    public override void addListener(global::System.Action listener) => parent.addListener(listener);
+    public override void addListener(Action listener) => parent.addListener(listener);
     public override void addStatusListener(AnimationStatusListener listener) => parent.addStatusListener(listener);
     public override AnimationStatus status => parent.status;
 }
 
-internal class _DragAnimation__tabs : global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.AnimationWithParentMixin<double>
+internal class _DragAnimation__tabs : Animation<double>, AnimationWithParentMixin<double>
 {
     public virtual TabController controller { get; private set; } = default!;
     public virtual long index { get; private set; } = default!;
@@ -589,7 +589,7 @@ internal class _DragAnimation__tabs : global::Doroti.Framework.Animation.Animati
         this.index = index;
     }
 
-    public virtual global::Doroti.Framework.Animation.Animation<double> parent => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(controller.animation!);
+    public virtual Animation<double> parent => DartRuntimePrimitives.ConvertValue<Animation<double>>(controller.animation!);
     public override void removeStatusListener(AnimationStatusListener listener)
     {
         if (controller.animation is not null)
@@ -598,7 +598,7 @@ internal class _DragAnimation__tabs : global::Doroti.Framework.Animation.Animati
         }
     }
 
-    public override void removeListener(global::System.Action listener)
+    public override void removeListener(Action listener)
     {
         if (controller.animation is not null)
         {
@@ -616,18 +616,18 @@ internal class _DragAnimation__tabs : global::Doroti.Framework.Animation.Animati
             return Dart_uiLibrary.clampDouble((controllerValue - index.toDouble()).abs(), 0.0, 1.0);
         }
     }
-    public override void addListener(global::System.Action listener) => parent.addListener(listener);
+    public override void addListener(Action listener) => parent.addListener(listener);
     public override void addStatusListener(AnimationStatusListener listener) => parent.addStatusListener(listener);
     public override AnimationStatus status => parent.status;
 }
 
-internal class _TabBarScrollPosition__tabs : global::Doroti.Framework.Widgets.ScrollPositionWithSingleContext
+internal class _TabBarScrollPosition__tabs : ScrollPositionWithSingleContext
 {
     public virtual _TabBarState__tabs tabBar { get; private set; } = default!;
     internal virtual bool _viewportDimensionWasNonZero { get; set; } = false;
     internal virtual bool _needsPixelsCorrection { get; set; } = true;
 
-    internal _TabBarScrollPosition__tabs(global::Doroti.Framework.Widgets.ScrollPhysics physics, global::Doroti.Framework.Widgets.ScrollContext context, global::Doroti.Framework.Widgets.ScrollPosition? oldPosition, _TabBarState__tabs tabBar) : base(physics: physics, context: context, oldPosition: oldPosition, initialPixels: null)
+    internal _TabBarScrollPosition__tabs(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition, _TabBarState__tabs tabBar) : base(physics: physics, context: context, oldPosition: oldPosition, initialPixels: null)
     {
         this.tabBar = tabBar;
     }
@@ -656,7 +656,7 @@ internal class _TabBarScrollPosition__tabs : global::Doroti.Framework.Widgets.Sc
 
 }
 
-public class TabBarScrollController : global::Doroti.Framework.Widgets.ScrollController
+public class TabBarScrollController : ScrollController
 {
     internal virtual _TabBarState__tabs? _tabBarState { get; set; } = default;
 
@@ -667,7 +667,7 @@ public class TabBarScrollController : global::Doroti.Framework.Widgets.ScrollCon
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.ScrollPosition createScrollPosition(global::Doroti.Framework.Widgets.ScrollPhysics physics, global::Doroti.Framework.Widgets.ScrollContext context, global::Doroti.Framework.Widgets.ScrollPosition? oldPosition)
+    public override ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
     {
         DartRuntimePrimitives.Assert(() => debugCheckHasTabBarState());
         return new _TabBarScrollPosition__tabs(physics: physics, context: context, oldPosition: oldPosition, tabBar: _tabBarState!);
@@ -684,44 +684,44 @@ public class TabBarScrollController : global::Doroti.Framework.Widgets.ScrollCon
 
 public delegate void TabValueChanged<T>(T value, long index);
 
-public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::Doroti.Framework.Widgets.PreferredSizeWidget
+public class TabBar : StatefulWidget, PreferredSizeWidget
 {
-    public virtual List<global::Doroti.Framework.Widgets.Widget> tabs { get; private set; } = default!;
+    public virtual List<Widget> tabs { get; private set; } = default!;
     public virtual TabController? controller { get; private set; }
     public virtual TabBarScrollController? scrollController { get; private set; }
     public virtual bool isScrollable { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
     public virtual Color? indicatorColor { get; private set; }
     public virtual double indicatorWeight { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.Decoration? indicator { get; private set; }
+    public virtual EdgeInsetsGeometry indicatorPadding { get; private set; } = default!;
+    public virtual Decoration? indicator { get; private set; }
     public virtual bool automaticIndicatorColorAdjustment { get; private set; } = default!;
     public virtual TabBarIndicatorSize? indicatorSize { get; private set; }
     public virtual Color? dividerColor { get; private set; }
     public virtual double? dividerHeight { get; private set; }
     public virtual Color? labelColor { get; private set; }
     public virtual Color? unselectedLabelColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? labelStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle { get; private set; }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor { get; private set; }
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual TextStyle? labelStyle { get; private set; }
+    public virtual TextStyle? unselectedLabelStyle { get; private set; }
+    public virtual EdgeInsetsGeometry? labelPadding { get; private set; }
+    public virtual WidgetStateProperty<Color?>? overlayColor { get; private set; }
+    public virtual Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual MouseCursor? mouseCursor { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
-    public virtual global::System.Action<long>? onTap { get; private set; }
-    public virtual global::System.Action<bool, long>? onHover { get; private set; }
-    public virtual global::System.Action<bool, long>? onFocusChange { get; private set; }
-    public virtual global::Doroti.Framework.Widgets.ScrollPhysics? physics { get; private set; }
+    public virtual System.Action<long>? onTap { get; private set; }
+    public virtual Action<bool, long>? onHover { get; private set; }
+    public virtual Action<bool, long>? onFocusChange { get; private set; }
+    public virtual ScrollPhysics? physics { get; private set; }
     public virtual InteractiveInkFeatureFactory? splashFactory { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderRadius? splashBorderRadius { get; private set; }
+    public virtual BorderRadius? splashBorderRadius { get; private set; }
     public virtual TabAlignment? tabAlignment { get; private set; }
-    public virtual global::Doroti.Framework.Painting.TextScaler? textScaler { get; private set; }
+    public virtual TextScaler? textScaler { get; private set; }
     public virtual TabIndicatorAnimation? indicatorAnimation { get; private set; }
     internal virtual bool _isPrimary { get; private set; } = default!;
 
-    public TabBar(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget> tabs = default!, TabController? controller = null, TabBarScrollController? scrollController = null, bool isScrollable = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Color? indicatorColor = null, bool automaticIndicatorColorAdjustment = true, double indicatorWeight = 2.0, global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding = default!, global::Doroti.Framework.Painting.Decoration? indicator = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, Color? unselectedLabelColor = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool? enableFeedback = null, global::System.Action<long>? onTap = null, global::System.Action<bool, long>? onHover = null, global::System.Action<bool, long>? onFocusChange = null, global::Doroti.Framework.Widgets.ScrollPhysics? physics = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Framework.Painting.BorderRadius? splashBorderRadius = null, TabAlignment? tabAlignment = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null) : base(key: key)
+    public TabBar(Key? key = null, List<Widget> tabs = default!, TabController? controller = null, TabBarScrollController? scrollController = null, bool isScrollable = false, EdgeInsetsGeometry? padding = null, Color? indicatorColor = null, bool automaticIndicatorColorAdjustment = true, double indicatorWeight = 2.0, EdgeInsetsGeometry indicatorPadding = default!, Decoration? indicator = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Color? unselectedLabelColor = null, TextStyle? unselectedLabelStyle = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null, bool? enableFeedback = null, System.Action<long>? onTap = null, Action<bool, long>? onHover = null, Action<bool, long>? onFocusChange = null, ScrollPhysics? physics = null, InteractiveInkFeatureFactory? splashFactory = null, BorderRadius? splashBorderRadius = null, TabAlignment? tabAlignment = null, TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? EdgeInsets.zero;
+        EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? EdgeInsets.zero;
         this.tabs = tabs;
         this.controller = controller;
         this.scrollController = scrollController;
@@ -757,10 +757,10 @@ public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::D
         System.Diagnostics.Debug.Assert((indicator is not null) || indicatorWeight > 0.0);
     }
 
-    public static TabBar CreateSecondary(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget> tabs = default!, TabController? controller = null, TabBarScrollController? scrollController = null, bool isScrollable = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Color? indicatorColor = null, bool automaticIndicatorColorAdjustment = true, double indicatorWeight = 2.0, global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding = default!, global::Doroti.Framework.Painting.Decoration? indicator = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, Color? unselectedLabelColor = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool? enableFeedback = null, global::System.Action<long>? onTap = null, global::System.Action<bool, long>? onHover = null, global::System.Action<bool, long>? onFocusChange = null, global::Doroti.Framework.Widgets.ScrollPhysics? physics = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Framework.Painting.BorderRadius? splashBorderRadius = null, TabAlignment? tabAlignment = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null)
+    public static TabBar CreateSecondary(Key? key = null, List<Widget> tabs = default!, TabController? controller = null, TabBarScrollController? scrollController = null, bool isScrollable = false, EdgeInsetsGeometry? padding = null, Color? indicatorColor = null, bool automaticIndicatorColorAdjustment = true, double indicatorWeight = 2.0, EdgeInsetsGeometry indicatorPadding = default!, Decoration? indicator = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, TextStyle? labelStyle = null, EdgeInsetsGeometry? labelPadding = null, Color? unselectedLabelColor = null, TextStyle? unselectedLabelStyle = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, WidgetStateProperty<Color?>? overlayColor = null, MouseCursor? mouseCursor = null, bool? enableFeedback = null, System.Action<long>? onTap = null, Action<bool, long>? onHover = null, Action<bool, long>? onFocusChange = null, ScrollPhysics? physics = null, InteractiveInkFeatureFactory? splashFactory = null, BorderRadius? splashBorderRadius = null, TabAlignment? tabAlignment = null, TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null)
     {
         var __instance = new TabBar(key: key, tabs: tabs, controller: controller, scrollController: scrollController, isScrollable: isScrollable, padding: padding, indicatorColor: indicatorColor, automaticIndicatorColorAdjustment: automaticIndicatorColorAdjustment, indicatorWeight: indicatorWeight, indicatorPadding: indicatorPadding, indicator: indicator, indicatorSize: indicatorSize, dividerColor: dividerColor, dividerHeight: dividerHeight, labelColor: labelColor, labelStyle: labelStyle, labelPadding: labelPadding, unselectedLabelColor: unselectedLabelColor, unselectedLabelStyle: unselectedLabelStyle, dragStartBehavior: dragStartBehavior, overlayColor: overlayColor, mouseCursor: mouseCursor, enableFeedback: enableFeedback, onTap: onTap, onHover: onHover, onFocusChange: onFocusChange, physics: physics, splashFactory: splashFactory, splashBorderRadius: splashBorderRadius, tabAlignment: tabAlignment, textScaler: textScaler, indicatorAnimation: indicatorAnimation);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? EdgeInsets.zero;
+        EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? EdgeInsets.zero;
         __instance.tabs = tabs;
         __instance.controller = controller;
         __instance.scrollController = scrollController;
@@ -801,27 +801,27 @@ public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::D
         get
         {
             double maxHeight = TabsLibrary._kTabHeight;
-            foreach (global::Doroti.Framework.Widgets.Widget item in tabs)
+            foreach (Widget item in tabs)
             {
-                if (item is global::Doroti.Framework.Widgets.PreferredSizeWidget)
+                if (item is PreferredSizeWidget)
                 {
-                    global::Doroti.Framework.Widgets.PreferredSizeWidget item__55453__as55479 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)item;
+                    PreferredSizeWidget item__55453__as55479 = (PreferredSizeWidget)item;
                     double itemHeight = item__55453__as55479.preferredSize.height;
                     maxHeight = Math.Max(itemHeight, maxHeight);
                 }
             }
-            return new global::Doroti.Ui.Size(maxHeight + indicatorWeight);
+            return new Size(maxHeight + indicatorWeight);
         }
     }
     public virtual bool tabHasTextAndIcon
     {
         get
         {
-            foreach (global::Doroti.Framework.Widgets.Widget item in tabs)
+            foreach (Widget item in tabs)
             {
-                if (item is global::Doroti.Framework.Widgets.PreferredSizeWidget)
+                if (item is PreferredSizeWidget)
                 {
-                    global::Doroti.Framework.Widgets.PreferredSizeWidget item__56008__as56034 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)item;
+                    PreferredSizeWidget item__56008__as56034 = (PreferredSizeWidget)item;
                     if (item__56008__as56034.preferredSize.height == TabsLibrary._kTextAndIconTabHeight)
                     {
                         return true;
@@ -834,22 +834,22 @@ public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::D
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabBarState__tabs());
 }
 
-internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBar>
+internal class _TabBarState__tabs : State<TabBar>
 {
     internal virtual TabBarScrollController? _internalScrollController { get; set; } = default;
     internal virtual TabController? _controller { get; set; } = default;
     internal virtual _IndicatorPainter__tabs? _indicatorPainter { get; set; } = default;
     internal virtual long? _currentIndex { get; set; } = default;
     internal virtual double _tabStripWidth { get; set; } = default!;
-    internal virtual List<global::Doroti.Framework.Widgets.GlobalKey<IState>> _tabKeys { get; set; } = default!;
-    internal virtual List<global::Doroti.Framework.Painting.EdgeInsetsGeometry> _labelPaddings { get; set; } = default!;
+    internal virtual List<GlobalKey<IState>> _tabKeys { get; set; } = default!;
+    internal virtual List<EdgeInsetsGeometry> _labelPaddings { get; set; } = default!;
     internal virtual bool _debugHasScheduledValidTabsCountCheck { get; set; } = false;
 
     public override void initState()
     {
         base.initState();
-        _tabKeys = widget.tabs.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.GlobalKey<IState>>((tab) => GlobalKey<IState>.Create()).ToList();
-        _labelPaddings = new List<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(Enumerable.Repeat<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.zero, checked((int)checked((long)widget.tabs.Count))));
+        _tabKeys = widget.tabs.map((tab) => GlobalKey<IState>.Create()).ToList();
+        _labelPaddings = new List<EdgeInsetsGeometry>(Enumerable.Repeat<EdgeInsetsGeometry>(EdgeInsets.zero, checked((int)checked((long)widget.tabs.Count))));
     }
 
     internal virtual TabBarThemeData _defaults
@@ -874,7 +874,7 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
             return _internalScrollController ??= new TabBarScrollController();
         }
     }
-    internal virtual global::Doroti.Framework.Painting.Decoration _getIndicator(TabBarIndicatorSize indicatorSize)
+    internal virtual Decoration _getIndicator(TabBarIndicatorSize indicatorSize)
     {
         ThemeData theme = Theme.of(context);
         TabBarThemeData tabBarTheme = TabBarTheme.of(context);
@@ -886,15 +886,15 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         {
             return tabBarTheme.indicator!;
         }
-        global::Doroti.Ui.Color colorLocal = (widget.indicatorColor ?? tabBarTheme.indicatorColor) ?? _defaults.indicatorColor!;
+        Color colorLocal = (widget.indicatorColor ?? tabBarTheme.indicatorColor) ?? _defaults.indicatorColor!;
         if (widget.automaticIndicatorColorAdjustment && (colorLocal.value == Material.maybeOf(context)?.color?.value))
         {
             colorLocal = Colors.white;
         }
         double effectiveIndicatorWeight = Math.Max(widget.indicatorWeight, (object)widget._isPrimary switch { true => _TabsPrimaryDefaultsM3__tabs.indicatorWeight(indicatorSize), false => _TabsSecondaryDefaultsM3__tabs.indicatorWeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         bool primaryWithLabelIndicator = indicatorSize switch { TabBarIndicatorSize.label => widget._isPrimary, TabBarIndicatorSize.tab => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        global::Doroti.Framework.Painting.BorderRadius? effectiveBorderRadius = primaryWithLabelIndicator ? new global::Doroti.Framework.Painting.BorderRadius(topLeft: Radius.circular(effectiveIndicatorWeight), topRight: Radius.circular(effectiveIndicatorWeight)) : null;
-        return new UnderlineTabIndicator(borderRadius: effectiveBorderRadius, borderSide: new global::Doroti.Framework.Painting.BorderSide(width: effectiveIndicatorWeight, color: colorLocal));
+        BorderRadius? effectiveBorderRadius = primaryWithLabelIndicator ? new BorderRadius(topLeft: Radius.circular(effectiveIndicatorWeight), topRight: Radius.circular(effectiveIndicatorWeight)) : null;
+        return new UnderlineTabIndicator(borderRadius: effectiveBorderRadius, borderSide: new BorderSide(width: effectiveIndicatorWeight, color: colorLocal));
     }
 
     internal virtual bool _controllerIsValid => DartRuntimePrimitives.ConvertValue<bool>(_controller?.animation is not null);
@@ -974,7 +974,7 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
             _initIndicatorPainter();
             if (_effectiveScrollController.hasClients)
             {
-                global::Doroti.Framework.Widgets.ScrollPosition positionLocal = _effectiveScrollController.position;
+                ScrollPosition positionLocal = _effectiveScrollController.position;
                 if (positionLocal is _TabBarScrollPosition__tabs)
                 {
                     _TabBarScrollPosition__tabs position__64819__as64879 = (_TabBarScrollPosition__tabs)positionLocal;
@@ -992,8 +992,8 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         if (checked(widget.tabs.Count) > checked((long)_tabKeys.Count))
         {
             long delta = checked(widget.tabs.Count) - checked((long)_tabKeys.Count);
-            _tabKeys.AddRange(DartRuntimePrimitives.CreateList<global::Doroti.Framework.Widgets.GlobalKey<IState>>(delta, (n) => GlobalKey<IState>.Create()).Cast<global::Doroti.Framework.Widgets.GlobalKey<IState>>());
-            _labelPaddings.AddRange(new List<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(Enumerable.Repeat<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.zero, checked((int)delta))).Cast<global::Doroti.Framework.Painting.EdgeInsetsGeometry>());
+            _tabKeys.AddRange(DartRuntimePrimitives.CreateList(delta, (n) => GlobalKey<IState>.Create()).Cast<GlobalKey<IState>>());
+            _labelPaddings.AddRange(new List<EdgeInsetsGeometry>(Enumerable.Repeat<EdgeInsetsGeometry>(EdgeInsets.zero, checked((int)delta))).Cast<EdgeInsetsGeometry>());
         }
         else
         {
@@ -1048,7 +1048,7 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
 
     internal virtual double _tabCenteredScrollOffset(long index)
     {
-        global::Doroti.Framework.Widgets.ScrollPosition positionLocal = _effectiveScrollController.position;
+        ScrollPosition positionLocal = _effectiveScrollController.position;
         return _tabScrollOffset(index, positionLocal.viewportDimension, positionLocal.minScrollExtent, positionLocal.maxScrollExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1114,7 +1114,7 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         widget.onTap?.Invoke(index);
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildStyledTab(global::Doroti.Framework.Widgets.Widget child, bool isSelected, global::Doroti.Framework.Animation.Animation<double> animation, TabBarThemeData defaults)
+    internal virtual Widget _buildStyledTab(Widget child, bool isSelected, Animation<double> animation, TabBarThemeData defaults)
     {
         return new _TabStyle__tabs(animation: animation, isSelected: isSelected, isPrimary: widget._isPrimary, labelColor: widget.labelColor, unselectedLabelColor: widget.unselectedLabelColor, labelStyle: widget.labelStyle, unselectedLabelStyle: widget.unselectedLabelStyle, defaults: defaults, child: child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1165,7 +1165,7 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         DartRuntimePrimitives.Assert(() => _debugScheduleCheckHasValidTabsCount());
@@ -1176,20 +1176,20 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         if (_controller!.length == 0L)
         {
-            return new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, child: new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, height: TabsLibrary._kTabHeight + widget.indicatorWeight));
+            return new LimitedBox(maxWidth: 0.0, child: new SizedBox(width: double.PositiveInfinity, height: TabsLibrary._kTabHeight + widget.indicatorWeight));
         }
-        var wrappedTabs = new List<global::Doroti.Framework.Widgets.Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)widget.tabs.Count))), (index) =>
+        var wrappedTabs = new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)widget.tabs.Count))), (index) =>
         {
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = (widget.labelPadding ?? tabBarTheme.labelPadding) ?? ConstantsLibrary.kTabLabelPadding;
+            EdgeInsetsGeometry paddingLocal = (widget.labelPadding ?? tabBarTheme.labelPadding) ?? ConstantsLibrary.kTabLabelPadding;
             double verticalAdjustment = (TabsLibrary._kTextAndIconTabHeight - TabsLibrary._kTabHeight) / 2.0;
-            global::Doroti.Framework.Widgets.Widget tabLocal = widget.tabs[index];
-            if ((tabLocal is global::Doroti.Framework.Widgets.PreferredSizeWidget) && (((global::Doroti.Framework.Widgets.PreferredSizeWidget)tabLocal).preferredSize.height == TabsLibrary._kTabHeight) && widget.tabHasTextAndIcon)
+            Widget tabLocal = widget.tabs[index];
+            if ((tabLocal is PreferredSizeWidget) && (((PreferredSizeWidget)tabLocal).preferredSize.height == TabsLibrary._kTabHeight) && widget.tabHasTextAndIcon)
             {
-                global::Doroti.Framework.Widgets.PreferredSizeWidget tab__72645__as72681 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)tabLocal;
+                PreferredSizeWidget tab__72645__as72681 = (PreferredSizeWidget)tabLocal;
                 paddingLocal = paddingLocal.add(EdgeInsets.CreateSymmetric(vertical: verticalAdjustment));
             }
             _labelPaddings[index] = paddingLocal;
-            return new global::Doroti.Framework.Widgets.Center(heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.Padding(padding: _labelPaddings[index], child: new global::Doroti.Framework.Widgets.KeyedSubtree(key: _tabKeys[index], child: widget.tabs[index])));
+            return new Center(heightFactor: 1.0, child: new Padding(padding: _labelPaddings[index], child: new KeyedSubtree(key: _tabKeys[index], child: widget.tabs[index])));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         if (_controller is not null)
@@ -1198,25 +1198,25 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
             if (_controller!.indexIsChanging)
             {
                 DartRuntimePrimitives.Assert(() => _currentIndex != previousIndexLocal);
-                global::Doroti.Framework.Animation.Animation<double> animationLocal = new _ChangeAnimation__tabs(_controller!);
+                Animation<double> animationLocal = new _ChangeAnimation__tabs(_controller!);
                 wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)] = _buildStyledTab(wrappedTabs[(int)DartRuntimePrimitives.RequireValue(_currentIndex)], true, animationLocal, _defaults);
                 wrappedTabs[(int)previousIndexLocal] = _buildStyledTab(wrappedTabs[(int)previousIndexLocal], false, animationLocal, _defaults);
             }
             else
             {
                 long tabIndexLocal = DartRuntimePrimitives.RequireValue(_currentIndex);
-                global::Doroti.Framework.Animation.Animation<double> centerAnimation = new _DragAnimation__tabs(_controller!, tabIndexLocal);
+                Animation<double> centerAnimation = new _DragAnimation__tabs(_controller!, tabIndexLocal);
                 wrappedTabs[(int)tabIndexLocal] = _buildStyledTab(wrappedTabs[(int)tabIndexLocal], true, centerAnimation, _defaults);
                 if (DartRuntimePrimitives.RequireValue(_currentIndex) > 0L)
                 {
                     long tabIndexAlternate = DartRuntimePrimitives.RequireValue(_currentIndex) - 1L;
-                    global::Doroti.Framework.Animation.Animation<double> previousAnimation = new global::Doroti.Framework.Animation.ReverseAnimation(new _DragAnimation__tabs(_controller!, tabIndexAlternate));
+                    Animation<double> previousAnimation = new ReverseAnimation(new _DragAnimation__tabs(_controller!, tabIndexAlternate));
                     wrappedTabs[(int)tabIndexAlternate] = _buildStyledTab(wrappedTabs[(int)tabIndexAlternate], false, previousAnimation, _defaults);
                 }
                 if (DartRuntimePrimitives.RequireValue(_currentIndex) < (checked(widget.tabs.Count) - 1L))
                 {
                     long tabIndexNested = DartRuntimePrimitives.RequireValue(_currentIndex) + 1L;
-                    global::Doroti.Framework.Animation.Animation<double> nextAnimation = new global::Doroti.Framework.Animation.ReverseAnimation(new _DragAnimation__tabs(_controller!, tabIndexNested));
+                    Animation<double> nextAnimation = new ReverseAnimation(new _DragAnimation__tabs(_controller!, tabIndexNested));
                     wrappedTabs[(int)tabIndexNested] = _buildStyledTab(wrappedTabs[(int)tabIndexNested], false, nextAnimation, _defaults);
                 }
             }
@@ -1226,11 +1226,11 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         {
             // Dart captures a separate loop variable per iteration; C# for loops do not.
             var tabIndex = indexLocal;
-            var selectedState = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection75624 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (indexLocal == _currentIndex) { __collection75624.Add(WidgetState.selected); } return __collection75624; }))();
-            global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = (WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(widget.mouseCursor, selectedState) ?? (tabBarTheme.mouseCursor?.resolve(selectedState))) ?? WidgetStateMouseCursor.clickable.resolve(selectedState);
-            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultOverlay = WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>((states) =>
+            var selectedState = ((Func<HashSet<WidgetState>>)(() => { var __collection75624 = new HashSet<WidgetState>(); if (indexLocal == _currentIndex) { __collection75624.Add(WidgetState.selected); } return __collection75624; }))();
+            MouseCursor effectiveMouseCursor = (WidgetStateProperty.resolveAs(widget.mouseCursor, selectedState) ?? (tabBarTheme.mouseCursor?.resolve(selectedState))) ?? WidgetStateMouseCursor.clickable.resolve(selectedState);
+            WidgetStateProperty<Color?> defaultOverlay = WidgetStateProperty.resolveWith((states) =>
             {
-                HashSet<global::Doroti.Framework.Widgets.WidgetState> effectiveStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+                HashSet<WidgetState> effectiveStates = ((Func<HashSet<WidgetState>>)(() =>
                 {
                     var __cascade = selectedState.toSet();
                     __cascade.UnionWith(states);
@@ -1239,7 +1239,7 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
                 return _defaults.overlayColor?.resolve(effectiveStates);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(mouseCursor: effectiveMouseCursor, onTap: () =>
+            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(new InkWell(mouseCursor: effectiveMouseCursor, onTap: () =>
             {
                 _handleTap(tabIndex);
             }, onHover: (value) =>
@@ -1248,26 +1248,26 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
             }, onFocusChange: (value) =>
             {
                 widget.onFocusChange?.Invoke(value, tabIndex);
-            }, enableFeedback: widget.enableFeedback ?? true, overlayColor: (widget.overlayColor ?? tabBarTheme.overlayColor) ?? defaultOverlay, splashFactory: (widget.splashFactory ?? tabBarTheme.splashFactory) ?? _defaults.splashFactory, borderRadius: (widget.splashBorderRadius ?? tabBarTheme.splashBorderRadius) ?? _defaults.splashBorderRadius, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateOnly(bottom: widget.indicatorWeight), child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tab, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(wrappedTabs[(int)indexLocal]), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(selected: indexLocal == _currentIndex, label: Foundation.ConstantsLibrary.kIsWeb ? null : localizations.tabLabel(tabIndex: indexLocal + 1L, tabCount: tabCountLocal))) })))));
-            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MergeSemantics(child: wrappedTabs[(int)indexLocal]));
+            }, enableFeedback: widget.enableFeedback ?? true, overlayColor: (widget.overlayColor ?? tabBarTheme.overlayColor) ?? defaultOverlay, splashFactory: (widget.splashFactory ?? tabBarTheme.splashFactory) ?? _defaults.splashFactory, borderRadius: (widget.splashBorderRadius ?? tabBarTheme.splashBorderRadius) ?? _defaults.splashBorderRadius, child: new Padding(padding: EdgeInsets.CreateOnly(bottom: widget.indicatorWeight), child: new Widgets.Semantics(role: SemanticsRole.tab, child: new Stack(children: new List<Widget> { DartRuntimePrimitives.ConvertValue<Widget>(wrappedTabs[(int)indexLocal]), DartRuntimePrimitives.ConvertValue<Widget>(new Widgets.Semantics(selected: indexLocal == _currentIndex, label: Foundation.ConstantsLibrary.kIsWeb ? null : localizations.tabLabel(tabIndex: indexLocal + 1L, tabCount: tabCountLocal))) })))));
+            wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(new MergeSemantics(child: wrappedTabs[(int)indexLocal]));
             if (!widget.isScrollable && Equals(effectiveTabAlignment, TabAlignment.fill))
             {
-                wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: wrappedTabs[(int)indexLocal]));
+                wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(new Expanded(child: wrappedTabs[(int)indexLocal]));
             }
         }
-        global::Doroti.Framework.Widgets.Widget tabBarLocal = new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tabBar, container: true, explicitChildNodes: true, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: _indicatorPainter, child: new _TabStyle__tabs(animation: AnimationsLibrary.kAlwaysDismissedAnimation, isSelected: false, isPrimary: widget._isPrimary, labelColor: widget.labelColor, unselectedLabelColor: widget.unselectedLabelColor, labelStyle: widget.labelStyle, unselectedLabelStyle: widget.unselectedLabelStyle, defaults: _defaults, child: new _TabLabelBar__tabs(onPerformLayout: _saveTabOffsets, mainAxisSize: Equals(effectiveTabAlignment, TabAlignment.fill) ? MainAxisSize.max : MainAxisSize.min, children: wrappedTabs))));
+        Widget tabBarLocal = new Widgets.Semantics(role: SemanticsRole.tabBar, container: true, explicitChildNodes: true, child: new CustomPaint(painter: _indicatorPainter, child: new _TabStyle__tabs(animation: AnimationsLibrary.kAlwaysDismissedAnimation, isSelected: false, isPrimary: widget._isPrimary, labelColor: widget.labelColor, unselectedLabelColor: widget.unselectedLabelColor, labelStyle: widget.labelStyle, unselectedLabelStyle: widget.unselectedLabelStyle, defaults: _defaults, child: new _TabLabelBar__tabs(onPerformLayout: _saveTabOffsets, mainAxisSize: Equals(effectiveTabAlignment, TabAlignment.fill) ? MainAxisSize.max : MainAxisSize.min, children: wrappedTabs))));
         if (widget.isScrollable)
         {
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = Equals(effectiveTabAlignment, TabAlignment.startOffset) ? EdgeInsetsDirectional.CreateOnly(start: TabsLibrary._kStartOffset).add(widget.padding ?? EdgeInsets.zero) : widget.padding;
-            tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(overscroll: false), child: new global::Doroti.Framework.Widgets.SingleChildScrollView(dragStartBehavior: widget.dragStartBehavior, scrollDirection: Axis.horizontal, controller: _effectiveScrollController, padding: effectivePadding, physics: widget.physics, child: tabBarLocal)));
+            EdgeInsetsGeometry? effectivePadding = Equals(effectiveTabAlignment, TabAlignment.startOffset) ? EdgeInsetsDirectional.CreateOnly(start: TabsLibrary._kStartOffset).add(widget.padding ?? EdgeInsets.zero) : widget.padding;
+            tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(overscroll: false), child: new SingleChildScrollView(dragStartBehavior: widget.dragStartBehavior, scrollDirection: Axis.horizontal, controller: _effectiveScrollController, padding: effectivePadding, physics: widget.physics, child: tabBarLocal)));
             {
-                global::Doroti.Framework.Painting.AlignmentGeometry effectiveAlignment = effectiveTabAlignment switch { TabAlignment.center => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(Alignment.center), TabAlignment.start or TabAlignment.startOffset => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(AlignmentDirectional.centerStart), TabAlignment.fill => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(AlignmentDirectional.centerStart), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-                global::Doroti.Ui.Color dividerColorLocal = (widget.dividerColor ?? tabBarTheme.dividerColor) ?? _defaults.dividerColor!;
+                AlignmentGeometry effectiveAlignment = effectiveTabAlignment switch { TabAlignment.center => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(Alignment.center), TabAlignment.start or TabAlignment.startOffset => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(AlignmentDirectional.centerStart), TabAlignment.fill => DartRuntimePrimitives.ConvertValue<AlignmentGeometry>(AlignmentDirectional.centerStart), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                Color dividerColorLocal = (widget.dividerColor ?? tabBarTheme.dividerColor) ?? _defaults.dividerColor!;
                 double dividerHeightLocal = (widget.dividerHeight ?? tabBarTheme.dividerHeight) ?? DartRuntimePrimitives.RequireValue(_defaults.dividerHeight);
-                tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(heightFactor: 1.0, widthFactor: (dividerHeightLocal > 0L) ? null : 1.0, alignment: effectiveAlignment, child: tabBarLocal));
+                tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Align(heightFactor: 1.0, widthFactor: (dividerHeightLocal > 0L) ? null : 1.0, alignment: effectiveAlignment, child: tabBarLocal));
                 if ((!Equals(dividerColorLocal, Colors.transparent)) && (dividerHeightLocal > 0L))
                 {
-                    tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.CustomPaint(painter: new _DividerPainter__tabs(dividerColor: dividerColorLocal, dividerHeight: dividerHeightLocal), child: tabBarLocal));
+                    tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new CustomPaint(painter: new _DividerPainter__tabs(dividerColor: dividerColorLocal, dividerHeight: dividerHeightLocal), child: tabBarLocal));
                 }
             }
         }
@@ -1275,24 +1275,24 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         {
             if (widget.padding is not null)
             {
-                tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: widget.padding!, child: tabBarLocal));
+                tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: widget.padding!, child: tabBarLocal));
             }
         }
-        return new Material(type: MaterialType.transparency, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: widget.textScaler ?? tabBarTheme.textScaler), child: tabBarLocal));
+        return new Material(type: MaterialType.transparency, child: new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: widget.textScaler ?? tabBarTheme.textScaler), child: tabBarLocal));
     }
 
 }
 
-public class TabBarView : global::Doroti.Framework.Widgets.StatefulWidget
+public class TabBarView : StatefulWidget
 {
     public virtual TabController? controller { get; private set; }
-    public virtual List<global::Doroti.Framework.Widgets.Widget> children { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Widgets.ScrollPhysics? physics { get; private set; }
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual List<Widget> children { get; private set; } = default!;
+    public virtual ScrollPhysics? physics { get; private set; }
+    public virtual Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual double viewportFraction { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public TabBarView(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget> children = default!, TabController? controller = null, global::Doroti.Framework.Widgets.ScrollPhysics? physics = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, double viewportFraction = 1.0, Clip clipBehavior = Clip.hardEdge) : base(key: key)
+    public TabBarView(Key? key = null, List<Widget> children = default!, TabController? controller = null, ScrollPhysics? physics = null, Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, double viewportFraction = 1.0, Clip clipBehavior = Clip.hardEdge) : base(key: key)
     {
         this.children = children;
         this.controller = controller;
@@ -1305,11 +1305,11 @@ public class TabBarView : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabBarViewState__tabs());
 }
 
-internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<TabBarView>
+internal class _TabBarViewState__tabs : State<TabBarView>
 {
     internal virtual TabController? _controller { get; set; } = default;
-    internal virtual global::Doroti.Framework.Widgets.PageController? _pageController { get; set; } = default;
-    internal virtual List<global::Doroti.Framework.Widgets.Widget> _childrenWithKey { get; set; } = default!;
+    internal virtual PageController? _pageController { get; set; } = default;
+    internal virtual List<Widget> _childrenWithKey { get; set; } = default!;
     internal virtual long? _currentIndex { get; set; } = default;
     internal virtual long _warpUnderwayCount { get; set; } = 0L;
     internal virtual long _scrollUnderwayCount { get; set; } = 0L;
@@ -1349,7 +1349,7 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         _warpUnderwayCount -= 1L;
     }
 
-    internal async virtual Future _animateToPage(long page, Duration duration, global::Doroti.Framework.Animation.Curve curve)
+    internal async virtual Future _animateToPage(long page, Duration duration, Curve curve)
     {
         _warpUnderwayCount += 1L;
         await _pageController!.animateToPage(page, duration: duration, curve: curve);
@@ -1369,7 +1369,7 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         _currentIndex = _controller!.index;
         if (_pageController is null)
         {
-            _pageController = new global::Doroti.Framework.Widgets.PageController(initialPage: DartRuntimePrimitives.RequireValue(_currentIndex), viewportFraction: widget.viewportFraction);
+            _pageController = new PageController(initialPage: DartRuntimePrimitives.RequireValue(_currentIndex), viewportFraction: widget.viewportFraction);
         }
         else
         {
@@ -1389,7 +1389,7 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         if (widget.viewportFraction != oldWidget.viewportFraction)
         {
             _pageController?.dispose();
-            _pageController = new global::Doroti.Framework.Widgets.PageController(initialPage: DartRuntimePrimitives.RequireValue(_currentIndex), viewportFraction: widget.viewportFraction);
+            _pageController = new PageController(initialPage: DartRuntimePrimitives.RequireValue(_currentIndex), viewportFraction: widget.viewportFraction);
         }
         if ((!Equals(widget.children, oldWidget.children)) && (_warpUnderwayCount == 0L))
         {
@@ -1410,9 +1410,9 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
 
     internal virtual void _updateChildren()
     {
-        _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(widget.children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>((child) =>
+        _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(widget.children.map<Widget, Widget>((child) =>
         {
-            return new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tabPanel, child: child);
+            return new Widgets.Semantics(role: SemanticsRole.tabPanel, child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
         }).ToList());
     }
@@ -1475,8 +1475,8 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         long initialPage = (DartRuntimePrimitives.RequireValue(_currentIndex) > previousIndexLocal) ? (DartRuntimePrimitives.RequireValue(_currentIndex) - 1L) : (DartRuntimePrimitives.RequireValue(_currentIndex) + 1L);
         setState(() =>
         {
-            _childrenWithKey = new List<global::Doroti.Framework.Widgets.Widget>(_childrenWithKey);
-            global::Doroti.Framework.Widgets.Widget temp = _childrenWithKey[(int)initialPage];
+            _childrenWithKey = new List<Widget>(_childrenWithKey);
+            Widget temp = _childrenWithKey[(int)initialPage];
             _childrenWithKey[(int)initialPage] = _childrenWithKey[(int)previousIndexLocal];
             _childrenWithKey[(int)previousIndexLocal] = temp;
         });
@@ -1503,7 +1503,7 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         _controller!.offset = Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(_pageController!.page) - _controller!.index, -1.0, 1.0);
     }
 
-    internal virtual bool _handleScrollNotification(global::Doroti.Framework.Widgets.ScrollNotification notification)
+    internal virtual bool _handleScrollNotification(ScrollNotification notification)
     {
         if ((_warpUnderwayCount > 0L) || (_scrollUnderwayCount > 0L))
         {
@@ -1519,9 +1519,9 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         }
         _scrollUnderwayCount += 1L;
         double pageLocal = DartRuntimePrimitives.RequireValue(_pageController!.page);
-        if ((notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification) && !_controller!.indexIsChanging)
+        if ((notification is ScrollUpdateNotification) && !_controller!.indexIsChanging)
         {
-            global::Doroti.Framework.Widgets.ScrollUpdateNotification notification__as89692 = (global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification;
+            ScrollUpdateNotification notification__as89692 = (ScrollUpdateNotification)notification;
             bool pageChanged = (pageLocal - _controller!.index).abs() > 1.0;
             if (pageChanged)
             {
@@ -1532,9 +1532,9 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         }
         else
         {
-            if (notification is global::Doroti.Framework.Widgets.ScrollEndNotification)
+            if (notification is ScrollEndNotification)
             {
-                global::Doroti.Framework.Widgets.ScrollEndNotification notification__as90007 = (global::Doroti.Framework.Widgets.ScrollEndNotification)notification;
+                ScrollEndNotification notification__as90007 = (ScrollEndNotification)notification;
                 _controller!.index = pageLocal.round();
                 _currentIndex = _controller!.index;
                 if (!_controller!.indexIsChanging)
@@ -1575,23 +1575,23 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _debugScheduleCheckHasValidChildrenCount());
-        return new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: _handleScrollNotification, child: new global::Doroti.Framework.Widgets.PageView(dragStartBehavior: widget.dragStartBehavior, clipBehavior: widget.clipBehavior, controller: _pageController, physics: (widget.physics is null) ? new global::Doroti.Framework.Widgets.PageScrollPhysics().applyTo(new global::Doroti.Framework.Widgets.ClampingScrollPhysics()) : new global::Doroti.Framework.Widgets.PageScrollPhysics().applyTo(widget.physics), children: _childrenWithKey));
+        return new NotificationListener<ScrollNotification>(onNotification: _handleScrollNotification, child: new PageView(dragStartBehavior: widget.dragStartBehavior, clipBehavior: widget.clipBehavior, controller: _pageController, physics: (widget.physics is null) ? new PageScrollPhysics().applyTo(new ClampingScrollPhysics()) : new PageScrollPhysics().applyTo(widget.physics), children: _childrenWithKey));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class TabPageSelectorIndicator : global::Doroti.Framework.Widgets.StatelessWidget
+public class TabPageSelectorIndicator : StatelessWidget
 {
     public virtual Color backgroundColor { get; private set; } = default!;
     public virtual Color borderColor { get; private set; } = default!;
     public virtual double size { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.BorderStyle borderStyle { get; private set; } = default!;
+    public virtual BorderStyle borderStyle { get; private set; } = default!;
 
-    public TabPageSelectorIndicator(global::Doroti.Framework.Foundation.Key? key = null, Color backgroundColor = default!, Color borderColor = default!, double size = default!, global::Doroti.Framework.Painting.BorderStyle borderStyle = BorderStyle.solid) : base(key: key)
+    public TabPageSelectorIndicator(Key? key = null, Color backgroundColor = default!, Color borderColor = default!, double size = default!, BorderStyle borderStyle = BorderStyle.solid) : base(key: key)
     {
         this.backgroundColor = backgroundColor;
         this.borderColor = borderColor;
@@ -1599,23 +1599,23 @@ public class TabPageSelectorIndicator : global::Doroti.Framework.Widgets.Statele
         this.borderStyle = borderStyle;
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        return new global::Doroti.Framework.Widgets.Container(width: size, height: size, margin: EdgeInsets.CreateAll(4.0), decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: backgroundColor, border: Border.CreateAll(color: borderColor, style: borderStyle), shape: BoxShape.circle));
+        return new Container(width: size, height: size, margin: EdgeInsets.CreateAll(4.0), decoration: new BoxDecoration(color: backgroundColor, border: Border.CreateAll(color: borderColor, style: borderStyle), shape: BoxShape.circle));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class TabPageSelector : global::Doroti.Framework.Widgets.StatefulWidget
+public class TabPageSelector : StatefulWidget
 {
     public virtual TabController? controller { get; private set; }
     public virtual double indicatorSize { get; private set; } = default!;
     public virtual Color? color { get; private set; }
     public virtual Color? selectedColor { get; private set; }
-    public virtual global::Doroti.Framework.Painting.BorderStyle? borderStyle { get; private set; }
+    public virtual BorderStyle? borderStyle { get; private set; }
 
-    public TabPageSelector(global::Doroti.Framework.Foundation.Key? key = null, TabController? controller = null, double indicatorSize = 12.0, Color? color = null, Color? selectedColor = null, global::Doroti.Framework.Painting.BorderStyle? borderStyle = null) : base(key: key)
+    public TabPageSelector(Key? key = null, TabController? controller = null, double indicatorSize = 12.0, Color? color = null, Color? selectedColor = null, BorderStyle? borderStyle = null) : base(key: key)
     {
         this.controller = controller;
         this.indicatorSize = indicatorSize;
@@ -1628,10 +1628,10 @@ public class TabPageSelector : global::Doroti.Framework.Widgets.StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _TabPageSelectorState__tabs());
 }
 
-internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.State<TabPageSelector>
+internal class _TabPageSelectorState__tabs : State<TabPageSelector>
 {
     internal virtual TabController? _previousTabController { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _animation { get; set; } = default;
+    internal virtual CurvedAnimation? _animation { get; set; } = default;
 
     internal virtual TabController _tabController
     {
@@ -1678,7 +1678,7 @@ internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.St
     internal virtual void _setAnimation()
     {
         _animation?.dispose();
-        _animation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _tabController.animation!, curve: Curves.fastOutSlowIn);
+        _animation = new CurvedAnimation(parent: _tabController.animation!, curve: Curves.fastOutSlowIn);
     }
 
     public override void dispose()
@@ -1687,9 +1687,9 @@ internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.St
         base.dispose();
     }
 
-    internal virtual global::Doroti.Framework.Widgets.Widget _buildTabIndicator(long tabIndex, TabController tabController, global::Doroti.Framework.Animation.ColorTween selectedColorTween, global::Doroti.Framework.Animation.ColorTween previousColorTween)
+    internal virtual Widget _buildTabIndicator(long tabIndex, TabController tabController, ColorTween selectedColorTween, ColorTween previousColorTween)
     {
-        global::Doroti.Ui.Color background = default!;
+        Color background = default!;
         if (tabController.indexIsChanging)
         {
             double t = 1.0 - TabsLibrary._indexChangeProgress(tabController);
@@ -1739,16 +1739,16 @@ internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.St
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
+    public override Widget build(BuildContext context)
     {
-        global::Doroti.Ui.Color fixColor = widget.color ?? Colors.transparent;
-        global::Doroti.Ui.Color fixSelectedColor = widget.selectedColor ?? Theme.of(context).colorScheme.secondary;
-        var selectedColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: fixColor, end: fixSelectedColor);
-        var previousColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: fixSelectedColor, end: fixColor);
+        Color fixColor = widget.color ?? Colors.transparent;
+        Color fixSelectedColor = widget.selectedColor ?? Theme.of(context).colorScheme.secondary;
+        var selectedColorTween = new ColorTween(begin: fixColor, end: fixSelectedColor);
+        var previousColorTween = new ColorTween(begin: fixSelectedColor, end: fixColor);
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        return new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: _animation!, builder: (context, child) =>
+        return new AnimatedBuilder(animation: _animation!, builder: (context, child) =>
         {
-            return new global::Doroti.Framework.Widgets.Semantics(label: localizations.tabLabel(tabIndex: _tabController.index + 1L, tabCount: _tabController.length), child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)_tabController.length)), (tabIndex) =>
+            return new Widgets.Semantics(label: localizations.tabLabel(tabIndex: _tabController.index + 1L, tabCount: _tabController.length), child: new Row(mainAxisSize: MainAxisSize.min, children: new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)_tabController.length)), (tabIndex) =>
             {
                 return _buildTabIndicator(tabIndex, _tabController, selectedColorTween, previousColorTween);
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1762,7 +1762,7 @@ internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.St
 
 internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -1792,22 +1792,22 @@ internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
         }
     }
     public virtual bool isScrollable { get; private set; } = default!;
-    public static global::Doroti.Framework.Painting.EdgeInsetsGeometry iconMargin = EdgeInsets.CreateOnly(bottom: 2);
+    public static EdgeInsetsGeometry iconMargin = EdgeInsets.CreateOnly(bottom: 2);
 
-    internal _TabsPrimaryDefaultsM3__tabs(global::Doroti.Framework.Widgets.BuildContext context, bool isScrollable) : base(indicatorSize: TabBarIndicatorSize.label)
+    internal _TabsPrimaryDefaultsM3__tabs(BuildContext context, bool isScrollable) : base(indicatorSize: TabBarIndicatorSize.label)
     {
         this.context = context;
         this.isScrollable = isScrollable;
     }
 
-    public override global::Doroti.Ui.Color? dividerColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.outlineVariant);
+    public override Color? dividerColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
     public override double? dividerHeight => 1.0;
-    public override global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.primary);
-    public override global::Doroti.Ui.Color? labelColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.primary);
-    public override global::Doroti.Framework.Painting.TextStyle? labelStyle => _textTheme.titleSmall;
-    public override global::Doroti.Ui.Color? unselectedLabelColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.onSurfaceVariant);
-    public override global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle => _textTheme.titleSmall;
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> overlayColor
+    public override Color? indicatorColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override Color? labelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override TextStyle? labelStyle => _textTheme.titleSmall;
+    public override Color? unselectedLabelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
+    public override TextStyle? unselectedLabelStyle => _textTheme.titleSmall;
+    public override WidgetStateProperty<Color?> overlayColor
     {
         get
         {
@@ -1858,7 +1858,7 @@ internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
 
 internal class _TabsSecondaryDefaultsM3__tabs : TabBarThemeData
 {
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -1890,20 +1890,20 @@ internal class _TabsSecondaryDefaultsM3__tabs : TabBarThemeData
     public virtual bool isScrollable { get; private set; } = default!;
     public static double indicatorWeight = 2.0;
 
-    internal _TabsSecondaryDefaultsM3__tabs(global::Doroti.Framework.Widgets.BuildContext context, bool isScrollable) : base(indicatorSize: TabBarIndicatorSize.tab)
+    internal _TabsSecondaryDefaultsM3__tabs(BuildContext context, bool isScrollable) : base(indicatorSize: TabBarIndicatorSize.tab)
     {
         this.context = context;
         this.isScrollable = isScrollable;
     }
 
-    public override global::Doroti.Ui.Color? dividerColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.outlineVariant);
+    public override Color? dividerColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.outlineVariant);
     public override double? dividerHeight => 1.0;
-    public override global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.primary);
-    public override global::Doroti.Ui.Color? labelColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.onSurface);
-    public override global::Doroti.Framework.Painting.TextStyle? labelStyle => _textTheme.titleSmall;
-    public override global::Doroti.Ui.Color? unselectedLabelColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(_colors.onSurfaceVariant);
-    public override global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle => _textTheme.titleSmall;
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> overlayColor
+    public override Color? indicatorColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.primary);
+    public override Color? labelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurface);
+    public override TextStyle? labelStyle => _textTheme.titleSmall;
+    public override Color? unselectedLabelColor => DartRuntimePrimitives.ConvertValue<Color>(_colors.onSurfaceVariant);
+    public override TextStyle? unselectedLabelStyle => _textTheme.titleSmall;
+    public override WidgetStateProperty<Color?> overlayColor
     {
         get
         {

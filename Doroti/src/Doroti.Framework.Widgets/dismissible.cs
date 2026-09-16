@@ -7,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class DismissibleLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kResizeTimeCurve = new global::Doroti.Framework.Animation.Interval(0.4, 1.0, curve: Curves.ease);
+    internal static Curve _kResizeTimeCurve = new Interval(0.4, 1.0, curve: Curves.ease);
 }
 
 public static partial class DismissibleLibrary
@@ -52,19 +52,19 @@ public class Dismissible : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Widget? background { get; private set; }
     public virtual Widget? secondaryBackground { get; private set; }
-    public virtual global::System.Func<DismissDirection, Future<bool?>>? confirmDismiss { get; private set; }
-    public virtual global::System.Action? onResize { get; private set; }
-    public virtual global::System.Action<DismissDirection>? onDismissed { get; private set; }
+    public virtual Func<DismissDirection, Future<bool?>>? confirmDismiss { get; private set; }
+    public virtual Action? onResize { get; private set; }
+    public virtual System.Action<DismissDirection>? onDismissed { get; private set; }
     public virtual DismissDirection direction { get; private set; } = default!;
     public virtual Duration? resizeDuration { get; private set; }
     public virtual DartMap<DismissDirection, double> dismissThresholds { get; private set; } = default!;
     public virtual Duration movementDuration { get; private set; } = default!;
     public virtual double crossAxisEndOffset { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior behavior { get; private set; } = default!;
-    public virtual global::System.Action<DismissUpdateDetails>? onUpdate { get; private set; }
+    public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual HitTestBehavior behavior { get; private set; } = default!;
+    public virtual System.Action<DismissUpdateDetails>? onUpdate { get; private set; }
 
-    public Dismissible(global::Doroti.Framework.Foundation.Key key, Widget child, Widget? background = null, Widget? secondaryBackground = null, global::System.Func<DismissDirection, Future<bool?>>? confirmDismiss = null, global::System.Action? onResize = null, global::System.Action<DismissUpdateDetails>? onUpdate = null, global::System.Action<DismissDirection>? onDismissed = null, DismissDirection direction = DismissDirection.horizontal, Duration? resizeDuration = null, DartMap<DismissDirection, double> dismissThresholds = default!, Duration? movementDuration = null, double crossAxisEndOffset = 0.0, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, global::Doroti.Framework.Rendering.HitTestBehavior behavior = HitTestBehavior.opaque) : base(key: key)
+    public Dismissible(Key key, Widget child, Widget? background = null, Widget? secondaryBackground = null, Func<DismissDirection, Future<bool?>>? confirmDismiss = null, Action? onResize = null, System.Action<DismissUpdateDetails>? onUpdate = null, System.Action<DismissDirection>? onDismissed = null, DismissDirection direction = DismissDirection.horizontal, Duration? resizeDuration = null, DartMap<DismissDirection, double> dismissThresholds = default!, Duration? movementDuration = null, double crossAxisEndOffset = 0.0, DragStartBehavior dragStartBehavior = DragStartBehavior.start, HitTestBehavior behavior = HitTestBehavior.opaque) : base(key: key)
     {
         Duration? __resizeDuration = resizeDuration ?? Duration.Create(milliseconds: 300);
         DartMap<DismissDirection, double> __dismissThresholds = dismissThresholds ?? new DartMap<DismissDirection, double>();
@@ -106,12 +106,12 @@ public class DismissUpdateDetails
 
 }
 
-internal class _DismissibleClipper__dismissible : global::Doroti.Framework.Rendering.CustomClipper<Rect>
+internal class _DismissibleClipper__dismissible : CustomClipper<Rect>
 {
-    public virtual global::Doroti.Framework.Painting.Axis axis { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<Offset> moveAnimation { get; private set; } = default!;
+    public virtual Axis axis { get; private set; } = default!;
+    public virtual Animation<Offset> moveAnimation { get; private set; } = default!;
 
-    internal _DismissibleClipper__dismissible(global::Doroti.Framework.Painting.Axis axis, global::Doroti.Framework.Animation.Animation<Offset> moveAnimation) : base(reclip: moveAnimation)
+    internal _DismissibleClipper__dismissible(Axis axis, Animation<Offset> moveAnimation) : base(reclip: moveAnimation)
     {
         this.axis = axis;
         this.moveAnimation = moveAnimation;
@@ -146,7 +146,7 @@ internal class _DismissibleClipper__dismissible : global::Doroti.Framework.Rende
     }
 
     public override Rect getApproximateClipRect(Size size) => getClip(size);
-    public override bool shouldReclip(global::Doroti.Framework.Rendering.CustomClipper<Rect> oldClipper)
+    public override bool shouldReclip(CustomClipper<Rect> oldClipper)
     {
         var __oldClipper = (_DismissibleClipper__dismissible)oldClipper;
         return (!Equals(__oldClipper.axis, axis)) || (!Equals(__oldClipper.moveAnimation.value, moveAnimation.value));
@@ -165,30 +165,30 @@ internal enum _FlingGestureKind__dismissible
 internal class _DismissibleState__dismissible : State<Dismissible>, TickerProviderStateMixin<Dismissible>, AutomaticKeepAliveClientMixin<Dismissible>
 {
     private bool __late__moveController_initialized;
-    private global::Doroti.Framework.Animation.AnimationController __late__moveController = default!;
-    internal virtual global::Doroti.Framework.Animation.AnimationController _moveController
+    private AnimationController __late__moveController = default!;
+    internal virtual AnimationController _moveController
     {
         get
         {
             if (!__late__moveController_initialized)
             {
-                __late__moveController = new global::Doroti.Framework.Animation.AnimationController(duration: widget.movementDuration, vsync: this);
+                __late__moveController = new AnimationController(duration: widget.movementDuration, vsync: this);
                 __late__moveController_initialized = true;
             }
             return __late__moveController;
         }
     }
-    internal virtual global::Doroti.Framework.Animation.Animation<Offset> _moveAnimation { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.AnimationController? _resizeController { get; set; } = default;
-    internal virtual global::Doroti.Framework.Animation.Animation<double>? _resizeAnimation { get; set; } = default;
+    internal virtual Animation<Offset> _moveAnimation { get; set; } = default!;
+    internal virtual AnimationController? _resizeController { get; set; } = default;
+    internal virtual Animation<double>? _resizeAnimation { get; set; } = default;
     internal virtual double _dragExtent { get; set; } = 0.0;
     internal virtual bool _confirming { get; set; } = false;
     internal virtual bool _dragUnderway { get; set; } = false;
     internal virtual Size? _sizePriorToCollapse { get; set; } = default;
     internal virtual bool _dismissThresholdReached { get; set; } = false;
     internal virtual GlobalKey<IState> _contentKey { get; private set; } = GlobalKey<IState>.Create();
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
     public virtual KeepAliveHandle? _keepAliveHandle { get; set; } = default;
 
     public override void initState()
@@ -198,10 +198,10 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             _ensureKeepAlive();
         }
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
 {
     var __cascade = _moveController;
-    __cascade.addStatusListener((global::Doroti.Framework.Animation.AnimationStatus __status) => { _ = _handleDismissStatusChanged(__status); });
+    __cascade.addStatusListener((AnimationStatus __status) => { _ = _handleDismissStatusChanged(__status); });
     __cascade.addListener(_handleDismissUpdateValueChanged);
     return __cascade;
 }))());
@@ -217,11 +217,11 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -260,11 +260,11 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     {
         get
         {
-            global::Doroti.Ui.Size sizeLocal = DartRuntimePrimitives.RequireValue(context.size);
+            Size sizeLocal = DartRuntimePrimitives.RequireValue(context.size);
             return _directionIsXAxis ? sizeLocal.width : sizeLocal.height;
         }
     }
-    internal virtual void _handleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
+    internal virtual void _handleDragStart(DragStartDetails details)
     {
         if (_confirming)
         {
@@ -287,7 +287,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         });
     }
 
-    internal virtual void _handleDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
+    internal virtual void _handleDragUpdate(DragUpdateDetails details)
     {
         if (!_dragUnderway || _moveController.isAnimating)
         {
@@ -398,10 +398,10 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     internal virtual void _updateMoveAnimation()
     {
         double endLocal = Math.Sign(_dragExtent);
-        _moveAnimation = _moveController.drive(new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: Offset.zero, end: _directionIsXAxis ? new global::Doroti.Ui.Offset(endLocal, widget.crossAxisEndOffset) : new global::Doroti.Ui.Offset(widget.crossAxisEndOffset, endLocal)));
+        _moveAnimation = _moveController.drive(new Tween<Offset>(begin: Offset.zero, end: _directionIsXAxis ? new Offset(endLocal, widget.crossAxisEndOffset) : new Offset(widget.crossAxisEndOffset, endLocal)));
     }
 
-    internal virtual _FlingGestureKind__dismissible _describeFlingGesture(global::Doroti.Framework.Gestures.Velocity velocity)
+    internal virtual _FlingGestureKind__dismissible _describeFlingGesture(Velocity velocity)
     {
         if (_dragExtent == 0.0)
         {
@@ -436,7 +436,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
+    internal virtual void _handleDragEnd(DragEndDetails details)
     {
         if (!_dragUnderway || _moveController.isAnimating)
         {
@@ -490,7 +490,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
     }
 
-    internal async virtual Future _handleDismissStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal async virtual Future _handleDismissStatusChanged(AnimationStatus status)
     {
         if (AnimationStatusMembers.isCompleted(status) && !_dragUnderway)
         {
@@ -557,9 +557,9 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         }
         else
         {
-            _resizeController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+            _resizeController = ((Func<AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: widget.resizeDuration, vsync: this);
+    var __cascade = new AnimationController(duration: widget.resizeDuration, vsync: this);
     __cascade.addListener(_handleResizeProgressChanged);
     __cascade.addStatusListener((status) => updateKeepAlive());
     return __cascade;
@@ -568,7 +568,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             setState(() =>
             {
                 _sizePriorToCollapse = context.size;
-                _resizeAnimation = _resizeController!.drive(new global::Doroti.Framework.Animation.CurveTween(curve: DismissibleLibrary._kResizeTimeCurve)).drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0));
+                _resizeAnimation = _resizeController!.drive(new CurveTween(curve: DismissibleLibrary._kResizeTimeCurve)).drive(new Tween<double>(begin: 1.0, end: 0.0));
             });
         }
     }
@@ -608,7 +608,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
                     if (!Equals(_resizeAnimation!.status, AnimationStatus.forward))
                     {
                         DartRuntimePrimitives.Assert(() => _resizeAnimation!.isCompleted);
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A dismissed Dismissible widget is still part of the tree."), new global::Doroti.Framework.Foundation.ErrorHint("Make sure to implement the onDismissed handler and to immediately remove the Dismissible " + "widget from the application once that handler has fired.") }));
+                        throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("A dismissed Dismissible widget is still part of the tree."), new ErrorHint("Make sure to implement the onDismissed handler and to immediately remove the Dismissible " + "widget from the application once that handler has fired.") }));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -628,14 +628,14 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
@@ -669,7 +669,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -679,7 +679,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -689,10 +689,10 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
     public virtual void _ensureKeepAlive()

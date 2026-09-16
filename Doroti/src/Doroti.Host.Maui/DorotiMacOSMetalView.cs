@@ -254,7 +254,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 if (Layer is { } layer)
                 {
                     layer.ContentsGravity = CALayer.GravityTopLeft;
-                    layer.ContentsScale = (System.Runtime.InteropServices.NFloat)scale;
+                    layer.ContentsScale = (nfloat)scale;
                 }
                 DrawableSize = drawableSize;
                 PublishDrawableMetrics(drawableSize);

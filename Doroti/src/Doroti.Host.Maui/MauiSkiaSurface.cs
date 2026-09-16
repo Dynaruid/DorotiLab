@@ -5,6 +5,11 @@ using Doroti.Ui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
 using SkiaSharp;
+#if IOS || MACCATALYST
+using CoreGraphics;
+using Foundation;
+using UIKit;
+#endif
 #if !MACOS
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
@@ -209,7 +214,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             // DeviceDisplay describes the main monitor, which need not own
             // this window. Match the scale used by the Metal drawable and
             // SKTouchHandler's conversion from UIKit points to pixels.
-            if (_view.Handler?.PlatformView is UIKit.UIView nativeView)
+            if (_view.Handler?.PlatformView is UIView nativeView)
                 density = MauiViewEnvironment.ValidScale((double)nativeView.ContentScaleFactor);
 #endif
 #if MACCATALYST || IOS || ANDROID
@@ -404,11 +409,11 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
     {
         private readonly SKGLView _view;
         private readonly Action<MauiSurfacePointerData> _dispatch;
-        private UIKit.UIView? _nativeView;
+        private UIView? _nativeView;
         private MacCatalystPointerRecognizer? _pointerRecognizer;
-        private UIKit.UIContextMenuInteraction? _contextMenuInteraction;
+        private UIContextMenuInteraction? _contextMenuInteraction;
         private MacCatalystContextMenuDelegate? _contextMenuDelegate;
-        private UIKit.UIHoverGestureRecognizer? _hoverRecognizer;
+        private UIHoverGestureRecognizer? _hoverRecognizer;
         private MacCatalystGestureDelegate? _gestureDelegate;
         private int _mouseButtons;
 
@@ -432,7 +437,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         private void AttachCurrent()
         {
             DetachCurrent();
-            if (_view.Handler?.PlatformView is not UIKit.UIView nativeView) return;
+            if (_view.Handler?.PlatformView is not UIView nativeView) return;
 
             _nativeView = nativeView;
             // UIKit's default scale-to-fill behavior stretches the last Metal
@@ -470,9 +475,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                 if (Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1")
                     Console.WriteLine("[MacCatalyst pointer] context click: down buttons=2, up buttons=0");
             });
-            _contextMenuInteraction = new UIKit.UIContextMenuInteraction(_contextMenuDelegate);
+            _contextMenuInteraction = new UIContextMenuInteraction(_contextMenuDelegate);
             nativeView.AddInteraction(_contextMenuInteraction);
-            _hoverRecognizer = new UIKit.UIHoverGestureRecognizer(recognizer =>
+            _hoverRecognizer = new UIHoverGestureRecognizer(recognizer =>
             {
                 // Hover callbacks during a drag must not clear the pressed mask.
                 if (_mouseButtons != 0) return;
@@ -493,7 +498,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
         private void DetachCurrent()
         {
             _mouseButtons = 0;
-            foreach (var gesture in new UIKit.UIGestureRecognizer?[] { _pointerRecognizer, _hoverRecognizer })
+            foreach (var gesture in new UIGestureRecognizer?[] { _pointerRecognizer, _hoverRecognizer })
             {
                 if (gesture is null) continue;
                 _nativeView?.RemoveGestureRecognizer(gesture);
@@ -511,18 +516,18 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             _nativeView = null;
         }
 
-        private sealed class MacCatalystContextMenuDelegate(Action<CoreGraphics.CGPoint> show)
-            : UIKit.UIContextMenuInteractionDelegate
+        private sealed class MacCatalystContextMenuDelegate(Action<CGPoint> show)
+            : UIContextMenuInteractionDelegate
         {
-            public override UIKit.UIContextMenuConfiguration? GetConfigurationForMenu(
-                UIKit.UIContextMenuInteraction interaction, CoreGraphics.CGPoint location)
+            public override UIContextMenuConfiguration? GetConfigurationForMenu(
+                UIContextMenuInteraction interaction, CGPoint location)
             {
                 show(location);
                 return null;
             }
         }
 
-        private sealed class MacCatalystPointerRecognizer : UIKit.UIGestureRecognizer
+        private sealed class MacCatalystPointerRecognizer : UIGestureRecognizer
         {
             private readonly Action<MauiSurfacePointerData> _dispatch;
             private static readonly bool TraceInput = Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1";
@@ -538,32 +543,32 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
                 DelaysTouchesEnded = false;
             }
 
-            public override void TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)
+            public override void TouchesBegan(NSSet touches, UIEvent evt)
             {
                 base.TouchesBegan(touches, evt);
                 Send(touches, evt, PointerChange.down);
             }
-            public override void TouchesMoved(Foundation.NSSet touches, UIKit.UIEvent evt)
+            public override void TouchesMoved(NSSet touches, UIEvent evt)
             {
                 base.TouchesMoved(touches, evt);
                 Send(touches, evt, PointerChange.move);
             }
-            public override void TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)
+            public override void TouchesEnded(NSSet touches, UIEvent evt)
             {
                 base.TouchesEnded(touches, evt);
                 Send(touches, evt, PointerChange.up);
             }
-            public override void TouchesCancelled(Foundation.NSSet touches, UIKit.UIEvent evt)
+            public override void TouchesCancelled(NSSet touches, UIEvent evt)
             {
                 base.TouchesCancelled(touches, evt);
                 Send(touches, evt, PointerChange.cancel);
             }
 
-            private void Send(Foundation.NSSet touches, UIKit.UIEvent evt, PointerChange change)
+            private void Send(NSSet touches, UIEvent evt, PointerChange change)
             {
                 if (View is not { } view) return;
                 var scale = MauiViewEnvironment.ValidScale((double)view.ContentScaleFactor);
-                foreach (var touch in touches.Cast<UIKit.UITouch>())
+                foreach (var touch in touches.Cast<UITouch>())
                 {
                     var handle = (nint)touch.Handle;
                     // The context-menu interaction owns this sequence even on
@@ -604,11 +609,11 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface, IMauiGraphiteSurface
             DetachCurrent();
         }
 
-        private sealed class MacCatalystGestureDelegate : UIKit.UIGestureRecognizerDelegate
+        private sealed class MacCatalystGestureDelegate : UIGestureRecognizerDelegate
         {
             public override bool ShouldRecognizeSimultaneously(
-                UIKit.UIGestureRecognizer gestureRecognizer,
-                UIKit.UIGestureRecognizer otherGestureRecognizer)
+                UIGestureRecognizer gestureRecognizer,
+                UIGestureRecognizer otherGestureRecognizer)
             {
                 _ = gestureRecognizer;
                 _ = otherGestureRecognizer;

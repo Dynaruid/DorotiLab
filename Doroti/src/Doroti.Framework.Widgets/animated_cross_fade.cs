@@ -11,7 +11,7 @@ public enum CrossFadeState
     showSecond
 }
 
-public delegate Widget AnimatedCrossFadeBuilder(Widget topChild, global::Doroti.Framework.Foundation.Key topChildKey, Widget bottomChild, global::Doroti.Framework.Foundation.Key bottomChildKey);
+public delegate Widget AnimatedCrossFadeBuilder(Widget topChild, Key topChildKey, Widget bottomChild, Key bottomChildKey);
 
 public class AnimatedCrossFade : StatefulWidget
 {
@@ -20,22 +20,22 @@ public class AnimatedCrossFade : StatefulWidget
     public virtual CrossFadeState crossFadeState { get; private set; } = default!;
     public virtual Duration duration { get; private set; } = default!;
     public virtual Duration? reverseDuration { get; private set; }
-    public virtual global::Doroti.Framework.Animation.Curve firstCurve { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Curve secondCurve { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Curve sizeCurve { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
-    public virtual global::System.Func<Widget, global::Doroti.Framework.Foundation.Key, Widget, global::Doroti.Framework.Foundation.Key, Widget> layoutBuilder { get; private set; } = default!;
+    public virtual Curve firstCurve { get; private set; } = default!;
+    public virtual Curve secondCurve { get; private set; } = default!;
+    public virtual Curve sizeCurve { get; private set; } = default!;
+    public virtual AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual Func<Widget, Key, Widget, Key, Widget> layoutBuilder { get; private set; } = default!;
     public virtual bool excludeBottomFocus { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
-    public virtual global::System.Action? onEnd { get; private set; }
+    public virtual Action? onEnd { get; private set; }
 
-    public AnimatedCrossFade(global::Doroti.Framework.Foundation.Key? key = null, Widget firstChild = default!, Widget secondChild = default!, global::Doroti.Framework.Animation.Curve firstCurve = default!, global::Doroti.Framework.Animation.Curve secondCurve = default!, global::Doroti.Framework.Animation.Curve sizeCurve = default!, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, CrossFadeState crossFadeState = default!, Duration duration = default!, Duration? reverseDuration = null, global::System.Func<Widget, global::Doroti.Framework.Foundation.Key, Widget, global::Doroti.Framework.Foundation.Key, Widget> layoutBuilder = default!, bool excludeBottomFocus = true, Clip clipBehavior = Clip.hardEdge, global::System.Action? onEnd = null) : base(key: key)
+    public AnimatedCrossFade(Key? key = null, Widget firstChild = default!, Widget secondChild = default!, Curve firstCurve = default!, Curve secondCurve = default!, Curve sizeCurve = default!, AlignmentGeometry alignment = default!, CrossFadeState crossFadeState = default!, Duration duration = default!, Duration? reverseDuration = null, Func<Widget, Key, Widget, Key, Widget> layoutBuilder = default!, bool excludeBottomFocus = true, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(key: key)
     {
-        global::Doroti.Framework.Animation.Curve __firstCurve = firstCurve ?? Curves.linear;
-        global::Doroti.Framework.Animation.Curve __secondCurve = secondCurve ?? Curves.linear;
-        global::Doroti.Framework.Animation.Curve __sizeCurve = sizeCurve ?? Curves.linear;
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.topCenter;
-        global::System.Func<Widget, global::Doroti.Framework.Foundation.Key, Widget, global::Doroti.Framework.Foundation.Key, Widget> __layoutBuilder = layoutBuilder ?? defaultLayoutBuilder;
+        Curve __firstCurve = firstCurve ?? Curves.linear;
+        Curve __secondCurve = secondCurve ?? Curves.linear;
+        Curve __sizeCurve = sizeCurve ?? Curves.linear;
+        AlignmentGeometry __alignment = alignment ?? Alignment.topCenter;
+        Func<Widget, Key, Widget, Key, Widget> __layoutBuilder = layoutBuilder ?? defaultLayoutBuilder;
         this.firstChild = firstChild;
         this.secondChild = secondChild;
         this.firstCurve = __firstCurve;
@@ -51,36 +51,36 @@ public class AnimatedCrossFade : StatefulWidget
         this.onEnd = onEnd;
     }
 
-    public static Widget defaultLayoutBuilder(Widget topChild, global::Doroti.Framework.Foundation.Key topChildKey, Widget bottomChild, global::Doroti.Framework.Foundation.Key bottomChildKey)
+    public static Widget defaultLayoutBuilder(Widget topChild, Key topChildKey, Widget bottomChild, Key bottomChildKey)
     {
         return new Stack(clipBehavior: Clip.none, children: new List<Widget> { new Positioned(key: bottomChildKey, left: 0.0, top: 0.0, right: 0.0, child: bottomChild), new Positioned(key: topChildKey, child: topChild) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _AnimatedCrossFadeState__animated_cross_fade());
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<CrossFadeState>("crossFadeState", crossFadeState));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", alignment, defaultValue: Alignment.topCenter));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", duration.inMilliseconds, unit: "ms"));
-        properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
+        properties.add(new EnumProperty<CrossFadeState>("crossFadeState", crossFadeState));
+        properties.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", alignment, defaultValue: Alignment.topCenter));
+        properties.add(new IntProperty("duration", duration.inMilliseconds, unit: "ms"));
+        properties.add(new IntProperty("reverseDuration", reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
     }
 
 }
 
 internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCrossFade>, TickerProviderStateMixin<AnimatedCrossFade>
 {
-    internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _firstAnimation { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _secondAnimation { get; set; } = default!;
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal virtual AnimationController _controller { get; set; } = default!;
+    internal virtual Animation<double> _firstAnimation { get; set; } = default!;
+    internal virtual Animation<double> _secondAnimation { get; set; } = default!;
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _controller = new global::Doroti.Framework.Animation.AnimationController(duration: widget.duration, reverseDuration: widget.reverseDuration, vsync: this);
+        _controller = new AnimationController(duration: widget.duration, reverseDuration: widget.reverseDuration, vsync: this);
         if (Equals(widget.crossFadeState, CrossFadeState.showSecond))
         {
             _controller.value = 1.0;
@@ -99,12 +99,12 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
         });
     }
 
-    internal virtual global::Doroti.Framework.Animation.Animation<double> _initAnimation(global::Doroti.Framework.Animation.Curve curve, bool inverted)
+    internal virtual Animation<double> _initAnimation(Curve curve, bool inverted)
     {
-        global::Doroti.Framework.Animation.Animation<double> result = _controller.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curve));
+        Animation<double> result = _controller.drive(new CurveTween(curve: curve));
         if (inverted)
         {
-            result = result.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0));
+            result = result.drive(new Tween<double>(begin: 1.0, end: 0.0));
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -117,11 +117,11 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -172,14 +172,14 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
 
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Foundation.Key kFirstChildKey = new global::Doroti.Framework.Foundation.ValueKey<CrossFadeState>(CrossFadeState.showFirst);
-        global::Doroti.Framework.Foundation.Key kSecondChildKey = new global::Doroti.Framework.Foundation.ValueKey<CrossFadeState>(CrossFadeState.showSecond);
-        global::Doroti.Framework.Foundation.Key topKey = default!;
+        Key kFirstChildKey = new ValueKey<CrossFadeState>(CrossFadeState.showFirst);
+        Key kSecondChildKey = new ValueKey<CrossFadeState>(CrossFadeState.showSecond);
+        Key topKey = default!;
         Widget topChild = default!;
-        global::Doroti.Framework.Animation.Animation<double> topAnimation = default!;
-        global::Doroti.Framework.Foundation.Key bottomKey = default!;
+        Animation<double> topAnimation = default!;
+        Key bottomKey = default!;
         Widget bottomChild = default!;
-        global::Doroti.Framework.Animation.Animation<double> bottomAnimation = default!;
+        Animation<double> bottomAnimation = default!;
         if (_controller.isForwardOrCompleted)
         {
             topKey = kSecondChildKey;
@@ -204,24 +204,24 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
-        description.add(new global::Doroti.Framework.Foundation.EnumProperty<CrossFadeState>("crossFadeState", widget.crossFadeState));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationController>("controller", _controller, showName: false));
-        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", widget.alignment, defaultValue: Alignment.topCenter));
-        description.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("clipBehavior", widget.clipBehavior, defaultValue: Clip.hardEdge));
+        description.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        description.add(new EnumProperty<CrossFadeState>("crossFadeState", widget.crossFadeState));
+        description.add(new DiagnosticsProperty<AnimationController>("controller", _controller, showName: false));
+        description.add(new DiagnosticsProperty<AlignmentGeometry>("alignment", widget.alignment, defaultValue: Alignment.topCenter));
+        description.add(new EnumProperty<Clip>("clipBehavior", widget.clipBehavior, defaultValue: Clip.hardEdge));
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
@@ -255,7 +255,7 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -265,7 +265,7 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;

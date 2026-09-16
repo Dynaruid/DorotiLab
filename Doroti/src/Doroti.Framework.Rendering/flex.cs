@@ -7,31 +7,31 @@ namespace Doroti.Framework.Rendering;
 
 public class _AxisSize__flex
 {
-    public global::Doroti.Ui.Size _size { get; }
+    public Size _size { get; }
 
-    private _AxisSize__flex(global::Doroti.Ui.Size _size)
+    private _AxisSize__flex(Size _size)
     {
         this._size = _size;
     }
 
-    public static _AxisSize__flex Create_(global::Doroti.Ui.Size _size) => new _AxisSize__flex(_size);
+    public static _AxisSize__flex Create_(Size _size) => new _AxisSize__flex(_size);
 
-    public static implicit operator global::Doroti.Ui.Size(_AxisSize__flex value) => value._size;
-    public static implicit operator _AxisSize__flex(global::Doroti.Ui.Size value) => new _AxisSize__flex(value);
+    public static implicit operator Size(_AxisSize__flex value) => value._size;
+    public static implicit operator _AxisSize__flex(Size value) => new _AxisSize__flex(value);
 
     public static _AxisSize__flex empty = Create_(Size.zero);
 
     internal _AxisSize__flex(double mainAxisExtent, double crossAxisExtent)
     {
-        _size = new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent);
+        _size = new Size(mainAxisExtent, crossAxisExtent);
     }
 
-    internal static _AxisSize__flex CreateFromSize(Size size, global::Doroti.Framework.Painting.Axis direction)
+    internal static _AxisSize__flex CreateFromSize(Size size, Axis direction)
     {
         return Create_(_convert(size, direction));
     }
 
-    internal static global::Doroti.Ui.Size _convert(Size size, global::Doroti.Framework.Painting.Axis direction)
+    internal static Size _convert(Size size, Axis direction)
     {
         return direction switch { Axis.horizontal => size, Axis.vertical => size.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -39,15 +39,15 @@ public class _AxisSize__flex
 
     public virtual double mainAxisExtent => _size.width;
     public virtual double crossAxisExtent => _size.height;
-    public virtual global::Doroti.Ui.Size toSize(global::Doroti.Framework.Painting.Axis direction) => _convert(_size, direction);
-    public virtual _AxisSize__flex applyConstraints(BoxConstraints constraints, global::Doroti.Framework.Painting.Axis direction)
+    public virtual Size toSize(Axis direction) => _convert(_size, direction);
+    public virtual _AxisSize__flex applyConstraints(BoxConstraints constraints, Axis direction)
     {
         BoxConstraints effectiveConstraints = direction switch { Axis.horizontal => constraints, Axis.vertical => constraints.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
         return Create_(effectiveConstraints.constrain(_size));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual _AxisSize__flex op_Add(_AxisSize__flex other) => Create_(new global::Doroti.Ui.Size(_size.width + other._size.width, Math.Max(_size.height, other._size.height)));
+    public virtual _AxisSize__flex op_Add(_AxisSize__flex other) => Create_(new Size(_size.width + other._size.width, Math.Max(_size.height, other._size.height)));
 }
 
 internal class _AscentDescent__flex
@@ -157,12 +157,12 @@ public static class CrossAxisAlignmentMembers
 
 public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexParentData>, RenderBoxContainerDefaultsMixin<RenderBox, FlexParentData>, DebugOverflowIndicatorMixin
 {
-    internal virtual global::Doroti.Framework.Painting.Axis _direction { get; set; } = default!;
+    internal virtual Axis _direction { get; set; } = default!;
     internal virtual MainAxisAlignment _mainAxisAlignment { get; set; } = default!;
     internal virtual MainAxisSize _mainAxisSize { get; set; } = default!;
     internal virtual CrossAxisAlignment _crossAxisAlignment { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.VerticalDirection _verticalDirection { get; set; } = default!;
+    internal virtual VerticalDirection _verticalDirection { get; set; } = default!;
     internal virtual TextBaseline? _textBaseline { get; set; } = default;
     internal virtual double _overflow { get; set; } = 0;
     internal virtual Clip _clipBehavior { get; set; } = Clip.none;
@@ -171,10 +171,10 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
     public virtual long _childCount { get; set; } = 0L;
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
-    public virtual List<global::Doroti.Framework.Painting.TextPainter> _indicatorLabel { get; set; } = new List<global::Doroti.Framework.Painting.TextPainter>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)Enum.GetValues<_OverflowSide__debug_overflow_indicator>().ToList().Count))), (i) => new global::Doroti.Framework.Painting.TextPainter(textDirection: TextDirection.ltr)));
+    public virtual List<TextPainter> _indicatorLabel { get; set; } = new List<TextPainter>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)Enum.GetValues<_OverflowSide__debug_overflow_indicator>().ToList().Count))), (i) => new TextPainter(textDirection: TextDirection.ltr)));
     public virtual bool _overflowReportNeeded { get; set; } = true;
 
-    public RenderFlex(List<RenderBox>? children = null, global::Doroti.Framework.Painting.Axis direction = Axis.horizontal, MainAxisSize mainAxisSize = MainAxisSize.max, MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, TextDirection? textDirection = null, global::Doroti.Framework.Painting.VerticalDirection verticalDirection = VerticalDirection.down, TextBaseline? textBaseline = null, Clip clipBehavior = Clip.none, double spacing = 0.0)
+    public RenderFlex(List<RenderBox>? children = null, Axis direction = Axis.horizontal, MainAxisSize mainAxisSize = MainAxisSize.max, MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start, CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center, TextDirection? textDirection = null, VerticalDirection verticalDirection = VerticalDirection.down, TextBaseline? textBaseline = null, Clip clipBehavior = Clip.none, double spacing = 0.0)
     {
         _direction = direction;
         _mainAxisAlignment = mainAxisAlignment;
@@ -188,7 +188,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         System.Diagnostics.Debug.Assert(spacing >= 0.0);
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis direction
+    public virtual Axis direction
     {
         get => _direction;
         set
@@ -240,7 +240,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
             }
         }
     }
-    public virtual global::Doroti.Ui.TextDirection? textDirection
+    public virtual TextDirection? textDirection
     {
         get => _textDirection;
         set
@@ -253,7 +253,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
             }
         }
     }
-    public virtual global::Doroti.Framework.Painting.VerticalDirection verticalDirection
+    public virtual VerticalDirection verticalDirection
     {
         get => _verticalDirection;
         set
@@ -266,7 +266,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
             }
         }
     }
-    public virtual global::Doroti.Ui.TextBaseline? textBaseline
+    public virtual TextBaseline? textBaseline
     {
         get => _textBaseline;
         set
@@ -337,7 +337,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         }
     }
     internal virtual bool _hasOverflow => _overflow > Foundation.ConstantsLibrary.precisionErrorTolerance;
-    public virtual global::Doroti.Ui.Clip clipBehavior
+    public virtual Clip clipBehavior
     {
         get => _clipBehavior;
         set
@@ -374,7 +374,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         }
     }
 
-    internal virtual double _getIntrinsicSize(global::Doroti.Framework.Painting.Axis sizingDirection, double extent, Func<RenderBox, double, double> childSize)
+    internal virtual double _getIntrinsicSize(Axis sizingDirection, double extent, Func<RenderBox, double, double> childSize)
     {
         if (Equals(_direction, sizingDirection))
         {
@@ -405,7 +405,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
                 double mainAxisSizeFromConstraints = isHorizontal ? constraints.maxWidth : constraints.maxHeight;
                 DartRuntimePrimitives.Assert(() => ((_getFlex(child) != 0L) && double.IsFinite(extent)) == double.IsFinite(mainAxisSizeFromConstraints));
                 double maxMainAxisSize = double.IsFinite(mainAxisSizeFromConstraints) ? mainAxisSizeFromConstraints : (isHorizontal ? child.getMaxIntrinsicWidth(double.PositiveInfinity) : child.getMaxIntrinsicHeight(double.PositiveInfinity));
-                return isHorizontal ? new global::Doroti.Ui.Size(maxMainAxisSize, childSize(child, maxMainAxisSize)) : new global::Doroti.Ui.Size(childSize(child, maxMainAxisSize), maxMainAxisSize);
+                return isHorizontal ? new Size(maxMainAxisSize, childSize(child, maxMainAxisSize)) : new Size(childSize(child, maxMainAxisSize), maxMainAxisSize);
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
             return _computeSizes(constraints: isHorizontal ? new BoxConstraints(maxWidth: extent) : new BoxConstraints(maxHeight: extent), layoutChild: layoutChild, getBaseline: ChildLayoutHelper.getDryBaseline).axisSize.crossAxisExtent;
@@ -539,12 +539,12 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
                 {
                     if (Equals(crossAxisAlignment, CrossAxisAlignment.baseline) && Equals(direction, Axis.horizontal))
                     {
-                        global::Doroti.Ui.Size childSize = childLocal.getDryLayout(childConstraints);
+                        Size childSize = childLocal.getDryLayout(childConstraints);
                         childCrossPosition = CrossAxisAlignment.start._getChildCrossAxisOffset(sizes.axisSize.crossAxisExtent - _getCrossSize(childSize), false);
                     }
                     else
                     {
-                        global::Doroti.Ui.Size childSizeLocal = childLocal.getDryLayout(childConstraints);
+                        Size childSizeLocal = childLocal.getDryLayout(childConstraints);
                         childCrossPosition = crossAxisAlignment._getChildCrossAxisOffset(sizes.axisSize.crossAxisExtent - _getCrossSize(childSizeLocal), flipCrossAxis);
                     }
                 }
@@ -576,7 +576,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         {
             mainPositions[DartRuntimePrimitives.RequireReference(childLocal)] = pos;
             BoxConstraints cc = constraintsForChild(childLocal);
-            global::Doroti.Ui.Size cs = childLocal.getDryLayout(cc);
+            Size cs = childLocal.getDryLayout(cc);
             pos += _getMainSize(cs) + betweenSpace;
         }
         for (RenderBox? childAlternate = firstChild; childAlternate is not null; childAlternate = childAfter(childAlternate))
@@ -697,11 +697,11 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         double maxMainSize = _getMainSize(constraints.biggest);
         bool canFlex = double.IsFinite(maxMainSize);
         BoxConstraints nonFlexChildConstraints = _constraintsForNonFlexChild(constraints);
-        global::Doroti.Ui.TextBaseline? textBaselineLocal = _isBaselineAligned ? (textBaseline ?? throw new FlutterError("To use CrossAxisAlignment.baseline, you must also specify which baseline to use using the \"textBaseline\" argument.")) : null;
+        TextBaseline? textBaselineLocal = _isBaselineAligned ? (textBaseline ?? throw new FlutterError("To use CrossAxisAlignment.baseline, you must also specify which baseline to use using the \"textBaseline\" argument.")) : null;
         var totalFlex = 0L;
         RenderBox? firstFlexChild = default!;
         _AscentDescent__flex accumulatedAscentDescent = _AscentDescent__flex.none;
-        var accumulatedSize = _AxisSize__flex.Create_(new global::Doroti.Ui.Size(spacing * (childCount - 1L), 0.0));
+        var accumulatedSize = _AxisSize__flex.Create_(new Size(spacing * (childCount - 1L), 0.0));
         for (RenderBox? child = firstChild; child is not null; child = childAfter(child))
         {
             long flex = default!;
@@ -792,7 +792,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
                 }
             }
             var childParentData = ((FlexParentData?)(object?)child.parentData!)!;
-            childParentData.offset = direction switch { Axis.horizontal => new global::Doroti.Ui.Offset(childMainPosition, childCrossPosition), Axis.vertical => new global::Doroti.Ui.Offset(childCrossPosition, childMainPosition), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+            childParentData.offset = direction switch { Axis.horizontal => new Offset(childMainPosition, childCrossPosition), Axis.vertical => new Offset(childCrossPosition, childMainPosition), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
             childMainPosition += _getMainSize(child.size) + betweenSpace;
         }
     }
@@ -818,7 +818,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         DartRuntimePrimitives.Assert(() =>
             {
                 var debugOverflowHints = new List<DiagnosticsNode> { new ErrorDescription($"The overflowing {GetType()} has an orientation of {_direction}."), new ErrorDescription($"The edge of the {GetType()} that is overflowing has been marked " + "in the rendering with a yellow and black striped pattern. This is " + $"usually caused by the contents being too big for the {GetType()}."), new ErrorHint("Consider applying a flex factor (e.g. using an Expanded widget) to " + $"force the children of the {GetType()} to fit within the available " + "space instead of being sized to their natural size."), new ErrorHint("This is considered an error condition because it indicates that there " + "is content that cannot be seen. If the content is legitimately bigger " + "than the available space, consider clipping it with a ClipRect widget " + "before putting it in the flex, or using a scrollable container rather " + "than a Flex, like a ListView.") };
-                global::Doroti.Ui.Rect overflowChildRect = _direction switch { Axis.horizontal => Rect.fromLTWH(0.0, 0.0, size.width + _overflow, 0.0), Axis.vertical => Rect.fromLTWH(0.0, 0.0, 0.0, size.height + _overflow), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+                Rect overflowChildRect = _direction switch { Axis.horizontal => Rect.fromLTWH(0.0, 0.0, size.width + _overflow, 0.0), Axis.vertical => Rect.fromLTWH(0.0, 0.0, 0.0, size.height + _overflow), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
                 paintOverflowIndicator(context, offset, Offset.zero & size, overflowChildRect, overflowHints: debugOverflowHints);
                 return true;
             });
@@ -827,7 +827,7 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
     public override void dispose()
     {
         _clipRectLayer.layer = null;
-        foreach (global::Doroti.Framework.Painting.TextPainter painter in _indicatorLabel)
+        foreach (TextPainter painter in _indicatorLabel)
         {
             painter.dispose();
         }
@@ -869,13 +869,13 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.Axis>("direction", direction));
+        properties.add(new EnumProperty<Axis>("direction", direction));
         properties.add(new EnumProperty<MainAxisAlignment>("mainAxisAlignment", mainAxisAlignment));
         properties.add(new EnumProperty<MainAxisSize>("mainAxisSize", mainAxisSize));
         properties.add(new EnumProperty<CrossAxisAlignment>("crossAxisAlignment", crossAxisAlignment));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", textDirection, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", verticalDirection, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Ui.TextBaseline>("textBaseline", textBaseline, defaultValue: null));
+        properties.add(new EnumProperty<TextDirection>("textDirection", textDirection, defaultValue: null));
+        properties.add(new EnumProperty<VerticalDirection>("verticalDirection", verticalDirection, defaultValue: null));
+        properties.add(new EnumProperty<TextBaseline>("textBaseline", textBaseline, defaultValue: null));
         properties.add(new DoubleProperty("spacing", spacing, defaultValue: null));
     }
 
@@ -1238,22 +1238,22 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         if (overflow.left > 0.0)
         {
             var markerRect = Rect.fromLTWH(0.0, 0.0, containerRect.width * DebugOverflowIndicatorMixin._indicatorFraction, containerRect.height);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRect, label: $"LEFT OVERFLOWED BY {_formatPixels(overflow.left)} PIXELS", labelOffset: markerRect.centerLeft + new global::Doroti.Ui.Offset(DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels, 0.0), rotation: Dart_mathLibrary.pi / 2.0, side: _OverflowSide__debug_overflow_indicator.left));
+            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRect, label: $"LEFT OVERFLOWED BY {_formatPixels(overflow.left)} PIXELS", labelOffset: markerRect.centerLeft + new Offset(DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels, 0.0), rotation: Dart_mathLibrary.pi / 2.0, side: _OverflowSide__debug_overflow_indicator.left));
         }
         if (overflow.right > 0.0)
         {
             var markerRectLocal = Rect.fromLTWH(containerRect.width * (1.0 - DebugOverflowIndicatorMixin._indicatorFraction), 0.0, containerRect.width * DebugOverflowIndicatorMixin._indicatorFraction, containerRect.height);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectLocal, label: $"RIGHT OVERFLOWED BY {_formatPixels(overflow.right)} PIXELS", labelOffset: markerRectLocal.centerRight - new global::Doroti.Ui.Offset(DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels, 0.0), rotation: -Dart_mathLibrary.pi / 2.0, side: _OverflowSide__debug_overflow_indicator.right));
+            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectLocal, label: $"RIGHT OVERFLOWED BY {_formatPixels(overflow.right)} PIXELS", labelOffset: markerRectLocal.centerRight - new Offset(DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels, 0.0), rotation: -Dart_mathLibrary.pi / 2.0, side: _OverflowSide__debug_overflow_indicator.right));
         }
         if (overflow.top > 0.0)
         {
             var markerRectAlternate = Rect.fromLTWH(0.0, 0.0, containerRect.width, containerRect.height * DebugOverflowIndicatorMixin._indicatorFraction);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectAlternate, label: $"TOP OVERFLOWED BY {_formatPixels(overflow.top)} PIXELS", labelOffset: markerRectAlternate.topCenter + new global::Doroti.Ui.Offset(0.0, DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels), side: _OverflowSide__debug_overflow_indicator.top));
+            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectAlternate, label: $"TOP OVERFLOWED BY {_formatPixels(overflow.top)} PIXELS", labelOffset: markerRectAlternate.topCenter + new Offset(0.0, DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels), side: _OverflowSide__debug_overflow_indicator.top));
         }
         if (overflow.bottom > 0.0)
         {
             var markerRectNested = Rect.fromLTWH(0.0, containerRect.height * (1.0 - DebugOverflowIndicatorMixin._indicatorFraction), containerRect.width, containerRect.height * DebugOverflowIndicatorMixin._indicatorFraction);
-            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectNested, label: $"BOTTOM OVERFLOWED BY {_formatPixels(overflow.bottom)} PIXELS", labelOffset: markerRectNested.bottomCenter - new global::Doroti.Ui.Offset(0.0, DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels), side: _OverflowSide__debug_overflow_indicator.bottom));
+            regions.Add(new _OverflowRegionData__debug_overflow_indicator(rect: markerRectNested, label: $"BOTTOM OVERFLOWED BY {_formatPixels(overflow.bottom)} PIXELS", labelOffset: markerRectNested.bottomCenter - new Offset(0.0, DebugOverflowIndicatorMixin._indicatorFontSizePixels + DebugOverflowIndicatorMixin._indicatorLabelPaddingPixels), side: _OverflowSide__debug_overflow_indicator.bottom));
         }
         return regions;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1303,15 +1303,15 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
         foreach (var region in overflowRegions)
         {
             context.canvas.drawRect(region.rect.shift(offset), DebugOverflowIndicatorMixin._indicatorPaint);
-            var textSpan = ((global::Doroti.Framework.Painting.TextSpan?)(object?)_indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text)!;
+            var textSpan = ((TextSpan?)(object?)_indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text)!;
             if (textSpan?.text != region.label)
             {
-                _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text = new global::Doroti.Framework.Painting.TextSpan(text: region.label, style: DebugOverflowIndicatorMixin._indicatorTextStyle);
+                _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].text = new TextSpan(text: region.label, style: DebugOverflowIndicatorMixin._indicatorTextStyle);
                 _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].layout();
             }
-            global::Doroti.Ui.Offset labelOffsetLocal = region.labelOffset + offset;
-            var centerOffset = new global::Doroti.Ui.Offset(-_indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].width / 2.0, 0.0);
-            global::Doroti.Ui.Rect textBackgroundRect = centerOffset & _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].size;
+            Offset labelOffsetLocal = region.labelOffset + offset;
+            var centerOffset = new Offset(-_indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].width / 2.0, 0.0);
+            Rect textBackgroundRect = centerOffset & _indicatorLabel[(int)FoundationRuntimePorts.EnumIndex(region.side)].size;
             context.canvas.save();
             context.canvas.translate(labelOffsetLocal.dx, labelOffsetLocal.dy);
             context.canvas.rotate(region.rotation);

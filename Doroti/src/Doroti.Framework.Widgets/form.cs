@@ -13,14 +13,14 @@ public static partial class FormLibrary
 public class Form : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual global::System.Func<Future<bool>>? onWillPop { get; private set; }
+    public virtual Func<Future<bool>>? onWillPop { get; private set; }
     public virtual bool? canPop { get; private set; }
-    public virtual global::System.Action<bool>? onPopInvoked { get; private set; }
-    public virtual global::System.Action<bool, object?>? onPopInvokedWithResult { get; private set; }
-    public virtual global::System.Action? onChanged { get; private set; }
+    public virtual System.Action<bool>? onPopInvoked { get; private set; }
+    public virtual Action<bool, object?>? onPopInvokedWithResult { get; private set; }
+    public virtual Action? onChanged { get; private set; }
     public virtual AutovalidateMode autovalidateMode { get; private set; } = default!;
 
-    public Form(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, bool? canPop = null, global::System.Action<bool>? onPopInvoked = null, global::System.Action<bool, object?>? onPopInvokedWithResult = null, global::System.Func<Future<bool>>? onWillPop = null, global::System.Action? onChanged = null, AutovalidateMode? autovalidateMode = null) : base(key: key)
+    public Form(Key? key = null, Widget child = default!, bool? canPop = null, System.Action<bool>? onPopInvoked = null, Action<bool, object?>? onPopInvokedWithResult = null, Func<Future<bool>>? onWillPop = null, Action? onChanged = null, AutovalidateMode? autovalidateMode = null) : base(key: key)
     {
         this.child = child;
         this.canPop = canPop;
@@ -228,7 +228,7 @@ public class FormState : State<Form>
         }
         if ((errorMessage.Length != 0) && MediaQuery.supportsAnnounceOf(context))
         {
-            global::Doroti.Ui.TextDirection directionality = Directionality.of(context);
+            TextDirection directionality = Directionality.of(context);
             if (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))
             {
                 DartAsyncRuntime.unawaited(new Future(async () =>
@@ -241,7 +241,7 @@ public class FormState : State<Form>
                     catch (Exception exceptionLocal)
                     {
                         var stackLocal = new System.Diagnostics.StackTrace();
-                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                        FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new ErrorDescription("while sending semantics announcement")));
                     }
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 }));
@@ -250,7 +250,7 @@ public class FormState : State<Form>
             {
                 DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(view, errorMessage, directionality, assertiveness: Assertiveness.assertive).catchError((exception, stack) =>
                 {
-                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                    FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new ErrorDescription("while sending semantics announcement")));
                 }));
             }
         }
@@ -285,18 +285,18 @@ public delegate Widget FormFieldBuilder<T>(FormFieldState<T> field);
 
 public class FormField<T> : StatefulWidget
 {
-    public virtual global::System.Func<FormFieldState<T>, Widget> builder { get; private set; } = default!;
-    public virtual global::System.Action<T?>? onSaved { get; private set; }
-    public virtual global::System.Action? onReset { get; private set; }
+    public virtual Func<FormFieldState<T>, Widget> builder { get; private set; } = default!;
+    public virtual System.Action<T?>? onSaved { get; private set; }
+    public virtual Action? onReset { get; private set; }
     public virtual string? forceErrorText { get; private set; }
-    public virtual global::System.Func<T?, string?>? validator { get; private set; }
-    public virtual global::System.Func<BuildContext, string, Widget>? errorBuilder { get; private set; }
+    public virtual Func<T?, string?>? validator { get; private set; }
+    public virtual Func<BuildContext, string, Widget>? errorBuilder { get; private set; }
     public virtual T? initialValue { get; private set; }
     public virtual bool enabled { get; private set; } = default!;
     public virtual AutovalidateMode autovalidateMode { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
 
-    public FormField(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<FormFieldState<T>, Widget> builder = default!, global::System.Action<T?>? onSaved = null, global::System.Action? onReset = null, string? forceErrorText = null, global::System.Func<T?, string?>? validator = null, global::System.Func<BuildContext, string, Widget>? errorBuilder = null, T? initialValue = default, bool enabled = true, AutovalidateMode? autovalidateMode = null, string? restorationId = null) : base(key: key)
+    public FormField(Key? key = null, Func<FormFieldState<T>, Widget> builder = default!, System.Action<T?>? onSaved = null, Action? onReset = null, string? forceErrorText = null, Func<T?, string?>? validator = null, Func<BuildContext, string, Widget>? errorBuilder = null, T? initialValue = default, bool enabled = true, AutovalidateMode? autovalidateMode = null, string? restorationId = null) : base(key: key)
     {
         this.builder = builder;
         this.onSaved = onSaved;
@@ -335,11 +335,11 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     internal virtual RestorableStringN _errorText { get; private set; } = default!;
     internal virtual RestorableBool _hasInteractedByUser { get; private set; } = new RestorableBool(false);
     internal virtual FocusNode _focusNode { get; private set; } = new FocusNode();
-    public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
-    public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
-    public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
+    public virtual RestorationBucket? _bucket { get; set; } = default;
+    public virtual DartMap<IRestorableProperty, Action> _properties { get; set; } = new DartMap<IRestorableProperty, Action>();
+    public virtual List<IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
-    public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
+    public virtual RestorationBucket? _currentParent { get; set; } = default;
 
     public virtual T? value => _value;
     public virtual string? errorText => _errorText.value;
@@ -420,7 +420,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     }
 
     public virtual string? restorationId => widget.restorationId;
-    public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
+    public virtual void restoreState(RestorationBucket? oldBucket, bool initialRestore)
     {
         registerForRestoration(_errorText, "error_text");
         registerForRestoration(_hasInteractedByUser, "has_interacted_by_user");
@@ -451,7 +451,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         bool needsRestore = restorePending;
         _currentParent = RestorationScope.maybeOf(context);
         bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: needsRestore);
@@ -558,16 +558,16 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => _bucket;
-    public virtual void didToggleBucket(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
+    public virtual RestorationBucket? bucket => _bucket;
+    public virtual void didToggleBucket(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => _bucket?.isReplacing != true);
     }
 
-    public virtual void registerForRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property, string restorationId)
+    public virtual void registerForRestoration(IRestorableProperty property, string restorationId)
     {
         DartRuntimePrimitives.Assert(() => (property._restorationId is null) || _debugDoingRestore && (property._restorationId == restorationId), () => (object?)$"Property is already registered under {property._restorationId}.");
-        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map<global::Doroti.Framework.Widgets.IRestorableProperty, string?>((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
+        DartRuntimePrimitives.Assert(() => _debugDoingRestore || !_properties.Keys.map((r) => r._restorationId).contains(restorationId), () => (object?)$"\"{restorationId}\" is already registered to another property.");
         bool hasSerializedValue = bucket?.contains(restorationId) ?? false;
         object? initialValue = hasSerializedValue ? property.fromPrimitivesObject(bucket!.read<object>(restorationId)) : property.createDefaultValueObject();
         if (!property.isRegistered)
@@ -598,7 +598,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             });
     }
 
-    public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void unregisterFromRestoration(IRestorableProperty property)
     {
         DartRuntimePrimitives.Assert(() => Equals(property._owner, this));
         _bucket?.remove<object?>(property._restorationId!);
@@ -611,7 +611,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         DartRuntimePrimitives.Assert(() => !restorePending);
         bool didReplaceBucket = _updateBucketIfNecessary(parent: _currentParent, restorePending: false);
         if (didReplaceBucket)
@@ -634,12 +634,12 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
+            RestorationBucket? potentialNewParent = RestorationScope.maybeOf(context);
             return (!Equals(potentialNewParent, _currentParent)) && (potentialNewParent?.isReplacing ?? false);
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>(_debugPropertiesWaitingForReregistration is not null);
-    public virtual void _doRestore(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
+    public virtual void _doRestore(RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -653,7 +653,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             {
                 if (Enumerable.Any(_debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
                 }
                 _debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -661,7 +661,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             });
     }
 
-    public virtual bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending)
+    public virtual bool _updateBucketIfNecessary(RestorationBucket? parent, bool restorePending)
     {
         if ((restorationId is null) || (parent is null))
         {
@@ -672,7 +672,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         DartRuntimePrimitives.Assert(() => restorationId is not null);
         if (restorePending || (_bucket is null))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
+            RestorationBucket newBucketLocal = parent.claimChild(restorationId!, debugOwner: this);
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => Equals(_bucket, newBucketLocal));
             return didReplaceLocal;
@@ -685,19 +685,19 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
+    public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
     {
         if (Equals(newBucket, _bucket))
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket = _bucket;
+        RestorationBucket? oldBucket = _bucket;
         _bucket = newBucket;
         if (!restorePending)
         {
             if (_bucket is not null)
             {
-                _properties.Keys.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Widgets.IRestorableProperty>)_updateProperty)(__arg0));
+                _properties.Keys.forEach((__arg0) => ((System.Action<IRestorableProperty>)_updateProperty)(__arg0));
             }
             didToggleBucket(oldBucket);
         }
@@ -705,7 +705,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _updateProperty(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void _updateProperty(IRestorableProperty property)
     {
         if (property.enabled)
         {
@@ -717,9 +717,9 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         }
     }
 
-    public virtual void _unregister(global::Doroti.Framework.Widgets.IRestorableProperty property)
+    public virtual void _unregister(IRestorableProperty property)
     {
-        global::System.Action listener = _properties.remove(property)!;
+        Action listener = _properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugPropertiesWaitingForReregistration?.Remove(property);

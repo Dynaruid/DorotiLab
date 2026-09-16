@@ -7,12 +7,12 @@ namespace Doroti.Framework.Widgets;
 
 public abstract class GestureRecognizerFactoryBase
 {
-    internal abstract global::Doroti.Framework.Gestures.GestureRecognizer createRecognizer();
-    internal abstract void initializeRecognizer(global::Doroti.Framework.Gestures.GestureRecognizer instance);
+    internal abstract GestureRecognizer createRecognizer();
+    internal abstract void initializeRecognizer(GestureRecognizer instance);
     internal abstract bool _debugAssertTypeMatches(Type type);
 }
 
-public abstract class GestureRecognizerFactory<T> : GestureRecognizerFactoryBase where T : global::Doroti.Framework.Gestures.GestureRecognizer
+public abstract class GestureRecognizerFactory<T> : GestureRecognizerFactoryBase where T : GestureRecognizer
 {
     protected GestureRecognizerFactory()
     {
@@ -20,8 +20,8 @@ public abstract class GestureRecognizerFactory<T> : GestureRecognizerFactoryBase
 
     public abstract T constructor();
     public abstract void initializer(T instance);
-    internal override global::Doroti.Framework.Gestures.GestureRecognizer createRecognizer() => constructor();
-    internal override void initializeRecognizer(global::Doroti.Framework.Gestures.GestureRecognizer instance) => initializer((T)instance);
+    internal override GestureRecognizer createRecognizer() => constructor();
+    internal override void initializeRecognizer(GestureRecognizer instance) => initializer((T)instance);
     internal override bool _debugAssertTypeMatches(Type type)
     {
         DartRuntimePrimitives.Assert(() => Equals(type, typeof(T)), () => (object?)$"GestureRecognizerFactory of type {typeof(T)} was used where type {type} was specified.");
@@ -31,16 +31,16 @@ public abstract class GestureRecognizerFactory<T> : GestureRecognizerFactoryBase
 
 }
 
-public delegate T GestureRecognizerFactoryConstructor<T>() where T : global::Doroti.Framework.Gestures.GestureRecognizer;
+public delegate T GestureRecognizerFactoryConstructor<T>() where T : GestureRecognizer;
 
-public delegate void GestureRecognizerFactoryInitializer<T>(T instance) where T : global::Doroti.Framework.Gestures.GestureRecognizer;
+public delegate void GestureRecognizerFactoryInitializer<T>(T instance) where T : GestureRecognizer;
 
-public class GestureRecognizerFactoryWithHandlers<T> : GestureRecognizerFactory<T> where T : global::Doroti.Framework.Gestures.GestureRecognizer
+public class GestureRecognizerFactoryWithHandlers<T> : GestureRecognizerFactory<T> where T : GestureRecognizer
 {
-    internal virtual global::System.Func<T> _constructor { get; private set; } = default!;
-    internal virtual global::System.Action<T> _initializer { get; private set; } = default!;
+    internal virtual Func<T> _constructor { get; private set; } = default!;
+    internal virtual System.Action<T> _initializer { get; private set; } = default!;
 
-    public GestureRecognizerFactoryWithHandlers(global::System.Func<T> _constructor, global::System.Action<T> _initializer)
+    public GestureRecognizerFactoryWithHandlers(Func<T> _constructor, System.Action<T> _initializer)
     {
         this._constructor = _constructor;
         this._initializer = _initializer;
@@ -53,72 +53,72 @@ public class GestureRecognizerFactoryWithHandlers<T> : GestureRecognizerFactory<
 public class GestureDetector : StatelessWidget
 {
     public virtual Widget? child { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp { get; private set; }
-    public virtual global::System.Action? onTap { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>? onTapMove { get; private set; }
-    public virtual global::System.Action? onTapCancel { get; private set; }
-    public virtual global::System.Action? onSecondaryTap { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp { get; private set; }
-    public virtual global::System.Action? onSecondaryTapCancel { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTertiaryTapDown { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTertiaryTapUp { get; private set; }
-    public virtual global::System.Action? onTertiaryTapCancel { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onDoubleTapDown { get; private set; }
-    public virtual global::System.Action? onDoubleTap { get; private set; }
-    public virtual global::System.Action? onDoubleTapCancel { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressDownDetails>? onLongPressDown { get; private set; }
-    public virtual global::System.Action? onLongPressCancel { get; private set; }
-    public virtual global::System.Action? onLongPress { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>? onLongPressStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>? onLongPressMoveUpdate { get; private set; }
-    public virtual global::System.Action? onLongPressUp { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>? onLongPressEnd { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressDownDetails>? onSecondaryLongPressDown { get; private set; }
-    public virtual global::System.Action? onSecondaryLongPressCancel { get; private set; }
-    public virtual global::System.Action? onSecondaryLongPress { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>? onSecondaryLongPressStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate { get; private set; }
-    public virtual global::System.Action? onSecondaryLongPressUp { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>? onSecondaryLongPressEnd { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressDownDetails>? onTertiaryLongPressDown { get; private set; }
-    public virtual global::System.Action? onTertiaryLongPressCancel { get; private set; }
-    public virtual global::System.Action? onTertiaryLongPress { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>? onTertiaryLongPressStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate { get; private set; }
-    public virtual global::System.Action? onTertiaryLongPressUp { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>? onTertiaryLongPressEnd { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>? onVerticalDragDown { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onVerticalDragStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onVerticalDragUpdate { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onVerticalDragEnd { get; private set; }
-    public virtual global::System.Action? onVerticalDragCancel { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>? onHorizontalDragDown { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onHorizontalDragStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onHorizontalDragUpdate { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onHorizontalDragEnd { get; private set; }
-    public virtual global::System.Action? onHorizontalDragCancel { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>? onPanDown { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onPanStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onPanUpdate { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onPanEnd { get; private set; }
-    public virtual global::System.Action? onPanCancel { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.ScaleStartDetails>? onScaleStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.ScaleUpdateDetails>? onScaleUpdate { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.ScaleEndDetails>? onScaleEnd { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressStart { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressPeak { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressUpdate { get; private set; }
-    public virtual global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressEnd { get; private set; }
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior? behavior { get; private set; }
+    public virtual System.Action<TapDownDetails>? onTapDown { get; private set; }
+    public virtual System.Action<TapUpDetails>? onTapUp { get; private set; }
+    public virtual Action? onTap { get; private set; }
+    public virtual System.Action<TapMoveDetails>? onTapMove { get; private set; }
+    public virtual Action? onTapCancel { get; private set; }
+    public virtual Action? onSecondaryTap { get; private set; }
+    public virtual System.Action<TapDownDetails>? onSecondaryTapDown { get; private set; }
+    public virtual System.Action<TapUpDetails>? onSecondaryTapUp { get; private set; }
+    public virtual Action? onSecondaryTapCancel { get; private set; }
+    public virtual System.Action<TapDownDetails>? onTertiaryTapDown { get; private set; }
+    public virtual System.Action<TapUpDetails>? onTertiaryTapUp { get; private set; }
+    public virtual Action? onTertiaryTapCancel { get; private set; }
+    public virtual System.Action<TapDownDetails>? onDoubleTapDown { get; private set; }
+    public virtual Action? onDoubleTap { get; private set; }
+    public virtual Action? onDoubleTapCancel { get; private set; }
+    public virtual System.Action<LongPressDownDetails>? onLongPressDown { get; private set; }
+    public virtual Action? onLongPressCancel { get; private set; }
+    public virtual Action? onLongPress { get; private set; }
+    public virtual System.Action<LongPressStartDetails>? onLongPressStart { get; private set; }
+    public virtual System.Action<LongPressMoveUpdateDetails>? onLongPressMoveUpdate { get; private set; }
+    public virtual Action? onLongPressUp { get; private set; }
+    public virtual System.Action<LongPressEndDetails>? onLongPressEnd { get; private set; }
+    public virtual System.Action<LongPressDownDetails>? onSecondaryLongPressDown { get; private set; }
+    public virtual Action? onSecondaryLongPressCancel { get; private set; }
+    public virtual Action? onSecondaryLongPress { get; private set; }
+    public virtual System.Action<LongPressStartDetails>? onSecondaryLongPressStart { get; private set; }
+    public virtual System.Action<LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate { get; private set; }
+    public virtual Action? onSecondaryLongPressUp { get; private set; }
+    public virtual System.Action<LongPressEndDetails>? onSecondaryLongPressEnd { get; private set; }
+    public virtual System.Action<LongPressDownDetails>? onTertiaryLongPressDown { get; private set; }
+    public virtual Action? onTertiaryLongPressCancel { get; private set; }
+    public virtual Action? onTertiaryLongPress { get; private set; }
+    public virtual System.Action<LongPressStartDetails>? onTertiaryLongPressStart { get; private set; }
+    public virtual System.Action<LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate { get; private set; }
+    public virtual Action? onTertiaryLongPressUp { get; private set; }
+    public virtual System.Action<LongPressEndDetails>? onTertiaryLongPressEnd { get; private set; }
+    public virtual System.Action<DragDownDetails>? onVerticalDragDown { get; private set; }
+    public virtual System.Action<DragStartDetails>? onVerticalDragStart { get; private set; }
+    public virtual System.Action<DragUpdateDetails>? onVerticalDragUpdate { get; private set; }
+    public virtual System.Action<DragEndDetails>? onVerticalDragEnd { get; private set; }
+    public virtual Action? onVerticalDragCancel { get; private set; }
+    public virtual System.Action<DragDownDetails>? onHorizontalDragDown { get; private set; }
+    public virtual System.Action<DragStartDetails>? onHorizontalDragStart { get; private set; }
+    public virtual System.Action<DragUpdateDetails>? onHorizontalDragUpdate { get; private set; }
+    public virtual System.Action<DragEndDetails>? onHorizontalDragEnd { get; private set; }
+    public virtual Action? onHorizontalDragCancel { get; private set; }
+    public virtual System.Action<DragDownDetails>? onPanDown { get; private set; }
+    public virtual System.Action<DragStartDetails>? onPanStart { get; private set; }
+    public virtual System.Action<DragUpdateDetails>? onPanUpdate { get; private set; }
+    public virtual System.Action<DragEndDetails>? onPanEnd { get; private set; }
+    public virtual Action? onPanCancel { get; private set; }
+    public virtual System.Action<ScaleStartDetails>? onScaleStart { get; private set; }
+    public virtual System.Action<ScaleUpdateDetails>? onScaleUpdate { get; private set; }
+    public virtual System.Action<ScaleEndDetails>? onScaleEnd { get; private set; }
+    public virtual System.Action<ForcePressDetails>? onForcePressStart { get; private set; }
+    public virtual System.Action<ForcePressDetails>? onForcePressPeak { get; private set; }
+    public virtual System.Action<ForcePressDetails>? onForcePressUpdate { get; private set; }
+    public virtual System.Action<ForcePressDetails>? onForcePressEnd { get; private set; }
+    public virtual HitTestBehavior? behavior { get; private set; }
     public virtual bool excludeFromSemantics { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual HashSet<PointerDeviceKind>? supportedDevices { get; private set; }
     public virtual bool trackpadScrollCausesScale { get; private set; } = default!;
     public virtual Offset trackpadScrollToScaleFactor { get; private set; } = default!;
 
-    public GestureDetector(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp = null, global::System.Action? onTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>? onTapMove = null, global::System.Action? onTapCancel = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp = null, global::System.Action? onSecondaryTapCancel = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTertiaryTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTertiaryTapUp = null, global::System.Action? onTertiaryTapCancel = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onDoubleTapDown = null, global::System.Action? onDoubleTap = null, global::System.Action? onDoubleTapCancel = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressDownDetails>? onLongPressDown = null, global::System.Action? onLongPressCancel = null, global::System.Action? onLongPress = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>? onLongPressStart = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>? onLongPressMoveUpdate = null, global::System.Action? onLongPressUp = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>? onLongPressEnd = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressDownDetails>? onSecondaryLongPressDown = null, global::System.Action? onSecondaryLongPressCancel = null, global::System.Action? onSecondaryLongPress = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>? onSecondaryLongPressStart = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate = null, global::System.Action? onSecondaryLongPressUp = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>? onSecondaryLongPressEnd = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressDownDetails>? onTertiaryLongPressDown = null, global::System.Action? onTertiaryLongPressCancel = null, global::System.Action? onTertiaryLongPress = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>? onTertiaryLongPressStart = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate = null, global::System.Action? onTertiaryLongPressUp = null, global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>? onTertiaryLongPressEnd = null, global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>? onVerticalDragDown = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onVerticalDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onVerticalDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onVerticalDragEnd = null, global::System.Action? onVerticalDragCancel = null, global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>? onHorizontalDragDown = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onHorizontalDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onHorizontalDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onHorizontalDragEnd = null, global::System.Action? onHorizontalDragCancel = null, global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressStart = null, global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressPeak = null, global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>? onForcePressEnd = null, global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>? onPanDown = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onPanStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onPanUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onPanEnd = null, global::System.Action? onPanCancel = null, global::System.Action<global::Doroti.Framework.Gestures.ScaleStartDetails>? onScaleStart = null, global::System.Action<global::Doroti.Framework.Gestures.ScaleUpdateDetails>? onScaleUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.ScaleEndDetails>? onScaleEnd = null, global::Doroti.Framework.Rendering.HitTestBehavior? behavior = null, bool excludeFromSemantics = false, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool trackpadScrollCausesScale = false, Offset? trackpadScrollToScaleFactor = null, HashSet<PointerDeviceKind>? supportedDevices = null) : base(key: key)
+    public GestureDetector(Key? key = null, Widget? child = null, System.Action<TapDownDetails>? onTapDown = null, System.Action<TapUpDetails>? onTapUp = null, Action? onTap = null, System.Action<TapMoveDetails>? onTapMove = null, Action? onTapCancel = null, Action? onSecondaryTap = null, System.Action<TapDownDetails>? onSecondaryTapDown = null, System.Action<TapUpDetails>? onSecondaryTapUp = null, Action? onSecondaryTapCancel = null, System.Action<TapDownDetails>? onTertiaryTapDown = null, System.Action<TapUpDetails>? onTertiaryTapUp = null, Action? onTertiaryTapCancel = null, System.Action<TapDownDetails>? onDoubleTapDown = null, Action? onDoubleTap = null, Action? onDoubleTapCancel = null, System.Action<LongPressDownDetails>? onLongPressDown = null, Action? onLongPressCancel = null, Action? onLongPress = null, System.Action<LongPressStartDetails>? onLongPressStart = null, System.Action<LongPressMoveUpdateDetails>? onLongPressMoveUpdate = null, Action? onLongPressUp = null, System.Action<LongPressEndDetails>? onLongPressEnd = null, System.Action<LongPressDownDetails>? onSecondaryLongPressDown = null, Action? onSecondaryLongPressCancel = null, Action? onSecondaryLongPress = null, System.Action<LongPressStartDetails>? onSecondaryLongPressStart = null, System.Action<LongPressMoveUpdateDetails>? onSecondaryLongPressMoveUpdate = null, Action? onSecondaryLongPressUp = null, System.Action<LongPressEndDetails>? onSecondaryLongPressEnd = null, System.Action<LongPressDownDetails>? onTertiaryLongPressDown = null, Action? onTertiaryLongPressCancel = null, Action? onTertiaryLongPress = null, System.Action<LongPressStartDetails>? onTertiaryLongPressStart = null, System.Action<LongPressMoveUpdateDetails>? onTertiaryLongPressMoveUpdate = null, Action? onTertiaryLongPressUp = null, System.Action<LongPressEndDetails>? onTertiaryLongPressEnd = null, System.Action<DragDownDetails>? onVerticalDragDown = null, System.Action<DragStartDetails>? onVerticalDragStart = null, System.Action<DragUpdateDetails>? onVerticalDragUpdate = null, System.Action<DragEndDetails>? onVerticalDragEnd = null, Action? onVerticalDragCancel = null, System.Action<DragDownDetails>? onHorizontalDragDown = null, System.Action<DragStartDetails>? onHorizontalDragStart = null, System.Action<DragUpdateDetails>? onHorizontalDragUpdate = null, System.Action<DragEndDetails>? onHorizontalDragEnd = null, Action? onHorizontalDragCancel = null, System.Action<ForcePressDetails>? onForcePressStart = null, System.Action<ForcePressDetails>? onForcePressPeak = null, System.Action<ForcePressDetails>? onForcePressUpdate = null, System.Action<ForcePressDetails>? onForcePressEnd = null, System.Action<DragDownDetails>? onPanDown = null, System.Action<DragStartDetails>? onPanStart = null, System.Action<DragUpdateDetails>? onPanUpdate = null, System.Action<DragEndDetails>? onPanEnd = null, Action? onPanCancel = null, System.Action<ScaleStartDetails>? onScaleStart = null, System.Action<ScaleUpdateDetails>? onScaleUpdate = null, System.Action<ScaleEndDetails>? onScaleEnd = null, HitTestBehavior? behavior = null, bool excludeFromSemantics = false, DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool trackpadScrollCausesScale = false, Offset? trackpadScrollToScaleFactor = null, HashSet<PointerDeviceKind>? supportedDevices = null) : base(key: key)
     {
         Offset __trackpadScrollToScaleFactor = trackpadScrollToScaleFactor ?? ScaleLibrary.kDefaultTrackpadScrollToScaleFactor;
         this.child = child;
@@ -186,7 +186,7 @@ public class GestureDetector : StatelessWidget
         this.trackpadScrollCausesScale = trackpadScrollCausesScale;
         this.trackpadScrollToScaleFactor = __trackpadScrollToScaleFactor;
         this.supportedDevices = supportedDevices;
-        System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
+        System.Diagnostics.Debug.Assert(((Func<bool>)(() =>
         {
             bool haveVerticalDrag = (onVerticalDragStart is not null) || (onVerticalDragUpdate is not null) || (onVerticalDragEnd is not null);
             bool haveHorizontalDrag = (onHorizontalDragStart is not null) || (onHorizontalDragUpdate is not null) || (onHorizontalDragEnd is not null);
@@ -196,7 +196,7 @@ public class GestureDetector : StatelessWidget
             {
                 if (havePan && haveScale)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Incorrect GestureDetector arguments."), new global::Doroti.Framework.Foundation.ErrorDescription("Having both a pan gesture recognizer and a scale gesture recognizer is redundant; scale is a superset of pan."), new global::Doroti.Framework.Foundation.ErrorHint("Just use the scale gesture recognizer.") }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Incorrect GestureDetector arguments."), new ErrorDescription("Having both a pan gesture recognizer and a scale gesture recognizer is redundant; scale is a superset of pan."), new ErrorHint("Just use the scale gesture recognizer.") }));
                 }
                 var recognizer = havePan ? "pan" : "scale";
                 if (haveVerticalDrag && haveHorizontalDrag)
@@ -212,13 +212,13 @@ public class GestureDetector : StatelessWidget
     public override Widget build(BuildContext context)
     {
         var gesturesLocal = new DartMap<Type, dynamic>();
-        global::Doroti.Framework.Gestures.DeviceGestureSettings? gestureSettingsLocal = MediaQuery.maybeGestureSettingsOf(context);
+        DeviceGestureSettings? gestureSettingsLocal = MediaQuery.maybeGestureSettingsOf(context);
         ScrollBehavior configuration = ScrollConfiguration.of(context);
         if ((onTapDown is not null) || (onTapUp is not null) || (onTap is not null) || (onTapCancel is not null) || (onSecondaryTap is not null) || (onSecondaryTapDown is not null) || (onSecondaryTapUp is not null) || (onSecondaryTapCancel is not null) || (onTertiaryTapDown is not null) || (onTertiaryTapUp is not null) || (onTertiaryTapCancel is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(() => new TapGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<TapGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onTapDown = onTapDown;
@@ -240,9 +240,9 @@ public class GestureDetector : StatelessWidget
         }
         if ((onDoubleTap is not null) || (onDoubleTapDown is not null) || (onDoubleTapCancel is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>(() => new global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(DoubleTapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(() => new DoubleTapGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<DoubleTapGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onDoubleTapDown = onDoubleTapDown;
@@ -256,9 +256,9 @@ public class GestureDetector : StatelessWidget
         }
         if ((onLongPressDown is not null) || (onLongPressCancel is not null) || (onLongPress is not null) || (onLongPressStart is not null) || (onLongPressMoveUpdate is not null) || (onLongPressUp is not null) || (onLongPressEnd is not null) || (onSecondaryLongPressDown is not null) || (onSecondaryLongPressCancel is not null) || (onSecondaryLongPress is not null) || (onSecondaryLongPressStart is not null) || (onSecondaryLongPressMoveUpdate is not null) || (onSecondaryLongPressUp is not null) || (onSecondaryLongPressEnd is not null) || (onTertiaryLongPressDown is not null) || (onTertiaryLongPressCancel is not null) || (onTertiaryLongPress is not null) || (onTertiaryLongPressStart is not null) || (onTertiaryLongPressMoveUpdate is not null) || (onTertiaryLongPressUp is not null) || (onTertiaryLongPressEnd is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>(() => new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(() => new LongPressGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<LongPressGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onLongPressDown = onLongPressDown;
@@ -290,9 +290,9 @@ public class GestureDetector : StatelessWidget
         }
         if ((onVerticalDragDown is not null) || (onVerticalDragStart is not null) || (onVerticalDragUpdate is not null) || (onVerticalDragEnd is not null) || (onVerticalDragCancel is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>(() => new global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(VerticalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<VerticalDragGestureRecognizer>(() => new VerticalDragGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<VerticalDragGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onDown = onVerticalDragDown;
@@ -310,9 +310,9 @@ public class GestureDetector : StatelessWidget
         }
         if ((onHorizontalDragDown is not null) || (onHorizontalDragStart is not null) || (onHorizontalDragUpdate is not null) || (onHorizontalDragEnd is not null) || (onHorizontalDragCancel is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>(() => new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(HorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<HorizontalDragGestureRecognizer>(() => new HorizontalDragGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<HorizontalDragGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onDown = onHorizontalDragDown;
@@ -330,9 +330,9 @@ public class GestureDetector : StatelessWidget
         }
         if ((onPanDown is not null) || (onPanStart is not null) || (onPanUpdate is not null) || (onPanEnd is not null) || (onPanCancel is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(() => new PanGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<PanGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onDown = onPanDown;
@@ -350,9 +350,9 @@ public class GestureDetector : StatelessWidget
         }
         if ((onScaleStart is not null) || (onScaleUpdate is not null) || (onScaleEnd is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.ScaleGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>(() => new global::Doroti.Framework.Gestures.ScaleGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(ScaleGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<ScaleGestureRecognizer>(() => new ScaleGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<ScaleGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onStart = onScaleStart;
@@ -369,9 +369,9 @@ public class GestureDetector : StatelessWidget
         }
         if ((onForcePressStart is not null) || (onForcePressPeak is not null) || (onForcePressUpdate is not null) || (onForcePressEnd is not null))
         {
-            gesturesLocal[typeof(global::Doroti.Framework.Gestures.ForcePressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>(() => new global::Doroti.Framework.Gestures.ForcePressGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
+            gesturesLocal[typeof(ForcePressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<ForcePressGestureRecognizer>(() => new ForcePressGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices), (instance) =>
             {
-                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() =>
+                DartRuntimePrimitives.Ignore(((Func<ForcePressGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
                     __cascade.onStart = onForcePressStart;
@@ -388,10 +388,10 @@ public class GestureDetector : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Gestures.DragStartBehavior>("startBehavior", dragStartBehavior));
+        properties.add(new EnumProperty<DragStartBehavior>("startBehavior", dragStartBehavior));
     }
 
 }
@@ -400,13 +400,13 @@ public class RawGestureDetector : StatefulWidget
 {
     public virtual Widget? child { get; private set; }
     public virtual DartMap<Type, dynamic> gestures { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior? behavior { get; private set; }
+    public virtual HitTestBehavior? behavior { get; private set; }
     public virtual bool excludeFromSemantics { get; private set; } = default!;
     public virtual SemanticsGestureDelegate? semantics { get; private set; }
 
-    public RawGestureDetector(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, DartMap<Type, dynamic> gestures = default!, global::Doroti.Framework.Rendering.HitTestBehavior? behavior = null, bool excludeFromSemantics = false, SemanticsGestureDelegate? semantics = null) : base(key: key)
+    public RawGestureDetector(Key? key = null, Widget? child = null, DartMap<Type, dynamic> gestures = default!, HitTestBehavior? behavior = null, bool excludeFromSemantics = false, SemanticsGestureDelegate? semantics = null) : base(key: key)
     {
-        DartMap<Type, dynamic> __gestures = gestures ?? new DartMap<Type, GestureRecognizerFactory<global::Doroti.Framework.Gestures.GestureRecognizer>>().cast<Type, dynamic>();
+        DartMap<Type, dynamic> __gestures = gestures ?? new DartMap<Type, GestureRecognizerFactory<GestureRecognizer>>().cast<Type, dynamic>();
         this.child = child;
         this.gestures = __gestures;
         this.behavior = behavior;
@@ -419,7 +419,7 @@ public class RawGestureDetector : StatefulWidget
 
 public class RawGestureDetectorState : State<RawGestureDetector>
 {
-    internal virtual DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer>? _recognizers { get; set; } = new DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer>();
+    internal virtual DartMap<Type, GestureRecognizer>? _recognizers { get; set; } = new DartMap<Type, GestureRecognizer>();
     internal virtual SemanticsGestureDelegate? _semantics { get; set; } = default;
 
     public override void initState()
@@ -445,7 +445,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
             {
                 if (!context.findRenderObject()!.owner!.debugDoingLayout)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Unexpected call to replaceGestureRecognizers() method of RawGestureDetectorState."), new global::Doroti.Framework.Foundation.ErrorDescription("The replaceGestureRecognizers() method can only be called during the layout phase."), new global::Doroti.Framework.Foundation.ErrorHint("To set the gesture recognizers at other times, trigger a new build using setState() " + "and provide the new gesture recognizers as constructor arguments to the corresponding " + "RawGestureDetector or GestureDetector object.") }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Unexpected call to replaceGestureRecognizers() method of RawGestureDetectorState."), new ErrorDescription("The replaceGestureRecognizers() method can only be called during the layout phase."), new ErrorHint("To set the gesture recognizers at other times, trigger a new build using setState() " + "and provide the new gesture recognizers as constructor arguments to the corresponding " + "RawGestureDetector or GestureDetector object.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -453,7 +453,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
         _syncAll(gestures);
         if (!widget.excludeFromSemantics)
         {
-            var semanticsGestureHandler = ((global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler?)context.findRenderObject()!)!;
+            var semanticsGestureHandler = ((RenderSemanticsGestureHandler?)context.findRenderObject()!)!;
             _updateSemanticsForRenderObject(semanticsGestureHandler);
         }
     }
@@ -464,7 +464,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
         {
             return;
         }
-        var semanticsGestureHandler = ((global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler?)context.findRenderObject())!;
+        var semanticsGestureHandler = ((RenderSemanticsGestureHandler?)context.findRenderObject())!;
         DartRuntimePrimitives.Assert(() =>
             {
                 if (semanticsGestureHandler is null)
@@ -479,7 +479,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
 
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Gestures.GestureRecognizer recognizer in _recognizers!.Values)
+        foreach (GestureRecognizer recognizer in _recognizers!.Values)
         {
             recognizer.dispose();
         }
@@ -490,8 +490,8 @@ public class RawGestureDetectorState : State<RawGestureDetector>
     internal virtual void _syncAll(DartMap<Type, dynamic> gestures)
     {
         DartRuntimePrimitives.Assert(() => _recognizers is not null);
-        DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> oldRecognizers = _recognizers!;
-        _recognizers = new DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer>().cast<Type, global::Doroti.Framework.Gestures.GestureRecognizer>();
+        DartMap<Type, GestureRecognizer> oldRecognizers = _recognizers!;
+        _recognizers = new DartMap<Type, GestureRecognizer>().cast<Type, GestureRecognizer>();
         foreach (Type @type in gestures.Keys)
         {
             DartRuntimePrimitives.Assert(() => gestures.ContainsKey(@type));
@@ -511,32 +511,32 @@ public class RawGestureDetectorState : State<RawGestureDetector>
         }
     }
 
-    internal virtual void _handlePointerDown(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    internal virtual void _handlePointerDown(Gestures.PointerDownEvent @event)
     {
         DartRuntimePrimitives.Assert(() => _recognizers is not null);
-        foreach (global::Doroti.Framework.Gestures.GestureRecognizer recognizer in _recognizers!.Values)
+        foreach (GestureRecognizer recognizer in _recognizers!.Values)
         {
             recognizer.addPointer(@event);
         }
     }
 
-    internal virtual void _handlePointerPanZoomStart(global::Doroti.Framework.Gestures.PointerPanZoomStartEvent @event)
+    internal virtual void _handlePointerPanZoomStart(PointerPanZoomStartEvent @event)
     {
         DartRuntimePrimitives.Assert(() => _recognizers is not null);
-        foreach (global::Doroti.Framework.Gestures.GestureRecognizer recognizer in _recognizers!.Values)
+        foreach (GestureRecognizer recognizer in _recognizers!.Values)
         {
             recognizer.addPointerPanZoom(@event);
         }
     }
 
-    internal virtual global::Doroti.Framework.Rendering.HitTestBehavior _defaultBehavior
+    internal virtual HitTestBehavior _defaultBehavior
     {
         get
         {
             return (widget.child is null) ? HitTestBehavior.translucent : HitTestBehavior.deferToChild;
         }
     }
-    internal virtual void _updateSemanticsForRenderObject(global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler renderObject)
+    internal virtual void _updateSemanticsForRenderObject(RenderSemanticsGestureHandler renderObject)
     {
         DartRuntimePrimitives.Assert(() => !widget.excludeFromSemantics);
         DartRuntimePrimitives.Assert(() => _semantics is not null);
@@ -554,7 +554,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         if (_recognizers is null)
@@ -563,38 +563,38 @@ public class RawGestureDetectorState : State<RawGestureDetector>
         }
         else
         {
-            List<string> gestures = _recognizers!.Values.map<global::Doroti.Framework.Gestures.GestureRecognizer, string>((recognizer) => recognizer.debugDescription).ToList().ToList();
-            properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("gestures", gestures.Cast<string>(), ifEmpty: "<none>"));
-            properties.add(new global::Doroti.Framework.Foundation.IterableProperty<global::Doroti.Framework.Gestures.GestureRecognizer>("recognizers", _recognizers!.Values.Cast<global::Doroti.Framework.Gestures.GestureRecognizer>(), level: DiagnosticLevel.fine));
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("excludeFromSemantics", widget.excludeFromSemantics, defaultValue: false));
+            List<string> gestures = _recognizers!.Values.map((recognizer) => recognizer.debugDescription).ToList().ToList();
+            properties.add(new IterableProperty<string>("gestures", gestures.Cast<string>(), ifEmpty: "<none>"));
+            properties.add(new IterableProperty<GestureRecognizer>("recognizers", _recognizers!.Values.Cast<GestureRecognizer>(), level: DiagnosticLevel.fine));
+            properties.add(new DiagnosticsProperty<bool>("excludeFromSemantics", widget.excludeFromSemantics, defaultValue: false));
             if (!widget.excludeFromSemantics)
             {
-                properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SemanticsGestureDelegate>("semantics", widget.semantics, defaultValue: null));
+                properties.add(new DiagnosticsProperty<SemanticsGestureDelegate>("semantics", widget.semantics, defaultValue: null));
             }
         }
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("behavior", widget.behavior, defaultValue: null));
+        properties.add(new EnumProperty<HitTestBehavior>("behavior", widget.behavior, defaultValue: null));
     }
 
 }
 
-internal delegate void _AssignSemantics__gesture_detector(global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler __unused0);
+internal delegate void _AssignSemantics__gesture_detector(RenderSemanticsGestureHandler __unused0);
 
 internal class _GestureSemantics__gesture_detector : SingleChildRenderObjectWidget
 {
-    public virtual global::Doroti.Framework.Rendering.HitTestBehavior behavior { get; private set; } = default!;
-    public virtual global::System.Action<global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler> assignSemantics { get; private set; } = default!;
+    public virtual HitTestBehavior behavior { get; private set; } = default!;
+    public virtual System.Action<RenderSemanticsGestureHandler> assignSemantics { get; private set; } = default!;
 
-    internal _GestureSemantics__gesture_detector(Widget? child = null, global::Doroti.Framework.Rendering.HitTestBehavior behavior = default!, global::System.Action<global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler> assignSemantics = default!) : base(child: child)
+    internal _GestureSemantics__gesture_detector(Widget? child = null, HitTestBehavior behavior = default!, System.Action<RenderSemanticsGestureHandler> assignSemantics = default!) : base(child: child)
     {
         this.behavior = behavior;
         this.assignSemantics = assignSemantics;
     }
 
-    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override RenderObject createRenderObject(BuildContext context)
     {
-        var renderObject = ((Func<global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler>)(() =>
+        var renderObject = ((Func<RenderSemanticsGestureHandler>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler();
+    var __cascade = new RenderSemanticsGestureHandler();
     __cascade.behavior = behavior;
     return __cascade;
 }))();
@@ -603,9 +603,9 @@ internal class _GestureSemantics__gesture_detector : SingleChildRenderObjectWidg
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler)renderObject;
+        var __renderObject = (RenderSemanticsGestureHandler)renderObject;
         __renderObject.behavior = behavior;
         assignSemantics(__renderObject);
     }
@@ -618,7 +618,7 @@ public abstract class SemanticsGestureDelegate
     {
     }
 
-    public abstract void assignSemantics(global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler renderObject);
+    public abstract void assignSemantics(RenderSemanticsGestureHandler renderObject);
     public override string ToString() => $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsGestureDelegate")}()";
 }
 
@@ -631,29 +631,29 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
         this.detectorState = detectorState;
     }
 
-    internal static global::Doroti.Ui.Rect _getLocalRectFromRenderObject(global::Doroti.Framework.Rendering.RenderObject renderObject)
+    internal static Rect _getLocalRectFromRenderObject(RenderObject renderObject)
     {
         if (renderObject is not RenderBox)
         {
             return Rect.zero;
         }
-        global::Doroti.Ui.Size sizeLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(((global::Doroti.Framework.Rendering.RenderBox)renderObject).size);
+        Size sizeLocal = DartRuntimePrimitives.ConvertValue<Size>(((RenderBox)renderObject).size);
         return Rect.fromLTWH(0, 0, sizeLocal.width, sizeLocal.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Ui.Offset _transformOffsetToGlobal(global::Doroti.Framework.Rendering.RenderObject @object, Offset local)
+    internal static Offset _transformOffsetToGlobal(RenderObject @object, Offset local)
     {
         Matrix4 transform = @object.getTransformTo(null);
         return MatrixUtils.transformPoint(transform, local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void assignSemantics(global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler renderObject)
+    public override void assignSemantics(RenderSemanticsGestureHandler renderObject)
     {
         DartRuntimePrimitives.Assert(() => !detectorState.widget.excludeFromSemantics);
-        DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> recognizers = detectorState._recognizers!;
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler>)(() =>
+        DartMap<Type, GestureRecognizer> recognizers = detectorState._recognizers!;
+        DartRuntimePrimitives.Ignore(((Func<RenderSemanticsGestureHandler>)(() =>
 {
     var __cascade = renderObject;
     __cascade.onTap = _getTapHandler(renderObject, recognizers);
@@ -664,69 +664,69 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
 }))());
     }
 
-    internal virtual global::System.Action? _getTapHandler(global::Doroti.Framework.Rendering.RenderObject renderObject, DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> recognizers)
+    internal virtual Action? _getTapHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
     {
-        var tap = ((global::Doroti.Framework.Gestures.TapGestureRecognizer?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)))!;
+        var tap = ((TapGestureRecognizer?)recognizers.GetValueOrDefault(typeof(TapGestureRecognizer)))!;
         if (tap is null)
         {
             return null;
         }
         return () =>
         {
-            global::Doroti.Ui.Offset localCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_getLocalRectFromRenderObject(renderObject).center);
-            global::Doroti.Ui.Offset globalCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, localCenter));
-            tap.onTapDown?.Invoke(new global::Doroti.Framework.Gestures.TapDownDetails(globalPosition: globalCenter, localPosition: localCenter, kind: PointerDeviceKind.unknown));
-            tap.onTapUp?.Invoke(new global::Doroti.Framework.Gestures.TapUpDetails(globalPosition: globalCenter, localPosition: localCenter, kind: PointerDeviceKind.unknown));
+            Offset localCenter = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
+            Offset globalCenter = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenter));
+            tap.onTapDown?.Invoke(new TapDownDetails(globalPosition: globalCenter, localPosition: localCenter, kind: PointerDeviceKind.unknown));
+            tap.onTapUp?.Invoke(new TapUpDetails(globalPosition: globalCenter, localPosition: localCenter, kind: PointerDeviceKind.unknown));
             tap.onTap?.Invoke();
         };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::System.Action? _getLongPressHandler(global::Doroti.Framework.Rendering.RenderObject renderObject, DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> recognizers)
+    internal virtual Action? _getLongPressHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
     {
-        var longPress = ((global::Doroti.Framework.Gestures.LongPressGestureRecognizer?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)))!;
+        var longPress = ((LongPressGestureRecognizer?)recognizers.GetValueOrDefault(typeof(LongPressGestureRecognizer)))!;
         if (longPress is null)
         {
             return null;
         }
         return () =>
         {
-            global::Doroti.Ui.Offset localCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_getLocalRectFromRenderObject(renderObject).center);
-            global::Doroti.Ui.Offset globalCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, localCenter));
-            longPress.onLongPressDown?.Invoke(new global::Doroti.Framework.Gestures.LongPressDownDetails(localPosition: localCenter, globalPosition: globalCenter));
-            longPress.onLongPressStart?.Invoke(new global::Doroti.Framework.Gestures.LongPressStartDetails(localPosition: localCenter, globalPosition: globalCenter));
+            Offset localCenter = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
+            Offset globalCenter = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenter));
+            longPress.onLongPressDown?.Invoke(new LongPressDownDetails(localPosition: localCenter, globalPosition: globalCenter));
+            longPress.onLongPressStart?.Invoke(new LongPressStartDetails(localPosition: localCenter, globalPosition: globalCenter));
             longPress.onLongPress?.Invoke();
-            longPress.onLongPressEnd?.Invoke(new global::Doroti.Framework.Gestures.LongPressEndDetails(localPosition: localCenter, globalPosition: globalCenter));
+            longPress.onLongPressEnd?.Invoke(new LongPressEndDetails(localPosition: localCenter, globalPosition: globalCenter));
             longPress.onLongPressUp?.Invoke();
         };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? _getHorizontalDragUpdateHandler(global::Doroti.Framework.Rendering.RenderObject renderObject, DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> recognizers)
+    internal virtual System.Action<DragUpdateDetails>? _getHorizontalDragUpdateHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
     {
-        var horizontal = ((global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer)))!;
-        var pan = ((global::Doroti.Framework.Gestures.PanGestureRecognizer?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)))!;
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? horizontalHandler = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>?)((horizontal is null) ? null : ((details) =>
+        var horizontal = ((HorizontalDragGestureRecognizer?)recognizers.GetValueOrDefault(typeof(HorizontalDragGestureRecognizer)))!;
+        var pan = ((PanGestureRecognizer?)recognizers.GetValueOrDefault(typeof(PanGestureRecognizer)))!;
+        System.Action<DragUpdateDetails>? horizontalHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((horizontal is null) ? null : ((details) =>
         {
-            global::Doroti.Ui.Offset localCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_getLocalRectFromRenderObject(renderObject).center);
-            global::Doroti.Ui.Offset globalCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, localCenter));
-            global::Doroti.Ui.Offset newLocalOffset = localCenter + details.delta;
-            global::Doroti.Ui.Offset newGlobalOffset = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, newLocalOffset));
-            horizontal.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter, globalPosition: globalCenter));
-            horizontal.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter, globalPosition: globalCenter));
+            Offset localCenter = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
+            Offset globalCenter = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenter));
+            Offset newLocalOffset = localCenter + details.delta;
+            Offset newGlobalOffset = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, newLocalOffset));
+            horizontal.onDown?.Invoke(new DragDownDetails(localPosition: localCenter, globalPosition: globalCenter));
+            horizontal.onStart?.Invoke(new DragStartDetails(localPosition: localCenter, globalPosition: globalCenter));
             horizontal.onUpdate?.Invoke(details);
-            horizontal.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset, globalPosition: newGlobalOffset));
+            horizontal.onEnd?.Invoke(new DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset, globalPosition: newGlobalOffset));
         })));
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>?)((pan is null) ? null : ((details) =>
+        System.Action<DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((pan is null) ? null : ((details) =>
         {
-            global::Doroti.Ui.Offset localCenterLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_getLocalRectFromRenderObject(renderObject).center);
-            global::Doroti.Ui.Offset globalCenterLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, localCenterLocal));
-            global::Doroti.Ui.Offset newLocalOffsetLocal = localCenterLocal + details.delta;
-            global::Doroti.Ui.Offset newGlobalOffsetLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, newLocalOffsetLocal));
-            pan.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
-            pan.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
+            Offset localCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
+            Offset globalCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenterLocal));
+            Offset newLocalOffsetLocal = localCenterLocal + details.delta;
+            Offset newGlobalOffsetLocal = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, newLocalOffsetLocal));
+            pan.onDown?.Invoke(new DragDownDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
+            pan.onStart?.Invoke(new DragStartDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
             pan.onUpdate?.Invoke(details);
-            pan.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(localPosition: newLocalOffsetLocal, globalPosition: newGlobalOffsetLocal));
+            pan.onEnd?.Invoke(new DragEndDetails(localPosition: newLocalOffsetLocal, globalPosition: newGlobalOffsetLocal));
         })));
         if ((horizontalHandler is null) && (panHandler is null))
         {
@@ -740,31 +740,31 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? _getVerticalDragUpdateHandler(global::Doroti.Framework.Rendering.RenderObject renderObject, DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> recognizers)
+    internal virtual System.Action<DragUpdateDetails>? _getVerticalDragUpdateHandler(RenderObject renderObject, DartMap<Type, GestureRecognizer> recognizers)
     {
-        var vertical = ((global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer)))!;
-        var pan = ((global::Doroti.Framework.Gestures.PanGestureRecognizer?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)))!;
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? verticalHandler = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>?)((vertical is null) ? null : ((details) =>
+        var vertical = ((VerticalDragGestureRecognizer?)recognizers.GetValueOrDefault(typeof(VerticalDragGestureRecognizer)))!;
+        var pan = ((PanGestureRecognizer?)recognizers.GetValueOrDefault(typeof(PanGestureRecognizer)))!;
+        System.Action<DragUpdateDetails>? verticalHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((vertical is null) ? null : ((details) =>
         {
-            global::Doroti.Ui.Offset localCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_getLocalRectFromRenderObject(renderObject).center);
-            global::Doroti.Ui.Offset globalCenter = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, localCenter));
-            global::Doroti.Ui.Offset newLocalOffset = localCenter + details.delta;
-            global::Doroti.Ui.Offset newGlobalOffset = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, newLocalOffset));
-            vertical.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter, globalPosition: globalCenter));
-            vertical.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter, globalPosition: globalCenter));
+            Offset localCenter = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
+            Offset globalCenter = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenter));
+            Offset newLocalOffset = localCenter + details.delta;
+            Offset newGlobalOffset = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, newLocalOffset));
+            vertical.onDown?.Invoke(new DragDownDetails(localPosition: localCenter, globalPosition: globalCenter));
+            vertical.onStart?.Invoke(new DragStartDetails(localPosition: localCenter, globalPosition: globalCenter));
             vertical.onUpdate?.Invoke(details);
-            vertical.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset, globalPosition: newGlobalOffset));
+            vertical.onEnd?.Invoke(new DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset, globalPosition: newGlobalOffset));
         })));
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>?)((pan is null) ? null : ((details) =>
+        System.Action<DragUpdateDetails>? panHandler = DartRuntimePrimitives.ConvertValue<System.Action<DragUpdateDetails>>((System.Action<DragUpdateDetails>?)((pan is null) ? null : ((details) =>
         {
-            global::Doroti.Ui.Offset localCenterLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_getLocalRectFromRenderObject(renderObject).center);
-            global::Doroti.Ui.Offset globalCenterLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, localCenterLocal));
-            global::Doroti.Ui.Offset newLocalOffsetLocal = localCenterLocal + details.delta;
-            global::Doroti.Ui.Offset newGlobalOffsetLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_transformOffsetToGlobal(renderObject, newLocalOffsetLocal));
-            pan.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
-            pan.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
+            Offset localCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_getLocalRectFromRenderObject(renderObject).center);
+            Offset globalCenterLocal = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, localCenterLocal));
+            Offset newLocalOffsetLocal = localCenterLocal + details.delta;
+            Offset newGlobalOffsetLocal = DartRuntimePrimitives.ConvertValue<Offset>(_transformOffsetToGlobal(renderObject, newLocalOffsetLocal));
+            pan.onDown?.Invoke(new DragDownDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
+            pan.onStart?.Invoke(new DragStartDetails(localPosition: localCenterLocal, globalPosition: globalCenterLocal));
             pan.onUpdate?.Invoke(details);
-            pan.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(localPosition: newLocalOffsetLocal, globalPosition: newGlobalOffsetLocal));
+            pan.onEnd?.Invoke(new DragEndDetails(localPosition: newLocalOffsetLocal, globalPosition: newGlobalOffsetLocal));
         })));
         if ((verticalHandler is null) && (panHandler is null))
         {

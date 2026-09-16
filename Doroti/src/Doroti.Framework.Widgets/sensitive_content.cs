@@ -14,12 +14,12 @@ internal class _ContentSensitivitySetting__sensitive_content
     {
     }
 
-    internal static void _reportUnknownContentSensitivityDetected(global::Doroti.Framework.Services.ContentSensitivity sensitivity)
+    internal static void _reportUnknownContentSensitivityDetected(ContentSensitivity sensitivity)
     {
-        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: FlutterError.Create($"SensitiveContent widgets with ContentSensitivity {sensitivity} is unsupported by _ContentSensitivitySetting"), library: "widget library", stack: new global::System.Diagnostics.StackTrace(true)));
+        FlutterError.reportError(new FlutterErrorDetails(exception: FlutterError.Create($"SensitiveContent widgets with ContentSensitivity {sensitivity} is unsupported by _ContentSensitivitySetting"), library: "widget library", stack: new System.Diagnostics.StackTrace(true)));
     }
 
-    public virtual void addWidgetWithContentSensitivity(global::Doroti.Framework.Services.ContentSensitivity sensitivity)
+    public virtual void addWidgetWithContentSensitivity(ContentSensitivity sensitivity)
     {
         switch (sensitivity)
         {
@@ -46,13 +46,13 @@ internal class _ContentSensitivitySetting__sensitive_content
         }
     }
 
-    internal static string _getNegativeWidgetCountErrorMessage(global::Doroti.Framework.Services.ContentSensitivity sensitivity, long count)
+    internal static string _getNegativeWidgetCountErrorMessage(ContentSensitivity sensitivity, long count)
     {
         return $"A negative amount ({count}) of {sensitivity} SensitiveContent widgets have been detected, which is not expected. Please file an issue.";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void removeWidgetWithContentSensitivity(global::Doroti.Framework.Services.ContentSensitivity sensitivity)
+    public virtual void removeWidgetWithContentSensitivity(ContentSensitivity sensitivity)
     {
         switch (sensitivity)
         {
@@ -83,7 +83,7 @@ internal class _ContentSensitivitySetting__sensitive_content
     }
 
     public virtual bool hasWidgets => DartRuntimePrimitives.ConvertValue<bool>((Math.Max(0L, _sensitiveWidgetCount) + Math.Max(0L, _autoSensitiveWidgetCount) + Math.Max(0L, _notSensitiveWidgetCount)) > 0L);
-    public virtual global::Doroti.Framework.Services.ContentSensitivity? contentSensitivityBasedOnWidgetCounts
+    public virtual ContentSensitivity? contentSensitivityBasedOnWidgetCounts
     {
         get
         {
@@ -121,31 +121,31 @@ public class SensitiveContentHost
             return __late__contentSensitivitySetting;
         }
     }
-    internal virtual global::Doroti.Framework.Services.ContentSensitivity? _fallbackContentSensitivitySetting { get; set; } = default;
-    internal virtual global::Doroti.Framework.Services.SensitiveContentService _sensitiveContentService { get; private set; } = new global::Doroti.Framework.Services.SensitiveContentService();
+    internal virtual ContentSensitivity? _fallbackContentSensitivitySetting { get; set; } = default;
+    internal virtual SensitiveContentService _sensitiveContentService { get; private set; } = new SensitiveContentService();
     public static SensitiveContentHost instance = new SensitiveContentHost();
 
     public SensitiveContentHost()
     {
     }
 
-    public virtual global::Doroti.Framework.Services.ContentSensitivity? calculatedContentSensitivity => _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts;
-    public static Future register(global::Doroti.Framework.Services.ContentSensitivity desiredSensitivity)
+    public virtual ContentSensitivity? calculatedContentSensitivity => _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts;
+    public static Future register(ContentSensitivity desiredSensitivity)
     {
         return instance._register(desiredSensitivity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal async virtual Future _register(global::Doroti.Framework.Services.ContentSensitivity desiredSensitivity)
+    internal async virtual Future _register(ContentSensitivity desiredSensitivity)
     {
         try
         {
             _contentSensitivityIsSupported ??= await _sensitiveContentService.isSupported();
         }
-        catch (global::Doroti.Framework.Services.PlatformException e)
+        catch (PlatformException e)
         {
             _contentSensitivityIsSupported = false;
-            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: FlutterError.Create($"Call to check if setting content sensitivity is supported on the current platform failed unexpectedly, so it is assumed to be unsupported: {e}}}"), library: "widget library", stack: (e.stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(e.stacktrace!)));
+            FlutterError.reportError(new FlutterErrorDetails(exception: FlutterError.Create($"Call to check if setting content sensitivity is supported on the current platform failed unexpectedly, so it is assumed to be unsupported: {e}}}"), library: "widget library", stack: (e.stacktrace is null) ? new System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(e.stacktrace!)));
         }
         if (!DartRuntimePrimitives.RequireValue(_contentSensitivityIsSupported))
         {
@@ -160,10 +160,10 @@ public class SensitiveContentHost
             catch (NotSupportedException eLocal)
             {
                 _fallbackContentSensitivitySetting = ContentSensitivity.notSensitive;
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: FlutterError.Create($"Unknown content sensitivity set in the Android embedding or by default: {eLocal}}}"), library: "widget library", stack: DartRuntimePrimitives.StackTraceFrom(eLocal)));
+                FlutterError.reportError(new FlutterErrorDetails(exception: FlutterError.Create($"Unknown content sensitivity set in the Android embedding or by default: {eLocal}}}"), library: "widget library", stack: DartRuntimePrimitives.StackTraceFrom(eLocal)));
             }
         }
-        global::Doroti.Framework.Services.ContentSensitivity? contentSensitivityBasedOnWidgetCountsBeforeRegister = _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts ?? _fallbackContentSensitivitySetting;
+        ContentSensitivity? contentSensitivityBasedOnWidgetCountsBeforeRegister = _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts ?? _fallbackContentSensitivitySetting;
         _contentSensitivitySetting.addWidgetWithContentSensitivity(desiredSensitivity);
         if (Equals(contentSensitivityBasedOnWidgetCountsBeforeRegister, _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts))
         {
@@ -173,25 +173,25 @@ public class SensitiveContentHost
         {
             await _sensitiveContentService.setContentSensitivity(DartRuntimePrimitives.RequireValue(_contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts));
         }
-        catch (global::Doroti.Framework.Services.PlatformException eAlternate)
+        catch (PlatformException eAlternate)
         {
-            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: FlutterError.Create($"Attempt to set {desiredSensitivity} sensitivity failed: {eAlternate}}}"), library: "widget library", stack: (eAlternate.stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(eAlternate.stacktrace!)));
+            FlutterError.reportError(new FlutterErrorDetails(exception: FlutterError.Create($"Attempt to set {desiredSensitivity} sensitivity failed: {eAlternate}}}"), library: "widget library", stack: (eAlternate.stacktrace is null) ? new System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(eAlternate.stacktrace!)));
         }
     }
 
-    public static async Future unregister(global::Doroti.Framework.Services.ContentSensitivity widgetSensitivity)
+    public static async Future unregister(ContentSensitivity widgetSensitivity)
     {
         await instance._unregister(widgetSensitivity);
         return;
     }
 
-    internal async virtual Future _unregister(global::Doroti.Framework.Services.ContentSensitivity widgetSensitivity)
+    internal async virtual Future _unregister(ContentSensitivity widgetSensitivity)
     {
         if (_contentSensitivityIsSupported != true)
         {
             return;
         }
-        global::Doroti.Framework.Services.ContentSensitivity contentSensitivityBasedOnWidgetCountsBeforeUnregister = DartRuntimePrimitives.RequireValue(_contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts);
+        ContentSensitivity contentSensitivityBasedOnWidgetCountsBeforeUnregister = DartRuntimePrimitives.RequireValue(_contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts);
         _contentSensitivitySetting.removeWidgetWithContentSensitivity(widgetSensitivity);
         if (!_contentSensitivitySetting.hasWidgets)
         {
@@ -203,22 +203,22 @@ public class SensitiveContentHost
             {
                 await _sensitiveContentService.setContentSensitivity(DartRuntimePrimitives.RequireValue(_fallbackContentSensitivitySetting));
             }
-            catch (global::Doroti.Framework.Services.PlatformException e)
+            catch (PlatformException e)
             {
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: FlutterError.Create($"Attempted to set {_fallbackContentSensitivitySetting} sensitivity failed: {e}}}"), library: "widget library", stack: (e.stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(e.stacktrace!)));
+                FlutterError.reportError(new FlutterErrorDetails(exception: FlutterError.Create($"Attempted to set {_fallbackContentSensitivitySetting} sensitivity failed: {e}}}"), library: "widget library", stack: (e.stacktrace is null) ? new System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(e.stacktrace!)));
             }
             return;
         }
-        global::Doroti.Framework.Services.ContentSensitivity contentSensitivityToRestore = DartRuntimePrimitives.RequireValue(_contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts);
+        ContentSensitivity contentSensitivityToRestore = DartRuntimePrimitives.RequireValue(_contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts);
         if (!Equals(contentSensitivityToRestore, contentSensitivityBasedOnWidgetCountsBeforeUnregister))
         {
             try
             {
                 await _sensitiveContentService.setContentSensitivity(contentSensitivityToRestore);
             }
-            catch (global::Doroti.Framework.Services.PlatformException eLocal)
+            catch (PlatformException eLocal)
             {
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: FlutterError.Create($"Attempted to set {_fallbackContentSensitivitySetting} sensitivity failed: {eLocal}}}"), library: "widget library", stack: (eLocal.stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(eLocal.stacktrace!)));
+                FlutterError.reportError(new FlutterErrorDetails(exception: FlutterError.Create($"Attempted to set {_fallbackContentSensitivitySetting} sensitivity failed: {eLocal}}}"), library: "widget library", stack: (eLocal.stacktrace is null) ? new System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(eLocal.stacktrace!)));
             }
         }
     }
@@ -227,10 +227,10 @@ public class SensitiveContentHost
 
 public class SensitiveContent : StatefulWidget
 {
-    public virtual global::Doroti.Framework.Services.ContentSensitivity sensitivity { get; private set; } = default!;
+    public virtual ContentSensitivity sensitivity { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public SensitiveContent(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Services.ContentSensitivity sensitivity = default!, Widget child = default!) : base(key: key)
+    public SensitiveContent(Key? key = null, ContentSensitivity sensitivity = default!, Widget child = default!) : base(key: key)
     {
         this.sensitivity = sensitivity;
         this.child = child;
@@ -253,12 +253,12 @@ internal class _SensitiveContentState__sensitive_content : State<SensitiveConten
     {
         DartRuntimePrimitives.Ignore(SensitiveContentHost.unregister(widget.sensitivity).catchError((exception, stack) =>
         {
-            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while unregistering sensitive content")));
+            FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new ErrorDescription("while unregistering sensitive content")));
         }));
         base.dispose();
     }
 
-    internal async virtual Future _reregisterWidget(global::Doroti.Framework.Services.ContentSensitivity oldSensitivity, global::Doroti.Framework.Services.ContentSensitivity newSensitivity)
+    internal async virtual Future _reregisterWidget(ContentSensitivity oldSensitivity, ContentSensitivity newSensitivity)
     {
         await SensitiveContentHost.register(newSensitivity);
         await SensitiveContentHost.unregister(oldSensitivity);

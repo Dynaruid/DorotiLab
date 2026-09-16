@@ -38,7 +38,7 @@ public enum ScrollbarOrientation
     bottom
 }
 
-public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifier
+public class ScrollbarPainter : ChangeNotifier
 {
     internal virtual Color _color { get; set; } = default!;
     internal virtual Color _trackColor { get; set; } = default!;
@@ -46,30 +46,30 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
     internal virtual Radius? _trackRadius { get; set; } = default;
     internal virtual TextDirection? _textDirection { get; set; } = default;
     internal virtual double _thickness { get; set; } = default!;
-    public virtual global::Doroti.Framework.Animation.Animation<double> fadeoutOpacityAnimation { get; private set; } = default!;
+    public virtual Animation<double> fadeoutOpacityAnimation { get; private set; } = default!;
     internal virtual double _mainAxisMargin { get; set; } = default!;
     internal virtual double _crossAxisMargin { get; set; } = default!;
     internal virtual Radius? _radius { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.OutlinedBorder? _shape { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry _padding { get; set; } = default!;
+    internal virtual OutlinedBorder? _shape { get; set; } = default;
+    internal virtual EdgeInsetsGeometry _padding { get; set; } = default!;
     internal virtual double _minLength { get; set; } = default!;
     internal virtual double _minOverscrollLength { get; set; } = default!;
     internal virtual ScrollbarOrientation? _scrollbarOrientation { get; set; } = default;
     internal virtual bool _ignorePointer { get; set; } = default!;
     internal virtual Rect? _trackRect { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.EdgeInsets? _resolvedPadding { get; set; } = default;
+    internal virtual EdgeInsets? _resolvedPadding { get; set; } = default;
     internal virtual Rect? _thumbRect { get; set; } = default;
     internal virtual double _thumbOffset { get; set; } = default!;
     internal virtual double _thumbExtent { get; set; } = default!;
     internal virtual ScrollMetrics? _lastMetrics { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.AxisDirection? _lastAxisDirection { get; set; } = default;
+    internal virtual AxisDirection? _lastAxisDirection { get; set; } = default;
 
-    public ScrollbarPainter(Color color, global::Doroti.Framework.Animation.Animation<double> fadeoutOpacityAnimation, Color trackColor = default!, Color trackBorderColor = default!, TextDirection? textDirection = null, double? thickness = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, double mainAxisMargin = 0.0, double crossAxisMargin = 0.0, Radius? radius = null, Radius? trackRadius = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, double? minLength = null, double? minOverscrollLength = null, ScrollbarOrientation? scrollbarOrientation = null, bool ignorePointer = false)
+    public ScrollbarPainter(Color color, Animation<double> fadeoutOpacityAnimation, Color trackColor = default!, Color trackBorderColor = default!, TextDirection? textDirection = null, double? thickness = null, EdgeInsetsGeometry padding = default!, double mainAxisMargin = 0.0, double crossAxisMargin = 0.0, Radius? radius = null, Radius? trackRadius = null, OutlinedBorder? shape = null, double? minLength = null, double? minOverscrollLength = null, ScrollbarOrientation? scrollbarOrientation = null, bool ignorePointer = false)
     {
         Color __trackColor = trackColor ?? new Color(0x00000000);
         Color __trackBorderColor = trackBorderColor ?? new Color(0x00000000);
         double __thickness = thickness ?? ScrollbarLibrary._kScrollbarThickness;
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? EdgeInsets.zero;
+        EdgeInsetsGeometry __padding = padding ?? EdgeInsets.zero;
         double __minLength = minLength ?? ScrollbarLibrary._kMinThumbExtent;
         this.fadeoutOpacityAnimation = fadeoutOpacityAnimation;
         _color = color;
@@ -97,7 +97,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         System.Diagnostics.Debug.Assert((__padding is not EdgeInsetsDirectional) || (textDirection is not null));
     }
 
-    public virtual global::Doroti.Ui.Color color
+    public virtual Color color
     {
         get => _color;
         set
@@ -111,7 +111,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Ui.Color trackColor
+    public virtual Color trackColor
     {
         get => _trackColor;
         set
@@ -125,7 +125,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Ui.Color trackBorderColor
+    public virtual Color trackBorderColor
     {
         get => _trackBorderColor;
         set
@@ -139,7 +139,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Ui.Radius? trackRadius
+    public virtual Radius? trackRadius
     {
         get => _trackRadius;
         set
@@ -153,7 +153,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Ui.TextDirection? textDirection
+    public virtual TextDirection? textDirection
     {
         get => _textDirection;
         set
@@ -211,7 +211,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Ui.Radius? radius
+    public virtual Radius? radius
     {
         get => _radius;
         set
@@ -226,7 +226,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder? shape
+    public virtual OutlinedBorder? shape
     {
         get => _shape;
         set
@@ -241,7 +241,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding
+    public virtual EdgeInsetsGeometry padding
     {
         get => _padding;
         set
@@ -368,7 +368,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             }, () => (object?)$"The given ScrollbarOrientation: {orientation} is incompatible with the " + $"current AxisDirection: {_lastAxisDirection}.");
     }
 
-    public virtual void update(ScrollMetrics metrics, global::Doroti.Framework.Painting.AxisDirection axisDirection)
+    public virtual void update(ScrollMetrics metrics, AxisDirection axisDirection)
     {
         if ((_lastMetrics is not null) && (_lastMetrics!.extentBefore == metrics.extentBefore) && (_lastMetrics!.extentInside == metrics.extentInside) && (_lastMetrics!.extentAfter == metrics.extentAfter) && Equals(_lastAxisDirection, axisDirection))
         {
@@ -390,13 +390,13 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         radius = nextRadius;
     }
 
-    internal virtual global::Doroti.Ui.Paint _paintThumb
+    internal virtual Paint _paintThumb
     {
         get
         {
             return ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = color.withOpacity(color.opacity * fadeoutOpacityAnimation.value);
     return __cascade;
 }))();
@@ -408,13 +408,13 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Paint _paintTrack(bool isBorder = false)
+    internal virtual Paint _paintTrack(bool isBorder = false)
     {
         if (isBorder)
         {
             return ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = trackBorderColor.withOpacity(trackBorderColor.opacity * fadeoutOpacityAnimation.value);
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = 1.0;
@@ -423,7 +423,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         }
         return ((Func<Paint>)(() =>
 {
-    var __cascade = new global::Doroti.Ui.Paint();
+    var __cascade = new Paint();
     __cascade.color = trackColor.withOpacity(trackColor.opacity * fadeoutOpacityAnimation.value);
     return __cascade;
 }))();
@@ -435,61 +435,61 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         DartRuntimePrimitives.Assert(() => textDirection is not null, () => (object?)"A TextDirection must be provided before a Scrollbar can be painted.");
         double x = default!;
         double y = default!;
-        global::Doroti.Ui.Size thumbSize = default!;
-        global::Doroti.Ui.Size trackSize = default!;
-        global::Doroti.Ui.Offset trackOffset = default!;
-        global::Doroti.Ui.Offset borderStart = default!;
-        global::Doroti.Ui.Offset borderEnd = default!;
+        Size thumbSize = default!;
+        Size trackSize = default!;
+        Offset trackOffset = default!;
+        Offset borderStart = default!;
+        Offset borderEnd = default!;
         _debugAssertIsValidOrientation(_resolvedOrientation);
         switch (_resolvedOrientation)
         {
             case ScrollbarOrientation.left:
                 {
-                    thumbSize = new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
-                    trackSize = new global::Doroti.Ui.Size(thickness + (2L * crossAxisMargin), _trackExtent);
+                    thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
+                    trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
                     x = crossAxisMargin + _resolvedPadding!.left;
                     y = _thumbOffset;
-                    trackOffset = new global::Doroti.Ui.Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
-                    borderStart = trackOffset + new global::Doroti.Ui.Offset(trackSize.width, 0.0);
-                    borderEnd = new global::Doroti.Ui.Offset(trackOffset.dx + trackSize.width, trackOffset.dy + _trackExtent);
+                    trackOffset = new Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
+                    borderStart = trackOffset + new Offset(trackSize.width, 0.0);
+                    borderEnd = new Offset(trackOffset.dx + trackSize.width, trackOffset.dy + _trackExtent);
                     break;
                 }
             case ScrollbarOrientation.right:
                 {
-                    thumbSize = new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
-                    trackSize = new global::Doroti.Ui.Size(thickness + (2L * crossAxisMargin), _trackExtent);
+                    thumbSize = new Size(DartRuntimePrimitives.RequireValue(thickness), _thumbExtent);
+                    trackSize = new Size(thickness + (2L * crossAxisMargin), _trackExtent);
                     x = size.width - thickness - crossAxisMargin - _resolvedPadding!.right;
                     y = _thumbOffset;
-                    trackOffset = new global::Doroti.Ui.Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
+                    trackOffset = new Offset(x - crossAxisMargin, _leadingTrackMainAxisOffset);
                     borderStart = trackOffset;
-                    borderEnd = new global::Doroti.Ui.Offset(trackOffset.dx, trackOffset.dy + _trackExtent);
+                    borderEnd = new Offset(trackOffset.dx, trackOffset.dy + _trackExtent);
                     break;
                 }
             case ScrollbarOrientation.top:
                 {
-                    thumbSize = new global::Doroti.Ui.Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
-                    trackSize = new global::Doroti.Ui.Size(_trackExtent, thickness + (2L * crossAxisMargin));
+                    thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
+                    trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
                     x = _thumbOffset;
                     y = crossAxisMargin + _resolvedPadding!.top;
-                    trackOffset = new global::Doroti.Ui.Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
-                    borderStart = trackOffset + new global::Doroti.Ui.Offset(0.0, trackSize.height);
-                    borderEnd = new global::Doroti.Ui.Offset(trackOffset.dx + _trackExtent, trackOffset.dy + trackSize.height);
+                    trackOffset = new Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
+                    borderStart = trackOffset + new Offset(0.0, trackSize.height);
+                    borderEnd = new Offset(trackOffset.dx + _trackExtent, trackOffset.dy + trackSize.height);
                     break;
                 }
             case ScrollbarOrientation.bottom:
                 {
-                    thumbSize = new global::Doroti.Ui.Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
-                    trackSize = new global::Doroti.Ui.Size(_trackExtent, thickness + (2L * crossAxisMargin));
+                    thumbSize = new Size(_thumbExtent, DartRuntimePrimitives.RequireValue(thickness));
+                    trackSize = new Size(_trackExtent, thickness + (2L * crossAxisMargin));
                     x = _thumbOffset;
                     y = size.height - thickness - crossAxisMargin - _resolvedPadding!.bottom;
-                    trackOffset = new global::Doroti.Ui.Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
+                    trackOffset = new Offset(_leadingTrackMainAxisOffset, y - crossAxisMargin);
                     borderStart = trackOffset;
-                    borderEnd = new global::Doroti.Ui.Offset(trackOffset.dx + _trackExtent, trackOffset.dy);
+                    borderEnd = new Offset(trackOffset.dx + _trackExtent, trackOffset.dy);
                     break;
                 }
         }
         _trackRect = trackOffset & trackSize;
-        _thumbRect = new global::Doroti.Ui.Offset(x, y) & thumbSize;
+        _thumbRect = new Offset(x, y) & thumbSize;
         if (fadeoutOpacityAnimation.value != 0.0)
         {
             if (trackRadius is null)
@@ -518,7 +518,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             }
             else
             {
-                global::Doroti.Ui.Path outerPath = shape!.getOuterPath(DartRuntimePrimitives.RequireValue(_thumbRect));
+                Path outerPath = shape!.getOuterPath(DartRuntimePrimitives.RequireValue(_thumbRect));
                 canvas.drawPath(outerPath, _paintThumb);
             }
             shape!.paint(canvas, DartRuntimePrimitives.RequireValue(_thumbRect));
@@ -601,8 +601,8 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         {
             return false;
         }
-        global::Doroti.Ui.Rect interactiveRect = DartRuntimePrimitives.RequireValue(_trackRect);
-        global::Doroti.Ui.Rect paddedRect = interactiveRect.expandToInclude(Rect.fromCircle(center: DartRuntimePrimitives.RequireValue(_thumbRect).center, radius: ScrollbarLibrary._kMinInteractiveSize / 2L));
+        Rect interactiveRect = DartRuntimePrimitives.RequireValue(_trackRect);
+        Rect paddedRect = interactiveRect.expandToInclude(Rect.fromCircle(center: DartRuntimePrimitives.RequireValue(_thumbRect).center, radius: ScrollbarLibrary._kMinInteractiveSize / 2L));
         if (fadeoutOpacityAnimation.value == 0.0)
         {
             if (forHover && Equals(kind, PointerDeviceKind.mouse))
@@ -654,7 +654,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    global::Doroti.Ui.Rect touchThumbRect = DartRuntimePrimitives.RequireValue(_thumbRect).expandToInclude(Rect.fromCircle(center: DartRuntimePrimitives.RequireValue(_thumbRect).center, radius: ScrollbarLibrary._kMinInteractiveSize / 2L));
+                    Rect touchThumbRect = DartRuntimePrimitives.RequireValue(_thumbRect).expandToInclude(Rect.fromCircle(center: DartRuntimePrimitives.RequireValue(_thumbRect).center, radius: ScrollbarLibrary._kMinInteractiveSize / 2L));
                     return touchThumbRect.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position)));
                 }
             case PointerDeviceKind.mouse:
@@ -676,8 +676,8 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool shouldRebuildSemantics(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
-    public virtual global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>>(null);
+    public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
+    public virtual Func<Size, List<CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<Func<Size, List<CustomPainterSemantics>>>(null);
     public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
     public override void dispose()
     {
@@ -692,7 +692,7 @@ public class RawScrollbar : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual ScrollController? controller { get; private set; }
     public virtual bool? thumbVisibility { get; private set; }
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder? shape { get; private set; }
+    public virtual OutlinedBorder? shape { get; private set; }
     public virtual Radius? radius { get; private set; }
     public virtual double? thickness { get; private set; }
     public virtual Color? thumbColor { get; private set; }
@@ -705,19 +705,19 @@ public class RawScrollbar : StatefulWidget
     public virtual Duration fadeDuration { get; private set; } = default!;
     public virtual Duration timeToFade { get; private set; } = default!;
     public virtual Duration pressDuration { get; private set; } = default!;
-    public virtual global::System.Func<ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
+    public virtual Func<ScrollNotification, bool> notificationPredicate { get; private set; } = default!;
     public virtual bool? interactive { get; private set; }
     public virtual ScrollbarOrientation? scrollbarOrientation { get; private set; }
     public virtual double mainAxisMargin { get; private set; } = default!;
     public virtual double crossAxisMargin { get; private set; } = default!;
-    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual EdgeInsetsGeometry? padding { get; private set; }
 
-    public RawScrollbar(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, ScrollController? controller = null, bool? thumbVisibility = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, Radius? radius = null, double? thickness = null, Color? thumbColor = null, double? minThumbLength = null, double? minOverscrollLength = null, bool? trackVisibility = null, Radius? trackRadius = null, Color? trackColor = null, Color? trackBorderColor = null, Duration? fadeDuration = null, Duration? timeToFade = null, Duration pressDuration = default, global::System.Func<ScrollNotification, bool> notificationPredicate = default!, bool? interactive = null, ScrollbarOrientation? scrollbarOrientation = null, double mainAxisMargin = 0.0, double crossAxisMargin = 0.0, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null) : base(key: key)
+    public RawScrollbar(Key? key = null, Widget child = default!, ScrollController? controller = null, bool? thumbVisibility = null, OutlinedBorder? shape = null, Radius? radius = null, double? thickness = null, Color? thumbColor = null, double? minThumbLength = null, double? minOverscrollLength = null, bool? trackVisibility = null, Radius? trackRadius = null, Color? trackColor = null, Color? trackBorderColor = null, Duration? fadeDuration = null, Duration? timeToFade = null, Duration pressDuration = default, Func<ScrollNotification, bool> notificationPredicate = default!, bool? interactive = null, ScrollbarOrientation? scrollbarOrientation = null, double mainAxisMargin = 0.0, double crossAxisMargin = 0.0, EdgeInsetsGeometry? padding = null) : base(key: key)
     {
         double __minThumbLength = minThumbLength ?? ScrollbarLibrary._kMinThumbExtent;
         Duration __fadeDuration = fadeDuration ?? ScrollbarLibrary._kScrollbarFadeDuration;
         Duration __timeToFade = timeToFade ?? ScrollbarLibrary._kScrollbarTimeToFade;
-        global::System.Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
+        Func<ScrollNotification, bool> __notificationPredicate = notificationPredicate ?? Scroll_notificationLibrary.defaultScrollNotificationPredicate;
         this.child = child;
         this.controller = controller;
         this.thumbVisibility = thumbVisibility;
@@ -758,18 +758,18 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     internal virtual ScrollController? _cachedController { get; set; } = default;
     internal virtual Timer? _fadeoutTimer { get; set; } = default;
     internal virtual bool _isDisposed { get; set; }
-    internal virtual global::Doroti.Framework.Animation.AnimationController _fadeoutAnimationController { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Animation.CurvedAnimation _fadeoutOpacityAnimation { get; set; } = default!;
+    internal virtual AnimationController _fadeoutAnimationController { get; set; } = default!;
+    internal virtual CurvedAnimation _fadeoutOpacityAnimation { get; set; } = default!;
     internal virtual GlobalKey<IState> _scrollbarPainterKey { get; private set; } = GlobalKey<IState>.Create();
     internal virtual bool _hoverIsActive { get; set; } = false;
-    internal virtual global::Doroti.Framework.Gestures.Drag? _thumbDrag { get; set; } = default;
+    internal virtual Drag? _thumbDrag { get; set; } = default;
     internal virtual bool _maxScrollExtentPermitsScrolling { get; set; } = false;
     internal virtual ScrollHoldController? _thumbHold { get; set; } = default;
-    internal virtual global::Doroti.Framework.Painting.Axis? _axis { get; set; } = default;
+    internal virtual Axis? _axis { get; set; } = default;
     internal virtual GlobalKey<RawGestureDetectorState> _gestureDetectorKey { get; private set; } = GlobalKey<RawGestureDetectorState>.Create();
     public virtual ScrollbarPainter scrollbarPainter { get; private set; } = default!;
-    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual HashSet<Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     internal virtual ScrollController? _effectiveScrollController => DartRuntimePrimitives.ConvertValue<ScrollController>(widget.controller ?? PrimaryScrollController.maybeOf(context));
     public virtual bool showScrollbar => DartRuntimePrimitives.ConvertValue<bool>(widget.thumbVisibility ?? false);
@@ -778,14 +778,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     public override void initState()
     {
         base.initState();
-        _fadeoutAnimationController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        _fadeoutAnimationController = ((Func<AnimationController>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this, duration: widget.fadeDuration);
+    var __cascade = new AnimationController(vsync: this, duration: widget.fadeDuration);
     __cascade.addStatusListener(_validateInteractions);
     return __cascade;
 }))();
-        _fadeoutOpacityAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _fadeoutAnimationController, curve: Curves.fastOutSlowIn);
-        scrollbarPainter = new ScrollbarPainter(color: widget.thumbColor ?? new global::Doroti.Ui.Color(1723645116L), fadeoutOpacityAnimation: _fadeoutOpacityAnimation, thickness: widget.thickness ?? ScrollbarLibrary._kScrollbarThickness, radius: widget.radius, trackRadius: widget.trackRadius, scrollbarOrientation: widget.scrollbarOrientation, mainAxisMargin: widget.mainAxisMargin, shape: widget.shape, crossAxisMargin: widget.crossAxisMargin, minLength: widget.minThumbLength, minOverscrollLength: widget.minOverscrollLength ?? widget.minThumbLength);
+        _fadeoutOpacityAnimation = new CurvedAnimation(parent: _fadeoutAnimationController, curve: Curves.fastOutSlowIn);
+        scrollbarPainter = new ScrollbarPainter(color: widget.thumbColor ?? new Color(1723645116L), fadeoutOpacityAnimation: _fadeoutOpacityAnimation, thickness: widget.thickness ?? ScrollbarLibrary._kScrollbarThickness, radius: widget.radius, trackRadius: widget.trackRadius, scrollbarOrientation: widget.scrollbarOrientation, mainAxisMargin: widget.mainAxisMargin, shape: widget.shape, crossAxisMargin: widget.crossAxisMargin, minLength: widget.minThumbLength, minOverscrollLength: widget.minOverscrollLength ?? widget.minThumbLength);
     }
 
     public override void didChangeDependencies()
@@ -808,7 +808,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _validateInteractions(global::Doroti.Framework.Animation.AnimationStatus status)
+    internal virtual void _validateInteractions(AnimationStatus status)
     {
         if (AnimationStatusMembers.isDismissed(status))
         {
@@ -857,7 +857,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
             {
                 if (!scrollController!.hasClients)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The Scrollbar's ScrollController has no ScrollPosition attached."), new global::Doroti.Framework.Foundation.ErrorDescription("A Scrollbar cannot be painted without a ScrollPosition. "), new global::Doroti.Framework.Foundation.ErrorHint($"The Scrollbar attempted to use the {controllerForError}. This " + "ScrollController should be associated with the ScrollView that " + "the Scrollbar is being applied to.") }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("The Scrollbar's ScrollController has no ScrollPosition attached."), new ErrorDescription("A Scrollbar cannot be painted without a ScrollPosition. "), new ErrorHint($"The Scrollbar attempted to use the {controllerForError}. This " + "ScrollController should be associated with the ScrollView that " + "the Scrollbar is being applied to.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -874,7 +874,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                     {
                         throw;
                     }
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"The {controllerForError} is attached to more than one ScrollPosition."), new global::Doroti.Framework.Foundation.ErrorDescription("The Scrollbar requires a single ScrollPosition in order to be painted."), new global::Doroti.Framework.Foundation.ErrorHint($"When {@when}, the associated ScrollController must only have one " + "ScrollPosition attached.") }));
+                    throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {controllerForError} is attached to more than one ScrollPosition."), new ErrorDescription("The Scrollbar requires a single ScrollPosition in order to be painted."), new ErrorHint($"When {@when}, the associated ScrollController must only have one " + "ScrollPosition attached.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -885,14 +885,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
 
     public virtual void updateScrollbarPainter()
     {
-        global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
+        TextDirection textDirectionLocal = Directionality.of(context);
         DartRuntimePrimitives.Ignore(((Func<ScrollbarPainter>)(() =>
 {
     var __cascade = scrollbarPainter;
-    __cascade.color = widget.thumbColor ?? new global::Doroti.Ui.Color(1723645116L);
+    __cascade.color = widget.thumbColor ?? new Color(1723645116L);
     __cascade.trackRadius = widget.trackRadius;
-    __cascade.trackColor = _showTrack ? (widget.trackColor ?? new global::Doroti.Ui.Color(134217728L)) : new global::Doroti.Ui.Color(0L);
-    __cascade.trackBorderColor = _showTrack ? (widget.trackBorderColor ?? new global::Doroti.Ui.Color(436207616L)) : new global::Doroti.Ui.Color(0L);
+    __cascade.trackColor = _showTrack ? (widget.trackColor ?? new Color(134217728L)) : new Color(0L);
+    __cascade.trackBorderColor = _showTrack ? (widget.trackBorderColor ?? new Color(436207616L)) : new Color(0L);
     __cascade.textDirection = textDirectionLocal;
     __cascade.thickness = widget.thickness ?? ScrollbarLibrary._kScrollbarThickness;
     __cascade.radius = widget.radius;
@@ -949,7 +949,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         }
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis? getScrollbarDirection() => _axis;
+    public virtual Axis? getScrollbarDirection() => _axis;
     internal virtual void _disposeThumbDrag()
     {
         _thumbDrag = null;
@@ -1041,7 +1041,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     public virtual void handleThumbPressStart(Offset localPosition)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
-        global::Doroti.Framework.Painting.Axis? direction = getScrollbarDirection();
+        Axis? direction = getScrollbarDirection();
         if (direction is null)
         {
             return;
@@ -1050,8 +1050,8 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         _fadeoutAnimationController.forward();
         DartRuntimePrimitives.Assert(() => _thumbDrag is null);
         ScrollPosition positionLocal = _cachedController!.position;
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
-        var details = new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localPosition, globalPosition: renderBox.localToGlobal(localPosition));
+        var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
+        var details = new DragStartDetails(localPosition: localPosition, globalPosition: renderBox.localToGlobal(localPosition));
         _thumbDrag = positionLocal.drag(details, () => _disposeThumbDrag());
         DartRuntimePrimitives.Assert(() => _thumbDrag is not null);
         DartRuntimePrimitives.Assert(() => _thumbHold is null);
@@ -1072,7 +1072,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return;
         }
-        global::Doroti.Framework.Painting.Axis? direction = getScrollbarDirection();
+        Axis? direction = getScrollbarDirection();
         if (direction is null)
         {
             return;
@@ -1087,17 +1087,17 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return;
         }
-        global::Doroti.Ui.Offset deltaLocal = DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(primaryDeltaLocal), 0), Axis.vertical => new global::Doroti.Ui.Offset(0, DartRuntimePrimitives.RequireValue(primaryDeltaLocal)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
-        var scrollDetails = new global::Doroti.Framework.Gestures.DragUpdateDetails(delta: deltaLocal, primaryDelta: DartRuntimePrimitives.RequireValue(primaryDeltaLocal), globalPosition: renderBox.localToGlobal(localPosition), localPosition: localPosition);
+        Offset deltaLocal = DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => new Offset(DartRuntimePrimitives.RequireValue(primaryDeltaLocal), 0), Axis.vertical => new Offset(0, DartRuntimePrimitives.RequireValue(primaryDeltaLocal)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") };
+        var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
+        var scrollDetails = new DragUpdateDetails(delta: deltaLocal, primaryDelta: DartRuntimePrimitives.RequireValue(primaryDeltaLocal), globalPosition: renderBox.localToGlobal(localPosition), localPosition: localPosition);
         _thumbDrag!.update(scrollDetails);
         _lastDragUpdateOffset = localPosition;
     }
 
-    public virtual void handleThumbPressEnd(Offset localPosition, global::Doroti.Framework.Gestures.Velocity velocity)
+    public virtual void handleThumbPressEnd(Offset localPosition, Velocity velocity)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
-        global::Doroti.Framework.Painting.Axis? direction = getScrollbarDirection();
+        Axis? direction = getScrollbarDirection();
         if (direction is null)
         {
             return;
@@ -1110,10 +1110,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return;
         }
-        global::Doroti.Framework.Foundation.TargetPlatform platform = ScrollConfiguration.of(context).getPlatform(context);
-        global::Doroti.Framework.Gestures.Velocity adjustedVelocity = platform switch { TargetPlatform.iOS => -velocity, TargetPlatform.android => -velocity, _ => Velocity.zero };
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
-        var details = new global::Doroti.Framework.Gestures.DragEndDetails(localPosition: localPosition, globalPosition: renderBox.localToGlobal(localPosition), velocity: adjustedVelocity, primaryVelocity: DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => adjustedVelocity.pixelsPerSecond.dx, Axis.vertical => adjustedVelocity.pixelsPerSecond.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        TargetPlatform platform = ScrollConfiguration.of(context).getPlatform(context);
+        Velocity adjustedVelocity = platform switch { TargetPlatform.iOS => -velocity, TargetPlatform.android => -velocity, _ => Velocity.zero };
+        var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
+        var details = new DragEndDetails(localPosition: localPosition, globalPosition: renderBox.localToGlobal(localPosition), velocity: adjustedVelocity, primaryVelocity: DartRuntimePrimitives.RequireValue(direction) switch { Axis.horizontal => adjustedVelocity.pixelsPerSecond.dx, Axis.vertical => adjustedVelocity.pixelsPerSecond.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         _thumbDrag?.end(details);
         DartRuntimePrimitives.Assert(() => _thumbDrag is null);
         _startDragScrollbarAxisOffset = null;
@@ -1122,7 +1122,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         _cachedController = null;
     }
 
-    public virtual void handleTrackTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
+    public virtual void handleTrackTapDown(TapDownDetails details)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
         _cachedController = _effectiveScrollController;
@@ -1131,7 +1131,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return;
         }
-        global::Doroti.Framework.Painting.AxisDirection scrollDirection = default!;
+        AxisDirection scrollDirection = default!;
         switch (Basic_typesLibrary.axisDirectionToAxis(positionLocal.axisDirection))
         {
             case Axis.vertical:
@@ -1166,7 +1166,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         DartRuntimePrimitives.Ignore(_cachedController!.position.moveTo(_cachedController!.position.pixels + scrollIncrement, duration: Duration.Create(milliseconds: 100L), curve: Curves.easeInOut));
     }
 
-    internal virtual bool _shouldUpdatePainter(global::Doroti.Framework.Painting.Axis notificationAxis)
+    internal virtual bool _shouldUpdatePainter(Axis notificationAxis)
     {
         ScrollController? scrollController = _effectiveScrollController;
         if (scrollController is null)
@@ -1260,29 +1260,29 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleThumbDragDown(global::Doroti.Framework.Gestures.DragDownDetails details)
+    internal virtual void _handleThumbDragDown(DragDownDetails details)
     {
         handleThumbPress();
     }
 
-    internal virtual global::Doroti.Ui.Offset _globalToScrollbar(Offset offset)
+    internal virtual Offset _globalToScrollbar(Offset offset)
     {
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
+        var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
         return renderBox.globalToLocal(offset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handleThumbDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
+    internal virtual void _handleThumbDragStart(DragStartDetails details)
     {
         handleThumbPressStart(_globalToScrollbar(details.globalPosition));
     }
 
-    internal virtual void _handleThumbDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
+    internal virtual void _handleThumbDragUpdate(DragUpdateDetails details)
     {
         handleThumbPressUpdate(_globalToScrollbar(details.globalPosition));
     }
 
-    internal virtual void _handleThumbDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
+    internal virtual void _handleThumbDragEnd(DragEndDetails details)
     {
         handleThumbPressEnd(_globalToScrollbar(details.globalPosition), details.velocity);
     }
@@ -1300,14 +1300,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         DartRuntimePrimitives.Assert(() => _thumbDrag is null);
     }
 
-    internal virtual void _initThumbDragGestureRecognizer(global::Doroti.Framework.Gestures.DragGestureRecognizer instance)
+    internal virtual void _initThumbDragGestureRecognizer(DragGestureRecognizer instance)
     {
         instance.onDown = _handleThumbDragDown;
         instance.onStart = _handleThumbDragStart;
         instance.onUpdate = _handleThumbDragUpdate;
         instance.onEnd = _handleThumbDragEnd;
         instance.onCancel = _handleThumbDragCancel;
-        instance.gestureSettings = new global::Doroti.Framework.Gestures.DeviceGestureSettings(touchSlop: 0);
+        instance.gestureSettings = new DeviceGestureSettings(touchSlop: 0);
         instance.dragStartBehavior = DragStartBehavior.down;
     }
 
@@ -1330,12 +1330,12 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
             {
                 case Axis.horizontal:
                     {
-                        gestures[typeof(_HorizontalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_HorizontalThumbDragGestureRecognizer__scrollbar>(() => new _HorizontalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((global::System.Action<global::Doroti.Framework.Gestures.DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.DragGestureRecognizer>(__arg0)));
+                        gestures[typeof(_HorizontalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_HorizontalThumbDragGestureRecognizer__scrollbar>(() => new _HorizontalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((System.Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
                         break;
                     }
                 case Axis.vertical:
                     {
-                        gestures[typeof(_VerticalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_VerticalThumbDragGestureRecognizer__scrollbar>(() => new _VerticalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((global::System.Action<global::Doroti.Framework.Gestures.DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.DragGestureRecognizer>(__arg0)));
+                        gestures[typeof(_VerticalThumbDragGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_VerticalThumbDragGestureRecognizer__scrollbar>(() => new _VerticalThumbDragGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: _scrollbarPainterKey), (__arg0) => ((System.Action<DragGestureRecognizer>)_initThumbDragGestureRecognizer)(DartRuntimePrimitives.ConvertValue<DragGestureRecognizer>(__arg0)));
                         break;
                     }
             }
@@ -1352,7 +1352,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return false;
         }
-        global::Doroti.Ui.Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
+        Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
         return scrollbarPainter.hitTestInteractive(localOffset, kind) && !scrollbarPainter.hitTestOnlyThumbInteractive(localOffset, kind);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1363,7 +1363,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return false;
         }
-        global::Doroti.Ui.Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
+        Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
         return scrollbarPainter.hitTestOnlyThumbInteractive(localOffset, kind);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1374,12 +1374,12 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return false;
         }
-        global::Doroti.Ui.Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
+        Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
         return scrollbarPainter.hitTestInteractive(localOffset, kind, forHover: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void handleHover(global::Doroti.Framework.Gestures.PointerHoverEvent @event)
+    public virtual void handleHover(Gestures.PointerHoverEvent @event)
     {
         if (isPointerOverScrollbar(@event.position, @event.kind, forHover: true))
         {
@@ -1397,13 +1397,13 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         }
     }
 
-    public virtual void handleHoverExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
+    public virtual void handleHoverExit(Gestures.PointerExitEvent @event)
     {
         _hoverIsActive = false;
         _maybeStartFadeoutTimer();
     }
 
-    internal virtual double _pointerSignalEventDelta(global::Doroti.Framework.Gestures.PointerScrollEvent @event)
+    internal virtual double _pointerSignalEventDelta(PointerScrollEvent @event)
     {
         DartRuntimePrimitives.Assert(() => _cachedController is not null);
         double delta = Equals(_cachedController!.position.axis, Axis.horizontal) ? @event.scrollDelta.dx : @event.scrollDelta.dy;
@@ -1422,11 +1422,11 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _handlePointerScroll(global::Doroti.Framework.Gestures.PointerEvent @event)
+    internal virtual void _handlePointerScroll(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => @event is global::Doroti.Framework.Gestures.PointerScrollEvent);
+        DartRuntimePrimitives.Assert(() => @event is PointerScrollEvent);
         _cachedController = _effectiveScrollController;
-        double delta = _pointerSignalEventDelta(((global::Doroti.Framework.Gestures.PointerScrollEvent?)@event)!);
+        double delta = _pointerSignalEventDelta(((PointerScrollEvent?)@event)!);
         double targetScrollOffset = _targetScrollOffsetForPointerScroll(delta);
         if ((delta != 0.0) && (targetScrollOffset != _cachedController!.position.pixels))
         {
@@ -1434,15 +1434,15 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         }
     }
 
-    internal virtual void _receivedPointerSignal(global::Doroti.Framework.Gestures.PointerSignalEvent @event)
+    internal virtual void _receivedPointerSignal(PointerSignalEvent @event)
     {
         _cachedController = _effectiveScrollController;
         if ((scrollbarPainter.hitTest(@event.localPosition) ?? false) && (_cachedController is not null) && _cachedController!.hasClients && ((_thumbDrag is null) || Foundation.ConstantsLibrary.kIsWeb))
         {
             ScrollPosition positionLocal = _cachedController!.position;
-            if (@event is global::Doroti.Framework.Gestures.PointerScrollEvent)
+            if (@event is PointerScrollEvent)
             {
-                global::Doroti.Framework.Gestures.PointerScrollEvent @event__as82127 = (global::Doroti.Framework.Gestures.PointerScrollEvent)@event;
+                PointerScrollEvent @event__as82127 = (PointerScrollEvent)@event;
                 if (!positionLocal.physics.shouldAcceptUserOffset(positionLocal))
                 {
                     return;
@@ -1451,14 +1451,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 double targetScrollOffset = _targetScrollOffsetForPointerScroll(delta);
                 if ((delta != 0.0) && (targetScrollOffset != positionLocal.pixels))
                 {
-                    GestureBinding.instance.pointerSignalResolver.register(@event__as82127, (__arg0) => ((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)_handlePointerScroll)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.PointerEvent>(__arg0)));
+                    GestureBinding.instance.pointerSignalResolver.register(@event__as82127, (__arg0) => ((System.Action<PointerEvent>)_handlePointerScroll)(DartRuntimePrimitives.ConvertValue<PointerEvent>(__arg0)));
                 }
             }
             else
             {
-                if (@event is global::Doroti.Framework.Gestures.PointerScrollInertiaCancelEvent)
+                if (@event is PointerScrollInertiaCancelEvent)
                 {
-                    global::Doroti.Framework.Gestures.PointerScrollInertiaCancelEvent @event__as82591 = (global::Doroti.Framework.Gestures.PointerScrollInertiaCancelEvent)@event;
+                    PointerScrollInertiaCancelEvent @event__as82591 = (PointerScrollInertiaCancelEvent)@event;
                     positionLocal.jumpTo(positionLocal.pixels);
                 }
             }
@@ -1477,11 +1477,11 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
             {
                 if (_tickers is not null)
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+                    foreach (Scheduler.Ticker ticker in _tickers!)
                     {
                         if (ticker.isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this} was disposed with an active Ticker."), new ErrorDescription($"{GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -1542,14 +1542,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual Scheduler.Ticker createTicker(System.Action<Duration> onTick)
     {
         if (_tickerModeNotifier is null)
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => _tickerModeNotifier is not null);
-        _tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
+        _tickers ??= new HashSet<Scheduler.Ticker>();
         TickerModeData values = _tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
@@ -1583,7 +1583,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             TickerModeData values = _tickerModeNotifier!.value;
             bool mutedLocal = !values.enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in _tickers!)
+            foreach (Scheduler.Ticker ticker in _tickers!)
             {
                 ticker.muted = mutedLocal;
                 ticker.forceFrames = values.forceFrames;
@@ -1593,7 +1593,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
+        ValueListenable<TickerModeData> newNotifier = TickerMode.getValuesNotifier(context);
         if (Equals(newNotifier, _tickerModeNotifier))
         {
             return;
@@ -1603,10 +1603,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         _tickerModeNotifier = newNotifier;
     }
 
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
+        properties.add(new DiagnosticsProperty<HashSet<Scheduler.Ticker>>("tickers", _tickers, description: (_tickers is not null) ? $"tracking {checked((long)_tickers!.Count)} ticker{((checked(_tickers!.Count) == 1L) ? "" : "s")}" : null, defaultValue: default));
     }
 
 }
@@ -1615,7 +1615,7 @@ public static partial class ScrollbarLibrary
 {
     internal static Offset _getLocalOffset(GlobalKey<IState> scrollbarPainterKey, Offset position)
     {
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)scrollbarPainterKey.currentContext!.findRenderObject()!)!;
+        var renderBox = ((RenderBox?)scrollbarPainterKey.currentContext!.findRenderObject()!)!;
         return renderBox.globalToLocal(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1623,7 +1623,7 @@ public static partial class ScrollbarLibrary
 
 public static partial class ScrollbarLibrary
 {
-    internal static bool _isThumbEvent(GlobalKey<IState> customPaintKey, global::Doroti.Framework.Gestures.PointerEvent @event)
+    internal static bool _isThumbEvent(GlobalKey<IState> customPaintKey, PointerEvent @event)
     {
         if (customPaintKey.currentContext is null)
         {
@@ -1631,7 +1631,7 @@ public static partial class ScrollbarLibrary
         }
         var customPaint = ((CustomPaint?)customPaintKey.currentContext!.widget)!;
         var painter = _ScrollbarCustomPainterAdapter.Unwrap(customPaint.foregroundPainter!);
-        global::Doroti.Ui.Offset localOffset = _getLocalOffset(customPaintKey, @event.position);
+        Offset localOffset = _getLocalOffset(customPaintKey, @event.position);
         return painter.hitTestOnlyThumbInteractive(localOffset, @event.kind);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1639,7 +1639,7 @@ public static partial class ScrollbarLibrary
 
 public static partial class ScrollbarLibrary
 {
-    internal static bool _isTrackEvent(GlobalKey<IState> customPaintKey, global::Doroti.Framework.Gestures.PointerEvent @event)
+    internal static bool _isTrackEvent(GlobalKey<IState> customPaintKey, PointerEvent @event)
     {
         if (customPaintKey.currentContext is null)
         {
@@ -1647,14 +1647,14 @@ public static partial class ScrollbarLibrary
         }
         var customPaint = ((CustomPaint?)customPaintKey.currentContext!.widget)!;
         var painter = _ScrollbarCustomPainterAdapter.Unwrap(customPaint.foregroundPainter!);
-        global::Doroti.Ui.Offset localOffset = _getLocalOffset(customPaintKey, @event.position);
-        global::Doroti.Ui.PointerDeviceKind kindLocal = @event.kind;
+        Offset localOffset = _getLocalOffset(customPaintKey, @event.position);
+        PointerDeviceKind kindLocal = @event.kind;
         return painter.hitTestInteractive(localOffset, kindLocal) && !painter.hitTestOnlyThumbInteractive(localOffset, kindLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-internal class _TrackTapGestureRecognizer__scrollbar : global::Doroti.Framework.Gestures.TapGestureRecognizer
+internal class _TrackTapGestureRecognizer__scrollbar : TapGestureRecognizer
 {
     internal virtual GlobalKey<IState> _customPaintKey { get; private set; } = default!;
 
@@ -1663,7 +1663,7 @@ internal class _TrackTapGestureRecognizer__scrollbar : global::Doroti.Framework.
         _customPaintKey = customPaintKey;
     }
 
-    public override bool isPointerAllowed(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
         return ScrollbarLibrary._isTrackEvent(_customPaintKey, @event) && base.isPointerAllowed(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1671,7 +1671,7 @@ internal class _TrackTapGestureRecognizer__scrollbar : global::Doroti.Framework.
 
 }
 
-internal class _VerticalThumbDragGestureRecognizer__scrollbar : global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer
+internal class _VerticalThumbDragGestureRecognizer__scrollbar : VerticalDragGestureRecognizer
 {
     internal virtual GlobalKey<IState> _customPaintKey { get; private set; } = default!;
 
@@ -1680,13 +1680,13 @@ internal class _VerticalThumbDragGestureRecognizer__scrollbar : global::Doroti.F
         _customPaintKey = customPaintKey;
     }
 
-    public override bool isPointerPanZoomAllowed(global::Doroti.Framework.Gestures.PointerPanZoomStartEvent @event)
+    public override bool isPointerPanZoomAllowed(PointerPanZoomStartEvent @event)
     {
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool isPointerAllowed(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
         return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event) && base.isPointerAllowed(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1694,7 +1694,7 @@ internal class _VerticalThumbDragGestureRecognizer__scrollbar : global::Doroti.F
 
 }
 
-internal class _HorizontalThumbDragGestureRecognizer__scrollbar : global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer
+internal class _HorizontalThumbDragGestureRecognizer__scrollbar : HorizontalDragGestureRecognizer
 {
     internal virtual GlobalKey<IState> _customPaintKey { get; private set; } = default!;
 
@@ -1703,13 +1703,13 @@ internal class _HorizontalThumbDragGestureRecognizer__scrollbar : global::Doroti
         _customPaintKey = customPaintKey;
     }
 
-    public override bool isPointerPanZoomAllowed(global::Doroti.Framework.Gestures.PointerPanZoomStartEvent @event)
+    public override bool isPointerPanZoomAllowed(PointerPanZoomStartEvent @event)
     {
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool isPointerAllowed(global::Doroti.Framework.Gestures.PointerDownEvent @event)
+    public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
         return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event) && base.isPointerAllowed(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1718,12 +1718,12 @@ internal class _HorizontalThumbDragGestureRecognizer__scrollbar : global::Doroti
 }
 
 
-internal sealed class _ScrollbarCustomPainterAdapter : global::Doroti.Framework.Rendering.CustomPainter
+internal sealed class _ScrollbarCustomPainterAdapter : CustomPainter
 {
     private readonly ScrollbarPainter _owner;
     internal _ScrollbarCustomPainterAdapter(ScrollbarPainter owner) : base(owner) => _owner = owner;
-    internal static ScrollbarPainter Unwrap(global::Doroti.Framework.Rendering.CustomPainter painter) => painter is _ScrollbarCustomPainterAdapter adapter ? adapter._owner : (ScrollbarPainter)(object)painter;
+    internal static ScrollbarPainter Unwrap(CustomPainter painter) => painter is _ScrollbarCustomPainterAdapter adapter ? adapter._owner : (ScrollbarPainter)(object)painter;
     public override void paint(Canvas canvas, Size size) => _owner.paint(canvas, size);
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => oldDelegate is not _ScrollbarCustomPainterAdapter other || _owner.shouldRepaint(other._owner);
+    public override bool shouldRepaint(CustomPainter oldDelegate) => oldDelegate is not _ScrollbarCustomPainterAdapter other || _owner.shouldRepaint(other._owner);
     public override bool? hitTest(Offset position) => _owner.hitTest(position);
 }

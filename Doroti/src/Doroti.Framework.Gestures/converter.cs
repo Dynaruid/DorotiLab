@@ -44,14 +44,14 @@ public abstract class PointerEventConverter
             {
                 return null;
             }
-            global::Doroti.Ui.Offset positionLocal = new global::Doroti.Ui.Offset(datum.physicalX, datum.physicalY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
-            global::Doroti.Ui.Offset deltaLocal = new global::Doroti.Ui.Offset(datum.physicalDeltaX, datum.physicalDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+            Offset positionLocal = new Offset(datum.physicalX, datum.physicalY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+            Offset deltaLocal = new Offset(datum.physicalDeltaX, datum.physicalDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
             double radiusMinorLocal = _toLogicalPixels(datum.radiusMinor, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
             double radiusMajorLocal = _toLogicalPixels(datum.radiusMajor, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
             double radiusMinLocal = _toLogicalPixels(datum.radiusMin, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
             double radiusMaxLocal = _toLogicalPixels(datum.radiusMax, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
             Duration timeStampLocal = datum.timeStamp;
-            global::Doroti.Ui.PointerDeviceKind kindLocal = datum.kind;
+            PointerDeviceKind kindLocal = datum.kind;
             switch (datum.signalKind ?? Dart_uiLibrary.PointerSignalKind.none)
             {
                 case Dart_uiLibrary.PointerSignalKind.none:
@@ -92,8 +92,8 @@ public abstract class PointerEventConverter
                                 }
                             case Dart_uiLibrary.PointerChange.panZoomUpdate:
                                 {
-                                    global::Doroti.Ui.Offset panLocal = new global::Doroti.Ui.Offset(datum.panX, datum.panY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
-                                    global::Doroti.Ui.Offset panDeltaLocal = new global::Doroti.Ui.Offset(datum.panDeltaX, datum.panDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                                    Offset panLocal = new Offset(datum.panX, datum.panY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                                    Offset panDeltaLocal = new Offset(datum.panDeltaX, datum.panDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
                                     return new PointerPanZoomUpdateEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), device: checked((long)datum.device), position: positionLocal, pan: panLocal, panDelta: panDeltaLocal, scale: datum.scale, rotation: datum.rotation, embedderId: checked((long)datum.embedderId), synthesized: datum.synthesized);
                                 }
                             case Dart_uiLibrary.PointerChange.panZoomEnd:
@@ -109,7 +109,7 @@ public abstract class PointerEventConverter
                         {
                             return null;
                         }
-                        global::Doroti.Ui.Offset scrollDeltaLocal = new global::Doroti.Ui.Offset(datum.scrollDeltaX, datum.scrollDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
+                        Offset scrollDeltaLocal = new Offset(datum.scrollDeltaX, datum.scrollDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio);
                         return new PointerScrollEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, kind: kindLocal, device: checked((long)datum.device), position: positionLocal, scrollDelta: scrollDeltaLocal, embedderId: checked((long)datum.embedderId), onRespond: datum.respond);
                     }
                 case Dart_uiLibrary.PointerSignalKind.scrollInertiaCancel:

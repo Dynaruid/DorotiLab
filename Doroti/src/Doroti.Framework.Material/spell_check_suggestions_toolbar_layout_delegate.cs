@@ -5,7 +5,7 @@ using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
 
-public class SpellCheckSuggestionsToolbarLayoutDelegate : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
+public class SpellCheckSuggestionsToolbarLayoutDelegate : SingleChildLayoutDelegate
 {
     public virtual Offset anchor { get; private set; } = default!;
 
@@ -14,7 +14,7 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : global::Doroti.Framewo
         this.anchor = anchor;
     }
 
-    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return constraints.loosen();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -22,11 +22,11 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : global::Doroti.Framewo
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        return new global::Doroti.Ui.Offset(TextSelectionToolbarLayoutDelegate.centerOn(anchor.dx, childSize.width, size.width), ((anchor.dy + childSize.height) > size.height) ? (size.height - childSize.height) : anchor.dy);
+        return new Offset(TextSelectionToolbarLayoutDelegate.centerOn(anchor.dx, childSize.width, size.width), ((anchor.dy + childSize.height) > size.height) ? (size.height - childSize.height) : anchor.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (SpellCheckSuggestionsToolbarLayoutDelegate)oldDelegate;
         return !Equals(anchor, __oldDelegate.anchor);

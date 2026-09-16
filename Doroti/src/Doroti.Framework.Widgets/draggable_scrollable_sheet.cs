@@ -7,10 +7,10 @@ namespace Doroti.Framework.Widgets;
 
 public delegate Widget ScrollableWidgetBuilder(BuildContext context, ScrollController scrollController);
 
-public class DraggableScrollableController : global::Doroti.Framework.Foundation.ChangeNotifier
+public class DraggableScrollableController : ChangeNotifier
 {
     internal virtual _DraggableScrollableSheetScrollController__draggable_scrollable_sheet? _attachedController { get; set; } = default;
-    internal virtual HashSet<global::Doroti.Framework.Animation.AnimationController> _animationControllers { get; private set; } = new HashSet<global::Doroti.Framework.Animation.AnimationController>();
+    internal virtual HashSet<AnimationController> _animationControllers { get; private set; } = new HashSet<AnimationController>();
 
     public DraggableScrollableController()
     {
@@ -47,7 +47,7 @@ public class DraggableScrollableController : global::Doroti.Framework.Foundation
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future animateTo(double size, Duration duration, global::Doroti.Framework.Animation.Curve curve)
+    public async virtual Future animateTo(double size, Duration duration, Curve curve)
     {
         _assertAttached();
         DartRuntimePrimitives.Assert(() => (size >= 0L) && (size <= 1L));
@@ -128,7 +128,7 @@ public class DraggableScrollableController : global::Doroti.Framework.Foundation
 
     internal virtual void _disposeAnimationControllers()
     {
-        foreach (global::Doroti.Framework.Animation.AnimationController animationController in _animationControllers)
+        foreach (AnimationController animationController in _animationControllers)
         {
             animationController.dispose();
         }
@@ -148,9 +148,9 @@ public class DraggableScrollableSheet : StatefulWidget
     public virtual Duration? snapAnimationDuration { get; private set; }
     public virtual DraggableScrollableController? controller { get; private set; }
     public virtual bool shouldCloseOnMinExtent { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, ScrollController, Widget> builder { get; private set; } = default!;
+    public virtual Func<BuildContext, ScrollController, Widget> builder { get; private set; } = default!;
 
-    public DraggableScrollableSheet(global::Doroti.Framework.Foundation.Key? key = null, double initialChildSize = 0.5, double minChildSize = 0.25, double maxChildSize = 1.0, bool expand = true, bool snap = false, List<double>? snapSizes = null, Duration? snapAnimationDuration = null, DraggableScrollableController? controller = null, bool shouldCloseOnMinExtent = true, global::System.Func<BuildContext, ScrollController, Widget> builder = default!) : base(key: key)
+    public DraggableScrollableSheet(Key? key = null, double initialChildSize = 0.5, double minChildSize = 0.25, double maxChildSize = 1.0, bool expand = true, bool snap = false, List<double>? snapSizes = null, Duration? snapAnimationDuration = null, DraggableScrollableController? controller = null, bool shouldCloseOnMinExtent = true, Func<BuildContext, ScrollController, Widget> builder = default!) : base(key: key)
     {
         this.initialChildSize = initialChildSize;
         this.minChildSize = minChildSize;
@@ -210,7 +210,7 @@ public class DraggableScrollableNotification : Notification, ViewportNotificatio
 
 public class _DraggableSheetExtent__draggable_scrollable_sheet
 {
-    internal virtual global::System.Action? _cancelActivity { get; set; } = default;
+    internal virtual Action? _cancelActivity { get; set; } = default;
     public virtual double minSize { get; private set; } = default!;
     public virtual double maxSize { get; private set; } = default!;
     public virtual bool snap { get; private set; } = default!;
@@ -218,12 +218,12 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
     public virtual Duration? snapAnimationDuration { get; private set; }
     public virtual double initialSize { get; private set; } = default!;
     public virtual bool shouldCloseOnMinExtent { get; private set; } = default!;
-    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<double> _currentSize { get; private set; } = default!;
+    internal virtual ValueNotifier<double> _currentSize { get; private set; } = default!;
     public virtual double availablePixels { get; set; } = default!;
     public virtual bool hasDragged { get; set; } = default!;
     public virtual bool hasChanged { get; set; } = default!;
 
-    internal _DraggableSheetExtent__draggable_scrollable_sheet(double minSize, double maxSize, bool snap, List<double> snapSizes, double initialSize, Duration? snapAnimationDuration = null, global::Doroti.Framework.Foundation.ValueNotifier<double>? currentSize = null, bool? hasDragged = null, bool? hasChanged = null, bool shouldCloseOnMinExtent = true)
+    internal _DraggableSheetExtent__draggable_scrollable_sheet(double minSize, double maxSize, bool snap, List<double> snapSizes, double initialSize, Duration? snapAnimationDuration = null, ValueNotifier<double>? currentSize = null, bool? hasDragged = null, bool? hasChanged = null, bool shouldCloseOnMinExtent = true)
     {
         this.minSize = minSize;
         this.maxSize = maxSize;
@@ -232,7 +232,7 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
         this.initialSize = initialSize;
         this.snapAnimationDuration = snapAnimationDuration;
         this.shouldCloseOnMinExtent = shouldCloseOnMinExtent;
-        _currentSize = currentSize ?? new global::Doroti.Framework.Foundation.ValueNotifier<double>(initialSize);
+        _currentSize = currentSize ?? new ValueNotifier<double>(initialSize);
         availablePixels = double.PositiveInfinity;
         this.hasDragged = hasDragged ?? false;
         this.hasChanged = hasChanged ?? false;
@@ -246,8 +246,8 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
     public virtual bool isAtMax => DartRuntimePrimitives.ConvertValue<bool>(maxSize <= _currentSize.value);
     public virtual double currentSize => _currentSize.value;
     public virtual double currentPixels => sizeToPixels(_currentSize.value);
-    public virtual List<double> pixelSnapSizes => snapSizes.map<double, double>(sizeToPixels).ToList();
-    public virtual void startActivity(global::System.Action onCanceled)
+    public virtual List<double> pixelSnapSizes => snapSizes.map(sizeToPixels).ToList();
+    public virtual void startActivity(Action onCanceled)
     {
         _cancelActivity?.Invoke();
         _cancelActivity = onCanceled;
@@ -297,7 +297,7 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
 
     public virtual _DraggableSheetExtent__draggable_scrollable_sheet copyWith(double minSize, double maxSize, bool snap, List<double> snapSizes, double initialSize, Duration? snapAnimationDuration, bool shouldCloseOnMinExtent)
     {
-        return new _DraggableSheetExtent__draggable_scrollable_sheet(minSize: minSize, maxSize: maxSize, snap: snap, snapSizes: snapSizes, snapAnimationDuration: snapAnimationDuration, initialSize: initialSize, currentSize: new global::Doroti.Framework.Foundation.ValueNotifier<double>(hasChanged ? Dart_uiLibrary.clampDouble(_currentSize.value, minSize, maxSize) : initialSize), hasDragged: hasDragged, hasChanged: hasChanged, shouldCloseOnMinExtent: shouldCloseOnMinExtent);
+        return new _DraggableSheetExtent__draggable_scrollable_sheet(minSize: minSize, maxSize: maxSize, snap: snap, snapSizes: snapSizes, snapAnimationDuration: snapAnimationDuration, initialSize: initialSize, currentSize: new ValueNotifier<double>(hasChanged ? Dart_uiLibrary.clampDouble(_currentSize.value, minSize, maxSize) : initialSize), hasDragged: hasDragged, hasChanged: hasChanged, shouldCloseOnMinExtent: shouldCloseOnMinExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -400,7 +400,7 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet : Stat
 
     internal virtual string _snapSizeErrorMessage(long invalidIndex)
     {
-        List<string> snapSizesWithIndicator = widget.snapSizes!.asMap().Keys.map<long, string>((index) =>
+        List<string> snapSizesWithIndicator = widget.snapSizes!.asMap().Keys.map((index) =>
         {
             var snapSizeString = widget.snapSizes![(int)index].ToString();
             if (index == invalidIndex)
@@ -419,7 +419,7 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet : Stat
 internal class _DraggableScrollableSheetScrollController__draggable_scrollable_sheet : ScrollController
 {
     public virtual _DraggableSheetExtent__draggable_scrollable_sheet extent { get; set; } = default!;
-    public virtual global::System.Action? onPositionDetached { get; set; } = default;
+    public virtual Action? onPositionDetached { get; set; } = default;
 
     internal _DraggableScrollableSheetScrollController__draggable_scrollable_sheet(_DraggableSheetExtent__draggable_scrollable_sheet extent)
     {
@@ -461,11 +461,11 @@ internal class _DraggableScrollableSheetScrollController__draggable_scrollable_s
 
 public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet : ScrollPositionWithSingleContext
 {
-    internal virtual global::System.Action? _dragCancelCallback { get; set; } = default;
-    public virtual global::System.Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent { get; private set; } = default!;
-    internal virtual HashSet<global::Doroti.Framework.Animation.AnimationController> _ballisticControllers { get; private set; } = new HashSet<global::Doroti.Framework.Animation.AnimationController>();
+    internal virtual Action? _dragCancelCallback { get; set; } = default;
+    public virtual Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent { get; private set; } = default!;
+    internal virtual HashSet<AnimationController> _ballisticControllers { get; private set; } = new HashSet<AnimationController>();
 
-    internal _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition = null, global::System.Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent = default!) : base(physics: physics, context: context, oldPosition: oldPosition)
+    internal _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition = null, Func<_DraggableSheetExtent__draggable_scrollable_sheet> getExtent = default!) : base(physics: physics, context: context, oldPosition: oldPosition)
     {
         this.getExtent = getExtent;
     }
@@ -489,7 +489,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
 
     public override void beginActivity(ScrollActivity? newActivity)
     {
-        foreach (global::Doroti.Framework.Animation.AnimationController ballisticController in _ballisticControllers)
+        foreach (AnimationController ballisticController in _ballisticControllers)
         {
             ballisticController.stop();
         }
@@ -522,7 +522,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
     internal virtual bool _shouldSnap() => DartRuntimePrimitives.ConvertValue<bool>(extent.snap && extent.hasDragged && !_isAtSnapSize());
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Animation.AnimationController ballisticController in _ballisticControllers)
+        foreach (AnimationController ballisticController in _ballisticControllers)
         {
             ballisticController.dispose();
         }
@@ -539,14 +539,14 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
         }
         _dragCancelCallback?.Invoke();
         _dragCancelCallback = null;
-        global::Doroti.Framework.Physics.Simulation simulation = default!;
+        Physics.Simulation simulation = default!;
         if (extent.snap)
         {
-            simulation = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Physics.Simulation>(new _SnappingSimulation__draggable_scrollable_sheet(position: extent.currentPixels, initialVelocity: velocity, pixelSnapSize: extent.pixelSnapSizes, snapAnimationDuration: extent.snapAnimationDuration, tolerance: physics.toleranceFor(this)));
+            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(new _SnappingSimulation__draggable_scrollable_sheet(position: extent.currentPixels, initialVelocity: velocity, pixelSnapSize: extent.pixelSnapSizes, snapAnimationDuration: extent.snapAnimationDuration, tolerance: physics.toleranceFor(this)));
         }
         else
         {
-            simulation = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Physics.Simulation>(new ClampingScrollSimulation(position: extent.currentPixels, velocity: velocity, tolerance: physics.toleranceFor(this)));
+            simulation = DartRuntimePrimitives.ConvertValue<Physics.Simulation>(new ClampingScrollSimulation(position: extent.currentPixels, velocity: velocity, tolerance: physics.toleranceFor(this)));
         }
         var ballisticController = AnimationController.CreateUnbounded(debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(this, "_DraggableScrollableSheetPosition"), vsync: context.vsync);
         _ballisticControllers.Add(ballisticController);
@@ -576,7 +576,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
                 }
             }
         }
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        DartRuntimePrimitives.Ignore(((Func<AnimationController>)(() =>
 {
     var __cascade = ballisticController;
     __cascade.addListener(tick);
@@ -592,7 +592,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
 }))());
     }
 
-    public override global::Doroti.Framework.Gestures.Drag drag(global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action dragCancelCallback)
+    public override Drag drag(DragStartDetails details, Action dragCancelCallback)
     {
         _dragCancelCallback = dragCancelCallback;
         return base.drag(details, () => dragCancelCallback());
@@ -605,7 +605,7 @@ public class DraggableScrollableActuator : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public DraggableScrollableActuator(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    public DraggableScrollableActuator(Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }
@@ -638,7 +638,7 @@ internal class _DraggableScrollableActuatorState__draggable_scrollable_sheet : S
 
 }
 
-public class _ResetNotifier__draggable_scrollable_sheet : global::Doroti.Framework.Foundation.ChangeNotifier
+public class _ResetNotifier__draggable_scrollable_sheet : ChangeNotifier
 {
     internal virtual bool _wasCalled { get; set; } = false;
 
@@ -684,14 +684,14 @@ internal class _InheritedResetNotifier__draggable_scrollable_sheet : InheritedNo
 
 }
 
-internal class _SnappingSimulation__draggable_scrollable_sheet : global::Doroti.Framework.Physics.Simulation
+internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulation
 {
     public virtual double position { get; private set; } = default!;
     public virtual double velocity { get; private set; } = default!;
     public const double minimumSpeed = 1600.0;
     internal virtual double _pixelSnapSize { get; private set; } = default!;
 
-    internal _SnappingSimulation__draggable_scrollable_sheet(double position, double initialVelocity, List<double> pixelSnapSize, Duration? snapAnimationDuration = null, global::Doroti.Framework.Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
+    internal _SnappingSimulation__draggable_scrollable_sheet(double position, double initialVelocity, List<double> pixelSnapSize, Duration? snapAnimationDuration = null, Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
     {
         this.position = position;
     }

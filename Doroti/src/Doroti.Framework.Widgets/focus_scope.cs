@@ -10,17 +10,17 @@ public class Focus : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::System.Action<bool>? onFocusChange { get; private set; }
-    internal virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? _onKeyEvent { get; private set; }
-    internal virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? _onKey { get; private set; }
+    public virtual System.Action<bool>? onFocusChange { get; private set; }
+    internal virtual Func<FocusNode, KeyEvent, KeyEventResult>? _onKeyEvent { get; private set; }
+    internal virtual Func<FocusNode, RawKeyEvent, KeyEventResult>? _onKey { get; private set; }
     internal virtual bool? _canRequestFocus { get; private set; }
     internal virtual bool? _skipTraversal { get; private set; }
     internal virtual bool? _descendantsAreFocusable { get; private set; }
     internal virtual bool? _descendantsAreTraversable { get; private set; }
     public virtual bool includeSemantics { get; private set; } = default!;
 
-    internal static global::System.Action? CreateSemanticsFocusAction(
-        global::Doroti.Framework.Foundation.TargetPlatform targetPlatform,
+    internal static Action? CreateSemanticsFocusAction(
+        TargetPlatform targetPlatform,
         bool couldRequestFocus,
         FocusNode focusNode) =>
         targetPlatform != TargetPlatform.iOS && couldRequestFocus
@@ -28,7 +28,7 @@ public class Focus : StatefulWidget
             : null;
     internal virtual string? _debugLabel { get; private set; }
 
-    public Focus(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, FocusNode? focusNode = null, FocusNode? parentNode = null, bool autofocus = false, global::System.Action<bool>? onFocusChange = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, bool? canRequestFocus = null, bool? skipTraversal = null, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null, bool includeSemantics = true, string? debugLabel = null) : base(key: key)
+    public Focus(Key? key = null, Widget child = default!, FocusNode? focusNode = null, FocusNode? parentNode = null, bool autofocus = false, System.Action<bool>? onFocusChange = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, bool? canRequestFocus = null, bool? skipTraversal = null, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null, bool includeSemantics = true, string? debugLabel = null) : base(key: key)
     {
         this.child = child;
         this.focusNode = focusNode;
@@ -45,12 +45,12 @@ public class Focus : StatefulWidget
         _debugLabel = debugLabel;
     }
 
-    public static Focus CreateWithExternalFocusNode(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = default!, global::System.Action<bool>? onFocusChange = null, bool includeSemantics = default!)
+    public static Focus CreateWithExternalFocusNode(Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = default!, System.Action<bool>? onFocusChange = null, bool includeSemantics = default!)
         => new _FocusWithExternalFocusNode__focus_scope(key, child, focusNode, parentNode, autofocus, onFocusChange, includeSemantics);
 
     internal virtual bool _usingExternalFocus => false;
-    public virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent => DartRuntimePrimitives.ConvertValue<global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>>(_onKeyEvent ?? (focusNode?.onKeyEvent));
-    public virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey => DartRuntimePrimitives.ConvertValue<global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>>(_onKey ?? (focusNode?.onKey));
+    public virtual Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent => DartRuntimePrimitives.ConvertValue<Func<FocusNode, KeyEvent, KeyEventResult>>(_onKeyEvent ?? (focusNode?.onKeyEvent));
+    public virtual Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey => DartRuntimePrimitives.ConvertValue<Func<FocusNode, RawKeyEvent, KeyEventResult>>(_onKey ?? (focusNode?.onKey));
     public virtual bool canRequestFocus => DartRuntimePrimitives.ConvertValue<bool>((_canRequestFocus ?? focusNode?.canRequestFocus) ?? true);
     public virtual bool skipTraversal => DartRuntimePrimitives.ConvertValue<bool>((_skipTraversal ?? focusNode?.skipTraversal) ?? false);
     public virtual bool descendantsAreFocusable => DartRuntimePrimitives.ConvertValue<bool>((_descendantsAreFocusable ?? focusNode?.descendantsAreFocusable) ?? true);
@@ -90,15 +90,15 @@ public class Focus : StatefulWidget
     }
 
     public static bool isAt(BuildContext context) => DartRuntimePrimitives.ConvertValue<bool>(maybeOf(context)?.hasFocus ?? false);
-    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("debugLabel", debugLabel, defaultValue: null));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("autofocus", value: autofocus, ifTrue: "AUTOFOCUS", defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("canRequestFocus", value: canRequestFocus, ifFalse: "NOT FOCUSABLE", defaultValue: false));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("descendantsAreFocusable", value: descendantsAreFocusable, ifFalse: "DESCENDANTS UNFOCUSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("descendantsAreTraversable", value: descendantsAreTraversable, ifFalse: "DESCENDANTS UNTRAVERSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("focusNode", focusNode, defaultValue: null));
+        properties.add(new StringProperty("debugLabel", debugLabel, defaultValue: null));
+        properties.add(new FlagProperty("autofocus", value: autofocus, ifTrue: "AUTOFOCUS", defaultValue: false));
+        properties.add(new FlagProperty("canRequestFocus", value: canRequestFocus, ifFalse: "NOT FOCUSABLE", defaultValue: false));
+        properties.add(new FlagProperty("descendantsAreFocusable", value: descendantsAreFocusable, ifFalse: "DESCENDANTS UNFOCUSABLE", defaultValue: true));
+        properties.add(new FlagProperty("descendantsAreTraversable", value: descendantsAreTraversable, ifFalse: "DESCENDANTS UNTRAVERSABLE", defaultValue: true));
+        properties.add(new DiagnosticsProperty<FocusNode>("focusNode", focusNode, defaultValue: null));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _FocusState__focus_scope());
@@ -106,13 +106,13 @@ public class Focus : StatefulWidget
 
 internal class _FocusWithExternalFocusNode__focus_scope : Focus
 {
-    internal _FocusWithExternalFocusNode__focus_scope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = false, global::System.Action<bool>? onFocusChange = null, bool includeSemantics = true) : base(key: key, child: child, focusNode: focusNode, parentNode: parentNode, autofocus: autofocus, onFocusChange: onFocusChange, includeSemantics: includeSemantics)
+    internal _FocusWithExternalFocusNode__focus_scope(Key? key = null, Widget child = default!, FocusNode focusNode = default!, FocusNode? parentNode = null, bool autofocus = false, System.Action<bool>? onFocusChange = null, bool includeSemantics = true) : base(key: key, child: child, focusNode: focusNode, parentNode: parentNode, autofocus: autofocus, onFocusChange: onFocusChange, includeSemantics: includeSemantics)
     {
     }
 
     internal override bool _usingExternalFocus => true;
-    public override global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent => focusNode!.onKeyEvent;
-    public override global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey => focusNode!.onKey;
+    public override Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent => focusNode!.onKeyEvent;
+    public override Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey => focusNode!.onKey;
     public override bool canRequestFocus => focusNode!.canRequestFocus;
     public override bool skipTraversal => focusNode!.skipTraversal;
     public override bool descendantsAreFocusable => focusNode!.descendantsAreFocusable;
@@ -308,11 +308,11 @@ internal class _FocusState__focus_scope : State<Focus>
 
 public class FocusScope : Focus
 {
-    public FocusScope(global::Doroti.Framework.Foundation.Key? key = null, FocusScopeNode? node = null, FocusNode? parentNode = null, Widget child = default!, bool autofocus = false, global::System.Action<bool>? onFocusChange = null, bool? canRequestFocus = null, bool? skipTraversal = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, string? debugLabel = null, bool includeSemantics = true, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null) : base(key: key, parentNode: parentNode, child: child, autofocus: autofocus, onFocusChange: onFocusChange, canRequestFocus: canRequestFocus, skipTraversal: skipTraversal, onKeyEvent: onKeyEvent, onKey: onKey, debugLabel: debugLabel, includeSemantics: includeSemantics, descendantsAreFocusable: descendantsAreFocusable, descendantsAreTraversable: descendantsAreTraversable, focusNode: node)
+    public FocusScope(Key? key = null, FocusScopeNode? node = null, FocusNode? parentNode = null, Widget child = default!, bool autofocus = false, System.Action<bool>? onFocusChange = null, bool? canRequestFocus = null, bool? skipTraversal = null, Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent = null, Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey = null, string? debugLabel = null, bool includeSemantics = true, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null) : base(key: key, parentNode: parentNode, child: child, autofocus: autofocus, onFocusChange: onFocusChange, canRequestFocus: canRequestFocus, skipTraversal: skipTraversal, onKeyEvent: onKeyEvent, onKey: onKey, debugLabel: debugLabel, includeSemantics: includeSemantics, descendantsAreFocusable: descendantsAreFocusable, descendantsAreTraversable: descendantsAreTraversable, focusNode: node)
     {
     }
 
-    public static FocusScope CreateWithExternalFocusNode(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = default!, bool includeSemantics = default!, global::System.Action<bool>? onFocusChange = null)
+    public static FocusScope CreateWithExternalFocusNode(Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = default!, bool includeSemantics = default!, System.Action<bool>? onFocusChange = null)
         => new _FocusScopeWithExternalFocusNode__focus_scope(key, child, focusScopeNode, parentNode, autofocus, includeSemantics, onFocusChange);
 
     public static FocusScopeNode of(BuildContext context, bool createDependency = true)
@@ -326,13 +326,13 @@ public class FocusScope : Focus
 
 internal class _FocusScopeWithExternalFocusNode__focus_scope : FocusScope
 {
-    internal _FocusScopeWithExternalFocusNode__focus_scope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = false, bool includeSemantics = true, global::System.Action<bool>? onFocusChange = null) : base(key: key, child: child, parentNode: parentNode, autofocus: autofocus, includeSemantics: includeSemantics, onFocusChange: onFocusChange, node: focusScopeNode)
+    internal _FocusScopeWithExternalFocusNode__focus_scope(Key? key = null, Widget child = default!, FocusScopeNode focusScopeNode = default!, FocusNode? parentNode = null, bool autofocus = false, bool includeSemantics = true, System.Action<bool>? onFocusChange = null) : base(key: key, child: child, parentNode: parentNode, autofocus: autofocus, includeSemantics: includeSemantics, onFocusChange: onFocusChange, node: focusScopeNode)
     {
     }
 
     internal override bool _usingExternalFocus => true;
-    public override global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent => focusNode!.onKeyEvent;
-    public override global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey => focusNode!.onKey;
+    public override Func<FocusNode, KeyEvent, KeyEventResult>? onKeyEvent => focusNode!.onKeyEvent;
+    public override Func<FocusNode, RawKeyEvent, KeyEventResult>? onKey => focusNode!.onKey;
     public override bool canRequestFocus => focusNode!.canRequestFocus;
     public override bool skipTraversal => focusNode!.skipTraversal;
     public override bool descendantsAreFocusable => focusNode!.descendantsAreFocusable;
@@ -373,35 +373,35 @@ internal class _DebugFocusBorder__focus_scope : StatelessWidget
         this.child = child;
     }
 
-    internal virtual global::Doroti.Ui.Color _borderColor
+    internal virtual Ui.Color _borderColor
     {
         get
         {
             if (node.hasPrimaryFocus)
             {
-                return new global::Doroti.Ui.Color(4026597120L);
+                return new Ui.Color(4026597120L);
             }
             else
             {
                 if (node.hasFocus)
                 {
-                    return new global::Doroti.Ui.Color(4026532095L);
+                    return new Ui.Color(4026532095L);
                 }
                 else
                 {
                     if (!node.canRequestFocus)
                     {
-                        return new global::Doroti.Ui.Color(4043243520L);
+                        return new Ui.Color(4043243520L);
                     }
                     else
                     {
                         if (node.skipTraversal)
                         {
-                            return new global::Doroti.Ui.Color(4043308800L);
+                            return new Ui.Color(4043308800L);
                         }
                         else
                         {
-                            return new global::Doroti.Ui.Color(4026597375L);
+                            return new Ui.Color(4026597375L);
                         }
                     }
                 }
@@ -412,7 +412,7 @@ internal class _DebugFocusBorder__focus_scope : StatelessWidget
     {
         return new ListenableBuilder(listenable: node, builder: (context, _) =>
         {
-            return new DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: Border.CreateAll(color: _borderColor, width: 3.0)), position: DecorationPosition.foreground, child: child);
+            return new DecoratedBox(decoration: new BoxDecoration(border: Border.CreateAll(color: _borderColor, width: 3.0)), position: DecorationPosition.foreground, child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
         });
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -433,7 +433,7 @@ public class ExcludeFocus : StatelessWidget
     public virtual bool excluding { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public ExcludeFocus(global::Doroti.Framework.Foundation.Key? key = null, bool excluding = true, Widget child = default!) : base(key: key)
+    public ExcludeFocus(Key? key = null, bool excluding = true, Widget child = default!) : base(key: key)
     {
         this.excluding = excluding;
         this.child = child;

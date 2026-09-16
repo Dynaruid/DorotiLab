@@ -83,8 +83,8 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         {
             return constraints.smallest;
         }
-        global::Doroti.Ui.Size childSize = child!.getDryLayout(_isVertical ? constraints.flipped : constraints);
-        return _isVertical ? new global::Doroti.Ui.Size(childSize.height, childSize.width) : childSize;
+        Size childSize = child!.getDryLayout(_isVertical ? constraints.flipped : constraints);
+        return _isVertical ? new Size(childSize.height, childSize.width) : childSize;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -94,7 +94,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         if (child is not null)
         {
             child!.layout(_isVertical ? constraints.flipped : constraints, parentUsesSize: true);
-            size = _isVertical ? new global::Doroti.Ui.Size(child!.size.height, child!.size.width) : child!.size;
+            size = _isVertical ? new Size(child!.size.height, child!.size.width) : child!.size;
             _paintTransform = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();

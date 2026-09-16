@@ -84,7 +84,7 @@ public class PolynomialFit
 
     public override string ToString()
     {
-        var coefficientString = coefficients.map<double, string>((c) => c.toStringAsPrecision(3L)).ToList().ToString();
+        var coefficientString = coefficients.map((c) => c.toStringAsPrecision(3L)).ToList().ToString();
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit")}({coefficientString}, confidence: {confidence.toStringAsFixed(3L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

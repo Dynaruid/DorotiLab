@@ -71,7 +71,7 @@ internal class _TapTracker__multitap
 
     public virtual bool isWithinGlobalTolerance(PointerEvent @event, double tolerance)
     {
-        global::Doroti.Ui.Offset offset = @event.position - _initialGlobalPosition;
+        Offset offset = @event.position - _initialGlobalPosition;
         return offset.distance <= tolerance;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -539,9 +539,9 @@ public class SerialTapDownDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
         properties.add(new IntProperty("buttons", buttons));
         properties.add(new IntProperty("count", count));
     }
@@ -591,9 +591,9 @@ public class SerialTapUpDetails : PositionedGestureDetails, Diagnosticable
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("globalPosition", globalPosition));
-        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Offset>("localPosition", localPosition));
-        properties.add(new EnumProperty<global::Doroti.Ui.PointerDeviceKind>("kind", kind));
+        properties.add(new DiagnosticsProperty<Offset>("globalPosition", globalPosition));
+        properties.add(new DiagnosticsProperty<Offset>("localPosition", localPosition));
+        properties.add(new EnumProperty<PointerDeviceKind>("kind", kind));
         properties.add(new IntProperty("count", count));
     }
 
