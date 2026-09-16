@@ -25,7 +25,7 @@ public sealed class PersistentHashMap<TKey, TValue> : IReadOnlyDictionary<TKey, 
     }
     public PersistentHashMap<TKey, TValue> put(TKey key, TValue value)
     {
-        using var profile = Doroti.Ui.FrameworkComponentProfile.Begin(Doroti.Ui.FrameworkComponentProfile.Kind.InheritancePut, Count);
+        using var profile = Ui.FrameworkComponentProfile.Begin(Ui.FrameworkComponentProfile.Kind.InheritancePut, Count);
         var hash = Hash(key);
         if (_root is null) return new(new PersistentHashTrie<TKey, TValue>.Leaf(hash, [new(key, value)]), 1);
         var added = false;
@@ -34,7 +34,7 @@ public sealed class PersistentHashMap<TKey, TValue> : IReadOnlyDictionary<TKey, 
     }
     public PersistentHashMap<TKey, TValue> remove(TKey key)
     {
-        using var profile = Doroti.Ui.FrameworkComponentProfile.Begin(Doroti.Ui.FrameworkComponentProfile.Kind.InheritanceRemove, Count);
+        using var profile = Ui.FrameworkComponentProfile.Begin(Ui.FrameworkComponentProfile.Kind.InheritanceRemove, Count);
         var hash = Hash(key);
         var removed = false;
         var root = _root?.Remove(key, hash, 0, ref removed);

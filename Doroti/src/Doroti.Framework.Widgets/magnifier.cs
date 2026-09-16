@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/magnifier.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -28,17 +27,17 @@ public class MagnifierInfo
     {
         var __other = other as MagnifierInfo;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is MagnifierInfo) && (object.Equals(((MagnifierInfo)((MagnifierInfo)__other)).globalGesturePosition, this.globalGesturePosition))) && (object.Equals(((MagnifierInfo)((MagnifierInfo)__other)).caretRect, this.caretRect))) && (object.Equals(((MagnifierInfo)((MagnifierInfo)__other)).currentLineBoundaries, this.currentLineBoundaries))) && (object.Equals(((MagnifierInfo)((MagnifierInfo)__other)).fieldBounds, this.fieldBounds)));
+        return (((((__other is MagnifierInfo) && (Equals(((MagnifierInfo)((MagnifierInfo)__other)).globalGesturePosition, this.globalGesturePosition))) && (Equals(((MagnifierInfo)((MagnifierInfo)__other)).caretRect, this.caretRect))) && (Equals(((MagnifierInfo)((MagnifierInfo)__other)).currentLineBoundaries, this.currentLineBoundaries))) && (Equals(((MagnifierInfo)((MagnifierInfo)__other)).fieldBounds, this.fieldBounds)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.globalGesturePosition, this.caretRect, this.fieldBounds, this.currentLineBoundaries));
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MagnifierInfo"))}(" + $"position: {this.globalGesturePosition}, " + $"line: {this.currentLineBoundaries}, " + $"caret: {this.caretRect}, " + $"field: {this.fieldBounds}" + ")";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "MagnifierInfo"))}(" + $"position: {this.globalGesturePosition}, " + $"line: {this.currentLineBoundaries}, " + $"caret: {this.caretRect}, " + $"field: {this.fieldBounds}" + ")";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -76,8 +75,8 @@ public class MagnifierController
     {
         this._overlayEntry?.remove();
         this._overlayEntry?.dispose();
-        OverlayState overlayState = ((OverlayState)(object?)Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor));
-        CapturedThemes capturedThemes = ((CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.maybeOf(context)?.context));
+        OverlayState overlayState = ((OverlayState)Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor));
+        CapturedThemes capturedThemes = ((CapturedThemes)InheritedTheme.capture(from: context, to: Navigator.maybeOf(context)?.context));
         _overlayEntry = new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) => capturedThemes.wrap(builder(context)))));
         overlayState.insert(this.overlayEntry!, below: below);
         if ((this.animationController is not null))
@@ -113,7 +112,7 @@ public class MagnifierController
     {
         DartRuntimePrimitives.Assert(() => (rect.width <= bounds.width), () => (object?)$"attempted to shift {rect} within {bounds}, but the rect has a greater width.");
         DartRuntimePrimitives.Assert(() => (rect.height <= bounds.height), () => (object?)$"attempted to shift {rect} within {bounds}, but the rect has a greater height.");
-        global::Doroti.Ui.Offset rectShift = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
+        global::Doroti.Ui.Offset rectShift = ((global::Doroti.Ui.Offset)Offset.zero);
         if ((rect.left < bounds.left))
         {
             rectShift += new global::Doroti.Ui.Offset((bounds.left - rect.left), 0);
@@ -160,11 +159,11 @@ public class MagnifierDecoration
     {
         var __other = other as MagnifierDecoration;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is MagnifierDecoration) && (((MagnifierDecoration)((MagnifierDecoration)__other)).opacity == this.opacity)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Framework.Painting.BoxShadow>(((MagnifierDecoration)((MagnifierDecoration)__other)).shadows, this.shadows)) && (object.Equals(((MagnifierDecoration)((MagnifierDecoration)__other)).shape, this.shape)));
+        return ((((__other is MagnifierDecoration) && (((MagnifierDecoration)((MagnifierDecoration)__other)).opacity == this.opacity)) && CollectionsLibrary.listEquals<global::Doroti.Framework.Painting.BoxShadow>(((MagnifierDecoration)((MagnifierDecoration)__other)).shadows, this.shadows)) && (Equals(((MagnifierDecoration)((MagnifierDecoration)__other)).shape, this.shape)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.opacity, this.shape, ((this.shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.shadows!))));
@@ -193,7 +192,7 @@ public class RawMagnifier : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Stack(clipBehavior: Clip.none, alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<Widget> { ClipPath.shape(shape: ((MagnifierDecoration)this.decoration).shape, child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new _Magnifier__magnifier(focalPointOffset: this.focalPointOffset, magnificationScale: this.magnificationScale, child: SizedBox.CreateFromSize(size: this.size, child: this.child)))), new IgnorePointer(child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new ClipPath(clipBehavior: this.clipBehavior, clipper: new _NegativeClip__magnifier(shape: ((MagnifierDecoration)this.decoration).shape), child: new DecoratedBox(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: ((MagnifierDecoration)this.decoration).shape, shadows: ((MagnifierDecoration)this.decoration).shadows), child: SizedBox.CreateFromSize(size: this.size))))) }));
+        return ((Widget)new Stack(clipBehavior: Clip.none, alignment: Alignment.center, children: new List<Widget> { ClipPath.shape(shape: ((MagnifierDecoration)this.decoration).shape, child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new _Magnifier__magnifier(focalPointOffset: this.focalPointOffset, magnificationScale: this.magnificationScale, child: SizedBox.CreateFromSize(size: this.size, child: this.child)))), new IgnorePointer(child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new ClipPath(clipBehavior: this.clipBehavior, clipper: new _NegativeClip__magnifier(shape: ((MagnifierDecoration)this.decoration).shape), child: new DecoratedBox(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: ((MagnifierDecoration)this.decoration).shape, shadows: ((MagnifierDecoration)this.decoration).shadows), child: SizedBox.CreateFromSize(size: this.size))))) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -221,7 +220,7 @@ internal class _NegativeClip__magnifier : global::Doroti.Framework.Rendering.Cus
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldReclip(global::Doroti.Framework.Rendering.CustomClipper<Path> oldClipper) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(((_NegativeClip__magnifier)oldClipper).shape, this.shape)));
+    public override bool shouldReclip(global::Doroti.Framework.Rendering.CustomClipper<Path> oldClipper) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(((_NegativeClip__magnifier)oldClipper).shape, this.shape)));
 }
 
 internal class _Magnifier__magnifier : SingleChildRenderObjectWidget
@@ -237,13 +236,13 @@ internal class _Magnifier__magnifier : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderMagnification__magnifier(this.focalPointOffset, this.magnificationScale));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderMagnification__magnifier(this.focalPointOffset, this.magnificationScale));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderMagnification__magnifier)(object)renderObject;
+        var __renderObject = (_RenderMagnification__magnifier)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderMagnification__magnifier>)(() =>
 {
     var __cascade = __renderObject;
@@ -272,7 +271,7 @@ public class _RenderMagnification__magnifier : global::Doroti.Framework.Renderin
         set
         {
             var __value = value;
-            if ((object.Equals(this._focalPointOffset, __value)))
+            if ((Equals(this._focalPointOffset, __value)))
             {
                 return;
             }
@@ -295,10 +294,10 @@ public class _RenderMagnification__magnifier : global::Doroti.Framework.Renderin
         }
     }
     public override bool alwaysNeedsCompositing => true;
-    public override global::Doroti.Framework.Rendering.BackdropFilterLayer? layer => ((global::Doroti.Framework.Rendering.BackdropFilterLayer?)(object?)base.layer)!;
+    public override global::Doroti.Framework.Rendering.BackdropFilterLayer? layer => ((global::Doroti.Framework.Rendering.BackdropFilterLayer?)base.layer)!;
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Ui.Offset thisCenter = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Alignment.center.alongSize(this.size) + offset));
+        global::Doroti.Ui.Offset thisCenter = ((global::Doroti.Ui.Offset)(Alignment.center.alongSize(this.size) + offset));
         var matrix = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();

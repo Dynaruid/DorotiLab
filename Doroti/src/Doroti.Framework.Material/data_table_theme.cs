@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/data_table_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -74,11 +74,11 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((__other is DataTableThemeData) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).decoration, this.decoration))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowColor, this.dataRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMinHeight == this.dataRowMinHeight)) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMaxHeight == this.dataRowMaxHeight)) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataTextStyle, this.dataTextStyle))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowColor, this.headingRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).headingRowHeight == this.headingRowHeight)) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingTextStyle, this.headingTextStyle))) && (((DataTableThemeData)((DataTableThemeData)__other)).horizontalMargin == this.horizontalMargin)) && (((DataTableThemeData)((DataTableThemeData)__other)).columnSpacing == this.columnSpacing)) && (((DataTableThemeData)((DataTableThemeData)__other)).dividerThickness == this.dividerThickness)) && (((DataTableThemeData)((DataTableThemeData)__other)).checkboxHorizontalMargin == this.checkboxHorizontalMargin)) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingCellCursor, this.headingCellCursor))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowCursor, this.dataRowCursor))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowAlignment, this.headingRowAlignment)));
+        return ((((((((((((((((__other is DataTableThemeData) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).decoration, this.decoration))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowColor, this.dataRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMinHeight == this.dataRowMinHeight)) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMaxHeight == this.dataRowMaxHeight)) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataTextStyle, this.dataTextStyle))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowColor, this.headingRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).headingRowHeight == this.headingRowHeight)) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingTextStyle, this.headingTextStyle))) && (((DataTableThemeData)((DataTableThemeData)__other)).horizontalMargin == this.horizontalMargin)) && (((DataTableThemeData)((DataTableThemeData)__other)).columnSpacing == this.columnSpacing)) && (((DataTableThemeData)((DataTableThemeData)__other)).dividerThickness == this.dividerThickness)) && (((DataTableThemeData)((DataTableThemeData)__other)).checkboxHorizontalMargin == this.checkboxHorizontalMargin)) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingCellCursor, this.headingCellCursor))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowCursor, this.dataRowCursor))) && (Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowAlignment, this.headingRowAlignment)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -100,8 +100,8 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("headingRowAlignment", this.headingRowAlignment, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -117,7 +117,7 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -134,10 +134,10 @@ public class DataTableTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static DataTableThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DataTableTheme? dataTableThemeLocal = ((DataTableTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DataTableTheme>());
+        DataTableTheme? dataTableThemeLocal = ((DataTableTheme?)context.dependOnInheritedWidgetOfExactType<DataTableTheme>());
         return (dataTableThemeLocal?.data ?? Theme.of(context).dataTableTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DataTableTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((DataTableTheme)oldWidget).data)));
 }

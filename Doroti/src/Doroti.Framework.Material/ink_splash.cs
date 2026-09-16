@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_splash.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -50,8 +50,8 @@ public static partial class Ink_splashLibrary
     {
         if (containedInkWell)
         {
-            global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
-            return Ink_splashLibrary._getSplashRadiusForPositionInSize(sizeLocal, position);
+            global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
+            return _getSplashRadiusForPositionInSize(sizeLocal, position);
         }
         return Material.defaultSplashRadius;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -79,7 +79,7 @@ internal class _InkSplashFactory__ink_splash : InteractiveInkFeatureFactory
 
     public virtual InteractiveInkFeature create(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null)
     {
-        return ((InteractiveInkFeature)(object?)new InkSplash(controller: controller, referenceBox: referenceBox, position: position, color: color, containedInkWell: containedInkWell, rectCallback: (global::System.Func<Rect>?)rectCallback, borderRadius: borderRadius, customBorder: customBorder, radius: radius, onRemoved: () => onRemoved(), textDirection: textDirection));
+        return ((InteractiveInkFeature)new InkSplash(controller: controller, referenceBox: referenceBox, position: position, color: color, containedInkWell: containedInkWell, rectCallback: (global::System.Func<Rect>?)rectCallback, borderRadius: borderRadius, customBorder: customBorder, radius: radius, onRemoved: onRemoved, textDirection: textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -97,12 +97,12 @@ public class InkSplash : InteractiveInkFeature
     internal virtual global::Doroti.Framework.Animation.AnimationController _radiusController { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.Animation<long> _alpha { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.AnimationController? _alphaController { get; set; } = default;
-    public static InteractiveInkFeatureFactory splashFactory = ((InteractiveInkFeatureFactory)(object?)new _InkSplashFactory__ink_splash());
+    public static InteractiveInkFeatureFactory splashFactory = ((InteractiveInkFeatureFactory)new _InkSplashFactory__ink_splash());
 
     public InkSplash(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, TextDirection textDirection, Offset? position = null, Color color = default!, bool containedInkWell = false, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null) : base(referenceBox: referenceBox, customBorder: customBorder, onRemoved: onRemoved, controller: controller, color: color)
     {
         this._position = position;
-        this._borderRadius = (borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero);
+        this._borderRadius = (borderRadius ?? BorderRadius.zero);
         this._targetRadius = (radius ?? Ink_splashLibrary._getTargetRadius(referenceBox, containedInkWell, rectCallback, DartRuntimePrimitives.RequireValue(position)));
         this._clipCallback = Ink_splashLibrary._getClipCallback(referenceBox, containedInkWell, rectCallback);
         this._repositionToReferenceBox = !containedInkWell;
@@ -146,7 +146,7 @@ public class InkSplash : InteractiveInkFeature
 
     internal virtual void _handleAlphaStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        if (AnimationStatusMembers.isCompleted(status))
         {
             dispose();
         }
@@ -168,7 +168,7 @@ public class InkSplash : InteractiveInkFeature
     __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset? centerLocal = ((global::Doroti.Ui.Offset?)(object?)this._position);
+        global::Doroti.Ui.Offset? centerLocal = ((global::Doroti.Ui.Offset?)this._position);
         if (this._repositionToReferenceBox)
         {
             centerLocal = Dart_uiLibrary.Offset.lerp(centerLocal, ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero), ((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value);

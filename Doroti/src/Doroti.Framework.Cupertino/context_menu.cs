@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/context_menu.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -33,7 +33,7 @@ public static partial class Context_menuLibrary
 
 public static partial class Context_menuLibrary
 {
-    internal static long _animationDuration = (Context_menuLibrary._previewLongPressTimeout.inMilliseconds + Context_menuLibrary._kModalPopupTransitionDuration.inMilliseconds);
+    internal static long _animationDuration = (_previewLongPressTimeout.inMilliseconds + _kModalPopupTransitionDuration.inMilliseconds);
 }
 
 public static partial class Context_menuLibrary
@@ -43,12 +43,12 @@ public static partial class Context_menuLibrary
 
 public static partial class Context_menuLibrary
 {
-    internal static Color _borderColor = ((Color)(object?)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4289309103L), darkColor: new global::Doroti.Ui.Color(4283914330L)));
+    internal static Color _borderColor = ((Color)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4289309103L), darkColor: new global::Doroti.Ui.Color(4283914330L)));
 }
 
 public static partial class Context_menuLibrary
 {
-    internal static Color _kBackgroundColor = ((Color)(object?)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4294046193L), darkColor: new global::Doroti.Ui.Color(4280361250L)));
+    internal static Color _kBackgroundColor = ((Color)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4294046193L), darkColor: new global::Doroti.Ui.Color(4280361250L)));
 }
 
 internal delegate void _DismissCallback__context_menu(global::Doroti.Framework.Widgets.BuildContext context, double scale, double opacity);
@@ -60,8 +60,8 @@ public static partial class Context_menuLibrary
     internal static Rect _getRect(global::Doroti.Framework.Widgets.GlobalKey<IState> globalKey)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Widgets.GlobalKey<IState>)globalKey).currentContext is not null));
-        var renderBoxContainer = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)globalKey).currentContext!.findRenderObject()!)!;
-        return global::Doroti.Ui.Rect.fromPoints(((Offset)(renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.topLeft)), ((Offset)(renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.bottomRight)));
+        var renderBoxContainer = ((global::Doroti.Framework.Rendering.RenderBox?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)globalKey).currentContext!.findRenderObject()!)!;
+        return Rect.fromPoints(((Offset)(renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.topLeft)), ((Offset)(renderBoxContainer).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBoxContainer).paintBounds.bottomRight)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -90,7 +90,7 @@ public class CupertinoContextMenu : global::Doroti.Framework.Widgets.StatefulWid
         this.child = child;
         this.enableHapticFeedback = enableHapticFeedback;
         this.builder = (((context, animation) => child));
-        System.Diagnostics.Debug.Assert(System.Linq.Enumerable.Any(actions));
+        System.Diagnostics.Debug.Assert(Enumerable.Any(actions));
     }
 
     public static CupertinoContextMenu CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget> actions = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget> builder = default!, bool enableHapticFeedback = false)
@@ -108,7 +108,7 @@ public class CupertinoContextMenu : global::Doroti.Framework.Widgets.StatefulWid
 
 internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framework.Widgets.State<CupertinoContextMenu>, global::Doroti.Framework.Widgets.TickerProviderStateMixin<CupertinoContextMenu>
 {
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _childGlobalKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _childGlobalKey { get; private set; } = GlobalKey<IState>.Create();
     internal virtual bool _childHidden { get; set; } = false;
     internal virtual global::Doroti.Framework.Animation.AnimationController _openController { get; set; } = default!;
     internal virtual Rect? _decoyChildEndRect { get; set; } = default;
@@ -138,13 +138,13 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     internal virtual void _listenerCallback()
     {
-        if (((!object.Equals(((global::Doroti.Framework.Animation.AnimationController)this._openController).status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) && (((global::Doroti.Framework.Animation.AnimationController)this._openController).value >= this._midpoint)))
+        if (((!Equals(((global::Doroti.Framework.Animation.AnimationController)this._openController).status, AnimationStatus.reverse)) && (((global::Doroti.Framework.Animation.AnimationController)this._openController).value >= this._midpoint)))
         {
-            if (((CupertinoContextMenu)(object)this.widget).enableHapticFeedback)
+            if (((CupertinoContextMenu)this.widget).enableHapticFeedback)
             {
                 DartRuntimePrimitives.Ignore(HapticFeedback.heavyImpact());
             }
-            this._tapGestureRecognizer.resolve(global::Doroti.Framework.Gestures.GestureDisposition.accepted);
+            this._tapGestureRecognizer.resolve(Gestures.GestureDisposition.accepted);
             this._openController.removeListener(this._listenerCallback);
         }
     }
@@ -153,7 +153,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
     {
         get
         {
-            global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)(object?)Context_menuLibrary._getRect(this._childGlobalKey));
+            global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)Context_menuLibrary._getRect(this._childGlobalKey));
             double screenWidth = MediaQuery.widthOf(this.context);
             double centerLocal = (screenWidth / 2L);
             bool centerDividesChild = ((childRect.left < centerLocal) && (childRect.right > centerLocal));
@@ -183,7 +183,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     internal static global::Doroti.Framework.Widgets.Widget _defaultPreviewBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FittedBox(fit: global::Doroti.Framework.Painting.BoxFit.cover, child: new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateCircular((Context_menuLibrary._previewBorderRadiusRatio * ((global::Doroti.Framework.Animation.Animation<double>)animation).value)), child: child)));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.FittedBox(fit: BoxFit.cover, child: new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: BorderRadius.CreateCircular((Context_menuLibrary._previewBorderRadiusRatio * ((global::Doroti.Framework.Animation.Animation<double>)animation).value)), child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -193,14 +193,14 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
         {
             _childHidden = true;
         })));
-        _route = new _ContextMenuRoute__context_menu<object?>(actions: ((CupertinoContextMenu)(object)this.widget).actions, barrierLabel: CupertinoLocalizations.of(this.context).menuDismissLabel, filter: new global::Doroti.Ui.ImageFilter(sigmaX: 5.0, sigmaY: 5.0), contextMenuLocation: this._contextMenuLocation, previousChildRect: DartRuntimePrimitives.RequireValue(this._decoyChildEndRect), scaleFactor: this._scaleFactor, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>?)((context, animation) =>
+        _route = new _ContextMenuRoute__context_menu<object?>(actions: ((CupertinoContextMenu)this.widget).actions, barrierLabel: CupertinoLocalizations.of(this.context).menuDismissLabel, filter: new global::Doroti.Ui.ImageFilter(sigmaX: 5.0, sigmaY: 5.0), contextMenuLocation: this._contextMenuLocation, previousChildRect: DartRuntimePrimitives.RequireValue(this._decoyChildEndRect), scaleFactor: this._scaleFactor, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>?)((context, animation) =>
         {
-            if ((((CupertinoContextMenu)(object)this.widget).child is null))
+            if ((((CupertinoContextMenu)this.widget).child is null))
             {
-                global::Doroti.Framework.Animation.Animation<double> localAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: CupertinoContextMenu.animationOpensAt, end: 1).animate(animation));
+                global::Doroti.Framework.Animation.Animation<double> localAnimation = ((global::Doroti.Framework.Animation.Animation<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: CupertinoContextMenu.animationOpensAt, end: 1).animate(animation));
                 return this.widget.builder(context, localAnimation);
             }
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)_CupertinoContextMenuState__context_menu._defaultPreviewBuilder(context, animation, ((CupertinoContextMenu)(object)this.widget).child!));
+            return ((global::Doroti.Framework.Widgets.Widget)_defaultPreviewBuilder(context, animation, ((CupertinoContextMenu)this.widget).child!));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         DartRuntimePrimitives.Ignore(Navigator.of(this.context, rootNavigator: true).push<object?>(this._route!));
@@ -209,7 +209,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     internal virtual void _removeContextMenuDecoy()
     {
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
         {
             if (this.mounted)
             {
@@ -230,7 +230,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
     {
         switch (animationStatus)
         {
-            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+            case AnimationStatus.dismissed:
                 {
                     if ((this._route is null))
                     {
@@ -242,16 +242,16 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
                     _closeContextMenu();
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.completed:
+            case AnimationStatus.completed:
                 {
                     _openContextMenu();
                     _removeContextMenuDecoy();
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.forward:
-            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+            case AnimationStatus.forward:
+            case AnimationStatus.reverse:
                 {
-                    if (!((bool)(global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(this.context)!).isCurrent))
+                    if (!((bool)(ModalRoute<object>.untypedOf(this.context)!).isCurrent))
                     {
                         _removeContextMenuDecoy();
                     }
@@ -262,7 +262,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     internal virtual void _routeAnimationStatusListener(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if (!global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
+        if (!AnimationStatusMembers.isDismissed(status))
         {
             return;
         }
@@ -308,12 +308,12 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
         {
             _childHidden = true;
         })));
-        global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)(object?)Context_menuLibrary._getRect(this._childGlobalKey));
-        _scaleFactor = _CupertinoContextMenuState__context_menu._getScaleFactor(childRect, MediaQuery.paddingOf(this.context), MediaQuery.sizeOf(this.context));
-        _decoyChildEndRect = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)(childRect).center), width: (childRect.width * this._scaleFactor), height: (childRect.height * this._scaleFactor));
+        global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)Context_menuLibrary._getRect(this._childGlobalKey));
+        _scaleFactor = _getScaleFactor(childRect, MediaQuery.paddingOf(this.context), MediaQuery.sizeOf(this.context));
+        _decoyChildEndRect = Rect.fromCenter(center: ((Offset)(childRect).center), width: (childRect.width * this._scaleFactor), height: (childRect.height * this._scaleFactor));
         _lastOverlayEntry = new global::Doroti.Framework.Widgets.OverlayEntry(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DecoyChild__context_menu(beginRect: childRect, controller: this._openController, endRect: this._decoyChildEndRect, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((CupertinoContextMenu)(object)this.widget).builder, child: ((CupertinoContextMenu)(object)this.widget).child));
+            return ((global::Doroti.Framework.Widgets.Widget)new _DecoyChild__context_menu(beginRect: childRect, controller: this._openController, endRect: this._decoyChildEndRect, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((CupertinoContextMenu)this.widget).builder, child: ((CupertinoContextMenu)this.widget).child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         Overlay.of(this.context, rootOverlay: true, debugRequiredFor: this.widget).insert(this._lastOverlayEntry!);
@@ -322,7 +322,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(cursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer), child: new global::Doroti.Framework.Widgets.Listener(onPointerDown: this._tapGestureRecognizer.addPointer, child: new global::Doroti.Framework.Widgets.TickerMode(enabled: !this._childHidden, child: new global::Doroti.Framework.Widgets.Visibility(key: this._childGlobalKey, visible: !this._childHidden, child: this.widget.builder(context, this._openController))))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.MouseRegion(cursor: (Foundation.ConstantsLibrary.kIsWeb ? SystemMouseCursors.click : MouseCursor.defer), child: new global::Doroti.Framework.Widgets.Listener(onPointerDown: this._tapGestureRecognizer.addPointer, child: new global::Doroti.Framework.Widgets.TickerMode(enabled: !this._childHidden, child: new global::Doroti.Framework.Widgets.Visibility(key: this._childGlobalKey, visible: !this._childHidden, child: this.widget.builder(context, this._openController))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -361,13 +361,13 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -401,8 +401,8 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -454,20 +454,20 @@ internal class _DecoyChildState__context_menu : global::Doroti.Framework.Widgets
         var openAnimationLength = 5.0;
         double totalOpenAnimationLength = (beginPause + openAnimationLength);
         double endPause = (((((totalOpenAnimationLength * Context_menuLibrary._animationDuration)) / Context_menuLibrary._previewLongPressTimeout.inMilliseconds)) - totalOpenAnimationLength);
-        _rect = new global::Doroti.Framework.Animation.TweenSequence<global::Doroti.Ui.Rect?>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>> { new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>(tween: new global::Doroti.Framework.Animation.RectTween(begin: ((_DecoyChild__context_menu)(object)this.widget).beginRect, end: ((_DecoyChild__context_menu)(object)this.widget).beginRect).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.linear)), weight: beginPause), new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>(tween: new global::Doroti.Framework.Animation.RectTween(begin: ((_DecoyChild__context_menu)(object)this.widget).beginRect, end: ((_DecoyChild__context_menu)(object)this.widget).endRect).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.easeOutSine)), weight: openAnimationLength), new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>(tween: new global::Doroti.Framework.Animation.RectTween(begin: ((_DecoyChild__context_menu)(object)this.widget).endRect, end: ((_DecoyChild__context_menu)(object)this.widget).endRect).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.linear)), weight: endPause) }.Cast<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>>().ToList()).animate(((_DecoyChild__context_menu)(object)this.widget).controller);
-        _boxDecorationCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_DecoyChild__context_menu)(object)this.widget).controller, curve: new global::Doroti.Framework.Animation.Interval(0.0, CupertinoContextMenu.animationOpensAt));
+        _rect = new global::Doroti.Framework.Animation.TweenSequence<global::Doroti.Ui.Rect?>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>> { new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>(tween: new global::Doroti.Framework.Animation.RectTween(begin: ((_DecoyChild__context_menu)this.widget).beginRect, end: ((_DecoyChild__context_menu)this.widget).beginRect).chain(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.linear)), weight: beginPause), new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>(tween: new global::Doroti.Framework.Animation.RectTween(begin: ((_DecoyChild__context_menu)this.widget).beginRect, end: ((_DecoyChild__context_menu)this.widget).endRect).chain(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeOutSine)), weight: openAnimationLength), new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>(tween: new global::Doroti.Framework.Animation.RectTween(begin: ((_DecoyChild__context_menu)this.widget).endRect, end: ((_DecoyChild__context_menu)this.widget).endRect).chain(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.linear)), weight: endPause) }.Cast<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Rect?>>().ToList()).animate(((_DecoyChild__context_menu)this.widget).controller);
+        _boxDecorationCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_DecoyChild__context_menu)this.widget).controller, curve: new global::Doroti.Framework.Animation.Interval(0.0, CupertinoContextMenu.animationOpensAt));
         _boxDecoration = new global::Doroti.Framework.Widgets.DecorationTween(begin: new global::Doroti.Framework.Painting.BoxDecoration(boxShadow: new List<global::Doroti.Framework.Painting.BoxShadow>()), end: new global::Doroti.Framework.Painting.BoxDecoration(boxShadow: Context_menuLibrary._endBoxShadow)).animate(this._boxDecorationCurvedAnimation);
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildAnimation(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRect(rect: DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Animation<Rect?>)this._rect).value), child: new global::Doroti.Framework.Widgets.Container(decoration: ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.Decoration>)this._boxDecoration).value, child: ((_DecoyChild__context_menu)(object)this.widget).child)));
+        return ((global::Doroti.Framework.Widgets.Widget)Positioned.CreateFromRect(rect: DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Animation<Rect?>)this._rect).value), child: new global::Doroti.Framework.Widgets.Container(decoration: ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.Decoration>)this._boxDecoration).value, child: ((_DecoyChild__context_menu)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Positioned.CreateFromRect(rect: DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Animation<Rect?>)this._rect).value), child: ((_DecoyChild__context_menu)(object)this.widget).builder!(context, ((_DecoyChild__context_menu)(object)this.widget).controller)));
+        return ((global::Doroti.Framework.Widgets.Widget)Positioned.CreateFromRect(rect: DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Animation<Rect?>)this._rect).value), child: ((_DecoyChild__context_menu)this.widget).builder!(context, ((_DecoyChild__context_menu)this.widget).controller)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -495,7 +495,7 @@ internal class _DecoyChildState__context_menu : global::Doroti.Framework.Widgets
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((((_DecoyChild__context_menu)(object)this.widget).child is not null) ? this._buildAnimation : this._buildBuilder)), animation: ((_DecoyChild__context_menu)(object)this.widget).controller)) }));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((((_DecoyChild__context_menu)this.widget).child is not null) ? this._buildAnimation : this._buildBuilder)), animation: ((_DecoyChild__context_menu)this.widget).controller)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -510,13 +510,13 @@ internal class _DecoyChildState__context_menu : global::Doroti.Framework.Widgets
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -550,8 +550,8 @@ internal class _DecoyChildState__context_menu : global::Doroti.Framework.Widgets
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -573,7 +573,7 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
     internal static Color _kModalBarrierColor = new global::Doroti.Ui.Color(1711539215L);
     internal virtual List<global::Doroti.Framework.Widgets.Widget> _actions { get; private set; } = default!;
     internal virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>? _builder { get; private set; }
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _childGlobalKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _childGlobalKey { get; private set; } = GlobalKey<IState>.Create();
     internal virtual _ContextMenuLocation__context_menu _contextMenuLocation { get; private set; } = default!;
     internal virtual bool _externalOffstage { get; set; } = false;
     internal virtual bool _internalOffstage { get; set; } = false;
@@ -581,9 +581,9 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
     internal virtual global::Doroti.Framework.Widgets.Orientation? _lastOrientation { get; set; } = default;
     internal virtual Rect _previousChildRect { get; private set; } = default!;
     internal virtual double? _scale { get; set; } = 1.0;
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _sheetGlobalKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
-    internal static global::Doroti.Framework.Animation.CurveTween _curve = new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.easeOutBack);
-    internal static global::Doroti.Framework.Animation.CurveTween _curveReverse = new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.easeInBack);
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _sheetGlobalKey { get; private set; } = GlobalKey<IState>.Create();
+    internal static global::Doroti.Framework.Animation.CurveTween _curve = new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeOutBack);
+    internal static global::Doroti.Framework.Animation.CurveTween _curveReverse = new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeInBack);
     internal static global::Doroti.Framework.Animation.RectTween _rectTween = new global::Doroti.Framework.Animation.RectTween();
     internal static global::Doroti.Framework.Animation.Animatable<Rect?> _rectAnimatable = _rectTween.chain(_curve);
     internal static global::Doroti.Framework.Animation.RectTween _rectTweenReverse = new global::Doroti.Framework.Animation.RectTween();
@@ -609,7 +609,7 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
         this._contextMenuLocation = contextMenuLocation;
         this._previousChildRect = previousChildRect;
         this._scaleFactor = scaleFactor;
-        System.Diagnostics.Debug.Assert(System.Linq.Enumerable.Any(actions));
+        System.Diagnostics.Debug.Assert(Enumerable.Any(actions));
     }
 
     public override Color? barrierColor => _kModalBarrierColor;
@@ -618,8 +618,8 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
     public override Duration transitionDuration => Context_menuLibrary._kModalPopupTransitionDuration;
     internal static global::Doroti.Ui.Rect _getScaledRect(global::Doroti.Framework.Widgets.GlobalKey<IState> globalKey, double scale)
     {
-        global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)(object?)Context_menuLibrary._getRect(globalKey));
-        global::Doroti.Ui.Size sizeScaled = ((global::Doroti.Ui.Size)(object?)(childRect.size * scale));
+        global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)Context_menuLibrary._getRect(globalKey));
+        global::Doroti.Ui.Size sizeScaled = ((global::Doroti.Ui.Size)(childRect.size * scale));
         var offsetScaled = new global::Doroti.Ui.Offset((childRect.left + (((childRect.size.width - sizeScaled.width)) / 2L)), (childRect.top + (((childRect.size.height - sizeScaled.height)) / 2L)));
         return (offsetScaled & sizeScaled);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -627,7 +627,7 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
 
     public static global::Doroti.Framework.Painting.AlignmentDirectional getSheetAlignment(_ContextMenuLocation__context_menu contextMenuLocation, global::Doroti.Framework.Widgets.Orientation orientation)
     {
-        return (contextMenuLocation switch { _ContextMenuLocation__context_menu.center when ((object.Equals(DartRuntimePrimitives.RequireValue(orientation), global::Doroti.Framework.Widgets.Orientation.landscape))) => global::Doroti.Framework.Painting.AlignmentDirectional.topStart, _ContextMenuLocation__context_menu.center => global::Doroti.Framework.Painting.AlignmentDirectional.topCenter, _ContextMenuLocation__context_menu.right => global::Doroti.Framework.Painting.AlignmentDirectional.topEnd, _ContextMenuLocation__context_menu.left => global::Doroti.Framework.Painting.AlignmentDirectional.topStart, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (contextMenuLocation switch { _ContextMenuLocation__context_menu.center when ((Equals(DartRuntimePrimitives.RequireValue(orientation), Orientation.landscape))) => AlignmentDirectional.topStart, _ContextMenuLocation__context_menu.center => AlignmentDirectional.topCenter, _ContextMenuLocation__context_menu.right => AlignmentDirectional.topEnd, _ContextMenuLocation__context_menu.left => AlignmentDirectional.topStart, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -637,18 +637,18 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
         {
             case _ContextMenuLocation__context_menu.center:
                 {
-                    global::Doroti.Ui.Offset target = ((global::Doroti.Ui.Offset)(object?)((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? childRect.bottomCenter : childRect.topCenter));
-                    global::Doroti.Ui.Offset centered = ((global::Doroti.Ui.Offset)(object?)(target - new global::Doroti.Ui.Offset((sheetRect.width / 2L), 0.0)));
+                    global::Doroti.Ui.Offset target = ((global::Doroti.Ui.Offset)((Equals(orientation, Orientation.portrait)) ? childRect.bottomCenter : childRect.topCenter));
+                    global::Doroti.Ui.Offset centered = ((global::Doroti.Ui.Offset)(target - new global::Doroti.Ui.Offset((sheetRect.width / 2L), 0.0)));
                     return (centered & sheetRect.size);
                 }
             case _ContextMenuLocation__context_menu.right:
                 {
-                    global::Doroti.Ui.Offset targetLocal = ((global::Doroti.Ui.Offset)(object?)((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? childRect.bottomRight : childRect.topRight));
+                    global::Doroti.Ui.Offset targetLocal = ((global::Doroti.Ui.Offset)((Equals(orientation, Orientation.portrait)) ? childRect.bottomRight : childRect.topRight));
                     return (((targetLocal - new global::Doroti.Ui.Offset(sheetRect.width, 0.0))) & sheetRect.size);
                 }
             case _ContextMenuLocation__context_menu.left:
                 {
-                    global::Doroti.Ui.Offset targetAlternate = ((global::Doroti.Ui.Offset)(object?)((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? childRect.bottomLeft : childRect.topLeft));
+                    global::Doroti.Ui.Offset targetAlternate = ((global::Doroti.Ui.Offset)((Equals(orientation, Orientation.portrait)) ? childRect.bottomLeft : childRect.topLeft));
                     return (targetAlternate & sheetRect.size);
                 }
             default:
@@ -668,12 +668,12 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
 
     internal virtual void _updateTweenRects()
     {
-        global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)(object?)((this._scale is null) ? Context_menuLibrary._getRect(this._childGlobalKey) : _ContextMenuRoute__context_menu<T>._getScaledRect(this._childGlobalKey, DartRuntimePrimitives.RequireValue(this._scale))));
+        global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)((this._scale is null) ? Context_menuLibrary._getRect(this._childGlobalKey) : _ContextMenuRoute__context_menu<T>._getScaledRect(this._childGlobalKey, DartRuntimePrimitives.RequireValue(this._scale))));
         _rectTween.begin = this._previousChildRect;
         _rectTween.end = childRect;
-        var childRectOriginal = global::Doroti.Ui.Rect.fromCenter(center: ((Offset)(this._previousChildRect).center), width: (this._previousChildRect.width / this._scaleFactor), height: (this._previousChildRect.height / this._scaleFactor));
-        global::Doroti.Ui.Rect sheetRect = ((global::Doroti.Ui.Rect)(object?)Context_menuLibrary._getRect(this._sheetGlobalKey));
-        global::Doroti.Ui.Rect sheetRectBegin = ((global::Doroti.Ui.Rect)(object?)_ContextMenuRoute__context_menu<T>._getSheetRectBegin(this._lastOrientation, this._contextMenuLocation, childRectOriginal, sheetRect));
+        var childRectOriginal = Rect.fromCenter(center: ((Offset)(this._previousChildRect).center), width: (this._previousChildRect.width / this._scaleFactor), height: (this._previousChildRect.height / this._scaleFactor));
+        global::Doroti.Ui.Rect sheetRect = ((global::Doroti.Ui.Rect)Context_menuLibrary._getRect(this._sheetGlobalKey));
+        global::Doroti.Ui.Rect sheetRectBegin = ((global::Doroti.Ui.Rect)_ContextMenuRoute__context_menu<T>._getSheetRectBegin(this._lastOrientation, this._contextMenuLocation, childRectOriginal, sheetRect));
         _sheetRectTween.begin = sheetRectBegin;
         _sheetRectTween.end = sheetRect;
         _sheetScaleTween.begin = 0.0;
@@ -708,23 +708,23 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
     {
         _internalOffstage = true;
         _setOffstageInternally();
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
         {
             _updateTweenRects();
             _internalOffstage = false;
             _setOffstageInternally();
         })), debugLabel: "renderContextMenuRouteOffstage");
-        return ((global::Doroti.Framework.Scheduler.TickerFuture)(object?)base.didPush());
+        return ((global::Doroti.Framework.Scheduler.TickerFuture)base.didPush());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Animation.Animation<double> createAnimation()
     {
-        global::Doroti.Framework.Animation.Animation<double> animation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)base.createAnimation());
-        if ((!object.Equals(this._curvedAnimation?.parent, animation)))
+        global::Doroti.Framework.Animation.Animation<double> animation = ((global::Doroti.Framework.Animation.Animation<double>)base.createAnimation());
+        if ((!Equals(this._curvedAnimation?.parent, animation)))
         {
             this._curvedAnimation?.dispose();
-            _curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: global::Doroti.Framework.Animation.Curves.linear);
+            _curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: Curves.linear);
         }
         _sheetOpacity = this._opacityTween.animate(this._curvedAnimation!);
         return animation;
@@ -733,24 +733,24 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
 
     public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+        return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.OrientationBuilder(builder: ((context, orientation) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.OrientationBuilder(builder: ((context, orientation) =>
         {
             _lastOrientation = DartRuntimePrimitives.RequireValue(orientation);
             if (!((global::Doroti.Framework.Animation.Animation<double>)animation).isCompleted)
             {
-                var reverseLocal = (object.Equals(((global::Doroti.Framework.Animation.Animation<double>)animation).status, global::Doroti.Framework.Animation.AnimationStatus.reverse));
-                global::Doroti.Ui.Rect rectLocal = ((global::Doroti.Ui.Rect)(object?)(reverseLocal ? DartRuntimePrimitives.RequireValue(_rectAnimatableReverse.evaluate(animation)) : DartRuntimePrimitives.RequireValue(_rectAnimatable.evaluate(animation))));
-                global::Doroti.Ui.Rect sheetRect = ((global::Doroti.Ui.Rect)(object?)(reverseLocal ? DartRuntimePrimitives.RequireValue(this._sheetRectAnimatableReverse.evaluate(animation)) : DartRuntimePrimitives.RequireValue(this._sheetRectAnimatable.evaluate(animation))));
+                var reverseLocal = (Equals(((global::Doroti.Framework.Animation.Animation<double>)animation).status, AnimationStatus.reverse));
+                global::Doroti.Ui.Rect rectLocal = ((global::Doroti.Ui.Rect)(reverseLocal ? DartRuntimePrimitives.RequireValue(_rectAnimatableReverse.evaluate(animation)) : DartRuntimePrimitives.RequireValue(_rectAnimatable.evaluate(animation))));
+                global::Doroti.Ui.Rect sheetRect = ((global::Doroti.Ui.Rect)(reverseLocal ? DartRuntimePrimitives.RequireValue(this._sheetRectAnimatableReverse.evaluate(animation)) : DartRuntimePrimitives.RequireValue(this._sheetRectAnimatable.evaluate(animation))));
                 double sheetScale = (reverseLocal ? _sheetScaleAnimatableReverse.evaluate(animation) : _sheetScaleAnimatable.evaluate(animation));
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Stack.Create(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Positioned.CreateFromRect(rect: sheetRect, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._sheetOpacity, child: global::Doroti.Framework.Widgets.Transform.CreateScale(alignment: _ContextMenuRoute__context_menu<T>.getSheetAlignment(this._contextMenuLocation, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(orientation))), scale: sheetScale, child: new _ContextMenuSheet__context_menu(key: this._sheetGlobalKey, actions: this._actions, contextMenuLocation: this._contextMenuLocation, orientation: DartRuntimePrimitives.RequireValue(orientation)))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Positioned.CreateFromRect(key: this._childGlobalKey, rect: rectLocal, child: this._builder!(context, animation))) }));
+                return ((global::Doroti.Framework.Widgets.Widget)Stack.Create(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateFromRect(rect: sheetRect, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._sheetOpacity, child: Transform.CreateScale(alignment: _ContextMenuRoute__context_menu<T>.getSheetAlignment(this._contextMenuLocation, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(orientation))), scale: sheetScale, child: new _ContextMenuSheet__context_menu(key: this._sheetGlobalKey, actions: this._actions, contextMenuLocation: this._contextMenuLocation, orientation: DartRuntimePrimitives.RequireValue(orientation)))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateFromRect(key: this._childGlobalKey, rect: rectLocal, child: this._builder!(context, animation))) }));
             }
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ContextMenuRouteStatic__context_menu(actions: this._actions, childGlobalKey: this._childGlobalKey, contextMenuLocation: this._contextMenuLocation, onDismiss: this._onDismiss, orientation: DartRuntimePrimitives.RequireValue(orientation), sheetGlobalKey: this._sheetGlobalKey, childRect: this._previousChildRect, child: this._builder!(context, animation)));
+            return ((global::Doroti.Framework.Widgets.Widget)new _ContextMenuRouteStatic__context_menu(actions: this._actions, childGlobalKey: this._childGlobalKey, contextMenuLocation: this._contextMenuLocation, onDismiss: this._onDismiss, orientation: DartRuntimePrimitives.RequireValue(orientation), sheetGlobalKey: this._sheetGlobalKey, childRect: this._previousChildRect, child: this._builder!(context, animation)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -830,17 +830,17 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
 
     internal virtual void _onPanEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
-        if ((((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy.abs() >= global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity))
+        if ((((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy.abs() >= Gestures.ConstantsLibrary.kMinFlingVelocity))
         {
             bool flingIsAway = (((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy > 0L);
             double finalPosition = (flingIsAway ? (((global::Doroti.Framework.Animation.Animation<Offset>)this._moveAnimation).value.dy + 100.0) : 0.0);
-            if ((flingIsAway && (!object.Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, global::Doroti.Framework.Animation.AnimationStatus.forward))))
+            if ((flingIsAway && (!Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, AnimationStatus.forward))))
             {
                 this._sheetController.forward();
             }
             else
             {
-                if ((!flingIsAway && (!object.Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, global::Doroti.Framework.Animation.AnimationStatus.reverse))))
+                if ((!flingIsAway && (!Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, AnimationStatus.reverse))))
                 {
                     this._sheetController.reverse();
                 }
@@ -854,7 +854,7 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
         }
         if ((this._lastScale == _kMinScale))
         {
-            ((_ContextMenuRouteStatic__context_menu)(object)this.widget).onDismiss!(this.context, this._lastScale, ((global::Doroti.Framework.Animation.Animation<double>)this._sheetOpacityAnimation).value);
+            ((_ContextMenuRouteStatic__context_menu)this.widget).onDismiss!(this.context, this._lastScale, ((global::Doroti.Framework.Animation.Animation<double>)this._sheetOpacityAnimation).value);
             return;
         }
         this._moveController.addListener(this._moveListener);
@@ -875,7 +875,7 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
 
     internal virtual void _flingStatusListener(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if (!global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        if (!AnimationStatusMembers.isCompleted(status))
         {
             return;
         }
@@ -885,7 +885,7 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
         {
             return;
         }
-        ((_ContextMenuRouteStatic__context_menu)(object)this.widget).onDismiss!(this.context, this._lastScale, ((global::Doroti.Framework.Animation.Animation<double>)this._sheetOpacityAnimation).value);
+        ((_ContextMenuRouteStatic__context_menu)this.widget).onDismiss!(this.context, this._lastScale, ((global::Doroti.Framework.Animation.Animation<double>)this._sheetOpacityAnimation).value);
     }
 
     internal virtual void _setDragOffset(Offset dragOffset)
@@ -896,13 +896,13 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
         {
             _dragOffset = dragOffset;
             _moveAnimation = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: Offset.zero, end: new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(endX, -SliderLibrary._kPadding, SliderLibrary._kPadding), endY)).animate(this._moveCurvedAnimation);
-            if ((((this._lastScale <= _kSheetScaleThreshold) && (!object.Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, global::Doroti.Framework.Animation.AnimationStatus.forward))) && (((global::Doroti.Framework.Animation.Animation<double>)this._sheetScaleAnimation).value != 0.0)))
+            if ((((this._lastScale <= _kSheetScaleThreshold) && (!Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, AnimationStatus.forward))) && (((global::Doroti.Framework.Animation.Animation<double>)this._sheetScaleAnimation).value != 0.0)))
             {
                 this._sheetController.forward();
             }
             else
             {
-                if ((((this._lastScale > _kSheetScaleThreshold) && (!object.Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, global::Doroti.Framework.Animation.AnimationStatus.reverse))) && (((global::Doroti.Framework.Animation.Animation<double>)this._sheetScaleAnimation).value != 1.0)))
+                if ((((this._lastScale > _kSheetScaleThreshold) && (!Equals(((global::Doroti.Framework.Animation.AnimationController)this._sheetController).status, AnimationStatus.reverse))) && (((global::Doroti.Framework.Animation.Animation<double>)this._sheetScaleAnimation).value != 1.0)))
                 {
                     this._sheetController.reverse();
                 }
@@ -912,31 +912,31 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
 
     internal virtual global::Doroti.Framework.Widgets.Widget _getChild(global::Doroti.Framework.Widgets.Orientation orientation, _ContextMenuLocation__context_menu contextMenuLocation)
     {
-        global::Doroti.Ui.Size screenSize = ((global::Doroti.Ui.Size)(object?)MediaQuery.sizeOf(this.context));
-        global::Doroti.Framework.Painting.EdgeInsets padding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(this.context));
-        var screenBoundsLocal = global::Doroti.Ui.Rect.fromLTWH(0, 0, ((screenSize.width - ((global::Doroti.Framework.Painting.EdgeInsets)padding).left) - ((global::Doroti.Framework.Painting.EdgeInsets)padding).right), ((screenSize.height - ((global::Doroti.Framework.Painting.EdgeInsets)padding).top) - ((global::Doroti.Framework.Painting.EdgeInsets)padding).bottom));
-        global::Doroti.Framework.Widgets.Widget sheetLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._sheetController, builder: this._buildSheetAnimation, child: new _ContextMenuSheet__context_menu(key: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).sheetGlobalKey, actions: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).actions!, contextMenuLocation: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).contextMenuLocation, orientation: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).orientation)));
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new _ContextMenuAlignedChildren__context_menu(targetRect: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).childRect, screenBounds: screenBoundsLocal, sheet: sheetLocal, contextMenuLocation: contextMenuLocation, orientation: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).orientation, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._moveController, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._buildChildAnimation, child: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).child)));
+        global::Doroti.Ui.Size screenSize = ((global::Doroti.Ui.Size)MediaQuery.sizeOf(this.context));
+        global::Doroti.Framework.Painting.EdgeInsets padding = ((global::Doroti.Framework.Painting.EdgeInsets)MediaQuery.paddingOf(this.context));
+        var screenBoundsLocal = Rect.fromLTWH(0, 0, ((screenSize.width - ((global::Doroti.Framework.Painting.EdgeInsets)padding).left) - ((global::Doroti.Framework.Painting.EdgeInsets)padding).right), ((screenSize.height - ((global::Doroti.Framework.Painting.EdgeInsets)padding).top) - ((global::Doroti.Framework.Painting.EdgeInsets)padding).bottom));
+        global::Doroti.Framework.Widgets.Widget sheetLocal = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._sheetController, builder: this._buildSheetAnimation, child: new _ContextMenuSheet__context_menu(key: ((_ContextMenuRouteStatic__context_menu)this.widget).sheetGlobalKey, actions: ((_ContextMenuRouteStatic__context_menu)this.widget).actions!, contextMenuLocation: ((_ContextMenuRouteStatic__context_menu)this.widget).contextMenuLocation, orientation: ((_ContextMenuRouteStatic__context_menu)this.widget).orientation)));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)new _ContextMenuAlignedChildren__context_menu(targetRect: ((_ContextMenuRouteStatic__context_menu)this.widget).childRect, screenBounds: screenBoundsLocal, sheet: sheetLocal, contextMenuLocation: contextMenuLocation, orientation: ((_ContextMenuRouteStatic__context_menu)this.widget).orientation, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._moveController, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._buildChildAnimation, child: ((_ContextMenuRouteStatic__context_menu)this.widget).child)));
         return childLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildSheetAnimation(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateScale(alignment: _ContextMenuRoute__context_menu<object>.getSheetAlignment(((_ContextMenuRouteStatic__context_menu)(object)this.widget).contextMenuLocation, ((_ContextMenuRouteStatic__context_menu)(object)this.widget).orientation), scale: ((global::Doroti.Framework.Animation.Animation<double>)this._sheetScaleAnimation).value, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._sheetOpacityAnimation, child: child)));
+        return ((global::Doroti.Framework.Widgets.Widget)Transform.CreateScale(alignment: _ContextMenuRoute__context_menu<object>.getSheetAlignment(((_ContextMenuRouteStatic__context_menu)this.widget).contextMenuLocation, ((_ContextMenuRouteStatic__context_menu)this.widget).orientation), scale: ((global::Doroti.Framework.Animation.Animation<double>)this._sheetScaleAnimation).value, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._sheetOpacityAnimation, child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildChildAnimation(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
     {
-        _lastScale = _ContextMenuRouteStaticState__context_menu._getScale(((_ContextMenuRouteStatic__context_menu)(object)this.widget).orientation, MediaQuery.heightOf(context), ((global::Doroti.Framework.Animation.Animation<Offset>)this._moveAnimation).value.dy);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateScale(key: ((_ContextMenuRouteStatic__context_menu)(object)this.widget).childGlobalKey, scale: this._lastScale, child: child));
+        _lastScale = _getScale(((_ContextMenuRouteStatic__context_menu)this.widget).orientation, MediaQuery.heightOf(context), ((global::Doroti.Framework.Animation.Animation<Offset>)this._moveAnimation).value.dy);
+        return ((global::Doroti.Framework.Widgets.Widget)Transform.CreateScale(key: ((_ContextMenuRouteStatic__context_menu)this.widget).childGlobalKey, scale: this._lastScale, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildAnimation(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateTranslate(offset: ((global::Doroti.Framework.Animation.Animation<Offset>)this._moveAnimation).value, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)Transform.CreateTranslate(offset: ((global::Doroti.Framework.Animation.Animation<Offset>)this._moveAnimation).value, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -944,9 +944,9 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
     {
         base.initState();
         _moveController = new global::Doroti.Framework.Animation.AnimationController(duration: _kMoveControllerDuration, value: 1.0, vsync: this);
-        _moveCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._moveController, curve: global::Doroti.Framework.Animation.Curves.elasticIn);
+        _moveCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._moveController, curve: Curves.elasticIn);
         _sheetController = new global::Doroti.Framework.Animation.AnimationController(duration: Duration.Create(milliseconds: 100L), reverseDuration: Duration.Create(milliseconds: 300L), vsync: this);
-        _sheetCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._sheetController, curve: global::Doroti.Framework.Animation.Curves.linear, reverseCurve: global::Doroti.Framework.Animation.Curves.easeInBack);
+        _sheetCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._sheetController, curve: Curves.linear, reverseCurve: Curves.easeInBack);
         _sheetScaleAnimation = new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0).animate(this._sheetCurvedAnimation);
         _sheetOpacityAnimation = new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0).animate(this._sheetController);
         _setDragOffset(Offset.zero);
@@ -979,8 +979,8 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)_getChild(((_ContextMenuRouteStatic__context_menu)(object)this.widget).orientation, ((_ContextMenuRouteStatic__context_menu)(object)this.widget).contextMenuLocation));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SafeArea(child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new global::Doroti.Framework.Widgets.GestureDetector(onPanEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onPanEnd, onPanStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._onPanStart, onPanUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._onPanUpdate, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._moveController, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._buildAnimation, child: childLocal)))));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)_getChild(((_ContextMenuRouteStatic__context_menu)this.widget).orientation, ((_ContextMenuRouteStatic__context_menu)this.widget).contextMenuLocation));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SafeArea(child: new global::Doroti.Framework.Widgets.Align(alignment: Alignment.topLeft, child: new global::Doroti.Framework.Widgets.GestureDetector(onPanEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onPanEnd, onPanStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._onPanStart, onPanUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._onPanUpdate, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._moveController, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)this._buildAnimation, child: childLocal)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -995,13 +995,13 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1035,8 +1035,8 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -1064,7 +1064,7 @@ internal class _ContextMenuSheet__context_menu : global::Doroti.Framework.Widget
         this.actions = actions;
         this.contextMenuLocation = contextMenuLocation;
         this.orientation = orientation;
-        System.Diagnostics.Debug.Assert(System.Linq.Enumerable.Any(actions));
+        System.Diagnostics.Debug.Assert(Enumerable.Any(actions));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ContextMenuSheetState__context_menu());
@@ -1090,7 +1090,7 @@ internal class _ContextMenuSheetState__context_menu : global::Doroti.Framework.W
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: _kMenuWidth, child: new global::Doroti.Framework.Widgets.IntrinsicHeight(child: new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(13.0)), child: new global::Doroti.Framework.Widgets.ColoredBox(color: CupertinoDynamicColor.resolve(CupertinoContextMenu.kBackgroundColor, context), child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), child: new CupertinoScrollbar(mainAxisMargin: _kScrollbarMainAxisMargin, controller: this._controller, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(controller: this._controller, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection49409 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection49409.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((_ContextMenuSheet__context_menu)(object)this.widget).actions.First())); foreach (var action in ((_ContextMenuSheet__context_menu)(object)this.widget).actions.skip(1L)) { __collection49409.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(Context_menuLibrary._borderColor, context), width: 0.4))), position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, child: action))); } return __collection49409; }))())))))))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(width: _kMenuWidth, child: new global::Doroti.Framework.Widgets.IntrinsicHeight(child: new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: BorderRadius.CreateAll(Radius.circular(13.0)), child: new global::Doroti.Framework.Widgets.ColoredBox(color: CupertinoDynamicColor.resolve(CupertinoContextMenu.kBackgroundColor, context), child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), child: new CupertinoScrollbar(mainAxisMargin: _kScrollbarMainAxisMargin, controller: this._controller, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(controller: this._controller, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection49409 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection49409.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((_ContextMenuSheet__context_menu)this.widget).actions.First())); foreach (var action in ((_ContextMenuSheet__context_menu)this.widget).actions.skip(1L)) { __collection49409.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(Context_menuLibrary._borderColor, context), width: 0.4))), position: DecorationPosition.foreground, child: action))); } return __collection49409; }))())))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1123,7 +1123,7 @@ internal class _ContextMenuAlignedChildren__context_menu : global::Doroti.Framew
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _ContextMenuAlignedChildrenDelegate__context_menu(targetRect: this.targetRect, screenBounds: this.screenBounds, orientation: this.orientation, contextMenuLocation: this.contextMenuLocation), children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _ContextMenuChild__context_menu.child, child: this.child)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _ContextMenuChild__context_menu.menuSheet, child: this.sheet)) }));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _ContextMenuAlignedChildrenDelegate__context_menu(targetRect: this.targetRect, screenBounds: this.screenBounds, orientation: this.orientation, contextMenuLocation: this.contextMenuLocation), children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _ContextMenuChild__context_menu.child, child: this.child)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _ContextMenuChild__context_menu.menuSheet, child: this.sheet)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1146,15 +1146,15 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : global::Dorot
 
     public override void performLayout(Size size)
     {
-        var constraints = global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size);
+        var constraints = BoxConstraints.CreateLoose(size);
         double availableHeightForChild = (this.screenBounds.height - _ContextMenuRouteStaticState__context_menu._kPadding);
         double availableWidth = (this.screenBounds.width - (_ContextMenuRouteStaticState__context_menu._kPadding * 2L));
-        double availableWidthForChild = (this.orientation switch { global::Doroti.Framework.Widgets.Orientation.portrait => availableWidth, global::Doroti.Framework.Widgets.Orientation.landscape => (availableWidth - _ContextMenuSheetState__context_menu._kMenuWidth), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double availableWidthForChild = (this.orientation switch { Orientation.portrait => availableWidth, Orientation.landscape => (availableWidth - _ContextMenuSheetState__context_menu._kMenuWidth), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         DartRuntimePrimitives.Assert(() => (availableWidthForChild >= 0.0));
         DartRuntimePrimitives.Assert(() => (availableHeightForChild >= 0.0));
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)layoutChild(_ContextMenuChild__context_menu.child, constraints.copyWith(maxHeight: availableHeightForChild, maxWidth: availableWidthForChild)));
-        double availableHeightForMenu = (this.orientation switch { global::Doroti.Framework.Widgets.Orientation.portrait => (availableHeightForChild - ((childSize.height + _ContextMenuRouteStaticState__context_menu._kPadding))), global::Doroti.Framework.Widgets.Orientation.landscape => availableHeightForChild, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.Size menuSize = ((global::Doroti.Ui.Size)(object?)layoutChild(_ContextMenuChild__context_menu.menuSheet, constraints.copyWith(maxHeight: availableHeightForMenu)));
+        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)layoutChild(_ContextMenuChild__context_menu.child, constraints.copyWith(maxHeight: availableHeightForChild, maxWidth: availableWidthForChild)));
+        double availableHeightForMenu = (this.orientation switch { Orientation.portrait => (availableHeightForChild - ((childSize.height + _ContextMenuRouteStaticState__context_menu._kPadding))), Orientation.landscape => availableHeightForChild, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Size menuSize = ((global::Doroti.Ui.Size)layoutChild(_ContextMenuChild__context_menu.menuSheet, constraints.copyWith(maxHeight: availableHeightForMenu)));
         double initialChildLeft = default!;
         double initialChildTop = default!;
         double maxClampedLeft = default!;
@@ -1163,7 +1163,7 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : global::Dorot
         bool menuBeforeChild = default!;
         switch (this.orientation)
         {
-            case global::Doroti.Framework.Widgets.Orientation.portrait:
+            case Orientation.portrait:
                 {
                     menuBeforeChild = false;
                     double totalHeight = ((childSize.height + menuSize.height) + _ContextMenuRouteStaticState__context_menu._kPadding);
@@ -1176,9 +1176,9 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : global::Dorot
                     maxClampedTop = (this.screenBounds.bottom - totalHeight);
                     break;
                 }
-            case global::Doroti.Framework.Widgets.Orientation.landscape:
+            case Orientation.landscape:
                 {
-                    menuBeforeChild = (object.Equals(this.contextMenuLocation, _ContextMenuLocation__context_menu.right));
+                    menuBeforeChild = (Equals(this.contextMenuLocation, _ContextMenuLocation__context_menu.right));
                     double totalWidthLocal = ((childSize.width + menuSize.width) + _ContextMenuRouteStaticState__context_menu._kPadding);
                     initialChildLeft = (((Offset)(this.screenBounds).center).dx - (totalWidthLocal / 2L));
                     initialChildTop = (((Offset)(this.screenBounds).center).dy - (Math.Max(childSize.height, menuSize.height) / 2L));
@@ -1192,15 +1192,15 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : global::Dorot
         double clampedLeft = Dart_uiLibrary.clampDouble(initialChildLeft, (this.screenBounds.left + _ContextMenuRouteStaticState__context_menu._kPadding), maxClampedLeft);
         double clampedTop = Dart_uiLibrary.clampDouble(initialChildTop, (this.screenBounds.top + _ContextMenuRouteStaticState__context_menu._kPadding), maxClampedTop);
         var firstPosition = new global::Doroti.Ui.Offset(clampedLeft, clampedTop);
-        global::Doroti.Ui.Offset secondPosition = ((global::Doroti.Ui.Offset)(object?)(firstPosition + secondChildOffset));
+        global::Doroti.Ui.Offset secondPosition = ((global::Doroti.Ui.Offset)(firstPosition + secondChildOffset));
         positionChild(_ContextMenuChild__context_menu.child, (menuBeforeChild ? secondPosition : firstPosition));
         positionChild(_ContextMenuChild__context_menu.menuSheet, (menuBeforeChild ? firstPosition : secondPosition));
     }
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.MultiChildLayoutDelegate oldDelegate)
     {
-        var __oldDelegate = (_ContextMenuAlignedChildrenDelegate__context_menu)(object)oldDelegate;
-        return ((((!object.Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).targetRect, this.targetRect)) || (!object.Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).screenBounds, this.screenBounds))) || (!object.Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).orientation, this.orientation))) || (!object.Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).contextMenuLocation, this.contextMenuLocation)));
+        var __oldDelegate = (_ContextMenuAlignedChildrenDelegate__context_menu)oldDelegate;
+        return ((((!Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).targetRect, this.targetRect)) || (!Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).screenBounds, this.screenBounds))) || (!Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).orientation, this.orientation))) || (!Equals(((_ContextMenuAlignedChildrenDelegate__context_menu)__oldDelegate).contextMenuLocation, this.contextMenuLocation)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/search_bar_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -49,7 +49,7 @@ public class SearchBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return a;
         }
-        return new SearchBarThemeData(elevation: WidgetStateProperty.lerp<double?>(a?.elevation, b?.elevation, t, (global::System.Func<double?, double?, double, double?>)Dart_uiLibrary.lerpDouble), backgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.backgroundColor, b?.backgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), shadowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.shadowColor, b?.shadowColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), surfaceTintColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.surfaceTintColor, b?.surfaceTintColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), side: WidgetStateBorderSide.lerp(a?.side, b?.side, t), shape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.shape, b?.shape, t, (global::System.Func<global::Doroti.Framework.Painting.OutlinedBorder?, global::Doroti.Framework.Painting.OutlinedBorder?, double, global::Doroti.Framework.Painting.OutlinedBorder?>)global::Doroti.Framework.Painting.OutlinedBorder.lerp), padding: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(a?.padding, b?.padding, t, (global::System.Func<global::Doroti.Framework.Painting.EdgeInsetsGeometry?, global::Doroti.Framework.Painting.EdgeInsetsGeometry?, double, global::Doroti.Framework.Painting.EdgeInsetsGeometry?>)global::Doroti.Framework.Painting.EdgeInsetsGeometry.lerp), textStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.textStyle, b?.textStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)global::Doroti.Framework.Painting.TextStyle.lerp), hintStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.hintStyle, b?.hintStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)global::Doroti.Framework.Painting.TextStyle.lerp), constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t), textCapitalization: ((t < 0.5) ? a?.textCapitalization : b?.textCapitalization));
+        return new SearchBarThemeData(elevation: WidgetStateProperty.lerp<double?>(a?.elevation, b?.elevation, t, (global::System.Func<double?, double?, double, double?>)Dart_uiLibrary.lerpDouble), backgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.backgroundColor, b?.backgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), shadowColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.shadowColor, b?.shadowColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), surfaceTintColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.surfaceTintColor, b?.surfaceTintColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), side: WidgetStateBorderSide.lerp(a?.side, b?.side, t), shape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.shape, b?.shape, t, (global::System.Func<global::Doroti.Framework.Painting.OutlinedBorder?, global::Doroti.Framework.Painting.OutlinedBorder?, double, global::Doroti.Framework.Painting.OutlinedBorder?>)OutlinedBorder.lerp), padding: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(a?.padding, b?.padding, t, (global::System.Func<global::Doroti.Framework.Painting.EdgeInsetsGeometry?, global::Doroti.Framework.Painting.EdgeInsetsGeometry?, double, global::Doroti.Framework.Painting.EdgeInsetsGeometry?>)EdgeInsetsGeometry.lerp), textStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.textStyle, b?.textStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)TextStyle.lerp), hintStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.hintStyle, b?.hintStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)TextStyle.lerp), constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t), textCapitalization: ((t < 0.5) ? a?.textCapitalization : b?.textCapitalization));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -62,11 +62,11 @@ public class SearchBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((((((__other is SearchBarThemeData) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).elevation, this.elevation))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).overlayColor, this.overlayColor))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).side, this.side))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).shape, this.shape))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).padding, this.padding))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).hintStyle, this.hintStyle))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).constraints, this.constraints))) && (object.Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).textCapitalization, this.textCapitalization)));
+        return (((((((((((((__other is SearchBarThemeData) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).elevation, this.elevation))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).overlayColor, this.overlayColor))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).side, this.side))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).shape, this.shape))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).padding, this.padding))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).textStyle, this.textStyle))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).hintStyle, this.hintStyle))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).constraints, this.constraints))) && (Equals(((SearchBarThemeData)((SearchBarThemeData)__other)).textCapitalization, this.textCapitalization)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -85,8 +85,8 @@ public class SearchBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.TextCapitalization>("textCapitalization", this.textCapitalization, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -102,7 +102,7 @@ public class SearchBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,10 +119,10 @@ public class SearchBarTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static SearchBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SearchBarTheme? searchBarThemeLocal = ((SearchBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SearchBarTheme>());
+        SearchBarTheme? searchBarThemeLocal = ((SearchBarTheme?)context.dependOnInheritedWidgetOfExactType<SearchBarTheme>());
         return (searchBarThemeLocal?.data ?? Theme.of(context).searchBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((SearchBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((SearchBarTheme)oldWidget).data)));
 }

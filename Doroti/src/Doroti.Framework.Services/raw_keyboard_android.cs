@@ -62,26 +62,26 @@ public class RawKeyEventDataAndroid : RawKeyEventData
     {
         get
         {
-            if (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToPhysicalKey.ContainsKey(scanCode))
+            if (Keyboard_maps_gLibrary.kAndroidToPhysicalKey.ContainsKey(scanCode))
             {
-                return global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToPhysicalKey.GetValueOrDefault(scanCode)!;
+                return Keyboard_maps_gLibrary.kAndroidToPhysicalKey.GetValueOrDefault(scanCode)!;
             }
             if (((eventSource & _sourceJoystick) == _sourceJoystick))
             {
-                LogicalKeyboardKey? foundKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
-                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowUp)))
+                LogicalKeyboardKey? foundKey = Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
+                if ((Equals(foundKey, LogicalKeyboardKey.arrowUp)))
                 {
                     return PhysicalKeyboardKey.arrowUp;
                 }
-                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowDown)))
+                if ((Equals(foundKey, LogicalKeyboardKey.arrowDown)))
                 {
                     return PhysicalKeyboardKey.arrowDown;
                 }
-                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowLeft)))
+                if ((Equals(foundKey, LogicalKeyboardKey.arrowLeft)))
                 {
                     return PhysicalKeyboardKey.arrowLeft;
                 }
-                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowRight)))
+                if ((Equals(foundKey, LogicalKeyboardKey.arrowRight)))
                 {
                     return PhysicalKeyboardKey.arrowRight;
                 }
@@ -93,7 +93,7 @@ public class RawKeyEventDataAndroid : RawKeyEventData
     {
         get
         {
-            LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey = Keyboard_maps_gLibrary.kAndroidNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
             {
                 return numPadKey;
@@ -104,7 +104,7 @@ public class RawKeyEventDataAndroid : RawKeyEventData
                 long keyId = (LogicalKeyboardKey.unicodePlane | ((combinedCodePoint & LogicalKeyboardKey.valueMask)));
                 return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
             if ((newKey is not null))
             {
                 return newKey;
@@ -118,13 +118,13 @@ public class RawKeyEventDataAndroid : RawKeyEventData
         {
             return false;
         }
-        return (side switch { var __case8577 when object.Equals(__case8577, KeyboardSide.any) => true, var __case8609 when object.Equals(__case8609, KeyboardSide.all) => ((((metaState & leftMask) != 0L)) && (((metaState & rightMask) != 0L))), var __case8696 when object.Equals(__case8696, KeyboardSide.left) => ((metaState & leftMask) != 0L), var __case8750 when object.Equals(__case8750, KeyboardSide.right) => ((metaState & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (side switch { var __case8577 when Equals(__case8577, KeyboardSide.any) => true, var __case8609 when Equals(__case8609, KeyboardSide.all) => ((((metaState & leftMask) != 0L)) && (((metaState & rightMask) != 0L))), var __case8696 when Equals(__case8696, KeyboardSide.left) => ((metaState & leftMask) != 0L), var __case8750 when Equals(__case8750, KeyboardSide.right) => ((metaState & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
     {
-        return (key switch { var __case8940 when object.Equals(__case8940, ModifierKey.controlModifier) => _isLeftRightModifierPressed(side, modifierControl, modifierLeftControl, modifierRightControl), var __case9113 when object.Equals(__case9113, ModifierKey.shiftModifier) => _isLeftRightModifierPressed(side, modifierShift, modifierLeftShift, modifierRightShift), var __case9278 when object.Equals(__case9278, ModifierKey.altModifier) => _isLeftRightModifierPressed(side, modifierAlt, modifierLeftAlt, modifierRightAlt), var __case9435 when object.Equals(__case9435, ModifierKey.metaModifier) => _isLeftRightModifierPressed(side, modifierMeta, modifierLeftMeta, modifierRightMeta), var __case9596 when object.Equals(__case9596, ModifierKey.capsLockModifier) => ((metaState & modifierCapsLock) != 0L), var __case9669 when object.Equals(__case9669, ModifierKey.numLockModifier) => ((metaState & modifierNumLock) != 0L), var __case9740 when object.Equals(__case9740, ModifierKey.scrollLockModifier) => ((metaState & modifierScrollLock) != 0L), var __case9817 when object.Equals(__case9817, ModifierKey.functionModifier) => ((metaState & modifierFunction) != 0L), var __case9890 when object.Equals(__case9890, ModifierKey.symbolModifier) => ((metaState & modifierSym) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (key switch { var __case8940 when Equals(__case8940, ModifierKey.controlModifier) => _isLeftRightModifierPressed(side, modifierControl, modifierLeftControl, modifierRightControl), var __case9113 when Equals(__case9113, ModifierKey.shiftModifier) => _isLeftRightModifierPressed(side, modifierShift, modifierLeftShift, modifierRightShift), var __case9278 when Equals(__case9278, ModifierKey.altModifier) => _isLeftRightModifierPressed(side, modifierAlt, modifierLeftAlt, modifierRightAlt), var __case9435 when Equals(__case9435, ModifierKey.metaModifier) => _isLeftRightModifierPressed(side, modifierMeta, modifierLeftMeta, modifierRightMeta), var __case9596 when Equals(__case9596, ModifierKey.capsLockModifier) => ((metaState & modifierCapsLock) != 0L), var __case9669 when Equals(__case9669, ModifierKey.numLockModifier) => ((metaState & modifierNumLock) != 0L), var __case9740 when Equals(__case9740, ModifierKey.scrollLockModifier) => ((metaState & modifierScrollLock) != 0L), var __case9817 when Equals(__case9817, ModifierKey.functionModifier) => ((metaState & modifierFunction) != 0L), var __case9890 when Equals(__case9890, ModifierKey.symbolModifier) => ((metaState & modifierSym) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -161,27 +161,27 @@ public class RawKeyEventDataAndroid : RawKeyEventData
         }
         switch (key)
         {
-            case var __case10758 when object.Equals(__case10758, ModifierKey.controlModifier):
+            case var __case10758 when Equals(__case10758, ModifierKey.controlModifier):
                 {
                     return findSide(modifierControl, modifierLeftControl, modifierRightControl);
                 }
-            case var __case10883 when object.Equals(__case10883, ModifierKey.shiftModifier):
+            case var __case10883 when Equals(__case10883, ModifierKey.shiftModifier):
                 {
                     return findSide(modifierShift, modifierLeftShift, modifierRightShift);
                 }
-            case var __case11000 when object.Equals(__case11000, ModifierKey.altModifier):
+            case var __case11000 when Equals(__case11000, ModifierKey.altModifier):
                 {
                     return findSide(modifierAlt, modifierLeftAlt, modifierRightAlt);
                 }
-            case var __case11109 when object.Equals(__case11109, ModifierKey.metaModifier):
+            case var __case11109 when Equals(__case11109, ModifierKey.metaModifier):
                 {
                     return findSide(modifierMeta, modifierLeftMeta, modifierRightMeta);
                 }
-            case var __case11222 when object.Equals(__case11222, ModifierKey.capsLockModifier):
-            case var __case11263 when object.Equals(__case11263, ModifierKey.numLockModifier):
-            case var __case11303 when object.Equals(__case11303, ModifierKey.scrollLockModifier):
-            case var __case11346 when object.Equals(__case11346, ModifierKey.functionModifier):
-            case var __case11387 when object.Equals(__case11387, ModifierKey.symbolModifier):
+            case var __case11222 when Equals(__case11222, ModifierKey.capsLockModifier):
+            case var __case11263 when Equals(__case11263, ModifierKey.numLockModifier):
+            case var __case11303 when Equals(__case11303, ModifierKey.scrollLockModifier):
+            case var __case11346 when Equals(__case11346, ModifierKey.functionModifier):
+            case var __case11387 when Equals(__case11387, ModifierKey.symbolModifier):
                 {
                     return KeyboardSide.all;
                 }
@@ -208,7 +208,7 @@ public class RawKeyEventDataAndroid : RawKeyEventData
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/bottom_app_bar_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -17,7 +17,7 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
     internal virtual Color? _shadowColor { get; private set; }
     internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _padding { get; private set; }
 
-    public BottomAppBarTheme(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, double? elevation = null, global::Doroti.Framework.Painting.NotchedShape? shape = null, double? height = null, Color? surfaceTintColor = null, Color? shadowColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, BottomAppBarThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))
+    public BottomAppBarTheme(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, double? elevation = null, global::Doroti.Framework.Painting.NotchedShape? shape = null, double? height = null, Color? surfaceTintColor = null, Color? shadowColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, BottomAppBarThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? SizedBox.CreateShrink()))
     {
         this._color = color;
         this._elevation = elevation;
@@ -46,7 +46,7 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static BottomAppBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        BottomAppBarTheme? bottomAppBarThemeLocal = ((BottomAppBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<BottomAppBarTheme>());
+        BottomAppBarTheme? bottomAppBarThemeLocal = ((BottomAppBarTheme?)context.dependOnInheritedWidgetOfExactType<BottomAppBarTheme>());
         return (bottomAppBarThemeLocal?.data ?? Theme.of(context).bottomAppBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -61,14 +61,14 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((BottomAppBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((BottomAppBarTheme)oldWidget).data)));
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new BottomAppBarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new BottomAppBarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
     public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -83,7 +83,7 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -139,11 +139,11 @@ public class BottomAppBarThemeData : global::Doroti.Framework.Foundation.Diagnos
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((__other is BottomAppBarThemeData) && (object.Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).color, this.color))) && (((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).elevation == this.elevation)) && (object.Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).shape, this.shape))) && (((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).height == this.height)) && (object.Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).padding, this.padding)));
+        return ((((((((__other is BottomAppBarThemeData) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).color, this.color))) && (((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).elevation == this.elevation)) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).shape, this.shape))) && (((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).height == this.height)) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((BottomAppBarThemeData)((BottomAppBarThemeData)__other)).padding, this.padding)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -157,8 +157,8 @@ public class BottomAppBarThemeData : global::Doroti.Framework.Foundation.Diagnos
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("padding", this.padding, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -174,7 +174,7 @@ public class BottomAppBarThemeData : global::Doroti.Framework.Foundation.Diagnos
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -62,7 +62,7 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
     internal virtual double _lastPressure { get; set; } = default!;
     internal virtual _ForceState__force_press _state { get; set; } = _ForceState__force_press.ready;
 
-    public ForcePressGestureRecognizer(double startPressure = 0.4, double peakPressure = 0.85, Func<double, double, double, double> interpolation = default!, object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? GestureRecognizer._defaultButtonAcceptBehavior)
+    public ForcePressGestureRecognizer(double startPressure = 0.4, double peakPressure = 0.85, Func<double, double, double, double> interpolation = default!, object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
         Func<double, double, double, double> __interpolation = interpolation ?? _inverseLerp;
         this.startPressure = startPressure;
@@ -80,7 +80,7 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
         else
         {
             base.addAllowedPointer(@event);
-            if ((object.Equals(this._state, _ForceState__force_press.ready)))
+            if ((Equals(this._state, _ForceState__force_press.ready)))
             {
                 _state = _ForceState__force_press.possible;
                 _lastPosition = OffsetPair.CreateFromEventPosition(@event);
@@ -90,14 +90,14 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void handleEvent(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._state, _ForceState__force_press.ready)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._state, _ForceState__force_press.ready)));
         if (((@event is PointerMoveEvent) || (@event is PointerDownEvent)))
         {
             double pressureLocal = this.interpolation(((PointerEvent)@event).pressureMin, ((PointerEvent)@event).pressureMax, ((PointerEvent)@event).pressure);
             DartRuntimePrimitives.Assert(() => ((((pressureLocal >= 0.0) && (pressureLocal <= 1.0))) || double.IsNaN(pressureLocal)));
             _lastPosition = OffsetPair.CreateFromEventPosition(@event);
             _lastPressure = pressureLocal;
-            if ((object.Equals(this._state, _ForceState__force_press.possible)))
+            if ((Equals(this._state, _ForceState__force_press.possible)))
             {
                 if ((pressureLocal > this.startPressure))
                 {
@@ -106,13 +106,13 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
                 }
                 else
                 {
-                    if ((((PointerEvent)@event).delta.distanceSquared > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerEvent)@event).kind, gestureSettings)))
+                    if ((((PointerEvent)@event).delta.distanceSquared > EventsLibrary.computeHitSlop(((PointerEvent)@event).kind, gestureSettings)))
                     {
                         resolve(GestureDisposition.rejected);
                     }
                 }
             }
-            if (((pressureLocal > this.startPressure) && (object.Equals(this._state, _ForceState__force_press.accepted))))
+            if (((pressureLocal > this.startPressure) && (Equals(this._state, _ForceState__force_press.accepted))))
             {
                 _state = _ForceState__force_press.started;
                 if ((this.onStart is not null))
@@ -120,7 +120,7 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
                     invokeCallback<object?>("onStart", () => { ((Action)((() => this.onStart!(new ForcePressDetails(pressure: pressureLocal, globalPosition: ((OffsetPair)this._lastPosition).global, localPosition: ((OffsetPair)this._lastPosition).local)))))(); return null; });
                 }
             }
-            if ((((this.onPeak is not null) && (pressureLocal > this.peakPressure)) && ((object.Equals(this._state, _ForceState__force_press.started)))))
+            if ((((this.onPeak is not null) && (pressureLocal > this.peakPressure)) && ((Equals(this._state, _ForceState__force_press.started)))))
             {
                 _state = _ForceState__force_press.peaked;
                 if ((this.onPeak is not null))
@@ -128,7 +128,7 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
                     invokeCallback<object?>("onPeak", () => { ((Action)((() => this.onPeak!(new ForcePressDetails(pressure: pressureLocal, globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition)))))(); return null; });
                 }
             }
-            if ((((this.onUpdate is not null) && !double.IsNaN(pressureLocal)) && (((object.Equals(this._state, _ForceState__force_press.started)) || (object.Equals(this._state, _ForceState__force_press.peaked))))))
+            if ((((this.onUpdate is not null) && !double.IsNaN(pressureLocal)) && (((Equals(this._state, _ForceState__force_press.started)) || (Equals(this._state, _ForceState__force_press.peaked))))))
             {
                 if ((this.onUpdate is not null))
                 {
@@ -141,11 +141,11 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void acceptGesture(long pointer)
     {
-        if ((object.Equals(this._state, _ForceState__force_press.possible)))
+        if ((Equals(this._state, _ForceState__force_press.possible)))
         {
             _state = _ForceState__force_press.accepted;
         }
-        if (((this.onStart is not null) && (object.Equals(this._state, _ForceState__force_press.started))))
+        if (((this.onStart is not null) && (Equals(this._state, _ForceState__force_press.started))))
         {
             invokeCallback<object?>("onStart", () => { ((Action)((() => this.onStart!(new ForcePressDetails(pressure: this._lastPressure, globalPosition: ((OffsetPair)this._lastPosition).global, localPosition: ((OffsetPair)this._lastPosition).local)))))(); return null; });
         }
@@ -153,8 +153,8 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void didStopTrackingLastPointer(long pointer)
     {
-        bool wasAccepted = ((object.Equals(this._state, _ForceState__force_press.started)) || (object.Equals(this._state, _ForceState__force_press.peaked)));
-        if ((object.Equals(this._state, _ForceState__force_press.possible)))
+        bool wasAccepted = ((Equals(this._state, _ForceState__force_press.started)) || (Equals(this._state, _ForceState__force_press.peaked)));
+        if ((Equals(this._state, _ForceState__force_press.possible)))
         {
             resolve(GestureDisposition.rejected);
             return;

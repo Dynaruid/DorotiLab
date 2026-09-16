@@ -41,7 +41,7 @@ public abstract class ViewportOffset : ChangeNotifier
     public abstract Future animateTo(double to, Duration duration, Curve curve);
     public virtual Future moveTo(double to, Duration? duration = null, Curve? curve = null, bool? clamp = null)
     {
-        if (((duration is null) || (object.Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero))))
+        if (((duration is null) || (Equals(DartRuntimePrimitives.RequireValue(duration), Duration.zero))))
         {
             jumpTo(to);
             return Future.value();
@@ -59,7 +59,7 @@ public abstract class ViewportOffset : ChangeNotifier
     {
         var description = new List<string>();
         debugFillDescription(description);
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

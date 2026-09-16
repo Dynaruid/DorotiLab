@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/bottom_sheet_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -64,11 +64,11 @@ public class BottomSheetThemeData : global::Doroti.Framework.Foundation.Diagnost
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((__other is BottomSheetThemeData) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).elevation == this.elevation)) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalBackgroundColor, this.modalBackgroundColor))) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalBarrierColor, this.modalBarrierColor))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalElevation == this.modalElevation)) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).shape, this.shape))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).showDragHandle == this.showDragHandle)) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).dragHandleColor, this.dragHandleColor))) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).dragHandleSize, this.dragHandleSize))) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).clipBehavior, this.clipBehavior))) && (object.Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).constraints, this.constraints)));
+        return ((((((((((((((__other is BottomSheetThemeData) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).elevation == this.elevation)) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalBackgroundColor, this.modalBackgroundColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalBarrierColor, this.modalBarrierColor))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).modalElevation == this.modalElevation)) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).shape, this.shape))) && (((BottomSheetThemeData)((BottomSheetThemeData)__other)).showDragHandle == this.showDragHandle)) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).dragHandleColor, this.dragHandleColor))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).dragHandleSize, this.dragHandleSize))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).clipBehavior, this.clipBehavior))) && (Equals(((BottomSheetThemeData)((BottomSheetThemeData)__other)).constraints, this.constraints)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -88,8 +88,8 @@ public class BottomSheetThemeData : global::Doroti.Framework.Foundation.Diagnost
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -105,7 +105,7 @@ public class BottomSheetThemeData : global::Doroti.Framework.Foundation.Diagnost
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

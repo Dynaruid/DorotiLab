@@ -56,14 +56,14 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
     public override void initState()
     {
         base.initState();
-        canPopNotifier = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(((PopScope<T>)(object)this.widget).canPop);
+        canPopNotifier = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(((PopScope<T>)this.widget).canPop);
     }
 
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
         IModalRoute? nextRoute = ModalRoute<object>.untypedOf(this.context);
-        if ((!object.Equals(nextRoute, this._route)))
+        if ((!Equals(nextRoute, this._route)))
         {
             this._route?.unregisterPopEntry(this);
             _route = nextRoute;
@@ -74,7 +74,7 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
     public override void didUpdateWidget(PopScope<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        this.canPopNotifier.value = ((PopScope<T>)(object)this.widget).canPop;
+        this.canPopNotifier.value = ((PopScope<T>)this.widget).canPop;
     }
 
     public override void dispose()
@@ -84,6 +84,6 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>, IPopEntry
         base.dispose();
     }
 
-    public override Widget build(BuildContext context) => ((PopScope<T>)(object)this.widget).child;
+    public override Widget build(BuildContext context) => ((PopScope<T>)this.widget).child;
 }
 

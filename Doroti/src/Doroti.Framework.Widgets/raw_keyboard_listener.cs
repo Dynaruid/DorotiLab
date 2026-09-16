@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/raw_keyboard_listener.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -44,7 +43,7 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
     public override void didUpdateWidget(RawKeyboardListener oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((RawKeyboardListener)this.widget).focusNode, ((RawKeyboardListener)oldWidget).focusNode)))
+        if ((!Equals(((RawKeyboardListener)this.widget).focusNode, ((RawKeyboardListener)oldWidget).focusNode)))
         {
             ((RawKeyboardListener)oldWidget).focusNode.removeListener(this._handleFocusChanged);
             ((RawKeyboardListener)this.widget).focusNode.addListener(this._handleFocusChanged);
@@ -76,7 +75,7 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
         {
             return;
         }
-        global::Doroti.Framework.Services.RawKeyboard.instance.addListener((global::System.Action<global::Doroti.Framework.Services.RawKeyEvent>)this._handleRawKeyEvent);
+        RawKeyboard.instance.addListener((global::System.Action<global::Doroti.Framework.Services.RawKeyEvent>)this._handleRawKeyEvent);
         _listening = true;
     }
 
@@ -86,7 +85,7 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
         {
             return;
         }
-        global::Doroti.Framework.Services.RawKeyboard.instance.removeListener((global::System.Action<global::Doroti.Framework.Services.RawKeyEvent>)this._handleRawKeyEvent);
+        RawKeyboard.instance.removeListener((global::System.Action<global::Doroti.Framework.Services.RawKeyEvent>)this._handleRawKeyEvent);
         _listening = false;
     }
 
@@ -97,7 +96,7 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Focus(focusNode: ((RawKeyboardListener)this.widget).focusNode, autofocus: ((RawKeyboardListener)this.widget).autofocus, includeSemantics: ((RawKeyboardListener)this.widget).includeSemantics, child: ((RawKeyboardListener)this.widget).child));
+        return ((Widget)new Focus(focusNode: ((RawKeyboardListener)this.widget).focusNode, autofocus: ((RawKeyboardListener)this.widget).autofocus, includeSemantics: ((RawKeyboardListener)this.widget).includeSemantics, child: ((RawKeyboardListener)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

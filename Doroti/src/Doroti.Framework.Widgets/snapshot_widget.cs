@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/snapshot_widget.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -61,17 +60,17 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context);
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSnapshotWidget__snapshot_widget(controller: this.controller, mode: this.mode, devicePixelRatio: MediaQuery.devicePixelRatioOf(context), painter: this.painter, autoresize: this.autoresize));
+        DebugLibrary.debugCheckHasMediaQuery(context);
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSnapshotWidget__snapshot_widget(controller: this.controller, mode: this.mode, devicePixelRatio: MediaQuery.devicePixelRatioOf(context), painter: this.painter, autoresize: this.autoresize));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context);
+        DebugLibrary.debugCheckHasMediaQuery(context);
         DartRuntimePrimitives.Ignore(((Func<_RenderSnapshotWidget__snapshot_widget>)(() =>
 {
-    var __cascade = (((_RenderSnapshotWidget__snapshot_widget?)(object?)renderObject)!);
+    var __cascade = (((_RenderSnapshotWidget__snapshot_widget?)renderObject)!);
     __cascade.controller = this.controller;
     __cascade.mode = this.mode;
     __cascade.devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
@@ -133,14 +132,14 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this.painter)))
+            if ((Equals(__value, this.painter)))
             {
                 return;
             }
             SnapshotPainter oldPainter = this.painter;
             oldPainter.removeListener(this.markNeedsPaint);
             _painter = __value;
-            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(oldPainter), DartRuntimePrimitives.RuntimeType(this.painter))) || this.painter.shouldRepaint(oldPainter)))
+            if (((!Equals(DartRuntimePrimitives.RuntimeType(oldPainter), DartRuntimePrimitives.RuntimeType(this.painter))) || this.painter.shouldRepaint(oldPainter)))
             {
                 markNeedsPaint();
             }
@@ -156,7 +155,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this.controller)))
+            if ((Equals(__value, this.controller)))
             {
                 return;
             }
@@ -179,7 +178,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._mode)))
+            if ((Equals(__value, this._mode)))
             {
                 return;
             }
@@ -244,17 +243,17 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
         var context = new global::Doroti.Framework.Rendering.PaintingContext(offsetLayer, (Offset.zero & this.size));
         base.paint(context, Offset.zero);
         context.stopRecordingIfNeeded();
-        if (((!object.Equals(this.mode, SnapshotMode.forced)) && !offsetLayer.supportsRasterization()))
+        if (((!Equals(this.mode, SnapshotMode.forced)) && !offsetLayer.supportsRasterization()))
         {
             offsetLayer.dispose();
-            if ((object.Equals(this.mode, SnapshotMode.normal)))
+            if ((Equals(this.mode, SnapshotMode.normal)))
             {
-                throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("SnapshotWidget used with a child that contains a PlatformView."));
+                throw DartRuntimePrimitives.AsException(FlutterError.Create("SnapshotWidget used with a child that contains a PlatformView."));
             }
             _disableSnapshotAttempt = true;
-            return ((global::Doroti.Ui.Image)(object)null);
+            return ((global::Doroti.Ui.Image?)null);
         }
-        global::Doroti.Ui.Image image = ((global::Doroti.Ui.Image)(object?)offsetLayer.toImageSync((Offset.zero & this.size), pixelRatio: this.devicePixelRatio));
+        global::Doroti.Ui.Image image = ((global::Doroti.Ui.Image)offsetLayer.toImageSync((Offset.zero & this.size), pixelRatio: this.devicePixelRatio));
         offsetLayer.dispose();
         _lastCachedSize = this.size;
         return image;
@@ -278,7 +277,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
             this.painter.paint(context, offset, this.size, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint);
             return;
         }
-        if (((this.autoresize && (!object.Equals(this.size, this._lastCachedSize))) && (this._lastCachedSize is not null)))
+        if (((this.autoresize && (!Equals(this.size, this._lastCachedSize))) && (this._lastCachedSize is not null)))
         {
             this._childRaster?.dispose();
             _childRaster = null;
@@ -337,8 +336,8 @@ internal class _DefaultSnapshotPainter__snapshot_widget : SnapshotPainter
 
     public override void paintSnapshot(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::Doroti.Ui.Image image, Size sourceSize, double pixelRatio)
     {
-        var src = global::Doroti.Ui.Rect.fromLTWH(0, 0, sourceSize.width, sourceSize.height);
-        var dst = global::Doroti.Ui.Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
+        var src = Rect.fromLTWH(0, 0, sourceSize.width, sourceSize.height);
+        var dst = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
         var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();

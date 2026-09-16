@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/text_painter.dart
-#pragma warning disable CS8601
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -43,7 +42,7 @@ public class PlaceholderDimensions
         {
             return true;
         }
-        return (((((__other is PlaceholderDimensions) && (object.Equals(((PlaceholderDimensions)((PlaceholderDimensions)__other)).size, this.size))) && (object.Equals(((PlaceholderDimensions)((PlaceholderDimensions)__other)).alignment, this.alignment))) && (object.Equals(((PlaceholderDimensions)((PlaceholderDimensions)__other)).baseline, this.baseline))) && (((PlaceholderDimensions)((PlaceholderDimensions)__other)).baselineOffset == this.baselineOffset));
+        return (((((__other is PlaceholderDimensions) && (Equals(((PlaceholderDimensions)((PlaceholderDimensions)__other)).size, this.size))) && (Equals(((PlaceholderDimensions)((PlaceholderDimensions)__other)).alignment, this.alignment))) && (Equals(((PlaceholderDimensions)((PlaceholderDimensions)__other)).baseline, this.baseline))) && (((PlaceholderDimensions)((PlaceholderDimensions)__other)).baselineOffset == this.baselineOffset));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.size, this.alignment, this.baseline, this.baselineOffset);
@@ -287,7 +286,7 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
             return false;
         }
         double maxIntrinsicWidthLocal = this.paragraph.maxIntrinsicWidth;
-        bool skipLineBreaking = ((maxWidth == this.layoutMaxWidth) || (((((this.paragraph.width - maxIntrinsicWidthLocal)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (((maxWidth - maxIntrinsicWidthLocal)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))));
+        bool skipLineBreaking = ((maxWidth == this.layoutMaxWidth) || (((((this.paragraph.width - maxIntrinsicWidthLocal)) > -Foundation.ConstantsLibrary.precisionErrorTolerance) && (((maxWidth - maxIntrinsicWidthLocal)) > -Foundation.ConstantsLibrary.precisionErrorTolerance))));
         if (skipLineBreaking)
         {
             contentWidth = this.layout._contentWidthFor(minWidth, maxWidth, widthBasis);
@@ -316,7 +315,7 @@ internal class _LineCaretMetrics__text_painter
 
     public virtual _LineCaretMetrics__text_painter shift(Offset offset)
     {
-        return ((object.Equals(offset, Offset.zero)) ? this : new _LineCaretMetrics__text_painter(offset: (offset + this.offset), writingDirection: this.writingDirection, height: this.height));
+        return ((Equals(offset, Offset.zero)) ? this : new _LineCaretMetrics__text_painter(offset: (offset + this.offset), writingDirection: this.writingDirection, height: this.height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -345,13 +344,13 @@ public class TextPainter
     internal virtual _LineCaretMetrics__text_painter _caretMetrics { get; set; } = default!;
     internal virtual bool _disposed { get; set; } = false;
 
-    public TextPainter(InlineSpan? text = null, TextAlign textAlign = TextAlign.start, TextDirection? textDirection = null, double textScaleFactor = 1.0, TextScaler textScaler = default!, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null)
+    public TextPainter(InlineSpan? text = null, TextAlign textAlign = TextAlign.start, TextDirection? textDirection = null, double textScaleFactor = 1.0, TextScaler? textScaler = null, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null)
     {
         TextScaler __textScaler = textScaler ?? new _UnspecifiedTextScaler__text_painter();
         this._text = text;
         this._textAlign = textAlign;
         this._textDirection = textDirection;
-        this._textScaler = ((object.Equals(textScaler, new _UnspecifiedTextScaler__text_painter())) ? TextScaler.CreateLinear(textScaleFactor) : textScaler);
+        this._textScaler = textScaler is null or _UnspecifiedTextScaler__text_painter ? TextScaler.CreateLinear(textScaleFactor) : textScaler;
         this._maxLines = maxLines;
         this._ellipsis = ellipsis;
         this._locale = locale;
@@ -360,15 +359,15 @@ public class TextPainter
         this._textHeightBehavior = textHeightBehavior;
         System.Diagnostics.Debug.Assert(((text is null) || text.debugAssertIsValid()));
         System.Diagnostics.Debug.Assert(((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)));
-        System.Diagnostics.Debug.Assert(((textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(__textScaler, new _UnspecifiedTextScaler__text_painter())));
+        System.Diagnostics.Debug.Assert(textScaleFactor == 1.0 || textScaler is null or _UnspecifiedTextScaler__text_painter);
     }
 
-    public static double computeWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler textScaler = default!, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
+    public static double computeWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler? textScaler = null, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => ((textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling)));
         var painter = ((Func<TextPainter>)(() =>
 {
-    var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: ((object.Equals(textScaler, TextScaler.noScaling)) ? TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
+    var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: ((Equals(textScaler, TextScaler.noScaling)) ? TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
     __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
     return __cascade;
 }))();
@@ -383,12 +382,12 @@ public class TextPainter
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static double computeMaxIntrinsicWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler textScaler = default!, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
+    public static double computeMaxIntrinsicWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler? textScaler = null, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => ((textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling)));
         var painter = ((Func<TextPainter>)(() =>
 {
-    var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: ((object.Equals(textScaler, TextScaler.noScaling)) ? TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
+    var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: ((Equals(textScaler, TextScaler.noScaling)) ? TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
     __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
     return __cascade;
 }))();
@@ -436,11 +435,11 @@ public class TextPainter
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => ((__value is null) || __value.debugAssertIsValid()));
-            if ((object.Equals(this._text, __value)))
+            if ((Equals(this._text, __value)))
             {
                 return;
             }
-            if ((!object.Equals(this._text?.style, __value?.style)))
+            if ((!Equals(this._text?.style, __value?.style)))
             {
                 this._layoutTemplate?.dispose();
                 _layoutTemplate = null;
@@ -475,7 +474,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            if ((object.Equals(this._textAlign, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._textAlign, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -489,7 +488,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            if ((object.Equals(this._textDirection, __value)))
+            if ((Equals(this._textDirection, __value)))
             {
                 return;
             }
@@ -514,7 +513,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._textScaler)))
+            if ((Equals(__value, this._textScaler)))
             {
                 return;
             }
@@ -545,7 +544,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            if ((object.Equals(this._locale, __value)))
+            if ((Equals(this._locale, __value)))
             {
                 return;
             }
@@ -574,7 +573,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            if ((object.Equals(this._strutStyle, __value)))
+            if ((Equals(this._strutStyle, __value)))
             {
                 return;
             }
@@ -588,7 +587,7 @@ public class TextPainter
         set
         {
             var __value = value;
-            if ((object.Equals(this._textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -604,8 +603,8 @@ public class TextPainter
         get => this._textHeightBehavior;
         set
         {
-            var __value = value is null ? null : (TextHeightBehavior)(object)value;
-            if ((object.Equals(this._textHeightBehavior, __value)))
+            var __value = value is null ? null : (TextHeightBehavior)value;
+            if ((Equals(this._textHeightBehavior, __value)))
             {
                 return;
             }
@@ -628,7 +627,7 @@ public class TextPainter
                 return new List<global::Doroti.Ui.TextBox>();
             }
             List<global::Doroti.Ui.TextBox> rawBoxes = ((_TextPainterLayoutCacheWithOffset__text_painter)layout).inlinePlaceholderBoxes;
-            if ((object.Equals(offset, Offset.zero)))
+            if ((Equals(offset, Offset.zero)))
             {
                 return rawBoxes;
             }
@@ -637,7 +636,7 @@ public class TextPainter
     }
     public virtual void setPlaceholderDimensions(List<PlaceholderDimensions>? value)
     {
-        if ((((value is null) || (checked((long)(value.Count)) == 0)) || global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(value, this._placeholderDimensions)))
+        if ((((value is null) || (checked((long)(value.Count)) == 0)) || CollectionsLibrary.listEquals(value, this._placeholderDimensions)))
         {
             return;
         }
@@ -837,7 +836,7 @@ public class TextPainter
 }))();
             DartRuntimePrimitives.Assert(() => (paragraphLocal.width == ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).layout._paragraph.width));
             paragraphLocal.dispose();
-            DartRuntimePrimitives.Assert(() => (object.Equals(debugSize, this.size)));
+            DartRuntimePrimitives.Assert(() => (Equals(debugSize, this.size)));
         }
         DartRuntimePrimitives.Assert(() => !this._rebuildParagraphForPaint);
         DartRuntimePrimitives.Assert(() => (!this.debugPaintTextLayoutBoxes || _debugPaintCharacterLayoutBoxes(canvas, layoutCache, offset)));
@@ -927,7 +926,7 @@ public class TextPainter
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _strutDisabled => (this.strutStyle switch { null => true, var __constant56323 when object.Equals(__constant56323, StrutStyle.disabled) => true, StrutStyle { fontSize: double fontSizeLocal } __object56356 => (fontSizeLocal == 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual bool _strutDisabled => (this.strutStyle switch { null => true, var __constant56323 when Equals(__constant56323, StrutStyle.disabled) => true, StrutStyle { fontSize: double fontSizeLocal } __object56356 => (fontSizeLocal == 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public virtual double getFullHeightForCaret(TextPosition position, Rect caretPrototype)
     {
         if (this._strutDisabled)
@@ -1005,7 +1004,7 @@ public class TextPainter
             return new List<global::Doroti.Ui.TextBox>();
         }
         List<global::Doroti.Ui.TextBox> boxes = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.getBoxesForRange(selection.start, selection.end, boxHeightStyle: boxHeightStyle, boxWidthStyle: boxWidthStyle);
-        return ((object.Equals(offset, Offset.zero)) ? boxes : boxes.map<TextBox, TextBox>(((box) => _shiftTextBox(box, offset))).ToList());
+        return ((Equals(offset, Offset.zero)) ? boxes : boxes.map<TextBox, TextBox>(((box) => _shiftTextBox(box, offset))).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1015,7 +1014,7 @@ public class TextPainter
         DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
         _TextPainterLayoutCacheWithOffset__text_painter cachedLayout = this._layoutCache!;
         global::Doroti.Ui.GlyphInfo? rawGlyphInfo = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.getClosestGlyphInfoForOffset((offset - ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset));
-        if (((rawGlyphInfo is null) || (object.Equals(((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset, Offset.zero))))
+        if (((rawGlyphInfo is null) || (Equals(((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset, Offset.zero))))
         {
             return rawGlyphInfo;
         }
@@ -1074,7 +1073,7 @@ public class TextPainter
             return new List<global::Doroti.Ui.LineMetrics>();
         }
         List<global::Doroti.Ui.LineMetrics> rawMetrics = ((_TextPainterLayoutCacheWithOffset__text_painter)layout).lineMetrics;
-        return ((object.Equals(offset, Offset.zero)) ? rawMetrics : rawMetrics.map<LineMetrics, LineMetrics>(((metrics) => _shiftLineMetrics(metrics, offset))).ToList());
+        return ((Equals(offset, Offset.zero)) ? rawMetrics : rawMetrics.map<LineMetrics, LineMetrics>(((metrics) => _shiftLineMetrics(metrics, offset))).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1099,7 +1098,7 @@ public class TextPainter
                 _disposed = true;
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._layoutTemplate?.dispose();
         _layoutTemplate = null;
         this._layoutCache?.paragraph.dispose();

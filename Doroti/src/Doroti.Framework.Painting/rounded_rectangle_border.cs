@@ -91,7 +91,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
         BorderRadius resolvedBorderRadius = this.borderRadius.resolve(textDirection);
-        if ((object.Equals(resolvedBorderRadius, BorderRadius.zero)))
+        if ((Equals(resolvedBorderRadius, BorderRadius.zero)))
         {
             return rect.contains(position);
         }
@@ -101,7 +101,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
 
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
-        if ((object.Equals(this.borderRadius, BorderRadius.zero)))
+        if ((Equals(this.borderRadius, BorderRadius.zero)))
         {
             canvas.drawRect(rect, paint);
         }
@@ -148,17 +148,17 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
     {
         var __other = other as RoundedRectangleBorder;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is RoundedRectangleBorder) && (object.Equals(((RoundedRectangleBorder)__other).side, side))) && (object.Equals(((RoundedRectangleBorder)((RoundedRectangleBorder)__other)).borderRadius, this.borderRadius)));
+        return (((__other is RoundedRectangleBorder) && (Equals(((RoundedRectangleBorder)__other).side, side))) && (Equals(((RoundedRectangleBorder)((RoundedRectangleBorder)__other)).borderRadius, this.borderRadius)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius);
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RoundedRectangleBorder"))}({side}, {this.borderRadius})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "RoundedRectangleBorder"))}({side}, {this.borderRadius})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -267,7 +267,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        if ((object.Equals(this.borderRadius, BorderRadius.zero)))
+        if ((Equals(this.borderRadius, BorderRadius.zero)))
         {
             return ((Func<Path>)(() =>
 {
@@ -292,7 +292,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
-        if ((object.Equals(this.borderRadius, BorderRadius.zero)))
+        if ((Equals(this.borderRadius, BorderRadius.zero)))
         {
             return ((Func<Path>)(() =>
 {
@@ -316,7 +316,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
         BorderRadius resolvedBorderRadius = this.borderRadius.resolve(textDirection);
-        if ((object.Equals(resolvedBorderRadius, BorderRadius.zero)))
+        if ((Equals(resolvedBorderRadius, BorderRadius.zero)))
         {
             return rect.contains(position);
         }
@@ -326,7 +326,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
 
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
-        if ((object.Equals(this.borderRadius, BorderRadius.zero)))
+        if ((Equals(this.borderRadius, BorderRadius.zero)))
         {
             canvas.drawRect(rect, paint);
         }
@@ -348,7 +348,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
             case BorderStyle.solid:
                 {
                     double strokeOffset = (((((BorderSide)side).strokeOutset - ((BorderSide)side).strokeInset)) / 2L);
-                    if ((object.Equals(this.borderRadius, BorderRadius.zero)))
+                    if ((Equals(this.borderRadius, BorderRadius.zero)))
                     {
                         global::Doroti.Ui.Rect @base = rect.inflate(strokeOffset);
                         canvas.drawRect(@base, side.toPaint());
@@ -367,17 +367,17 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
     {
         var __other = other as RoundedSuperellipseBorder;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is RoundedSuperellipseBorder) && (object.Equals(((RoundedSuperellipseBorder)__other).side, side))) && (object.Equals(((RoundedSuperellipseBorder)((RoundedSuperellipseBorder)__other)).borderRadius, this.borderRadius)));
+        return (((__other is RoundedSuperellipseBorder) && (Equals(((RoundedSuperellipseBorder)__other).side, side))) && (Equals(((RoundedSuperellipseBorder)((RoundedSuperellipseBorder)__other)).borderRadius, this.borderRadius)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius);
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RoundedSuperellipseBorder"))}({side}, {this.borderRadius})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "RoundedSuperellipseBorder"))}({side}, {this.borderRadius})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -506,13 +506,13 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
         {
             double partialDelta = (((rect.height - rect.width)) / 2L);
             double delta = ((this.circularity * partialDelta) * ((1.0 - this.eccentricity)));
-            return global::Doroti.Ui.Rect.fromLTRB(rect.left, (rect.top + delta), rect.right, (rect.bottom - delta));
+            return Rect.fromLTRB(rect.left, (rect.top + delta), rect.right, (rect.bottom - delta));
         }
         else
         {
             double partialDeltaLocal = (((rect.width - rect.height)) / 2L);
             double deltaLocal = ((this.circularity * partialDeltaLocal) * ((1.0 - this.eccentricity)));
-            return global::Doroti.Ui.Rect.fromLTRB((rect.left + deltaLocal), rect.top, (rect.right - deltaLocal), rect.bottom);
+            return Rect.fromLTRB((rect.left + deltaLocal), rect.top, (rect.right - deltaLocal), rect.bottom);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -528,11 +528,11 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
         {
             if ((rect.width < rect.height))
             {
-                return BorderRadius.lerp(resolvedRadius, BorderRadius.CreateAll(global::Doroti.Ui.Radius.elliptical((rect.width / 2L), ((((0.5 + (this.eccentricity / 2L))) * rect.height) / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
+                return BorderRadius.lerp(resolvedRadius, BorderRadius.CreateAll(Radius.elliptical((rect.width / 2L), ((((0.5 + (this.eccentricity / 2L))) * rect.height) / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
             }
             else
             {
-                return BorderRadius.lerp(resolvedRadius, BorderRadius.CreateAll(global::Doroti.Ui.Radius.elliptical(((((0.5 + (this.eccentricity / 2L))) * rect.width) / 2L), (rect.height / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
+                return BorderRadius.lerp(resolvedRadius, BorderRadius.CreateAll(Radius.elliptical(((((0.5 + (this.eccentricity / 2L))) * rect.width) / 2L), (rect.height / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
             }
         }
         return BorderRadius.lerp(resolvedRadius, BorderRadius.CreateCircular((rect.shortestSide / 2L)), DartRuntimePrimitives.RequireValue(this.circularity))!;
@@ -555,7 +555,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
     {
         global::Doroti.Ui.Rect adjustedRect = _adjustRect(rect);
         BorderRadius adjustedBorderRadius = _adjustBorderRadius(rect, textDirection);
-        if ((object.Equals(adjustedBorderRadius, BorderRadius.zero)))
+        if ((Equals(adjustedBorderRadius, BorderRadius.zero)))
         {
             return adjustedRect.contains(position);
         }
@@ -566,7 +566,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
         BorderRadius adjustedBorderRadius = _adjustBorderRadius(rect, textDirection);
-        if ((object.Equals(adjustedBorderRadius, BorderRadius.zero)))
+        if ((Equals(adjustedBorderRadius, BorderRadius.zero)))
         {
             canvas.drawRect(_adjustRect(rect), paint);
         }
@@ -598,11 +598,11 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
     {
         var __other = other as _ShapeToCircleBorder__rounded_rectangle_border<T>;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is _ShapeToCircleBorder__rounded_rectangle_border<T>) && (object.Equals(((_ShapeToCircleBorder__rounded_rectangle_border<T>)__other).side, side))) && (object.Equals(((_ShapeToCircleBorder__rounded_rectangle_border<T>)((_ShapeToCircleBorder__rounded_rectangle_border<T>)__other)).borderRadius, this.borderRadius))) && (((_ShapeToCircleBorder__rounded_rectangle_border<T>)((_ShapeToCircleBorder__rounded_rectangle_border<T>)__other)).circularity == this.circularity));
+        return ((((__other is _ShapeToCircleBorder__rounded_rectangle_border<T>) && (Equals(((_ShapeToCircleBorder__rounded_rectangle_border<T>)__other).side, side))) && (Equals(((_ShapeToCircleBorder__rounded_rectangle_border<T>)((_ShapeToCircleBorder__rounded_rectangle_border<T>)__other)).borderRadius, this.borderRadius))) && (((_ShapeToCircleBorder__rounded_rectangle_border<T>)((_ShapeToCircleBorder__rounded_rectangle_border<T>)__other)).circularity == this.circularity));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius, this.circularity);

@@ -18,7 +18,7 @@ internal sealed class RegisteredHtmlElementState : State<RegisteredHtmlElementVi
     public override Widget build(BuildContext context)
     {
         var definition = widget.Definition;
-        if (definition.hitTestBehavior == Rendering.PlatformViewHitTestBehavior.translucent)
+        if (definition.hitTestBehavior == PlatformViewHitTestBehavior.translucent)
             throw new NotSupportedException("DOM direct input does not support translucent framework gesture mediation.");
         _request ??= new PlatformViewRequest(_id, definition.viewType,
             PlatformViewComposition.InterleavedComposition,

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/hardware_keyboard.dart
-#pragma warning disable CS8620
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -10,21 +9,21 @@ public static partial class Hardware_keyboardLibrary
 {
     internal static bool _keyboardDebug(Func<string> messageFunc, Func<IEnumerable<object>>? detailsFunc = null)
     {
-        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (ConstantsLibrary.kReleaseMode)
         {
             throw new InvalidOperationException("_keyboardDebug was called in Release mode, which means they are called " + "without being wrapped in an assert. Always call _keyboardDebug like so:\n" + "  assert(_keyboardDebug(() => 'Blah $foo'));");
         }
-        if (!global::Doroti.Framework.Services.DebugLibrary.debugPrintKeyboardEvents)
+        if (!DebugLibrary.debugPrintKeyboardEvents)
         {
             return true;
         }
-        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"KEYBOARD: {messageFunc()}");
+        PrintLibrary.debugPrint($"KEYBOARD: {messageFunc()}");
         IEnumerable<object> details = (detailsFunc?.Invoke() ?? new List<object>());
         if ((details.Count() != 0))
         {
             foreach (var detail in details)
             {
-                global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"    {detail}");
+                PrintLibrary.debugPrint($"    {detail}");
             }
         }
         return true;
@@ -161,7 +160,7 @@ public class HardwareKeyboard
                         }
                         else
                         {
-                            if ((!object.Equals(_pressedKeys.GetValueOrDefault(@event.physicalKey), @event.logicalKey)))
+                            if ((!Equals(_pressedKeys.GetValueOrDefault(@event.physicalKey), @event.logicalKey)))
                             {
                                 Hardware_keyboardLibrary._keyboardDebug((() => $"ERROR: Received unexpected {@event.GetType()} for key with mismatched logical key:\n" + $"{common}\n" + $"    Event: {@event}\n" + $"    Pressed logical key: {_pressedKeys.GetValueOrDefault(@event.physicalKey)}"));
                             }
@@ -355,12 +354,12 @@ public class KeyEventManager
         _transitMode ??= KeyDataTransitMode.keyDataThenRawKeyData;
         switch (_transitMode!)
         {
-            case var __case46602 when object.Equals(__case46602, KeyDataTransitMode.rawKeyData):
+            case var __case46602 when Equals(__case46602, KeyDataTransitMode.rawKeyData):
                 {
                     DartRuntimePrimitives.Assert(() => false);
                     return false;
                 }
-            case var __case46755 when object.Equals(__case46755, KeyDataTransitMode.keyDataThenRawKeyData):
+            case var __case46755 when Equals(__case46755, KeyDataTransitMode.keyDataThenRawKeyData):
                 {
                     if (((data.physical == 0L) && (data.logical == 0L)))
                     {
@@ -405,14 +404,16 @@ public class KeyEventManager
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<DartMap<string, object>> handleRawKeyMessage(object message)
+    public async virtual Future<DartMap<string, object>> handleRawKeyMessage(object? message)
     {
         if ((_transitMode is null))
         {
             _transitMode = KeyDataTransitMode.rawKeyData;
             _rawKeyboard.addListener(_convertRawEventAndStore);
         }
-        var rawEvent = RawKeyEvent.CreateFromMessage(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)message));
+        if (message is not System.Collections.IDictionary payload)
+            throw new FormatException("Raw key messages require a map.");
+        var rawEvent = RawKeyEvent.CreateFromMessage(DartRuntimePrimitives.ConvertMap<string, object?>(payload));
         var shouldDispatch = true;
         if (rawEvent is RawKeyDownEvent rawEvent__as49898)
         {
@@ -445,9 +446,9 @@ public class KeyEventManager
             {
                 handled = (_hardwareKeyboard.handleKeyEvent(@event) || handled);
             }
-            if ((object.Equals(_transitMode, KeyDataTransitMode.rawKeyData)))
+            if ((Equals(_transitMode, KeyDataTransitMode.rawKeyData)))
             {
-                DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.CollectionsLibrary.setEquals(_rawKeyboard.physicalKeysPressed, _hardwareKeyboard.physicalKeysPressed));
+                DartRuntimePrimitives.Assert(() => CollectionsLibrary.setEquals(_rawKeyboard.physicalKeysPressed, _hardwareKeyboard.physicalKeysPressed));
             }
             handled = (_dispatchKeyMessage(_keyEventsSinceLastMessage, rawEvent) || handled);
             _keyEventsSinceLastMessage.Clear();
@@ -465,23 +466,23 @@ public class KeyEventManager
         }
         switch (((RawKeyEventDataAndroid)data).eventSource)
         {
-            case var __case51679 when object.Equals(__case51679, 257L):
+            case var __case51679 when Equals(__case51679, 257L):
                 {
                     return Dart_uiLibrary.KeyEventDeviceType.keyboard;
                 }
-            case var __case51835 when object.Equals(__case51835, 513L):
+            case var __case51835 when Equals(__case51835, 513L):
                 {
                     return Dart_uiLibrary.KeyEventDeviceType.directionalPad;
                 }
-            case var __case52000 when object.Equals(__case52000, 1025L):
+            case var __case52000 when Equals(__case52000, 1025L):
                 {
                     return Dart_uiLibrary.KeyEventDeviceType.gamepad;
                 }
-            case var __case52159 when object.Equals(__case52159, 16777232L):
+            case var __case52159 when Equals(__case52159, 16777232L):
                 {
                     return Dart_uiLibrary.KeyEventDeviceType.joystick;
                 }
-            case var __case52315 when object.Equals(__case52315, 33554433L):
+            case var __case52315 when Equals(__case52315, 33554433L):
                 {
                     return Dart_uiLibrary.KeyEventDeviceType.hdmi;
                 }
@@ -529,7 +530,7 @@ public class KeyEventManager
         }
         foreach (PhysicalKeyboardKey key in physicalKeysPressed.difference(_rawKeyboard.physicalKeysPressed))
         {
-            if ((object.Equals(key, physicalKey)))
+            if ((Equals(key, physicalKey)))
             {
                 eventAfterwards.Add(new KeyUpEvent(physicalKey: key, logicalKey: logicalKey, timeStamp: timeStamp, synthesized: true, deviceType: deviceType));
             }
@@ -567,16 +568,16 @@ public class KeyEventManager
         Duration timeStamp = keyData.timeStamp;
         switch (keyData.type)
         {
-            case var __case56760 when object.Equals(__case56760, Dart_uiLibrary.KeyEventType.down):
+            case var __case56760 when Equals(__case56760, Dart_uiLibrary.KeyEventType.down):
                 {
                     return new KeyDownEvent(physicalKey: physicalKey, logicalKey: logicalKey, timeStamp: timeStamp, character: keyData.character, synthesized: keyData.synthesized, deviceType: keyData.deviceType);
                 }
-            case var __case57061 when object.Equals(__case57061, Dart_uiLibrary.KeyEventType.up):
+            case var __case57061 when Equals(__case57061, Dart_uiLibrary.KeyEventType.up):
                 {
                     DartRuntimePrimitives.Assert(() => (keyData.character is null));
                     return new KeyUpEvent(physicalKey: physicalKey, logicalKey: logicalKey, timeStamp: timeStamp, synthesized: keyData.synthesized, deviceType: keyData.deviceType);
                 }
-            case var __case57361 when object.Equals(__case57361, Dart_uiLibrary.KeyEventType.repeat):
+            case var __case57361 when Equals(__case57361, Dart_uiLibrary.KeyEventType.repeat):
                 {
                     return new KeyRepeatEvent(physicalKey: physicalKey, logicalKey: logicalKey, timeStamp: timeStamp, character: keyData.character, deviceType: keyData.deviceType);
                 }

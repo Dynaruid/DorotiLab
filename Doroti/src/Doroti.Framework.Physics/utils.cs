@@ -20,6 +20,6 @@ public static partial class UtilsLibrary
 
 public static partial class UtilsLibrary
 {
-    public static bool nearZero(double a, double epsilon) => UtilsLibrary.nearEqual(a, 0.0, epsilon);
+    public static bool nearZero(double a, double epsilon) => nearEqual(a, 0.0, epsilon);
 }
 

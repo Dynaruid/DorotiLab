@@ -30,7 +30,7 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((DebugLibrary.debugPrintBeginFrameBanner || DebugLibrary.debugPrintEndFrameBanner))
+                if ((debugPrintBeginFrameBanner || debugPrintEndFrameBanner))
                 {
                     throw new FlutterError(reason);
                 }

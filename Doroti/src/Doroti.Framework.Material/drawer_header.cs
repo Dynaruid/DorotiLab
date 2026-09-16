@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/drawer_header.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -21,10 +21,10 @@ public class DrawerHeader : global::Doroti.Framework.Widgets.StatelessWidget
 
     public DrawerHeader(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, Duration? duration = null, global::Doroti.Framework.Animation.Curve curve = default!, global::Doroti.Framework.Widgets.Widget? child = default!) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? __margin = margin ?? global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: 8.0);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? __margin = margin ?? EdgeInsets.CreateOnly(bottom: 8.0);
         global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? new global::Doroti.Framework.Painting.EdgeInsets(16.0, 16.0, 16.0, 8.0);
         Duration __duration = duration ?? Duration.Create(milliseconds: 250);
-        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.fastOutSlowIn;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? Curves.fastOutSlowIn;
         this.decoration = decoration;
         this.margin = __margin;
         this.padding = __padding;
@@ -36,10 +36,10 @@ public class DrawerHeader : global::Doroti.Framework.Widgets.StatelessWidget
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         ThemeData theme = Theme.of(context);
         double statusBarHeight = MediaQuery.paddingOf(context).top;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(height: (statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight), margin: this.margin, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context))), child: new global::Doroti.Framework.Widgets.AnimatedContainer(padding: this.padding.add(global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: this.decoration, duration: DartRuntimePrimitives.RequireValue(this.duration), curve: this.curve, child: ((this.child is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: this.child!))))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(height: (statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight), margin: this.margin, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context))), child: new global::Doroti.Framework.Widgets.AnimatedContainer(padding: this.padding.add(EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: this.decoration, duration: DartRuntimePrimitives.RequireValue(this.duration), curve: this.curve, child: ((this.child is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: this.child!))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

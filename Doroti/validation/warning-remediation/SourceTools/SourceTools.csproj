@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RoslynTools>$(MSBuildSDKsPath)/../DotnetTools/dotnet-format</RoslynTools>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(RoslynTools)/Microsoft.CodeAnalysis*.dll" />
+    <Reference Include="$(RoslynTools)/System.Composition*.dll" />
+    <Reference Include="Microsoft.Build.Locator">
+      <HintPath>$(RoslynTools)/BuildHost-netcore/Microsoft.Build.Locator.dll</HintPath>
+    </Reference>
+    <Content Include="$(RoslynTools)/*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(RoslynTools)/BuildHost-netcore/**" Link="BuildHost-netcore/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(RoslynTools)/BuildHost-net472/**" Link="BuildHost-net472/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <AssemblyMetadata Include="SdkPath" Value="$(MSBuildSDKsPath)/.." />
+  </ItemGroup>
+</Project>

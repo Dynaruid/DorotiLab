@@ -15,6 +15,6 @@ public abstract class Simulation
     public abstract double x(double time);
     public abstract double dx(double time);
     public abstract bool isDone(double time);
-    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Simulation");
+    public override string ToString() => Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Simulation");
 }
 

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/image_filter_config.dart
-#pragma warning disable CS8602, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -42,8 +41,8 @@ public abstract class ImageFilterConfig
 
 internal class _DirectImageFilterConfig__image_filter_config : ImageFilterConfig
 {
-    private ImageFilter? __field_filter = default!;
-    public override ImageFilter? filter { get => __field_filter; }
+    private readonly ImageFilter __field_filter;
+    public override ImageFilter filter { get => __field_filter; }
 
     internal _DirectImageFilterConfig__image_filter_config(ImageFilter filter)
     {
@@ -64,11 +63,11 @@ internal class _DirectImageFilterConfig__image_filter_config : ImageFilterConfig
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((__other is _DirectImageFilterConfig__image_filter_config) && (object.Equals(((_DirectImageFilterConfig__image_filter_config)((_DirectImageFilterConfig__image_filter_config)__other)).filter, this.filter)));
+        return ((__other is _DirectImageFilterConfig__image_filter_config) && (Equals(((_DirectImageFilterConfig__image_filter_config)((_DirectImageFilterConfig__image_filter_config)__other)).filter, this.filter)));
     }
 
     public override int GetHashCode() => this.filter.GetHashCode();
@@ -105,11 +104,11 @@ internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is _BlurImageFilterConfig__image_filter_config) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).sigmaX == this.sigmaX)) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).sigmaY == this.sigmaY)) && (object.Equals(((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).tileMode, this.tileMode))) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).bounded == this.bounded));
+        return (((((__other is _BlurImageFilterConfig__image_filter_config) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).sigmaX == this.sigmaX)) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).sigmaY == this.sigmaY)) && (Equals(((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).tileMode, this.tileMode))) && (((_BlurImageFilterConfig__image_filter_config)((_BlurImageFilterConfig__image_filter_config)__other)).bounded == this.bounded));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.sigmaX, this.sigmaY, this.tileMode, this.bounded);
@@ -168,11 +167,11 @@ internal class _ComposeImageFilterConfig__image_filter_config : ImageFilterConfi
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is _ComposeImageFilterConfig__image_filter_config) && (object.Equals(((_ComposeImageFilterConfig__image_filter_config)((_ComposeImageFilterConfig__image_filter_config)__other)).outer, this.outer))) && (object.Equals(((_ComposeImageFilterConfig__image_filter_config)((_ComposeImageFilterConfig__image_filter_config)__other)).inner, this.inner)));
+        return (((__other is _ComposeImageFilterConfig__image_filter_config) && (Equals(((_ComposeImageFilterConfig__image_filter_config)((_ComposeImageFilterConfig__image_filter_config)__other)).outer, this.outer))) && (Equals(((_ComposeImageFilterConfig__image_filter_config)((_ComposeImageFilterConfig__image_filter_config)__other)).inner, this.inner)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.outer, this.inner);

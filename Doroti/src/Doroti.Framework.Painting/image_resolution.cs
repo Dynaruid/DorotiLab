@@ -26,7 +26,7 @@ public class AssetImage : AssetBundleImageProvider
     public virtual string keyName => ((this.package is null) ? this.assetName : $"packages/{this.package}/{this.assetName}");
     public override Future<AssetBundleImageKey> obtainKey(ImageConfiguration configuration)
     {
-        AssetBundle chosenBundle = ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle);
+        AssetBundle chosenBundle = ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? Asset_bundleLibrary.rootBundle);
         Completer<AssetBundleImageKey>? completer = default!;
         Future<AssetBundleImageKey>? result = default!;
         _ = AssetManifest.loadFromAssetBundle(chosenBundle).then((Action<AssetManifest>)((manifest) =>
@@ -103,14 +103,14 @@ public class AssetImage : AssetBundleImageProvider
     {
         var __other = other as AssetImage;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is AssetImage) && (((AssetImage)((AssetImage)__other)).keyName == this.keyName)) && (object.Equals(((AssetImage)((AssetImage)__other)).bundle, this.bundle)));
+        return (((__other is AssetImage) && (((AssetImage)((AssetImage)__other)).keyName == this.keyName)) && (Equals(((AssetImage)((AssetImage)__other)).bundle, this.bundle)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.keyName, this.bundle);
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage"))}(bundle: {this.bundle}, name: \"{this.keyName}\")";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage"))}(bundle: {this.bundle}, name: \"{this.keyName}\")";
 }
 

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/date.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -64,7 +64,7 @@ public abstract class CalendarDelegate<T> where T : struct
     public abstract string formatMonthYear(T date, MaterialLocalizations localizations);
     public virtual string formatYear(long year, MaterialLocalizations localizations)
     {
-        return ((string)(object?)localizations.formatYear(DartRuntimePrimitives.CreateDateTime(year)));
+        return ((string)localizations.formatYear(DartRuntimePrimitives.CreateDateTime(year)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -104,37 +104,37 @@ public class GregorianCalendarDelegate : CalendarDelegate<DateTime>
     public override DateTime getDay(long year, long month, long day) => DartRuntimePrimitives.CreateDateTime(year, month, day);
     public override string formatMonthYear(DateTime date, MaterialLocalizations localizations)
     {
-        return ((string)(object?)localizations.formatMonthYear(date));
+        return ((string)localizations.formatMonthYear(date));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatMediumDate(DateTime date, MaterialLocalizations localizations)
     {
-        return ((string)(object?)localizations.formatMediumDate(date));
+        return ((string)localizations.formatMediumDate(date));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatShortMonthDay(DateTime date, MaterialLocalizations localizations)
     {
-        return ((string)(object?)localizations.formatShortMonthDay(date));
+        return ((string)localizations.formatShortMonthDay(date));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatShortDate(DateTime date, MaterialLocalizations localizations)
     {
-        return ((string)(object?)localizations.formatShortDate(date));
+        return ((string)localizations.formatShortDate(date));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatFullDate(DateTime date, MaterialLocalizations localizations)
     {
-        return ((string)(object?)localizations.formatFullDate(date));
+        return ((string)localizations.formatFullDate(date));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatCompactDate(DateTime date, MaterialLocalizations localizations)
     {
-        return ((string)(object?)localizations.formatCompactDate(date));
+        return ((string)localizations.formatCompactDate(date));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -162,7 +162,7 @@ public abstract class DateUtils
 
     public static DateTimeRange<DateTime> datesOnly(DateTimeRange<DateTime> range)
     {
-        return new DateTimeRange<DateTime>(start: DateUtils.dateOnly(((DateTimeRange<DateTime>)range).start), end: DateUtils.dateOnly(((DateTimeRange<DateTime>)range).end));
+        return new DateTimeRange<DateTime>(start: dateOnly(((DateTimeRange<DateTime>)range).start), end: dateOnly(((DateTimeRange<DateTime>)range).end));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -254,11 +254,11 @@ public class DateTimeRange<T> where T : struct
     {
         var __other = other as DateTimeRange<T>;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is DateTimeRange<T>) && object.Equals(((DateTimeRange<T>)__other).start, this.start)) && object.Equals(((DateTimeRange<T>)__other).end, this.end));
+        return (((__other is DateTimeRange<T>) && Equals(((DateTimeRange<T>)__other).start, this.start)) && Equals(((DateTimeRange<T>)__other).end, this.end));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.start, this.end));

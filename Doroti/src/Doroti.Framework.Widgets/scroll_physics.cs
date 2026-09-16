@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scroll_physics.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -15,7 +14,7 @@ public enum ScrollDecelerationRate
 public class ScrollPhysics
 {
     public virtual ScrollPhysics? parent { get; private set; }
-    internal static global::Doroti.Framework.Physics.SpringDescription _kDefaultSpring = global::Doroti.Framework.Physics.SpringDescription.CreateWithDampingRatio(mass: 0.5, stiffness: 100.0, ratio: 1.1);
+    internal static global::Doroti.Framework.Physics.SpringDescription _kDefaultSpring = Physics.SpringDescription.CreateWithDampingRatio(mass: 0.5, stiffness: 100.0, ratio: 1.1);
 
     public ScrollPhysics(ScrollPhysics? parent = null)
     {
@@ -78,7 +77,7 @@ public class ScrollPhysics
 
     public virtual global::Doroti.Framework.Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
     {
-        return ((global::Doroti.Framework.Physics.Simulation?)(object?)this.parent?.createBallisticSimulation(position, velocity));
+        return ((global::Doroti.Framework.Physics.Simulation?)this.parent?.createBallisticSimulation(position, velocity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -87,7 +86,7 @@ public class ScrollPhysics
     {
         get
         {
-            return ((global::Doroti.Framework.Physics.Tolerance)(object?)toleranceFor(new FixedScrollMetrics(minScrollExtent: ((double)(object)null), maxScrollExtent: ((double)(object)null), pixels: ((double)(object)null), viewportDimension: ((double)(object)null), axisDirection: global::Doroti.Framework.Painting.AxisDirection.down, devicePixelRatio: WidgetsBinding.instance.window.devicePixelRatio)));
+            return ((global::Doroti.Framework.Physics.Tolerance)toleranceFor(new FixedScrollMetrics(minScrollExtent: null, maxScrollExtent: null, pixels: null, viewportDimension: null, axisDirection: AxisDirection.down, devicePixelRatio: WidgetsBinding.instance.window.devicePixelRatio)));
         }
     }
     public virtual global::Doroti.Framework.Physics.Tolerance toleranceFor(ScrollMetrics metrics)
@@ -96,9 +95,9 @@ public class ScrollPhysics
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double minFlingDistance => DartRuntimePrimitives.ConvertValue<double>((this.parent?.minFlingDistance ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop));
-    public virtual double minFlingVelocity => DartRuntimePrimitives.ConvertValue<double>((this.parent?.minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity));
-    public virtual double maxFlingVelocity => DartRuntimePrimitives.ConvertValue<double>((this.parent?.maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
+    public virtual double minFlingDistance => DartRuntimePrimitives.ConvertValue<double>((this.parent?.minFlingDistance ?? Gestures.ConstantsLibrary.kTouchSlop));
+    public virtual double minFlingVelocity => DartRuntimePrimitives.ConvertValue<double>((this.parent?.minFlingVelocity ?? Gestures.ConstantsLibrary.kMinFlingVelocity));
+    public virtual double maxFlingVelocity => DartRuntimePrimitives.ConvertValue<double>((this.parent?.maxFlingVelocity ?? Gestures.ConstantsLibrary.kMaxFlingVelocity));
     public virtual double carriedMomentum(double existingVelocity)
     {
         return (this.parent?.carriedMomentum(existingVelocity) ?? 0.0);
@@ -112,9 +111,9 @@ public class ScrollPhysics
     {
         if ((this.parent is null))
         {
-            return global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ScrollPhysics");
+            return objectRuntimeTypeFunctions.objectRuntimeType(this, "ScrollPhysics");
         }
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ScrollPhysics"))} -> {this.parent}";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ScrollPhysics"))} -> {this.parent}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -198,7 +197,7 @@ public class BouncingScrollPhysics : ScrollPhysics
 
     public virtual double frictionFactor(double overscrollFraction)
     {
-        return (global::Doroti.Runtime.Dart_mathLibrary.pow((1L - overscrollFraction), 2L) * (this.decelerationRate switch { ScrollDecelerationRate.fast => 0.26, ScrollDecelerationRate.normal => 0.52, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return (Dart_mathLibrary.pow((1L - overscrollFraction), 2L) * (this.decelerationRate switch { ScrollDecelerationRate.fast => 0.26, ScrollDecelerationRate.normal => 0.52, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -216,11 +215,11 @@ public class BouncingScrollPhysics : ScrollPhysics
         bool easing = ((((overscrollPastStart > 0.0) && (offset < 0.0))) || (((overscrollPastEnd > 0.0) && (offset > 0.0))));
         double friction = (easing ? frictionFactor((((overscrollPast - offset.abs())) / ((ScrollMetrics)position).viewportDimension)) : frictionFactor((overscrollPast / ((ScrollMetrics)position).viewportDimension)));
         double direction = Math.Sign(offset);
-        if ((easing && (object.Equals(this.decelerationRate, ScrollDecelerationRate.fast))))
+        if ((easing && (Equals(this.decelerationRate, ScrollDecelerationRate.fast))))
         {
             return (direction * offset.abs());
         }
-        return (direction * BouncingScrollPhysics._applyFriction(overscrollPast, offset.abs(), friction));
+        return (direction * _applyFriction(overscrollPast, offset.abs(), friction));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -245,24 +244,24 @@ public class BouncingScrollPhysics : ScrollPhysics
     public override double applyBoundaryConditions(ScrollMetrics position, double value) => 0.0;
     public override global::Doroti.Framework.Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
     {
-        global::Doroti.Framework.Physics.Tolerance toleranceLocal = ((global::Doroti.Framework.Physics.Tolerance)(object?)toleranceFor(position));
+        global::Doroti.Framework.Physics.Tolerance toleranceLocal = ((global::Doroti.Framework.Physics.Tolerance)toleranceFor(position));
         if (((velocity.abs() >= ((global::Doroti.Framework.Physics.Tolerance)toleranceLocal).velocity) || ((ScrollMetrics)position).outOfRange))
         {
-            return ((global::Doroti.Framework.Physics.Simulation?)(object?)new BouncingScrollSimulation(spring: this.spring, position: ((ScrollMetrics)position).pixels, velocity: velocity, leadingExtent: ((ScrollMetrics)position).minScrollExtent, trailingExtent: ((ScrollMetrics)position).maxScrollExtent, tolerance: toleranceLocal, constantDeceleration: (this.decelerationRate switch { ScrollDecelerationRate.fast => 1400, ScrollDecelerationRate.normal => 0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+            return ((global::Doroti.Framework.Physics.Simulation?)new BouncingScrollSimulation(spring: this.spring, position: ((ScrollMetrics)position).pixels, velocity: velocity, leadingExtent: ((ScrollMetrics)position).minScrollExtent, trailingExtent: ((ScrollMetrics)position).maxScrollExtent, tolerance: toleranceLocal, constantDeceleration: (this.decelerationRate switch { ScrollDecelerationRate.fast => 1400, ScrollDecelerationRate.normal => 0, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
         }
-        return ((global::Doroti.Framework.Physics.Simulation)(object)null);
+        return ((global::Doroti.Framework.Physics.Simulation?)null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double minFlingVelocity => DartRuntimePrimitives.ConvertValue<double>((global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity * 2.0));
+    public override double minFlingVelocity => DartRuntimePrimitives.ConvertValue<double>((Gestures.ConstantsLibrary.kMinFlingVelocity * 2.0));
     public override double carriedMomentum(double existingVelocity)
     {
-        return (Math.Sign(existingVelocity) * Math.Min((0.000816 * global::Doroti.Runtime.Dart_mathLibrary.pow(existingVelocity.abs(), 1.967).toDouble()), 40000.0));
+        return (Math.Sign(existingVelocity) * Math.Min((0.000816 * Dart_mathLibrary.pow(existingVelocity.abs(), 1.967).toDouble()), 40000.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? dragStartDistanceMotionThreshold => 3.5;
-    public override double maxFlingVelocity => (this.decelerationRate switch { ScrollDecelerationRate.fast => (global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity * 8.0), ScrollDecelerationRate.normal => base.maxFlingVelocity, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    public override double maxFlingVelocity => (this.decelerationRate switch { ScrollDecelerationRate.fast => (Gestures.ConstantsLibrary.kMaxFlingVelocity * 8.0), ScrollDecelerationRate.normal => base.maxFlingVelocity, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public override global::Doroti.Framework.Physics.SpringDescription spring
     {
         get
@@ -271,7 +270,7 @@ public class BouncingScrollPhysics : ScrollPhysics
             {
                 case ScrollDecelerationRate.fast:
                     {
-                        return global::Doroti.Framework.Physics.SpringDescription.CreateWithDampingRatio(mass: 0.3, stiffness: 75.0, ratio: 1.3);
+                        return Physics.SpringDescription.CreateWithDampingRatio(mass: 0.3, stiffness: 75.0, ratio: 1.3);
                     }
                 case ScrollDecelerationRate.normal:
                     {
@@ -302,7 +301,7 @@ public class ClampingScrollPhysics : ScrollPhysics
             {
                 if ((value == ((ScrollMetrics)position).pixels))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()}.applyBoundaryConditions() was called redundantly."), new global::Doroti.Framework.Foundation.ErrorDescription($"The proposed new position, {value}, is exactly equal to the current position of the " + $"given {DartRuntimePrimitives.RuntimeType(position)}, {((ScrollMetrics)position).pixels}.\n" + "The applyBoundaryConditions method should only be called when the value is " + "going to actually change the pixels, otherwise it is redundant."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollPhysics>("The physics object in question was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollMetrics>("The position object in question was", position, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()}.applyBoundaryConditions() was called redundantly."), new global::Doroti.Framework.Foundation.ErrorDescription($"The proposed new position, {value}, is exactly equal to the current position of the " + $"given {DartRuntimePrimitives.RuntimeType(position)}, {((ScrollMetrics)position).pixels}.\n" + "The applyBoundaryConditions method should only be called when the value is " + "going to actually change the pixels, otherwise it is redundant."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollPhysics>("The physics object in question was", this, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollMetrics>("The position object in question was", position, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -329,7 +328,7 @@ public class ClampingScrollPhysics : ScrollPhysics
 
     public override global::Doroti.Framework.Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
     {
-        global::Doroti.Framework.Physics.Tolerance toleranceLocal = ((global::Doroti.Framework.Physics.Tolerance)(object?)toleranceFor(position));
+        global::Doroti.Framework.Physics.Tolerance toleranceLocal = ((global::Doroti.Framework.Physics.Tolerance)toleranceFor(position));
         if (((ScrollMetrics)position).outOfRange)
         {
             double? end = default!;
@@ -342,21 +341,21 @@ public class ClampingScrollPhysics : ScrollPhysics
                 end = ((ScrollMetrics)position).minScrollExtent;
             }
             DartRuntimePrimitives.Assert(() => (end is not null));
-            return ((global::Doroti.Framework.Physics.Simulation?)(object?)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, ((ScrollMetrics)position).pixels, DartRuntimePrimitives.RequireValue(end), Math.Min(0.0, velocity), tolerance: toleranceLocal));
+            return ((global::Doroti.Framework.Physics.Simulation?)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, ((ScrollMetrics)position).pixels, DartRuntimePrimitives.RequireValue(end), Math.Min(0.0, velocity), tolerance: toleranceLocal));
         }
         if ((velocity.abs() < ((global::Doroti.Framework.Physics.Tolerance)toleranceLocal).velocity))
         {
-            return ((global::Doroti.Framework.Physics.Simulation)(object)null);
+            return ((global::Doroti.Framework.Physics.Simulation?)null);
         }
         if (((velocity > 0.0) && (((ScrollMetrics)position).pixels >= ((ScrollMetrics)position).maxScrollExtent)))
         {
-            return ((global::Doroti.Framework.Physics.Simulation)(object)null);
+            return ((global::Doroti.Framework.Physics.Simulation?)null);
         }
         if (((velocity < 0.0) && (((ScrollMetrics)position).pixels <= ((ScrollMetrics)position).minScrollExtent)))
         {
-            return ((global::Doroti.Framework.Physics.Simulation)(object)null);
+            return ((global::Doroti.Framework.Physics.Simulation?)null);
         }
-        return ((global::Doroti.Framework.Physics.Simulation?)(object?)new ClampingScrollSimulation(position: ((ScrollMetrics)position).pixels, velocity: velocity, tolerance: toleranceLocal));
+        return ((global::Doroti.Framework.Physics.Simulation?)new ClampingScrollSimulation(position: ((ScrollMetrics)position).pixels, velocity: velocity, tolerance: toleranceLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

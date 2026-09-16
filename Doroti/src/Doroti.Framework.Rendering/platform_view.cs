@@ -23,7 +23,7 @@ public static partial class Platform_viewLibrary
 {
     internal static bool _factoryTypesSetEquals<T>(HashSet<Factory<T>>? a, HashSet<Factory<T>>? b)
     {
-        if ((object.Equals(a, b)))
+        if ((Equals(a, b)))
         {
             return true;
         }
@@ -31,7 +31,7 @@ public static partial class Platform_viewLibrary
         {
             return false;
         }
-        return global::Doroti.Framework.Foundation.CollectionsLibrary.setEquals(Platform_viewLibrary._factoriesTypeSet<T>(a), Platform_viewLibrary._factoriesTypeSet<T>(b));
+        return CollectionsLibrary.setEquals(_factoriesTypeSet(a), _factoriesTypeSet(b));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -67,7 +67,7 @@ public class RenderAndroidView : PlatformViewRenderBox
         {
             var controller = (AndroidViewController)(object)value;
             DartRuntimePrimitives.Assert(() => !this._isDisposed);
-            if ((object.Equals(this._viewController, controller)))
+            if ((Equals(this._viewController, controller)))
             {
                 return;
             }
@@ -89,7 +89,7 @@ public class RenderAndroidView : PlatformViewRenderBox
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this._clipBehavior)))
+            if ((!Equals(__value, this._clipBehavior)))
             {
                 _clipBehavior = __value;
                 markNeedsPaint();
@@ -120,7 +120,7 @@ public class RenderAndroidView : PlatformViewRenderBox
 
     internal async virtual Future _sizePlatformView()
     {
-        if (((object.Equals(this._state, _PlatformViewState__platform_view.resizing)) || size.isEmpty))
+        if (((Equals(this._state, _PlatformViewState__platform_view.resizing)) || size.isEmpty))
         {
             return;
         }
@@ -136,7 +136,7 @@ public class RenderAndroidView : PlatformViewRenderBox
                 return;
             }
         }
-        while ((!object.Equals(size, targetSize)));
+        while ((!Equals(size, targetSize)));
         _state = _PlatformViewState__platform_view.ready;
         markNeedsPaint();
     }
@@ -163,7 +163,7 @@ public class RenderAndroidView : PlatformViewRenderBox
             return;
         }
         bool isTextureLargerThanWidget = ((DartRuntimePrimitives.RequireValue(this._currentTextureSize).width > size.width) || (DartRuntimePrimitives.RequireValue(this._currentTextureSize).height > size.height));
-        if ((isTextureLargerThanWidget && (!object.Equals(this.clipBehavior, Clip.none))))
+        if ((isTextureLargerThanWidget && (!Equals(this.clipBehavior, Clip.none))))
         {
             this._clipRectLayer.layer = context.pushClipRect(true, offset, (offset & size), (Action<PaintingContext, Offset>)this._paintTexture, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
             return;
@@ -254,23 +254,23 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if (((object.Equals(this.hitTestBehavior, PlatformViewHitTestBehavior.transparent)) || !size.contains(DartRuntimePrimitives.RequireValue(position))))
+        if (((Equals(this.hitTestBehavior, PlatformViewHitTestBehavior.transparent)) || !size.contains(DartRuntimePrimitives.RequireValue(position))))
         {
             return false;
         }
         result.add(new BoxHitTestEntry(this, DartRuntimePrimitives.RequireValue(position)));
-        return (object.Equals(this.hitTestBehavior, PlatformViewHitTestBehavior.opaque));
+        return (Equals(this.hitTestBehavior, PlatformViewHitTestBehavior.opaque));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool hitTestSelf(Offset position) => (!object.Equals(this.hitTestBehavior, PlatformViewHitTestBehavior.transparent));
+    public override bool hitTestSelf(Offset position) => (!Equals(this.hitTestBehavior, PlatformViewHitTestBehavior.transparent));
     internal virtual void _handleGlobalPointerEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
     {
         if (!hasSize)
         {
             return;
         }
-        if ((@event is not global::Doroti.Framework.Gestures.PointerDownEvent))
+        if ((@event is not Gestures.PointerDownEvent))
         {
             return;
         }
@@ -278,7 +278,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
         {
             return;
         }
-        if ((!object.Equals(((@event.original ?? @event)), this._lastPointerDownEvent)))
+        if ((!Equals(((@event.original ?? @event)), this._lastPointerDownEvent)))
         {
             _ = this._viewController.rejectGesture();
         }
@@ -328,7 +328,7 @@ public class RenderUiKitView : RenderDarwinPlatformView<UiKitViewController>
 
     public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
-        if ((@event is not global::Doroti.Framework.Gestures.PointerDownEvent))
+        if ((@event is not Gestures.PointerDownEvent))
         {
             return;
         }
@@ -515,7 +515,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
         {
             var controller = value;
             DartRuntimePrimitives.Assert(() => (controller.viewId > -1L));
-            if ((object.Equals(this._controller, controller)))
+            if ((Equals(this._controller, controller)))
             {
                 return;
             }
@@ -530,7 +530,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
     }
     public virtual void updateGestureRecognizers(HashSet<Factory<OneSequenceGestureRecognizer>> gestureRecognizers)
     {
-        _updateGestureRecognizersWithCallBack(gestureRecognizers, (Func<global::Doroti.Framework.Gestures.PointerEvent, Future>)((__event) => _controller.dispatchPointerEvent(global::Doroti.Ui.PointerEvent.FromFrameworkEvent(__event is global::Doroti.Framework.Gestures.PointerDownEvent ? 1L : __event is global::Doroti.Framework.Gestures.PointerUpEvent ? 2L : __event is global::Doroti.Framework.Gestures.PointerCancelEvent ? 3L : __event is global::Doroti.Framework.Gestures.PointerHoverEvent ? 4L : __event is global::Doroti.Framework.Gestures.PointerMoveEvent ? 5L : 0L, __event.pointer, __event.embedderId, __event.platformData, __event.timeStamp, __event.position, __event.kind, __event.orientation, __event.pressure, __event.size, __event.radiusMajor, __event.radiusMinor))));
+        _updateGestureRecognizersWithCallBack(gestureRecognizers, (Func<global::Doroti.Framework.Gestures.PointerEvent, Future>)((__event) => _controller.dispatchPointerEvent(Ui.PointerEvent.FromFrameworkEvent(__event is global::Doroti.Framework.Gestures.PointerDownEvent ? 1L : __event is global::Doroti.Framework.Gestures.PointerUpEvent ? 2L : __event is global::Doroti.Framework.Gestures.PointerCancelEvent ? 3L : __event is global::Doroti.Framework.Gestures.PointerHoverEvent ? 4L : __event is global::Doroti.Framework.Gestures.PointerMoveEvent ? 5L : 0L, __event.pointer, __event.embedderId, __event.platformData, __event.timeStamp, __event.position, __event.kind, __event.orientation, __event.pressure, __event.size, __event.radiusMajor, __event.radiusMinor))));
     }
 
     public override bool sizedByParent => true;
@@ -560,7 +560,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this._hitTestBehavior)))
+            if ((!Equals(__value, this._hitTestBehavior)))
             {
                 this._hitTestBehavior = __value;
                 if ((owner is not null))
@@ -584,19 +584,19 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
-        if (((object.Equals(this._hitTestBehavior, PlatformViewHitTestBehavior.transparent)) || !size.contains(position)))
+        if (((Equals(this._hitTestBehavior, PlatformViewHitTestBehavior.transparent)) || !size.contains(position)))
         {
             return false;
         }
         result.add(new BoxHitTestEntry(this, position));
-        return (object.Equals(this._hitTestBehavior, PlatformViewHitTestBehavior.opaque));
+        return (Equals(this._hitTestBehavior, PlatformViewHitTestBehavior.opaque));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool hitTestSelf(Offset position) => (!object.Equals(this._hitTestBehavior, PlatformViewHitTestBehavior.transparent));
+    public override bool hitTestSelf(Offset position) => (!Equals(this._hitTestBehavior, PlatformViewHitTestBehavior.transparent));
     public virtual Action<global::Doroti.Framework.Gestures.PointerEnterEvent>? onEnter => null;
     public virtual Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit => null;
-    public virtual MouseCursor cursor => (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? MouseCursor.defer : MouseCursor.uncontrolled);
+    public virtual MouseCursor cursor => (Foundation.ConstantsLibrary.kIsWeb ? MouseCursor.defer : MouseCursor.uncontrolled);
     public virtual bool validForMouseTracker => true;
     public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {

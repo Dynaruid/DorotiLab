@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/animated_scroll_view.dart
-#pragma warning disable CS8600, CS8602, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -8,12 +7,12 @@ namespace Doroti.Framework.Widgets;
 
 public class AnimatedList : _AnimatedScrollView__animated_scroll_view
 {
-    public AnimatedList(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null) : base(key: key, itemBuilder: itemBuilder, initialItemCount: initialItemCount, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: DartRuntimePrimitives.RequireValue(primary), physics: physics, shrinkWrap: shrinkWrap, padding: padding, clipBehavior: clipBehavior, scrollCacheExtent: scrollCacheExtent)
+    public AnimatedList(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null) : base(key: key, itemBuilder: itemBuilder, initialItemCount: initialItemCount, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: DartRuntimePrimitives.RequireValue(primary), physics: physics, shrinkWrap: shrinkWrap, padding: padding, clipBehavior: clipBehavior, scrollCacheExtent: scrollCacheExtent)
     {
         System.Diagnostics.Debug.Assert((initialItemCount >= 0L));
     }
 
-    public static AnimatedList CreateSeparated(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> separatorBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> removedSeparatorBuilder = default!, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null)
+    public static AnimatedList CreateSeparated(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> separatorBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> removedSeparatorBuilder = default!, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null)
     {
         var __instance = new AnimatedList(
             key: key,
@@ -37,7 +36,7 @@ public class AnimatedList : _AnimatedScrollView__animated_scroll_view
 
     public static AnimatedListState of(BuildContext context)
     {
-        AnimatedListState? result = ((AnimatedListState?)(object?)AnimatedList.maybeOf(context));
+        AnimatedListState? result = ((AnimatedListState?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((result is null))
@@ -53,7 +52,7 @@ public class AnimatedList : _AnimatedScrollView__animated_scroll_view
 
     public static AnimatedListState? maybeOf(BuildContext context)
     {
-        return ((AnimatedListState?)(object?)context.findAncestorStateOfType<AnimatedListState>());
+        return ((AnimatedListState?)context.findAncestorStateOfType<AnimatedListState>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -74,7 +73,7 @@ public class AnimatedListState : _AnimatedScrollViewState__animated_scroll_view<
 {
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)_wrap(new SliverAnimatedList(key: this._sliverAnimatedMultiBoxKey, itemBuilder: (global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>)this.widget.itemBuilder, initialItemCount: this.widget.initialItemCount), this.widget.scrollDirection));
+        return ((Widget)_wrap(new SliverAnimatedList(key: this._sliverAnimatedMultiBoxKey, itemBuilder: (global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>)this.widget.itemBuilder, initialItemCount: this.widget.initialItemCount), this.widget.scrollDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -84,7 +83,7 @@ public class AnimatedGrid : _AnimatedScrollView__animated_scroll_view
 {
     public virtual global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate { get; private set; } = default!;
 
-    public AnimatedGrid(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate = default!, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null) : base(key: key, itemBuilder: itemBuilder, initialItemCount: initialItemCount, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: DartRuntimePrimitives.RequireValue(primary), physics: physics, padding: padding, clipBehavior: clipBehavior, scrollCacheExtent: scrollCacheExtent)
+    public AnimatedGrid(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate = default!, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null) : base(key: key, itemBuilder: itemBuilder, initialItemCount: initialItemCount, scrollDirection: scrollDirection, reverse: reverse, controller: controller, primary: DartRuntimePrimitives.RequireValue(primary), physics: physics, padding: padding, clipBehavior: clipBehavior, scrollCacheExtent: scrollCacheExtent)
     {
         this.gridDelegate = gridDelegate;
         System.Diagnostics.Debug.Assert((initialItemCount >= 0L));
@@ -92,7 +91,7 @@ public class AnimatedGrid : _AnimatedScrollView__animated_scroll_view
 
     public static AnimatedGridState of(BuildContext context)
     {
-        AnimatedGridState? result = ((AnimatedGridState?)(object?)AnimatedGrid.maybeOf(context));
+        AnimatedGridState? result = ((AnimatedGridState?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((result is null))
@@ -108,7 +107,7 @@ public class AnimatedGrid : _AnimatedScrollView__animated_scroll_view
 
     public static AnimatedGridState? maybeOf(BuildContext context)
     {
-        return ((AnimatedGridState?)(object?)context.findAncestorStateOfType<AnimatedGridState>());
+        return ((AnimatedGridState?)context.findAncestorStateOfType<AnimatedGridState>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,7 +118,7 @@ public class AnimatedGridState : _AnimatedScrollViewState__animated_scroll_view<
 {
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)_wrap(new SliverAnimatedGrid(key: this._sliverAnimatedMultiBoxKey, gridDelegate: ((AnimatedGrid)(object)this.widget).gridDelegate, itemBuilder: (global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>)this.widget.itemBuilder, initialItemCount: this.widget.initialItemCount), this.widget.scrollDirection));
+        return ((Widget)_wrap(new SliverAnimatedGrid(key: this._sliverAnimatedMultiBoxKey, gridDelegate: ((AnimatedGrid)this.widget).gridDelegate, itemBuilder: (global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>)this.widget.itemBuilder, initialItemCount: this.widget.initialItemCount), this.widget.scrollDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -140,7 +139,7 @@ public abstract class _AnimatedScrollView__animated_scroll_view : StatefulWidget
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent { get; private set; }
 
-    internal _AnimatedScrollView__animated_scroll_view(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilder = null, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null) : base(key: key)
+    internal _AnimatedScrollView__animated_scroll_view(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilder = null, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null) : base(key: key)
     {
         this.itemBuilder = itemBuilder;
         this.removedSeparatorBuilder = removedSeparatorBuilder;
@@ -167,7 +166,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
 
     public virtual void insertItem(long index, Duration? duration = null)
     {
-        if ((((_AnimatedScrollView__animated_scroll_view)(object)this.widget).removedSeparatorBuilder is null))
+        if ((((_AnimatedScrollView__animated_scroll_view)this.widget).removedSeparatorBuilder is null))
         {
             ((GlobalKey<_SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<_SliverAnimatedMultiBoxAdaptor__animated_scroll_view>>)this._sliverAnimatedMultiBoxKey).currentState!.insertItem(index, duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)));
         }
@@ -184,7 +183,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
 
     public virtual void insertAllItems(long index, long length, Duration? duration = null, bool isAsync = false)
     {
-        if ((((_AnimatedScrollView__animated_scroll_view)(object)this.widget).removedSeparatorBuilder is null))
+        if ((((_AnimatedScrollView__animated_scroll_view)this.widget).removedSeparatorBuilder is null))
         {
             ((GlobalKey<_SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<_SliverAnimatedMultiBoxAdaptor__animated_scroll_view>>)this._sliverAnimatedMultiBoxKey).currentState!.insertAllItems(index, length, duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)));
         }
@@ -198,7 +197,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
 
     public virtual void removeItem(long index, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget> builder, Duration? duration = null)
     {
-        global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilderLocal = ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).removedSeparatorBuilder;
+        global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilderLocal = ((_AnimatedScrollView__animated_scroll_view)this.widget).removedSeparatorBuilder;
         if ((removedSeparatorBuilderLocal is null))
         {
             ((GlobalKey<_SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<_SliverAnimatedMultiBoxAdaptor__animated_scroll_view>>)this._sliverAnimatedMultiBoxKey).currentState!.removeItem(index, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget>)builder, duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)));
@@ -224,7 +223,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
 
     public virtual void removeAllItems(global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget> builder, Duration? duration = null)
     {
-        global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilderLocal = ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).removedSeparatorBuilder;
+        global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilderLocal = ((_AnimatedScrollView__animated_scroll_view)this.widget).removedSeparatorBuilder;
         if ((removedSeparatorBuilderLocal is null))
         {
             ((GlobalKey<_SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<_SliverAnimatedMultiBoxAdaptor__animated_scroll_view>>)this._sliverAnimatedMultiBoxKey).currentState!.removeAllItems((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget>)builder, duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)));
@@ -273,23 +272,23 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
 
     internal virtual Widget _wrap(Widget sliver, global::Doroti.Framework.Painting.Axis direction)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).padding;
-        if ((((_AnimatedScrollView__animated_scroll_view)(object)this.widget).padding is null))
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = ((_AnimatedScrollView__animated_scroll_view)this.widget).padding;
+        if ((((_AnimatedScrollView__animated_scroll_view)this.widget).padding is null))
         {
-            MediaQueryData? mediaQuery = ((MediaQueryData?)(object?)MediaQuery.maybeOf(this.context));
+            MediaQueryData? mediaQuery = ((MediaQueryData?)MediaQuery.maybeOf(this.context));
             if ((mediaQuery is not null))
             {
-                global::Doroti.Framework.Painting.EdgeInsets mediaQueryHorizontalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((MediaQueryData)mediaQuery).padding.copyWith(top: 0.0, bottom: 0.0));
-                global::Doroti.Framework.Painting.EdgeInsets mediaQueryVerticalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((MediaQueryData)mediaQuery).padding.copyWith(left: 0.0, right: 0.0));
-                effectivePadding = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(((object.Equals(direction, global::Doroti.Framework.Painting.Axis.vertical)) ? mediaQueryVerticalPadding : mediaQueryHorizontalPadding));
-                sliver = new MediaQuery(data: mediaQuery.copyWith(padding: ((object.Equals(direction, global::Doroti.Framework.Painting.Axis.vertical)) ? mediaQueryHorizontalPadding : mediaQueryVerticalPadding)), child: sliver);
+                global::Doroti.Framework.Painting.EdgeInsets mediaQueryHorizontalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)((MediaQueryData)mediaQuery).padding.copyWith(top: 0.0, bottom: 0.0));
+                global::Doroti.Framework.Painting.EdgeInsets mediaQueryVerticalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)((MediaQueryData)mediaQuery).padding.copyWith(left: 0.0, right: 0.0));
+                effectivePadding = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(((Equals(direction, Axis.vertical)) ? mediaQueryVerticalPadding : mediaQueryHorizontalPadding));
+                sliver = new MediaQuery(data: mediaQuery.copyWith(padding: ((Equals(direction, Axis.vertical)) ? mediaQueryHorizontalPadding : mediaQueryVerticalPadding)), child: sliver);
             }
         }
         if ((effectivePadding is not null))
         {
             sliver = new SliverPadding(padding: effectivePadding, sliver: sliver);
         }
-        return ((Widget)(object?)new CustomScrollView(scrollDirection: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).scrollDirection, reverse: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).reverse, controller: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).controller, primary: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).primary, physics: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).physics, clipBehavior: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).clipBehavior, shrinkWrap: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).shrinkWrap, scrollCacheExtent: ((_AnimatedScrollView__animated_scroll_view)(object)this.widget).scrollCacheExtent, slivers: new List<Widget> { sliver }));
+        return ((Widget)new CustomScrollView(scrollDirection: ((_AnimatedScrollView__animated_scroll_view)this.widget).scrollDirection, reverse: ((_AnimatedScrollView__animated_scroll_view)this.widget).reverse, controller: ((_AnimatedScrollView__animated_scroll_view)this.widget).controller, primary: ((_AnimatedScrollView__animated_scroll_view)this.widget).primary, physics: ((_AnimatedScrollView__animated_scroll_view)this.widget).physics, clipBehavior: ((_AnimatedScrollView__animated_scroll_view)this.widget).clipBehavior, shrinkWrap: ((_AnimatedScrollView__animated_scroll_view)this.widget).shrinkWrap, scrollCacheExtent: ((_AnimatedScrollView__animated_scroll_view)this.widget).scrollCacheExtent, slivers: new List<Widget> { sliver }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -304,13 +303,13 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -344,8 +343,8 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -438,12 +437,12 @@ public class SliverAnimatedList : _SliverAnimatedMultiBoxAdaptor__animated_scrol
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new SliverAnimatedListState());
     public static SliverAnimatedListState of(BuildContext context)
     {
-        SliverAnimatedListState? result = ((SliverAnimatedListState?)(object?)SliverAnimatedList.maybeOf(context));
+        SliverAnimatedListState? result = ((SliverAnimatedListState?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((result is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("SliverAnimatedList.of() called with a context that does not contain a SliverAnimatedList.\n" + "No SliverAnimatedListState ancestor could be found starting from the " + "context that was passed to SliverAnimatedListState.of(). This can " + "happen when the context provided is from the same StatefulWidget that " + "built the AnimatedList. Please see the SliverAnimatedList documentation " + "for examples of how to refer to an AnimatedListState object: " + "https://api.flutter.dev/flutter/widgets/SliverAnimatedListState-class.html\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("SliverAnimatedList.of() called with a context that does not contain a SliverAnimatedList.\n" + "No SliverAnimatedListState ancestor could be found starting from the " + "context that was passed to SliverAnimatedListState.of(). This can " + "happen when the context provided is from the same StatefulWidget that " + "built the AnimatedList. Please see the SliverAnimatedList documentation " + "for examples of how to refer to an AnimatedListState object: " + "https://api.flutter.dev/flutter/widgets/SliverAnimatedListState-class.html\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -454,7 +453,7 @@ public class SliverAnimatedList : _SliverAnimatedMultiBoxAdaptor__animated_scrol
 
     public static SliverAnimatedListState? maybeOf(BuildContext context)
     {
-        return ((SliverAnimatedListState?)(object?)context.findAncestorStateOfType<SliverAnimatedListState>());
+        return ((SliverAnimatedListState?)context.findAncestorStateOfType<SliverAnimatedListState>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -464,7 +463,7 @@ public class SliverAnimatedListState : _SliverAnimatedMultiBoxAdaptorState__anim
 {
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new SliverList(@delegate: _createDelegate()));
+        return ((Widget)new SliverList(@delegate: _createDelegate()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -483,12 +482,12 @@ public class SliverAnimatedGrid : _SliverAnimatedMultiBoxAdaptor__animated_scrol
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new SliverAnimatedGridState());
     public static SliverAnimatedGridState of(BuildContext context)
     {
-        SliverAnimatedGridState? result = ((SliverAnimatedGridState?)(object?)context.findAncestorStateOfType<SliverAnimatedGridState>());
+        SliverAnimatedGridState? result = ((SliverAnimatedGridState?)context.findAncestorStateOfType<SliverAnimatedGridState>());
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((result is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("SliverAnimatedGrid.of() called with a context that does not contain a SliverAnimatedGrid.\n" + "No SliverAnimatedGridState ancestor could be found starting from the " + "context that was passed to SliverAnimatedGridState.of(). This can " + "happen when the context provided is from the same StatefulWidget that " + "built the AnimatedGrid. Please see the SliverAnimatedGrid documentation " + "for examples of how to refer to an AnimatedGridState object: " + "https://api.flutter.dev/flutter/widgets/SliverAnimatedGridState-class.html\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("SliverAnimatedGrid.of() called with a context that does not contain a SliverAnimatedGrid.\n" + "No SliverAnimatedGridState ancestor could be found starting from the " + "context that was passed to SliverAnimatedGridState.of(). This can " + "happen when the context provided is from the same StatefulWidget that " + "built the AnimatedGrid. Please see the SliverAnimatedGrid documentation " + "for examples of how to refer to an AnimatedGridState object: " + "https://api.flutter.dev/flutter/widgets/SliverAnimatedGridState-class.html\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -499,7 +498,7 @@ public class SliverAnimatedGrid : _SliverAnimatedMultiBoxAdaptor__animated_scrol
 
     public static SliverAnimatedGridState? maybeOf(BuildContext context)
     {
-        return ((SliverAnimatedGridState?)(object?)context.findAncestorStateOfType<SliverAnimatedGridState>());
+        return ((SliverAnimatedGridState?)context.findAncestorStateOfType<SliverAnimatedGridState>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -509,7 +508,7 @@ public class SliverAnimatedGridState : _SliverAnimatedMultiBoxAdaptorState__anim
 {
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new SliverGrid(gridDelegate: ((SliverAnimatedGrid)(object)this.widget).gridDelegate, @delegate: _createDelegate()));
+        return ((Widget)new SliverGrid(gridDelegate: ((SliverAnimatedGrid)this.widget).gridDelegate, @delegate: _createDelegate()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -542,7 +541,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
     public override void initState()
     {
         base.initState();
-        _itemsCount = ((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)(object)this.widget).initialItemCount;
+        _itemsCount = ((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)this.widget).initialItemCount;
     }
 
     public override void dispose()
@@ -573,14 +572,14 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
 
     internal virtual _ActiveItem__animated_scroll_view? _removeActiveItemAt(List<_ActiveItem__animated_scroll_view> items, long itemIndex)
     {
-        long i = global::Doroti.Framework.Foundation.CollectionsLibrary.binarySearch(items, _ActiveItem__animated_scroll_view.CreateIndex(itemIndex));
+        long i = CollectionsLibrary.binarySearch(items, _ActiveItem__animated_scroll_view.CreateIndex(itemIndex));
         return ((i == -1L) ? null : items.removeAt(i));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual _ActiveItem__animated_scroll_view? _activeItemAt(List<_ActiveItem__animated_scroll_view> items, long itemIndex)
     {
-        long i = global::Doroti.Framework.Foundation.CollectionsLibrary.binarySearch(items, _ActiveItem__animated_scroll_view.CreateIndex(itemIndex));
+        long i = CollectionsLibrary.binarySearch(items, _ActiveItem__animated_scroll_view.CreateIndex(itemIndex));
         return ((i == -1L) ? null : items[(int)(i)]);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -624,9 +623,9 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
 
     internal virtual SliverChildDelegate _createDelegate()
     {
-        return ((SliverChildDelegate)(object?)new SliverChildBuilderDelegate((global::System.Func<BuildContext, long, Widget>)this._itemBuilder, childCount: this._itemsCount, findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>)((((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)(object)this.widget).findChildIndexCallback is null) ? null : ((key) =>
+        return ((SliverChildDelegate)new SliverChildBuilderDelegate((global::System.Func<BuildContext, long, Widget>)this._itemBuilder, childCount: this._itemsCount, findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>?)((((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)this.widget).findChildIndexCallback is null) ? null : ((key) =>
         {
-            long? index = ((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)(object)this.widget).findChildIndexCallback!(key);
+            long? index = ((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)this.widget).findChildIndexCallback!(key);
             return ((index is not null) ? _indexToItemIndex(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index))) : null);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
@@ -635,13 +634,13 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
 
     internal virtual Widget _itemBuilder(BuildContext context, long itemIndex)
     {
-        _ActiveItem__animated_scroll_view? outgoingItem = ((_ActiveItem__animated_scroll_view?)(object?)_activeItemAt(this._outgoingItems, itemIndex));
+        _ActiveItem__animated_scroll_view? outgoingItem = ((_ActiveItem__animated_scroll_view?)_activeItemAt(this._outgoingItems, itemIndex));
         if ((outgoingItem is not null))
         {
             return ((_ActiveItem__animated_scroll_view)outgoingItem).removedItemBuilder!(context, ((_ActiveItem__animated_scroll_view)outgoingItem).controller!.view);
         }
-        _ActiveItem__animated_scroll_view? incomingItem = ((_ActiveItem__animated_scroll_view?)(object?)_activeItemAt(this._incomingItems, itemIndex));
-        global::Doroti.Framework.Animation.Animation<double> animation = (incomingItem?.controller?.view ?? global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation);
+        _ActiveItem__animated_scroll_view? incomingItem = ((_ActiveItem__animated_scroll_view?)_activeItemAt(this._incomingItems, itemIndex));
+        global::Doroti.Framework.Animation.Animation<double> animation = (incomingItem?.controller?.view ?? AnimationsLibrary.kAlwaysCompleteAnimation);
         return this.widget.itemBuilder(context, _itemIndexToIndex(itemIndex), animation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -699,7 +698,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         long itemIndexLocal = _indexToItemIndex(index);
         DartRuntimePrimitives.Assert(() => ((itemIndexLocal >= 0L) && (itemIndexLocal < this._itemsCount)));
         DartRuntimePrimitives.Assert(() => (_activeItemAt(this._outgoingItems, itemIndexLocal) is null));
-        _ActiveItem__animated_scroll_view? incomingItem = ((_ActiveItem__animated_scroll_view?)(object?)_removeActiveItemAt(this._incomingItems, itemIndexLocal));
+        _ActiveItem__animated_scroll_view? incomingItem = ((_ActiveItem__animated_scroll_view?)_removeActiveItemAt(this._incomingItems, itemIndexLocal));
         global::Doroti.Framework.Animation.AnimationController controllerLocal = (incomingItem?.controller ?? new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(duration), value: 1.0, vsync: this));
         var outgoingItem = _ActiveItem__animated_scroll_view.CreateOutgoing(controllerLocal, itemIndexLocal, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget>)builder);
         setState(((global::System.Action)(() =>
@@ -756,13 +755,13 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -796,8 +795,8 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }

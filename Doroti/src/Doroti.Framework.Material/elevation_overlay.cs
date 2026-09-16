@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/elevation_overlay.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
@@ -9,11 +9,11 @@ public abstract class ElevationOverlay
 {
     public static global::Doroti.Ui.Color applySurfaceTint(Color color, Color? surfaceTint, double elevation)
     {
-        if (((surfaceTint is not null) && (!object.Equals(surfaceTint, Colors.transparent))))
+        if (((surfaceTint is not null) && (!Equals(surfaceTint, Colors.transparent))))
         {
-            return ((global::Doroti.Ui.Color)(object?)Dart_uiLibrary.Color.alphaBlend(surfaceTint.withOpacity(ElevationOverlay._surfaceTintOpacityForElevation(elevation)), color));
+            return ((global::Doroti.Ui.Color)Dart_uiLibrary.Color.alphaBlend(surfaceTint.withOpacity(_surfaceTintOpacityForElevation(elevation)), color));
         }
-        return ((global::Doroti.Ui.Color)(object?)color);
+        return ((global::Doroti.Ui.Color)color);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -42,31 +42,31 @@ public abstract class ElevationOverlay
     public static global::Doroti.Ui.Color applyOverlay(global::Doroti.Framework.Widgets.BuildContext context, Color color, double elevation)
     {
         ThemeData theme = Theme.of(context);
-        if (((((elevation > 0.0) && theme.applyElevationOverlayColor) && (object.Equals(theme.brightness, Brightness.dark))) && (object.Equals(color.withOpacity(1.0), theme.colorScheme.surface.withOpacity(1.0)))))
+        if (((((elevation > 0.0) && theme.applyElevationOverlayColor) && (Equals(theme.brightness, Brightness.dark))) && (Equals(color.withOpacity(1.0), theme.colorScheme.surface.withOpacity(1.0)))))
         {
-            return ((global::Doroti.Ui.Color)(object?)ElevationOverlay.colorWithOverlay(color, theme.colorScheme.onSurface, elevation));
+            return ((global::Doroti.Ui.Color)colorWithOverlay(color, theme.colorScheme.onSurface, elevation));
         }
-        return ((global::Doroti.Ui.Color)(object?)color);
+        return ((global::Doroti.Ui.Color)color);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Color overlayColor(global::Doroti.Framework.Widgets.BuildContext context, double elevation)
     {
         ThemeData theme = Theme.of(context);
-        return ((global::Doroti.Ui.Color)(object?)ElevationOverlay._overlayColor(theme.colorScheme.onSurface, elevation));
+        return ((global::Doroti.Ui.Color)_overlayColor(theme.colorScheme.onSurface, elevation));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Color colorWithOverlay(Color surface, Color overlay, double elevation)
     {
-        return ((global::Doroti.Ui.Color)(object?)Dart_uiLibrary.Color.alphaBlend(ElevationOverlay._overlayColor(overlay, elevation), surface));
+        return ((global::Doroti.Ui.Color)Dart_uiLibrary.Color.alphaBlend(_overlayColor(overlay, elevation), surface));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Ui.Color _overlayColor(Color color, double elevation)
     {
-        double opacity = ((((4.5 * global::Doroti.Runtime.Dart_mathLibrary.log((elevation + 1L))) + 2L)) / 100.0);
-        return ((global::Doroti.Ui.Color)(object?)color.withOpacity(opacity));
+        double opacity = ((((4.5 * Runtime.Dart_mathLibrary.log((elevation + 1L))) + 2L)) / 100.0);
+        return ((global::Doroti.Ui.Color)color.withOpacity(opacity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

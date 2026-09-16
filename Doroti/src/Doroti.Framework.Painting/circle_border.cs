@@ -64,7 +64,7 @@ public class CircleBorder : OutlinedBorder
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
         global::Doroti.Ui.Rect adjustedRect = _adjustRect(rect);
-        return global::Doroti.Ui.RRect.fromRectAndRadius(adjustedRect, global::Doroti.Ui.Radius.elliptical((adjustedRect.width / 2.0), (adjustedRect.height / 2.0))).contains(position);
+        return RRect.fromRectAndRadius(adjustedRect, Radius.elliptical((adjustedRect.width / 2.0), (adjustedRect.height / 2.0))).contains(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -115,17 +115,17 @@ public class CircleBorder : OutlinedBorder
     {
         if (((this.eccentricity == 0.0) || (rect.width == rect.height)))
         {
-            return global::Doroti.Ui.Rect.fromCircle(center: rect.center, radius: (rect.shortestSide / 2.0));
+            return Rect.fromCircle(center: rect.center, radius: (rect.shortestSide / 2.0));
         }
         if ((rect.width < rect.height))
         {
             double delta = ((((1.0 - this.eccentricity)) * ((rect.height - rect.width))) / 2.0);
-            return global::Doroti.Ui.Rect.fromLTRB(rect.left, (rect.top + delta), rect.right, (rect.bottom - delta));
+            return Rect.fromLTRB(rect.left, (rect.top + delta), rect.right, (rect.bottom - delta));
         }
         else
         {
             double deltaLocal = ((((1.0 - this.eccentricity)) * ((rect.width - rect.height))) / 2.0);
-            return global::Doroti.Ui.Rect.fromLTRB((rect.left + deltaLocal), rect.top, (rect.right - deltaLocal), rect.bottom);
+            return Rect.fromLTRB((rect.left + deltaLocal), rect.top, (rect.right - deltaLocal), rect.bottom);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -134,11 +134,11 @@ public class CircleBorder : OutlinedBorder
     {
         var __other = other as CircleBorder;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is CircleBorder) && (object.Equals(((CircleBorder)__other).side, side))) && (((CircleBorder)((CircleBorder)__other)).eccentricity == this.eccentricity));
+        return (((__other is CircleBorder) && (Equals(((CircleBorder)__other).side, side))) && (((CircleBorder)((CircleBorder)__other)).eccentricity == this.eccentricity));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.eccentricity);
@@ -146,9 +146,9 @@ public class CircleBorder : OutlinedBorder
     {
         if ((this.eccentricity != 0.0))
         {
-            return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "CircleBorder"))}({side}, eccentricity: {this.eccentricity})";
+            return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "CircleBorder"))}({side}, eccentricity: {this.eccentricity})";
         }
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "CircleBorder"))}({side})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "CircleBorder"))}({side})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

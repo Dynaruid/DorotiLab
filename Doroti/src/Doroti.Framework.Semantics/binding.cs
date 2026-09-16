@@ -16,7 +16,7 @@ public interface SemanticsBinding
 
     public static global::Doroti.Framework.Semantics.SemanticsBinding instance
     {
-        get => BindingBase.checkInstance(global::Doroti.Framework.Semantics.SemanticsBinding._instance);
+        get => BindingBase.checkInstance(_instance);
     }
     public bool semanticsEnabled { get; }
     public void addSemanticsEnabledListener(Action listener);
@@ -50,7 +50,7 @@ public class SemanticsHandle
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._onDispose();
     }
 

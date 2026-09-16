@@ -90,7 +90,7 @@ public class RenderPerformanceOverlay : RenderBox
     public override void paint(PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() => needsCompositing);
-        context.addLayer(new PerformanceOverlayLayer(overlayRect: global::Doroti.Ui.Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), optionsMask: this.optionsMask));
+        context.addLayer(new PerformanceOverlayLayer(overlayRect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), optionsMask: this.optionsMask));
     }
 
 }

@@ -21,7 +21,7 @@ public class Texture : LeafRenderObjectWidget
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.TextureBox(textureId: this.textureId, freeze: this.freeze, filterQuality: this.filterQuality));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.TextureBox)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.TextureBox)renderObject;
         __renderObject.textureId = this.textureId;
         __renderObject.freeze = this.freeze;
         __renderObject.filterQuality = this.filterQuality;

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/mouse_cursor.dart
-#pragma warning disable CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -14,7 +13,7 @@ public class MouseCursorManager
     public MouseCursorManager(MouseCursor fallbackMouseCursor)
     {
         this.fallbackMouseCursor = fallbackMouseCursor;
-        System.Diagnostics.Debug.Assert((!object.Equals(fallbackMouseCursor, MouseCursor.defer)));
+        System.Diagnostics.Debug.Assert((!Equals(fallbackMouseCursor, MouseCursor.defer)));
     }
 
     public virtual MouseCursor? debugDeviceActiveCursor(long device)
@@ -29,7 +28,7 @@ public class MouseCursorManager
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void handleDeviceCursorUpdate(long device, IPointerEvent triggeringEvent, IEnumerable<MouseCursor> cursorCandidates)
+    public virtual void handleDeviceCursorUpdate(long device, IPointerEvent? triggeringEvent, IEnumerable<MouseCursor> cursorCandidates)
     {
         if (triggeringEvent is IPointerRemovedEvent)
         {
@@ -39,7 +38,7 @@ public class MouseCursorManager
         MouseCursorSession? lastSession = _lastSession.GetValueOrDefault(device);
         MouseCursor nextCursor = (_DeferringMouseCursor.firstNonDeferred(cursorCandidates) ?? fallbackMouseCursor);
         DartRuntimePrimitives.Assert(() => (nextCursor is not _DeferringMouseCursor));
-        if ((object.Equals(lastSession?.cursor, nextCursor)))
+        if ((Equals(lastSession?.cursor, nextCursor)))
         {
             return;
         }
@@ -77,7 +76,7 @@ public abstract class MouseCursor : Diagnosticable
 
     public abstract MouseCursorSession createSession(long device);
     public abstract string debugDescription { get; }
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -86,7 +85,7 @@ public abstract class MouseCursor : Diagnosticable
         {
             return debugDescription;
         }
-        return base.ToString();
+        return GetType().ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -110,7 +109,7 @@ internal class _DeferringMouseCursor : MouseCursor
     {
         foreach (var cursor in cursors)
         {
-            if ((!object.Equals(cursor, MouseCursor.defer)))
+            if ((!Equals(cursor, defer)))
             {
                 return cursor;
             }
@@ -157,7 +156,7 @@ internal class _SystemMouseCursorSession : MouseCursorSession
     public override Future activate()
     {
         const string elementId = "package:flutter/services.dart#MouseCursor.activateSystemCursor";
-        var dispatcher = global::Doroti.Ui.PlatformDispatcher.instance;
+        var dispatcher = PlatformDispatcher.instance;
         var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
             ?? throw new DorotiCapabilityException(
                 DorotiCapabilityIds.PlatformServices,
@@ -192,13 +191,13 @@ public class SystemMouseCursor : MouseCursor
         this.kind = kind;
     }
 
-    public override string debugDescription => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor"))}({kind})";
+    public override string debugDescription => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor"))}({kind})";
     public override MouseCursorSession createSession(long device) => new _SystemMouseCursorSession(this, device);
     public override bool Equals(object? other)
     {
         var __other = other as SystemMouseCursor;
         if (__other is null) return false;
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }

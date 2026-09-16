@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/tab_bar_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -73,7 +73,7 @@ public class TabBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
 
     public static TabBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TabBarTheme? tabBarThemeLocal = ((TabBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TabBarTheme>());
+        TabBarTheme? tabBarThemeLocal = ((TabBarTheme?)context.dependOnInheritedWidgetOfExactType<TabBarTheme>());
         return (tabBarThemeLocal?.data ?? Theme.of(context).tabBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -88,14 +88,14 @@ public class TabBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TabBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((TabBarTheme)oldWidget).data)));
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TabBarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new TabBarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
     public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -110,7 +110,7 @@ public class TabBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
 
     public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -186,11 +186,11 @@ public class TabBarThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((((__other is TabBarThemeData) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicator, this.indicator))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorColor, this.indicatorColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorSize, this.indicatorSize))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).dividerColor, this.dividerColor))) && (((TabBarThemeData)((TabBarThemeData)__other)).dividerHeight == this.dividerHeight)) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelColor, this.labelColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelPadding, this.labelPadding))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelStyle, this.labelStyle))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).unselectedLabelColor, this.unselectedLabelColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).unselectedLabelStyle, this.unselectedLabelStyle))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).overlayColor, this.overlayColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).splashFactory, this.splashFactory))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).mouseCursor, this.mouseCursor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).tabAlignment, this.tabAlignment))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).textScaler, this.textScaler))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorAnimation, this.indicatorAnimation))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).splashBorderRadius, this.splashBorderRadius)));
+        return ((((((((((((((((((__other is TabBarThemeData) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicator, this.indicator))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorColor, this.indicatorColor))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorSize, this.indicatorSize))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).dividerColor, this.dividerColor))) && (((TabBarThemeData)((TabBarThemeData)__other)).dividerHeight == this.dividerHeight)) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelColor, this.labelColor))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelPadding, this.labelPadding))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelStyle, this.labelStyle))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).unselectedLabelColor, this.unselectedLabelColor))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).unselectedLabelStyle, this.unselectedLabelStyle))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).overlayColor, this.overlayColor))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).splashFactory, this.splashFactory))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).mouseCursor, this.mouseCursor))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).tabAlignment, this.tabAlignment))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).textScaler, this.textScaler))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorAnimation, this.indicatorAnimation))) && (Equals(((TabBarThemeData)((TabBarThemeData)__other)).splashBorderRadius, this.splashBorderRadius)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -214,8 +214,8 @@ public class TabBarThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadius?>("splashBorderRadius", this.splashBorderRadius, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -231,7 +231,7 @@ public class TabBarThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

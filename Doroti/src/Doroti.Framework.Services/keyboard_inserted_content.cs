@@ -17,7 +17,7 @@ public class KeyboardInsertedContent
         this.data = data;
     }
 
-    public static KeyboardInsertedContent CreateFromJson(DartMap<string, object> metadata)
+    public static KeyboardInsertedContent CreateFromJson(DartMap<string, object?> metadata)
     {
         var __instance = new KeyboardInsertedContent(default!, default!, default!);
         __instance.mimeType = ((string?)metadata.GetValueOrDefault("mimeType"))!;
@@ -27,16 +27,16 @@ public class KeyboardInsertedContent
     }
 
     public virtual bool hasData => (((bool?)((data?.Count != 0))) ?? false);
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "KeyboardInsertedContent"))}({mimeType}, {uri}, {data})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "KeyboardInsertedContent"))}({mimeType}, {uri}, {data})";
     public override bool Equals(object? other)
     {
         var __other = other as KeyboardInsertedContent;
         if (__other is null) return false;
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }
-        return ((((__other is KeyboardInsertedContent) && (((KeyboardInsertedContent)__other).mimeType == mimeType)) && (((KeyboardInsertedContent)__other).uri == uri)) && (object.Equals(((KeyboardInsertedContent)__other).data, data)));
+        return ((((__other is KeyboardInsertedContent) && (((KeyboardInsertedContent)__other).mimeType == mimeType)) && (((KeyboardInsertedContent)__other).uri == uri)) && (Equals(((KeyboardInsertedContent)__other).data, data)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(mimeType, uri, data);

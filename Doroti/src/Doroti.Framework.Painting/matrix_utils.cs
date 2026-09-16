@@ -135,7 +135,7 @@ public abstract class MatrixUtils
         _accumulate(storageLocal, rect.right, rect.top, false, isAffine);
         _accumulate(storageLocal, rect.left, rect.bottom, false, isAffine);
         _accumulate(storageLocal, rect.right, rect.bottom, false, isAffine);
-        return global::Doroti.Ui.Rect.fromLTRB(_minMax[0L], _minMax[1L], _minMax[2L], _minMax[3L]);
+        return Rect.fromLTRB(_minMax[0L], _minMax[1L], _minMax[2L], _minMax[3L]);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -225,7 +225,7 @@ public abstract class MatrixUtils
             {
                 bottomLocal += hy;
             }
-            return global::Doroti.Ui.Rect.fromLTRB(leftLocal, topLocal, rightLocal, bottomLocal);
+            return Rect.fromLTRB(leftLocal, topLocal, rightLocal, bottomLocal);
         }
         else
         {
@@ -240,7 +240,7 @@ public abstract class MatrixUtils
             double lly = (((ry + hy)) / ((rw + hw)));
             double lrx = ((((rx + wx) + hx)) / (((rw + ww) + hw)));
             double lry = ((((ry + wy) + hy)) / (((rw + ww) + hw)));
-            return global::Doroti.Ui.Rect.fromLTRB(_min4(ulx, urx, llx, lrx), _min4(uly, ury, lly, lry), _max4(ulx, urx, llx, lrx), _max4(uly, ury, lly, lry));
+            return Rect.fromLTRB(_min4(ulx, urx, llx, lrx), _min4(uly, ury, lly, lry), _max4(ulx, urx, llx, lrx), _max4(uly, ury, lly, lry));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -315,14 +315,14 @@ public static partial class Matrix_utilsLibrary
         {
             return new List<string> { "null" };
         }
-        return new List<string> { $"[0] {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 3L)))}", $"[1] {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 3L)))}", $"[2] {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 3L)))}", $"[3] {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 3L)))}" };
+        return new List<string> { $"[0] {(Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(0L, 3L)))}", $"[1] {(Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(1L, 3L)))}", $"[2] {(Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 3L)))}", $"[3] {(Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 3L)))}" };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public class TransformProperty : DiagnosticsProperty<Matrix4>
 {
-    public TransformProperty(string name, Matrix4? value, bool showName = true, object? defaultValue = default!, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, showName: showName, defaultValue: defaultValue ?? global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue, level: level)
+    public TransformProperty(string name, Matrix4? value, bool showName = true, object? defaultValue = default!, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, showName: showName, defaultValue: defaultValue ?? DiagnosticsLibrary.kNoDefaultValue, level: level)
     {
     }
 
@@ -330,7 +330,7 @@ public class TransformProperty : DiagnosticsProperty<Matrix4>
     {
         if (((parentConfiguration is not null) && !parentConfiguration.lineBreakProperties))
         {
-            var values = new List<string> { $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 3L)))}" };
+            var values = new List<string> { $"{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 3L)))}", $"{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 3L)))}", $"{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 3L)))}", $"{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 0L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 1L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 2L)))},{(Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 3L)))}" };
             return $"[{string.Join("; ", values)}]";
         }
         return string.Join("\n", Matrix_utilsLibrary.debugDescribeTransform(value));

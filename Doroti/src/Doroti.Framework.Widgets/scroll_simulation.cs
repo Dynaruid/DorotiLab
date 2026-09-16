@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scroll_simulation.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -17,7 +16,7 @@ public class BouncingScrollSimulation : global::Doroti.Framework.Physics.Simulat
     internal virtual double _springTime { get; set; } = default!;
     internal virtual double _timeOffset { get; set; } = 0.0;
 
-    public BouncingScrollSimulation(double position, double velocity, double leadingExtent, double trailingExtent, global::Doroti.Framework.Physics.SpringDescription spring, double constantDeceleration = 0, global::Doroti.Framework.Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? global::Doroti.Framework.Physics.Tolerance.defaultTolerance)
+    public BouncingScrollSimulation(double position, double velocity, double leadingExtent, double trailingExtent, global::Doroti.Framework.Physics.SpringDescription spring, double constantDeceleration = 0, global::Doroti.Framework.Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
     {
         this.leadingExtent = leadingExtent;
         this.trailingExtent = trailingExtent;
@@ -63,13 +62,13 @@ public class BouncingScrollSimulation : global::Doroti.Framework.Physics.Simulat
 
     internal virtual global::Doroti.Framework.Physics.Simulation _underscrollSimulation(double x, double dx)
     {
-        return ((global::Doroti.Framework.Physics.Simulation)(object?)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, x, this.leadingExtent, dx));
+        return ((global::Doroti.Framework.Physics.Simulation)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, x, this.leadingExtent, dx));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Physics.Simulation _overscrollSimulation(double x, double dx)
     {
-        return ((global::Doroti.Framework.Physics.Simulation)(object?)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, x, this.trailingExtent, dx));
+        return ((global::Doroti.Framework.Physics.Simulation)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, x, this.trailingExtent, dx));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -100,7 +99,7 @@ public class BouncingScrollSimulation : global::Doroti.Framework.Physics.Simulat
     public override bool isDone(double time) => _simulation(time).isDone((time - this._timeOffset));
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BouncingScrollSimulation"))}(leadingExtent: {this.leadingExtent}, trailingExtent: {this.trailingExtent})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "BouncingScrollSimulation"))}(leadingExtent: {this.leadingExtent}, trailingExtent: {this.trailingExtent})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -113,11 +112,11 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
     public virtual double friction { get; private set; } = default!;
     internal virtual double _duration { get; set; } = default!;
     internal virtual double _distance { get; set; } = default!;
-    internal static double _kDecelerationRate = (global::Doroti.Runtime.Dart_mathLibrary.log(0.78) / global::Doroti.Runtime.Dart_mathLibrary.log(0.9));
+    internal static double _kDecelerationRate = (Dart_mathLibrary.log(0.78) / Dart_mathLibrary.log(0.9));
     internal const double _kInflexion = 0.35;
     internal static double _physicalCoeff = (((9.80665 * 39.37) * 160.0) * 0.84);
 
-    public ClampingScrollSimulation(double position, double velocity, double friction = 0.015, global::Doroti.Framework.Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? global::Doroti.Framework.Physics.Tolerance.defaultTolerance)
+    public ClampingScrollSimulation(double position, double velocity, double friction = 0.015, global::Doroti.Framework.Physics.Tolerance tolerance = default!) : base(tolerance: tolerance ?? Physics.Tolerance.defaultTolerance)
     {
         this.position = position;
         this.velocity = velocity;
@@ -129,7 +128,7 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
     internal virtual double _flingDuration()
     {
         double referenceVelocity = ((this.friction * _physicalCoeff) / _kInflexion);
-        var androidDuration = ((double)global::Doroti.Runtime.Dart_mathLibrary.pow((this.velocity.abs() / referenceVelocity), (1L / ((_kDecelerationRate - 1.0)))));
+        var androidDuration = ((double)Dart_mathLibrary.pow((this.velocity.abs() / referenceVelocity), (1L / ((_kDecelerationRate - 1.0)))));
         return ((_kDecelerationRate * _kInflexion) * androidDuration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -140,8 +139,8 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
         DartRuntimePrimitives.Assert(() =>
             {
                 double referenceVelocity = ((this.friction * _physicalCoeff) / _kInflexion);
-                double logVelocity = global::Doroti.Runtime.Dart_mathLibrary.log((this.velocity.abs() / referenceVelocity));
-                double distanceAgain = ((this.friction * _physicalCoeff) * global::Doroti.Runtime.Dart_mathLibrary.exp(((logVelocity * _kDecelerationRate) / ((_kDecelerationRate - 1.0)))));
+                double logVelocity = Dart_mathLibrary.log((this.velocity.abs() / referenceVelocity));
+                double distanceAgain = ((this.friction * _physicalCoeff) * Dart_mathLibrary.exp(((logVelocity * _kDecelerationRate) / ((_kDecelerationRate - 1.0)))));
                 return (((distanceLocal.abs() - distanceAgain)).abs() < ((global::Doroti.Framework.Physics.Tolerance)this.tolerance).distance);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -152,14 +151,14 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
     public override double x(double time)
     {
         double t = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
-        return (this.position + (this._distance * ((1.0 - global::Doroti.Runtime.Dart_mathLibrary.pow((1.0 - t), _kDecelerationRate)))));
+        return (this.position + (this._distance * ((1.0 - Dart_mathLibrary.pow((1.0 - t), _kDecelerationRate)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double dx(double time)
     {
         double t = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
-        return (this.velocity * global::Doroti.Runtime.Dart_mathLibrary.pow((1.0 - t), (_kDecelerationRate - 1.0)));
+        return (this.velocity * Dart_mathLibrary.pow((1.0 - t), (_kDecelerationRate - 1.0)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

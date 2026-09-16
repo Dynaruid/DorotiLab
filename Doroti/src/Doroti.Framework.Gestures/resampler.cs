@@ -123,7 +123,7 @@ public class PointerEventResampler
             _pointerIdentifier = pointerIdentifier;
             if (((eventLocal is not PointerMoveEvent) && (eventLocal is not PointerHoverEvent)))
             {
-                if ((!object.Equals(positionLocal, this._position)))
+                if ((!Equals(positionLocal, this._position)))
                 {
                     global::Doroti.Ui.Offset deltaLocal = (positionLocal - this._position);
                     callback(_toMoveOrHoverEvent(eventLocal, positionLocal, deltaLocal, this._pointerIdentifier, sampleTime, wasDown, hadButtons));
@@ -139,7 +139,7 @@ public class PointerEventResampler
     {
         global::Doroti.Ui.Offset position = _positionAt(sampleTime);
         PointerEvent? next = this._next;
-        if (((!object.Equals(position, this._position)) && (next is not null)))
+        if (((!Equals(position, this._position)) && (next is not null)))
         {
             global::Doroti.Ui.Offset delta = (position - this._position);
             callback(_toMoveOrHoverEvent(next, position, delta, this._pointerIdentifier, sampleTime, this._isDown, this._hasButtons));

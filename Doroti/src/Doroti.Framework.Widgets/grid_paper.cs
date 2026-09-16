@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/grid_paper.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -44,8 +43,8 @@ internal class _GridPaperPainter__grid_paper : global::Doroti.Framework.Renderin
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
-        var __oldPainter = (_GridPaperPainter__grid_paper)(object)oldDelegate;
-        return ((((!object.Equals(((_GridPaperPainter__grid_paper)__oldPainter).color, this.color)) || (((_GridPaperPainter__grid_paper)__oldPainter).interval != this.interval)) || (((_GridPaperPainter__grid_paper)__oldPainter).divisions != this.divisions)) || (((_GridPaperPainter__grid_paper)__oldPainter).subdivisions != this.subdivisions));
+        var __oldPainter = (_GridPaperPainter__grid_paper)oldDelegate;
+        return ((((!Equals(((_GridPaperPainter__grid_paper)__oldPainter).color, this.color)) || (((_GridPaperPainter__grid_paper)__oldPainter).interval != this.interval)) || (((_GridPaperPainter__grid_paper)__oldPainter).divisions != this.divisions)) || (((_GridPaperPainter__grid_paper)__oldPainter).subdivisions != this.subdivisions));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -74,7 +73,7 @@ public class GridPaper : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new CustomPaint(foregroundPainter: new _GridPaperPainter__grid_paper(color: this.color, interval: this.interval, divisions: this.divisions, subdivisions: this.subdivisions), child: this.child));
+        return ((Widget)new CustomPaint(foregroundPainter: new _GridPaperPainter__grid_paper(color: this.color, interval: this.interval, divisions: this.divisions, subdivisions: this.subdivisions), child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

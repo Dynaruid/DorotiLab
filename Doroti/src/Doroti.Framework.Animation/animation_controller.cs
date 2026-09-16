@@ -13,7 +13,7 @@ internal enum _AnimationDirection__animation_controller
 
 public static partial class Animation_controllerLibrary
 {
-    internal static global::Doroti.Framework.Physics.SpringDescription _kFlingSpringDescription = global::Doroti.Framework.Physics.SpringDescription.CreateWithDampingRatio(mass: 1.0, stiffness: 500.0);
+    internal static global::Doroti.Framework.Physics.SpringDescription _kFlingSpringDescription = Physics.SpringDescription.CreateWithDampingRatio(mass: 1.0, stiffness: 500.0);
 }
 
 public static partial class Animation_controllerLibrary
@@ -74,7 +74,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
             upperBound: double.PositiveInfinity,
             animationBehavior: animationBehavior,
             vsync: vsync);
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchCreated("animation", "AnimationController", __instance));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchCreated("animation", "AnimationController", __instance));
         return __instance;
     }
 
@@ -244,11 +244,11 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
         var simulationDuration = duration;
         if ((simulationDuration is null))
         {
-            DartRuntimePrimitives.Assert(() => !(((this.duration is null) && (object.Equals(this._direction, _AnimationDirection__animation_controller.forward)))));
-            DartRuntimePrimitives.Assert(() => !((((this.duration is null) && (object.Equals(this._direction, _AnimationDirection__animation_controller.reverse))) && (this.reverseDuration is null))));
+            DartRuntimePrimitives.Assert(() => !(((this.duration is null) && (Equals(this._direction, _AnimationDirection__animation_controller.forward)))));
+            DartRuntimePrimitives.Assert(() => !((((this.duration is null) && (Equals(this._direction, _AnimationDirection__animation_controller.reverse))) && (this.reverseDuration is null))));
             double range = (this.upperBound - this.lowerBound);
             double remainingFraction = (double.IsFinite(range) ? (((target - this._value)).abs() / range) : 1.0);
-            Duration directionDuration = ((((object.Equals(this._direction, _AnimationDirection__animation_controller.reverse)) && (this.reverseDuration is not null))) ? DartRuntimePrimitives.RequireValue(this.reverseDuration) : DartRuntimePrimitives.RequireValue(this.duration));
+            Duration directionDuration = ((((Equals(this._direction, _AnimationDirection__animation_controller.reverse)) && (this.reverseDuration is not null))) ? DartRuntimePrimitives.RequireValue(this.reverseDuration) : DartRuntimePrimitives.RequireValue(this.duration));
             simulationDuration = (directionDuration * remainingFraction);
         }
         else
@@ -259,14 +259,14 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
             }
         }
         stop();
-        if ((object.Equals(DartRuntimePrimitives.RequireValue(simulationDuration), Duration.zero)))
+        if ((Equals(DartRuntimePrimitives.RequireValue(simulationDuration), Duration.zero)))
         {
             if ((this.value != target))
             {
                 _value = Dart_uiLibrary.clampDouble(target, this.lowerBound, this.upperBound);
                 notifyListeners();
             }
-            _status = (((object.Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.completed : AnimationStatus.dismissed);
+            _status = (((Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.completed : AnimationStatus.dismissed);
             _checkStatusChanged();
             return TickerFuture.CreateComplete();
         }
@@ -300,7 +300,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     internal virtual void _directionSetter(_AnimationDirection__animation_controller direction)
     {
         _direction = direction;
-        _status = (((object.Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.forward : AnimationStatus.reverse);
+        _status = (((Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.forward : AnimationStatus.reverse);
         _checkStatusChanged();
     }
 
@@ -317,7 +317,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     __cascade.tolerance = Animation_controllerLibrary._kFlingTolerance;
     return __cascade;
 }))();
-        DartRuntimePrimitives.Assert(() => (!object.Equals(((global::Doroti.Framework.Physics.SpringSimulation)simulation).type, global::Doroti.Framework.Physics.SpringType.underDamped)));
+        DartRuntimePrimitives.Assert(() => (!Equals(((global::Doroti.Framework.Physics.SpringSimulation)simulation).type, Physics.SpringType.underDamped)));
         stop();
         return _startSimulation(simulation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -348,7 +348,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
         _lastElapsedDuration = Duration.zero;
         _value = Dart_uiLibrary.clampDouble(simulation.x(0.0), this.lowerBound, this.upperBound);
         TickerFuture result = this._ticker!.start();
-        _status = (((object.Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.forward : AnimationStatus.reverse);
+        _status = (((Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.forward : AnimationStatus.reverse);
         _checkStatusChanged();
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -372,7 +372,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
                 }
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._ticker!.dispose();
         _ticker = null;
         clearStatusListeners();
@@ -382,7 +382,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     internal virtual void _checkStatusChanged()
     {
         AnimationStatus newStatus = this.status;
-        if ((!object.Equals(this._lastReportedStatus, newStatus)))
+        if ((!Equals(this._lastReportedStatus, newStatus)))
         {
             _lastReportedStatus = newStatus;
             notifyStatusListeners(newStatus);
@@ -397,7 +397,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
         _value = Dart_uiLibrary.clampDouble(this._simulation!.x(elapsedInSeconds), this.lowerBound, this.upperBound);
         if (this._simulation!.isDone(elapsedInSeconds))
         {
-            _status = (((object.Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.completed : AnimationStatus.dismissed);
+            _status = (((Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.completed : AnimationStatus.dismissed);
             stop(canceled: false);
         }
         notifyListeners();

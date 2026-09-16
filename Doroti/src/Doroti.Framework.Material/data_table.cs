@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/data_table.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -74,7 +74,7 @@ public class DataRow
 
 public class DataCell
 {
-    public static DataCell empty = new DataCell(global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+    public static DataCell empty = new DataCell(SizedBox.CreateShrink());
     public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
     public virtual bool placeholder { get; private set; } = default!;
     public virtual bool showEditIcon { get; private set; } = default!;
@@ -123,7 +123,7 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual global::Doroti.Framework.Rendering.TableBorder? border { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
     internal virtual long? _onlyTextColumn { get; private set; }
-    internal static global::Doroti.Framework.Foundation.LocalKey _headingRowKey = ((global::Doroti.Framework.Foundation.LocalKey)(object?)new global::Doroti.Framework.Foundation.UniqueKey());
+    internal static global::Doroti.Framework.Foundation.LocalKey _headingRowKey = ((global::Doroti.Framework.Foundation.LocalKey)new global::Doroti.Framework.Foundation.UniqueKey());
     internal const double _headingRowHeight = 56.0;
     internal const double _horizontalMargin = 24.0;
     internal const double _columnSpacing = 56.0;
@@ -154,8 +154,8 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
         this.clipBehavior = clipBehavior;
         this.dataRowMinHeight = (dataRowHeight ?? dataRowMinHeight);
         this.dataRowMaxHeight = (dataRowHeight ?? dataRowMaxHeight);
-        this._onlyTextColumn = DataTable._initOnlyTextColumn(columns);
-        System.Diagnostics.Debug.Assert(System.Linq.Enumerable.Any(columns));
+        this._onlyTextColumn = _initOnlyTextColumn(columns);
+        System.Diagnostics.Debug.Assert(Enumerable.Any(columns));
         System.Diagnostics.Debug.Assert(((sortColumnIndex is null) || (((sortColumnIndex >= 0L) && (DartRuntimePrimitives.RequireValue(sortColumnIndex) < checked((long)(columns.Count)))))));
         System.Diagnostics.Debug.Assert(!rows.any(((row) => (checked((long)(((DataRow)row).cells.Count)) != checked((long)(columns.Count))))));
         System.Diagnostics.Debug.Assert(((dividerThickness is null) || (dividerThickness >= 0L)));
@@ -216,12 +216,12 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
         double effectiveHorizontalMargin = ((this.horizontalMargin ?? themeData.dataTableTheme.horizontalMargin) ?? _horizontalMargin);
         double effectiveCheckboxHorizontalMarginStart = ((this.checkboxHorizontalMargin ?? themeData.dataTableTheme.checkboxHorizontalMargin) ?? effectiveHorizontalMargin);
         double effectiveCheckboxHorizontalMarginEnd = ((this.checkboxHorizontalMargin ?? themeData.dataTableTheme.checkboxHorizontalMargin) ?? (effectiveHorizontalMargin / 2.0));
-        global::Doroti.Framework.Widgets.Widget contents = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: effectiveCheckboxHorizontalMarginStart, end: effectiveCheckboxHorizontalMarginEnd), child: new global::Doroti.Framework.Widgets.Center(child: new Checkbox(value: @checked, onChanged: onCheckboxChanged, tristate: tristate)))));
+        global::Doroti.Framework.Widgets.Widget contents = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: effectiveCheckboxHorizontalMarginStart, end: effectiveCheckboxHorizontalMarginEnd), child: new global::Doroti.Framework.Widgets.Center(child: new Checkbox(value: @checked, onChanged: onCheckboxChanged, tristate: tristate)))));
         if ((onRowTap is not null))
         {
             contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TableRowInkWell(onTap: () => onRowTap(), overlayColor: overlayColor, mouseCursor: rowMouseCursor, child: contents));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.TableCell(verticalAlignment: global::Doroti.Framework.Rendering.TableCellVerticalAlignment.fill, child: contents));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.TableCell(verticalAlignment: TableCellVerticalAlignment.fill, child: contents));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -229,7 +229,7 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
     {
         ThemeData themeData = Theme.of(context);
         DataTableThemeData dataTableThemeLocal = DataTableTheme.of(context);
-        label = new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.columnHeader, child: new global::Doroti.Framework.Widgets.Row(textDirection: (numeric ? TextDirection.rtl : null), mainAxisAlignment: headingRowAlignment, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection34143 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((object.Equals(headingRowAlignment, global::Doroti.Framework.Rendering.MainAxisAlignment.center)) && (onSort is not null))) { __collection34143.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: (_SortArrowState__data_table._arrowIconSize + _sortArrowPadding)))); } __collection34143.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(label)); if ((onSort is not null)) { __collection34143.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _SortArrow__data_table(visible: sorted, up: (sorted ? ascending : null), duration: _sortArrowAnimationDuration)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: _sortArrowPadding)) }); } return __collection34143; }))()));
+        label = new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.columnHeader, child: new global::Doroti.Framework.Widgets.Row(textDirection: (numeric ? TextDirection.rtl : null), mainAxisAlignment: headingRowAlignment, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection34143 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((Equals(headingRowAlignment, MainAxisAlignment.center)) && (onSort is not null))) { __collection34143.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: (_SortArrowState__data_table._arrowIconSize + _sortArrowPadding)))); } __collection34143.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(label)); if ((onSort is not null)) { __collection34143.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _SortArrow__data_table(visible: sorted, up: (sorted ? ascending : null), duration: _sortArrowAnimationDuration)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: _sortArrowPadding)) }); } return __collection34143; }))()));
         global::Doroti.Framework.Painting.TextStyle effectiveHeadingTextStyle = (((this.headingTextStyle ?? dataTableThemeLocal.headingTextStyle) ?? themeData.dataTableTheme.headingTextStyle) ?? themeData.textTheme.titleSmall!);
         double effectiveHeadingRowHeight = (((this.headingRowHeight ?? dataTableThemeLocal.headingRowHeight) ?? themeData.dataTableTheme.headingRowHeight) ?? _headingRowHeight);
         label = new global::Doroti.Framework.Widgets.Container(padding: padding, height: effectiveHeadingRowHeight, alignment: (numeric ? global::Doroti.Framework.Painting.Alignment.centerRight : global::Doroti.Framework.Painting.AlignmentDirectional.centerStart), child: new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: DefaultTextStyle.of(context).style.merge(effectiveHeadingTextStyle), softWrap: false, duration: _sortArrowAnimationDuration, child: label));
@@ -248,7 +248,7 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
         DataTableThemeData dataTableThemeLocal = DataTableTheme.of(context);
         if (showEditIcon)
         {
-            global::Doroti.Framework.Widgets.Widget icon = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Icon(Icons.edit, size: 18.0));
+            global::Doroti.Framework.Widgets.Widget icon = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Icon(Icons.edit, size: 18.0));
             label = new global::Doroti.Framework.Widgets.Expanded(child: label);
             label = new global::Doroti.Framework.Widgets.Row(textDirection: (numeric ? TextDirection.rtl : null), children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(label), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(icon) });
         }
@@ -264,10 +264,10 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
         {
             if ((((onSelectChanged is not null) || (onRowLongPress is not null)) || (onRowHover is not null)))
             {
-                label = new TableRowInkWell(onTap: () => onSelectChanged(), onLongPress: () => onRowLongPress(), onHover: (global::System.Action<bool>?)onRowHover, overlayColor: overlayColor, mouseCursor: mouseCursor, child: label);
+                label = new TableRowInkWell(onTap: onSelectChanged, onLongPress: onRowLongPress, onHover: (global::System.Action<bool>?)onRowHover, overlayColor: overlayColor, mouseCursor: mouseCursor, child: label);
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.TableCell(child: label));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.TableCell(child: label));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -276,11 +276,11 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
         DartRuntimePrimitives.Assert(() => (!this._debugInteractive || DebugLibrary.debugCheckHasMaterial(context)));
         ThemeData theme = Theme.of(context);
         DataTableThemeData dataTableThemeLocal = DataTableTheme.of(context);
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveHeadingRowColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)((this.headingRowColor ?? dataTableThemeLocal.headingRowColor) ?? theme.dataTableTheme.headingRowColor));
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveDataRowColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)((this.dataRowColor ?? dataTableThemeLocal.dataRowColor) ?? theme.dataTableTheme.dataRowColor));
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultRowColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveHeadingRowColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)((this.headingRowColor ?? dataTableThemeLocal.headingRowColor) ?? theme.dataTableTheme.headingRowColor));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveDataRowColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)((this.dataRowColor ?? dataTableThemeLocal.dataRowColor) ?? theme.dataTableTheme.dataRowColor));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultRowColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)WidgetStateProperty.resolveWith((states) =>
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+            if (states.Contains(WidgetState.selected))
             {
                 return (theme.colorScheme.primary.withOpacity(0.08));
             }
@@ -292,24 +292,24 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
         IEnumerable<DataRow> rowsWithCheckbox = (displayCheckboxColumn ? this.rows.where(((row) => (((DataRow)row).onSelectChanged is not null))) : new List<DataRow>());
         IEnumerable<DataRow> rowsChecked = rowsWithCheckbox.where(((row) => ((DataRow)row).selected));
         bool allChecked = (displayCheckboxColumn && (rowsChecked.Count() == rowsWithCheckbox.Count()));
-        bool anyChecked = (displayCheckboxColumn && System.Linq.Enumerable.Any(rowsChecked));
+        bool anyChecked = (displayCheckboxColumn && Enumerable.Any(rowsChecked));
         bool someChecked = (anyChecked && !allChecked);
         double effectiveHorizontalMargin = (((this.horizontalMargin ?? dataTableThemeLocal.horizontalMargin) ?? theme.dataTableTheme.horizontalMargin) ?? _horizontalMargin);
         double effectiveCheckboxHorizontalMarginStart = (((this.checkboxHorizontalMargin ?? dataTableThemeLocal.checkboxHorizontalMargin) ?? theme.dataTableTheme.checkboxHorizontalMargin) ?? effectiveHorizontalMargin);
         double effectiveCheckboxHorizontalMarginEnd = (((this.checkboxHorizontalMargin ?? dataTableThemeLocal.checkboxHorizontalMargin) ?? theme.dataTableTheme.checkboxHorizontalMargin) ?? (effectiveHorizontalMargin / 2.0));
         double effectiveColumnSpacing = (((this.columnSpacing ?? dataTableThemeLocal.columnSpacing) ?? theme.dataTableTheme.columnSpacing) ?? _columnSpacing);
-        var tableColumns = new List<global::Doroti.Framework.Rendering.TableColumnWidth>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Rendering.TableColumnWidth>(new _NullTableColumnWidth__data_table(), checked((int)(checked((long)(this.columns.Count)) + ((displayCheckboxColumn ? 1L : 0L))))));
-        var tableRows = new List<global::Doroti.Framework.Widgets.TableRow>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(this.rows.Count)) + 1L))), ((index) =>
+        var tableColumns = new List<global::Doroti.Framework.Rendering.TableColumnWidth>(Enumerable.Repeat<global::Doroti.Framework.Rendering.TableColumnWidth>(new _NullTableColumnWidth__data_table(), checked((int)(checked((long)(this.columns.Count)) + ((displayCheckboxColumn ? 1L : 0L))))));
+        var tableRows = new List<global::Doroti.Framework.Widgets.TableRow>(Enumerable.Select(Enumerable.Range(0, checked((int)(checked((long)(this.rows.Count)) + 1L))), ((index) =>
         {
             bool isSelected = ((index > 0L) && this.rows[(int)((index - 1L))].selected);
             bool isDisabled = (((index > 0L) && anyRowSelectable) && (this.rows[(int)((index - 1L))].onSelectChanged is null));
-            var statesLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection41545 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (isSelected) { __collection41545.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } if (isDisabled) { __collection41545.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection41545; }))();
-            global::Doroti.Ui.Color? resolvedDataRowColor = ((global::Doroti.Ui.Color?)(object?)((index > 0L) ? ((this.rows[(int)((index - 1L))].color ?? effectiveDataRowColor))?.resolve(statesLocal) : null));
-            global::Doroti.Ui.Color? resolvedHeadingRowColor = ((global::Doroti.Ui.Color?)(object?)effectiveHeadingRowColor?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));
+            var statesLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection41545 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (isSelected) { __collection41545.Add(WidgetState.selected); } if (isDisabled) { __collection41545.Add(WidgetState.disabled); } return __collection41545; }))();
+            global::Doroti.Ui.Color? resolvedDataRowColor = ((global::Doroti.Ui.Color?)((index > 0L) ? ((this.rows[(int)((index - 1L))].color ?? effectiveDataRowColor))?.resolve(statesLocal) : null));
+            global::Doroti.Ui.Color? resolvedHeadingRowColor = ((global::Doroti.Ui.Color?)effectiveHeadingRowColor?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));
             var rowColor = ((index > 0L) ? resolvedDataRowColor : resolvedHeadingRowColor);
-            global::Doroti.Framework.Painting.BorderSide borderSide = ((global::Doroti.Framework.Painting.BorderSide)(object?)Divider.createBorderSide(context, width: (((this.dividerThickness ?? dataTableThemeLocal.dividerThickness) ?? theme.dataTableTheme.dividerThickness) ?? _dividerThickness)));
+            global::Doroti.Framework.Painting.BorderSide borderSide = ((global::Doroti.Framework.Painting.BorderSide)Divider.createBorderSide(context, width: (((this.dividerThickness ?? dataTableThemeLocal.dividerThickness) ?? theme.dataTableTheme.dividerThickness) ?? _dividerThickness)));
             global::Doroti.Framework.Painting.Border? borderLocal = (this.showBottomBorder ? new global::Doroti.Framework.Painting.Border(bottom: borderSide) : ((index == 0L) ? null : new global::Doroti.Framework.Painting.Border(top: borderSide)));
-            return new global::Doroti.Framework.Widgets.TableRow(key: ((index == 0L) ? _headingRowKey : this.rows[(int)((index - 1L))].key), decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: borderLocal, color: ((rowColor ?? (Color)defaultRowColor.resolve(statesLocal)))), children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Widgets.Widget>(new _NullWidget__data_table(), checked((int)checked((long)(tableColumns.Count))))));
+            return new global::Doroti.Framework.Widgets.TableRow(key: ((index == 0L) ? _headingRowKey : this.rows[(int)((index - 1L))].key), decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: borderLocal, color: ((rowColor ?? (Color?)defaultRowColor.resolve(statesLocal)))), children: new List<global::Doroti.Framework.Widgets.Widget>(Enumerable.Repeat<global::Doroti.Framework.Widgets.Widget>(new _NullWidget__data_table(), checked((int)checked((long)(tableColumns.Count))))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         long rowIndex = default!;
@@ -321,8 +321,8 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
             rowIndex = 1L;
             foreach (DataRow rowLocal in this.rows)
             {
-                var statesAlternate = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection43445 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((DataRow)rowLocal).selected) { __collection43445.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection43445; }))();
-                tableRows[(int)(rowIndex)].children[(int)(0L)] = _buildCheckbox(context: context, @checked: ((DataRow)rowLocal).selected, onRowTap: ((global::System.Action)((((DataRow)rowLocal).onSelectChanged is null) ? null : (() => { ((DataRow)rowLocal).onSelectChanged?.Invoke(!((DataRow)rowLocal).selected); }))), onCheckboxChanged: (global::System.Action<bool?>?)((DataRow)rowLocal).onSelectChanged, overlayColor: (((DataRow)rowLocal).color ?? effectiveDataRowColor), rowMouseCursor: ((((DataRow)rowLocal).mouseCursor?.resolve(statesAlternate) ?? (global::Doroti.Framework.Services.MouseCursor)dataTableThemeLocal.dataRowCursor?.resolve(statesAlternate))), tristate: false);
+                var statesAlternate = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection43445 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((DataRow)rowLocal).selected) { __collection43445.Add(WidgetState.selected); } return __collection43445; }))();
+                tableRows[(int)(rowIndex)].children[(int)(0L)] = _buildCheckbox(context: context, @checked: ((DataRow)rowLocal).selected, onRowTap: ((global::System.Action?)((((DataRow)rowLocal).onSelectChanged is null) ? null : (() => { ((DataRow)rowLocal).onSelectChanged?.Invoke(!((DataRow)rowLocal).selected); }))), onCheckboxChanged: (global::System.Action<bool?>?)((DataRow)rowLocal).onSelectChanged, overlayColor: (((DataRow)rowLocal).color ?? effectiveDataRowColor), rowMouseCursor: ((((DataRow)rowLocal).mouseCursor?.resolve(statesAlternate) ?? (global::Doroti.Framework.Services.MouseCursor?)dataTableThemeLocal.dataRowCursor?.resolve(statesAlternate))), tristate: false);
                 rowIndex += 1L;
             }
             displayColumnIndex += 1L;
@@ -340,7 +340,7 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
             {
                 paddingEnd = (effectiveColumnSpacing / 2.0);
             }
-            var paddingLocal = global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: paddingStart, end: paddingEnd);
+            var paddingLocal = EdgeInsetsDirectional.CreateOnly(start: paddingStart, end: paddingEnd);
             if ((((DataColumn)column).columnWidth is not null))
             {
                 tableColumns[(int)(displayColumnIndex)] = ((DataColumn)column).columnWidth!;
@@ -356,19 +356,19 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
                     tableColumns[(int)(displayColumnIndex)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.TableColumnWidth>(new global::Doroti.Framework.Rendering.IntrinsicColumnWidth());
                 }
             }
-            var headerStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection45174 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((((DataColumn)column).onSort is null)) { __collection45174.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection45174; }))();
-            tableRows[(int)(0L)].children[(int)(displayColumnIndex)] = _buildHeadingCell(context: context, padding: paddingLocal, label: ((DataColumn)column).label, tooltip: ((DataColumn)column).tooltip, numeric: ((DataColumn)column).numeric, onSort: ((global::System.Action)((((DataColumn)column).onSort is not null) ? (() => { ((DataColumn)column).onSort!(dataColumnIndex, ((this.sortColumnIndex != dataColumnIndex) || !this.sortAscending)); }) : null)), sorted: (dataColumnIndex == this.sortColumnIndex), ascending: this.sortAscending, overlayColor: effectiveHeadingRowColor, mouseCursor: ((((DataColumn)column).mouseCursor?.resolve(headerStates) ?? (global::Doroti.Framework.Services.MouseCursor)dataTableThemeLocal.headingCellCursor?.resolve(headerStates))), headingRowAlignment: ((((DataColumn)column).headingRowAlignment ?? dataTableThemeLocal.headingRowAlignment) ?? global::Doroti.Framework.Rendering.MainAxisAlignment.start));
+            var headerStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection45174 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((((DataColumn)column).onSort is null)) { __collection45174.Add(WidgetState.disabled); } return __collection45174; }))();
+            tableRows[(int)(0L)].children[(int)(displayColumnIndex)] = _buildHeadingCell(context: context, padding: paddingLocal, label: ((DataColumn)column).label, tooltip: ((DataColumn)column).tooltip, numeric: ((DataColumn)column).numeric, onSort: ((global::System.Action?)((((DataColumn)column).onSort is not null) ? (() => { ((DataColumn)column).onSort!(dataColumnIndex, ((this.sortColumnIndex != dataColumnIndex) || !this.sortAscending)); }) : null)), sorted: (dataColumnIndex == this.sortColumnIndex), ascending: this.sortAscending, overlayColor: effectiveHeadingRowColor, mouseCursor: ((((DataColumn)column).mouseCursor?.resolve(headerStates) ?? (global::Doroti.Framework.Services.MouseCursor?)dataTableThemeLocal.headingCellCursor?.resolve(headerStates))), headingRowAlignment: ((((DataColumn)column).headingRowAlignment ?? dataTableThemeLocal.headingRowAlignment) ?? MainAxisAlignment.start));
             rowIndex = 1L;
             foreach (DataRow rowAlternate in this.rows)
             {
-                var statesNested = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection46198 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((DataRow)rowAlternate).selected) { __collection46198.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection46198; }))();
+                var statesNested = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection46198 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((DataRow)rowAlternate).selected) { __collection46198.Add(WidgetState.selected); } return __collection46198; }))();
                 DataCell cell = ((DataRow)rowAlternate).cells[(int)(dataColumnIndex)];
-                tableRows[(int)(rowIndex)].children[(int)(displayColumnIndex)] = _buildDataCell(context: context, padding: paddingLocal, label: ((DataCell)cell).child, numeric: ((DataColumn)column).numeric, placeholder: ((DataCell)cell).placeholder, showEditIcon: ((DataCell)cell).showEditIcon, onTap: () => ((DataCell)cell).onTap(), onDoubleTap: () => ((DataCell)cell).onDoubleTap(), onLongPress: () => ((DataCell)cell).onLongPress(), onTapCancel: () => ((DataCell)cell).onTapCancel(), onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)((DataCell)cell).onTapDown, onSelectChanged: ((global::System.Action)((((DataRow)rowAlternate).onSelectChanged is null) ? null : (() => { ((DataRow)rowAlternate).onSelectChanged?.Invoke(!((DataRow)rowAlternate).selected); }))), overlayColor: (((DataRow)rowAlternate).color ?? effectiveDataRowColor), onRowLongPress: () => ((DataRow)rowAlternate).onLongPress(), onRowHover: (global::System.Action<bool>?)((DataRow)rowAlternate).onHover, mouseCursor: ((((DataRow)rowAlternate).mouseCursor?.resolve(statesNested) ?? (global::Doroti.Framework.Services.MouseCursor)dataTableThemeLocal.dataRowCursor?.resolve(statesNested))));
+                tableRows[(int)(rowIndex)].children[(int)(displayColumnIndex)] = _buildDataCell(context: context, padding: paddingLocal, label: ((DataCell)cell).child, numeric: ((DataColumn)column).numeric, placeholder: ((DataCell)cell).placeholder, showEditIcon: ((DataCell)cell).showEditIcon, onTap: ((DataCell)cell).onTap, onDoubleTap: ((DataCell)cell).onDoubleTap, onLongPress: ((DataCell)cell).onLongPress, onTapCancel: ((DataCell)cell).onTapCancel, onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)((DataCell)cell).onTapDown, onSelectChanged: ((global::System.Action?)((((DataRow)rowAlternate).onSelectChanged is null) ? null : (() => { ((DataRow)rowAlternate).onSelectChanged?.Invoke(!((DataRow)rowAlternate).selected); }))), overlayColor: (((DataRow)rowAlternate).color ?? effectiveDataRowColor), onRowLongPress: ((DataRow)rowAlternate).onLongPress, onRowHover: (global::System.Action<bool>?)((DataRow)rowAlternate).onHover, mouseCursor: ((((DataRow)rowAlternate).mouseCursor?.resolve(statesNested) ?? (global::Doroti.Framework.Services.MouseCursor?)dataTableThemeLocal.dataRowCursor?.resolve(statesNested))));
                 rowIndex += 1L;
             }
             displayColumnIndex += 1L;
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(decoration: ((this.decoration ?? dataTableThemeLocal.decoration) ?? theme.dataTableTheme.decoration), child: new Material(type: MaterialType.transparency, borderRadius: this.border?.borderRadius, clipBehavior: this.clipBehavior, child: new global::Doroti.Framework.Widgets.Table(columnWidths: tableColumns.asMap(), defaultVerticalAlignment: global::Doroti.Framework.Rendering.TableCellVerticalAlignment.middle, children: tableRows, border: this.border))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(decoration: ((this.decoration ?? dataTableThemeLocal.decoration) ?? theme.dataTableTheme.decoration), child: new Material(type: MaterialType.transparency, borderRadius: this.border?.borderRadius, clipBehavior: this.clipBehavior, child: new global::Doroti.Framework.Widgets.Table(columnWidths: tableColumns.asMap(), defaultVerticalAlignment: TableCellVerticalAlignment.middle, children: tableRows, border: this.border))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -376,7 +376,7 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
 
 public class TableRowInkWell : InkResponse
 {
-    public TableRowInkWell(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key, child: child, onTap: onTap, onDoubleTap: onDoubleTap, onLongPress: onLongPress, onHighlightChanged: onHighlightChanged, onHover: onHover, onSecondaryTap: onSecondaryTap, onSecondaryTapDown: onSecondaryTapDown, overlayColor: overlayColor, mouseCursor: mouseCursor, containedInkWell: true, highlightShape: global::Doroti.Framework.Painting.BoxShape.rectangle)
+    public TableRowInkWell(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key, child: child, onTap: onTap, onDoubleTap: onDoubleTap, onLongPress: onLongPress, onHighlightChanged: onHighlightChanged, onHover: onHover, onSecondaryTap: onSecondaryTap, onSecondaryTapDown: onSecondaryTapDown, overlayColor: overlayColor, mouseCursor: mouseCursor, containedInkWell: true, highlightShape: BoxShape.rectangle)
     {
     }
 
@@ -384,24 +384,24 @@ public class TableRowInkWell : InkResponse
     {
         return ((global::System.Func<Rect>)(() =>
         {
-            global::Doroti.Framework.Rendering.RenderObject cell = ((global::Doroti.Framework.Rendering.RenderObject)(object?)referenceBox);
+            global::Doroti.Framework.Rendering.RenderObject cell = ((global::Doroti.Framework.Rendering.RenderObject)referenceBox);
             global::Doroti.Framework.Rendering.RenderObject? table = ((global::Doroti.Framework.Rendering.RenderObject)cell).parent;
             var transform = Matrix4.identity();
-            while ((true && (table is not global::Doroti.Framework.Rendering.RenderTable)))
+            while (table is not null && table is not RenderTable)
             {
                 (table).applyPaintTransform(cell, transform);
-                DartRuntimePrimitives.Assert(() => (object.Equals(table, ((global::Doroti.Framework.Rendering.RenderObject)cell).parent)));
+                DartRuntimePrimitives.Assert(() => (Equals(table, ((global::Doroti.Framework.Rendering.RenderObject)cell).parent)));
                 cell = table;
                 table = ((global::Doroti.Framework.Rendering.RenderObject)table).parent;
             }
             if ((table is global::Doroti.Framework.Rendering.RenderTable))
             {
                 global::Doroti.Framework.Rendering.RenderTable table__49236__as49524 = (global::Doroti.Framework.Rendering.RenderTable)table;
-                var cellParentData = ((global::Doroti.Framework.Rendering.TableCellParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)cell).parentData!)!;
+                var cellParentData = ((global::Doroti.Framework.Rendering.TableCellParentData?)((global::Doroti.Framework.Rendering.RenderObject)cell).parentData!)!;
                 DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.TableCellParentData)cellParentData).y is not null));
-                global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Rendering.RenderTable)table__49236__as49524).getRowBox(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.TableCellParentData)cellParentData).y)));
+                global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)((global::Doroti.Framework.Rendering.RenderTable)table__49236__as49524).getRowBox(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.TableCellParentData)cellParentData).y)));
                 ((global::Doroti.Framework.Rendering.RenderTable)table__49236__as49524).applyPaintTransform(cell, transform);
-                global::Doroti.Ui.Offset? offset = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
+                global::Doroti.Ui.Offset? offset = ((global::Doroti.Ui.Offset?)MatrixUtils.getAsTranslation(transform));
                 if ((offset is not null))
                 {
                     Offset offset__49929__value49991 = DartRuntimePrimitives.RequireValue(offset);
@@ -416,7 +416,7 @@ public class TableRowInkWell : InkResponse
 
     public override bool debugCheckContext(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasTable(context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasTable(context));
         return base.debugCheckContext(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -447,7 +447,7 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
     internal virtual global::Doroti.Framework.Animation.Animation<double> _orientationAnimation { get; private set; } = default!;
     internal virtual double _orientationOffset { get; set; } = 0.0;
     internal virtual bool? _up { get; set; } = default;
-    internal static global::Doroti.Framework.Animation.Animatable<double> _turnTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: Dart_mathLibrary.pi).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.easeIn));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _turnTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: Dart_mathLibrary.pi).chain(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeIn));
     internal static double _arrowIconBaselineOffset = -1.5;
     internal const double _arrowIconSize = 16.0;
     public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
@@ -459,7 +459,7 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
         _up = ((_SortArrow__data_table)this.widget).up;
         _opacityAnimation = ((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _opacityController = new global::Doroti.Framework.Animation.AnimationController(duration: ((_SortArrow__data_table)this.widget).duration, vsync: this), curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
+    var __cascade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _opacityController = new global::Doroti.Framework.Animation.AnimationController(duration: ((_SortArrow__data_table)this.widget).duration, vsync: this), curve: Curves.fastOutSlowIn);
     __cascade.addListener(this._rebuild);
     return __cascade;
 }))();
@@ -487,7 +487,7 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
 
     internal virtual void _resetOrientationAnimation(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        if (AnimationStatusMembers.isCompleted(status))
         {
             DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Animation.Animation<double>)this._orientationAnimation).value == Dart_mathLibrary.pi));
             _orientationOffset += Dart_mathLibrary.pi;
@@ -558,12 +558,12 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: new global::Doroti.Framework.Widgets.Transform(transform: ((Func<Matrix4>)(() =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: new global::Doroti.Framework.Widgets.Transform(transform: ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.rotationZ((this._orientationOffset + ((global::Doroti.Framework.Animation.Animation<double>)this._orientationAnimation).value));
     __cascade.setTranslationRaw(0.0, _arrowIconBaselineOffset, 0.0);
     return __cascade;
-}))(), alignment: global::Doroti.Framework.Painting.Alignment.center, child: new global::Doroti.Framework.Widgets.Icon(Icons.arrow_upward, size: _arrowIconSize))));
+}))(), alignment: Alignment.center, child: new global::Doroti.Framework.Widgets.Icon(Icons.arrow_upward, size: _arrowIconSize))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -578,13 +578,13 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -618,8 +618,8 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }

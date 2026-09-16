@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/date_picker.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -102,7 +102,7 @@ public static partial class Date_pickerLibrary
         DartRuntimePrimitives.Assert(() => ((initialDate is null) || !DartRuntimePrimitives.RequireValue(initialDate).isAfter(lastDate)), () => (object?)$"initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must be on or before lastDate {lastDate}.");
         DartRuntimePrimitives.Assert(() => (((selectableDayPredicate is null) || (initialDate is null)) || selectableDayPredicate(DartRuntimePrimitives.RequireValue(initialDate))), () => (object?)$"Provided initialDate {DartRuntimePrimitives.RequireValue(initialDate)} must satisfy provided selectableDayPredicate.");
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.Widget dialog = ((global::Doroti.Framework.Widgets.Widget)(object?)new DatePickerDialog(initialDate: initialDate, firstDate: firstDate, lastDate: lastDate, currentDate: currentDate, initialEntryMode: initialEntryMode, selectableDayPredicate: (global::System.Func<DateTime, bool>?)selectableDayPredicate, helpText: helpText, cancelText: cancelText, confirmText: confirmText, initialCalendarMode: initialDatePickerMode, errorFormatText: errorFormatText, errorInvalidText: errorInvalidText, fieldHintText: fieldHintText, fieldLabelText: fieldLabelText, keyboardType: keyboardType, onDatePickerModeChange: (global::System.Action<DatePickerEntryMode>?)onDatePickerModeChange, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon, calendarDelegate: calendarDelegate));
+        global::Doroti.Framework.Widgets.Widget dialog = ((global::Doroti.Framework.Widgets.Widget)new DatePickerDialog(initialDate: initialDate, firstDate: firstDate, lastDate: lastDate, currentDate: currentDate, initialEntryMode: initialEntryMode, selectableDayPredicate: (global::System.Func<DateTime, bool>?)selectableDayPredicate, helpText: helpText, cancelText: cancelText, confirmText: confirmText, initialCalendarMode: initialDatePickerMode, errorFormatText: errorFormatText, errorInvalidText: errorInvalidText, fieldHintText: fieldHintText, fieldLabelText: fieldLabelText, keyboardType: keyboardType, onDatePickerModeChange: (global::System.Action<DatePickerEntryMode>?)onDatePickerModeChange, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon, calendarDelegate: calendarDelegate));
         if ((textDirection is not null))
         {
             TextDirection textDirection__value11363 = DartRuntimePrimitives.RequireValue(textDirection);
@@ -111,14 +111,14 @@ public static partial class Date_pickerLibrary
         if ((locale is not null))
         {
             Locale locale__value11473 = DartRuntimePrimitives.RequireValue(locale);
-            dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Localizations.CreateOverride(context: context, locale: DartRuntimePrimitives.RequireValue(locale__value11473), child: dialog));
+            dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Localizations.CreateOverride(context: context, locale: DartRuntimePrimitives.RequireValue(locale__value11473), child: dialog));
         }
         else
         {
             DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
             if ((datePickerTheme.locale is not null))
             {
-                dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Localizations.CreateOverride(context: context, locale: datePickerTheme.locale, child: dialog));
+                dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Localizations.CreateOverride(context: context, locale: datePickerTheme.locale, child: dialog));
             }
         }
         return await DialogLibrary.showDialog<DateTime?>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, routeSettings: routeSettings, builder: ((context) =>
@@ -156,7 +156,7 @@ public class DatePickerDialog : global::Doroti.Framework.Widgets.StatefulWidget
 
     public DatePickerDialog(global::Doroti.Framework.Foundation.Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, global::System.Func<DateTime, bool>? selectableDayPredicate = null, string? cancelText = null, string? confirmText = null, string? helpText = null, DatePickerMode initialCalendarMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, string? restorationId = null, global::System.Action<DatePickerEntryMode>? onDatePickerModeChange = null, global::Doroti.Framework.Widgets.Icon? switchToInputEntryModeIcon = null, global::Doroti.Framework.Widgets.Icon? switchToCalendarEntryModeIcon = null, global::Doroti.Framework.Painting.EdgeInsets insetPadding = default!, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsets __insetPadding = insetPadding ?? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
+        global::Doroti.Framework.Painting.EdgeInsets __insetPadding = insetPadding ?? EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
         CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
         this.initialEntryMode = initialEntryMode;
         this.selectableDayPredicate = selectableDayPredicate;
@@ -175,10 +175,10 @@ public class DatePickerDialog : global::Doroti.Framework.Widgets.StatefulWidget
         this.switchToCalendarEntryModeIcon = switchToCalendarEntryModeIcon;
         this.insetPadding = __insetPadding;
         this.calendarDelegate = __calendarDelegate;
-        this.initialDate = ((initialDate is null) ? null : calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate))));
-        this.firstDate = calendarDelegate.dateOnly(firstDate);
-        this.lastDate = calendarDelegate.dateOnly(lastDate);
-        this.currentDate = calendarDelegate.dateOnly(((currentDate ?? (DateTime)calendarDelegate.now())));
+        this.initialDate = ((initialDate is null) ? null : this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate))));
+        this.firstDate = this.calendarDelegate.dateOnly(firstDate);
+        this.lastDate = this.calendarDelegate.dateOnly(lastDate);
+        this.currentDate = this.calendarDelegate.dateOnly(((currentDate ?? (DateTime)this.calendarDelegate.now())));
         DartRuntimePrimitives.Assert(() => !this.lastDate.isBefore(this.firstDate), () => (object?)$"lastDate {this.lastDate} must be on or after firstDate {this.firstDate}.");
         DartRuntimePrimitives.Assert(() => ((initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isBefore(this.firstDate)), () => (object?)$"initialDate {this.initialDate} must be on or after firstDate {this.firstDate}.");
         DartRuntimePrimitives.Assert(() => ((initialDate is null) || !DartRuntimePrimitives.RequireValue(this.initialDate).isAfter(this.lastDate)), () => (object?)$"initialDate {this.initialDate} must be on or before lastDate {this.lastDate}.");
@@ -218,10 +218,10 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
             return __late__entryMode;
         }
     }
-    internal virtual _RestorableAutovalidateMode__date_picker _autovalidateMode { get; private set; } = new _RestorableAutovalidateMode__date_picker(global::Doroti.Framework.Widgets.AutovalidateMode.disabled);
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _calendarPickerKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.FormState> _formKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.FormState>.Create();
-    internal static DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> _formShortcutMap = new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.enter)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.NextFocusIntent()) };
+    internal virtual _RestorableAutovalidateMode__date_picker _autovalidateMode { get; private set; } = new _RestorableAutovalidateMode__date_picker(AutovalidateMode.disabled);
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _calendarPickerKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.FormState> _formKey { get; private set; } = GlobalKey<FormState>.Create();
+    internal static DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> _formShortcutMap = new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.enter)] = ((global::Doroti.Framework.Widgets.Intent)new global::Doroti.Framework.Widgets.NextFocusIntent()) };
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
     public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
     public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
@@ -255,12 +255,12 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
 
     internal virtual void _handleOk()
     {
-        if (((object.Equals(this._entryMode.value, DatePickerEntryMode.input)) || (object.Equals(this._entryMode.value, DatePickerEntryMode.inputOnly))))
+        if (((Equals(this._entryMode.value, DatePickerEntryMode.input)) || (Equals(this._entryMode.value, DatePickerEntryMode.inputOnly))))
         {
             global::Doroti.Framework.Widgets.FormState form = ((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.FormState>)this._formKey).currentState!;
             if (!form.validate())
             {
-                setState(((global::System.Action)(() => { _ = this._autovalidateMode.value = global::Doroti.Framework.Widgets.AutovalidateMode.always; })));
+                setState(((global::System.Action)(() => { _ = this._autovalidateMode.value = AutovalidateMode.always; })));
                 return;
             }
             form.save();
@@ -286,7 +286,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
             {
                 case DatePickerEntryMode.calendar:
                     {
-                        this._autovalidateMode.value = global::Doroti.Framework.Widgets.AutovalidateMode.disabled;
+                        this._autovalidateMode.value = AutovalidateMode.disabled;
                         this._entryMode.value = DatePickerEntryMode.input;
                         _handleOnDatePickerModeChange();
                         break;
@@ -317,15 +317,15 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
     {
         bool isCalendar = (this._entryMode.value switch { DatePickerEntryMode.calendar => true,DatePickerEntryMode.calendarOnly => true,DatePickerEntryMode.input => false,DatePickerEntryMode.inputOnly => false,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Framework.Widgets.Orientation orientation = MediaQuery.orientationOf(context);
-        return ((isCalendar, orientation) switch { (true, global::Doroti.Framework.Widgets.Orientation.portrait) => Date_pickerLibrary._calendarPortraitDialogSizeM3,(false, global::Doroti.Framework.Widgets.Orientation.portrait) => Date_pickerLibrary._inputPortraitDialogSizeM3,(true, global::Doroti.Framework.Widgets.Orientation.landscape) => Date_pickerLibrary._calendarLandscapeDialogSize,(false, global::Doroti.Framework.Widgets.Orientation.landscape) => Date_pickerLibrary._inputLandscapeDialogSize });
+        return ((isCalendar, orientation) switch { (true, Orientation.portrait) => Date_pickerLibrary._calendarPortraitDialogSizeM3,(false, Orientation.portrait) => Date_pickerLibrary._inputPortraitDialogSizeM3,(true, Orientation.landscape) => Date_pickerLibrary._calendarLandscapeDialogSize,(false, Orientation.landscape) => Date_pickerLibrary._inputLandscapeDialogSize });
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         global::Doroti.Framework.Widgets.Orientation orientationLocal = MediaQuery.orientationOf(context);
-        var isLandscapeOrientation = (object.Equals(orientationLocal, global::Doroti.Framework.Widgets.Orientation.landscape));
+        var isLandscapeOrientation = (Equals(orientationLocal, Orientation.landscape));
         DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
         TextTheme textThemeLocal = theme.textTheme;
@@ -337,7 +337,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
                 case DatePickerEntryMode.input:
                 case DatePickerEntryMode.inputOnly:
                     {
-                        if ((object.Equals(orientationLocal, global::Doroti.Framework.Widgets.Orientation.landscape)))
+                        if ((Equals(orientationLocal, Orientation.landscape)))
                         {
                             headlineStyle = textThemeLocal.headlineSmall;
                         }
@@ -348,9 +348,9 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
                     break;
             }
         }
-        global::Doroti.Ui.Color? headerForegroundColorLocal = ((global::Doroti.Ui.Color?)(object?)(datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor));
+        global::Doroti.Ui.Color? headerForegroundColorLocal = ((global::Doroti.Ui.Color?)(datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor));
         headlineStyle = headlineStyle?.copyWith(color: headerForegroundColorLocal);
-        global::Doroti.Framework.Widgets.Widget actions = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: MediaQuery.withClampedTextScaling(maxScaleFactor: (isLandscapeOrientation ? 1.6 : Calendar_date_pickerLibrary._kMaxTextScaleFactor), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: (datePickerTheme.cancelButtonStyle ?? defaultsLocal.cancelButtonStyle), onPressed: this._handleCancel, child: new global::Doroti.Framework.Widgets.Text((((DatePickerDialog)this.widget).cancelText ?? (((((MaterialLocalizations)localizations).cancelButtonLabel))))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: (datePickerTheme.confirmButtonStyle ?? defaultsLocal.confirmButtonStyle), onPressed: this._handleOk, child: new global::Doroti.Framework.Widgets.Text(((((DatePickerDialog)this.widget).confirmText ?? (string)((MaterialLocalizations)localizations).okButtonLabel))))) }))))));
+        global::Doroti.Framework.Widgets.Widget actions = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: MediaQuery.withClampedTextScaling(maxScaleFactor: (isLandscapeOrientation ? 1.6 : Calendar_date_pickerLibrary._kMaxTextScaleFactor), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 8), child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerEnd, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: (datePickerTheme.cancelButtonStyle ?? defaultsLocal.cancelButtonStyle), onPressed: this._handleCancel, child: new global::Doroti.Framework.Widgets.Text((((DatePickerDialog)this.widget).cancelText ?? (((((MaterialLocalizations)localizations).cancelButtonLabel))))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: (datePickerTheme.confirmButtonStyle ?? defaultsLocal.confirmButtonStyle), onPressed: this._handleOk, child: new global::Doroti.Framework.Widgets.Text(((((DatePickerDialog)this.widget).confirmText ?? (string)((MaterialLocalizations)localizations).okButtonLabel))))) }))))));
         CalendarDatePicker calendarDatePicker()
         {
             return new CalendarDatePicker(calendarDelegate: ((DatePickerDialog)this.widget).calendarDelegate, key: this._calendarPickerKey, initialDate: this._selectedDate.value, firstDate: ((DatePickerDialog)this.widget).firstDate, lastDate: ((DatePickerDialog)this.widget).lastDate, currentDate: ((DatePickerDialog)this.widget).currentDate, onDateChanged: (global::System.Action<DateTime>)this._handleDateChanged, selectableDayPredicate: (global::System.Func<DateTime, bool>?)((DatePickerDialog)this.widget).selectableDayPredicate, initialCalendarMode: ((DatePickerDialog)this.widget).initialCalendarMode);
@@ -358,7 +358,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
         }
         global::Doroti.Framework.Widgets.Form inputDatePicker()
         {
-            return new global::Doroti.Framework.Widgets.Form(key: this._formKey, autovalidateMode: this._autovalidateMode.value, child: new global::Doroti.Framework.Widgets.SizedBox(height: ((object.Equals(orientationLocal, global::Doroti.Framework.Widgets.Orientation.portrait)) ? Date_pickerLibrary._inputFormPortraitHeight : Date_pickerLibrary._inputFormLandscapeHeight), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 24), child: new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: _formShortcutMap, child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: MediaQuery.withClampedTextScaling(maxScaleFactor: 2.0, child: new InputDatePickerFormField(calendarDelegate: ((DatePickerDialog)this.widget).calendarDelegate, initialDate: this._selectedDate.value, firstDate: ((DatePickerDialog)this.widget).firstDate, lastDate: ((DatePickerDialog)this.widget).lastDate, onDateSubmitted: (global::System.Action<DateTime>)this._handleDateChanged, onDateSaved: (global::System.Action<DateTime>)this._handleDateChanged, selectableDayPredicate: (global::System.Func<DateTime, bool>?)((DatePickerDialog)this.widget).selectableDayPredicate, errorFormatText: ((DatePickerDialog)this.widget).errorFormatText, errorInvalidText: ((DatePickerDialog)this.widget).errorInvalidText, fieldHintText: ((DatePickerDialog)this.widget).fieldHintText, fieldLabelText: ((DatePickerDialog)this.widget).fieldLabelText, keyboardType: ((DatePickerDialog)this.widget).keyboardType, autofocus: true)))) })))));
+            return new global::Doroti.Framework.Widgets.Form(key: this._formKey, autovalidateMode: this._autovalidateMode.value, child: new global::Doroti.Framework.Widgets.SizedBox(height: ((Equals(orientationLocal, Orientation.portrait)) ? Date_pickerLibrary._inputFormPortraitHeight : Date_pickerLibrary._inputFormLandscapeHeight), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 24), child: new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: _formShortcutMap, child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: MediaQuery.withClampedTextScaling(maxScaleFactor: 2.0, child: new InputDatePickerFormField(calendarDelegate: ((DatePickerDialog)this.widget).calendarDelegate, initialDate: this._selectedDate.value, firstDate: ((DatePickerDialog)this.widget).firstDate, lastDate: ((DatePickerDialog)this.widget).lastDate, onDateSubmitted: (global::System.Action<DateTime>)this._handleDateChanged, onDateSaved: (global::System.Action<DateTime>)this._handleDateChanged, selectableDayPredicate: (global::System.Func<DateTime, bool>?)((DatePickerDialog)this.widget).selectableDayPredicate, errorFormatText: ((DatePickerDialog)this.widget).errorFormatText, errorInvalidText: ((DatePickerDialog)this.widget).errorInvalidText, fieldHintText: ((DatePickerDialog)this.widget).fieldHintText, fieldLabelText: ((DatePickerDialog)this.widget).fieldLabelText, keyboardType: ((DatePickerDialog)this.widget).keyboardType, autofocus: true)))) })))));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         global::Doroti.Framework.Widgets.Widget picker = default!;
@@ -390,26 +390,26 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
                     break;
                 }
         }
-        global::Doroti.Framework.Widgets.Widget header = ((global::Doroti.Framework.Widgets.Widget)(object?)new _DatePickerHeader__date_picker(helpText: (((DatePickerDialog)this.widget).helpText ?? (((((MaterialLocalizations)localizations).datePickerHelpText)))), titleText: ((this._selectedDate.value is null) ? "" : ((DatePickerDialog)this.widget).calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(this._selectedDate.value), localizations)), titleStyle: headlineStyle, orientation: orientationLocal, isShort: (object.Equals(orientationLocal, global::Doroti.Framework.Widgets.Orientation.landscape)), entryModeButton: entryModeButtonLocal));
+        global::Doroti.Framework.Widgets.Widget header = ((global::Doroti.Framework.Widgets.Widget)new _DatePickerHeader__date_picker(helpText: (((DatePickerDialog)this.widget).helpText ?? (((((MaterialLocalizations)localizations).datePickerHelpText)))), titleText: ((this._selectedDate.value is null) ? "" : ((DatePickerDialog)this.widget).calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(this._selectedDate.value), localizations)), titleStyle: headlineStyle, orientation: orientationLocal, isShort: (Equals(orientationLocal, Orientation.landscape)), entryModeButton: entryModeButtonLocal));
         double textScaleFactor = (MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale);
-        global::Doroti.Ui.Size dialogSize = ((global::Doroti.Ui.Size)(object?)(_dialogSize(context) * textScaleFactor));
+        global::Doroti.Ui.Size dialogSize = ((global::Doroti.Ui.Size)(_dialogSize(context) * textScaleFactor));
         DialogThemeData dialogThemeLocal = theme.dialogTheme;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Dialog(backgroundColor: (datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor), elevation: (((datePickerTheme.elevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation)))), shadowColor: (datePickerTheme.shadowColor ?? defaultsLocal.shadowColor), surfaceTintColor: (datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor), shape: (((datePickerTheme.shape ?? defaultsLocal.shape))), insetPadding: ((DatePickerDialog)this.widget).insetPadding, clipBehavior: Clip.antiAlias, child: new global::Doroti.Framework.Widgets.AnimatedContainer(width: dialogSize.width, height: dialogSize.height, duration: Date_pickerLibrary._dialogSizeAnimationDuration, curve: global::Doroti.Framework.Animation.Curves.easeIn, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new Dialog(backgroundColor: (datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor), elevation: (((datePickerTheme.elevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation)))), shadowColor: (datePickerTheme.shadowColor ?? defaultsLocal.shadowColor), surfaceTintColor: (datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor), shape: (((datePickerTheme.shape ?? defaultsLocal.shape))), insetPadding: ((DatePickerDialog)this.widget).insetPadding, clipBehavior: Clip.antiAlias, child: new global::Doroti.Framework.Widgets.AnimatedContainer(width: dialogSize.width, height: dialogSize.height, duration: Date_pickerLibrary._dialogSizeAnimationDuration, curve: Curves.easeIn, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
         {
-            global::Doroti.Ui.Size portraitDialogSize = ((global::Doroti.Ui.Size)(object?)((Date_pickerLibrary._inputPortraitDialogSizeM3)));
+            global::Doroti.Ui.Size portraitDialogSize = ((global::Doroti.Ui.Size)((Date_pickerLibrary._inputPortraitDialogSizeM3)));
             bool isFullyPortrait = (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight >= Math.Min(dialogSize.height, portraitDialogSize.height));
             switch (orientationLocal)
             {
-                case global::Doroti.Framework.Widgets.Orientation.portrait:
+                case Orientation.portrait:
                     {
-                        bool isInputMode = ((object.Equals(this._entryMode.value, DatePickerEntryMode.inputOnly)) || (object.Equals(this._entryMode.value, DatePickerEntryMode.input)));
+                        bool isInputMode = ((Equals(this._entryMode.value, DatePickerEntryMode.inputOnly)) || (Equals(this._entryMode.value, DatePickerEntryMode.input)));
                         bool showHeader = (isFullyPortrait || !isInputMode);
                         bool showPicker = (isFullyPortrait || isInputMode);
-                        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31479 = new List<global::Doroti.Framework.Widgets.Widget>(); if (showHeader) { __collection31479.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); } { __collection31479.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Divider(height: 0, color: datePickerTheme.dividerColor))); } if (showPicker) { __collection31479.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: picker)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions) }); } return __collection31479; }))()));
+                        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31479 = new List<global::Doroti.Framework.Widgets.Widget>(); if (showHeader) { __collection31479.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); } { __collection31479.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Divider(height: 0, color: datePickerTheme.dividerColor))); } if (showPicker) { __collection31479.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: picker)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions) }); } return __collection31479; }))()));
                     }
-                case global::Doroti.Framework.Widgets.Orientation.landscape:
+                case Orientation.landscape:
                     {
-                        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31985 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection31985.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); { __collection31985.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new VerticalDivider(width: 0, color: datePickerTheme.dividerColor))); } __collection31985.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: picker)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions) })))); return __collection31985; }))()));
+                        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31985 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection31985.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); { __collection31985.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new VerticalDivider(width: 0, color: datePickerTheme.dividerColor))); } __collection31985.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: picker)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions) })))); return __collection31985; }))()));
                     }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -444,7 +444,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (Equals(property._owner, this))) && this._properties.ContainsKey(property)));
         property.initWithValueObject(initialValue);
         if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
@@ -459,7 +459,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
 
     public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(property._owner, this)));
         this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
@@ -475,7 +475,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
         bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
             oldBucket?.dispose();
         }
@@ -499,8 +499,8 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)RestorationScope.maybeOf(this.context));
+            return ((!Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
@@ -517,7 +517,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
         }
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             oldBucket?.dispose();
         }
     }
@@ -533,7 +533,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
         this._firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
             {
-                if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
+                if (Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
@@ -553,9 +553,9 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)parent.claimChild(this.restorationId!, debugOwner: this));
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._bucket, newBucketLocal)));
             return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
@@ -568,7 +568,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
 
     public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
     {
-        if ((object.Equals(newBucket, this._bucket)))
+        if ((Equals(newBucket, this._bucket)))
         {
             return false;
         }
@@ -624,11 +624,11 @@ internal class _RestorableDatePickerEntryMode__date_picker : global::Doroti.Fram
     public override DatePickerEntryMode createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(DatePickerEntryMode oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(FoundationRuntimePorts.EnumIndex(this.value)));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(FoundationRuntimePorts.EnumIndex(this.value)));
         notifyListeners();
     }
 
-    public override DatePickerEntryMode fromPrimitives(object? data) => System.Enum.GetValues<DatePickerEntryMode>().ToList()[(int)(((long)data!))];
+    public override DatePickerEntryMode fromPrimitives(object? data) => Enum.GetValues<DatePickerEntryMode>().ToList()[(int)(((long)data!))];
     public override object? toPrimitives() => FoundationRuntimePorts.EnumIndex(this.value);
 }
 
@@ -644,11 +644,11 @@ internal class _RestorableAutovalidateMode__date_picker : global::Doroti.Framewo
     public override global::Doroti.Framework.Widgets.AutovalidateMode createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(global::Doroti.Framework.Widgets.AutovalidateMode oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(FoundationRuntimePorts.EnumIndex(this.value)));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(FoundationRuntimePorts.EnumIndex(this.value)));
         notifyListeners();
     }
 
-    public override global::Doroti.Framework.Widgets.AutovalidateMode fromPrimitives(object? data) => System.Enum.GetValues<global::Doroti.Framework.Widgets.AutovalidateMode>().ToList()[(int)(((long)data!))];
+    public override global::Doroti.Framework.Widgets.AutovalidateMode fromPrimitives(object? data) => Enum.GetValues<global::Doroti.Framework.Widgets.AutovalidateMode>().ToList()[(int)(((long)data!))];
     public override object? toPrimitives() => FoundationRuntimePorts.EnumIndex(this.value);
 }
 
@@ -681,26 +681,26 @@ internal class _DatePickerHeader__date_picker : global::Doroti.Framework.Widgets
         ThemeData theme = Theme.of(context);
         DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
-        global::Doroti.Ui.Color? backgroundColor = ((global::Doroti.Ui.Color?)(object?)(datePickerTheme.headerBackgroundColor ?? defaultsLocal.headerBackgroundColor));
-        global::Doroti.Ui.Color? foregroundColor = ((global::Doroti.Ui.Color?)(object?)(datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor));
-        global::Doroti.Framework.Painting.TextStyle? helpStyle = ((global::Doroti.Framework.Painting.TextStyle?)(object?)((datePickerTheme.headerHelpStyle ?? defaultsLocal.headerHelpStyle))?.copyWith(color: foregroundColor));
+        global::Doroti.Ui.Color? backgroundColor = ((global::Doroti.Ui.Color?)(datePickerTheme.headerBackgroundColor ?? defaultsLocal.headerBackgroundColor));
+        global::Doroti.Ui.Color? foregroundColor = ((global::Doroti.Ui.Color?)(datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor));
+        global::Doroti.Framework.Painting.TextStyle? helpStyle = ((global::Doroti.Framework.Painting.TextStyle?)((datePickerTheme.headerHelpStyle ?? defaultsLocal.headerHelpStyle))?.copyWith(color: foregroundColor));
         double currentScale = (MediaQuery.textScalerOf(context).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale);
         double maxHeaderTextScaleFactor = Math.Min(currentScale, ((this.entryModeButton is not null) ? Date_pickerLibrary._kMaxHeaderWithEntryTextScaleFactor : Date_pickerLibrary._kMaxHeaderTextScaleFactor));
         double textScaleFactor = (MediaQuery.textScalerOf(context).clamp(maxScaleFactor: maxHeaderTextScaleFactor).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale);
         double scaledFontSize = MediaQuery.textScalerOf(context).scale((this.titleStyle?.fontSize ?? 32));
         var headerScaleFactor = ((textScaleFactor > 1L) ? textScaleFactor : 1.0);
-        var help = new global::Doroti.Framework.Widgets.Text(this.helpText, style: helpStyle, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Math.Min(textScaleFactor, ((object.Equals(this.orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? Date_pickerLibrary._kMaxHelpPortraitTextScaleFactor : Date_pickerLibrary._kMaxHelpLandscapeTextScaleFactor))));
-        var title = new global::Doroti.Framework.Widgets.Text(this.titleText, semanticsLabel: (this.titleSemanticsLabel ?? this.titleText), style: this.titleStyle, maxLines: ((object.Equals(this.orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? (((scaledFontSize > 70L) ? 2L : 1L)) : ((scaledFontSize > 40L) ? 3L : 2L)), overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: textScaleFactor));
+        var help = new global::Doroti.Framework.Widgets.Text(this.helpText, style: helpStyle, maxLines: 1L, overflow: TextOverflow.ellipsis, textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Math.Min(textScaleFactor, ((Equals(this.orientation, Orientation.portrait)) ? Date_pickerLibrary._kMaxHelpPortraitTextScaleFactor : Date_pickerLibrary._kMaxHelpLandscapeTextScaleFactor))));
+        var title = new global::Doroti.Framework.Widgets.Text(this.titleText, semanticsLabel: (this.titleSemanticsLabel ?? this.titleText), style: this.titleStyle, maxLines: ((Equals(this.orientation, Orientation.portrait)) ? (((scaledFontSize > 70L) ? 2L : 1L)) : ((scaledFontSize > 40L) ? 3L : 2L)), overflow: TextOverflow.ellipsis, textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: textScaleFactor));
         double fontScaleAdjustedHeaderHeight = ((headerScaleFactor > 1.3) ? (headerScaleFactor - 0.2) : 1.0);
         switch (this.orientation)
         {
-            case global::Doroti.Framework.Widgets.Orientation.portrait:
+            case Orientation.portrait:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.SizedBox(height: (_datePickerHeaderPortraitHeight * fontScaleAdjustedHeaderHeight), child: new Material(color: backgroundColor, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 24, end: 12, bottom: 12), child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 16)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(help), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.SizedBox(height: 38))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection38913 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection38913.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: title))); if ((this.entryModeButton is not null)) { __collection38913.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(container: true, child: this.entryModeButton))); } return __collection38913; }))())) }))))));
+                    return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.SizedBox(height: (_datePickerHeaderPortraitHeight * fontScaleAdjustedHeaderHeight), child: new Material(color: backgroundColor, child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsetsDirectional.CreateOnly(start: 24, end: 12, bottom: 12), child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 16)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(help), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.SizedBox(height: 38))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection38913 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection38913.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: title))); if ((this.entryModeButton is not null)) { __collection38913.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(container: true, child: this.entryModeButton))); } return __collection38913; }))())) }))))));
                 }
-            case global::Doroti.Framework.Widgets.Orientation.landscape:
+            case Orientation.landscape:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.SizedBox(width: _datePickerHeaderLandscapeWidth, child: new Material(color: backgroundColor, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection39596 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 16))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: _headerPaddingLandscape), child: help))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: (this.isShort ? 16 : 56)))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: _headerPaddingLandscape), child: title)))); if ((this.entryModeButton is not null)) { __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: ((global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 8.0, end: 4.0, bottom: 6.0))), child: new global::Doroti.Framework.Widgets.Semantics(container: true, child: this.entryModeButton)))); } return __collection39596; }))())))));
+                    return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.SizedBox(width: _datePickerHeaderLandscapeWidth, child: new Material(color: backgroundColor, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection39596 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 16))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: _headerPaddingLandscape), child: help))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: (this.isShort ? 16 : 56)))); __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: _headerPaddingLandscape), child: title)))); if ((this.entryModeButton is not null)) { __collection39596.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: ((EdgeInsetsDirectional.CreateOnly(start: 8.0, end: 4.0, bottom: 6.0))), child: new global::Doroti.Framework.Widgets.Semantics(container: true, child: this.entryModeButton)))); } return __collection39596; }))())))));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -728,7 +728,7 @@ public static partial class Date_pickerLibrary
         DartRuntimePrimitives.Assert(() => (((initialDateRange is null) || (selectableDayPredicate is null)) || selectableDayPredicate(((DateTimeRange<DateTime>)initialDateRange).end, ((DateTimeRange<DateTime>)initialDateRange).start, ((DateTimeRange<DateTime>)initialDateRange).end)), () => (object?)"initialDateRange's end date must be selectable.");
         currentDate = calendarDelegate.dateOnly(((currentDate ?? (DateTime)calendarDelegate.now())));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.Widget dialog = ((global::Doroti.Framework.Widgets.Widget)(object?)new DateRangePickerDialog(initialDateRange: initialDateRange, firstDate: firstDate, lastDate: lastDate, currentDate: DartRuntimePrimitives.RequireValue(currentDate), selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)selectableDayPredicate, initialEntryMode: initialEntryMode, helpText: helpText, cancelText: cancelText, confirmText: confirmText, saveText: saveText, errorFormatText: errorFormatText, errorInvalidText: errorInvalidText, errorInvalidRangeText: errorInvalidRangeText, fieldStartHintText: fieldStartHintText, fieldEndHintText: fieldEndHintText, fieldStartLabelText: fieldStartLabelText, fieldEndLabelText: fieldEndLabelText, keyboardType: keyboardType, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon, calendarDelegate: calendarDelegate));
+        global::Doroti.Framework.Widgets.Widget dialog = ((global::Doroti.Framework.Widgets.Widget)new DateRangePickerDialog(initialDateRange: initialDateRange, firstDate: firstDate, lastDate: lastDate, currentDate: DartRuntimePrimitives.RequireValue(currentDate), selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)selectableDayPredicate, initialEntryMode: initialEntryMode, helpText: helpText, cancelText: cancelText, confirmText: confirmText, saveText: saveText, errorFormatText: errorFormatText, errorInvalidText: errorInvalidText, errorInvalidRangeText: errorInvalidRangeText, fieldStartHintText: fieldStartHintText, fieldEndHintText: fieldEndHintText, fieldStartLabelText: fieldStartLabelText, fieldEndLabelText: fieldEndLabelText, keyboardType: keyboardType, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToCalendarEntryModeIcon: switchToCalendarEntryModeIcon, calendarDelegate: calendarDelegate));
         if ((textDirection is not null))
         {
             TextDirection textDirection__value49942 = DartRuntimePrimitives.RequireValue(textDirection);
@@ -737,7 +737,7 @@ public static partial class Date_pickerLibrary
         if ((locale is not null))
         {
             Locale locale__value50052 = DartRuntimePrimitives.RequireValue(locale);
-            dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Localizations.CreateOverride(context: context, locale: DartRuntimePrimitives.RequireValue(locale__value50052), child: dialog));
+            dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Localizations.CreateOverride(context: context, locale: DartRuntimePrimitives.RequireValue(locale__value50052), child: dialog));
         }
         return await DialogLibrary.showDialog<DateTimeRange<DateTime>>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, routeSettings: routeSettings, useSafeArea: false, builder: ((context) =>
         {
@@ -793,7 +793,7 @@ public class DateRangePickerDialog : global::Doroti.Framework.Widgets.StatefulWi
 
     public DateRangePickerDialog(global::Doroti.Framework.Foundation.Key? key = null, DateTimeRange<DateTime>? initialDateRange = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, string? helpText = null, string? cancelText = null, string? confirmText = null, string? saveText = null, string? errorInvalidRangeText = null, string? errorFormatText = null, string? errorInvalidText = null, string? fieldStartHintText = null, string? fieldEndHintText = null, string? fieldStartLabelText = null, string? fieldEndLabelText = null, global::Doroti.Framework.Services.TextInputType keyboardType = default!, string? restorationId = null, global::Doroti.Framework.Widgets.Icon? switchToInputEntryModeIcon = null, global::Doroti.Framework.Widgets.Icon? switchToCalendarEntryModeIcon = null, global::System.Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
-        global::Doroti.Framework.Services.TextInputType __keyboardType = keyboardType ?? global::Doroti.Framework.Services.TextInputType.datetime;
+        global::Doroti.Framework.Services.TextInputType __keyboardType = keyboardType ?? TextInputType.datetime;
         CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
         this.initialDateRange = initialDateRange;
         this.firstDate = firstDate;
@@ -874,8 +874,8 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
         }
     }
     internal virtual global::Doroti.Framework.Widgets.RestorableBool _autoValidate { get; private set; } = new global::Doroti.Framework.Widgets.RestorableBool(false);
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _calendarPickerKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<_InputDateRangePickerState__date_picker> _inputPickerKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<_InputDateRangePickerState__date_picker>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _calendarPickerKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<_InputDateRangePickerState__date_picker> _inputPickerKey { get; private set; } = GlobalKey<_InputDateRangePickerState__date_picker>.Create();
     public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
     public virtual DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action> _properties { get; set; } = new DartMap<global::Doroti.Framework.Widgets.IRestorableProperty, global::System.Action>();
     public virtual List<global::Doroti.Framework.Widgets.IRestorableProperty>? _debugPropertiesWaitingForReregistration { get; set; } = default;
@@ -911,7 +911,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
 
     internal virtual void _handleOk()
     {
-        if (((object.Equals(this._entryMode.value, DatePickerEntryMode.input)) || (object.Equals(this._entryMode.value, DatePickerEntryMode.inputOnly))))
+        if (((Equals(this._entryMode.value, DatePickerEntryMode.input)) || (Equals(this._entryMode.value, DatePickerEntryMode.inputOnly))))
         {
             _InputDateRangePickerState__date_picker picker = ((global::Doroti.Framework.Widgets.GlobalKey<_InputDateRangePickerState__date_picker>)this._inputPickerKey).currentState!;
             if (!picker.validate())
@@ -1004,7 +1004,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
     {
         ThemeData theme = Theme.of(context);
         global::Doroti.Framework.Widgets.Orientation orientation = MediaQuery.orientationOf(context);
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
         global::Doroti.Framework.Widgets.Widget contents = default!;
@@ -1014,15 +1014,15 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
         global::Doroti.Ui.Color? surfaceTintColorLocal = default!;
         global::Doroti.Framework.Painting.ShapeBorder? shapeLocal = default!;
         global::Doroti.Framework.Painting.EdgeInsets insetPaddingLocal = default!;
-        bool showEntryModeButton = ((object.Equals(this._entryMode.value, DatePickerEntryMode.calendar)) || (object.Equals(this._entryMode.value, DatePickerEntryMode.input)));
+        bool showEntryModeButton = ((Equals(this._entryMode.value, DatePickerEntryMode.calendar)) || (Equals(this._entryMode.value, DatePickerEntryMode.input)));
         switch (this._entryMode.value)
         {
             case DatePickerEntryMode.calendar:
             case DatePickerEntryMode.calendarOnly:
                 {
-                    contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _CalendarRangePickerDialog__date_picker(key: this._calendarPickerKey, calendarDelegate: ((DateRangePickerDialog)this.widget).calendarDelegate, selectedStartDate: this._selectedStart.value, selectedEndDate: this._selectedEnd.value, firstDate: ((DateRangePickerDialog)this.widget).firstDate, lastDate: ((DateRangePickerDialog)this.widget).lastDate, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)((DateRangePickerDialog)this.widget).selectableDayPredicate, currentDate: ((DateRangePickerDialog)this.widget).currentDate, onStartDateChanged: (__arg0) => ((global::System.Action<DateTime?>)this._handleStartDateChanged)(DartRuntimePrimitives.ConvertValue<DateTime>(__arg0)), onEndDateChanged: (global::System.Action<DateTime?>)this._handleEndDateChanged, onConfirm: ((global::System.Action)(this._hasSelectedDateRange ? this._handleOk : null)), onCancel: () => this._handleCancel(), entryModeButton: (showEntryModeButton ? new IconButton(icon: (((DateRangePickerDialog)this.widget).switchToInputEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(((Icons.edit_outlined)))), padding: global::Doroti.Framework.Painting.EdgeInsets.zero, tooltip: ((MaterialLocalizations)localizations).inputDateModeButtonLabel, onPressed: this._handleEntryModeToggle) : null), confirmText: (((DateRangePickerDialog)this.widget).saveText ?? (((((MaterialLocalizations)localizations).saveButtonLabel)))), helpText: (((DateRangePickerDialog)this.widget).helpText ?? (((((MaterialLocalizations)localizations).dateRangePickerHelpText))))));
+                    contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _CalendarRangePickerDialog__date_picker(key: this._calendarPickerKey, calendarDelegate: ((DateRangePickerDialog)this.widget).calendarDelegate, selectedStartDate: this._selectedStart.value, selectedEndDate: this._selectedEnd.value, firstDate: ((DateRangePickerDialog)this.widget).firstDate, lastDate: ((DateRangePickerDialog)this.widget).lastDate, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)((DateRangePickerDialog)this.widget).selectableDayPredicate, currentDate: ((DateRangePickerDialog)this.widget).currentDate, onStartDateChanged: (__arg0) => ((global::System.Action<DateTime?>)this._handleStartDateChanged)(DartRuntimePrimitives.ConvertValue<DateTime>(__arg0)), onEndDateChanged: (global::System.Action<DateTime?>)this._handleEndDateChanged, onConfirm: ((global::System.Action?)(this._hasSelectedDateRange ? this._handleOk : null)), onCancel: () => this._handleCancel(), entryModeButton: (showEntryModeButton ? new IconButton(icon: (((DateRangePickerDialog)this.widget).switchToInputEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(((Icons.edit_outlined)))), padding: EdgeInsets.zero, tooltip: ((MaterialLocalizations)localizations).inputDateModeButtonLabel, onPressed: this._handleEntryModeToggle) : null), confirmText: (((DateRangePickerDialog)this.widget).saveText ?? (((((MaterialLocalizations)localizations).saveButtonLabel)))), helpText: (((DateRangePickerDialog)this.widget).helpText ?? (((((MaterialLocalizations)localizations).dateRangePickerHelpText))))));
                     size = MediaQuery.sizeOf(context);
-                    insetPaddingLocal = global::Doroti.Framework.Painting.EdgeInsets.zero;
+                    insetPaddingLocal = EdgeInsets.zero;
                     elevationLocal = (datePickerTheme.rangePickerElevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.rangePickerElevation));
                     shadowColorLocal = (datePickerTheme.rangePickerShadowColor ?? defaultsLocal.rangePickerShadowColor!);
                     surfaceTintColorLocal = (datePickerTheme.rangePickerSurfaceTintColor ?? defaultsLocal.rangePickerSurfaceTintColor!);
@@ -1032,18 +1032,18 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
             case DatePickerEntryMode.input:
             case DatePickerEntryMode.inputOnly:
                 {
-                    contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _InputDateRangePickerDialog__date_picker(calendarDelegate: ((DateRangePickerDialog)this.widget).calendarDelegate, selectedStartDate: this._selectedStart.value, selectedEndDate: this._selectedEnd.value, currentDate: ((DateRangePickerDialog)this.widget).currentDate, picker: new global::Doroti.Framework.Widgets.SizedBox(height: ((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? Date_pickerLibrary._inputFormPortraitHeight : Date_pickerLibrary._inputFormLandscapeHeight), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 24), child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Spacer()), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _InputDateRangePicker__date_picker(key: this._inputPickerKey, calendarDelegate: ((DateRangePickerDialog)this.widget).calendarDelegate, initialStartDate: this._selectedStart.value, initialEndDate: this._selectedEnd.value, firstDate: ((DateRangePickerDialog)this.widget).firstDate, lastDate: ((DateRangePickerDialog)this.widget).lastDate, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)((DateRangePickerDialog)this.widget).selectableDayPredicate, onStartDateChanged: (global::System.Action<DateTime?>)this._handleStartDateChanged, onEndDateChanged: (global::System.Action<DateTime?>)this._handleEndDateChanged, autofocus: true, autovalidate: DartRuntimePrimitives.RequireValue(this._autoValidate.value), helpText: ((DateRangePickerDialog)this.widget).helpText, errorInvalidRangeText: ((DateRangePickerDialog)this.widget).errorInvalidRangeText, errorFormatText: ((DateRangePickerDialog)this.widget).errorFormatText, errorInvalidText: ((DateRangePickerDialog)this.widget).errorInvalidText, fieldStartHintText: ((DateRangePickerDialog)this.widget).fieldStartHintText, fieldEndHintText: ((DateRangePickerDialog)this.widget).fieldEndHintText, fieldStartLabelText: ((DateRangePickerDialog)this.widget).fieldStartLabelText, fieldEndLabelText: ((DateRangePickerDialog)this.widget).fieldEndLabelText, keyboardType: ((DateRangePickerDialog)this.widget).keyboardType)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Spacer()) }))), onConfirm: () => this._handleOk(), onCancel: () => this._handleCancel(), entryModeButton: (showEntryModeButton ? new IconButton(icon: (((DateRangePickerDialog)this.widget).switchToCalendarEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.calendar_today)), padding: global::Doroti.Framework.Painting.EdgeInsets.zero, tooltip: ((MaterialLocalizations)localizations).calendarModeButtonLabel, onPressed: this._handleEntryModeToggle) : null), confirmText: ((((DateRangePickerDialog)this.widget).confirmText ?? (string)((MaterialLocalizations)localizations).okButtonLabel)), cancelText: (((DateRangePickerDialog)this.widget).cancelText ?? (((((MaterialLocalizations)localizations).cancelButtonLabel)))), helpText: (((DateRangePickerDialog)this.widget).helpText ?? (((((MaterialLocalizations)localizations).dateRangePickerHelpText))))));
+                    contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _InputDateRangePickerDialog__date_picker(calendarDelegate: ((DateRangePickerDialog)this.widget).calendarDelegate, selectedStartDate: this._selectedStart.value, selectedEndDate: this._selectedEnd.value, currentDate: ((DateRangePickerDialog)this.widget).currentDate, picker: new global::Doroti.Framework.Widgets.SizedBox(height: ((Equals(orientation, Orientation.portrait)) ? Date_pickerLibrary._inputFormPortraitHeight : Date_pickerLibrary._inputFormLandscapeHeight), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 24), child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Spacer()), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _InputDateRangePicker__date_picker(key: this._inputPickerKey, calendarDelegate: ((DateRangePickerDialog)this.widget).calendarDelegate, initialStartDate: this._selectedStart.value, initialEndDate: this._selectedEnd.value, firstDate: ((DateRangePickerDialog)this.widget).firstDate, lastDate: ((DateRangePickerDialog)this.widget).lastDate, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)((DateRangePickerDialog)this.widget).selectableDayPredicate, onStartDateChanged: (global::System.Action<DateTime?>)this._handleStartDateChanged, onEndDateChanged: (global::System.Action<DateTime?>)this._handleEndDateChanged, autofocus: true, autovalidate: DartRuntimePrimitives.RequireValue(this._autoValidate.value), helpText: ((DateRangePickerDialog)this.widget).helpText, errorInvalidRangeText: ((DateRangePickerDialog)this.widget).errorInvalidRangeText, errorFormatText: ((DateRangePickerDialog)this.widget).errorFormatText, errorInvalidText: ((DateRangePickerDialog)this.widget).errorInvalidText, fieldStartHintText: ((DateRangePickerDialog)this.widget).fieldStartHintText, fieldEndHintText: ((DateRangePickerDialog)this.widget).fieldEndHintText, fieldStartLabelText: ((DateRangePickerDialog)this.widget).fieldStartLabelText, fieldEndLabelText: ((DateRangePickerDialog)this.widget).fieldEndLabelText, keyboardType: ((DateRangePickerDialog)this.widget).keyboardType)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Spacer()) }))), onConfirm: () => this._handleOk(), onCancel: () => this._handleCancel(), entryModeButton: (showEntryModeButton ? new IconButton(icon: (((DateRangePickerDialog)this.widget).switchToCalendarEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.calendar_today)), padding: EdgeInsets.zero, tooltip: ((MaterialLocalizations)localizations).calendarModeButtonLabel, onPressed: this._handleEntryModeToggle) : null), confirmText: ((((DateRangePickerDialog)this.widget).confirmText ?? (string)((MaterialLocalizations)localizations).okButtonLabel)), cancelText: (((DateRangePickerDialog)this.widget).cancelText ?? (((((MaterialLocalizations)localizations).cancelButtonLabel)))), helpText: (((DateRangePickerDialog)this.widget).helpText ?? (((((MaterialLocalizations)localizations).dateRangePickerHelpText))))));
                     DialogThemeData dialogThemeLocal = theme.dialogTheme;
-                    size = ((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? (((Date_pickerLibrary._inputPortraitDialogSizeM3))) : Date_pickerLibrary._inputRangeLandscapeDialogSize);
+                    size = ((Equals(orientation, Orientation.portrait)) ? (((Date_pickerLibrary._inputPortraitDialogSizeM3))) : Date_pickerLibrary._inputRangeLandscapeDialogSize);
                     elevationLocal = (((datePickerTheme.elevation ?? DartRuntimePrimitives.RequireValue(defaultsLocal.elevation))));
                     shadowColorLocal = (datePickerTheme.shadowColor ?? defaultsLocal.shadowColor);
                     surfaceTintColorLocal = (datePickerTheme.surfaceTintColor ?? defaultsLocal.surfaceTintColor);
                     shapeLocal = (((datePickerTheme.shape ?? defaultsLocal.shape)));
-                    insetPaddingLocal = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
+                    insetPaddingLocal = EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 24.0);
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Dialog(insetPadding: insetPaddingLocal, backgroundColor: (datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor), elevation: elevationLocal, shadowColor: shadowColorLocal, surfaceTintColor: surfaceTintColorLocal, shape: shapeLocal, clipBehavior: Clip.antiAlias, child: new global::Doroti.Framework.Widgets.AnimatedContainer(width: size.width, height: size.height, duration: Date_pickerLibrary._dialogSizeAnimationDuration, curve: global::Doroti.Framework.Animation.Curves.easeIn, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Date_pickerLibrary._kMaxRangeTextScaleFactor, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new Dialog(insetPadding: insetPaddingLocal, backgroundColor: (datePickerTheme.backgroundColor ?? defaultsLocal.backgroundColor), elevation: elevationLocal, shadowColor: shadowColorLocal, surfaceTintColor: surfaceTintColorLocal, shape: shapeLocal, clipBehavior: Clip.antiAlias, child: new global::Doroti.Framework.Widgets.AnimatedContainer(width: size.width, height: size.height, duration: Date_pickerLibrary._dialogSizeAnimationDuration, curve: Curves.easeIn, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Date_pickerLibrary._kMaxRangeTextScaleFactor, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
             return contents;
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1076,7 +1076,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (Equals(property._owner, this))) && this._properties.ContainsKey(property)));
         property.initWithValueObject(initialValue);
         if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
@@ -1091,7 +1091,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
 
     public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(property._owner, this)));
         this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
@@ -1107,7 +1107,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
         bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
             oldBucket?.dispose();
         }
@@ -1131,8 +1131,8 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)RestorationScope.maybeOf(this.context));
+            return ((!Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
@@ -1149,7 +1149,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
         }
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             oldBucket?.dispose();
         }
     }
@@ -1165,7 +1165,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
         this._firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
             {
-                if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
+                if (Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
@@ -1185,9 +1185,9 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)parent.claimChild(this.restorationId!, debugOwner: this));
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._bucket, newBucketLocal)));
             return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
@@ -1200,7 +1200,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
 
     public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
     {
-        if ((object.Equals(newBucket, this._bucket)))
+        if ((Equals(newBucket, this._bucket)))
         {
             return false;
         }
@@ -1282,23 +1282,23 @@ internal class _CalendarRangePickerDialog__date_picker : global::Doroti.Framewor
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         global::Doroti.Framework.Widgets.Orientation orientation = MediaQuery.orientationOf(context);
         DatePickerThemeData themeData = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
-        global::Doroti.Ui.Color? dialogBackground = ((global::Doroti.Ui.Color?)(object?)(themeData.rangePickerBackgroundColor ?? defaultsLocal.rangePickerBackgroundColor));
-        global::Doroti.Ui.Color? headerBackground = ((global::Doroti.Ui.Color?)(object?)(themeData.rangePickerHeaderBackgroundColor ?? defaultsLocal.rangePickerHeaderBackgroundColor));
-        global::Doroti.Ui.Color? headerForeground = ((global::Doroti.Ui.Color?)(object?)(themeData.rangePickerHeaderForegroundColor ?? defaultsLocal.rangePickerHeaderForegroundColor));
-        global::Doroti.Ui.Color? headerDisabledForeground = ((global::Doroti.Ui.Color?)(object?)headerForeground?.withOpacity(0.38));
+        global::Doroti.Ui.Color? dialogBackground = ((global::Doroti.Ui.Color?)(themeData.rangePickerBackgroundColor ?? defaultsLocal.rangePickerBackgroundColor));
+        global::Doroti.Ui.Color? headerBackground = ((global::Doroti.Ui.Color?)(themeData.rangePickerHeaderBackgroundColor ?? defaultsLocal.rangePickerHeaderBackgroundColor));
+        global::Doroti.Ui.Color? headerForeground = ((global::Doroti.Ui.Color?)(themeData.rangePickerHeaderForegroundColor ?? defaultsLocal.rangePickerHeaderForegroundColor));
+        global::Doroti.Ui.Color? headerDisabledForeground = ((global::Doroti.Ui.Color?)headerForeground?.withOpacity(0.38));
         global::Doroti.Framework.Painting.TextStyle? headlineStyle = (themeData.rangePickerHeaderHeadlineStyle ?? defaultsLocal.rangePickerHeaderHeadlineStyle);
-        global::Doroti.Framework.Painting.TextStyle? headlineHelpStyle = ((global::Doroti.Framework.Painting.TextStyle?)(object?)((themeData.rangePickerHeaderHelpStyle ?? defaultsLocal.rangePickerHeaderHelpStyle))?.apply(color: headerForeground));
+        global::Doroti.Framework.Painting.TextStyle? headlineHelpStyle = ((global::Doroti.Framework.Painting.TextStyle?)((themeData.rangePickerHeaderHelpStyle ?? defaultsLocal.rangePickerHeaderHelpStyle))?.apply(color: headerForeground));
         string startDateText = Date_pickerLibrary._formatRangeStartDate(localizations, this.calendarDelegate, this.selectedStartDate, this.selectedEndDate);
         string endDateText = Date_pickerLibrary._formatRangeEndDate(localizations, this.calendarDelegate, this.selectedStartDate, this.selectedEndDate, this.calendarDelegate.now());
-        global::Doroti.Framework.Painting.TextStyle? startDateStyle = ((global::Doroti.Framework.Painting.TextStyle?)(object?)headlineStyle?.apply(color: ((this.selectedStartDate is not null) ? headerForeground : headerDisabledForeground)));
-        global::Doroti.Framework.Painting.TextStyle? endDateStyle = ((global::Doroti.Framework.Painting.TextStyle?)(object?)headlineStyle?.apply(color: ((this.selectedEndDate is not null) ? headerForeground : headerDisabledForeground)));
+        global::Doroti.Framework.Painting.TextStyle? startDateStyle = ((global::Doroti.Framework.Painting.TextStyle?)headlineStyle?.apply(color: ((this.selectedStartDate is not null) ? headerForeground : headerDisabledForeground)));
+        global::Doroti.Framework.Painting.TextStyle? endDateStyle = ((global::Doroti.Framework.Painting.TextStyle?)headlineStyle?.apply(color: ((this.selectedEndDate is not null) ? headerForeground : headerDisabledForeground)));
         ButtonStyle buttonStyle = TextButton.styleFrom(foregroundColor: headerForeground, disabledForegroundColor: headerDisabledForeground);
         var iconThemeLocal = new global::Doroti.Framework.Widgets.IconThemeData(color: headerForeground);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SafeArea(top: false, left: false, right: false, child: new Scaffold(appBar: new AppBar(iconTheme: iconThemeLocal, actionsIconTheme: iconThemeLocal, elevation: ((0)), scrolledUnderElevation: ((0)), backgroundColor: headerBackground, leading: new CloseButton(onPressed: () => this.onCancel()), actions: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection72957 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.landscape)) && (this.entryModeButton is not null))) { __collection72957.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this.entryModeButton!)); } __collection72957.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: buttonStyle, onPressed: this.onConfirm, child: new global::Doroti.Framework.Widgets.Text(this.confirmText)))); __collection72957.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 8))); return __collection72957; }))(), bottom: new global::Doroti.Framework.Widgets.PreferredSize(preferredSize: new global::Doroti.Ui.Size(double.PositiveInfinity, 64), child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection73350 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection73350.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((MediaQuery.widthOf(context) < 360L) ? 42 : 72)))); __collection73350.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Semantics(label: $"{this.helpText} {startDateText} to {endDateText}", excludeSemantics: true, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.helpText, style: headlineHelpStyle, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 8)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(startDateText, style: startDateStyle, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(" – ", style: startDateStyle)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Text(endDateText, style: endDateStyle, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis))) })), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 16)) }))))); if (((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) && (this.entryModeButton is not null))) { __collection73350.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), child: new global::Doroti.Framework.Widgets.IconTheme(data: iconThemeLocal, child: this.entryModeButton!)))); } return __collection73350; }))()))), backgroundColor: dialogBackground, body: new _CalendarDateRangePicker__date_picker(initialStartDate: this.selectedStartDate, initialEndDate: this.selectedEndDate, firstDate: this.firstDate, lastDate: this.lastDate, currentDate: this.currentDate, onStartDateChanged: (global::System.Action<DateTime>)this.onStartDateChanged, onEndDateChanged: (global::System.Action<DateTime?>)this.onEndDateChanged, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)this.selectableDayPredicate, calendarDelegate: this.calendarDelegate))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SafeArea(top: false, left: false, right: false, child: new Scaffold(appBar: new AppBar(iconTheme: iconThemeLocal, actionsIconTheme: iconThemeLocal, elevation: ((0)), scrolledUnderElevation: ((0)), backgroundColor: headerBackground, leading: new CloseButton(onPressed: this.onCancel), actions: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection72957 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((Equals(orientation, Orientation.landscape)) && (this.entryModeButton is not null))) { __collection72957.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this.entryModeButton!)); } __collection72957.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: buttonStyle, onPressed: this.onConfirm, child: new global::Doroti.Framework.Widgets.Text(this.confirmText)))); __collection72957.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 8))); return __collection72957; }))(), bottom: new global::Doroti.Framework.Widgets.PreferredSize(preferredSize: new global::Doroti.Ui.Size(double.PositiveInfinity, 64), child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection73350 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection73350.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((MediaQuery.widthOf(context) < 360L) ? 42 : 72)))); __collection73350.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Semantics(label: $"{this.helpText} {startDateText} to {endDateText}", excludeSemantics: true, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.helpText, style: headlineHelpStyle, maxLines: 1L, overflow: TextOverflow.ellipsis)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 8)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(startDateText, style: startDateStyle, maxLines: 1L, overflow: TextOverflow.ellipsis)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(" – ", style: startDateStyle)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Text(endDateText, style: endDateStyle, maxLines: 1L, overflow: TextOverflow.ellipsis))) })), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 16)) }))))); if (((Equals(orientation, Orientation.portrait)) && (this.entryModeButton is not null))) { __collection73350.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 8.0), child: new global::Doroti.Framework.Widgets.IconTheme(data: iconThemeLocal, child: this.entryModeButton!)))); } return __collection73350; }))()))), backgroundColor: dialogBackground, body: new _CalendarDateRangePicker__date_picker(initialStartDate: this.selectedStartDate, initialEndDate: this.selectedEndDate, firstDate: this.firstDate, lastDate: this.lastDate, currentDate: this.currentDate, onStartDateChanged: (global::System.Action<DateTime>)this.onStartDateChanged, onEndDateChanged: (global::System.Action<DateTime?>)this.onEndDateChanged, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)this.selectableDayPredicate, calendarDelegate: this.calendarDelegate))));
     }
 
 }
@@ -1361,11 +1361,11 @@ internal class _CalendarDateRangePicker__date_picker : global::Doroti.Framework.
         this.onStartDateChanged = onStartDateChanged;
         this.onEndDateChanged = onEndDateChanged;
         this.calendarDelegate = calendarDelegate;
-        this.initialStartDate = ((initialStartDate is not null) ? calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialStartDate))) : null);
-        this.initialEndDate = ((initialEndDate is not null) ? calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialEndDate))) : null);
-        this.firstDate = calendarDelegate.dateOnly(firstDate);
-        this.lastDate = calendarDelegate.dateOnly(lastDate);
-        this.currentDate = calendarDelegate.dateOnly(((currentDate ?? (DateTime)calendarDelegate.now())));
+        this.initialStartDate = ((initialStartDate is not null) ? this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialStartDate))) : null);
+        this.initialEndDate = ((initialEndDate is not null) ? this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialEndDate))) : null);
+        this.firstDate = this.calendarDelegate.dateOnly(firstDate);
+        this.lastDate = this.calendarDelegate.dateOnly(lastDate);
+        this.currentDate = this.calendarDelegate.dateOnly(((currentDate ?? (DateTime)this.calendarDelegate.now())));
         DartRuntimePrimitives.Assert(() => (((this.initialStartDate is null) || (this.initialEndDate is null)) || !DartRuntimePrimitives.RequireValue(this.initialStartDate).isAfter(DartRuntimePrimitives.RequireValue(initialEndDate))), () => (object?)"initialStartDate must be on or before initialEndDate.");
         DartRuntimePrimitives.Assert(() => !this.lastDate.isBefore(this.firstDate), () => (object?)"firstDate must be on or before lastDate.");
     }
@@ -1375,8 +1375,8 @@ internal class _CalendarDateRangePicker__date_picker : global::Doroti.Framework.
 
 internal class _CalendarDateRangePickerState__date_picker : global::Doroti.Framework.Widgets.State<_CalendarDateRangePicker__date_picker>
 {
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _scrollViewKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
-    internal virtual global::Doroti.Framework.Foundation.Key _sliverAfterKey { get; private set; } = ((global::Doroti.Framework.Foundation.Key)(object?)new global::Doroti.Framework.Foundation.UniqueKey());
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _scrollViewKey { get; private set; } = GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Foundation.Key _sliverAfterKey { get; private set; } = ((global::Doroti.Framework.Foundation.Key)new global::Doroti.Framework.Foundation.UniqueKey());
     internal virtual DateTime? _startDate { get; set; } = default;
     internal virtual DateTime? _endDate { get; set; } = default;
     internal virtual long _initialMonthIndex { get; set; } = 0L;
@@ -1430,16 +1430,16 @@ internal class _CalendarDateRangePickerState__date_picker : global::Doroti.Frame
     {
         switch (Theme.of(this.context).platform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
                 {
                     DartRuntimePrimitives.Ignore(HapticFeedback.vibrate());
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.iOS:
+            case TargetPlatform.linux:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 {
                     break;
                 }
@@ -1473,13 +1473,13 @@ internal class _CalendarDateRangePickerState__date_picker : global::Doroti.Frame
     {
         long monthIndex = (beforeInitialMonth ? ((this._initialMonthIndex - index) - 1L) : (this._initialMonthIndex + index));
         DateTime month = ((_CalendarDateRangePicker__date_picker)this.widget).calendarDelegate.addMonthsToMonthDate(((_CalendarDateRangePicker__date_picker)this.widget).firstDate, monthIndex);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _MonthItem__date_picker(calendarDelegate: ((_CalendarDateRangePicker__date_picker)this.widget).calendarDelegate, selectedDateStart: this._startDate, selectedDateEnd: this._endDate, currentDate: ((_CalendarDateRangePicker__date_picker)this.widget).currentDate, firstDate: ((_CalendarDateRangePicker__date_picker)this.widget).firstDate, lastDate: ((_CalendarDateRangePicker__date_picker)this.widget).lastDate, displayedMonth: month, onChanged: (global::System.Action<DateTime>)this._updateSelection, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)((_CalendarDateRangePicker__date_picker)this.widget).selectableDayPredicate));
+        return ((global::Doroti.Framework.Widgets.Widget)new _MonthItem__date_picker(calendarDelegate: ((_CalendarDateRangePicker__date_picker)this.widget).calendarDelegate, selectedDateStart: this._startDate, selectedDateEnd: this._endDate, currentDate: ((_CalendarDateRangePicker__date_picker)this.widget).currentDate, firstDate: ((_CalendarDateRangePicker__date_picker)this.widget).firstDate, lastDate: ((_CalendarDateRangePicker__date_picker)this.widget).lastDate, displayedMonth: month, onChanged: (global::System.Action<DateTime>)this._updateSelection, selectableDayPredicate: (global::System.Func<DateTime, DateTime?, DateTime?, bool>?)((_CalendarDateRangePicker__date_picker)this.widget).selectableDayPredicate));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection82299 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection82299.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DayHeaders__date_picker())); if (this._showWeekBottomDivider) { __collection82299.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Divider(height: 0))); } __collection82299.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _CalendarKeyboardNavigator__date_picker(calendarDelegate: ((_CalendarDateRangePicker__date_picker)this.widget).calendarDelegate, firstDate: ((_CalendarDateRangePicker__date_picker)this.widget).firstDate, lastDate: ((_CalendarDateRangePicker__date_picker)this.widget).lastDate, initialFocusedDay: ((this._startDate ?? ((_CalendarDateRangePicker__date_picker)this.widget).initialStartDate) ?? ((_CalendarDateRangePicker__date_picker)this.widget).currentDate), child: new global::Doroti.Framework.Widgets.CustomScrollView(key: this._scrollViewKey, controller: this._controller, center: this._sliverAfterKey, slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SliverList.CreateBuilder(itemCount: this._initialMonthIndex, itemBuilder: ((context, index) => _buildMonthItem(context, index, true)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SliverList.CreateBuilder(key: this._sliverAfterKey, itemCount: (this._numberOfMonths - this._initialMonthIndex), itemBuilder: ((context, index) => _buildMonthItem(context, index, false)))) }))))); return __collection82299; }))()));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection82299 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection82299.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DayHeaders__date_picker())); if (this._showWeekBottomDivider) { __collection82299.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Divider(height: 0))); } __collection82299.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _CalendarKeyboardNavigator__date_picker(calendarDelegate: ((_CalendarDateRangePicker__date_picker)this.widget).calendarDelegate, firstDate: ((_CalendarDateRangePicker__date_picker)this.widget).firstDate, lastDate: ((_CalendarDateRangePicker__date_picker)this.widget).lastDate, initialFocusedDay: ((this._startDate ?? ((_CalendarDateRangePicker__date_picker)this.widget).initialStartDate) ?? ((_CalendarDateRangePicker__date_picker)this.widget).currentDate), child: new global::Doroti.Framework.Widgets.CustomScrollView(key: this._scrollViewKey, controller: this._controller, center: this._sliverAfterKey, slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(SliverList.CreateBuilder(itemCount: this._initialMonthIndex, itemBuilder: ((context, index) => _buildMonthItem(context, index, true)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(SliverList.CreateBuilder(key: this._sliverAfterKey, itemCount: (this._numberOfMonths - this._initialMonthIndex), itemBuilder: ((context, index) => _buildMonthItem(context, index, false)))) }))))); return __collection82299; }))()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1507,12 +1507,12 @@ internal class _CalendarKeyboardNavigator__date_picker : global::Doroti.Framewor
 
 internal class _CalendarKeyboardNavigatorState__date_picker : global::Doroti.Framework.Widgets.State<_CalendarKeyboardNavigator__date_picker>
 {
-    internal virtual DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> _shortcutMap { get; private set; } = new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Framework.Widgets.TraversalDirection.left)), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Framework.Widgets.TraversalDirection.right)), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Framework.Widgets.TraversalDirection.down)), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Framework.Widgets.TraversalDirection.up)) };
+    internal virtual DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> _shortcutMap { get; private set; } = new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((global::Doroti.Framework.Widgets.Intent)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(TraversalDirection.left)), [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.arrowRight)] = ((global::Doroti.Framework.Widgets.Intent)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(TraversalDirection.right)), [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.arrowDown)] = ((global::Doroti.Framework.Widgets.Intent)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(TraversalDirection.down)), [new global::Doroti.Framework.Widgets.SingleActivator(LogicalKeyboardKey.arrowUp)] = ((global::Doroti.Framework.Widgets.Intent)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(TraversalDirection.up)) };
     internal virtual DartMap<Type, dynamic> _actionMap { get; set; } = default!;
     internal virtual global::Doroti.Framework.Widgets.FocusNode _dayGridFocus { get; set; } = default!;
     internal virtual global::Doroti.Framework.Widgets.TraversalDirection? _dayTraversalDirection { get; set; } = default;
     internal virtual DateTime? _focusedDay { get; set; } = default;
-    internal static DartMap<global::Doroti.Framework.Widgets.TraversalDirection, long> _directionOffset = new DartMap<global::Doroti.Framework.Widgets.TraversalDirection, long> { [global::Doroti.Framework.Widgets.TraversalDirection.up] = -7L, [global::Doroti.Framework.Widgets.TraversalDirection.right] = 1L, [global::Doroti.Framework.Widgets.TraversalDirection.down] = 7L, [global::Doroti.Framework.Widgets.TraversalDirection.left] = -1L };
+    internal static DartMap<global::Doroti.Framework.Widgets.TraversalDirection, long> _directionOffset = new DartMap<global::Doroti.Framework.Widgets.TraversalDirection, long> { [TraversalDirection.up] = -7L, [TraversalDirection.right] = 1L, [TraversalDirection.down] = 7L, [TraversalDirection.left] = -1L };
 
     public override void initState()
     {
@@ -1567,17 +1567,17 @@ internal class _CalendarKeyboardNavigatorState__date_picker : global::Doroti.Fra
 
     internal virtual long _dayDirectionOffset(global::Doroti.Framework.Widgets.TraversalDirection traversalDirection, TextDirection textDirection)
     {
-        if ((object.Equals(textDirection, TextDirection.rtl)))
+        if ((Equals(textDirection, TextDirection.rtl)))
         {
-            if ((object.Equals(traversalDirection, global::Doroti.Framework.Widgets.TraversalDirection.left)))
+            if ((Equals(traversalDirection, TraversalDirection.left)))
             {
-                traversalDirection = global::Doroti.Framework.Widgets.TraversalDirection.right;
+                traversalDirection = TraversalDirection.right;
             }
             else
             {
-                if ((object.Equals(traversalDirection, global::Doroti.Framework.Widgets.TraversalDirection.right)))
+                if ((Equals(traversalDirection, TraversalDirection.right)))
                 {
-                    traversalDirection = global::Doroti.Framework.Widgets.TraversalDirection.left;
+                    traversalDirection = TraversalDirection.left;
                 }
             }
         }
@@ -1599,7 +1599,7 @@ internal class _CalendarKeyboardNavigatorState__date_picker : global::Doroti.Fra
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FocusableActionDetector(shortcuts: this._shortcutMap, actions: this._actionMap, focusNode: this._dayGridFocus, onFocusChange: (global::System.Action<bool>)this._handleGridFocusChange, child: new _FocusedDate__date_picker(calendarDelegate: ((_CalendarKeyboardNavigator__date_picker)this.widget).calendarDelegate, date: (((global::Doroti.Framework.Widgets.FocusNode)this._dayGridFocus).hasFocus ? this._focusedDay : null), scrollDirection: (((global::Doroti.Framework.Widgets.FocusNode)this._dayGridFocus).hasFocus ? this._dayTraversalDirection : null), child: ((_CalendarKeyboardNavigator__date_picker)this.widget).child)));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.FocusableActionDetector(shortcuts: this._shortcutMap, actions: this._actionMap, focusNode: this._dayGridFocus, onFocusChange: (global::System.Action<bool>)this._handleGridFocusChange, child: new _FocusedDate__date_picker(calendarDelegate: ((_CalendarKeyboardNavigator__date_picker)this.widget).calendarDelegate, date: (((global::Doroti.Framework.Widgets.FocusNode)this._dayGridFocus).hasFocus ? this._focusedDay : null), scrollDirection: (((global::Doroti.Framework.Widgets.FocusNode)this._dayGridFocus).hasFocus ? this._dayTraversalDirection : null), child: ((_CalendarKeyboardNavigator__date_picker)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1620,14 +1620,14 @@ internal class _FocusedDate__date_picker : global::Doroti.Framework.Widgets.Inhe
 
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
-        var __oldWidget = (_FocusedDate__date_picker)(object)oldWidget;
-        return (!this.calendarDelegate.isSameDay(this.date, ((_FocusedDate__date_picker)__oldWidget).date) || (!object.Equals(this.scrollDirection, ((_FocusedDate__date_picker)__oldWidget).scrollDirection)));
+        var __oldWidget = (_FocusedDate__date_picker)oldWidget;
+        return (!this.calendarDelegate.isSameDay(this.date, ((_FocusedDate__date_picker)__oldWidget).date) || (!Equals(this.scrollDirection, ((_FocusedDate__date_picker)__oldWidget).scrollDirection)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static _FocusedDate__date_picker? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((_FocusedDate__date_picker?)(object?)context.dependOnInheritedWidgetOfExactType<_FocusedDate__date_picker>());
+        return ((_FocusedDate__date_picker?)context.dependOnInheritedWidgetOfExactType<_FocusedDate__date_picker>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1655,12 +1655,12 @@ internal class _DayHeaders__date_picker : global::Doroti.Framework.Widgets.State
     {
         ThemeData themeData = Theme.of(context);
         ColorScheme colorSchemeLocal = themeData.colorScheme;
-        global::Doroti.Framework.Painting.TextStyle textStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)themeData.textTheme.titleSmall!.apply(color: colorSchemeLocal.onSurface));
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        List<global::Doroti.Framework.Widgets.Widget> labels = ((List<global::Doroti.Framework.Widgets.Widget>)(object?)_getDayHeaders(textStyle, localizations));
-        labels.Insert(checked((int)0L), global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
-        labels.Add(global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: ((object.Equals(MediaQuery.orientationOf(context), global::Doroti.Framework.Widgets.Orientation.landscape)) ? Date_pickerLibrary._maxCalendarWidthLandscape : Date_pickerLibrary._maxCalendarWidthPortrait), maxHeight: Date_pickerLibrary._monthItemRowHeight), child: global::Doroti.Framework.Widgets.GridView.CreateCustom(shrinkWrap: true, gridDelegate: Date_pickerLibrary._monthItemGridDelegate, childrenDelegate: new global::Doroti.Framework.Widgets.SliverChildListDelegate(labels, addRepaintBoundaries: false))));
+        global::Doroti.Framework.Painting.TextStyle textStyle = ((global::Doroti.Framework.Painting.TextStyle)themeData.textTheme.titleSmall!.apply(color: colorSchemeLocal.onSurface));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
+        List<global::Doroti.Framework.Widgets.Widget> labels = ((List<global::Doroti.Framework.Widgets.Widget>)_getDayHeaders(textStyle, localizations));
+        labels.Insert(checked((int)0L), SizedBox.CreateShrink());
+        labels.Add(SizedBox.CreateShrink());
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: ((Equals(MediaQuery.orientationOf(context), Orientation.landscape)) ? Date_pickerLibrary._maxCalendarWidthLandscape : Date_pickerLibrary._maxCalendarWidthPortrait), maxHeight: Date_pickerLibrary._monthItemRowHeight), child: GridView.CreateCustom(shrinkWrap: true, gridDelegate: Date_pickerLibrary._monthItemGridDelegate, childrenDelegate: new global::Doroti.Framework.Widgets.SliverChildListDelegate(labels, addRepaintBoundaries: false))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1675,7 +1675,7 @@ internal class _MonthItemGridDelegate__date_picker : global::Doroti.Framework.Re
     public virtual global::Doroti.Framework.Rendering.SliverGridLayout getLayout(global::Doroti.Framework.Rendering.SliverConstraints constraints)
     {
         double tileWidth = Math.Max((((((global::Doroti.Framework.Rendering.SliverConstraints)constraints).crossAxisExtent - (2L * Date_pickerLibrary._horizontalPadding))) / 7L), 0.0);
-        return ((global::Doroti.Framework.Rendering.SliverGridLayout)(object?)new _MonthSliverGridLayout__date_picker(crossAxisCount: (7L + 2L), dayChildWidth: tileWidth, edgeChildWidth: Date_pickerLibrary._horizontalPadding, reverseCrossAxis: global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((global::Doroti.Framework.Rendering.SliverConstraints)constraints).crossAxisDirection)));
+        return ((global::Doroti.Framework.Rendering.SliverGridLayout)new _MonthSliverGridLayout__date_picker(crossAxisCount: (7L + 2L), dayChildWidth: tileWidth, edgeChildWidth: Date_pickerLibrary._horizontalPadding, reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(((global::Doroti.Framework.Rendering.SliverConstraints)constraints).crossAxisDirection)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1804,7 +1804,7 @@ internal class _MonthItemState__date_picker : global::Doroti.Framework.Widgets.S
     {
         base.initState();
         long daysInMonth = ((_MonthItem__date_picker)this.widget).calendarDelegate.getDaysInMonth(((_MonthItem__date_picker)this.widget).displayedMonth.Year, ((_MonthItem__date_picker)this.widget).displayedMonth.Month);
-        _dayFocusNodes = new List<global::Doroti.Framework.Widgets.FocusNode>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)daysInMonth)), ((index) => new global::Doroti.Framework.Widgets.FocusNode(skipTraversal: true, debugLabel: $"Day {(index + 1L)}"))));
+        _dayFocusNodes = new List<global::Doroti.Framework.Widgets.FocusNode>(Enumerable.Select(Enumerable.Range(0, checked((int)daysInMonth)), ((index) => new global::Doroti.Framework.Widgets.FocusNode(skipTraversal: true, debugLabel: $"Day {(index + 1L)}"))));
     }
 
     public override void didChangeDependencies()
@@ -1829,7 +1829,7 @@ internal class _MonthItemState__date_picker : global::Doroti.Framework.Widgets.S
 
     internal virtual global::Doroti.Ui.Color _highlightColor(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Ui.Color)(object?)(DatePickerTheme.of(context).rangeSelectionBackgroundColor ?? DatePickerTheme.defaults(context).rangeSelectionBackgroundColor!));
+        return ((global::Doroti.Ui.Color)(DatePickerTheme.of(context).rangeSelectionBackgroundColor ?? DatePickerTheme.defaults(context).rangeSelectionBackgroundColor!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1841,23 +1841,23 @@ internal class _MonthItemState__date_picker : global::Doroti.Framework.Widgets.S
             if ((focusDirection is not null))
             {
                 global::Doroti.Framework.Widgets.TraversalDirection focusDirection__98861__value98936 = DartRuntimePrimitives.RequireValue(focusDirection);
-                global::Doroti.Framework.Widgets.ScrollPositionAlignmentPolicy policy = global::Doroti.Framework.Widgets.ScrollPositionAlignmentPolicy.@explicit;
+                global::Doroti.Framework.Widgets.ScrollPositionAlignmentPolicy policy = ScrollPositionAlignmentPolicy.@explicit;
                 switch (DartRuntimePrimitives.RequireValue(focusDirection__98861__value98936))
                 {
-                    case global::Doroti.Framework.Widgets.TraversalDirection.up:
-                    case global::Doroti.Framework.Widgets.TraversalDirection.left:
+                    case TraversalDirection.up:
+                    case TraversalDirection.left:
                         {
-                            policy = global::Doroti.Framework.Widgets.ScrollPositionAlignmentPolicy.keepVisibleAtStart;
+                            policy = ScrollPositionAlignmentPolicy.keepVisibleAtStart;
                             break;
                         }
-                    case global::Doroti.Framework.Widgets.TraversalDirection.right:
-                    case global::Doroti.Framework.Widgets.TraversalDirection.down:
+                    case TraversalDirection.right:
+                    case TraversalDirection.down:
                         {
-                            policy = global::Doroti.Framework.Widgets.ScrollPositionAlignmentPolicy.keepVisibleAtEnd;
+                            policy = ScrollPositionAlignmentPolicy.keepVisibleAtEnd;
                             break;
                         }
                 }
-                DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus!.context!, duration: Calendar_date_pickerLibrary._monthScrollDuration, alignmentPolicy: policy));
+                DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(Focus_managerLibrary.primaryFocus!.context!, duration: Calendar_date_pickerLibrary._monthScrollDuration, alignmentPolicy: policy));
             }
         }
     }
@@ -1870,15 +1870,15 @@ internal class _MonthItemState__date_picker : global::Doroti.Framework.Widgets.S
         bool isSelectedDayStartLocal = ((((_MonthItem__date_picker)this.widget).selectedDateStart is not null) && dayToBuild.isAtSameMomentAs(DartRuntimePrimitives.RequireValue(((_MonthItem__date_picker)this.widget).selectedDateStart)));
         bool isSelectedDayEndLocal = ((((_MonthItem__date_picker)this.widget).selectedDateEnd is not null) && dayToBuild.isAtSameMomentAs(DartRuntimePrimitives.RequireValue(((_MonthItem__date_picker)this.widget).selectedDateEnd)));
         bool isInRangeLocal = ((isRangeSelectedLocal && dayToBuild.isAfter(DartRuntimePrimitives.RequireValue(((_MonthItem__date_picker)this.widget).selectedDateStart))) && dayToBuild.isBefore(DartRuntimePrimitives.RequireValue(((_MonthItem__date_picker)this.widget).selectedDateEnd)));
-        bool isOneDayRangeLocal = (isRangeSelectedLocal && (object.Equals(((_MonthItem__date_picker)this.widget).selectedDateStart, ((_MonthItem__date_picker)this.widget).selectedDateEnd)));
+        bool isOneDayRangeLocal = (isRangeSelectedLocal && (Equals(((_MonthItem__date_picker)this.widget).selectedDateStart, ((_MonthItem__date_picker)this.widget).selectedDateEnd)));
         bool isTodayLocal = ((_MonthItem__date_picker)this.widget).calendarDelegate.isSameDay(((_MonthItem__date_picker)this.widget).currentDate, dayToBuild);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DayItem__date_picker(calendarDelegate: ((_MonthItem__date_picker)this.widget).calendarDelegate, day: dayToBuild, focusNode: this._dayFocusNodes[(int)((dayLocal - 1L))], onChanged: (global::System.Action<DateTime>)((_MonthItem__date_picker)this.widget).onChanged, onFocusChange: (global::System.Action<bool>)this._dayFocusChanged, highlightColor: _highlightColor(context), isDisabled: isDisabledLocal, isRangeSelected: isRangeSelectedLocal, isSelectedDayStart: isSelectedDayStartLocal, isSelectedDayEnd: isSelectedDayEndLocal, isInRange: isInRangeLocal, isOneDayRange: isOneDayRangeLocal, isToday: isTodayLocal));
+        return ((global::Doroti.Framework.Widgets.Widget)new _DayItem__date_picker(calendarDelegate: ((_MonthItem__date_picker)this.widget).calendarDelegate, day: dayToBuild, focusNode: this._dayFocusNodes[(int)((dayLocal - 1L))], onChanged: (global::System.Action<DateTime>)((_MonthItem__date_picker)this.widget).onChanged, onFocusChange: (global::System.Action<bool>)this._dayFocusChanged, highlightColor: _highlightColor(context), isDisabled: isDisabledLocal, isRangeSelected: isRangeSelectedLocal, isSelectedDayStart: isSelectedDayStartLocal, isSelectedDayEnd: isSelectedDayEndLocal, isInRange: isInRangeLocal, isOneDayRange: isOneDayRangeLocal, isToday: isTodayLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildEdgeBox(global::Doroti.Framework.Widgets.BuildContext context, bool isHighlighted)
     {
-        global::Doroti.Framework.Widgets.Widget empty = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand()));
+        global::Doroti.Framework.Widgets.Widget empty = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: SizedBox.CreateExpand()));
         return (isHighlighted ? new global::Doroti.Framework.Widgets.ColoredBox(color: _highlightColor(context), child: empty) : empty);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1887,7 +1887,7 @@ internal class _MonthItemState__date_picker : global::Doroti.Framework.Widgets.S
     {
         ThemeData themeData = Theme.of(context);
         TextTheme textThemeLocal = themeData.textTheme;
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         long year = ((_MonthItem__date_picker)this.widget).displayedMonth.Year;
         long month = ((_MonthItem__date_picker)this.widget).displayedMonth.Month;
         long daysInMonth = ((_MonthItem__date_picker)this.widget).calendarDelegate.getDaysInMonth(year, month);
@@ -1899,12 +1899,12 @@ internal class _MonthItemState__date_picker : global::Doroti.Framework.Widgets.S
         {
             if ((day < 1L))
             {
-                dayItems.Add(new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand()));
+                dayItems.Add(new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: SizedBox.CreateExpand()));
             }
             else
             {
                 DateTime dayToBuild = ((_MonthItem__date_picker)this.widget).calendarDelegate.getDay(year, month, day);
-                global::Doroti.Framework.Widgets.Widget dayItem = ((global::Doroti.Framework.Widgets.Widget)(object?)_buildDayItem(context, dayToBuild, dayOffset, daysInMonth));
+                global::Doroti.Framework.Widgets.Widget dayItem = ((global::Doroti.Framework.Widgets.Widget)_buildDayItem(context, dayToBuild, dayOffset, daysInMonth));
                 dayItems.Add(dayItem);
             }
         }
@@ -1925,8 +1925,8 @@ internal class _MonthItemState__date_picker : global::Doroti.Framework.Widgets.S
             }
             paddedDayItems.AddRange(weekList.Cast<global::Doroti.Framework.Widgets.Widget>());
         }
-        double maxWidthLocal = ((object.Equals(MediaQuery.orientationOf(context), global::Doroti.Framework.Widgets.Orientation.landscape)) ? Date_pickerLibrary._maxCalendarWidthLandscape : Date_pickerLibrary._maxCalendarWidthPortrait);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: maxWidthLocal).tighten(height: Date_pickerLibrary._monthItemHeaderHeight), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text(((_MonthItem__date_picker)this.widget).calendarDelegate.formatMonthYear(((_MonthItem__date_picker)this.widget).displayedMonth, localizations), style: textThemeLocal.bodyMedium!.apply(color: themeData.colorScheme.onSurface))))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: maxWidthLocal, maxHeight: gridHeight), child: global::Doroti.Framework.Widgets.GridView.CreateCustom(physics: new global::Doroti.Framework.Widgets.NeverScrollableScrollPhysics(), gridDelegate: Date_pickerLibrary._monthItemGridDelegate, childrenDelegate: new global::Doroti.Framework.Widgets.SliverChildListDelegate(paddedDayItems, addRepaintBoundaries: false)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: Date_pickerLibrary._monthItemFooterHeight)) }));
+        double maxWidthLocal = ((Equals(MediaQuery.orientationOf(context), Orientation.landscape)) ? Date_pickerLibrary._maxCalendarWidthLandscape : Date_pickerLibrary._maxCalendarWidthPortrait);
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: maxWidthLocal).tighten(height: Date_pickerLibrary._monthItemHeaderHeight), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16), child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text(((_MonthItem__date_picker)this.widget).calendarDelegate.formatMonthYear(((_MonthItem__date_picker)this.widget).displayedMonth, localizations), style: textThemeLocal.bodyMedium!.apply(color: themeData.colorScheme.onSurface))))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: maxWidthLocal, maxHeight: gridHeight), child: GridView.CreateCustom(physics: new global::Doroti.Framework.Widgets.NeverScrollableScrollPhysics(), gridDelegate: Date_pickerLibrary._monthItemGridDelegate, childrenDelegate: new global::Doroti.Framework.Widgets.SliverChildListDelegate(paddedDayItems, addRepaintBoundaries: false)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: Date_pickerLibrary._monthItemFooterHeight)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1983,11 +1983,11 @@ internal class _DayItemState__date_picker : global::Doroti.Framework.Widgets.Sta
         ThemeData themeLocal = Theme.of(context);
         ColorScheme colorSchemeLocal = themeLocal.colorScheme;
         TextTheme textThemeLocal = themeLocal.textTheme;
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        global::Doroti.Ui.Color highlightColorLocal = ((global::Doroti.Ui.Color)(object?)((_DayItem__date_picker)this.widget).highlightColor);
+        global::Doroti.Ui.Color highlightColorLocal = ((global::Doroti.Ui.Color)((_DayItem__date_picker)this.widget).highlightColor);
         global::Doroti.Framework.Painting.ShapeDecoration? decorationLocal = default!;
         global::Doroti.Framework.Painting.TextStyle? itemStyle = textThemeLocal.bodyMedium;
         P? effectiveValue<P>(global::System.Func<DatePickerThemeData?, P?> getProperty)
@@ -2004,11 +2004,11 @@ internal class _DayItemState__date_picker : global::Doroti.Framework.Widgets.Sta
             }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        var statesLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection108309 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((_DayItem__date_picker)this.widget).isDisabled) { __collection108309.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if ((((_DayItem__date_picker)this.widget).isSelectedDayStart || ((_DayItem__date_picker)this.widget).isSelectedDayEnd)) { __collection108309.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection108309; }))();
+        var statesLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection108309 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((_DayItem__date_picker)this.widget).isDisabled) { __collection108309.Add(WidgetState.disabled); } if ((((_DayItem__date_picker)this.widget).isSelectedDayStart || ((_DayItem__date_picker)this.widget).isSelectedDayEnd)) { __collection108309.Add(WidgetState.selected); } return __collection108309; }))();
         this._statesController.value = statesLocal;
-        global::Doroti.Ui.Color? dayForegroundColorLocal = ((global::Doroti.Ui.Color?)(object?)resolve<global::Doroti.Ui.Color?>(((theme) => theme?.dayForegroundColor), statesLocal));
-        global::Doroti.Ui.Color? dayBackgroundColorLocal = ((global::Doroti.Ui.Color?)(object?)resolve<global::Doroti.Ui.Color?>(((theme) => theme?.dayBackgroundColor), statesLocal));
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> dayOverlayColorLocal = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>)((states) => effectiveValue(((theme) => (((_DayItem__date_picker)this.widget).isInRange ? theme?.rangeSelectionOverlayColor?.resolve(states) : theme?.dayOverlayColor?.resolve(states))))))));
+        global::Doroti.Ui.Color? dayForegroundColorLocal = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((theme) => theme?.dayForegroundColor), statesLocal));
+        global::Doroti.Ui.Color? dayBackgroundColorLocal = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((theme) => theme?.dayBackgroundColor), statesLocal));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> dayOverlayColorLocal = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>)((states) => effectiveValue(((theme) => (((_DayItem__date_picker)this.widget).isInRange ? theme?.rangeSelectionOverlayColor?.resolve(states) : theme?.dayOverlayColor?.resolve(states))))))));
         global::Doroti.Framework.Painting.OutlinedBorder dayShapeLocal = (resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(((theme) => theme?.dayShape), statesLocal) ?? new global::Doroti.Framework.Painting.CircleBorder());
         _HighlightPainter__date_picker? highlightPainter = default!;
         if ((((_DayItem__date_picker)this.widget).isSelectedDayStart || ((_DayItem__date_picker)this.widget).isSelectedDayEnd))
@@ -2042,13 +2042,13 @@ internal class _DayItemState__date_picker : global::Doroti.Framework.Widgets.Sta
                     if (((_DayItem__date_picker)this.widget).isToday)
                     {
                         itemStyle = itemStyle?.apply(color: colorSchemeLocal.primary);
-                        global::Doroti.Framework.Painting.BorderSide todaySide = ((global::Doroti.Framework.Painting.BorderSide)(object?)((datePickerTheme.todayBorder ?? defaultsLocal.todayBorder!)).copyWith(color: colorSchemeLocal.primary));
+                        global::Doroti.Framework.Painting.BorderSide todaySide = ((global::Doroti.Framework.Painting.BorderSide)((datePickerTheme.todayBorder ?? defaultsLocal.todayBorder!)).copyWith(color: colorSchemeLocal.primary));
                         decorationLocal = new global::Doroti.Framework.Painting.ShapeDecoration(shape: dayShapeLocal.copyWith(side: todaySide));
                     }
                 }
             }
         }
-        string dayText = ((string)(object?)localizations.formatDecimal(((_DayItem__date_picker)this.widget).day.Day));
+        string dayText = ((string)localizations.formatDecimal(((_DayItem__date_picker)this.widget).day.Day));
         var semanticLabelSuffix = (((_DayItem__date_picker)this.widget).isToday ? $", {((MaterialLocalizations)localizations).currentDateLabel}" : "");
         var semanticLabel = $"{dayText}, {((_DayItem__date_picker)this.widget).calendarDelegate.formatFullDate(((_DayItem__date_picker)this.widget).day, localizations)}{semanticLabelSuffix}";
         if (((_DayItem__date_picker)this.widget).isSelectedDayStart)
@@ -2062,7 +2062,7 @@ internal class _DayItemState__date_picker : global::Doroti.Framework.Widgets.Sta
                 semanticLabel = localizations.dateRangeEndDateSemanticLabel(semanticLabel);
             }
         }
-        global::Doroti.Framework.Widgets.Widget dayWidget = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(decoration: decorationLocal, alignment: global::Doroti.Framework.Painting.Alignment.center, child: new global::Doroti.Framework.Widgets.Semantics(label: semanticLabel, selected: (((_DayItem__date_picker)this.widget).isSelectedDayStart || ((_DayItem__date_picker)this.widget).isSelectedDayEnd), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text(dayText, style: itemStyle)))));
+        global::Doroti.Framework.Widgets.Widget dayWidget = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(decoration: decorationLocal, alignment: Alignment.center, child: new global::Doroti.Framework.Widgets.Semantics(label: semanticLabel, selected: (((_DayItem__date_picker)this.widget).isSelectedDayStart || ((_DayItem__date_picker)this.widget).isSelectedDayEnd), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text(dayText, style: itemStyle)))));
         if ((highlightPainter is not null))
         {
             dayWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.CustomPaint(painter: highlightPainter, child: dayWidget));
@@ -2100,7 +2100,7 @@ internal class _HighlightPainter__date_picker : global::Doroti.Framework.Renderi
 
     public override void paint(Canvas canvas, Size size)
     {
-        if ((object.Equals(this.style, _HighlightPainterStyle__date_picker.none)))
+        if ((Equals(this.style, _HighlightPainterStyle__date_picker.none)))
         {
             return;
         }
@@ -2117,18 +2117,18 @@ internal class _HighlightPainter__date_picker : global::Doroti.Framework.Renderi
             case _HighlightPainterStyle__date_picker.highlightLeading when (rtlLocal):
             case _HighlightPainterStyle__date_picker.highlightTrailing when (!rtlLocal):
                 {
-                    canvas.drawRect(global::Doroti.Ui.Rect.fromLTWH((size.width / 2L), 0, (size.width / 2L), size.height), paintLocal);
+                    canvas.drawRect(Rect.fromLTWH((size.width / 2L), 0, (size.width / 2L), size.height), paintLocal);
                     break;
                 }
             case _HighlightPainterStyle__date_picker.highlightLeading:
             case _HighlightPainterStyle__date_picker.highlightTrailing:
                 {
-                    canvas.drawRect(global::Doroti.Ui.Rect.fromLTWH(0, 0, (size.width / 2L), size.height), paintLocal);
+                    canvas.drawRect(Rect.fromLTWH(0, 0, (size.width / 2L), size.height), paintLocal);
                     break;
                 }
             case _HighlightPainterStyle__date_picker.highlightAll:
                 {
-                    canvas.drawRect(global::Doroti.Ui.Rect.fromLTWH(0, 0, size.width, size.height), paintLocal);
+                    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paintLocal);
                     break;
                 }
             case _HighlightPainterStyle__date_picker.none:
@@ -2172,7 +2172,7 @@ internal class _InputDateRangePickerDialog__date_picker : global::Doroti.Framewo
 
     internal virtual string _formatDateRange(global::Doroti.Framework.Widgets.BuildContext context, DateTime? start, DateTime? end, DateTime now)
     {
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         string startText = Date_pickerLibrary._formatRangeStartDate(localizations, this.calendarDelegate, start, end);
         string endText = Date_pickerLibrary._formatRangeEndDate(localizations, this.calendarDelegate, start, end, now);
         if (((start is null) || (end is null)))
@@ -2184,33 +2184,33 @@ internal class _InputDateRangePickerDialog__date_picker : global::Doroti.Framewo
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         global::Doroti.Framework.Widgets.Orientation orientationLocal = MediaQuery.orientationOf(context);
         DatePickerThemeData datePickerTheme = DatePickerTheme.of(context);
         DatePickerThemeData defaultsLocal = DatePickerTheme.defaults(context);
-        global::Doroti.Framework.Painting.TextStyle? headlineStyle = (((object.Equals(orientationLocal, global::Doroti.Framework.Widgets.Orientation.portrait))) ? (datePickerTheme.headerHeadlineStyle ?? defaultsLocal.headerHeadlineStyle) : Theme.of(context).textTheme.headlineSmall);
-        global::Doroti.Ui.Color? headerForegroundColorLocal = ((global::Doroti.Ui.Color?)(object?)(datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor));
+        global::Doroti.Framework.Painting.TextStyle? headlineStyle = (((Equals(orientationLocal, Orientation.portrait))) ? (datePickerTheme.headerHeadlineStyle ?? defaultsLocal.headerHeadlineStyle) : Theme.of(context).textTheme.headlineSmall);
+        global::Doroti.Ui.Color? headerForegroundColorLocal = ((global::Doroti.Ui.Color?)(datePickerTheme.headerForegroundColor ?? defaultsLocal.headerForegroundColor));
         headlineStyle = headlineStyle?.copyWith(color: headerForegroundColorLocal);
-        string dateText = ((string)(object?)_formatDateRange(context, this.selectedStartDate, this.selectedEndDate, DartRuntimePrimitives.RequireValue(this.currentDate)));
+        string dateText = ((string)_formatDateRange(context, this.selectedStartDate, this.selectedEndDate, DartRuntimePrimitives.RequireValue(this.currentDate)));
         var semanticDateText = (((this.selectedStartDate is not null) && (this.selectedEndDate is not null)) ? $"{this.calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(this.selectedStartDate), localizations)} – {this.calendarDelegate.formatMediumDate(DartRuntimePrimitives.RequireValue(this.selectedEndDate), localizations)}" : "");
-        global::Doroti.Framework.Widgets.Widget header = ((global::Doroti.Framework.Widgets.Widget)(object?)new _DatePickerHeader__date_picker(helpText: (this.helpText ?? (((((MaterialLocalizations)localizations).dateRangePickerHelpText)))), titleText: dateText, titleSemanticsLabel: semanticDateText, titleStyle: headlineStyle, orientation: orientationLocal, isShort: (object.Equals(orientationLocal, global::Doroti.Framework.Widgets.Orientation.landscape)), entryModeButton: this.entryModeButton));
-        global::Doroti.Framework.Widgets.Widget actions = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(onPressed: this.onCancel, child: new global::Doroti.Framework.Widgets.Text((this.cancelText ?? (((((MaterialLocalizations)localizations).cancelButtonLabel))))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(onPressed: this.onConfirm, child: new global::Doroti.Framework.Widgets.Text(((this.confirmText ?? (string)((MaterialLocalizations)localizations).okButtonLabel))))) })))));
+        global::Doroti.Framework.Widgets.Widget header = ((global::Doroti.Framework.Widgets.Widget)new _DatePickerHeader__date_picker(helpText: (this.helpText ?? (((((MaterialLocalizations)localizations).dateRangePickerHelpText)))), titleText: dateText, titleSemanticsLabel: semanticDateText, titleStyle: headlineStyle, orientation: orientationLocal, isShort: (Equals(orientationLocal, Orientation.landscape)), entryModeButton: this.entryModeButton));
+        global::Doroti.Framework.Widgets.Widget actions = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 8), child: new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.centerEnd, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(onPressed: this.onCancel, child: new global::Doroti.Framework.Widgets.Text((this.cancelText ?? (((((MaterialLocalizations)localizations).cancelButtonLabel))))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(onPressed: this.onConfirm, child: new global::Doroti.Framework.Widgets.Text(((this.confirmText ?? (string)((MaterialLocalizations)localizations).okButtonLabel))))) })))));
         double textScaleFactor = (MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Date_pickerLibrary._kMaxRangeTextScaleFactor).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale);
-        global::Doroti.Ui.Size dialogSize = ((global::Doroti.Ui.Size)(object?)((((Date_pickerLibrary._inputPortraitDialogSizeM3))) * textScaleFactor));
+        global::Doroti.Ui.Size dialogSize = ((global::Doroti.Ui.Size)((((Date_pickerLibrary._inputPortraitDialogSizeM3))) * textScaleFactor));
         switch (orientationLocal)
         {
-            case global::Doroti.Framework.Widgets.Orientation.portrait:
+            case Orientation.portrait:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+                    return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
                     {
-                        global::Doroti.Ui.Size portraitDialogSize = ((global::Doroti.Ui.Size)(object?)((Date_pickerLibrary._inputPortraitDialogSizeM3)));
+                        global::Doroti.Ui.Size portraitDialogSize = ((global::Doroti.Ui.Size)((Date_pickerLibrary._inputPortraitDialogSizeM3)));
                         bool isFullyPortrait = (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight >= Math.Min(dialogSize.height, portraitDialogSize.height));
-                        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection120213 = new List<global::Doroti.Framework.Widgets.Widget>(); if (isFullyPortrait) { __collection120213.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); } __collection120213.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: this.picker))); __collection120213.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions)); return __collection120213; }))()));
+                        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection120213 = new List<global::Doroti.Framework.Widgets.Widget>(); if (isFullyPortrait) { __collection120213.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); } __collection120213.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: this.picker))); __collection120213.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions)); return __collection120213; }))()));
                     }))));
                 }
-            case global::Doroti.Framework.Widgets.Orientation.landscape:
+            case Orientation.landscape:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: this.picker)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions) }))) }));
+                    return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: this.picker)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions) }))) }));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -2244,7 +2244,7 @@ internal class _InputDateRangePicker__date_picker : global::Doroti.Framework.Wid
 
     internal _InputDateRangePicker__date_picker(global::Doroti.Framework.Foundation.Key? key = null, DateTime? initialStartDate = null, DateTime? initialEndDate = null, DateTime firstDate = default!, DateTime lastDate = default!, global::System.Action<DateTime?>? onStartDateChanged = default!, global::System.Action<DateTime?>? onEndDateChanged = default!, global::System.Func<DateTime, DateTime?, DateTime?, bool>? selectableDayPredicate = default!, CalendarDelegate<DateTime> calendarDelegate = default!, string? helpText = null, string? errorFormatText = null, string? errorInvalidText = null, string? errorInvalidRangeText = null, string? fieldStartHintText = null, string? fieldEndHintText = null, string? fieldStartLabelText = null, string? fieldEndLabelText = null, bool autofocus = false, bool autovalidate = false, global::Doroti.Framework.Services.TextInputType keyboardType = default!) : base(key: key)
     {
-        global::Doroti.Framework.Services.TextInputType __keyboardType = keyboardType ?? global::Doroti.Framework.Services.TextInputType.datetime;
+        global::Doroti.Framework.Services.TextInputType __keyboardType = keyboardType ?? TextInputType.datetime;
         this.onStartDateChanged = onStartDateChanged;
         this.onEndDateChanged = onEndDateChanged;
         this.selectableDayPredicate = selectableDayPredicate;
@@ -2260,10 +2260,10 @@ internal class _InputDateRangePicker__date_picker : global::Doroti.Framework.Wid
         this.autofocus = autofocus;
         this.autovalidate = autovalidate;
         this.keyboardType = __keyboardType;
-        this.initialStartDate = ((initialStartDate is null) ? null : calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialStartDate))));
-        this.initialEndDate = ((initialEndDate is null) ? null : calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialEndDate))));
-        this.firstDate = calendarDelegate.dateOnly(firstDate);
-        this.lastDate = calendarDelegate.dateOnly(lastDate);
+        this.initialStartDate = ((initialStartDate is null) ? null : this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialStartDate))));
+        this.initialEndDate = ((initialEndDate is null) ? null : this.calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialEndDate))));
+        this.firstDate = this.calendarDelegate.dateOnly(firstDate);
+        this.lastDate = this.calendarDelegate.dateOnly(lastDate);
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InputDateRangePickerState__date_picker());
@@ -2300,7 +2300,7 @@ internal class _InputDateRangePickerState__date_picker : global::Doroti.Framewor
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(this.context));
         if ((this._startDate is not null))
         {
             _startInputText = ((_InputDateRangePicker__date_picker)this.widget).calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(this._startDate), localizations);
@@ -2317,8 +2317,8 @@ internal class _InputDateRangePickerState__date_picker : global::Doroti.Framewor
 
     public virtual bool validate()
     {
-        string? startError = ((string?)(object?)_validateDate(this._startDate));
-        string? endError = ((string?)(object?)_validateDate(this._endDate));
+        string? startError = ((string?)_validateDate(this._startDate));
+        string? endError = ((string?)_validateDate(this._endDate));
         if (((startError is null) && (endError is null)))
         {
             if (DartRuntimePrimitives.RequireValue(this._startDate).isAfter(DartRuntimePrimitives.RequireValue(this._endDate)))
@@ -2337,7 +2337,7 @@ internal class _InputDateRangePickerState__date_picker : global::Doroti.Framewor
 
     internal virtual DateTime? _parseDate(string? text)
     {
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(this.context));
         return ((_InputDateRangePicker__date_picker)this.widget).calendarDelegate.parseCompactDate(text, localizations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2375,7 +2375,7 @@ internal class _InputDateRangePickerState__date_picker : global::Doroti.Framewor
 
     internal virtual void _updateController(global::Doroti.Framework.Widgets.TextEditingController controller, string text, bool selectText)
     {
-        global::Doroti.Framework.Services.TextEditingValue textEditingValue = ((global::Doroti.Framework.Services.TextEditingValue)(object?)controller.value.copyWith(text: text));
+        global::Doroti.Framework.Services.TextEditingValue textEditingValue = ((global::Doroti.Framework.Services.TextEditingValue)controller.value.copyWith(text: text));
         if (selectText)
         {
             textEditingValue = textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: text.Length));
@@ -2414,10 +2414,10 @@ internal class _InputDateRangePickerState__date_picker : global::Doroti.Framewor
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        InputDecorationThemeData inputTheme = ((InputDecorationThemeData)(object?)InputDecorationTheme.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
+        InputDecorationThemeData inputTheme = ((InputDecorationThemeData)InputDecorationTheme.of(context));
         InputBorder inputBorder = (((InputDecorationThemeData)inputTheme).border ?? (((new OutlineInputBorder()))));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new TextField(controller: this._startController, decoration: new InputDecoration(border: inputBorder, filled: ((InputDecorationThemeData)inputTheme).filled, hintText: ((((_InputDateRangePicker__date_picker)this.widget).fieldStartHintText ?? (string)((_InputDateRangePicker__date_picker)this.widget).calendarDelegate.dateHelpText(localizations))), labelText: ((((_InputDateRangePicker__date_picker)this.widget).fieldStartLabelText ?? (string)((MaterialLocalizations)localizations).dateRangeStartLabel)), errorText: this._startErrorText), keyboardType: ((_InputDateRangePicker__date_picker)this.widget).keyboardType, onChanged: this._handleStartChanged, autofocus: ((_InputDateRangePicker__date_picker)this.widget).autofocus))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 8)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new TextField(controller: this._endController, decoration: new InputDecoration(border: inputBorder, filled: ((InputDecorationThemeData)inputTheme).filled, hintText: ((((_InputDateRangePicker__date_picker)this.widget).fieldEndHintText ?? (string)((_InputDateRangePicker__date_picker)this.widget).calendarDelegate.dateHelpText(localizations))), labelText: ((((_InputDateRangePicker__date_picker)this.widget).fieldEndLabelText ?? (string)((MaterialLocalizations)localizations).dateRangeEndLabel)), errorText: this._endErrorText), keyboardType: ((_InputDateRangePicker__date_picker)this.widget).keyboardType, onChanged: this._handleEndChanged))) }));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new TextField(controller: this._startController, decoration: new InputDecoration(border: inputBorder, filled: ((InputDecorationThemeData)inputTheme).filled, hintText: ((((_InputDateRangePicker__date_picker)this.widget).fieldStartHintText ?? (string)((_InputDateRangePicker__date_picker)this.widget).calendarDelegate.dateHelpText(localizations))), labelText: ((((_InputDateRangePicker__date_picker)this.widget).fieldStartLabelText ?? (string)((MaterialLocalizations)localizations).dateRangeStartLabel)), errorText: this._startErrorText), keyboardType: ((_InputDateRangePicker__date_picker)this.widget).keyboardType, onChanged: this._handleStartChanged, autofocus: ((_InputDateRangePicker__date_picker)this.widget).autofocus))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: 8)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new TextField(controller: this._endController, decoration: new InputDecoration(border: inputBorder, filled: ((InputDecorationThemeData)inputTheme).filled, hintText: ((((_InputDateRangePicker__date_picker)this.widget).fieldEndHintText ?? (string)((_InputDateRangePicker__date_picker)this.widget).calendarDelegate.dateHelpText(localizations))), labelText: ((((_InputDateRangePicker__date_picker)this.widget).fieldEndLabelText ?? (string)((MaterialLocalizations)localizations).dateRangeEndLabel)), errorText: this._endErrorText), keyboardType: ((_InputDateRangePicker__date_picker)this.widget).keyboardType, onChanged: this._handleEndChanged))) }));
     }
 
 }

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/date_picker_theme.dart
-#pragma warning disable CS8600, CS8603, CS8619, CS8620
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -119,7 +119,7 @@ public class DatePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
         {
             return a;
         }
-        return new DatePickerThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), headerBackgroundColor: Dart_uiLibrary.Color.lerp(a?.headerBackgroundColor, b?.headerBackgroundColor, t), headerForegroundColor: Dart_uiLibrary.Color.lerp(a?.headerForegroundColor, b?.headerForegroundColor, t), headerHeadlineStyle: TextStyle.lerp(a?.headerHeadlineStyle, b?.headerHeadlineStyle, t), headerHelpStyle: TextStyle.lerp(a?.headerHelpStyle, b?.headerHelpStyle, t), weekdayStyle: TextStyle.lerp(a?.weekdayStyle, b?.weekdayStyle, t), dayStyle: TextStyle.lerp(a?.dayStyle, b?.dayStyle, t), dayForegroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.dayForegroundColor, b?.dayForegroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dayBackgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.dayBackgroundColor, b?.dayBackgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dayOverlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.dayOverlayColor, b?.dayOverlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dayShape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.dayShape, b?.dayShape, t, (global::System.Func<global::Doroti.Framework.Painting.OutlinedBorder?, global::Doroti.Framework.Painting.OutlinedBorder?, double, global::Doroti.Framework.Painting.OutlinedBorder?>)global::Doroti.Framework.Painting.OutlinedBorder.lerp), todayForegroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.todayForegroundColor, b?.todayForegroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), todayBackgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.todayBackgroundColor, b?.todayBackgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), todayBorder: DatePickerThemeData._lerpBorderSide(a?.todayBorder, b?.todayBorder, t), yearStyle: TextStyle.lerp(a?.yearStyle, b?.yearStyle, t), yearForegroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.yearForegroundColor, b?.yearForegroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), yearBackgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.yearBackgroundColor, b?.yearBackgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), yearOverlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.yearOverlayColor, b?.yearOverlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), yearShape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.yearShape, b?.yearShape, t, (global::System.Func<global::Doroti.Framework.Painting.OutlinedBorder?, global::Doroti.Framework.Painting.OutlinedBorder?, double, global::Doroti.Framework.Painting.OutlinedBorder?>)global::Doroti.Framework.Painting.OutlinedBorder.lerp), rangePickerBackgroundColor: Dart_uiLibrary.Color.lerp(a?.rangePickerBackgroundColor, b?.rangePickerBackgroundColor, t), rangePickerElevation: Dart_uiLibrary.lerpDouble(a?.rangePickerElevation, b?.rangePickerElevation, t), rangePickerShadowColor: Dart_uiLibrary.Color.lerp(a?.rangePickerShadowColor, b?.rangePickerShadowColor, t), rangePickerSurfaceTintColor: Dart_uiLibrary.Color.lerp(a?.rangePickerSurfaceTintColor, b?.rangePickerSurfaceTintColor, t), rangePickerShape: ShapeBorder.lerp(a?.rangePickerShape, b?.rangePickerShape, t), rangePickerHeaderBackgroundColor: Dart_uiLibrary.Color.lerp(a?.rangePickerHeaderBackgroundColor, b?.rangePickerHeaderBackgroundColor, t), rangePickerHeaderForegroundColor: Dart_uiLibrary.Color.lerp(a?.rangePickerHeaderForegroundColor, b?.rangePickerHeaderForegroundColor, t), rangePickerHeaderHeadlineStyle: TextStyle.lerp(a?.rangePickerHeaderHeadlineStyle, b?.rangePickerHeaderHeadlineStyle, t), rangePickerHeaderHelpStyle: TextStyle.lerp(a?.rangePickerHeaderHelpStyle, b?.rangePickerHeaderHelpStyle, t), rangeSelectionBackgroundColor: Dart_uiLibrary.Color.lerp(a?.rangeSelectionBackgroundColor, b?.rangeSelectionBackgroundColor, t), rangeSelectionOverlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.rangeSelectionOverlayColor, b?.rangeSelectionOverlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t), inputDecorationTheme: ((t < 0.5) ? a?.inputDecorationTheme : b?.inputDecorationTheme), cancelButtonStyle: ButtonStyle.lerp(a?.cancelButtonStyle, b?.cancelButtonStyle, t), confirmButtonStyle: ButtonStyle.lerp(a?.confirmButtonStyle, b?.confirmButtonStyle, t), locale: ((t < 0.5) ? a?.locale : b?.locale), toggleButtonTextStyle: TextStyle.lerp(a?.toggleButtonTextStyle, b?.toggleButtonTextStyle, t), subHeaderForegroundColor: Dart_uiLibrary.Color.lerp(a?.subHeaderForegroundColor, b?.subHeaderForegroundColor, t));
+        return new DatePickerThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), headerBackgroundColor: Dart_uiLibrary.Color.lerp(a?.headerBackgroundColor, b?.headerBackgroundColor, t), headerForegroundColor: Dart_uiLibrary.Color.lerp(a?.headerForegroundColor, b?.headerForegroundColor, t), headerHeadlineStyle: TextStyle.lerp(a?.headerHeadlineStyle, b?.headerHeadlineStyle, t), headerHelpStyle: TextStyle.lerp(a?.headerHelpStyle, b?.headerHelpStyle, t), weekdayStyle: TextStyle.lerp(a?.weekdayStyle, b?.weekdayStyle, t), dayStyle: TextStyle.lerp(a?.dayStyle, b?.dayStyle, t), dayForegroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.dayForegroundColor, b?.dayForegroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dayBackgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.dayBackgroundColor, b?.dayBackgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dayOverlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.dayOverlayColor, b?.dayOverlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dayShape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.dayShape, b?.dayShape, t, (global::System.Func<global::Doroti.Framework.Painting.OutlinedBorder?, global::Doroti.Framework.Painting.OutlinedBorder?, double, global::Doroti.Framework.Painting.OutlinedBorder?>)OutlinedBorder.lerp), todayForegroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.todayForegroundColor, b?.todayForegroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), todayBackgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.todayBackgroundColor, b?.todayBackgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), todayBorder: _lerpBorderSide(a?.todayBorder, b?.todayBorder, t), yearStyle: TextStyle.lerp(a?.yearStyle, b?.yearStyle, t), yearForegroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.yearForegroundColor, b?.yearForegroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), yearBackgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.yearBackgroundColor, b?.yearBackgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), yearOverlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.yearOverlayColor, b?.yearOverlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), yearShape: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.OutlinedBorder?>(a?.yearShape, b?.yearShape, t, (global::System.Func<global::Doroti.Framework.Painting.OutlinedBorder?, global::Doroti.Framework.Painting.OutlinedBorder?, double, global::Doroti.Framework.Painting.OutlinedBorder?>)OutlinedBorder.lerp), rangePickerBackgroundColor: Dart_uiLibrary.Color.lerp(a?.rangePickerBackgroundColor, b?.rangePickerBackgroundColor, t), rangePickerElevation: Dart_uiLibrary.lerpDouble(a?.rangePickerElevation, b?.rangePickerElevation, t), rangePickerShadowColor: Dart_uiLibrary.Color.lerp(a?.rangePickerShadowColor, b?.rangePickerShadowColor, t), rangePickerSurfaceTintColor: Dart_uiLibrary.Color.lerp(a?.rangePickerSurfaceTintColor, b?.rangePickerSurfaceTintColor, t), rangePickerShape: ShapeBorder.lerp(a?.rangePickerShape, b?.rangePickerShape, t), rangePickerHeaderBackgroundColor: Dart_uiLibrary.Color.lerp(a?.rangePickerHeaderBackgroundColor, b?.rangePickerHeaderBackgroundColor, t), rangePickerHeaderForegroundColor: Dart_uiLibrary.Color.lerp(a?.rangePickerHeaderForegroundColor, b?.rangePickerHeaderForegroundColor, t), rangePickerHeaderHeadlineStyle: TextStyle.lerp(a?.rangePickerHeaderHeadlineStyle, b?.rangePickerHeaderHeadlineStyle, t), rangePickerHeaderHelpStyle: TextStyle.lerp(a?.rangePickerHeaderHelpStyle, b?.rangePickerHeaderHelpStyle, t), rangeSelectionBackgroundColor: Dart_uiLibrary.Color.lerp(a?.rangeSelectionBackgroundColor, b?.rangeSelectionBackgroundColor, t), rangeSelectionOverlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.rangeSelectionOverlayColor, b?.rangeSelectionOverlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t), inputDecorationTheme: ((t < 0.5) ? a?.inputDecorationTheme : b?.inputDecorationTheme), cancelButtonStyle: ButtonStyle.lerp(a?.cancelButtonStyle, b?.cancelButtonStyle, t), confirmButtonStyle: ButtonStyle.lerp(a?.confirmButtonStyle, b?.confirmButtonStyle, t), locale: ((t < 0.5) ? a?.locale : b?.locale), toggleButtonTextStyle: TextStyle.lerp(a?.toggleButtonTextStyle, b?.toggleButtonTextStyle, t), subHeaderForegroundColor: Dart_uiLibrary.Color.lerp(a?.subHeaderForegroundColor, b?.subHeaderForegroundColor, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -131,9 +131,9 @@ public class DatePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
         }
         if ((a is null))
         {
-            return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L)), b, t));
+            return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L)), b, t));
         }
-        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(a, new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)a).color.withAlpha(0L)), t));
+        return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)a).color.withAlpha(0L)), t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -146,7 +146,7 @@ public class DatePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
         {
             return true;
         }
-        return ((((((((((((((((((((((((((((((((((((((((((__other is DatePickerThemeData) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).backgroundColor, this.backgroundColor))) && (((DatePickerThemeData)((DatePickerThemeData)__other)).elevation == this.elevation)) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).shape, this.shape))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerBackgroundColor, this.headerBackgroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerForegroundColor, this.headerForegroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerHeadlineStyle, this.headerHeadlineStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerHelpStyle, this.headerHelpStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).weekdayStyle, this.weekdayStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayStyle, this.dayStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayForegroundColor, this.dayForegroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayBackgroundColor, this.dayBackgroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayOverlayColor, this.dayOverlayColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayShape, this.dayShape))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).todayForegroundColor, this.todayForegroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).todayBackgroundColor, this.todayBackgroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).todayBorder, this.todayBorder))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearStyle, this.yearStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearForegroundColor, this.yearForegroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearBackgroundColor, this.yearBackgroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearOverlayColor, this.yearOverlayColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearShape, this.yearShape))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerBackgroundColor, this.rangePickerBackgroundColor))) && (((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerElevation == this.rangePickerElevation)) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerShadowColor, this.rangePickerShadowColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerSurfaceTintColor, this.rangePickerSurfaceTintColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerShape, this.rangePickerShape))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderBackgroundColor, this.rangePickerHeaderBackgroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderForegroundColor, this.rangePickerHeaderForegroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderHeadlineStyle, this.rangePickerHeaderHeadlineStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderHelpStyle, this.rangePickerHeaderHelpStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangeSelectionBackgroundColor, this.rangeSelectionBackgroundColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangeSelectionOverlayColor, this.rangeSelectionOverlayColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dividerColor, this.dividerColor))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).cancelButtonStyle, this.cancelButtonStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).confirmButtonStyle, this.confirmButtonStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).locale, this.locale))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).toggleButtonTextStyle, this.toggleButtonTextStyle))) && (object.Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).subHeaderForegroundColor, this.subHeaderForegroundColor)));
+        return ((((((((((((((((((((((((((((((((((((((((((__other is DatePickerThemeData) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).backgroundColor, this.backgroundColor))) && (((DatePickerThemeData)((DatePickerThemeData)__other)).elevation == this.elevation)) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).shape, this.shape))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerBackgroundColor, this.headerBackgroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerForegroundColor, this.headerForegroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerHeadlineStyle, this.headerHeadlineStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).headerHelpStyle, this.headerHelpStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).weekdayStyle, this.weekdayStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayStyle, this.dayStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayForegroundColor, this.dayForegroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayBackgroundColor, this.dayBackgroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayOverlayColor, this.dayOverlayColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dayShape, this.dayShape))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).todayForegroundColor, this.todayForegroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).todayBackgroundColor, this.todayBackgroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).todayBorder, this.todayBorder))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearStyle, this.yearStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearForegroundColor, this.yearForegroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearBackgroundColor, this.yearBackgroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearOverlayColor, this.yearOverlayColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).yearShape, this.yearShape))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerBackgroundColor, this.rangePickerBackgroundColor))) && (((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerElevation == this.rangePickerElevation)) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerShadowColor, this.rangePickerShadowColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerSurfaceTintColor, this.rangePickerSurfaceTintColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerShape, this.rangePickerShape))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderBackgroundColor, this.rangePickerHeaderBackgroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderForegroundColor, this.rangePickerHeaderForegroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderHeadlineStyle, this.rangePickerHeaderHeadlineStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangePickerHeaderHelpStyle, this.rangePickerHeaderHelpStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangeSelectionBackgroundColor, this.rangeSelectionBackgroundColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).rangeSelectionOverlayColor, this.rangeSelectionOverlayColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).dividerColor, this.dividerColor))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).cancelButtonStyle, this.cancelButtonStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).confirmButtonStyle, this.confirmButtonStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).locale, this.locale))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).toggleButtonTextStyle, this.toggleButtonTextStyle))) && (Equals(((DatePickerThemeData)((DatePickerThemeData)__other)).subHeaderForegroundColor, this.subHeaderForegroundColor)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -194,8 +194,8 @@ public class DatePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
         properties.add(new global::Doroti.Framework.Painting.ColorProperty("subHeaderForegroundColor", this.subHeaderForegroundColor, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -211,7 +211,7 @@ public class DatePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -228,7 +228,7 @@ public class DatePickerTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static DatePickerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return (DatePickerTheme.maybeOf(context) ?? Theme.of(context).datePickerTheme);
+        return (maybeOf(context) ?? Theme.of(context).datePickerTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -245,11 +245,11 @@ public class DatePickerTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DatePickerTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new DatePickerTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DatePickerTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((DatePickerTheme)oldWidget).data)));
 }
 
 internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
@@ -298,7 +298,7 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
         }
     }
 
-    internal _DatePickerDefaultsM3__date_picker_theme(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 6.0, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(28.0))), dayShape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.CircleBorder()), yearShape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()), rangePickerElevation: 0.0, rangePickerShape: new global::Doroti.Framework.Painting.RoundedRectangleBorder())
+    internal _DatePickerDefaultsM3__date_picker_theme(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 6.0, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(28.0))), dayShape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.CircleBorder()), yearShape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()), rangePickerElevation: 0.0, rangePickerShape: new global::Doroti.Framework.Painting.RoundedRectangleBorder())
     {
         this.context = context;
     }
@@ -330,13 +330,13 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     public override global::Doroti.Framework.Painting.TextStyle? dayStyle => ((TextTheme)this._textTheme).bodyLarge;
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
             return (((ColorScheme)this._colors).onPrimary);
         }
         else
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            if (states.Contains(WidgetState.disabled))
             {
                 return (((ColorScheme)this._colors).onSurface.withOpacity(0.38));
             }
@@ -346,7 +346,7 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     });
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayBackgroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
             return (((ColorScheme)this._colors).primary);
         }
@@ -355,32 +355,32 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     });
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayOverlayColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            if (states.Contains(WidgetState.pressed))
             {
                 return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            if (states.Contains(WidgetState.hovered))
             {
                 return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            if (states.Contains(WidgetState.focused))
             {
                 return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
             }
         }
         else
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            if (states.Contains(WidgetState.pressed))
             {
                 return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            if (states.Contains(WidgetState.hovered))
             {
                 return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            if (states.Contains(WidgetState.focused))
             {
                 return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
             }
@@ -390,13 +390,13 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     });
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
             return (((ColorScheme)this._colors).onPrimary);
         }
         else
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            if (states.Contains(WidgetState.disabled))
             {
                 return (((ColorScheme)this._colors).primary.withOpacity(0.38));
             }
@@ -409,13 +409,13 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     public override global::Doroti.Framework.Painting.TextStyle? yearStyle => ((TextTheme)this._textTheme).bodyLarge;
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
             return (((ColorScheme)this._colors).onPrimary);
         }
         else
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            if (states.Contains(WidgetState.disabled))
             {
                 return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.38));
             }
@@ -425,7 +425,7 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     });
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearBackgroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
             return (((ColorScheme)this._colors).primary);
         }
@@ -434,32 +434,32 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     });
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearOverlayColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            if (states.Contains(WidgetState.pressed))
             {
                 return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            if (states.Contains(WidgetState.hovered))
             {
                 return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            if (states.Contains(WidgetState.focused))
             {
                 return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
             }
         }
         else
         {
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            if (states.Contains(WidgetState.pressed))
             {
                 return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            if (states.Contains(WidgetState.hovered))
             {
                 return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
             }
-            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            if (states.Contains(WidgetState.focused))
             {
                 return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
             }
@@ -472,15 +472,15 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     public override Color? rangeSelectionBackgroundColor => ((ColorScheme)this._colors).secondaryContainer;
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? rangeSelectionOverlayColor => WidgetStateProperty.resolveWith((states) =>
     {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        if (states.Contains(WidgetState.pressed))
         {
             return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.1));
         }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(WidgetState.hovered))
         {
             return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.08));
         }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        if (states.Contains(WidgetState.focused))
         {
             return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.1));
         }

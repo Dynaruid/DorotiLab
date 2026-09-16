@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/popup_menu_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -57,7 +57,7 @@ public class PopupMenuThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return a;
         }
-        return new PopupMenuThemeData(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), menuPadding: EdgeInsetsGeometry.lerp(a?.menuPadding, b?.menuPadding, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t), labelTextStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.labelTextStyle, b?.labelTextStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)global::Doroti.Framework.Painting.TextStyle.lerp), enableFeedback: ((t < 0.5) ? a?.enableFeedback : b?.enableFeedback), mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), position: ((t < 0.5) ? a?.position : b?.position), iconColor: Dart_uiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t), iconSize: Dart_uiLibrary.lerpDouble(a?.iconSize, b?.iconSize, t));
+        return new PopupMenuThemeData(color: Dart_uiLibrary.Color.lerp(a?.color, b?.color, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), menuPadding: EdgeInsetsGeometry.lerp(a?.menuPadding, b?.menuPadding, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t), labelTextStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.labelTextStyle, b?.labelTextStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)TextStyle.lerp), enableFeedback: ((t < 0.5) ? a?.enableFeedback : b?.enableFeedback), mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), position: ((t < 0.5) ? a?.position : b?.position), iconColor: Dart_uiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t), iconSize: Dart_uiLibrary.lerpDouble(a?.iconSize, b?.iconSize, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -70,11 +70,11 @@ public class PopupMenuThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((__other is PopupMenuThemeData) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).color, this.color))) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).shape, this.shape))) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).menuPadding, this.menuPadding))) && (((PopupMenuThemeData)((PopupMenuThemeData)__other)).elevation == this.elevation)) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).labelTextStyle, this.labelTextStyle))) && (((PopupMenuThemeData)((PopupMenuThemeData)__other)).enableFeedback == this.enableFeedback)) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).mouseCursor, this.mouseCursor))) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).position, this.position))) && (object.Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).iconColor, this.iconColor))) && (((PopupMenuThemeData)((PopupMenuThemeData)__other)).iconSize == this.iconSize));
+        return ((((((((((((((__other is PopupMenuThemeData) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).color, this.color))) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).shape, this.shape))) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).menuPadding, this.menuPadding))) && (((PopupMenuThemeData)((PopupMenuThemeData)__other)).elevation == this.elevation)) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).textStyle, this.textStyle))) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).labelTextStyle, this.labelTextStyle))) && (((PopupMenuThemeData)((PopupMenuThemeData)__other)).enableFeedback == this.enableFeedback)) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).mouseCursor, this.mouseCursor))) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).position, this.position))) && (Equals(((PopupMenuThemeData)((PopupMenuThemeData)__other)).iconColor, this.iconColor))) && (((PopupMenuThemeData)((PopupMenuThemeData)__other)).iconSize == this.iconSize));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -94,8 +94,8 @@ public class PopupMenuThemeData : global::Doroti.Framework.Foundation.Diagnostic
         properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("iconSize", this.iconSize, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -111,7 +111,7 @@ public class PopupMenuThemeData : global::Doroti.Framework.Foundation.Diagnostic
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -128,16 +128,16 @@ public class PopupMenuTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static PopupMenuThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        PopupMenuTheme? popupMenuThemeLocal = ((PopupMenuTheme?)(object?)context.dependOnInheritedWidgetOfExactType<PopupMenuTheme>());
+        PopupMenuTheme? popupMenuThemeLocal = ((PopupMenuTheme?)context.dependOnInheritedWidgetOfExactType<PopupMenuTheme>());
         return (popupMenuThemeLocal?.data ?? Theme.of(context).popupMenuTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new PopupMenuTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new PopupMenuTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((PopupMenuTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((PopupMenuTheme)oldWidget).data)));
 }

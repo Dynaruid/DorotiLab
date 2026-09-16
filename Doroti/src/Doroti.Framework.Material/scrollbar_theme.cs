@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/scrollbar_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -60,11 +60,11 @@ public class ScrollbarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((__other is ScrollbarThemeData) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thumbVisibility, this.thumbVisibility))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thickness, this.thickness))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackVisibility, this.trackVisibility))) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).interactive == this.interactive)) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).radius, this.radius))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thumbColor, this.thumbColor))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackColor, this.trackColor))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackBorderColor, this.trackBorderColor))) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).crossAxisMargin == this.crossAxisMargin)) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).mainAxisMargin == this.mainAxisMargin)) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).minThumbLength == this.minThumbLength));
+        return ((((((((((((__other is ScrollbarThemeData) && (Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thumbVisibility, this.thumbVisibility))) && (Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thickness, this.thickness))) && (Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackVisibility, this.trackVisibility))) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).interactive == this.interactive)) && (Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).radius, this.radius))) && (Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thumbColor, this.thumbColor))) && (Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackColor, this.trackColor))) && (Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackBorderColor, this.trackBorderColor))) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).crossAxisMargin == this.crossAxisMargin)) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).mainAxisMargin == this.mainAxisMargin)) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).minThumbLength == this.minThumbLength));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -82,8 +82,8 @@ public class ScrollbarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("minThumbLength", this.minThumbLength, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -99,7 +99,7 @@ public class ScrollbarThemeData : global::Doroti.Framework.Foundation.Diagnostic
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -121,16 +121,16 @@ public class ScrollbarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static ScrollbarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ScrollbarTheme? scrollbarThemeLocal = ((ScrollbarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ScrollbarTheme>());
+        ScrollbarTheme? scrollbarThemeLocal = ((ScrollbarTheme?)context.dependOnInheritedWidgetOfExactType<ScrollbarTheme>());
         return (scrollbarThemeLocal?.data ?? Theme.of(context).scrollbarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ScrollbarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new ScrollbarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ScrollbarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ScrollbarTheme)oldWidget).data)));
 }

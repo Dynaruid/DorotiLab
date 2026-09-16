@@ -27,7 +27,7 @@ public abstract class ScrollActivity
     public virtual ScrollActivityDelegate @delegate => this._delegate;
     public virtual void updateDelegate(ScrollActivityDelegate value)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._delegate, value)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._delegate, value)));
         _delegate = value;
     }
 
@@ -64,11 +64,11 @@ public abstract class ScrollActivity
     public abstract double velocity { get; }
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         _isDisposed = true;
     }
 
-    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class IdleScrollActivity : ScrollActivity
@@ -148,10 +148,10 @@ public class ScrollDragController : global::Doroti.Framework.Gestures.Drag
     }
 
     public virtual ScrollActivityDelegate @delegate => this._delegate;
-    internal virtual bool _reversed => global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((ScrollActivityDelegate)this.@delegate).axisDirection);
+    internal virtual bool _reversed => Basic_typesLibrary.axisDirectionIsReversed(((ScrollActivityDelegate)this.@delegate).axisDirection);
     public virtual void updateDelegate(ScrollActivityDelegate value)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._delegate, value)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._delegate, value)));
         _delegate = value;
     }
 
@@ -258,13 +258,13 @@ public class ScrollDragController : global::Doroti.Framework.Gestures.Drag
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         _lastDetails = null;
         this.onDragCanceled?.Invoke();
     }
 
     public virtual object? lastDetails => this._lastDetails;
-    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class DragScrollActivity : ScrollActivity
@@ -280,21 +280,21 @@ public class DragScrollActivity : ScrollActivity
     {
         object? lastDetailsLocal = this._controller!.lastDetails;
         DartRuntimePrimitives.Assert(() => (lastDetailsLocal is global::Doroti.Framework.Gestures.DragStartDetails));
-        new ScrollStartNotification(metrics: metrics, context: context, dragDetails: ((global::Doroti.Framework.Gestures.DragStartDetails?)(object?)lastDetailsLocal)!).dispatch(context);
+        new ScrollStartNotification(metrics: metrics, context: context, dragDetails: ((global::Doroti.Framework.Gestures.DragStartDetails?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchScrollUpdateNotification(ScrollMetrics metrics, BuildContext context, double scrollDelta)
     {
         object? lastDetailsLocal = this._controller!.lastDetails;
         DartRuntimePrimitives.Assert(() => (lastDetailsLocal is global::Doroti.Framework.Gestures.DragUpdateDetails));
-        new ScrollUpdateNotification(metrics: metrics, context: context, scrollDelta: scrollDelta, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)(object?)lastDetailsLocal)!).dispatch(context);
+        new ScrollUpdateNotification(metrics: metrics, context: context, scrollDelta: scrollDelta, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchOverscrollNotification(ScrollMetrics metrics, BuildContext context, double overscroll)
     {
         object? lastDetailsLocal = this._controller!.lastDetails;
         DartRuntimePrimitives.Assert(() => (lastDetailsLocal is global::Doroti.Framework.Gestures.DragUpdateDetails));
-        new OverscrollNotification(metrics: metrics, context: context, overscroll: overscroll, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)(object?)lastDetailsLocal)!).dispatch(context);
+        new OverscrollNotification(metrics: metrics, context: context, overscroll: overscroll, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchScrollEndNotification(ScrollMetrics metrics, BuildContext context)
@@ -303,7 +303,7 @@ public class DragScrollActivity : ScrollActivity
         new ScrollEndNotification(metrics: metrics, context: context, dragDetails: ((lastDetailsLocal is global::Doroti.Framework.Gestures.DragEndDetails) ? ((global::Doroti.Framework.Gestures.DragEndDetails)lastDetailsLocal) : null)).dispatch(context);
     }
 
-    public override bool shouldIgnorePointer => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this._controller?._kind, PointerDeviceKind.trackpad)));
+    public override bool shouldIgnorePointer => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this._controller?._kind, PointerDeviceKind.trackpad)));
     public override bool isScrolling => true;
     public override double velocity => 0.0;
     public override void dispose()
@@ -314,7 +314,7 @@ public class DragScrollActivity : ScrollActivity
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this._controller})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({this._controller})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -331,8 +331,8 @@ public class BallisticScrollActivity : ScrollActivity
         this.__field_shouldIgnorePointer = shouldIgnorePointer;
         this._controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
         {
-            var controller = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(
-                debugLabel: global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BallisticScrollActivity"),
+            var controller = AnimationController.CreateUnbounded(
+                debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(this, "BallisticScrollActivity"),
                 vsync: vsync);
             controller.addListener(this._tick);
             controller.animateWith(simulation).whenComplete(() => { this._end(); return default!; });
@@ -360,7 +360,7 @@ public class BallisticScrollActivity : ScrollActivity
 
     public virtual bool applyMoveTo(double value)
     {
-        return (this.@delegate.setPixels(value).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance);
+        return (this.@delegate.setPixels(value).abs() < Foundation.ConstantsLibrary.precisionErrorTolerance);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -387,7 +387,7 @@ public class BallisticScrollActivity : ScrollActivity
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this._controller})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({this._controller})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -402,9 +402,9 @@ public class DrivenScrollActivity : ScrollActivity
     {
         System.Diagnostics.Debug.Assert((duration > Duration.zero));
         _completer = new Completer<object?>();
-        _controller = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(
+        _controller = AnimationController.CreateUnbounded(
             value: from,
-            debugLabel: global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DrivenScrollActivity"),
+            debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(this, "DrivenScrollActivity"),
             vsync: vsync);
         _controller.addListener(this._tick);
         DartRuntimePrimitives.Observe(
@@ -419,7 +419,7 @@ public class DrivenScrollActivity : ScrollActivity
         __instance._completer = new Completer<object?>();
         __instance._controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
-    var __cascade = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(debugLabel: global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(__instance, "DrivenScrollActivity"), vsync: vsync);
+    var __cascade = AnimationController.CreateUnbounded(debugLabel: objectRuntimeTypeFunctions.objectRuntimeType(__instance, "DrivenScrollActivity"), vsync: vsync);
     __cascade.addListener(__instance._tick);
     __cascade.animateWith(simulation).whenComplete(() => { ((Action)__instance._end)(); return default!; });
     return __cascade;
@@ -438,7 +438,7 @@ public class DrivenScrollActivity : ScrollActivity
 
     public virtual bool applyMoveTo(double value)
     {
-        return (this.@delegate.setPixels(value).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance);
+        return (this.@delegate.setPixels(value).abs() < Foundation.ConstantsLibrary.precisionErrorTolerance);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -467,7 +467,7 @@ public class DrivenScrollActivity : ScrollActivity
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this._controller})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({this._controller})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

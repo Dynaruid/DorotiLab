@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/placeholder.dart
-#pragma warning disable CS8600, CS8603, CS8605
 using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
@@ -26,7 +25,7 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
     __cascade.strokeWidth = this.strokeWidth;
     return __cascade;
 }))();
-        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(Offset.zero & size));
         var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -40,8 +39,8 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
-        var __oldPainter = (_PlaceholderPainter__placeholder)(object)oldDelegate;
-        return ((!object.Equals(((_PlaceholderPainter__placeholder)__oldPainter).color, this.color)) || (((_PlaceholderPainter__placeholder)__oldPainter).strokeWidth != this.strokeWidth));
+        var __oldPainter = (_PlaceholderPainter__placeholder)oldDelegate;
+        return ((!Equals(((_PlaceholderPainter__placeholder)__oldPainter).color, this.color)) || (((_PlaceholderPainter__placeholder)__oldPainter).strokeWidth != this.strokeWidth));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -68,7 +67,7 @@ public class Placeholder : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new LimitedBox(maxWidth: this.fallbackWidth, maxHeight: this.fallbackHeight, child: new CustomPaint(size: Size.infinite, painter: new _PlaceholderPainter__placeholder(color: this.color, strokeWidth: this.strokeWidth), child: this.child)));
+        return ((Widget)new LimitedBox(maxWidth: this.fallbackWidth, maxHeight: this.fallbackHeight, child: new CustomPaint(size: Size.infinite, painter: new _PlaceholderPainter__placeholder(color: this.color, strokeWidth: this.strokeWidth), child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

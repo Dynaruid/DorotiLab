@@ -14,8 +14,8 @@ public enum AnimationStatus
 
 public static class AnimationStatusMembers
 {
-    public static bool isDismissed(this AnimationStatus value) => (object.Equals(value, AnimationStatus.dismissed));
-    public static bool isCompleted(this AnimationStatus value) => (object.Equals(value, AnimationStatus.completed));
+    public static bool isDismissed(this AnimationStatus value) => (Equals(value, AnimationStatus.dismissed));
+    public static bool isCompleted(this AnimationStatus value) => (Equals(value, AnimationStatus.completed));
     public static bool isAnimating(this AnimationStatus value) => (value switch { AnimationStatus.forward => true, AnimationStatus.reverse => true, AnimationStatus.completed => false, AnimationStatus.dismissed => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public static bool isForwardOrCompleted(this AnimationStatus value) => (value switch { AnimationStatus.forward => true, AnimationStatus.completed => true, AnimationStatus.reverse => false, AnimationStatus.dismissed => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
 }
@@ -43,10 +43,10 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
         get => throw new NotSupportedException("Dart getter contract has no base implementation.");
         set => throw new NotSupportedException("Dart setter contract has no base implementation.");
     }
-    public virtual bool isDismissed => global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(this.status);
-    public virtual bool isCompleted => global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(this.status);
-    public virtual bool isAnimating => global::Doroti.Framework.Animation.AnimationStatusMembers.isAnimating(this.status);
-    public virtual bool isForwardOrCompleted => global::Doroti.Framework.Animation.AnimationStatusMembers.isForwardOrCompleted(this.status);
+    public virtual bool isDismissed => AnimationStatusMembers.isDismissed(this.status);
+    public virtual bool isCompleted => AnimationStatusMembers.isCompleted(this.status);
+    public virtual bool isAnimating => AnimationStatusMembers.isAnimating(this.status);
+    public virtual bool isForwardOrCompleted => AnimationStatusMembers.isForwardOrCompleted(this.status);
     public virtual Animation<U> drive<U>(Animatable<U> child)
     {
         DartRuntimePrimitives.Assert(() => (this is Animation<double>));
@@ -56,7 +56,7 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({toStringDetails()})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({toStringDetails()})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

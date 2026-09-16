@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/banner.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -18,12 +17,12 @@ public static partial class BannerLibrary
 
 public static partial class BannerLibrary
 {
-    internal static double _kBottomOffset = (BannerLibrary._kOffset + (global::Doroti.Runtime.Dart_mathLibrary.sqrt1_2 * BannerLibrary._kHeight));
+    internal static double _kBottomOffset = (_kOffset + (Dart_mathLibrary.sqrt1_2 * _kHeight));
 }
 
 public static partial class BannerLibrary
 {
-    internal static Rect _kRect = global::Doroti.Ui.Rect.fromLTWH(-BannerLibrary._kOffset, (BannerLibrary._kOffset - BannerLibrary._kHeight), (BannerLibrary._kOffset * 2.0), BannerLibrary._kHeight);
+    internal static Rect _kRect = Rect.fromLTWH(-_kOffset, (_kOffset - _kHeight), (_kOffset * 2.0), _kHeight);
 }
 
 public static partial class BannerLibrary
@@ -38,7 +37,7 @@ public static partial class BannerLibrary
 
 public static partial class BannerLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextStyle _kTextStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4294967295L), fontSize: (BannerLibrary._kHeight * 0.85), fontWeight: FontWeight.w900, height: 1.0);
+    internal static global::Doroti.Framework.Painting.TextStyle _kTextStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4294967295L), fontSize: (_kHeight * 0.85), fontWeight: FontWeight.w900, height: 1.0);
 }
 
 public enum BannerLocation
@@ -63,7 +62,7 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
     internal virtual Paint _paintShadow { get; set; } = default!;
     internal virtual Paint _paintBanner { get; set; } = default!;
 
-    public BannerPainter(string message, TextDirection textDirection, BannerLocation location, TextDirection layoutDirection, Color color = default!, global::Doroti.Framework.Painting.TextStyle textStyle = default!, global::Doroti.Framework.Painting.BoxShadow shadow = default!) : base(repaint: global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts)
+    public BannerPainter(string message, TextDirection textDirection, BannerLocation location, TextDirection layoutDirection, Color color = default!, global::Doroti.Framework.Painting.TextStyle textStyle = default!, global::Doroti.Framework.Painting.BoxShadow shadow = default!) : base(repaint: PaintingBinding.instance.systemFonts)
     {
         Color __color = color ?? BannerLibrary._kColor;
         global::Doroti.Framework.Painting.TextStyle __textStyle = textStyle ?? BannerLibrary._kTextStyle;
@@ -79,7 +78,7 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._textPainter?.dispose();
         _textPainter = null;
     }
@@ -94,7 +93,7 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
     return __cascade;
 }))();
         this._textPainter?.dispose();
-        _textPainter = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: this.textStyle, text: this.message), textAlign: global::Doroti.Ui.TextAlign.center, textDirection: this.textDirection);
+        _textPainter = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: this.textStyle, text: this.message), textAlign: TextAlign.center, textDirection: this.textDirection);
         _prepared = true;
     }
 
@@ -120,8 +119,8 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
-        var __oldDelegate = (BannerPainter)(object)oldDelegate;
-        return ((((this.message != ((BannerPainter)__oldDelegate).message) || (!object.Equals(this.location, ((BannerPainter)__oldDelegate).location))) || (!object.Equals(this.color, ((BannerPainter)__oldDelegate).color))) || (!object.Equals(this.textStyle, ((BannerPainter)__oldDelegate).textStyle)));
+        var __oldDelegate = (BannerPainter)oldDelegate;
+        return ((((this.message != ((BannerPainter)__oldDelegate).message) || (!Equals(this.location, ((BannerPainter)__oldDelegate).location))) || (!Equals(this.color, ((BannerPainter)__oldDelegate).color))) || (!Equals(this.textStyle, ((BannerPainter)__oldDelegate).textStyle)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -188,10 +187,10 @@ internal class _BannerState__banner : State<Banner>
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ((((((Banner)this.widget).textDirection is not null) && (((Banner)this.widget).layoutDirection is not null))) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
+        DartRuntimePrimitives.Assert(() => ((((((Banner)this.widget).textDirection is not null) && (((Banner)this.widget).layoutDirection is not null))) || DebugLibrary.debugCheckHasDirectionality(context)));
         this._painter?.dispose();
         _painter = new BannerPainter(message: ((Banner)this.widget).message, textDirection: ((((Banner)this.widget).textDirection ?? (TextDirection)Directionality.of(context))), location: ((Banner)this.widget).location, layoutDirection: ((((Banner)this.widget).layoutDirection ?? (TextDirection)Directionality.of(context))), color: ((Banner)this.widget).color, textStyle: ((Banner)this.widget).textStyle, shadow: ((Banner)this.widget).shadow);
-        return ((Widget)(object?)new CustomPaint(foregroundPainter: this._painter, child: ((Banner)this.widget).child));
+        return ((Widget)new CustomPaint(foregroundPainter: this._painter, child: ((Banner)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -240,7 +239,7 @@ public class CheckedModeBanner : StatelessWidget
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        properties.add(global::Doroti.Framework.Foundation.DiagnosticsNode.CreateMessage(message));
+        properties.add(DiagnosticsNode.CreateMessage(message));
     }
 
 }

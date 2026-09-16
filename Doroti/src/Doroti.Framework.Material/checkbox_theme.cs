@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/checkbox_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -43,7 +43,7 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
         {
             return a;
         }
-        return new CheckboxThemeData(mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), fillColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.fillColor, b?.fillColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), checkColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.checkColor, b?.checkColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t), materialTapTargetSize: ((t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize), visualDensity: ((t < 0.5) ? a?.visualDensity : b?.visualDensity), shape: ((global::Doroti.Framework.Painting.OutlinedBorder?)(object?)ShapeBorder.lerp(a?.shape, b?.shape, t))!, side: CheckboxThemeData._lerpSides(a?.side, b?.side, t));
+        return new CheckboxThemeData(mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), fillColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.fillColor, b?.fillColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), checkColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.checkColor, b?.checkColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t), materialTapTargetSize: ((t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize), visualDensity: ((t < 0.5) ? a?.visualDensity : b?.visualDensity), shape: ((global::Doroti.Framework.Painting.OutlinedBorder?)ShapeBorder.lerp(a?.shape, b?.shape, t))!, side: _lerpSides(a?.side, b?.side, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -56,11 +56,11 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((__other is CheckboxThemeData) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).mouseCursor, this.mouseCursor))) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).fillColor, this.fillColor))) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).checkColor, this.checkColor))) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).overlayColor, this.overlayColor))) && (((CheckboxThemeData)((CheckboxThemeData)__other)).splashRadius == this.splashRadius)) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).visualDensity, this.visualDensity))) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).shape, this.shape))) && (object.Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).side, this.side)));
+        return ((((((((((__other is CheckboxThemeData) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).mouseCursor, this.mouseCursor))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).fillColor, this.fillColor))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).checkColor, this.checkColor))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).overlayColor, this.overlayColor))) && (((CheckboxThemeData)((CheckboxThemeData)__other)).splashRadius == this.splashRadius)) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).visualDensity, this.visualDensity))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).shape, this.shape))) && (Equals(((CheckboxThemeData)((CheckboxThemeData)__other)).side, this.side)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -92,12 +92,12 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
         }
         a ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)a).color.withAlpha(0L));
-        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(a, b, t));
+        return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -113,7 +113,7 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -130,10 +130,10 @@ public class CheckboxTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static CheckboxThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CheckboxTheme? checkboxThemeLocal = ((CheckboxTheme?)(object?)context.dependOnInheritedWidgetOfExactType<CheckboxTheme>());
+        CheckboxTheme? checkboxThemeLocal = ((CheckboxTheme?)context.dependOnInheritedWidgetOfExactType<CheckboxTheme>());
         return (checkboxThemeLocal?.data ?? Theme.of(context).checkboxTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((CheckboxTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((CheckboxTheme)oldWidget).data)));
 }

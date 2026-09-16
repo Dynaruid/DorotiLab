@@ -96,8 +96,8 @@ public class FilteringTextInputFormatter : TextInputFormatter
     public virtual Pattern filterPattern { get; private set; } = default!;
     public virtual bool allow { get; private set; } = default!;
     public virtual string replacementString { get; private set; } = default!;
-    public static TextInputFormatter singleLineFormatter = FilteringTextInputFormatter.CreateDeny("\n");
-    public static TextInputFormatter digitsOnly = FilteringTextInputFormatter.CreateAllow(new RegExp("[0-9]"));
+    public static TextInputFormatter singleLineFormatter = CreateDeny("\n");
+    public static TextInputFormatter digitsOnly = CreateAllow(new RegExp("[0-9]"));
 
     public FilteringTextInputFormatter(Pattern filterPattern, bool allow, string replacementString = "")
     {
@@ -174,23 +174,23 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
 
     public static MaxLengthEnforcement getDefaultMaxLengthEnforcement(TargetPlatform? platform = null)
     {
-        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (ConstantsLibrary.kIsWeb)
         {
             return MaxLengthEnforcement.truncateAfterCompositionEnds;
         }
         else
         {
-            switch ((platform ?? global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform))
+            switch ((platform ?? PlatformLibrary.defaultTargetPlatform))
             {
-                case var __case22082 when object.Equals(__case22082, TargetPlatform.android):
-                case var __case22119 when object.Equals(__case22119, TargetPlatform.windows):
+                case var __case22082 when Equals(__case22082, TargetPlatform.android):
+                case var __case22119 when Equals(__case22119, TargetPlatform.windows):
                     {
                         return MaxLengthEnforcement.enforced;
                     }
-                case var __case22204 when object.Equals(__case22204, TargetPlatform.iOS):
-                case var __case22237 when object.Equals(__case22237, TargetPlatform.macOS):
-                case var __case22272 when object.Equals(__case22272, TargetPlatform.linux):
-                case var __case22307 when object.Equals(__case22307, TargetPlatform.fuchsia):
+                case var __case22204 when Equals(__case22204, TargetPlatform.iOS):
+                case var __case22237 when Equals(__case22237, TargetPlatform.macOS):
+                case var __case22272 when Equals(__case22272, TargetPlatform.linux):
+                case var __case22307 when Equals(__case22307, TargetPlatform.fuchsia):
                     {
                         return MaxLengthEnforcement.truncateAfterCompositionEnds;
                     }
@@ -221,11 +221,11 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
         DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(maxLength) > 0L));
         switch ((maxLengthEnforcement ?? getDefaultMaxLengthEnforcement()))
         {
-            case var __case23944 when object.Equals(__case23944, MaxLengthEnforcement.none):
+            case var __case23944 when Equals(__case23944, MaxLengthEnforcement.none):
                 {
                     return newValue;
                 }
-            case var __case24007 when object.Equals(__case24007, MaxLengthEnforcement.enforced):
+            case var __case24007 when Equals(__case24007, MaxLengthEnforcement.enforced):
                 {
                     if (((oldValue.text.characters().Count == DartRuntimePrimitives.RequireValue(maxLength)) && oldValue.selection.isCollapsed))
                     {
@@ -233,7 +233,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                     }
                     return truncate(newValue, DartRuntimePrimitives.RequireValue(maxLength));
                 }
-            case var __case24396 when object.Equals(__case24396, MaxLengthEnforcement.truncateAfterCompositionEnds):
+            case var __case24396 when Equals(__case24396, MaxLengthEnforcement.truncateAfterCompositionEnds):
                 {
                     if (((oldValue.text.characters().Count == DartRuntimePrimitives.RequireValue(maxLength)) && !oldValue.composing.isValid))
                     {

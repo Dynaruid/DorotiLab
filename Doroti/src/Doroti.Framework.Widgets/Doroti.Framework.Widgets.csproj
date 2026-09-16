@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Validation.Fcr6Semantics" />
+    <InternalsVisibleTo Include="Doroti.Framework.Material" />
     <InternalsVisibleTo Include="Doroti.Validation.Fcr7MaterialWidget" />
     <InternalsVisibleTo Include="Doroti.Validation.NativeAot.Localizations" />
     <InternalsVisibleTo Include="Doroti.Validation.NativeAot.Forms" />

@@ -77,7 +77,7 @@ internal sealed class GalleryDrawerState : State<GalleryDrawer>
     private long _selected;
     public override Widget build(BuildContext context)
     {
-        Widget Heading(string text) => new Padding(padding: EdgeInsets.CreateFromLTRB(28, 16, 16, 10), child: new Text(text, style: M.Theme.of(context).textTheme.titleSmall));
+        Widget Heading(string text) => new Padding(padding: EdgeInsetsGeometry.CreateFromLTRB(28, 16, 16, 10), child: new Text(text, style: M.Theme.of(context).textTheme.titleSmall));
         Widget Destination(int i) => new M.NavigationDrawerDestination(label: new Text(GalleryDrawer.Labels[i]), icon: new Icon(GalleryDrawer.Icons[i]), selectedIcon: new Icon(GalleryDrawer.SelectedIcons[i]));
         return new M.NavigationDrawer(selectedIndex: _selected, onDestinationSelected: value => setState(() => _selected = value), children:
             [Heading("Mail"), .. Enumerable.Range(0, 4).Select(Destination), new M.Divider(indent: 28, endIndent: 28), Heading("Labels"), .. Enumerable.Range(4, 3).Select(Destination)]);

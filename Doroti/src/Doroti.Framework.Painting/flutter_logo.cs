@@ -61,11 +61,11 @@ public class FlutterLogoDecoration : Decoration
         }
         if ((a is null))
         {
-            return FlutterLogoDecoration.Create_(b!.textColor, ((FlutterLogoDecoration)b).style, (((FlutterLogoDecoration)b).margin.op_Multiply(t)), ((FlutterLogoDecoration)b)._position, (((FlutterLogoDecoration)b)._opacity * Dart_uiLibrary.clampDouble(t, 0.0, 1.0)));
+            return Create_(b!.textColor, ((FlutterLogoDecoration)b).style, (((FlutterLogoDecoration)b).margin.op_Multiply(t)), ((FlutterLogoDecoration)b)._position, (((FlutterLogoDecoration)b)._opacity * Dart_uiLibrary.clampDouble(t, 0.0, 1.0)));
         }
         if ((b is null))
         {
-            return FlutterLogoDecoration.Create_(((FlutterLogoDecoration)a).textColor, ((FlutterLogoDecoration)a).style, (((FlutterLogoDecoration)a).margin.op_Multiply(t)), ((FlutterLogoDecoration)a)._position, (((FlutterLogoDecoration)a)._opacity * Dart_uiLibrary.clampDouble((1.0 - t), 0.0, 1.0)));
+            return Create_(((FlutterLogoDecoration)a).textColor, ((FlutterLogoDecoration)a).style, (((FlutterLogoDecoration)a).margin.op_Multiply(t)), ((FlutterLogoDecoration)a)._position, (((FlutterLogoDecoration)a)._opacity * Dart_uiLibrary.clampDouble((1.0 - t), 0.0, 1.0)));
         }
         if ((t == 0.0))
         {
@@ -75,7 +75,7 @@ public class FlutterLogoDecoration : Decoration
         {
             return b;
         }
-        return FlutterLogoDecoration.Create_(Dart_uiLibrary.Color.lerp(((FlutterLogoDecoration)a).textColor, ((FlutterLogoDecoration)b).textColor, t)!, ((t < 0.5) ? ((FlutterLogoDecoration)a).style : ((FlutterLogoDecoration)b).style), EdgeInsets.lerp(((FlutterLogoDecoration)a).margin, ((FlutterLogoDecoration)b).margin, t)!, (((FlutterLogoDecoration)a)._position + (((((FlutterLogoDecoration)b)._position - ((FlutterLogoDecoration)a)._position)) * t)), Dart_uiLibrary.clampDouble((((FlutterLogoDecoration)a)._opacity + (((((FlutterLogoDecoration)b)._opacity - ((FlutterLogoDecoration)a)._opacity)) * t)), 0.0, 1.0));
+        return Create_(Dart_uiLibrary.Color.lerp(((FlutterLogoDecoration)a).textColor, ((FlutterLogoDecoration)b).textColor, t)!, ((t < 0.5) ? ((FlutterLogoDecoration)a).style : ((FlutterLogoDecoration)b).style), EdgeInsets.lerp(((FlutterLogoDecoration)a).margin, ((FlutterLogoDecoration)b).margin, t)!, (((FlutterLogoDecoration)a)._position + (((((FlutterLogoDecoration)b)._position - ((FlutterLogoDecoration)a)._position)) * t)), Dart_uiLibrary.clampDouble((((FlutterLogoDecoration)a)._opacity + (((((FlutterLogoDecoration)b)._opacity - ((FlutterLogoDecoration)a)._opacity)) * t)), 0.0, 1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -86,7 +86,7 @@ public class FlutterLogoDecoration : Decoration
         {
             FlutterLogoDecoration a__as4619 = (FlutterLogoDecoration)a;
             DartRuntimePrimitives.Assert(() => (((FlutterLogoDecoration?)a__as4619)?.debugAssertIsValid() ?? true));
-            return FlutterLogoDecoration.lerp(((FlutterLogoDecoration?)a__as4619), this, t);
+            return lerp(((FlutterLogoDecoration?)a__as4619), this, t);
         }
         return ((FlutterLogoDecoration?)(object?)base.lerpFrom(a, t))!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -99,7 +99,7 @@ public class FlutterLogoDecoration : Decoration
         {
             FlutterLogoDecoration b__as4933 = (FlutterLogoDecoration)b;
             DartRuntimePrimitives.Assert(() => (((FlutterLogoDecoration?)b__as4933)?.debugAssertIsValid() ?? true));
-            return FlutterLogoDecoration.lerp(this, ((FlutterLogoDecoration?)b__as4933), t);
+            return lerp(this, ((FlutterLogoDecoration?)b__as4933), t);
         }
         return ((FlutterLogoDecoration?)(object?)base.lerpTo(b, t))!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -133,7 +133,7 @@ public class FlutterLogoDecoration : Decoration
         {
             return true;
         }
-        return ((((__other is FlutterLogoDecoration) && (object.Equals(((FlutterLogoDecoration)((FlutterLogoDecoration)__other)).textColor, this.textColor))) && (((FlutterLogoDecoration)((FlutterLogoDecoration)__other))._position == this._position)) && (((FlutterLogoDecoration)((FlutterLogoDecoration)__other))._opacity == this._opacity));
+        return ((((__other is FlutterLogoDecoration) && (Equals(((FlutterLogoDecoration)((FlutterLogoDecoration)__other)).textColor, this.textColor))) && (((FlutterLogoDecoration)((FlutterLogoDecoration)__other))._position == this._position)) && (((FlutterLogoDecoration)((FlutterLogoDecoration)__other))._opacity == this._opacity));
     }
 
     public override int GetHashCode()
@@ -148,7 +148,7 @@ public class FlutterLogoDecoration : Decoration
         properties.add(new EnumProperty<FlutterLogoStyle>("style", this.style));
         if (this._inTransition)
         {
-            properties.add(new DiagnosticsNode($"transition {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this._position))}:{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this._opacity))}"));
+            properties.add(new DiagnosticsNode($"transition {(Foundation.DebugLibrary.debugFormatDouble(this._position))}:{(Foundation.DebugLibrary.debugFormatDouble(this._opacity))}"));
         }
     }
 
@@ -178,7 +178,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
         _textPainter = new TextPainter(text: new TextSpan(text: kLabel, style: new TextStyle(color: ((FlutterLogoDecoration)this._config).textColor, fontFamily: "Roboto", fontSize: ((100.0 * 350.0) / 247.0), fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic)), textDirection: TextDirection.ltr);
         this._textPainter.layout();
         global::Doroti.Ui.TextBox textSize = this._textPainter.getBoxesForSelection(new TextSelection(baseOffset: 0L, extentOffset: kLabel.Length)).Single();
-        _textBoundingRect = global::Doroti.Ui.Rect.fromLTRB(textSize.left, textSize.top, textSize.right, textSize.bottom);
+        _textBoundingRect = Rect.fromLTRB(textSize.left, textSize.top, textSize.right, textSize.bottom);
     }
 
     internal virtual void _paintLogo(Canvas canvas, Rect rect)
@@ -205,7 +205,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
     __cascade.color = new global::Doroti.Ui.Color(4278278043L);
     return __cascade;
 }))();
-        var triangleGradient = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset((87.2623 + 37.9092), (28.8384 + 123.4389)), new global::Doroti.Ui.Offset((42.9205 + 37.9092), (35.0952 + 123.4389)), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(1713022L), new global::Doroti.Ui.Color(1712989054L) });
+        var triangleGradient = Ui.Gradient.linear(new global::Doroti.Ui.Offset((87.2623 + 37.9092), (28.8384 + 123.4389)), new global::Doroti.Ui.Offset((42.9205 + 37.9092), (35.0952 + 123.4389)), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(1713022L), new global::Doroti.Ui.Color(1712989054L) });
         var trianglePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
@@ -244,7 +244,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
         canvas.drawPath(bottomBeam, darkPaint);
         canvas.save();
         canvas.transform(new Float64List(new List<double> { 0.7071, -0.7071, 0.0, 0.0, 0.7071, 0.7071, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -77.697, 98.057, 0.0, 1.0 }));
-        canvas.drawRect(global::Doroti.Ui.Rect.fromLTWH(59.8, 123.1, 39.4, 39.4), mediumPaint);
+        canvas.drawRect(Rect.fromLTWH(59.8, 123.1, 39.4, 39.4), mediumPaint);
         canvas.restore();
         var triangle = ((Func<Path>)(() =>
 {
@@ -267,22 +267,22 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
             return;
         }
         global::Doroti.Ui.Size logoSize = (((FlutterLogoDecoration)this._config)._position switch { > 0.0 => new global::Doroti.Ui.Size(820.0, 232.0), < 0.0 => new global::Doroti.Ui.Size(252.0, 306.0), _ => new global::Doroti.Ui.Size(202.0, 202.0) });
-        FittedSizes fittedSize = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(BoxFit.contain, logoSize, canvasSize);
-        DartRuntimePrimitives.Assert(() => (object.Equals(((FittedSizes)fittedSize).source, logoSize)));
+        FittedSizes fittedSize = Box_fitLibrary.applyBoxFit(BoxFit.contain, logoSize, canvasSize);
+        DartRuntimePrimitives.Assert(() => (Equals(((FittedSizes)fittedSize).source, logoSize)));
         global::Doroti.Ui.Rect rect = Alignment.center.inscribe(((FittedSizes)fittedSize).destination, (offset & canvasSize));
         double centerSquareHeight = canvasSize.shortestSide;
-        var centerSquare = global::Doroti.Ui.Rect.fromLTWH((offset.dx + (((canvasSize.width - centerSquareHeight)) / 2.0)), (offset.dy + (((canvasSize.height - centerSquareHeight)) / 2.0)), centerSquareHeight, centerSquareHeight);
+        var centerSquare = Rect.fromLTWH((offset.dx + (((canvasSize.width - centerSquareHeight)) / 2.0)), (offset.dy + (((canvasSize.height - centerSquareHeight)) / 2.0)), centerSquareHeight, centerSquareHeight);
         global::Doroti.Ui.Rect logoTargetSquare = default!;
         if ((((FlutterLogoDecoration)this._config)._position > 0.0))
         {
-            logoTargetSquare = global::Doroti.Ui.Rect.fromLTWH(rect.left, rect.top, rect.height, rect.height);
+            logoTargetSquare = Rect.fromLTWH(rect.left, rect.top, rect.height, rect.height);
         }
         else
         {
             if ((((FlutterLogoDecoration)this._config)._position < 0.0))
             {
                 double logoHeight = ((rect.height * 191.0) / 306.0);
-                logoTargetSquare = global::Doroti.Ui.Rect.fromLTWH((rect.left + (((rect.width - logoHeight)) / 2.0)), rect.top, logoHeight, logoHeight);
+                logoTargetSquare = Rect.fromLTWH((rect.left + (((rect.width - logoHeight)) / 2.0)), rect.top, logoHeight, logoHeight);
             }
             else
             {
@@ -295,7 +295,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
             canvas.saveLayer((offset & canvasSize), ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.colorFilter = global::Doroti.Ui.ColorFilter.mode(new global::Doroti.Ui.Color(4294967295L).withOpacity(((FlutterLogoDecoration)this._config)._opacity), BlendMode.modulate);
+    __cascade.colorFilter = ColorFilter.mode(new global::Doroti.Ui.Color(4294967295L).withOpacity(((FlutterLogoDecoration)this._config)._opacity), BlendMode.modulate);
     return __cascade;
 }))());
         }
@@ -351,7 +351,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.blendMode = BlendMode.modulate;
-    __cascade.shader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset((this._textBoundingRect.width * -0.5), 0.0), new global::Doroti.Ui.Offset((this._textBoundingRect.width * 1.5), 0.0), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L), new global::Doroti.Ui.Color(16777215L) }, new List<double> { 0.0, Math.Max(0.0, (((FlutterLogoDecoration)this._config)._position.abs() - 0.1)), Math.Min((((FlutterLogoDecoration)this._config)._position.abs() + 0.1), 1.0), 1.0 });
+    __cascade.shader = Ui.Gradient.linear(new global::Doroti.Ui.Offset((this._textBoundingRect.width * -0.5), 0.0), new global::Doroti.Ui.Offset((this._textBoundingRect.width * 1.5), 0.0), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L), new global::Doroti.Ui.Color(16777215L) }, new List<double> { 0.0, Math.Max(0.0, (((FlutterLogoDecoration)this._config)._position.abs() - 0.1)), Math.Min((((FlutterLogoDecoration)this._config)._position.abs() + 0.1), 1.0), 1.0 });
     return __cascade;
 }))());
                     }

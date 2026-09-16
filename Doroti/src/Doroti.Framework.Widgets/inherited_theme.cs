@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/inherited_theme.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -14,13 +13,13 @@ public abstract class InheritedTheme : InheritedWidget
     public abstract Widget wrap(BuildContext context, Widget child);
     public static Widget captureAll(BuildContext context, Widget child, BuildContext? to = null)
     {
-        return ((Widget)(object?)InheritedTheme.capture(from: context, to: to).wrap(child));
+        return ((Widget)capture(from: context, to: to).wrap(child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static CapturedThemes capture(BuildContext from, BuildContext? to)
     {
-        if ((object.Equals(from, to)))
+        if ((Equals(from, to)))
         {
             return new CapturedThemes(new List<InheritedTheme>());
         }
@@ -35,7 +34,7 @@ public abstract class InheritedTheme : InheritedWidget
             });
         from.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
         {
-            if ((object.Equals(ancestor, to)))
+            if ((Equals(ancestor, to)))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
@@ -75,7 +74,7 @@ public class CapturedThemes
 
     public virtual Widget wrap(Widget child)
     {
-        return ((Widget)(object?)new _CaptureAll__inherited_theme(themes: this._themes, child: child));
+        return ((Widget)new _CaptureAll__inherited_theme(themes: this._themes, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

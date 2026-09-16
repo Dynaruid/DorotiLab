@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/carousel_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -37,7 +37,7 @@ public class CarouselViewThemeData : global::Doroti.Framework.Foundation.Diagnos
         {
             return a;
         }
-        return new CarouselViewThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: ((global::Doroti.Framework.Painting.OutlinedBorder?)(object?)ShapeBorder.lerp(a?.shape, b?.shape, t))!, overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), padding: EdgeInsets.lerp(a?.padding, b?.padding, t), itemClipBehavior: ((t < 0.5) ? a?.itemClipBehavior : b?.itemClipBehavior));
+        return new CarouselViewThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), shape: ((global::Doroti.Framework.Painting.OutlinedBorder?)ShapeBorder.lerp(a?.shape, b?.shape, t))!, overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), padding: EdgeInsets.lerp(a?.padding, b?.padding, t), itemClipBehavior: ((t < 0.5) ? a?.itemClipBehavior : b?.itemClipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -50,11 +50,11 @@ public class CarouselViewThemeData : global::Doroti.Framework.Foundation.Diagnos
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((__other is CarouselViewThemeData) && (object.Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).backgroundColor, this.backgroundColor))) && (((CarouselViewThemeData)((CarouselViewThemeData)__other)).elevation == this.elevation)) && (object.Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).shape, this.shape))) && (object.Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).overlayColor, this.overlayColor))) && (object.Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).padding, this.padding))) && (object.Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).itemClipBehavior, this.itemClipBehavior)));
+        return (((((((__other is CarouselViewThemeData) && (Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).backgroundColor, this.backgroundColor))) && (((CarouselViewThemeData)((CarouselViewThemeData)__other)).elevation == this.elevation)) && (Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).shape, this.shape))) && (Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).overlayColor, this.overlayColor))) && (Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).padding, this.padding))) && (Equals(((CarouselViewThemeData)((CarouselViewThemeData)__other)).itemClipBehavior, this.itemClipBehavior)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -67,8 +67,8 @@ public class CarouselViewThemeData : global::Doroti.Framework.Foundation.Diagnos
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Clip>("itemClipBehavior", this.itemClipBehavior, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -84,7 +84,7 @@ public class CarouselViewThemeData : global::Doroti.Framework.Foundation.Diagnos
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -101,16 +101,16 @@ public class CarouselViewTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static CarouselViewThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CarouselViewTheme? inheritedTheme = ((CarouselViewTheme?)(object?)context.dependOnInheritedWidgetOfExactType<CarouselViewTheme>());
+        CarouselViewTheme? inheritedTheme = ((CarouselViewTheme?)context.dependOnInheritedWidgetOfExactType<CarouselViewTheme>());
         return (inheritedTheme?.data ?? Theme.of(context).carouselViewTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CarouselViewTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new CarouselViewTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((CarouselViewTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((CarouselViewTheme)oldWidget).data)));
 }

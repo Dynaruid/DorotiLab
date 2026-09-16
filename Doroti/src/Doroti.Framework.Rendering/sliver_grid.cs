@@ -69,7 +69,7 @@ public class SliverGridRegularTileLayout : SliverGridLayout
 
     public virtual long getMinChildIndexForScrollOffset(double scrollOffset)
     {
-        return ((this.mainAxisStride > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? (this.crossAxisCount * ((checked((long)(scrollOffset / this.mainAxisStride))))) : 0L);
+        return ((this.mainAxisStride > Foundation.ConstantsLibrary.precisionErrorTolerance) ? (this.crossAxisCount * ((checked((long)(scrollOffset / this.mainAxisStride))))) : 0L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -159,7 +159,7 @@ public class SliverGridDelegateWithFixedCrossAxisCount : SliverGridDelegate
         double usableCrossAxisExtent = Math.Max(0.0, (((SliverConstraints)constraints).crossAxisExtent - (this.crossAxisSpacing * ((this.crossAxisCount - 1L)))));
         double childCrossAxisExtentLocal = (usableCrossAxisExtent / this.crossAxisCount);
         double childMainAxisExtentLocal = (this.mainAxisExtent ?? (childCrossAxisExtentLocal / this.childAspectRatio));
-        return new SliverGridRegularTileLayout(crossAxisCount: this.crossAxisCount, mainAxisStride: (childMainAxisExtentLocal + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtentLocal + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtentLocal, childCrossAxisExtent: childCrossAxisExtentLocal, reverseCrossAxis: global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
+        return new SliverGridRegularTileLayout(crossAxisCount: this.crossAxisCount, mainAxisStride: (childMainAxisExtentLocal + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtentLocal + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtentLocal, childCrossAxisExtent: childCrossAxisExtentLocal, reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -213,7 +213,7 @@ public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
         double usableCrossAxisExtent = Math.Max(0.0, (((SliverConstraints)constraints).crossAxisExtent - (this.crossAxisSpacing * ((crossAxisCountLocal - 1L)))));
         double childCrossAxisExtentLocal = (usableCrossAxisExtent / crossAxisCountLocal);
         double childMainAxisExtentLocal = (this.mainAxisExtent ?? (childCrossAxisExtentLocal / this.childAspectRatio));
-        return new SliverGridRegularTileLayout(crossAxisCount: crossAxisCountLocal, mainAxisStride: (childMainAxisExtentLocal + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtentLocal + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtentLocal, childCrossAxisExtent: childCrossAxisExtentLocal, reverseCrossAxis: global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
+        return new SliverGridRegularTileLayout(crossAxisCount: crossAxisCountLocal, mainAxisStride: (childMainAxisExtentLocal + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtentLocal + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtentLocal, childCrossAxisExtent: childCrossAxisExtentLocal, reverseCrossAxis: Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -256,11 +256,11 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
         set
         {
             var __value = value;
-            if ((object.Equals(this._gridDelegate, __value)))
+            if ((Equals(this._gridDelegate, __value)))
             {
                 return;
             }
-            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(__value), DartRuntimePrimitives.RuntimeType(this._gridDelegate))) || __value.shouldRelayout(this._gridDelegate)))
+            if (((!Equals(DartRuntimePrimitives.RuntimeType(__value), DartRuntimePrimitives.RuntimeType(this._gridDelegate))) || __value.shouldRelayout(this._gridDelegate)))
             {
                 markNeedsLayout();
             }

@@ -34,7 +34,7 @@ public abstract class ClipContext
                 }
         }
         painter();
-        if ((object.Equals(clipBehavior, Clip.antiAliasWithSaveLayer)))
+        if ((Equals(clipBehavior, Clip.antiAliasWithSaveLayer)))
         {
             this.canvas.restore();
         }

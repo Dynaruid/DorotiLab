@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/dismissible.dart
-#pragma warning disable CS4014, CS8600, CS8601, CS8602, CS8603, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -8,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class DismissibleLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kResizeTimeCurve = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval(0.4, 1.0, curve: global::Doroti.Framework.Animation.Curves.ease));
+    internal static global::Doroti.Framework.Animation.Curve _kResizeTimeCurve = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Interval(0.4, 1.0, curve: Curves.ease));
 }
 
 public static partial class DismissibleLibrary
@@ -65,7 +64,7 @@ public class Dismissible : StatefulWidget
     public virtual global::Doroti.Framework.Rendering.HitTestBehavior behavior { get; private set; } = default!;
     public virtual global::System.Action<DismissUpdateDetails>? onUpdate { get; private set; }
 
-    public Dismissible(global::Doroti.Framework.Foundation.Key key, Widget child, Widget? background = null, Widget? secondaryBackground = null, global::System.Func<DismissDirection, Future<bool?>>? confirmDismiss = null, global::System.Action? onResize = null, global::System.Action<DismissUpdateDetails>? onUpdate = null, global::System.Action<DismissDirection>? onDismissed = null, DismissDirection direction = DismissDirection.horizontal, Duration? resizeDuration = null, DartMap<DismissDirection, double> dismissThresholds = default!, Duration? movementDuration = null, double crossAxisEndOffset = 0.0, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Rendering.HitTestBehavior behavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque) : base(key: key)
+    public Dismissible(global::Doroti.Framework.Foundation.Key key, Widget child, Widget? background = null, Widget? secondaryBackground = null, global::System.Func<DismissDirection, Future<bool?>>? confirmDismiss = null, global::System.Action? onResize = null, global::System.Action<DismissUpdateDetails>? onUpdate = null, global::System.Action<DismissDirection>? onDismissed = null, DismissDirection direction = DismissDirection.horizontal, Duration? resizeDuration = null, DartMap<DismissDirection, double> dismissThresholds = default!, Duration? movementDuration = null, double crossAxisEndOffset = 0.0, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, global::Doroti.Framework.Rendering.HitTestBehavior behavior = HitTestBehavior.opaque) : base(key: key)
     {
         Duration? __resizeDuration = resizeDuration ?? Duration.Create(milliseconds: 300);
         DartMap<DismissDirection, double> __dismissThresholds = dismissThresholds ?? new DartMap<DismissDirection, double>();
@@ -122,23 +121,23 @@ internal class _DismissibleClipper__dismissible : global::Doroti.Framework.Rende
     {
         switch (this.axis)
         {
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
                     double offset = (((global::Doroti.Framework.Animation.Animation<Offset>)this.moveAnimation).value.dx * size.width);
                     if ((offset < 0L))
                     {
-                        return global::Doroti.Ui.Rect.fromLTRB((size.width + offset), 0.0, size.width, size.height);
+                        return Rect.fromLTRB((size.width + offset), 0.0, size.width, size.height);
                     }
-                    return global::Doroti.Ui.Rect.fromLTRB(0.0, 0.0, offset, size.height);
+                    return Rect.fromLTRB(0.0, 0.0, offset, size.height);
                 }
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 {
                     double offsetLocal = (((global::Doroti.Framework.Animation.Animation<Offset>)this.moveAnimation).value.dy * size.height);
                     if ((offsetLocal < 0L))
                     {
-                        return global::Doroti.Ui.Rect.fromLTRB(0.0, (size.height + offsetLocal), size.width, size.height);
+                        return Rect.fromLTRB(0.0, (size.height + offsetLocal), size.width, size.height);
                     }
-                    return global::Doroti.Ui.Rect.fromLTRB(0.0, 0.0, size.width, offsetLocal);
+                    return Rect.fromLTRB(0.0, 0.0, size.width, offsetLocal);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -149,8 +148,8 @@ internal class _DismissibleClipper__dismissible : global::Doroti.Framework.Rende
     public override Rect getApproximateClipRect(Size size) => getClip(size);
     public override bool shouldReclip(global::Doroti.Framework.Rendering.CustomClipper<Rect> oldClipper)
     {
-        var __oldClipper = (_DismissibleClipper__dismissible)(object)oldClipper;
-        return ((!object.Equals(((_DismissibleClipper__dismissible)__oldClipper).axis, this.axis)) || (!object.Equals(((_DismissibleClipper__dismissible)__oldClipper).moveAnimation.value, ((global::Doroti.Framework.Animation.Animation<Offset>)this.moveAnimation).value)));
+        var __oldClipper = (_DismissibleClipper__dismissible)oldClipper;
+        return ((!Equals(((_DismissibleClipper__dismissible)__oldClipper).axis, this.axis)) || (!Equals(((_DismissibleClipper__dismissible)__oldClipper).moveAnimation.value, ((global::Doroti.Framework.Animation.Animation<Offset>)this.moveAnimation).value)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -238,7 +237,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     {
         get
         {
-            return (((object.Equals(((Dismissible)this.widget).direction, DismissDirection.horizontal)) || (object.Equals(((Dismissible)this.widget).direction, DismissDirection.endToStart))) || (object.Equals(((Dismissible)this.widget).direction, DismissDirection.startToEnd)));
+            return (((Equals(((Dismissible)this.widget).direction, DismissDirection.horizontal)) || (Equals(((Dismissible)this.widget).direction, DismissDirection.endToStart))) || (Equals(((Dismissible)this.widget).direction, DismissDirection.startToEnd)));
         }
     }
     internal virtual DismissDirection _extentToDirection(double extent)
@@ -261,7 +260,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     {
         get
         {
-            global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)DartRuntimePrimitives.RequireValue(((BuildContext)this.context).size));
+            global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)DartRuntimePrimitives.RequireValue(((BuildContext)this.context).size));
             return (this._directionIsXAxis ? sizeLocal.width : sizeLocal.height);
         }
     }
@@ -429,7 +428,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             DartRuntimePrimitives.Assert(() => (vy != 0.0));
             flingDirection = _extentToDirection(vy);
         }
-        if ((object.Equals(flingDirection, this._dismissDirection)))
+        if ((Equals(flingDirection, this._dismissDirection)))
         {
             return _FlingGestureKind__dismissible.forward;
         }
@@ -493,7 +492,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
 
     internal async virtual Future _handleDismissStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if ((global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status) && !this._dragUnderway))
+        if ((AnimationStatusMembers.isCompleted(status) && !this._dragUnderway))
         {
             await _handleMoveCompleted();
         }
@@ -507,7 +506,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     {
         if ((this._dismissThreshold >= 1.0))
         {
-            this._moveController.reverse();
+            DartRuntimePrimitives.Observe(this._moveController.reverse(), "Dismissible.reverse");
             return;
         }
         bool result = await _confirmStartResizeAnimation();
@@ -519,7 +518,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             }
             else
             {
-                this._moveController.reverse();
+                DartRuntimePrimitives.Observe(this._moveController.reverse(), "Dismissible.reverse");
             }
         }
     }
@@ -592,12 +591,12 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             _ensureKeepAlive();
         }
-        DartRuntimePrimitives.Assert(() => (!this._directionIsXAxis || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
+        DartRuntimePrimitives.Assert(() => (!this._directionIsXAxis || DebugLibrary.debugCheckHasDirectionality(context)));
         Widget? backgroundLocal = ((Dismissible)this.widget).background;
         if ((((Dismissible)this.widget).secondaryBackground is not null))
         {
             DismissDirection directionLocal = this._dismissDirection;
-            if (((object.Equals(directionLocal, DismissDirection.endToStart)) || (object.Equals(directionLocal, DismissDirection.up))))
+            if (((Equals(directionLocal, DismissDirection.endToStart)) || (Equals(directionLocal, DismissDirection.up))))
             {
                 backgroundLocal = ((Dismissible)this.widget).secondaryBackground;
             }
@@ -606,7 +605,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((!object.Equals(this._resizeAnimation!.status, global::Doroti.Framework.Animation.AnimationStatus.forward)))
+                    if ((!Equals(this._resizeAnimation!.status, AnimationStatus.forward)))
                     {
                         DartRuntimePrimitives.Assert(() => this._resizeAnimation!.isCompleted);
                         throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A dismissed Dismissible widget is still part of the tree."), new global::Doroti.Framework.Foundation.ErrorHint("Make sure to implement the onDismissed handler and to immediately remove the Dismissible " + "widget from the application once that handler has fired.") }));
@@ -614,18 +613,18 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
-            return ((Widget)(object?)new SizeTransition(sizeFactor: this._resizeAnimation!, axis: (this._directionIsXAxis ? global::Doroti.Framework.Painting.Axis.vertical : global::Doroti.Framework.Painting.Axis.horizontal), child: new SizedBox(width: DartRuntimePrimitives.RequireValue(this._sizePriorToCollapse).width, height: DartRuntimePrimitives.RequireValue(this._sizePriorToCollapse).height, child: backgroundLocal)));
+            return ((Widget)new SizeTransition(sizeFactor: this._resizeAnimation!, axis: (this._directionIsXAxis ? Axis.vertical : Axis.horizontal), child: new SizedBox(width: DartRuntimePrimitives.RequireValue(this._sizePriorToCollapse).width, height: DartRuntimePrimitives.RequireValue(this._sizePriorToCollapse).height, child: backgroundLocal)));
         }
-        Widget content = ((Widget)(object?)new SlideTransition(position: this._moveAnimation, child: new KeyedSubtree(key: this._contentKey, child: ((Dismissible)this.widget).child)));
+        Widget content = ((Widget)new SlideTransition(position: this._moveAnimation, child: new KeyedSubtree(key: this._contentKey, child: ((Dismissible)this.widget).child)));
         if ((backgroundLocal is not null))
         {
             content = DartRuntimePrimitives.ConvertValue<Widget>(new Stack(children: new List<Widget> { content }));
         }
-        if ((object.Equals(((Dismissible)this.widget).direction, DismissDirection.none)))
+        if ((Equals(((Dismissible)this.widget).direction, DismissDirection.none)))
         {
             return content;
         }
-        return ((Widget)(object?)new GestureDetector(onHorizontalDragStart: ((global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)(this._directionIsXAxis ? this._handleDragStart : null)), onHorizontalDragUpdate: ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)(this._directionIsXAxis ? this._handleDragUpdate : null)), onHorizontalDragEnd: ((global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)(this._directionIsXAxis ? this._handleDragEnd : null)), onVerticalDragStart: ((global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)(this._directionIsXAxis ? null : this._handleDragStart)), onVerticalDragUpdate: ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)(this._directionIsXAxis ? null : this._handleDragUpdate)), onVerticalDragEnd: ((global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)(this._directionIsXAxis ? null : this._handleDragEnd)), behavior: ((Dismissible)this.widget).behavior, dragStartBehavior: ((Dismissible)this.widget).dragStartBehavior, child: content));
+        return ((Widget)new GestureDetector(onHorizontalDragStart: ((global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>?)(this._directionIsXAxis ? this._handleDragStart : null)), onHorizontalDragUpdate: ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>?)(this._directionIsXAxis ? this._handleDragUpdate : null)), onHorizontalDragEnd: ((global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>?)(this._directionIsXAxis ? this._handleDragEnd : null)), onVerticalDragStart: ((global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>?)(this._directionIsXAxis ? null : this._handleDragStart)), onVerticalDragUpdate: ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>?)(this._directionIsXAxis ? null : this._handleDragUpdate)), onVerticalDragEnd: ((global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>?)(this._directionIsXAxis ? null : this._handleDragEnd)), behavior: ((Dismissible)this.widget).behavior, dragStartBehavior: ((Dismissible)this.widget).dragStartBehavior, child: content));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -640,13 +639,13 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -680,8 +679,8 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -737,4 +736,3 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
     }
 
 }
-

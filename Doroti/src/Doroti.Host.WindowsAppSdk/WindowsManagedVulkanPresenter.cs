@@ -3003,8 +3003,8 @@ internal sealed class VulkanAcrylicScene : IDisposable
         _backdrop.ResetProperties();
         _backdrop.Kind = options.acrylicKind switch
         {
-            Doroti.Ui.WindowAcrylicKind.@base => DesktopAcrylicKind.Base,
-            Doroti.Ui.WindowAcrylicKind.thin => DesktopAcrylicKind.Thin,
+            Ui.WindowAcrylicKind.@base => DesktopAcrylicKind.Base,
+            Ui.WindowAcrylicKind.thin => DesktopAcrylicKind.Thin,
             _ => DesktopAcrylicKind.Default,
         };
         if (options.tintColor is { } tint)
@@ -3020,8 +3020,8 @@ internal sealed class VulkanAcrylicScene : IDisposable
             _backdrop.LuminosityOpacity = (float)luminosityOpacity;
         _configuration.Theme = options.theme switch
         {
-            Doroti.Ui.WindowBackdropTheme.light => SystemBackdropTheme.Light,
-            Doroti.Ui.WindowBackdropTheme.dark => SystemBackdropTheme.Dark,
+            Ui.WindowBackdropTheme.light => SystemBackdropTheme.Light,
+            Ui.WindowBackdropTheme.dark => SystemBackdropTheme.Dark,
             _ => systemBrightness == Brightness.dark
                 ? SystemBackdropTheme.Dark : SystemBackdropTheme.Light,
         };

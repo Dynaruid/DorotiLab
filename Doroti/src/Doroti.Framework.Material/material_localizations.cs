@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/material_localizations.dart
-#pragma warning disable CS8600, CS8601, CS8603, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -195,7 +195,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     internal static List<string> _narrowWeekdays = new List<string> { "S", "M", "T", "W", "T", "F", "S" };
     internal static List<string> _shortMonths = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
     internal static List<string> _months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations> @delegate = ((global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations>)(object?)new _MaterialLocalizationsDelegate__material_localizations());
+    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations> @delegate = ((global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations>)new _MaterialLocalizationsDelegate__material_localizations());
 
     public DefaultMaterialLocalizations()
     {
@@ -219,21 +219,21 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
 
     public override string formatHour(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)
     {
-        TimeOfDayFormat format = ((TimeOfDayFormat)(object?)timeOfDayFormat(alwaysUse24HourFormat: alwaysUse24HourFormat));
+        TimeOfDayFormat format = ((TimeOfDayFormat)timeOfDayFormat(alwaysUse24HourFormat: alwaysUse24HourFormat));
         switch (format)
         {
-            case var __constant29744 when (object.Equals(__constant29744, TimeOfDayFormat.h_colon_mm_space_a)):
+            case var __constant29744 when (Equals(__constant29744, TimeOfDayFormat.h_colon_mm_space_a)):
                 {
-                    return ((string)(object?)formatDecimal(((timeOfDay.hourOfPeriod == 0L) ? 12L : timeOfDay.hourOfPeriod)));
+                    return ((string)formatDecimal(((timeOfDay.hourOfPeriod == 0L) ? 12L : timeOfDay.hourOfPeriod)));
                 }
-            case var __constant29880 when (object.Equals(__constant29880, TimeOfDayFormat.HH_colon_mm)):
+            case var __constant29880 when (Equals(__constant29880, TimeOfDayFormat.HH_colon_mm)):
                 {
-                    return ((string)(object?)_formatTwoDigitZeroPad(timeOfDay.hour));
+                    return ((string)_formatTwoDigitZeroPad(timeOfDay.hour));
                 }
-            case var __constant29975 when (object.Equals(__constant29975, TimeOfDayFormat.a_space_h_colon_mm)):
-            case var __constant30022 when (object.Equals(__constant30022, TimeOfDayFormat.frenchCanadian)):
-            case var __constant30065 when (object.Equals(__constant30065, TimeOfDayFormat.H_colon_mm)):
-            case var __constant30104 when (object.Equals(__constant30104, TimeOfDayFormat.HH_dot_mm)):
+            case var __constant29975 when (Equals(__constant29975, TimeOfDayFormat.a_space_h_colon_mm)):
+            case var __constant30022 when (Equals(__constant30022, TimeOfDayFormat.frenchCanadian)):
+            case var __constant30065 when (Equals(__constant30065, TimeOfDayFormat.H_colon_mm)):
+            case var __constant30104 when (Equals(__constant30104, TimeOfDayFormat.HH_dot_mm)):
                 {
                     throw DartRuntimePrimitives.AsException(new AssertionError($"{this.GetType()} does not support {format}."));
                 }
@@ -264,8 +264,8 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string formatYear(DateTime date) => date.Year.ToString();
     public override string formatCompactDate(DateTime date)
     {
-        string month = ((string)(object?)_formatTwoDigitZeroPad(date.Month));
-        string day = ((string)(object?)_formatTwoDigitZeroPad(date.Day));
+        string month = ((string)_formatTwoDigitZeroPad(date.Month));
+        string day = ((string)_formatTwoDigitZeroPad(date.Day));
         string year = date.Year.ToString().padLeft(4L, "0");
         return $"{month}/{day}/{year}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -295,7 +295,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
 
     public override string formatMonthYear(DateTime date)
     {
-        string year = ((string)(object?)formatYear(date));
+        string year = ((string)formatYear(date));
         string month = _months[(int)((date.Month - 1L))];
         return $"{month} {year}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -374,7 +374,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string inputTimeModeButtonLabel => "Switch to text input mode";
     internal virtual string _formatDayPeriod(TimeOfDay timeOfDay)
     {
-        return (timeOfDay.period switch { var __constant34816 when (object.Equals(__constant34816, DayPeriod.am)) => this.anteMeridiemAbbreviation, var __constant34864 when (object.Equals(__constant34864, DayPeriod.pm)) => this.postMeridiemAbbreviation, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (timeOfDay.period switch { var __constant34816 when (Equals(__constant34816, DayPeriod.am)) => this.anteMeridiemAbbreviation, var __constant34864 when (Equals(__constant34864, DayPeriod.pm)) => this.postMeridiemAbbreviation, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -525,7 +525,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string refreshIndicatorSemanticLabel => "Refresh";
     public static Future<MaterialLocalizations> load(Locale locale)
     {
-        return ((Future<MaterialLocalizations>)(object?)new global::Doroti.Framework.Foundation.SynchronousFuture<MaterialLocalizations>(new DefaultMaterialLocalizations()));
+        return ((Future<MaterialLocalizations>)new global::Doroti.Framework.Foundation.SynchronousFuture<MaterialLocalizations>(new DefaultMaterialLocalizations()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

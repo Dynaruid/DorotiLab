@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -23,7 +22,7 @@ public class NestedScrollView : StatefulWidget
     public virtual string? restorationId { get; private set; }
     public virtual ScrollBehavior? scrollBehavior { get; private set; }
 
-    public NestedScrollView(global::Doroti.Framework.Foundation.Key? key = null, ScrollController? controller = null, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, bool reverse = false, ScrollPhysics? physics = null, global::System.Func<BuildContext, bool, List<Widget>> headerSliverBuilder = default!, Widget body = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, bool floatHeaderSlivers = false, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null) : base(key: key)
+    public NestedScrollView(global::Doroti.Framework.Foundation.Key? key = null, ScrollController? controller = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, ScrollPhysics? physics = null, global::System.Func<BuildContext, bool, List<Widget>> headerSliverBuilder = default!, Widget body = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, bool floatHeaderSlivers = false, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null) : base(key: key)
     {
         this.controller = controller;
         this.scrollDirection = scrollDirection;
@@ -41,7 +40,7 @@ public class NestedScrollView : StatefulWidget
 
     public static SliverOverlapAbsorberHandle sliverOverlapAbsorberHandleFor(BuildContext context)
     {
-        _InheritedNestedScrollView__nested_scroll_view? target = ((_InheritedNestedScrollView__nested_scroll_view?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedNestedScrollView__nested_scroll_view>());
+        _InheritedNestedScrollView__nested_scroll_view? target = ((_InheritedNestedScrollView__nested_scroll_view?)context.dependOnInheritedWidgetOfExactType<_InheritedNestedScrollView__nested_scroll_view>());
         DartRuntimePrimitives.Assert(() => (target is not null), () => (object?)"NestedScrollView.sliverOverlapAbsorberHandleFor must be called with a context that contains a NestedScrollView.");
         return target!.state._absorberHandle;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -49,7 +48,7 @@ public class NestedScrollView : StatefulWidget
 
     internal virtual List<Widget> _buildSlivers(BuildContext context, ScrollController innerController, bool bodyIsScrolled)
     {
-        return new List<Widget> { new SliverFillRemaining(child: new PrimaryScrollController(automaticallyInheritForPlatforms: System.Enum.GetValues<global::Doroti.Framework.Foundation.TargetPlatform>().ToList().toSet(), controller: innerController, child: this.body)) };
+        return new List<Widget> { new SliverFillRemaining(child: new PrimaryScrollController(automaticallyInheritForPlatforms: Enum.GetValues<global::Doroti.Framework.Foundation.TargetPlatform>().ToList().toSet(), controller: innerController, child: this.body)) };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -79,7 +78,7 @@ public class NestedScrollViewState : State<NestedScrollView>
     public override void didUpdateWidget(NestedScrollView oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((NestedScrollView)oldWidget).controller, ((NestedScrollView)this.widget).controller)))
+        if ((!Equals(((NestedScrollView)oldWidget).controller, ((NestedScrollView)this.widget).controller)))
         {
             this._coordinator!.setParent(((NestedScrollView)this.widget).controller);
         }
@@ -110,11 +109,11 @@ public class NestedScrollViewState : State<NestedScrollView>
 
     public override Widget build(BuildContext context)
     {
-        ScrollPhysics scrollPhysics = (((((NestedScrollView)this.widget).physics?.applyTo(new ClampingScrollPhysics()) ?? (ScrollPhysics)((NestedScrollView)this.widget).scrollBehavior?.getScrollPhysics(context).applyTo(new ClampingScrollPhysics()))) ?? new ClampingScrollPhysics());
-        return ((Widget)(object?)new _InheritedNestedScrollView__nested_scroll_view(state: this, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        ScrollPhysics scrollPhysics = (((((NestedScrollView)this.widget).physics?.applyTo(new ClampingScrollPhysics()) ?? (ScrollPhysics?)((NestedScrollView)this.widget).scrollBehavior?.getScrollPhysics(context).applyTo(new ClampingScrollPhysics()))) ?? new ClampingScrollPhysics());
+        return ((Widget)new _InheritedNestedScrollView__nested_scroll_view(state: this, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
             _lastHasScrolledBody = this._coordinator!.hasScrolledBody;
-            return ((Widget)(object?)new _NestedScrollViewCustomScrollView__nested_scroll_view(dragStartBehavior: ((NestedScrollView)this.widget).dragStartBehavior, scrollDirection: ((NestedScrollView)this.widget).scrollDirection, reverse: ((NestedScrollView)this.widget).reverse, physics: scrollPhysics, scrollBehavior: ((((NestedScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), controller: this._coordinator!._outerController, slivers: this.widget._buildSlivers(context, this._coordinator!._innerController, DartRuntimePrimitives.RequireValue(this._lastHasScrolledBody)), handle: this._absorberHandle, clipBehavior: ((NestedScrollView)this.widget).clipBehavior, restorationId: ((NestedScrollView)this.widget).restorationId, hitTestBehavior: ((NestedScrollView)this.widget).hitTestBehavior));
+            return ((Widget)new _NestedScrollViewCustomScrollView__nested_scroll_view(dragStartBehavior: ((NestedScrollView)this.widget).dragStartBehavior, scrollDirection: ((NestedScrollView)this.widget).scrollDirection, reverse: ((NestedScrollView)this.widget).reverse, physics: scrollPhysics, scrollBehavior: ((((NestedScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), controller: this._coordinator!._outerController, slivers: this.widget._buildSlivers(context, this._coordinator!._innerController, DartRuntimePrimitives.RequireValue(this._lastHasScrolledBody)), handle: this._absorberHandle, clipBehavior: ((NestedScrollView)this.widget).clipBehavior, restorationId: ((NestedScrollView)this.widget).restorationId, hitTestBehavior: ((NestedScrollView)this.widget).hitTestBehavior));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -126,7 +125,7 @@ internal class _NestedScrollViewCustomScrollView__nested_scroll_view : CustomScr
 {
     public virtual SliverOverlapAbsorberHandle handle { get; private set; } = default!;
 
-    internal _NestedScrollViewCustomScrollView__nested_scroll_view(global::Doroti.Framework.Painting.Axis scrollDirection, bool reverse, ScrollPhysics physics, ScrollBehavior scrollBehavior, ScrollController controller, List<Widget> slivers, SliverOverlapAbsorberHandle handle, Clip clipBehavior, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, string? restorationId = null) : base(scrollDirection: scrollDirection, reverse: reverse, physics: physics, scrollBehavior: scrollBehavior, controller: controller, slivers: slivers, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior, dragStartBehavior: dragStartBehavior, restorationId: restorationId)
+    internal _NestedScrollViewCustomScrollView__nested_scroll_view(global::Doroti.Framework.Painting.Axis scrollDirection, bool reverse, ScrollPhysics physics, ScrollBehavior scrollBehavior, ScrollController controller, List<Widget> slivers, SliverOverlapAbsorberHandle handle, Clip clipBehavior, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, string? restorationId = null) : base(scrollDirection: scrollDirection, reverse: reverse, physics: physics, scrollBehavior: scrollBehavior, controller: controller, slivers: slivers, clipBehavior: clipBehavior, hitTestBehavior: hitTestBehavior, dragStartBehavior: dragStartBehavior, restorationId: restorationId)
     {
         this.handle = handle;
     }
@@ -134,7 +133,7 @@ internal class _NestedScrollViewCustomScrollView__nested_scroll_view : CustomScr
     public override Widget buildViewport(BuildContext context, global::Doroti.Framework.Rendering.ViewportOffset offset, global::Doroti.Framework.Painting.AxisDirection axisDirection, List<Widget> slivers)
     {
         DartRuntimePrimitives.Assert(() => !this.shrinkWrap);
-        return ((Widget)(object?)new NestedScrollViewViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, handle: this.handle, clipBehavior: this.clipBehavior));
+        return ((Widget)new NestedScrollViewViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, handle: this.handle, clipBehavior: this.clipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -149,7 +148,7 @@ internal class _InheritedNestedScrollView__nested_scroll_view : InheritedWidget
         this.state = state;
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => (!object.Equals(this.state, ((_InheritedNestedScrollView__nested_scroll_view)oldWidget).state));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => (!Equals(this.state, ((_InheritedNestedScrollView__nested_scroll_view)oldWidget).state));
 }
 
 public class _NestedScrollMetrics__nested_scroll_view : FixedScrollMetrics
@@ -183,7 +182,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     internal virtual bool _floatHeaderSlivers { get; private set; } = default!;
     internal virtual _NestedScrollController__nested_scroll_view _outerController { get; set; } = default!;
     internal virtual _NestedScrollController__nested_scroll_view _innerController { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Rendering.ScrollDirection _userScrollDirection { get; set; } = global::Doroti.Framework.Rendering.ScrollDirection.idle;
+    internal virtual global::Doroti.Framework.Rendering.ScrollDirection _userScrollDirection { get; set; } = ScrollDirection.idle;
     internal virtual ScrollDragController? _currentDrag { get; set; } = default;
 
     internal _NestedScrollCoordinator__nested_scroll_view(NestedScrollViewState _state, ScrollController? _parent, global::System.Action _onHasScrolledBodyChanged, bool _floatHeaderSlivers)
@@ -207,7 +206,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         {
             if (!this._outerController.hasClients)
             {
-                return ((_NestedScrollPosition__nested_scroll_view)(object)null);
+                return ((_NestedScrollPosition__nested_scroll_view?)null);
             }
             return ((_NestedScrollController__nested_scroll_view)this._outerController).nestedPositions.Single();
         }
@@ -260,7 +259,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     public virtual global::Doroti.Framework.Rendering.ScrollDirection userScrollDirection => this._userScrollDirection;
     public virtual void updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection value)
     {
-        if ((object.Equals(this.userScrollDirection, DartRuntimePrimitives.RequireValue(value))))
+        if ((Equals(this.userScrollDirection, DartRuntimePrimitives.RequireValue(value))))
         {
             return;
         }
@@ -286,7 +285,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         _currentDrag = null;
         if (!scrolling)
         {
-            updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection.idle);
+            updateUserScrollDirection(ScrollDirection.idle);
         }
     }
 
@@ -299,14 +298,14 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual void goIdle()
     {
-        beginActivity(_NestedScrollCoordinator__nested_scroll_view._createIdleScrollActivity(this._outerPosition!), (global::System.Func<_NestedScrollPosition__nested_scroll_view, IdleScrollActivity>)_createIdleScrollActivity);
+        beginActivity(_createIdleScrollActivity(this._outerPosition!), (global::System.Func<_NestedScrollPosition__nested_scroll_view, IdleScrollActivity>)_createIdleScrollActivity);
     }
 
     public virtual void goBallistic(double velocity)
     {
         beginActivity(createOuterBallisticScrollActivity(velocity), ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) =>
         {
-            return ((ScrollActivity)(object?)createInnerBallisticScrollActivity(position, velocity));
+            return ((ScrollActivity)createInnerBallisticScrollActivity(position, velocity));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
     }
@@ -341,16 +340,16 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         }
         if ((innerPosition is null))
         {
-            return ((ScrollActivity)(object?)this._outerPosition!.createBallisticScrollActivity(this._outerPosition!.physics.createBallisticSimulation(this._outerPosition!, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent));
+            return ((ScrollActivity)this._outerPosition!.createBallisticScrollActivity(this._outerPosition!.physics.createBallisticSimulation(this._outerPosition!, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent));
         }
-        _NestedScrollMetrics__nested_scroll_view metricsLocal = ((_NestedScrollMetrics__nested_scroll_view)(object?)_getMetrics(innerPosition, velocity));
-        return ((ScrollActivity)(object?)this._outerPosition!.createBallisticScrollActivity(this._outerPosition!.physics.createBallisticSimulation(metricsLocal, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.outer, metrics: metricsLocal));
+        _NestedScrollMetrics__nested_scroll_view metricsLocal = ((_NestedScrollMetrics__nested_scroll_view)_getMetrics(innerPosition, velocity));
+        return ((ScrollActivity)this._outerPosition!.createBallisticScrollActivity(this._outerPosition!.physics.createBallisticSimulation(metricsLocal, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.outer, metrics: metricsLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual ScrollActivity createInnerBallisticScrollActivity(_NestedScrollPosition__nested_scroll_view position, double velocity)
     {
-        return ((ScrollActivity)(object?)position.createBallisticScrollActivity(position.physics.createBallisticSimulation(_getMetrics(position, velocity), velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.inner));
+        return ((ScrollActivity)position.createBallisticScrollActivity(position.physics.createBallisticSimulation(_getMetrics(position, velocity), velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.inner));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -428,7 +427,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual double unnestOffset(double value, _NestedScrollPosition__nested_scroll_view source)
     {
-        if ((object.Equals(source, this._outerPosition)))
+        if ((Equals(source, this._outerPosition)))
         {
             return Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), this._outerPosition!.minScrollExtent, this._outerPosition!.maxScrollExtent);
         }
@@ -442,7 +441,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual double nestOffset(double value, _NestedScrollPosition__nested_scroll_view target)
     {
-        if ((object.Equals(target, this._outerPosition)))
+        if ((Equals(target, this._outerPosition)))
         {
             return Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), this._outerPosition!.minScrollExtent, this._outerPosition!.maxScrollExtent);
         }
@@ -478,16 +477,16 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public async virtual Future animateTo(double to, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
-        DrivenScrollActivity outerActivity = ((DrivenScrollActivity)(object?)this._outerPosition!.createDrivenScrollActivity(nestOffset(to, this._outerPosition!), duration, curve));
+        DrivenScrollActivity outerActivity = ((DrivenScrollActivity)this._outerPosition!.createDrivenScrollActivity(nestOffset(to, this._outerPosition!), duration, curve));
         var resultFutures = new List<Future> { ((DrivenScrollActivity)outerActivity).done };
         beginActivity(outerActivity, ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) =>
         {
-            DrivenScrollActivity innerActivity = ((DrivenScrollActivity)(object?)position.createDrivenScrollActivity(nestOffset(to, position), duration, curve));
+            DrivenScrollActivity innerActivity = ((DrivenScrollActivity)position.createDrivenScrollActivity(nestOffset(to, position), duration, curve));
             resultFutures.Add(((DrivenScrollActivity)innerActivity).done);
-            return ((ScrollActivity)(object?)innerActivity);
+            return ((ScrollActivity)innerActivity);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(resultFutures);
+        await DartAsyncRuntime.wait<object?>(resultFutures);
     }
 
     public virtual void jumpTo(double to)
@@ -509,7 +508,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
             return;
         }
         goIdle();
-        updateUserScrollDirection(((delta < 0.0) ? global::Doroti.Framework.Rendering.ScrollDirection.forward : global::Doroti.Framework.Rendering.ScrollDirection.reverse));
+        updateUserScrollDirection(((delta < 0.0) ? ScrollDirection.forward : ScrollDirection.reverse));
         this._outerPosition!.isScrollingNotifier.value = true;
         this._outerPosition!.didStartScroll();
         foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
@@ -517,7 +516,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
             position.isScrollingNotifier.value = true;
             position.didStartScroll();
         }
-        if (!System.Linq.Enumerable.Any(this._innerPositions))
+        if (!Enumerable.Any(this._innerPositions))
         {
             this._outerPosition!.applyClampedPointerSignalUpdate(delta);
         }
@@ -586,7 +585,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     public virtual ScrollHoldController hold(global::System.Action holdCancelCallback)
     {
         beginActivity(new HoldScrollActivity(@delegate: this._outerPosition!, onHoldCanceled: () => holdCancelCallback()), ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) => new HoldScrollActivity(@delegate: position))));
-        return ((ScrollHoldController)(object?)this);
+        return ((ScrollHoldController)this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -601,15 +600,15 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         beginActivity(new DragScrollActivity(this._outerPosition!, dragLocal), ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) => new DragScrollActivity(position, dragLocal))));
         DartRuntimePrimitives.Assert(() => (this._currentDrag is null));
         _currentDrag = dragLocal;
-        return ((global::Doroti.Framework.Gestures.Drag)(object?)dragLocal);
+        return ((global::Doroti.Framework.Gestures.Drag)dragLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void applyUserOffset(double delta)
     {
-        updateUserScrollDirection(((delta > 0.0) ? global::Doroti.Framework.Rendering.ScrollDirection.forward : global::Doroti.Framework.Rendering.ScrollDirection.reverse));
+        updateUserScrollDirection(((delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse));
         DartRuntimePrimitives.Assert(() => (delta != 0.0));
-        if (!System.Linq.Enumerable.Any(this._innerPositions))
+        if (!Enumerable.Any(this._innerPositions))
         {
             this._outerPosition!.applyFullDragUpdate(delta);
         }
@@ -626,7 +625,7 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                         outerDelta = Math.Max(outerDelta, potentialOuterDelta);
                     }
                 }
-                if ((outerDelta.abs() > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                if ((outerDelta.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
                     double innerDelta = this._outerPosition!.applyClampedDragUpdate(outerDelta);
                     if ((innerDelta != 0.0))
@@ -681,19 +680,19 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual void updateParent()
     {
-        this._outerPosition?.setParent(((this._parent ?? (ScrollController)PrimaryScrollController.maybeOf(this._state.context))));
+        this._outerPosition?.setParent(((this._parent ?? (ScrollController?)PrimaryScrollController.maybeOf(this._state.context))));
     }
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._currentDrag?.dispose();
         _currentDrag = null;
         this._outerController.dispose();
         this._innerController.dispose();
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedScrollCoordinator"))}(outer={this._outerController}; inner={this._innerController})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedScrollCoordinator"))}(outer={this._outerController}; inner={this._innerController})";
 }
 
 internal class _NestedScrollController__nested_scroll_view : ScrollController
@@ -707,7 +706,7 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
 
     public override ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
     {
-        return ((ScrollPosition)(object?)new _NestedScrollPosition__nested_scroll_view(coordinator: this.coordinator, physics: physics, context: context, initialPixels: this.initialScrollOffset, oldPosition: oldPosition, debugLabel: this.debugLabel));
+        return ((ScrollPosition)new _NestedScrollPosition__nested_scroll_view(coordinator: this.coordinator, physics: physics, context: context, initialPixels: this.initialScrollOffset, oldPosition: oldPosition, debugLabel: this.debugLabel));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -724,7 +723,7 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
     public override void detach(ScrollPosition position)
     {
         DartRuntimePrimitives.Assert(() => (position is _NestedScrollPosition__nested_scroll_view));
-        (((_NestedScrollPosition__nested_scroll_view?)(object?)position)!).setParent(((ScrollController)(object)null));
+        (((_NestedScrollPosition__nested_scroll_view?)position)!).setParent(((ScrollController?)null));
         ((_NestedScrollPosition__nested_scroll_view)position).removeListener(this._scheduleUpdateShadow);
         base.detach(((_NestedScrollPosition__nested_scroll_view)position));
         _scheduleUpdateShadow();
@@ -732,7 +731,7 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
 
     internal virtual void _scheduleUpdateShadow()
     {
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
         {
             this.coordinator.updateShadow();
         })), debugLabel: "NestedScrollController.updateShadow");
@@ -801,7 +800,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
             didUpdateScrollPositionBy(offset);
         }
         double result = (delta + offset);
-        if ((result.abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        if ((result.abs() < Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return 0.0;
         }
@@ -814,7 +813,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
         DartRuntimePrimitives.Assert(() => (delta != 0.0));
         double oldPixels = this.pixels;
         double newPixels = (this.pixels - this.physics.applyPhysicsToUserOffset(this, delta));
-        if ((((oldPixels - newPixels)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        if ((((oldPixels - newPixels)).abs() < Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return 0.0;
         }
@@ -868,7 +867,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     public virtual void goIdle()
     {
         beginActivity(new IdleScrollActivity(this));
-        this.coordinator.updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection.idle);
+        this.coordinator.updateUserScrollDirection(ScrollDirection.idle);
     }
 
     public virtual void goBallistic(double velocity)
@@ -885,7 +884,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     {
         if ((simulation is null))
         {
-            return ((ScrollActivity)(object?)new IdleScrollActivity(this));
+            return ((ScrollActivity)new IdleScrollActivity(this));
         }
         switch (mode)
         {
@@ -894,17 +893,17 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
                     DartRuntimePrimitives.Assert(() => (metrics is not null));
                     if ((metrics!.minRange == ((_NestedScrollMetrics__nested_scroll_view)metrics).maxRange))
                     {
-                        return ((ScrollActivity)(object?)new IdleScrollActivity(this));
+                        return ((ScrollActivity)new IdleScrollActivity(this));
                     }
-                    return ((ScrollActivity)(object?)new _NestedOuterBallisticScrollActivity__nested_scroll_view(this.coordinator, this, metrics, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
+                    return ((ScrollActivity)new _NestedOuterBallisticScrollActivity__nested_scroll_view(this.coordinator, this, metrics, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
                 }
             case _NestedBallisticScrollActivityMode__nested_scroll_view.inner:
                 {
-                    return ((ScrollActivity)(object?)new _NestedInnerBallisticScrollActivity__nested_scroll_view(this.coordinator, this, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
+                    return ((ScrollActivity)new _NestedInnerBallisticScrollActivity__nested_scroll_view(this.coordinator, this, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
                 }
             case _NestedBallisticScrollActivityMode__nested_scroll_view.independent:
                 {
-                    return ((ScrollActivity)(object?)new BallisticScrollActivity(this, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
+                    return ((ScrollActivity)new BallisticScrollActivity(this, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -914,7 +913,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
 
     public override Future animateTo(double to, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
-        return ((Future)(object?)this.coordinator.animateTo(this.coordinator.unnestOffset(to, this), duration: duration, curve: curve));
+        return ((Future)this.coordinator.animateTo(this.coordinator.unnestOffset(to, this), duration: duration, curve: curve));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -955,19 +954,19 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
 
     public virtual void updateCanDrag(bool innerCanDrag)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((_NestedScrollCoordinator__nested_scroll_view)this.coordinator)._outerPosition, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((_NestedScrollCoordinator__nested_scroll_view)this.coordinator)._outerPosition, this)));
         this.context.setCanDrag((this.physics.shouldAcceptUserOffset(this) || innerCanDrag));
     }
 
     public override ScrollHoldController hold(global::System.Action holdCancelCallback)
     {
-        return ((ScrollHoldController)(object?)this.coordinator.hold(() => holdCancelCallback()));
+        return ((ScrollHoldController)this.coordinator.hold(() => holdCancelCallback()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Gestures.Drag drag(global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action dragCancelCallback)
     {
-        return ((global::Doroti.Framework.Gestures.Drag)(object?)this.coordinator.drag(details, () => dragCancelCallback()));
+        return ((global::Doroti.Framework.Gestures.Drag)this.coordinator.drag(details, () => dragCancelCallback()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -989,7 +988,7 @@ internal class _NestedInnerBallisticScrollActivity__nested_scroll_view : Ballist
         this.coordinator = coordinator;
     }
 
-    public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)(object?)base.@delegate)!);
+    public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)base.@delegate)!);
     public override void resetActivity()
     {
         ((_NestedScrollPosition__nested_scroll_view)this.@delegate).beginActivity(this.coordinator.createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate), this.velocity));
@@ -1021,7 +1020,7 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
         System.Diagnostics.Debug.Assert((((_NestedScrollMetrics__nested_scroll_view)metrics).maxRange > ((_NestedScrollMetrics__nested_scroll_view)metrics).minRange));
     }
 
-    public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)(object?)base.@delegate)!);
+    public override ScrollActivityDelegate @delegate => DartRuntimePrimitives.ConvertValue<ScrollActivityDelegate>(((_NestedScrollPosition__nested_scroll_view?)base.@delegate)!);
     public override void resetActivity()
     {
         ((_NestedScrollPosition__nested_scroll_view)this.@delegate).beginActivity(this.coordinator.createOuterBallisticScrollActivity(this.velocity));
@@ -1075,7 +1074,7 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedOuterBallisticScrollActivity"))}({((_NestedScrollMetrics__nested_scroll_view)this.metrics).minRange} .. {((_NestedScrollMetrics__nested_scroll_view)this.metrics).maxRange}; correcting by {((_NestedScrollMetrics__nested_scroll_view)this.metrics).correctionOffset})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedOuterBallisticScrollActivity"))}({((_NestedScrollMetrics__nested_scroll_view)this.metrics).minRange} .. {((_NestedScrollMetrics__nested_scroll_view)this.metrics).maxRange}; correcting by {((_NestedScrollMetrics__nested_scroll_view)this.metrics).correctionOffset})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1104,7 +1103,7 @@ public class SliverOverlapAbsorberHandle : global::Doroti.Framework.Foundation.C
     public override string ToString()
     {
         string? extra = (this._writers switch { 0L => ", orphan", 1L => DartRuntimePrimitives.ConvertValue<string>(null), _ => $", {this._writers} WRITERS ASSIGNED" });
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SliverOverlapAbsorberHandle"))}({this.layoutExtent}{extra})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SliverOverlapAbsorberHandle"))}({this.layoutExtent}{extra})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1121,13 +1120,13 @@ public class SliverOverlapAbsorber : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new RenderSliverOverlapAbsorber(handle: this.handle));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new RenderSliverOverlapAbsorber(handle: this.handle));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (RenderSliverOverlapAbsorber)(object)renderObject;
+        var __renderObject = (RenderSliverOverlapAbsorber)renderObject;
         __renderObject.handle = this.handle;
     }
 
@@ -1155,7 +1154,7 @@ public class RenderSliverOverlapAbsorber : global::Doroti.Framework.Rendering.Re
         set
         {
             var __value = value;
-            if ((object.Equals(this.handle, __value)))
+            if ((Equals(this.handle, __value)))
             {
                 return;
             }
@@ -1187,7 +1186,7 @@ public class RenderSliverOverlapAbsorber : global::Doroti.Framework.Rendering.Re
         DartRuntimePrimitives.Assert(() => (((SliverOverlapAbsorberHandle)this.handle)._writers == 1L), () => (object?)"A SliverOverlapAbsorberHandle cannot be passed to multiple RenderSliverOverlapAbsorber objects at the same time.");
         if ((this.child is null))
         {
-            geometry = global::Doroti.Framework.Rendering.SliverGeometry.zero;
+            geometry = SliverGeometry.zero;
             return;
         }
         this.child!.layout(this.constraints, parentUsesSize: true);
@@ -1230,7 +1229,7 @@ public class RenderSliverOverlapAbsorber : global::Doroti.Framework.Rendering.Re
             {
                 if ((child is not RenderSliver))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", (child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderSliver)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderSliver)} child was created by", this.debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", (child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1291,13 +1290,13 @@ public class SliverOverlapInjector : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new RenderSliverOverlapInjector(handle: this.handle));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new RenderSliverOverlapInjector(handle: this.handle));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (RenderSliverOverlapInjector)(object)renderObject;
+        var __renderObject = (RenderSliverOverlapInjector)renderObject;
         __renderObject.handle = this.handle;
     }
 
@@ -1326,7 +1325,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
         set
         {
             var __value = value;
-            if ((object.Equals(this.handle, __value)))
+            if ((Equals(this.handle, __value)))
             {
                 return;
             }
@@ -1375,7 +1374,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)
+                if (Rendering.DebugLibrary.debugPaintSizeEnabled)
                 {
                     var paint = ((Func<Paint>)(() =>
 {
@@ -1390,7 +1389,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
                     global::Doroti.Ui.Offset delta = default!;
                     switch (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis)
                     {
-                        case global::Doroti.Framework.Painting.Axis.vertical:
+                        case Axis.vertical:
                             {
                                 double x = (offset.dx + (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 2.0));
                                 start = new global::Doroti.Ui.Offset(x, offset.dy);
@@ -1398,7 +1397,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
                                 delta = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 5.0), 0.0);
                                 break;
                             }
-                        case global::Doroti.Framework.Painting.Axis.horizontal:
+                        case Axis.horizontal:
                             {
                                 double y = (offset.dy + (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 2.0));
                                 start = new global::Doroti.Ui.Offset(offset.dx, y);
@@ -1409,7 +1408,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
                     }
                     for (var index = -2L; (index <= 2L); index += 1L)
                     {
-                        global::Doroti.Framework.Painting.Paint_utilitiesLibrary.paintZigZag(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, paint, (start - (delta * index.toDouble())), (end - (delta * index.toDouble())), 10L, 10.0);
+                        Paint_utilitiesLibrary.paintZigZag(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, paint, (start - (delta * index.toDouble())), (end - (delta * index.toDouble())), 10L, 10.0);
                     }
                 }
                 return true;
@@ -1429,25 +1428,25 @@ public class NestedScrollViewViewport : Viewport
 {
     public virtual SliverOverlapAbsorberHandle handle { get; private set; } = default!;
 
-    public NestedScrollViewViewport(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = global::Doroti.Framework.Painting.AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection? crossAxisDirection = null, double anchor = 0.0, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, global::Doroti.Framework.Foundation.Key? center = null, List<Widget> slivers = default!, SliverOverlapAbsorberHandle handle = default!, Clip clipBehavior = Clip.hardEdge) : base(key: key, axisDirection: axisDirection, crossAxisDirection: DartRuntimePrimitives.RequireValue(crossAxisDirection), anchor: anchor, offset: offset, center: center, slivers: slivers ?? new List<Widget>(), clipBehavior: clipBehavior)
+    public NestedScrollViewViewport(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection? crossAxisDirection = null, double anchor = 0.0, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, global::Doroti.Framework.Foundation.Key? center = null, List<Widget> slivers = default!, SliverOverlapAbsorberHandle handle = default!, Clip clipBehavior = Clip.hardEdge) : base(key: key, axisDirection: axisDirection, crossAxisDirection: DartRuntimePrimitives.RequireValue(crossAxisDirection), anchor: anchor, offset: offset, center: center, slivers: slivers ?? new List<Widget>(), clipBehavior: clipBehavior)
     {
         this.handle = handle;
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new RenderNestedScrollViewViewport(axisDirection: this.axisDirection, crossAxisDirection: ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection))), anchor: this.anchor, offset: this.offset, handle: this.handle, clipBehavior: this.clipBehavior));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new RenderNestedScrollViewViewport(axisDirection: this.axisDirection, crossAxisDirection: ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)getDefaultCrossAxisDirection(context, this.axisDirection))), anchor: this.anchor, offset: this.offset, handle: this.handle, clipBehavior: this.clipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (RenderNestedScrollViewViewport)(object)renderObject;
+        var __renderObject = (RenderNestedScrollViewViewport)renderObject;
         DartRuntimePrimitives.Ignore(((Func<RenderNestedScrollViewViewport>)(() =>
 {
     var __cascade = __renderObject;
     __cascade.axisDirection = this.axisDirection;
-    __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection)));
+    __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)getDefaultCrossAxisDirection(context, this.axisDirection)));
     __cascade.anchor = this.anchor;
     __cascade.offset = this.offset;
     __cascade.handle = this.handle;
@@ -1468,7 +1467,7 @@ public class RenderNestedScrollViewViewport : global::Doroti.Framework.Rendering
 {
     internal virtual SliverOverlapAbsorberHandle _handle { get; set; } = default!;
 
-    public RenderNestedScrollViewViewport(global::Doroti.Framework.Painting.AxisDirection axisDirection = global::Doroti.Framework.Painting.AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection crossAxisDirection = default!, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, double anchor = 0.0, List<global::Doroti.Framework.Rendering.RenderSliver>? children = null, global::Doroti.Framework.Rendering.RenderSliver? center = null, SliverOverlapAbsorberHandle handle = default!, Clip clipBehavior = Clip.hardEdge) : base(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection, offset: offset, anchor: anchor, children: children, center: center, clipBehavior: clipBehavior)
+    public RenderNestedScrollViewViewport(global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Painting.AxisDirection crossAxisDirection = default!, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, double anchor = 0.0, List<global::Doroti.Framework.Rendering.RenderSliver>? children = null, global::Doroti.Framework.Rendering.RenderSliver? center = null, SliverOverlapAbsorberHandle handle = default!, Clip clipBehavior = Clip.hardEdge) : base(axisDirection: axisDirection, crossAxisDirection: crossAxisDirection, offset: offset, anchor: anchor, children: children, center: center, clipBehavior: clipBehavior)
     {
         this._handle = handle;
     }
@@ -1479,7 +1478,7 @@ public class RenderNestedScrollViewViewport : global::Doroti.Framework.Rendering
         set
         {
             var __value = value;
-            if ((object.Equals(this.handle, __value)))
+            if ((Equals(this.handle, __value)))
             {
                 return;
             }

@@ -76,7 +76,7 @@ public class UndoManager
 
     internal virtual UndoDirection _toUndoDirection(string direction)
     {
-        return (direction switch { var __case4108 when object.Equals(__case4108, "undo") => UndoDirection.undo, var __case4144 when object.Equals(__case4144, "redo") => UndoDirection.redo, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown undo direction: {direction}") }) });
+        return (direction switch { var __case4108 when Equals(__case4108, "undo") => UndoDirection.undo, var __case4144 when Equals(__case4144, "redo") => UndoDirection.redo, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown undo direction: {direction}") }) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

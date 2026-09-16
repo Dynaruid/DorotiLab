@@ -14,7 +14,7 @@ public class RawWebImageIo : StatelessWidget
 
     public RawWebImageIo(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.WebImageInfoIo image = default!, string? debugImageLabel = null, double? width = null, double? height = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, bool matchTextDirection = false) : base(key: key)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.image = image;
         this.debugImageLabel = debugImageLabel;
         this.width = width;

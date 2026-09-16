@@ -46,7 +46,7 @@ public class _CombiningGestureArenaMember__team : GestureArenaMember
         _winner ??= (((GestureArenaTeam)this._owner).captain ?? this._members[(int)(0L)]);
         foreach (GestureArenaMember member in this._members)
         {
-            if ((!object.Equals(member, this._winner)))
+            if ((!Equals(member, this._winner)))
             {
                 member.rejectGesture(pointer);
             }
@@ -69,7 +69,7 @@ public class _CombiningGestureArenaMember__team : GestureArenaMember
         DartRuntimePrimitives.Assert(() => !this._resolved);
         _resolved = true;
         _CombiningGestureArenaMember__team? combiner = ((GestureArenaTeam)this._owner)._combiners.remove(this._pointer);
-        DartRuntimePrimitives.Assert(() => (object.Equals(combiner, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(combiner, this)));
     }
 
     internal virtual GestureArenaEntry _add(long pointer, GestureArenaMember member)

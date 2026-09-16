@@ -43,7 +43,7 @@ public class SelectedContentRange : Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
@@ -121,11 +121,11 @@ public abstract class SelectionUtils
         }
         if (((point.dy <= targetRect.top) || ((point.dy <= targetRect.bottom) && (point.dx <= targetRect.left))))
         {
-            return ((object.Equals(direction, TextDirection.ltr)) ? targetRect.topLeft : targetRect.topRight);
+            return ((Equals(direction, TextDirection.ltr)) ? targetRect.topLeft : targetRect.topRight);
         }
         else
         {
-            return ((object.Equals(direction, TextDirection.ltr)) ? targetRect.bottomRight : targetRect.bottomLeft);
+            return ((Equals(direction, TextDirection.ltr)) ? targetRect.bottomRight : targetRect.bottomLeft);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -298,10 +298,10 @@ public class SelectionGeometry : Diagnosticable
         this.selectionRects = __selectionRects;
         this.status = status;
         this.hasContent = hasContent;
-        System.Diagnostics.Debug.Assert(((((startSelectionPoint is null) && (endSelectionPoint is null))) || (!object.Equals(DartRuntimePrimitives.RequireValue(status), SelectionStatus.none))));
+        System.Diagnostics.Debug.Assert(((((startSelectionPoint is null) && (endSelectionPoint is null))) || (!Equals(DartRuntimePrimitives.RequireValue(status), SelectionStatus.none))));
     }
 
-    public virtual bool hasSelection => (!object.Equals(this.status, SelectionStatus.none));
+    public virtual bool hasSelection => (!Equals(this.status, SelectionStatus.none));
     public virtual SelectionGeometry copyWith(SelectionPoint? startSelectionPoint = null, SelectionPoint? endSelectionPoint = null, List<Rect>? selectionRects = null, SelectionStatus? status = null, bool? hasContent = null)
     {
         return new SelectionGeometry(startSelectionPoint: (startSelectionPoint ?? this.startSelectionPoint), endSelectionPoint: (endSelectionPoint ?? this.endSelectionPoint), selectionRects: (selectionRects ?? this.selectionRects), status: (status ?? this.status), hasContent: (hasContent ?? this.hasContent));
@@ -316,11 +316,11 @@ public class SelectionGeometry : Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((__other is SelectionGeometry) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).startSelectionPoint, this.startSelectionPoint))) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).endSelectionPoint, this.endSelectionPoint))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((SelectionGeometry)((SelectionGeometry)__other)).selectionRects, this.selectionRects)) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).status, this.status))) && (((SelectionGeometry)((SelectionGeometry)__other)).hasContent == this.hasContent));
+        return ((((((__other is SelectionGeometry) && (Equals(((SelectionGeometry)((SelectionGeometry)__other)).startSelectionPoint, this.startSelectionPoint))) && (Equals(((SelectionGeometry)((SelectionGeometry)__other)).endSelectionPoint, this.endSelectionPoint))) && CollectionsLibrary.listEquals(((SelectionGeometry)((SelectionGeometry)__other)).selectionRects, this.selectionRects)) && (Equals(((SelectionGeometry)((SelectionGeometry)__other)).status, this.status))) && (((SelectionGeometry)((SelectionGeometry)__other)).hasContent == this.hasContent));
     }
 
     public override int GetHashCode()
@@ -360,11 +360,11 @@ public class SelectionPoint : Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is SelectionPoint) && (object.Equals(((SelectionPoint)((SelectionPoint)__other)).localPosition, this.localPosition))) && (((SelectionPoint)((SelectionPoint)__other)).lineHeight == this.lineHeight)) && (object.Equals(((SelectionPoint)((SelectionPoint)__other)).handleType, this.handleType)));
+        return ((((__other is SelectionPoint) && (Equals(((SelectionPoint)((SelectionPoint)__other)).localPosition, this.localPosition))) && (((SelectionPoint)((SelectionPoint)__other)).lineHeight == this.lineHeight)) && (Equals(((SelectionPoint)((SelectionPoint)__other)).handleType, this.handleType)));
     }
 
     public override int GetHashCode()

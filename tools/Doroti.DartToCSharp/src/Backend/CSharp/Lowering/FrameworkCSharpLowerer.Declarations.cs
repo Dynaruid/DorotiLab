@@ -1207,7 +1207,15 @@ internal sealed partial class FrameworkCSharpLowerer
                     !IsValueType(returnType.TrimEnd('?')) &&
                     !IsValueType(expressionType.TrimEnd('?')) &&
                     !string.Equals(returnType.TrimEnd('?'), expressionType.TrimEnd('?'), StringComparison.Ordinal);
-                if (needsCheckedCast) builder.Append("((").Append(returnType).Append(")(object?)");
+                if (needsCheckedCast)
+                {
+                    // Preserve the Dart expression's nullability while bridging
+                    // CLR representations. A nullable object cast loses the flow
+                    // state even for a freshly constructed, non-null instance.
+                    builder.Append("((").Append(returnType).Append(")(object");
+                    if (expressionType.EndsWith("?", StringComparison.Ordinal)) builder.Append('?');
+                    builder.Append(')');
+                }
                 LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
                 if (needsCheckedCast) builder.Append(')');
                 builder.AppendLine(";");

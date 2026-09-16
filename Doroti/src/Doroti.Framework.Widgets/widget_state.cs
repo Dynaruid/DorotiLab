@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/widget_state.dart
-#pragma warning disable CS0659, CS0693, CS8600, CS8601, CS8602, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -48,10 +47,11 @@ internal class _WidgetStateAnd__widget_state : _WidgetStateCombo__widget_state
     {
         var __other = other as _WidgetStateAnd__widget_state;
         if (__other is null) return false;
-        return (((__other is _WidgetStateAnd__widget_state) && (object.Equals(((_WidgetStateAnd__widget_state)__other).first, this.first))) && (object.Equals(((_WidgetStateAnd__widget_state)__other).second, this.second)));
+        return (((__other is _WidgetStateAnd__widget_state) && (Equals(((_WidgetStateAnd__widget_state)__other).first, this.first))) && (Equals(((_WidgetStateAnd__widget_state)__other).second, this.second)));
     }
 
     public override string ToString() => $"({this.first} & {this.second})";
+    public override int GetHashCode() => base.GetHashCode();
 }
 
 internal class _WidgetStateOr__widget_state : _WidgetStateCombo__widget_state
@@ -70,10 +70,11 @@ internal class _WidgetStateOr__widget_state : _WidgetStateCombo__widget_state
     {
         var __other = other as _WidgetStateOr__widget_state;
         if (__other is null) return false;
-        return (((__other is _WidgetStateOr__widget_state) && (object.Equals(((_WidgetStateOr__widget_state)__other).first, this.first))) && (object.Equals(((_WidgetStateOr__widget_state)__other).second, this.second)));
+        return (((__other is _WidgetStateOr__widget_state) && (Equals(((_WidgetStateOr__widget_state)__other).first, this.first))) && (Equals(((_WidgetStateOr__widget_state)__other).second, this.second)));
     }
 
     public override string ToString() => $"({this.first} | {this.second})";
+    public override int GetHashCode() => base.GetHashCode();
 }
 
 internal class _WidgetStateNot__widget_state : WidgetStatesConstraint
@@ -90,10 +91,10 @@ internal class _WidgetStateNot__widget_state : WidgetStatesConstraint
     {
         var __other = other as _WidgetStateNot__widget_state;
         if (__other is null) return false;
-        return ((__other is _WidgetStateNot__widget_state) && (object.Equals(((_WidgetStateNot__widget_state)((_WidgetStateNot__widget_state)__other)).value, this.value)));
+        return ((__other is _WidgetStateNot__widget_state) && (Equals(((_WidgetStateNot__widget_state)((_WidgetStateNot__widget_state)__other)).value, this.value)));
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(this.value.GetHashCode());
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>((this.value?.GetHashCode() ?? 0));
     public override string ToString() => $"~{this.value}";
     public virtual WidgetStatesConstraint op_BitwiseAnd(WidgetStatesConstraint other) => DartRuntimePrimitives.ConvertValue<WidgetStatesConstraint>(new _WidgetStateAnd__widget_state(this, other));
     public virtual WidgetStatesConstraint op_BitwiseOr(WidgetStatesConstraint other) => DartRuntimePrimitives.ConvertValue<WidgetStatesConstraint>(new _WidgetStateOr__widget_state(this, other));
@@ -146,17 +147,17 @@ public delegate T WidgetPropertyResolver<T>(HashSet<WidgetState> states);
 
 public abstract class WidgetStateColor : Color, WidgetStateProperty<Color>
 {
-    public static WidgetStateColor transparent = ((WidgetStateColor)(object?)new _WidgetStateColorTransparent__widget_state());
+    public static WidgetStateColor transparent = ((WidgetStateColor)new _WidgetStateColorTransparent__widget_state());
 
     protected WidgetStateColor(long defaultValue) : base(defaultValue)
     {
     }
 
     public static WidgetStateColor CreateResolveWith(global::System.Func<HashSet<WidgetState>, Color> callback)
-        => ((WidgetStateColor)(object?)new _WidgetStateColor__widget_state(callback));
+        => ((WidgetStateColor)new _WidgetStateColor__widget_state(callback));
 
     public static WidgetStateColor CreateFromMap(DartMap<WidgetStatesConstraint, Color> map)
-        => ((WidgetStateColor)(object?)new _WidgetStateColorMapper__widget_state(map));
+        => new _WidgetStateColorMapper__widget_state(map);
 
     public abstract Color resolve(HashSet<WidgetState> states);
 }
@@ -183,33 +184,26 @@ internal class _WidgetStateColorTransparent__widget_state : WidgetStateColor
     public override Color resolve(HashSet<WidgetState> states) => new global::Doroti.Ui.Color(0L);
 }
 
-internal class _WidgetStateColorMapper__widget_state : WidgetStateMapper<Color>
-{
-    internal _WidgetStateColorMapper__widget_state(DartMap<WidgetStatesConstraint, Color> map) : base(map)
-    {
-    }
-
-}
 
 public abstract class WidgetStateMouseCursor : global::Doroti.Framework.Services.MouseCursor, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>
 {
-    public static WidgetStateMouseCursor clickable = WidgetStateMouseCursor.CreateResolveWith((global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Services.MouseCursor>)_clickable, debugDescription: "WidgetStateMouseCursor(clickable)");
-    public static WidgetStateMouseCursor adaptiveClickable = WidgetStateMouseCursor.CreateResolveWith((global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Services.MouseCursor>)_adaptiveClickable, debugDescription: "WidgetStateMouseCursor(adaptiveClickable)");
-    public static WidgetStateMouseCursor textable = WidgetStateMouseCursor.CreateResolveWith((global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Services.MouseCursor>)_textable, debugDescription: "WidgetStateMouseCursor(textable)");
+    public static WidgetStateMouseCursor clickable = CreateResolveWith((global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Services.MouseCursor>)_clickable, debugDescription: "WidgetStateMouseCursor(clickable)");
+    public static WidgetStateMouseCursor adaptiveClickable = CreateResolveWith((global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Services.MouseCursor>)_adaptiveClickable, debugDescription: "WidgetStateMouseCursor(adaptiveClickable)");
+    public static WidgetStateMouseCursor textable = CreateResolveWith((global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Services.MouseCursor>)_textable, debugDescription: "WidgetStateMouseCursor(textable)");
 
     protected WidgetStateMouseCursor()
     {
     }
 
     public static WidgetStateMouseCursor CreateResolveWith(global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Services.MouseCursor> callback, string debugDescription = default!)
-        => ((WidgetStateMouseCursor)(object?)new _WidgetStateMouseCursor__widget_state(callback, debugDescription));
+        => ((WidgetStateMouseCursor)new _WidgetStateMouseCursor__widget_state(callback, debugDescription));
 
     public static WidgetStateMouseCursor CreateFromMap(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Services.MouseCursor> map)
-        => ((WidgetStateMouseCursor)(object?)new _WidgetMouseCursorMapper__widget_state(map));
+        => new _WidgetMouseCursorMapper__widget_state(map);
 
     public override global::Doroti.Framework.Services.MouseCursorSession createSession(long device)
     {
-        return ((global::Doroti.Framework.Services.MouseCursorSession)(object?)resolve(new HashSet<WidgetState>()).createSession(device));
+        return ((global::Doroti.Framework.Services.MouseCursorSession)resolve(new HashSet<WidgetState>()).createSession(device));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -221,9 +215,9 @@ public abstract class WidgetStateMouseCursor : global::Doroti.Framework.Services
     {
         if (states.Contains(WidgetState.disabled))
         {
-            return ((global::Doroti.Framework.Services.MouseCursor)(object?)global::Doroti.Framework.Services.SystemMouseCursors.basic);
+            return ((global::Doroti.Framework.Services.MouseCursor)SystemMouseCursors.basic);
         }
-        return ((global::Doroti.Framework.Services.MouseCursor)(object?)global::Doroti.Framework.Services.SystemMouseCursors.click);
+        return ((global::Doroti.Framework.Services.MouseCursor)SystemMouseCursors.click);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -231,9 +225,9 @@ public abstract class WidgetStateMouseCursor : global::Doroti.Framework.Services
     {
         if (states.Contains(WidgetState.disabled))
         {
-            return ((global::Doroti.Framework.Services.MouseCursor)(object?)global::Doroti.Framework.Services.SystemMouseCursors.basic);
+            return ((global::Doroti.Framework.Services.MouseCursor)SystemMouseCursors.basic);
         }
-        return ((global::Doroti.Framework.Services.MouseCursor)(object?)(global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic));
+        return ((global::Doroti.Framework.Services.MouseCursor)(Foundation.ConstantsLibrary.kIsWeb ? SystemMouseCursors.click : SystemMouseCursors.basic));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -241,9 +235,9 @@ public abstract class WidgetStateMouseCursor : global::Doroti.Framework.Services
     {
         if (states.Contains(WidgetState.disabled))
         {
-            return ((global::Doroti.Framework.Services.MouseCursor)(object?)global::Doroti.Framework.Services.SystemMouseCursors.basic);
+            return ((global::Doroti.Framework.Services.MouseCursor)SystemMouseCursors.basic);
         }
-        return ((global::Doroti.Framework.Services.MouseCursor)(object?)global::Doroti.Framework.Services.SystemMouseCursors.text);
+        return ((global::Doroti.Framework.Services.MouseCursor)SystemMouseCursors.text);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -264,13 +258,6 @@ internal class _WidgetStateMouseCursor__widget_state : WidgetStateMouseCursor
     public override global::Doroti.Framework.Services.MouseCursor resolve(HashSet<WidgetState> states) => this._resolve(states);
 }
 
-internal class _WidgetMouseCursorMapper__widget_state : WidgetStateMapper<global::Doroti.Framework.Services.MouseCursor>
-{
-    internal _WidgetMouseCursorMapper__widget_state(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Services.MouseCursor> map) : base(map)
-    {
-    }
-
-}
 
 public abstract class WidgetStateBorderSide : global::Doroti.Framework.Painting.BorderSide, WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>
 {
@@ -279,23 +266,23 @@ public abstract class WidgetStateBorderSide : global::Doroti.Framework.Painting.
     }
 
     public static WidgetStateBorderSide CreateResolveWith(global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Painting.BorderSide?> callback)
-        => ((WidgetStateBorderSide)(object?)new _WidgetStateBorderSide__widget_state(callback));
+        => ((WidgetStateBorderSide)new _WidgetStateBorderSide__widget_state(callback));
 
     public static WidgetStateBorderSide CreateFromMap(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Painting.BorderSide?> map)
-        => ((WidgetStateBorderSide)(object?)new _WidgetBorderSideMapper__widget_state(map));
+        => new _WidgetBorderSideMapper__widget_state(map);
 
     public abstract global::Doroti.Framework.Painting.BorderSide? resolve(HashSet<WidgetState> states);
     public static WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? lerp(WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? a, WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? b, double t)
     {
         if (((a is null) && (b is null)))
         {
-            return ((WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>)(object)null);
+            return ((WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>?)null);
         }
         if (DartRuntimePrimitives.Identical(a, b))
         {
             return a;
         }
-        return ((WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>?)(object?)new _LerpSides__widget_state(a, b, t));
+        return ((WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>?)new _LerpSides__widget_state(a, b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -316,21 +303,21 @@ internal class _LerpSides__widget_state : WidgetStateProperty<global::Doroti.Fra
 
     public virtual global::Doroti.Framework.Painting.BorderSide? resolve(HashSet<WidgetState> states)
     {
-        global::Doroti.Framework.Painting.BorderSide? resolvedA = ((global::Doroti.Framework.Painting.BorderSide?)(object?)this.a?.resolve(states));
-        global::Doroti.Framework.Painting.BorderSide? resolvedB = ((global::Doroti.Framework.Painting.BorderSide?)(object?)this.b?.resolve(states));
+        global::Doroti.Framework.Painting.BorderSide? resolvedA = ((global::Doroti.Framework.Painting.BorderSide?)this.a?.resolve(states));
+        global::Doroti.Framework.Painting.BorderSide? resolvedB = ((global::Doroti.Framework.Painting.BorderSide?)this.b?.resolve(states));
         if (((resolvedA is null) && (resolvedB is null)))
         {
-            return ((global::Doroti.Framework.Painting.BorderSide)(object)null);
+            return ((global::Doroti.Framework.Painting.BorderSide?)null);
         }
         if ((resolvedA is null))
         {
-            return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(new global::Doroti.Framework.Painting.BorderSide(width: 0, color: resolvedB!.color.withAlpha(0L)), resolvedB, this.t));
+            return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(new global::Doroti.Framework.Painting.BorderSide(width: 0, color: resolvedB!.color.withAlpha(0L)), resolvedB, this.t));
         }
         if ((resolvedB is null))
         {
-            return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(resolvedA, new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)resolvedA).color.withAlpha(0L)), this.t));
+            return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(resolvedA, new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)resolvedA).color.withAlpha(0L)), this.t));
         }
-        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(resolvedA, resolvedB, this.t));
+        return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(resolvedA, resolvedB, this.t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -348,13 +335,6 @@ internal class _WidgetStateBorderSide__widget_state : WidgetStateBorderSide
     public override global::Doroti.Framework.Painting.BorderSide? resolve(HashSet<WidgetState> states) => this._resolve(states);
 }
 
-internal class _WidgetBorderSideMapper__widget_state : WidgetStateMapper<global::Doroti.Framework.Painting.BorderSide?>
-{
-    internal _WidgetBorderSideMapper__widget_state(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Painting.BorderSide?> map) : base(map)
-    {
-    }
-
-}
 
 public abstract class WidgetStateOutlinedBorder : global::Doroti.Framework.Painting.OutlinedBorder, WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>
 {
@@ -363,33 +343,15 @@ public abstract class WidgetStateOutlinedBorder : global::Doroti.Framework.Paint
     }
 
     public static WidgetStateOutlinedBorder CreateResolveWith(global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Painting.OutlinedBorder?> callback)
-        => ((WidgetStateOutlinedBorder)(object?)new _WidgetStateOutlinedBorder__widget_state(callback));
+        => new _WidgetStateOutlinedBorder__widget_state(callback);
 
     public static WidgetStateOutlinedBorder CreateFromMap(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Painting.OutlinedBorder?> map)
-        => ((WidgetStateOutlinedBorder)(object?)new _WidgetOutlinedBorderMapper__widget_state(map));
+        => new _WidgetOutlinedBorderMapper__widget_state(map);
 
     public abstract global::Doroti.Framework.Painting.OutlinedBorder? resolve(HashSet<WidgetState> states);
 }
 
-internal class _WidgetStateOutlinedBorder__widget_state : global::Doroti.Framework.Painting.RoundedRectangleBorder
-{
-    internal virtual global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Painting.OutlinedBorder?> _resolve { get; private set; } = default!;
 
-    internal _WidgetStateOutlinedBorder__widget_state(global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Painting.OutlinedBorder?> _resolve)
-    {
-        this._resolve = _resolve;
-    }
-
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder? resolve(HashSet<WidgetState> states) => this._resolve(states);
-}
-
-internal class _WidgetOutlinedBorderMapper__widget_state : WidgetStateMapper<global::Doroti.Framework.Painting.OutlinedBorder?>
-{
-    internal _WidgetOutlinedBorderMapper__widget_state(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Painting.OutlinedBorder?> map) : base(map)
-    {
-    }
-
-}
 
 public abstract class WidgetStateTextStyle : global::Doroti.Framework.Painting.TextStyle, WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle>
 {
@@ -398,10 +360,10 @@ public abstract class WidgetStateTextStyle : global::Doroti.Framework.Painting.T
     }
 
     public static WidgetStateTextStyle CreateResolveWith(global::System.Func<HashSet<WidgetState>, global::Doroti.Framework.Painting.TextStyle> callback)
-        => ((WidgetStateTextStyle)(object?)new _WidgetStateTextStyle__widget_state(callback));
+        => ((WidgetStateTextStyle)new _WidgetStateTextStyle__widget_state(callback));
 
     public static WidgetStateTextStyle CreateFromMap(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Painting.TextStyle> map)
-        => ((WidgetStateTextStyle)(object?)new _WidgetTextStyleMapper__widget_state(map));
+        => new _WidgetTextStyleMapper__widget_state(map);
 
     public abstract global::Doroti.Framework.Painting.TextStyle resolve(HashSet<WidgetState> states);
 }
@@ -418,13 +380,6 @@ internal class _WidgetStateTextStyle__widget_state : WidgetStateTextStyle
     public override global::Doroti.Framework.Painting.TextStyle resolve(HashSet<WidgetState> states) => this._resolve(states);
 }
 
-internal class _WidgetTextStyleMapper__widget_state : WidgetStateMapper<global::Doroti.Framework.Painting.TextStyle>
-{
-    internal _WidgetTextStyleMapper__widget_state(DartMap<WidgetStatesConstraint, global::Doroti.Framework.Painting.TextStyle> map) : base(map)
-    {
-    }
-
-}
 
 public static class WidgetStateProperty
 {
@@ -434,33 +389,33 @@ public static class WidgetStateProperty
     public static WidgetStateProperty<T?>? lerp<T>(WidgetStateProperty<T>? a, WidgetStateProperty<T>? b, double t, global::System.Func<T?, T?, double, T?> lerpFunction) => WidgetStateProperty<T>.lerp(a, b, t, lerpFunction);
 }
 
-public interface WidgetStateProperty<T>
+public interface WidgetStateProperty<out T>
 {
     public static WidgetStateProperty<T> CreateFromMap(DartMap<WidgetStatesConstraint, T> map)
-        => ((WidgetStateProperty<T>)(object?)new WidgetStateMapper<T>(map));
+        => ((WidgetStateProperty<T>)new WidgetStateMapper<T>(map));
 
     public static WidgetStateProperty<T> CreateFromMap(DartMap<WidgetState, T> map)
         => CreateFromMap(WidgetStateMapAdapters.toConstraints(map));
 
-    public static T resolveAs<T>(T value, HashSet<WidgetState> states)
+    public static TValue resolveAs<TValue>(TValue value, HashSet<WidgetState> states)
     {
-        if ((value is WidgetStateProperty<T>))
+        if ((value is WidgetStateProperty<TValue>))
         {
-            WidgetStateProperty<T> value__as32591 = (WidgetStateProperty<T>)value;
-            WidgetStateProperty<T> @property = ((WidgetStateProperty<T>)(object?)value__as32591);
-            return ((T)(object?)@property.resolve(states));
+            WidgetStateProperty<TValue> value__as32591 = (WidgetStateProperty<TValue>)value;
+            WidgetStateProperty<TValue> @property = ((WidgetStateProperty<TValue>)value__as32591);
+            return ((TValue)@property.resolve(states));
         }
         return value;
     }
-    public static WidgetStateProperty<T> resolveWith<T>(global::System.Func<HashSet<WidgetState>, T> callback) => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<T>>(new _WidgetStatePropertyWith__widget_state<T>((global::System.Func<HashSet<WidgetState>, T>)callback));
-    public static WidgetStateProperty<T> all<T>(T value) => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<T>>(new WidgetStatePropertyAll<T>(value));
-    public static WidgetStateProperty<T?>? lerp<T>(WidgetStateProperty<T>? a, WidgetStateProperty<T>? b, double t, global::System.Func<T?, T?, double, T?> lerpFunction)
+    public static WidgetStateProperty<TValue> resolveWith<TValue>(global::System.Func<HashSet<WidgetState>, TValue> callback) => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<TValue>>(new _WidgetStatePropertyWith__widget_state<TValue>((global::System.Func<HashSet<WidgetState>, TValue>)callback));
+    public static WidgetStateProperty<TValue> all<TValue>(TValue value) => DartRuntimePrimitives.ConvertValue<WidgetStateProperty<TValue>>(new WidgetStatePropertyAll<TValue>(value));
+    public static WidgetStateProperty<TValue?>? lerp<TValue>(WidgetStateProperty<TValue>? a, WidgetStateProperty<TValue>? b, double t, global::System.Func<TValue?, TValue?, double, TValue?> lerpFunction)
     {
         if (((a is null) && (b is null)))
         {
             return default;
         }
-        return ((WidgetStateProperty<T?>?)(object?)new _LerpProperties__widget_state<T>(a, b, t, (global::System.Func<T?, T?, double, T?>)lerpFunction));
+        return ((WidgetStateProperty<TValue?>?)new _LerpProperties__widget_state<TValue>(a, b, t, (global::System.Func<TValue?, TValue?, double, TValue?>)lerpFunction));
     }
     public T resolve(HashSet<WidgetState> states);
 }
@@ -492,8 +447,8 @@ internal class _LerpProperties__widget_state<T> : WidgetStateProperty<T?>
 
     public virtual T? resolve(HashSet<WidgetState> states)
     {
-        T? resolvedA = ((T?)(object?)DartRuntimePrimitives.NullAware(this.a, __target => __target.resolve(states)));
-        T? resolvedB = ((T?)(object?)DartRuntimePrimitives.NullAware(this.b, __target => __target.resolve(states)));
+        T? resolvedA = ((T?)DartRuntimePrimitives.NullAware(this.a, __target => __target.resolve(states)));
+        T? resolvedB = ((T?)DartRuntimePrimitives.NullAware(this.b, __target => __target.resolve(states)));
         return this.lerpFunction(resolvedA, resolvedB, this.t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -514,9 +469,11 @@ internal class _WidgetStatePropertyWith__widget_state<T> : WidgetStateProperty<T
 
 public delegate void WidgetStateMap<T>();
 
-public class WidgetStateMapper<T> : global::Doroti.Framework.Foundation.Diagnosticable, WidgetStateProperty<T>
+public class WidgetStateMapper<T> : global::Doroti.Framework.Foundation.Diagnosticable, WidgetStateProperty<T>, IWidgetStateMapping<T>
 {
     internal virtual DartMap<WidgetStatesConstraint, T> _map { get; private set; } = default!;
+
+    DartMap<WidgetStatesConstraint, T> IWidgetStateMapping<T>.Mapping => _map;
 
     public WidgetStateMapper(DartMap<WidgetStatesConstraint, T> map)
     {
@@ -543,17 +500,13 @@ public class WidgetStateMapper<T> : global::Doroti.Framework.Foundation.Diagnost
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool Equals(object? other)
-    {
-        var __other = other as WidgetStateMapper<T>;
-        if (__other is null) return false;
-        return ((__other is WidgetStateMapper<T>) && global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals(this._map, ((WidgetStateMapper<T>)((WidgetStateMapper<T>)__other))._map));
-    }
+    public override bool Equals(object? other) => other is IWidgetStateMapping<T> mapping
+        && CollectionsLibrary.mapEquals(_map, mapping.Mapping);
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(new MapEquality<WidgetStatesConstraint, T>().hash(this._map));
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
-    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info)
+    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         return $"WidgetStateMapper<{typeof(T)}>({this._map})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -570,10 +523,10 @@ public class WidgetStateMapper<T> : global::Doroti.Framework.Foundation.Diagnost
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<WidgetStateMap<T>>("map", this._map));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -594,7 +547,7 @@ public class WidgetStatePropertyAll<T> : WidgetStateProperty<T>
         if ((this.value is double))
         {
             double value__as40867 = (double)(object)value!;
-            return $"WidgetStatePropertyAll({(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(((double)(object)this.value)))})";
+            return $"WidgetStatePropertyAll({(Foundation.DebugLibrary.debugFormatDouble(((double)(object)this.value)))})";
         }
         else
         {
@@ -607,10 +560,10 @@ public class WidgetStatePropertyAll<T> : WidgetStateProperty<T>
     {
         var __other = other as WidgetStatePropertyAll<T>;
         if (__other is null) return false;
-        return (((__other is WidgetStatePropertyAll<T>) && (object.Equals(DartRuntimePrimitives.RuntimeType(((WidgetStatePropertyAll<T>)__other)), this.GetType()))) && EqualityComparer<T>.Default.Equals(((WidgetStatePropertyAll<T>)((WidgetStatePropertyAll<T>)__other)).value, this.value));
+        return (((__other is WidgetStatePropertyAll<T>) && (Equals(DartRuntimePrimitives.RuntimeType(((WidgetStatePropertyAll<T>)__other)), this.GetType()))) && EqualityComparer<T>.Default.Equals(((WidgetStatePropertyAll<T>)((WidgetStatePropertyAll<T>)__other)).value, this.value));
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(this.value.GetHashCode());
+    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>((this.value?.GetHashCode() ?? 0));
 }
 
 public class WidgetStatesController : global::Doroti.Framework.Foundation.ValueNotifier<HashSet<WidgetState>>

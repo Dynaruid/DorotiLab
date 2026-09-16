@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/toggleable.dart
-#pragma warning disable CS8600, CS8602
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -85,7 +84,7 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._position)))
+            if ((Equals(__value, this._position)))
             {
                 return;
             }
@@ -101,7 +100,7 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._reaction)))
+            if ((Equals(__value, this._reaction)))
             {
                 return;
             }
@@ -117,7 +116,7 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._reactionFocusFade)))
+            if ((Equals(__value, this._reactionFocusFade)))
             {
                 return;
             }
@@ -133,7 +132,7 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._reactionHoverFade)))
+            if ((Equals(__value, this._reactionHoverFade)))
             {
                 return;
             }
@@ -148,8 +147,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         get => this._activeColor!;
         set
         {
-            var __value = (Color)(object)value;
-            if ((object.Equals(this._activeColor, __value)))
+            var __value = (Color)value;
+            if ((Equals(this._activeColor, __value)))
             {
                 return;
             }
@@ -162,8 +161,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         get => this._inactiveColor!;
         set
         {
-            var __value = (Color)(object)value;
-            if ((object.Equals(this._inactiveColor, __value)))
+            var __value = (Color)value;
+            if ((Equals(this._inactiveColor, __value)))
             {
                 return;
             }
@@ -176,8 +175,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         get => this._inactiveReactionColor!;
         set
         {
-            var __value = (Color)(object)value;
-            if ((object.Equals(__value, this._inactiveReactionColor)))
+            var __value = (Color)value;
+            if ((Equals(__value, this._inactiveReactionColor)))
             {
                 return;
             }
@@ -190,8 +189,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         get => this._reactionColor!;
         set
         {
-            var __value = (Color)(object)value;
-            if ((object.Equals(__value, this._reactionColor)))
+            var __value = (Color)value;
+            if ((Equals(__value, this._reactionColor)))
             {
                 return;
             }
@@ -204,8 +203,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         get => this._hoverColor!;
         set
         {
-            var __value = (Color)(object)value;
-            if ((object.Equals(__value, this._hoverColor)))
+            var __value = (Color)value;
+            if ((Equals(__value, this._hoverColor)))
             {
                 return;
             }
@@ -218,8 +217,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         get => this._focusColor!;
         set
         {
-            var __value = (Color)(object)value;
-            if ((object.Equals(__value, this._focusColor)))
+            var __value = (Color)value;
+            if ((Equals(__value, this._focusColor)))
             {
                 return;
             }
@@ -247,7 +246,7 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._downPosition)))
+            if ((Equals(__value, this._downPosition)))
             {
                 return;
             }
@@ -307,7 +306,7 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(this.inactiveReactionColor, this.reactionColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), this.hoverColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).value), this.focusColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).value)!;
     return __cascade;
 }))();
-            global::Doroti.Framework.Animation.Animatable<double> radialReactionRadiusTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: this.splashRadius));
+            global::Doroti.Framework.Animation.Animatable<double> radialReactionRadiusTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: this.splashRadius));
             double reactionRadius = ((this.isFocused || this.isHovered) ? this.splashRadius : radialReactionRadiusTween.evaluate(this.reaction));
             if ((reactionRadius > 0.0))
             {
@@ -331,7 +330,7 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     public virtual bool? hitTest(Offset position) => null;
     public virtual global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>>(null);
     public virtual bool shouldRebuildSemantics(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
-    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
 internal sealed class ToggleableCustomPainterAdapter : global::Doroti.Framework.Rendering.CustomPainter

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/single_child_scroll_view.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -21,7 +20,7 @@ public class SingleChildScrollView : StatelessWidget
     public virtual string? restorationId { get; private set; }
     public virtual ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior { get; private set; }
 
-    public SingleChildScrollView(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, bool reverse = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, bool? primary = null, ScrollPhysics? physics = null, ScrollController? controller = null, Widget? child = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, string? restorationId = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null) : base(key: key)
+    public SingleChildScrollView(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = Axis.vertical, bool reverse = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, bool? primary = null, ScrollPhysics? physics = null, ScrollController? controller = null, Widget? child = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, string? restorationId = null, ScrollViewKeyboardDismissBehavior? keyboardDismissBehavior = null) : base(key: key)
     {
         this.scrollDirection = scrollDirection;
         this.reverse = reverse;
@@ -40,7 +39,7 @@ public class SingleChildScrollView : StatelessWidget
 
     internal virtual global::Doroti.Framework.Painting.AxisDirection _getDirection(BuildContext context)
     {
-        return global::Doroti.Framework.Widgets.BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, this.scrollDirection, this.reverse);
+        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, this.scrollDirection, this.reverse);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -54,17 +53,17 @@ public class SingleChildScrollView : StatelessWidget
         }
         bool effectivePrimary = (this.primary ?? ((this.controller is null) && PrimaryScrollController.shouldInherit(context, this.scrollDirection)));
         ScrollController? scrollController = (effectivePrimary ? PrimaryScrollController.maybeOf(context) : this.controller);
-        Widget scrollable = ((Widget)(object?)new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirectionLocal, controller: scrollController, physics: this.physics, restorationId: this.restorationId, clipBehavior: this.clipBehavior, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
+        Widget scrollable = ((Widget)new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirectionLocal, controller: scrollController, physics: this.physics, restorationId: this.restorationId, clipBehavior: this.clipBehavior, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
         {
-            return ((Widget)(object?)new _SingleChildViewport__single_child_scroll_view(axisDirection: axisDirectionLocal, offset: offset, clipBehavior: this.clipBehavior, child: contents));
+            return ((Widget)new _SingleChildViewport__single_child_scroll_view(axisDirection: axisDirectionLocal, offset: offset, clipBehavior: this.clipBehavior, child: contents));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = ((this.keyboardDismissBehavior ?? (ScrollViewKeyboardDismissBehavior)ScrollConfiguration.of(context).getKeyboardDismissBehavior(context)));
-        if ((object.Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag)))
+        if ((Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag)))
         {
             scrollable = DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollUpdateNotification>(child: scrollable, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
             {
-                FocusScopeNode currentScope = ((FocusScopeNode)(object?)FocusScope.of(context));
+                FocusScopeNode currentScope = ((FocusScopeNode)FocusScope.of(context));
                 if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope.hasPrimaryFocus) && currentScope.hasFocus))
                 {
                     FocusManager.instance.primaryFocus?.unfocus();
@@ -85,7 +84,7 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
     public virtual global::Doroti.Framework.Rendering.ViewportOffset offset { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    internal _SingleChildViewport__single_child_scroll_view(global::Doroti.Framework.Painting.AxisDirection axisDirection = global::Doroti.Framework.Painting.AxisDirection.down, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, Widget? child = null, Clip clipBehavior = default!) : base(child: child)
+    internal _SingleChildViewport__single_child_scroll_view(global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, Widget? child = null, Clip clipBehavior = default!) : base(child: child)
     {
         this.axisDirection = axisDirection;
         this.offset = offset;
@@ -94,13 +93,13 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSingleChildViewport__single_child_scroll_view(axisDirection: this.axisDirection, offset: this.offset, clipBehavior: this.clipBehavior));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSingleChildViewport__single_child_scroll_view(axisDirection: this.axisDirection, offset: this.offset, clipBehavior: this.clipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderSingleChildViewport__single_child_scroll_view)(object)renderObject;
+        var __renderObject = (_RenderSingleChildViewport__single_child_scroll_view)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSingleChildViewport__single_child_scroll_view>)(() =>
 {
     var __cascade = __renderObject;
@@ -113,7 +112,7 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
 
     public override SingleChildRenderObjectElement createElement()
     {
-        return ((SingleChildRenderObjectElement)(object?)new _SingleChildViewportElement__single_child_scroll_view(this));
+        return ((SingleChildRenderObjectElement)new _SingleChildViewportElement__single_child_scroll_view(this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -151,7 +150,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
     internal virtual global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.ClipRectLayer> _clipRectLayer { get; private set; } = new global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.ClipRectLayer>();
     public virtual RenderBox? _child { get; set; } = default;
 
-    internal _RenderSingleChildViewport__single_child_scroll_view(global::Doroti.Framework.Painting.AxisDirection axisDirection = global::Doroti.Framework.Painting.AxisDirection.down, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, global::Doroti.Framework.Rendering.RenderBox? child = null, Clip clipBehavior = default!)
+    internal _RenderSingleChildViewport__single_child_scroll_view(global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, global::Doroti.Framework.Rendering.RenderBox? child = null, Clip clipBehavior = default!)
     {
         this._axisDirection = axisDirection;
         this._offset = offset;
@@ -164,7 +163,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._axisDirection)))
+            if ((Equals(__value, this._axisDirection)))
             {
                 return;
             }
@@ -172,14 +171,14 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Painting.Axis axis => global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
+    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
     public virtual global::Doroti.Framework.Rendering.ViewportOffset offset
     {
         get => this._offset;
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._offset)))
+            if ((Equals(__value, this._offset)))
             {
                 return;
             }
@@ -201,7 +200,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this._clipBehavior)))
+            if ((!Equals(__value, this._clipBehavior)))
             {
                 _clipBehavior = __value;
                 markNeedsPaint();
@@ -239,7 +238,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         get
         {
             DartRuntimePrimitives.Assert(() => this.hasSize);
-            return (this.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => this.size.width, global::Doroti.Framework.Painting.Axis.vertical => this.size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return (this.axis switch { Axis.horizontal => this.size.width, Axis.vertical => this.size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
     }
     internal virtual double _minScrollExtent
@@ -259,12 +258,12 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
             {
                 return 0.0;
             }
-            return Math.Max(0.0, (this.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => (this.child!.size.width - this.size.width), global::Doroti.Framework.Painting.Axis.vertical => (this.child!.size.height - this.size.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            return Math.Max(0.0, (this.axis switch { Axis.horizontal => (this.child!.size.width - this.size.width), Axis.vertical => (this.child!.size.height - this.size.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         }
     }
     internal virtual global::Doroti.Framework.Rendering.BoxConstraints _getInnerConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return (this.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => constraints.heightConstraints(), global::Doroti.Framework.Painting.Axis.vertical => constraints.widthConstraints(), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.axis switch { Axis.horizontal => constraints.heightConstraints(), Axis.vertical => constraints.widthConstraints(), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -298,7 +297,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         {
             return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).smallest;
         }
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)this.child!.getDryLayout(_getInnerConstraints(constraints)));
+        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)this.child!.getDryLayout(_getInnerConstraints(constraints)));
         return constraints.constrain(childSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -336,7 +335,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
     internal virtual global::Doroti.Ui.Offset _paintOffset => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_paintOffsetForPosition(((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels));
     internal virtual global::Doroti.Ui.Offset _paintOffsetForPosition(double position)
     {
-        return (this.axisDirection switch { global::Doroti.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((position - this.child!.size.height) + this.size.height)), global::Doroti.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(((position - this.child!.size.width) + this.size.width), 0.0), global::Doroti.Framework.Painting.AxisDirection.right => new global::Doroti.Ui.Offset(-position, 0.0), global::Doroti.Framework.Painting.AxisDirection.down => new global::Doroti.Ui.Offset(0.0, -position), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.axisDirection switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((position - this.child!.size.height) + this.size.height)), AxisDirection.left => new global::Doroti.Ui.Offset(((position - this.child!.size.width) + this.size.width), 0.0), AxisDirection.right => new global::Doroti.Ui.Offset(-position, 0.0), AxisDirection.down => new global::Doroti.Ui.Offset(0.0, -position), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -365,7 +364,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
     {
         if ((this.child is not null))
         {
-            global::Doroti.Ui.Offset paintOffset = ((global::Doroti.Ui.Offset)(object?)this._paintOffset);
+            global::Doroti.Ui.Offset paintOffset = ((global::Doroti.Ui.Offset)this._paintOffset);
             void paintContents(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
             {
                 context.paintChild(this.child!, (offset + paintOffset));
@@ -390,8 +389,8 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
 
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        global::Doroti.Ui.Offset paintOffset = ((global::Doroti.Ui.Offset)(object?)this._paintOffset);
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        global::Doroti.Ui.Offset paintOffset = ((global::Doroti.Ui.Offset)this._paintOffset);
         transform.translateByDouble(paintOffset.dx, paintOffset.dy, 0, 1);
     }
 
@@ -411,7 +410,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         {
             return result.addWithPaintOffset(offset: this._paintOffset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position + -this._paintOffset))));
+                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position + -this._paintOffset))));
                 return this.child!.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
@@ -424,17 +423,17 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
     {
         axis = this.axis;
         rect ??= ((global::Doroti.Framework.Rendering.RenderObject)target).paintBounds;
-        if ((target is not global::Doroti.Framework.Rendering.RenderBox))
+        if ((target is not RenderBox))
         {
             return new global::Doroti.Framework.Rendering.RevealedOffset(offset: ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels, rect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
         }
         global::Doroti.Framework.Rendering.RenderBox targetBox = ((global::Doroti.Framework.Rendering.RenderBox)target);
-        Matrix4 transform = ((Matrix4)(object?)targetBox.getTransformTo(this.child));
-        global::Doroti.Ui.Rect bounds = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))));
-        global::Doroti.Ui.Size contentSize = ((global::Doroti.Ui.Size)(object?)this.child!.size);
-        var (mainAxisExtent, leadingScrollOffset, targetMainAxisExtent) = (this.axisDirection switch { global::Doroti.Framework.Painting.AxisDirection.up => (((double, double, double))((this.size.height, (contentSize.height - bounds.bottom), bounds.height))), global::Doroti.Framework.Painting.AxisDirection.left => (((double, double, double))((this.size.width, (contentSize.width - bounds.right), bounds.width))), global::Doroti.Framework.Painting.AxisDirection.right => (((double, double, double))((this.size.width, bounds.left, bounds.width))), global::Doroti.Framework.Painting.AxisDirection.down => (((double, double, double))((this.size.height, bounds.top, bounds.height))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        Matrix4 transform = ((Matrix4)targetBox.getTransformTo(this.child));
+        global::Doroti.Ui.Rect bounds = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect))));
+        global::Doroti.Ui.Size contentSize = ((global::Doroti.Ui.Size)this.child!.size);
+        var (mainAxisExtent, leadingScrollOffset, targetMainAxisExtent) = (this.axisDirection switch { AxisDirection.up => (((double, double, double))((this.size.height, (contentSize.height - bounds.bottom), bounds.height))), AxisDirection.left => (((double, double, double))((this.size.width, (contentSize.width - bounds.right), bounds.width))), AxisDirection.right => (((double, double, double))((this.size.width, bounds.left, bounds.width))), AxisDirection.down => (((double, double, double))((this.size.height, bounds.top, bounds.height))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double targetOffset = (leadingScrollOffset - (((mainAxisExtent - targetMainAxisExtent)) * alignment));
-        global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)(object?)bounds.shift(_paintOffsetForPosition(targetOffset)));
+        global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)bounds.shift(_paintOffsetForPosition(targetOffset)));
         return new global::Doroti.Framework.Rendering.RevealedOffset(offset: targetOffset, rect: targetRect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -446,11 +445,11 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
             base.showOnScreen(descendant: descendant, rect: rect, duration: duration, curve: curve);
             return;
         }
-        global::Doroti.Ui.Rect? newRect = ((global::Doroti.Ui.Rect?)(object?)_showInViewport(descendant, rect, this, this.offset, duration, curve));
+        global::Doroti.Ui.Rect? newRect = ((global::Doroti.Ui.Rect?)_showInViewport(descendant, rect, this, this.offset, duration, curve));
         base.showOnScreen(rect: newRect, duration: duration, curve: curve);
     }
 
-    private static Rect? _showInViewport(global::Doroti.Framework.Rendering.RenderObject? descendant, Rect? rect, _RenderSingleChildViewport__single_child_scroll_view viewport, global::Doroti.Framework.Rendering.ViewportOffset offset, Duration duration, global::Doroti.Framework.Animation.Curve curve) { if (descendant is null) return rect; var leading = viewport.getOffsetToReveal(descendant, 0.0, rect: rect); var trailing = viewport.getOffsetToReveal(descendant, 1.0, rect: rect); var target = global::Doroti.Framework.Rendering.RevealedOffset.clampOffset(leading, trailing, offset.pixels); if (target is null) return rect ?? descendant.paintBounds; _ = offset.moveTo(target.offset, duration: duration, curve: curve); return target.rect; }
+    private static Rect? _showInViewport(global::Doroti.Framework.Rendering.RenderObject? descendant, Rect? rect, _RenderSingleChildViewport__single_child_scroll_view viewport, global::Doroti.Framework.Rendering.ViewportOffset offset, Duration duration, global::Doroti.Framework.Animation.Curve curve) { if (descendant is null) return rect; var leading = viewport.getOffsetToReveal(descendant, 0.0, rect: rect); var trailing = viewport.getOffsetToReveal(descendant, 1.0, rect: rect); var target = RevealedOffset.clampOffset(leading, trailing, offset.pixels); if (target is null) return rect ?? descendant.paintBounds; _ = offset.moveTo(target.offset, duration: duration, curve: curve); return target.rect; }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
@@ -463,21 +462,21 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
         double remainingOffset = (this._maxScrollExtent - ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels);
         switch (this.axisDirection)
         {
-            case global::Doroti.Framework.Painting.AxisDirection.up:
+            case AxisDirection.up:
                 {
-                    return global::Doroti.Ui.Rect.fromLTRB(this.semanticBounds.left, (this.semanticBounds.top - remainingOffset), this.semanticBounds.right, (this.semanticBounds.bottom + ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels));
+                    return Rect.fromLTRB(this.semanticBounds.left, (this.semanticBounds.top - remainingOffset), this.semanticBounds.right, (this.semanticBounds.bottom + ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels));
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.right:
+            case AxisDirection.right:
                 {
-                    return global::Doroti.Ui.Rect.fromLTRB((this.semanticBounds.left - ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels), this.semanticBounds.top, (this.semanticBounds.right + remainingOffset), this.semanticBounds.bottom);
+                    return Rect.fromLTRB((this.semanticBounds.left - ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels), this.semanticBounds.top, (this.semanticBounds.right + remainingOffset), this.semanticBounds.bottom);
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.down:
+            case AxisDirection.down:
                 {
-                    return global::Doroti.Ui.Rect.fromLTRB(this.semanticBounds.left, (this.semanticBounds.top - ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels), this.semanticBounds.right, (this.semanticBounds.bottom + remainingOffset));
+                    return Rect.fromLTRB(this.semanticBounds.left, (this.semanticBounds.top - ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels), this.semanticBounds.right, (this.semanticBounds.bottom + remainingOffset));
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.left:
+            case AxisDirection.left:
                 {
-                    return global::Doroti.Ui.Rect.fromLTRB((this.semanticBounds.left - remainingOffset), this.semanticBounds.top, (this.semanticBounds.right + ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels), this.semanticBounds.bottom);
+                    return Rect.fromLTRB((this.semanticBounds.left - remainingOffset), this.semanticBounds.top, (this.semanticBounds.right + ((global::Doroti.Framework.Rendering.ViewportOffset)this.offset).pixels), this.semanticBounds.bottom);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -491,7 +490,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
             {
                 if ((child is not RenderBox))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", (child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", (child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");

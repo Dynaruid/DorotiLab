@@ -39,7 +39,7 @@ internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>
     public override void didUpdateWidget(WillPopScope oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (((!object.Equals((global::System.Func<Future<bool>>?)((WillPopScope)this.widget).onWillPop, (global::System.Func<Future<bool>>?)((WillPopScope)oldWidget).onWillPop)) && (this._route is not null)))
+        if (((!Equals((global::System.Func<Future<bool>>?)((WillPopScope)this.widget).onWillPop, (global::System.Func<Future<bool>>?)((WillPopScope)oldWidget).onWillPop)) && (this._route is not null)))
         {
             if ((((WillPopScope)oldWidget).onWillPop is not null))
             {

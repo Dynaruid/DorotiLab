@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/mouse_tracker.dart
-#pragma warning disable CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -40,9 +39,9 @@ internal class _MouseState__mouse_tracker
     public virtual long device => this.latestEvent.device;
     public override string ToString()
     {
-        var describeLatestEvent = $"latestEvent: {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.latestEvent))}";
+        var describeLatestEvent = $"latestEvent: {(DiagnosticsLibrary.describeIdentity(this.latestEvent))}";
         var describeAnnotations = $"annotations: [list of {checked((long)(this.annotations.Count))}]";
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({describeLatestEvent}, {describeAnnotations})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({describeLatestEvent}, {describeAnnotations})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -55,7 +54,7 @@ internal class _MouseTrackerUpdateDetails__mouse_tracker : Diagnosticable
     public virtual global::Doroti.Framework.Gestures.PointerEvent? previousEvent { get; private set; }
     public virtual global::Doroti.Framework.Gestures.PointerEvent? triggeringEvent { get; private set; }
 
-    internal _MouseTrackerUpdateDetails__mouse_tracker(DartMap<IMouseTrackerAnnotation, Matrix4> lastAnnotations, DartMap<IMouseTrackerAnnotation, Matrix4> nextAnnotations, global::Doroti.Framework.Gestures.PointerEvent previousEvent)
+    internal _MouseTrackerUpdateDetails__mouse_tracker(DartMap<IMouseTrackerAnnotation, Matrix4> lastAnnotations, DartMap<IMouseTrackerAnnotation, Matrix4> nextAnnotations, global::Doroti.Framework.Gestures.PointerEvent? previousEvent)
     {
         this.lastAnnotations = lastAnnotations;
         this.nextAnnotations = nextAnnotations;
@@ -153,7 +152,7 @@ public class MouseTracker : ChangeNotifier
             global::Doroti.Framework.Gestures.PointerSignalEvent @event__as8007 = (global::Doroti.Framework.Gestures.PointerSignalEvent)@event;
             return false;
         }
-        return (((lastEvent is global::Doroti.Framework.Gestures.PointerAddedEvent) || (@event is global::Doroti.Framework.Gestures.PointerRemovedEvent)) || (!object.Equals(lastEvent.position, @event.position)));
+        return (((lastEvent is global::Doroti.Framework.Gestures.PointerAddedEvent) || (@event is global::Doroti.Framework.Gestures.PointerRemovedEvent)) || (!Equals(lastEvent.position, @event.position)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -196,7 +195,7 @@ public class MouseTracker : ChangeNotifier
     public virtual bool mouseIsConnected => (checked((long)(this._mouseStates.Count)) != 0);
     public virtual void updateWithEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult)
     {
-        if (((!object.Equals(@event.kind, PointerDeviceKind.mouse)) && (!object.Equals(@event.kind, PointerDeviceKind.stylus))))
+        if (((!Equals(@event.kind, PointerDeviceKind.mouse)) && (!Equals(@event.kind, PointerDeviceKind.stylus))))
         {
             return;
         }
@@ -227,7 +226,7 @@ public class MouseTracker : ChangeNotifier
                 }
                 else
                 {
-                    DartRuntimePrimitives.Assert(() => (@event is not global::Doroti.Framework.Gestures.PointerAddedEvent));
+                    DartRuntimePrimitives.Assert(() => (@event is not PointerAddedEvent));
                     if ((@event is global::Doroti.Framework.Gestures.PointerRemovedEvent))
                     {
                         global::Doroti.Framework.Gestures.PointerRemovedEvent @event__as12521 = (global::Doroti.Framework.Gestures.PointerRemovedEvent)@event;
@@ -268,7 +267,7 @@ public class MouseTracker : ChangeNotifier
         global::Doroti.Framework.Gestures.PointerEvent latestEventLocal = ((_MouseTrackerUpdateDetails__mouse_tracker)details).latestEvent;
         DartMap<IMouseTrackerAnnotation, Matrix4> lastAnnotationsLocal = ((_MouseTrackerUpdateDetails__mouse_tracker)details).lastAnnotations;
         DartMap<IMouseTrackerAnnotation, Matrix4> nextAnnotationsLocal = ((_MouseTrackerUpdateDetails__mouse_tracker)details).nextAnnotations;
-        var baseExitEvent = global::Doroti.Framework.Gestures.PointerExitEvent.CreateFromMouseEvent(latestEventLocal);
+        var baseExitEvent = Gestures.PointerExitEvent.CreateFromMouseEvent(latestEventLocal);
         lastAnnotationsLocal.forEach(((annotation, transform) =>
         {
             if ((annotation.validForMouseTracker && !nextAnnotationsLocal.ContainsKey(annotation)))
@@ -277,8 +276,8 @@ public class MouseTracker : ChangeNotifier
             }
         }));
         List<IMouseTrackerAnnotation> enteringAnnotations = nextAnnotationsLocal.Keys.where(((annotation) => !lastAnnotationsLocal.ContainsKey(annotation))).ToList();
-        var baseEnterEvent = global::Doroti.Framework.Gestures.PointerEnterEvent.CreateFromMouseEvent(latestEventLocal);
-        foreach (IMouseTrackerAnnotation annotationLocal in System.Linq.Enumerable.Reverse(enteringAnnotations))
+        var baseEnterEvent = Gestures.PointerEnterEvent.CreateFromMouseEvent(latestEventLocal);
+        foreach (IMouseTrackerAnnotation annotationLocal in Enumerable.Reverse(enteringAnnotations))
         {
             if (annotationLocal.validForMouseTracker)
             {

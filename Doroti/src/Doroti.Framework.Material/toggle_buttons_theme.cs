@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/toggle_buttons_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -68,11 +68,11 @@ public class ToggleButtonsThemeData : global::Doroti.Framework.Foundation.Diagno
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((__other is ToggleButtonsThemeData) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).constraints, this.constraints))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).color, this.color))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).selectedColor, this.selectedColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).disabledColor, this.disabledColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).fillColor, this.fillColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).focusColor, this.focusColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).highlightColor, this.highlightColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).hoverColor, this.hoverColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).splashColor, this.splashColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).borderColor, this.borderColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).selectedBorderColor, this.selectedBorderColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).disabledBorderColor, this.disabledBorderColor))) && (object.Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).borderRadius, this.borderRadius))) && (((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).borderWidth == this.borderWidth));
+        return ((((((((((((((((__other is ToggleButtonsThemeData) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).textStyle, this.textStyle))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).constraints, this.constraints))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).color, this.color))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).selectedColor, this.selectedColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).disabledColor, this.disabledColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).fillColor, this.fillColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).focusColor, this.focusColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).highlightColor, this.highlightColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).hoverColor, this.hoverColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).splashColor, this.splashColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).borderColor, this.borderColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).selectedBorderColor, this.selectedBorderColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).disabledBorderColor, this.disabledBorderColor))) && (Equals(((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).borderRadius, this.borderRadius))) && (((ToggleButtonsThemeData)((ToggleButtonsThemeData)__other)).borderWidth == this.borderWidth));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -94,8 +94,8 @@ public class ToggleButtonsThemeData : global::Doroti.Framework.Foundation.Diagno
         properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("borderWidth", this.borderWidth, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -111,7 +111,7 @@ public class ToggleButtonsThemeData : global::Doroti.Framework.Foundation.Diagno
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -128,16 +128,16 @@ public class ToggleButtonsTheme : global::Doroti.Framework.Widgets.InheritedThem
 
     public static ToggleButtonsThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ToggleButtonsTheme? toggleButtonsThemeLocal = ((ToggleButtonsTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ToggleButtonsTheme>());
+        ToggleButtonsTheme? toggleButtonsThemeLocal = ((ToggleButtonsTheme?)context.dependOnInheritedWidgetOfExactType<ToggleButtonsTheme>());
         return (toggleButtonsThemeLocal?.data ?? Theme.of(context).toggleButtonsTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ToggleButtonsTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new ToggleButtonsTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ToggleButtonsTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ToggleButtonsTheme)oldWidget).data)));
 }

@@ -138,7 +138,7 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._parent)))
+            if ((Equals(__value, this._parent)))
             {
                 return;
             }
@@ -162,7 +162,7 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
                 {
                     notifyListeners();
                 }
-                if ((!object.Equals(this._status, this._parent!.status)))
+                if ((!Equals(this._status, this._parent!.status)))
                 {
                     notifyStatusListeners(this._parent!.status);
                 }
@@ -195,9 +195,9 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
     {
         if ((this.parent is null))
         {
-            return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation"))}(null; {base.toStringDetails()} {this.value.toStringAsFixed(3L)})";
+            return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation"))}(null; {base.toStringDetails()} {this.value.toStringAsFixed(3L)})";
         }
-        return $"{this.parent}➩{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation"))}";
+        return $"{this.parent}➩{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation"))}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -364,7 +364,7 @@ public class ReverseAnimation : Animation<double>, AnimationLazyListenerMixin, A
 
     public override string ToString()
     {
-        return $"{this.parent}➪{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ReverseAnimation"))}";
+        return $"{this.parent}➪{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ReverseAnimation"))}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -454,19 +454,19 @@ public class CurvedAnimation : Animation<double>, AnimationWithParentMixin<doubl
 
     internal virtual void _updateCurveDirection(AnimationStatus status)
     {
-        _curveDirection = (global::Doroti.Framework.Animation.AnimationStatusMembers.isAnimating(status) ? (this._curveDirection ?? status) : null);
+        _curveDirection = (AnimationStatusMembers.isAnimating(status) ? (this._curveDirection ?? status) : null);
     }
 
     internal virtual bool _useForwardCurve
     {
         get
         {
-            return ((this.reverseCurve is null) || (!object.Equals(((this._curveDirection ?? ((Animation<double>)this.parent).status)), AnimationStatus.reverse)));
+            return ((this.reverseCurve is null) || (!Equals(((this._curveDirection ?? ((Animation<double>)this.parent).status)), AnimationStatus.reverse)));
         }
     }
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         isDisposed = true;
         this.parent.removeStatusListener((AnimationStatusListener)this._updateCurveDirection);
     }
@@ -547,7 +547,7 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
     internal virtual void _statusChangeHandler(AnimationStatus status)
     {
         DartRuntimePrimitives.Assert(() => (this._currentTrain is not null));
-        if ((!object.Equals(status, this._lastStatus)))
+        if ((!Equals(status, this._lastStatus)))
         {
             notifyStatusListeners(status);
             _lastStatus = status;
@@ -595,7 +595,7 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
     public override double value => this._currentTrain!.value;
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         DartRuntimePrimitives.Assert(() => (this._currentTrain is not null));
         this._currentTrain!.removeStatusListener((AnimationStatusListener)this._statusChangeHandler);
         this._currentTrain!.removeListener((Action)this._valueChangeHandler);
@@ -610,9 +610,9 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
     {
         if ((this._nextTrain is not null))
         {
-            return $"{this.currentTrain}➩{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation"))}(next: {this._nextTrain})";
+            return $"{this.currentTrain}➩{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation"))}(next: {this._nextTrain})";
         }
-        return $"{this.currentTrain}➩{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation"))}(no next)";
+        return $"{this.currentTrain}➩{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation"))}(no next)";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -750,16 +750,16 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
         this.next.removeStatusListener((AnimationStatusListener)this._maybeNotifyStatusListeners);
     }
 
-    public override AnimationStatus status => (global::Doroti.Framework.Animation.AnimationStatusMembers.isAnimating(((Animation<T>)this.next).status) ? ((Animation<T>)this.next).status : ((Animation<T>)this.first).status);
+    public override AnimationStatus status => (AnimationStatusMembers.isAnimating(((Animation<T>)this.next).status) ? ((Animation<T>)this.next).status : ((Animation<T>)this.first).status);
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "CompoundAnimation"))}({this.first}, {this.next})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "CompoundAnimation"))}({this.first}, {this.next})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _maybeNotifyStatusListeners(AnimationStatus __unused0)
     {
-        if ((!object.Equals(this.status, this._lastStatus)))
+        if ((!Equals(this.status, this._lastStatus)))
         {
             _lastStatus = this.status;
             notifyStatusListeners(this.status);

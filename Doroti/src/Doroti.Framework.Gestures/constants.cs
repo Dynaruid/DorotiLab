@@ -36,7 +36,7 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static double kDoubleTapTouchSlop = ConstantsLibrary.kTouchSlop;
+    public static double kDoubleTapTouchSlop = kTouchSlop;
 }
 
 public static partial class ConstantsLibrary
@@ -56,17 +56,17 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static double kPagingTouchSlop = (ConstantsLibrary.kTouchSlop * 2.0);
+    public static double kPagingTouchSlop = (kTouchSlop * 2.0);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static double kPanSlop = (ConstantsLibrary.kTouchSlop * 2.0);
+    public static double kPanSlop = (kTouchSlop * 2.0);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static double kScaleSlop = ConstantsLibrary.kTouchSlop;
+    public static double kScaleSlop = kTouchSlop;
 }
 
 public static partial class ConstantsLibrary
@@ -96,11 +96,11 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static double kPrecisePointerPanSlop = (ConstantsLibrary.kPrecisePointerHitSlop * 2.0);
+    public static double kPrecisePointerPanSlop = (kPrecisePointerHitSlop * 2.0);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static double kPrecisePointerScaleSlop = ConstantsLibrary.kPrecisePointerHitSlop;
+    public static double kPrecisePointerScaleSlop = kPrecisePointerHitSlop;
 }
 

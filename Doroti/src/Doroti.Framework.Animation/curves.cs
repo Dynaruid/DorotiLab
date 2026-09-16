@@ -24,7 +24,7 @@ public abstract class ParametricCurve<T>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ParametricCurve");
+    public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "ParametricCurve");
 }
 
 public abstract class Curve : ParametricCurve<double>
@@ -73,7 +73,7 @@ public class SawTooth : Curve
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SawTooth"))}({this.count})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SawTooth"))}({this.count})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -113,9 +113,9 @@ public class Interval : Curve
     {
         if ((this.curve is not _Linear__curves))
         {
-            return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval"))}({this.begin}⋯{this.end})➩{this.curve}";
+            return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval"))}({this.begin}⋯{this.end})➩{this.curve}";
         }
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval"))}({this.begin}⋯{this.end})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval"))}({this.begin}⋯{this.end})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -165,7 +165,7 @@ public class Split : Curve
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this.split}, {this.beginCurve}, {this.endCurve})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({this.split}, {this.beginCurve}, {this.endCurve})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -250,7 +250,7 @@ public class Cubic : Curve
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Cubic"))}({this.a.toStringAsFixed(2L)}, {this.b.toStringAsFixed(2L)}, {this.c.toStringAsFixed(2L)}, {this.d.toStringAsFixed(2L)})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Cubic"))}({this.a.toStringAsFixed(2L)}, {this.b.toStringAsFixed(2L)}, {this.c.toStringAsFixed(2L)}, {this.d.toStringAsFixed(2L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -292,7 +292,7 @@ public class ThreePointCubic : Curve
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, $"ThreePointCubic({this.a1}, {this.b1}, {this.midpoint}, {this.a2}, {this.b2})"))} ";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, $"ThreePointCubic({this.a1}, {this.b1}, {this.midpoint}, {this.a2}, {this.b2})"))} ";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -449,9 +449,9 @@ public class CatmullRomSpline : Curve2D
             global::Doroti.Ui.Offset diffCurve10 = (curve[(int)(1L)] - curve[(int)(0L)]);
             global::Doroti.Ui.Offset diffCurve21 = (curve[(int)(2L)] - curve[(int)(1L)]);
             global::Doroti.Ui.Offset diffCurve32 = (curve[(int)(3L)] - curve[(int)(2L)]);
-            double t01 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve10.distance, alpha).toDouble();
-            double t12 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve21.distance, alpha).toDouble();
-            double t23 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve32.distance, alpha).toDouble();
+            double t01 = Dart_mathLibrary.pow(diffCurve10.distance, alpha).toDouble();
+            double t12 = Dart_mathLibrary.pow(diffCurve21.distance, alpha).toDouble();
+            double t23 = Dart_mathLibrary.pow(diffCurve32.distance, alpha).toDouble();
             global::Doroti.Ui.Offset m1 = (((diffCurve21 + ((((diffCurve10 / t01) - (((curve[(int)(2L)] - curve[(int)(0L)])) / ((t01 + t12))))) * t12))) * reverseTension);
             global::Doroti.Ui.Offset m2 = (((diffCurve21 + ((((diffCurve32 / t23) - (((curve[(int)(3L)] - curve[(int)(1L)])) / ((t12 + t23))))) * t12))) * reverseTension);
             global::Doroti.Ui.Offset sumM12 = (m1 + m2);
@@ -701,7 +701,7 @@ public class FlippedCurve : Curve
     public override double transformInternal(double t) => (1.0 - this.curve.transform((1.0 - t)));
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FlippedCurve"))}({this.curve})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "FlippedCurve"))}({this.curve})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -814,13 +814,13 @@ public class ElasticInCurve : Curve
     {
         double s = (this.period / 4.0);
         t = (t - 1.0);
-        return (-global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (10.0 * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
+        return (-Dart_mathLibrary.pow(2.0, (10.0 * t)) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInCurve"))}({this.period})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInCurve"))}({this.period})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -838,13 +838,13 @@ public class ElasticOutCurve : Curve
     public override double transformInternal(double t)
     {
         double s = (this.period / 4.0);
-        return ((global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (-10L * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) + 1.0);
+        return ((Dart_mathLibrary.pow(2.0, (-10L * t)) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) + 1.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticOutCurve"))}({this.period})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticOutCurve"))}({this.period})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -865,18 +865,18 @@ public class ElasticInOutCurve : Curve
         t = ((2.0 * t) - 1.0);
         if ((t < 0.0))
         {
-            return ((-0.5 * global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (10.0 * t))) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
+            return ((-0.5 * Dart_mathLibrary.pow(2.0, (10.0 * t))) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
         }
         else
         {
-            return (((global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (-10.0 * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) * 0.5) + 1.0);
+            return (((Dart_mathLibrary.pow(2.0, (-10.0 * t)) * Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) * 0.5) + 1.0);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInOutCurve"))}({this.period})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInOutCurve"))}({this.period})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

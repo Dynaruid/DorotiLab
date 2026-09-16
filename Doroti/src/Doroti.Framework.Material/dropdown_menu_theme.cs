@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/dropdown_menu_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -58,11 +58,11 @@ public class DropdownMenuThemeData : global::Doroti.Framework.Foundation.Diagnos
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is DropdownMenuThemeData) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).menuStyle, this.menuStyle))) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).disabledColor, this.disabledColor)));
+        return (((((__other is DropdownMenuThemeData) && (Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).textStyle, this.textStyle))) && (Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).menuStyle, this.menuStyle))) && (Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).disabledColor, this.disabledColor)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -73,8 +73,8 @@ public class DropdownMenuThemeData : global::Doroti.Framework.Foundation.Diagnos
         properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", this.disabledColor, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -90,7 +90,7 @@ public class DropdownMenuThemeData : global::Doroti.Framework.Foundation.Diagnos
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -107,7 +107,7 @@ public class DropdownMenuTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static DropdownMenuThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return (DropdownMenuTheme.maybeOf(context) ?? Theme.of(context).dropdownMenuTheme);
+        return (maybeOf(context) ?? Theme.of(context).dropdownMenuTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,9 +119,9 @@ public class DropdownMenuTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DropdownMenuTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new DropdownMenuTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DropdownMenuTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((DropdownMenuTheme)oldWidget).data)));
 }

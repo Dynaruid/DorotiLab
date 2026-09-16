@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/progress_indicator_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -70,11 +70,11 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((((((((((__other is ProgressIndicatorThemeData) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).color, this.color))) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).linearTrackColor, this.linearTrackColor))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).linearMinHeight == this.linearMinHeight)) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).circularTrackColor, this.circularTrackColor))) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).refreshBackgroundColor, this.refreshBackgroundColor))) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).borderRadius, this.borderRadius))) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).stopIndicatorColor, this.stopIndicatorColor))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).stopIndicatorRadius == this.stopIndicatorRadius)) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeAlign == this.strokeAlign)) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeWidth == this.strokeWidth)) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeCap, this.strokeCap))) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).constraints, this.constraints))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).trackGap == this.trackGap)) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).circularTrackPadding, this.circularTrackPadding))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).year2023 == this.year2023)) && (object.Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).controller, this.controller)));
+        return (((((((((((((((((__other is ProgressIndicatorThemeData) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).color, this.color))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).linearTrackColor, this.linearTrackColor))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).linearMinHeight == this.linearMinHeight)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).circularTrackColor, this.circularTrackColor))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).refreshBackgroundColor, this.refreshBackgroundColor))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).borderRadius, this.borderRadius))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).stopIndicatorColor, this.stopIndicatorColor))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).stopIndicatorRadius == this.stopIndicatorRadius)) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeAlign == this.strokeAlign)) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeWidth == this.strokeWidth)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).strokeCap, this.strokeCap))) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).constraints, this.constraints))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).trackGap == this.trackGap)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).circularTrackPadding, this.circularTrackPadding))) && (((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).year2023 == this.year2023)) && (Equals(((ProgressIndicatorThemeData)((ProgressIndicatorThemeData)__other)).controller, this.controller)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -97,8 +97,8 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationController>("controller", this.controller, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -114,7 +114,7 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -131,16 +131,16 @@ public class ProgressIndicatorTheme : global::Doroti.Framework.Widgets.Inherited
 
     public static ProgressIndicatorThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ProgressIndicatorTheme? progressIndicatorThemeLocal = ((ProgressIndicatorTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ProgressIndicatorTheme>());
+        ProgressIndicatorTheme? progressIndicatorThemeLocal = ((ProgressIndicatorTheme?)context.dependOnInheritedWidgetOfExactType<ProgressIndicatorTheme>());
         return (progressIndicatorThemeLocal?.data ?? Theme.of(context).progressIndicatorTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ProgressIndicatorTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new ProgressIndicatorTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ProgressIndicatorTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ProgressIndicatorTheme)oldWidget).data)));
 }

@@ -18,17 +18,17 @@ public abstract class AssetBundle
     public async virtual Future<string> loadString(string key, bool cache = true)
     {
         ByteData data = await load(key);
-        if (((data.lengthInBytes < (50L * 1024L)) || global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))
+        if (((data.lengthInBytes < (50L * 1024L)) || ConstantsLibrary.kIsWeb))
         {
-            return global::Doroti.Runtime.Dart_convertLibrary.utf8.decode(new Uint8List(data));
+            return Dart_convertLibrary.utf8.decode(new Uint8List(data));
         }
-        return await global::Doroti.Framework.Foundation.IsolatesLibrary.compute(_utf8decode, data, debugLabel: $"UTF8 decode for \"{key}\"");
+        return await IsolatesLibrary.compute(_utf8decode, data, debugLabel: $"UTF8 decode for \"{key}\"");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static string _utf8decode(ByteData data)
     {
-        return global::Doroti.Runtime.Dart_convertLibrary.utf8.decode(new Uint8List(data));
+        return Dart_convertLibrary.utf8.decode(new Uint8List(data));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -52,7 +52,7 @@ public abstract class AssetBundle
     {
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}()";
+    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}()";
 }
 
 public class NetworkAssetBundle : AssetBundle
@@ -75,12 +75,12 @@ public class NetworkAssetBundle : AssetBundle
         {
             throw new FlutterError(new List<DiagnosticsNode> { Asset_bundleLibrary._errorSummaryWithKey(key), new IntProperty("HTTP status code", response.statusCode) });
         }
-        Uint8List bytes = await global::Doroti.Framework.Foundation.Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response);
+        Uint8List bytes = await Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response);
         return new ByteData(bytes);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({_baseUrl})";
+    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}({_baseUrl})";
 }
 
 public abstract class CachingAssetBundle : AssetBundle
@@ -184,7 +184,7 @@ public class PlatformAssetBundle : CachingAssetBundle
 {
     public override Future<ByteData> load(string key)
     {
-        Uint8List encoded = global::Doroti.Runtime.Dart_convertLibrary.utf8.encode(new DartUri(path: DartUri.encodeFull(key)).path);
+        Uint8List encoded = Dart_convertLibrary.utf8.encode(new DartUri(path: DartUri.encodeFull(key)).path);
         Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger.send("flutter/assets", new ByteData(encoded))?.then<ByteData>(((asset) =>
         {
             if ((asset is null))
@@ -203,7 +203,7 @@ public class PlatformAssetBundle : CachingAssetBundle
 
     public async override Future<ImmutableBuffer> loadBuffer(string key)
     {
-        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (ConstantsLibrary.kIsWeb)
         {
             ByteData bytes = await load(key);
             return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytes));
@@ -255,5 +255,5 @@ public static partial class Asset_bundleLibrary
 
 public static partial class Asset_bundleLibrary
 {
-    public static AssetBundle rootBundle = Asset_bundleLibrary._initRootBundle();
+    public static AssetBundle rootBundle = _initRootBundle();
 }

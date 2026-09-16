@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/spell_check.dart
-#pragma warning disable CS8600, CS8602
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -39,15 +38,15 @@ public class SpellCheckConfiguration
     {
         if (!this._spellCheckEnabled)
         {
-            return SpellCheckConfiguration.CreateDisabled();
+            return CreateDisabled();
         }
-        return new SpellCheckConfiguration(spellCheckService: (spellCheckService ?? this.spellCheckService), misspelledSelectionColor: (misspelledSelectionColor ?? this.misspelledSelectionColor), misspelledTextStyle: (misspelledTextStyle ?? this.misspelledTextStyle), spellCheckSuggestionsToolbarBuilder: ((spellCheckSuggestionsToolbarBuilder ?? (global::System.Func<BuildContext, EditableTextState, Widget>)this.spellCheckSuggestionsToolbarBuilder)));
+        return new SpellCheckConfiguration(spellCheckService: (spellCheckService ?? this.spellCheckService), misspelledSelectionColor: (misspelledSelectionColor ?? this.misspelledSelectionColor), misspelledTextStyle: (misspelledTextStyle ?? this.misspelledTextStyle), spellCheckSuggestionsToolbarBuilder: ((spellCheckSuggestionsToolbarBuilder ?? (global::System.Func<BuildContext, EditableTextState, Widget>?)this.spellCheckSuggestionsToolbarBuilder)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SpellCheckConfiguration"))}(" + $"{(this._spellCheckEnabled ? "enabled" : "disabled")}, " + $"service: {this.spellCheckService}, " + $"text style: {this.misspelledTextStyle}, " + $"toolbar builder: {this.spellCheckSuggestionsToolbarBuilder}" + ")";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SpellCheckConfiguration"))}(" + $"{(this._spellCheckEnabled ? "enabled" : "disabled")}, " + $"service: {this.spellCheckService}, " + $"text style: {this.misspelledTextStyle}, " + $"toolbar builder: {this.spellCheckSuggestionsToolbarBuilder}" + ")";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -55,11 +54,11 @@ public class SpellCheckConfiguration
     {
         var __other = other as SpellCheckConfiguration;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is SpellCheckConfiguration) && (object.Equals(((SpellCheckConfiguration)((SpellCheckConfiguration)__other)).spellCheckService, this.spellCheckService))) && (object.Equals(((SpellCheckConfiguration)((SpellCheckConfiguration)__other)).misspelledTextStyle, this.misspelledTextStyle))) && (object.Equals((global::System.Func<BuildContext, EditableTextState, Widget>?)((SpellCheckConfiguration)((SpellCheckConfiguration)__other)).spellCheckSuggestionsToolbarBuilder, (global::System.Func<BuildContext, EditableTextState, Widget>?)this.spellCheckSuggestionsToolbarBuilder))) && (((SpellCheckConfiguration)((SpellCheckConfiguration)__other))._spellCheckEnabled == this._spellCheckEnabled));
+        return (((((__other is SpellCheckConfiguration) && (Equals(((SpellCheckConfiguration)((SpellCheckConfiguration)__other)).spellCheckService, this.spellCheckService))) && (Equals(((SpellCheckConfiguration)((SpellCheckConfiguration)__other)).misspelledTextStyle, this.misspelledTextStyle))) && (Equals((global::System.Func<BuildContext, EditableTextState, Widget>?)((SpellCheckConfiguration)((SpellCheckConfiguration)__other)).spellCheckSuggestionsToolbarBuilder, (global::System.Func<BuildContext, EditableTextState, Widget>?)this.spellCheckSuggestionsToolbarBuilder))) && (((SpellCheckConfiguration)((SpellCheckConfiguration)__other))._spellCheckEnabled == this._spellCheckEnabled));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.spellCheckService, this.misspelledTextStyle, this.spellCheckSuggestionsToolbarBuilder, this._spellCheckEnabled));
@@ -117,14 +116,14 @@ public static partial class Spell_checkLibrary
         string spellCheckResultsText = ((global::Doroti.Framework.Services.SpellCheckResults)spellCheckResults).spellCheckedText;
         if ((spellCheckResultsText != ((global::Doroti.Framework.Services.TextEditingValue)value).text))
         {
-            spellCheckResultsSpans = Spell_checkLibrary._correctSpellCheckResults(((global::Doroti.Framework.Services.TextEditingValue)value).text, spellCheckResultsText, spellCheckResultsSpans);
+            spellCheckResultsSpans = _correctSpellCheckResults(((global::Doroti.Framework.Services.TextEditingValue)value).text, spellCheckResultsText, spellCheckResultsSpans);
         }
-        var shouldConsiderComposingRegion = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android));
+        var shouldConsiderComposingRegion = (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
         if (shouldConsiderComposingRegion)
         {
-            return new global::Doroti.Framework.Painting.TextSpan(style: style, children: Spell_checkLibrary._buildSubtreesWithComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, composingWithinCurrentTextRange).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
+            return new global::Doroti.Framework.Painting.TextSpan(style: style, children: _buildSubtreesWithComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, composingWithinCurrentTextRange).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
         }
-        return new global::Doroti.Framework.Painting.TextSpan(style: style, children: Spell_checkLibrary._buildSubtreesWithoutComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, ((global::Doroti.Framework.Services.TextEditingValue)value).selection.baseOffset).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
+        return new global::Doroti.Framework.Painting.TextSpan(style: style, children: _buildSubtreesWithoutComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, ((global::Doroti.Framework.Services.TextEditingValue)value).selection.baseOffset).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -180,7 +179,7 @@ public static partial class Spell_checkLibrary
         long endIndex = default!;
         global::Doroti.Framework.Services.SuggestionSpan currentSpan = default!;
         string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)value).text;
-        global::Doroti.Ui.TextRange composingRegion = ((global::Doroti.Ui.TextRange)(object?)((global::Doroti.Framework.Services.TextEditingValue)value).composing);
+        global::Doroti.Ui.TextRange composingRegion = ((global::Doroti.Ui.TextRange)((global::Doroti.Framework.Services.TextEditingValue)value).composing);
         global::Doroti.Framework.Painting.TextStyle composingTextStyle = (style?.merge(new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline)) ?? new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline));
         global::Doroti.Framework.Painting.TextStyle misspelledJointStyle = (style?.merge(misspelledStyle) ?? misspelledStyle);
         var textPointerWithinComposingRegion = false;
@@ -196,7 +195,7 @@ public static partial class Spell_checkLibrary
                     textPointerWithinComposingRegion = (((composingRegion.start >= textPointer) && (composingRegion.end <= endIndex)) && !composingWithinCurrentTextRange);
                     if (textPointerWithinComposingRegion)
                     {
-                        Spell_checkLibrary._addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
+                        _addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
                         textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(composingRegion.end, endIndex)));
                     }
                     else
@@ -219,7 +218,7 @@ public static partial class Spell_checkLibrary
         {
             if (((textPointer < composingRegion.start) && !composingWithinCurrentTextRange))
             {
-                Spell_checkLibrary._addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
+                _addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
                 if ((composingRegion.end != textLocal.Length))
                 {
                     textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(composingRegion.end, textLocal.Length)));

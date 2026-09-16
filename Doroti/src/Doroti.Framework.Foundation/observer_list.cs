@@ -94,7 +94,7 @@ public class HashedObserverList<T> : IEnumerable<T> where T : notnull
     public List<T> toList(bool growable = true)
     {
         IEnumerator<T> iterator = _map.Keys.GetEnumerator();
-        return new List<T>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, _map.Count), (_) => (((Func<IEnumerator<T>>)(() =>
+        return new List<T>(Enumerable.Select(Enumerable.Range(0, _map.Count), (_) => (((Func<IEnumerator<T>>)(() =>
 {
     var __cascade = GetEnumerator();
     __cascade.MoveNext();

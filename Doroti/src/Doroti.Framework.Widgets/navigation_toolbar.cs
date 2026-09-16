@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/navigation_toolbar.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -27,7 +26,7 @@ public class NavigationToolbar : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
         var children = new List<Widget>();
         if (this.leading is not null)
@@ -36,7 +35,7 @@ public class NavigationToolbar : StatelessWidget
             children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.middle, child: this.middle));
         if (this.trailing is not null)
             children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.trailing, child: this.trailing));
-        return ((Widget)(object?)new CustomMultiChildLayout(@delegate: new _ToolbarLayout__navigation_toolbar(centerMiddle: this.centerMiddle, middleSpacing: DartRuntimePrimitives.RequireValue(this.middleSpacing), textDirection: textDirectionLocal), children: children));
+        return ((Widget)new CustomMultiChildLayout(@delegate: new _ToolbarLayout__navigation_toolbar(centerMiddle: this.centerMiddle, middleSpacing: DartRuntimePrimitives.RequireValue(this.middleSpacing), textDirection: textDirectionLocal), children: children));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -75,8 +74,8 @@ internal class _ToolbarLayout__navigation_toolbar : global::Doroti.Framework.Ren
         }
         if (hasChild(_ToolbarSlot__navigation_toolbar.trailing))
         {
-            var constraintsLocal = global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size);
-            global::Doroti.Ui.Size trailingSize = ((global::Doroti.Ui.Size)(object?)layoutChild(_ToolbarSlot__navigation_toolbar.trailing, constraintsLocal));
+            var constraintsLocal = BoxConstraints.CreateLoose(size);
+            global::Doroti.Ui.Size trailingSize = ((global::Doroti.Ui.Size)layoutChild(_ToolbarSlot__navigation_toolbar.trailing, constraintsLocal));
             double trailingX = (this.textDirection switch { TextDirection.rtl => 0.0, TextDirection.ltr => (size.width - trailingSize.width), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             double trailingY = (((size.height - trailingSize.height)) / 2.0);
             trailingWidth = trailingSize.width;
@@ -85,8 +84,8 @@ internal class _ToolbarLayout__navigation_toolbar : global::Doroti.Framework.Ren
         if (hasChild(_ToolbarSlot__navigation_toolbar.middle))
         {
             double maxWidthLocal = Math.Max((((size.width - leadingWidth) - trailingWidth) - (this.middleSpacing * 2.0)), 0.0);
-            global::Doroti.Framework.Rendering.BoxConstraints constraintsAlternate = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size).copyWith(maxWidth: maxWidthLocal));
-            global::Doroti.Ui.Size middleSize = ((global::Doroti.Ui.Size)(object?)layoutChild(_ToolbarSlot__navigation_toolbar.middle, constraintsAlternate));
+            global::Doroti.Framework.Rendering.BoxConstraints constraintsAlternate = ((global::Doroti.Framework.Rendering.BoxConstraints)BoxConstraints.CreateLoose(size).copyWith(maxWidth: maxWidthLocal));
+            global::Doroti.Ui.Size middleSize = ((global::Doroti.Ui.Size)layoutChild(_ToolbarSlot__navigation_toolbar.middle, constraintsAlternate));
             double middleStartMargin = (leadingWidth + this.middleSpacing);
             var middleStart = middleStartMargin;
             double middleY = (((size.height - middleSize.height)) / 2.0);
@@ -112,8 +111,8 @@ internal class _ToolbarLayout__navigation_toolbar : global::Doroti.Framework.Ren
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.MultiChildLayoutDelegate oldDelegate)
     {
-        var __oldDelegate = (_ToolbarLayout__navigation_toolbar)(object)oldDelegate;
-        return (((((_ToolbarLayout__navigation_toolbar)__oldDelegate).centerMiddle != this.centerMiddle) || (((_ToolbarLayout__navigation_toolbar)__oldDelegate).middleSpacing != this.middleSpacing)) || (!object.Equals(((_ToolbarLayout__navigation_toolbar)__oldDelegate).textDirection, this.textDirection)));
+        var __oldDelegate = (_ToolbarLayout__navigation_toolbar)oldDelegate;
+        return (((((_ToolbarLayout__navigation_toolbar)__oldDelegate).centerMiddle != this.centerMiddle) || (((_ToolbarLayout__navigation_toolbar)__oldDelegate).middleSpacing != this.middleSpacing)) || (!Equals(((_ToolbarLayout__navigation_toolbar)__oldDelegate).textDirection, this.textDirection)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

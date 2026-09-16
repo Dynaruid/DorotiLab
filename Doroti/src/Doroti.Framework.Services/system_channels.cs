@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/system_channels.dart
-#pragma warning disable CS8620
 namespace Doroti.Framework.Services;
 
 public abstract class SystemChannels
@@ -15,7 +14,7 @@ public abstract class SystemChannels
     public static MethodChannel spellCheck = new OptionalMethodChannel("flutter/spellcheck");
     public static MethodChannel undoManager = new OptionalMethodChannel("flutter/undomanager", new JSONMethodCodec());
     public static BasicMessageChannel<object?> keyEvent = new BasicMessageChannel<object?>("flutter/keyevent", new JSONMessageCodec());
-    public static BasicMessageChannel<string?> lifecycle = new BasicMessageChannel<string?>("flutter/lifecycle", new StringCodec());
+    public static BasicMessageChannel<string> lifecycle = new BasicMessageChannel<string>("flutter/lifecycle", new StringCodec());
     public static BasicMessageChannel<object?> system = new BasicMessageChannel<object?>("flutter/system", new JSONMessageCodec());
     public static BasicMessageChannel<object?> accessibility = new BasicMessageChannel<object?>("flutter/accessibility", new StandardMessageCodec());
     public static MethodChannel platform_views = new MethodChannel("flutter/platform_views");

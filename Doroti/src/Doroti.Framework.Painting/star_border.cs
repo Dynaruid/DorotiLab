@@ -60,7 +60,7 @@ public class StarBorder : OutlinedBorder
     {
         get
         {
-            return (this._innerRadiusRatio ?? global::Doroti.Runtime.Dart_mathLibrary.cos((Dart_mathLibrary.pi / this.points)));
+            return (this._innerRadiusRatio ?? Dart_mathLibrary.cos((Dart_mathLibrary.pi / this.points)));
         }
     }
     public virtual double rotation => (this._rotationRadians * Star_borderLibrary._kRadToDeg);
@@ -105,7 +105,7 @@ public class StarBorder : OutlinedBorder
             if ((this.points >= 2.5))
             {
                 double lerpedPoints = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.points.round(), this.points, t));
-                return new StarBorder(side: BorderSide.lerp(((CircleBorder)a__as8105).side, side, t), points: lerpedPoints, squash: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((CircleBorder)((CircleBorder)a__as8105)).eccentricity, this.squash, t)), rotation: this.rotation, innerRadiusRatio: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(global::Doroti.Runtime.Dart_mathLibrary.cos((Dart_mathLibrary.pi / lerpedPoints)), this.innerRadiusRatio, t)), pointRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(1.0, this.pointRounding, t)), valleyRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, this.valleyRounding, t)));
+                return new StarBorder(side: BorderSide.lerp(((CircleBorder)a__as8105).side, side, t), points: lerpedPoints, squash: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((CircleBorder)((CircleBorder)a__as8105)).eccentricity, this.squash, t)), rotation: this.rotation, innerRadiusRatio: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(Dart_mathLibrary.cos((Dart_mathLibrary.pi / lerpedPoints)), this.innerRadiusRatio, t)), pointRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(1.0, this.pointRounding, t)), valleyRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, this.valleyRounding, t)));
             }
             else
             {
@@ -156,7 +156,7 @@ public class StarBorder : OutlinedBorder
             if ((this.points >= 2.5))
             {
                 double lerpedPoints = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.points, this.points.round(), t));
-                return new StarBorder(side: BorderSide.lerp(side, ((CircleBorder)b__as11105).side, t), points: lerpedPoints, squash: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.squash, ((CircleBorder)((CircleBorder)b__as11105)).eccentricity, t)), rotation: this.rotation, innerRadiusRatio: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.innerRadiusRatio, global::Doroti.Runtime.Dart_mathLibrary.cos((Dart_mathLibrary.pi / lerpedPoints)), t)), pointRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.pointRounding, 1.0, t)), valleyRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.valleyRounding, 0.0, t)));
+                return new StarBorder(side: BorderSide.lerp(side, ((CircleBorder)b__as11105).side, t), points: lerpedPoints, squash: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.squash, ((CircleBorder)((CircleBorder)b__as11105)).eccentricity, t)), rotation: this.rotation, innerRadiusRatio: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.innerRadiusRatio, Dart_mathLibrary.cos((Dart_mathLibrary.pi / lerpedPoints)), t)), pointRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.pointRounding, 1.0, t)), valleyRounding: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.valleyRounding, 0.0, t)));
             }
             else
             {
@@ -227,17 +227,17 @@ public class StarBorder : OutlinedBorder
     {
         var __other = other as StarBorder;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((__other is StarBorder) && (object.Equals(((StarBorder)__other).side, side))) && (((StarBorder)((StarBorder)__other)).points == this.points)) && (((StarBorder)((StarBorder)__other))._innerRadiusRatio == this._innerRadiusRatio)) && (((StarBorder)((StarBorder)__other)).pointRounding == this.pointRounding)) && (((StarBorder)((StarBorder)__other)).valleyRounding == this.valleyRounding)) && (((StarBorder)((StarBorder)__other))._rotationRadians == this._rotationRadians)) && (((StarBorder)((StarBorder)__other)).squash == this.squash));
+        return ((((((((__other is StarBorder) && (Equals(((StarBorder)__other).side, side))) && (((StarBorder)((StarBorder)__other)).points == this.points)) && (((StarBorder)((StarBorder)__other))._innerRadiusRatio == this._innerRadiusRatio)) && (((StarBorder)((StarBorder)__other)).pointRounding == this.pointRounding)) && (((StarBorder)((StarBorder)__other)).valleyRounding == this.valleyRounding)) && (((StarBorder)((StarBorder)__other))._rotationRadians == this._rotationRadians)) && (((StarBorder)((StarBorder)__other)).squash == this.squash));
     }
 
     public override int GetHashCode() => side.GetHashCode();
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "StarBorder"))}({side}, points: {this.points}, innerRadiusRatio: {this.innerRadiusRatio})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "StarBorder"))}({side}, points: {this.points}, innerRadiusRatio: {this.innerRadiusRatio})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -324,7 +324,7 @@ internal class _StarGenerator__star_border
     {
         double step = (Dart_mathLibrary.pi / this.points);
         double angle = ((-Dart_mathLibrary.pi / 2L) - step);
-        var valleyLocal = new global::Doroti.Ui.Offset((center.dx + (global::Doroti.Runtime.Dart_mathLibrary.cos(angle) * innerRadius)), (center.dy + (global::Doroti.Runtime.Dart_mathLibrary.sin(angle) * innerRadius)));
+        var valleyLocal = new global::Doroti.Ui.Offset((center.dx + (Dart_mathLibrary.cos(angle) * innerRadius)), (center.dy + (Dart_mathLibrary.sin(angle) * innerRadius)));
         Offset getCurveMidpoint(Offset a, Offset b, Offset c, Offset a1, Offset c1)
         {
             double angleLocal = _getAngle(a, b, c);
@@ -335,9 +335,9 @@ internal class _StarGenerator__star_border
         double addPoint(double pointAngle, double pointStep, double pointRadius, double pointInnerRadius)
         {
             pointAngle += pointStep;
-            var pointLocal = new global::Doroti.Ui.Offset((center.dx + (global::Doroti.Runtime.Dart_mathLibrary.cos(pointAngle) * pointRadius)), (center.dy + (global::Doroti.Runtime.Dart_mathLibrary.sin(pointAngle) * pointRadius)));
+            var pointLocal = new global::Doroti.Ui.Offset((center.dx + (Dart_mathLibrary.cos(pointAngle) * pointRadius)), (center.dy + (Dart_mathLibrary.sin(pointAngle) * pointRadius)));
             pointAngle += pointStep;
-            var nextValley = new global::Doroti.Ui.Offset((center.dx + (global::Doroti.Runtime.Dart_mathLibrary.cos(pointAngle) * pointInnerRadius)), (center.dy + (global::Doroti.Runtime.Dart_mathLibrary.sin(pointAngle) * pointInnerRadius)));
+            var nextValley = new global::Doroti.Ui.Offset((center.dx + (Dart_mathLibrary.cos(pointAngle) * pointInnerRadius)), (center.dy + (Dart_mathLibrary.sin(pointAngle) * pointInnerRadius)));
             global::Doroti.Ui.Offset valleyArc1Local = (valleyLocal + (((pointLocal - valleyLocal)) * this.valleyRounding));
             global::Doroti.Ui.Offset pointArc1Local = (pointLocal + (((valleyLocal - pointLocal)) * this.pointRounding));
             global::Doroti.Ui.Offset pointArc2Local = (pointLocal + (((nextValley - pointLocal)) * this.pointRounding));
@@ -408,13 +408,13 @@ internal class _StarGenerator__star_border
 
     internal virtual double _getWeight(double angle)
     {
-        return global::Doroti.Runtime.Dart_mathLibrary.cos((((angle / 2L)) % ((Dart_mathLibrary.pi / 2L))));
+        return Dart_mathLibrary.cos((((angle / 2L)) % ((Dart_mathLibrary.pi / 2L))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _getAngle(Offset a, Offset b, Offset c)
     {
-        if ((((object.Equals(a, c)) || (object.Equals(b, c))) || (object.Equals(b, a))))
+        if ((((Equals(a, c)) || (Equals(b, c))) || (Equals(b, a))))
         {
             return 0;
         }
@@ -423,7 +423,7 @@ internal class _StarGenerator__star_border
         double dot = ((u.dx * v.dx) + (u.dy * v.dy));
         double m1 = ((b.dx == a.dx) ? double.PositiveInfinity : (-u.dy / -u.dx));
         double m2 = ((b.dx == c.dx) ? double.PositiveInfinity : (-v.dy / -v.dx));
-        double angle = global::Doroti.Runtime.Dart_mathLibrary.atan2((m1 - m2), (1L + (m1 * m2))).abs();
+        double angle = Dart_mathLibrary.atan2((m1 - m2), (1L + (m1 * m2))).abs();
         if ((dot < 0L))
         {
             angle += Dart_mathLibrary.pi;

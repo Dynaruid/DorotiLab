@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/message_codecs.dart
-#pragma warning disable CS8603, CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Services;
@@ -32,7 +31,7 @@ public class StringCodec : MessageCodec<string>
         {
             return null;
         }
-        return global::Doroti.Runtime.Dart_convertLibrary.utf8.decode(new Uint8List(message));
+        return Dart_convertLibrary.utf8.decode(new Uint8List(message));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -42,7 +41,7 @@ public class StringCodec : MessageCodec<string>
         {
             return null;
         }
-        return new ByteData(global::Doroti.Runtime.Dart_convertLibrary.utf8.encode(message));
+        return new ByteData(Dart_convertLibrary.utf8.encode(message));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,7 +63,7 @@ public class JSONMessageCodec : MessageCodec<object?>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual object decodeMessage(ByteData? message)
+    public virtual object? decodeMessage(ByteData? message)
     {
         if ((message is null))
         {
@@ -99,7 +98,7 @@ public class JSONMethodCodec : MethodCodec
         return new MethodCall(method, arguments);
     }
 
-    public virtual object decodeEnvelope(ByteData envelope)
+    public virtual object? decodeEnvelope(ByteData envelope)
     {
         object? decoded = new JSONMessageCodec().decodeMessage(envelope);
         if ((decoded is not System.Collections.IList))
@@ -170,7 +169,7 @@ public class StandardMessageCodec : MessageCodec<object?>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual object decodeMessage(ByteData? message)
+    public virtual object? decodeMessage(ByteData? message)
     {
         if ((message is null))
         {
@@ -237,7 +236,7 @@ public class StandardMessageCodec : MessageCodec<object?>
                                 }
                                 else
                                 {
-                                    utf8Bytes = global::Doroti.Runtime.Dart_convertLibrary.utf8.encode(((string)value__as15722).substring(i));
+                                    utf8Bytes = Dart_convertLibrary.utf8.encode(((string)value__as15722).substring(i));
                                     utf8Offset = i;
                                     break;
                                 }
@@ -349,72 +348,72 @@ public class StandardMessageCodec : MessageCodec<object?>
     {
         switch (type)
         {
-            case var __case18505 when object.Equals(__case18505, _valueNull):
+            case var __case18505 when Equals(__case18505, _valueNull):
                 {
                     return null;
                 }
-            case var __case18549 when object.Equals(__case18549, _valueTrue):
+            case var __case18549 when Equals(__case18549, _valueTrue):
                 {
                     return true;
                 }
-            case var __case18593 when object.Equals(__case18593, _valueFalse):
+            case var __case18593 when Equals(__case18593, _valueFalse):
                 {
                     return false;
                 }
-            case var __case18639 when object.Equals(__case18639, _valueInt32):
+            case var __case18639 when Equals(__case18639, _valueInt32):
                 {
                     return (long)buffer.getInt32();
                 }
-            case var __case18697 when object.Equals(__case18697, _valueInt64):
+            case var __case18697 when Equals(__case18697, _valueInt64):
                 {
                     return buffer.getInt64();
                 }
-            case var __case18755 when object.Equals(__case18755, _valueFloat64):
+            case var __case18755 when Equals(__case18755, _valueFloat64):
                 {
                     return buffer.getFloat64();
                 }
-            case var __case18817 when object.Equals(__case18817, _valueLargeInt):
-            case var __case18844 when object.Equals(__case18844, _valueString):
+            case var __case18817 when Equals(__case18817, _valueLargeInt):
+            case var __case18844 when Equals(__case18844, _valueString):
                 {
                     long length = readSize(buffer);
-                    return global::Doroti.Runtime.Dart_convertLibrary.utf8.decoder.convert(buffer.getUint8List(length));
+                    return Dart_convertLibrary.utf8.decoder.convert(buffer.getUint8List(length));
                 }
-            case var __case18980 when object.Equals(__case18980, _valueUint8List):
+            case var __case18980 when Equals(__case18980, _valueUint8List):
                 {
                     long lengthLocal = readSize(buffer);
                     return new Uint8List(buffer.getUint8List(lengthLocal).ToArray());
                 }
-            case var __case19097 when object.Equals(__case19097, _valueInt32List):
+            case var __case19097 when Equals(__case19097, _valueInt32List):
                 {
                     long lengthAlternate = readSize(buffer);
                     return buffer.getInt32List(lengthAlternate);
                 }
-            case var __case19214 when object.Equals(__case19214, _valueInt64List):
+            case var __case19214 when Equals(__case19214, _valueInt64List):
                 {
                     long lengthNested = readSize(buffer);
                     return buffer.getInt64List(lengthNested);
                 }
-            case var __case19331 when object.Equals(__case19331, _valueFloat32List):
+            case var __case19331 when Equals(__case19331, _valueFloat32List):
                 {
                     long lengthCurrent = readSize(buffer);
                     return buffer.getFloat32List(lengthCurrent);
                 }
-            case var __case19452 when object.Equals(__case19452, _valueFloat64List):
+            case var __case19452 when Equals(__case19452, _valueFloat64List):
                 {
                     long lengthNext = readSize(buffer);
                     return buffer.getFloat64List(lengthNext);
                 }
-            case var __case19573 when object.Equals(__case19573, _valueList):
+            case var __case19573 when Equals(__case19573, _valueList):
                 {
                     long lengthCandidate = readSize(buffer);
-                    var result = new List<object?>(System.Linq.Enumerable.Repeat<object?>(null, checked((int)lengthCandidate)));
+                    var result = new List<object?>(Enumerable.Repeat<object?>(null, checked((int)lengthCandidate)));
                     for (var i = 0L; (i < lengthCandidate); i++)
                     {
                         result[(int)(i)] = readValue(buffer);
                     }
                     return result;
                 }
-            case var __case19817 when object.Equals(__case19817, _valueMap):
+            case var __case19817 when Equals(__case19817, _valueMap):
                 {
                     long lengthA = readSize(buffer);
                     var resultLocal = new DartMap<object?, object?>();
@@ -457,7 +456,7 @@ public class StandardMessageCodec : MessageCodec<object?>
     public virtual long readSize(ReadBuffer buffer)
     {
         long value = buffer.getUint8();
-        return (value switch { var __case20966 when object.Equals(__case20966, 254L) => buffer.getUint16(), var __case20999 when object.Equals(__case20999, 255L) => buffer.getUint32(), _ => value });
+        return (value switch { var __case20966 when Equals(__case20966, 254L) => buffer.getUint16(), var __case20999 when Equals(__case20999, 255L) => buffer.getUint32(), _ => value });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -517,7 +516,7 @@ public class StandardMethodCodec : MethodCodec
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual object decodeEnvelope(ByteData envelope)
+    public virtual object? decodeEnvelope(ByteData envelope)
     {
         if ((envelope.lengthInBytes == 0L))
         {

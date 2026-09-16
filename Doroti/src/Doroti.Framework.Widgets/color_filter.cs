@@ -17,7 +17,7 @@ public class ColorFiltered : SingleChildRenderObjectWidget
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _ColorFilterRenderObject__color_filter(this.colorFilter));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        (((_ColorFilterRenderObject__color_filter?)(object?)renderObject)!).colorFilter = this.colorFilter;
+        (((_ColorFilterRenderObject__color_filter?)renderObject)!).colorFilter = this.colorFilter;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -42,8 +42,8 @@ internal class _ColorFilterRenderObject__color_filter : global::Doroti.Framework
         get => this._colorFilter;
         set
         {
-            var __value = (ColorFilter)(object)value;
-            if ((!object.Equals(__value, this._colorFilter)))
+            var __value = (ColorFilter)value;
+            if ((!Equals(__value, this._colorFilter)))
             {
                 _colorFilter = __value;
                 markNeedsPaint();
@@ -53,7 +53,7 @@ internal class _ColorFilterRenderObject__color_filter : global::Doroti.Framework
     public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>((this.child is not null));
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        layer = context.pushColorFilter(offset, this.colorFilter, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Framework.Rendering.ColorFilterLayer?)(object?)this.layer)!);
+        layer = context.pushColorFilter(offset, this.colorFilter, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Framework.Rendering.ColorFilterLayer?)this.layer)!);
         DartRuntimePrimitives.Assert(() =>
             {
                 this.layer!.debugCreator = this.debugCreator;

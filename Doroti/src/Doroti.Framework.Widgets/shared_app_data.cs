@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/shared_app_data.dart
-#pragma warning disable CS8600, CS8601, CS8603, CS8604, CS8619, CS8620
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -17,18 +16,18 @@ public class SharedAppData : StatefulWidget
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SharedAppDataState__shared_app_data());
-    public static V getValue<K, V>(BuildContext context, K key, global::System.Func<V> init)
+    public static V getValue<K, V>(BuildContext context, K key, global::System.Func<V> init) where K : notnull
     {
-        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)(object?)InheritedModel<object>.inheritFrom<_SharedAppModel__shared_app_data>(context, aspect: key));
-        DartRuntimePrimitives.Assert(() => SharedAppData._debugHasSharedAppData(model, context, "getValue"));
-        return ((V)(object?)model!.sharedAppDataState.getValue<K, V>(key, (global::System.Func<V>)init));
+        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)InheritedModel<object>.inheritFrom<_SharedAppModel__shared_app_data>(context, aspect: key));
+        DartRuntimePrimitives.Assert(() => _debugHasSharedAppData(model, context, "getValue"));
+        return ((V)model!.sharedAppDataState.getValue<K, V>(key, (global::System.Func<V>)init));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static void setValue<K, V>(BuildContext context, K key, V value)
+    public static void setValue<K, V>(BuildContext context, K key, V value) where K : notnull
     {
-        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)(object?)context.getInheritedWidgetOfExactType<_SharedAppModel__shared_app_data>());
-        DartRuntimePrimitives.Assert(() => SharedAppData._debugHasSharedAppData(model, context, "setValue"));
+        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)context.getInheritedWidgetOfExactType<_SharedAppModel__shared_app_data>());
+        DartRuntimePrimitives.Assert(() => _debugHasSharedAppData(model, context, "setValue"));
         model!.sharedAppDataState.setValue<K, V>(key, value);
     }
 
@@ -52,14 +51,14 @@ public class SharedAppData : StatefulWidget
 internal class _SharedAppDataState__shared_app_data : State<SharedAppData>
 {
     private bool __late_data_initialized;
-    private DartMap<object, object> __late_data = default!;
-    public virtual DartMap<object, object> data
+    private DartMap<object, object?> __late_data = default!;
+    public virtual DartMap<object, object?> data
     {
         get
         {
             if (!__late_data_initialized)
             {
-                __late_data = new DartMap<object, object>();
+                __late_data = new DartMap<object, object?>();
                 __late_data_initialized = true;
             }
             return __late_data;
@@ -69,20 +68,20 @@ internal class _SharedAppDataState__shared_app_data : State<SharedAppData>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _SharedAppModel__shared_app_data(sharedAppDataState: this, child: ((SharedAppData)(object)this.widget).child));
+        return ((Widget)new _SharedAppModel__shared_app_data(sharedAppDataState: this, child: ((SharedAppData)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual V getValue<K, V>(K key, global::System.Func<V> init)
+    public virtual V getValue<K, V>(K key, global::System.Func<V> init) where K : notnull
     {
         this.data.putIfAbsent(key, () => init());
         return ((V?)(object?)this.data.GetValueOrDefault(key))!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void setValue<K, V>(K key, V value)
+    public virtual void setValue<K, V>(K key, V value) where K : notnull
     {
-        if ((!object.Equals(this.data.GetValueOrDefault(key), value)))
+        if ((!Equals(this.data.GetValueOrDefault(key), value)))
         {
             setState(((global::System.Action)(() =>
             {
@@ -97,7 +96,7 @@ internal class _SharedAppDataState__shared_app_data : State<SharedAppData>
 internal class _SharedAppModel__shared_app_data : InheritedModel<object>
 {
     public virtual _SharedAppDataState__shared_app_data sharedAppDataState { get; private set; } = default!;
-    public virtual DartMap<object, object> data { get; private set; } = default!;
+    public virtual DartMap<object, object?> data { get; private set; } = default!;
 
     internal _SharedAppModel__shared_app_data(_SharedAppDataState__shared_app_data sharedAppDataState, Widget child) : base(child: child)
     {
@@ -107,17 +106,17 @@ internal class _SharedAppModel__shared_app_data : InheritedModel<object>
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __old = (_SharedAppModel__shared_app_data)(object)oldWidget;
-        return (!object.Equals(this.data, ((_SharedAppModel__shared_app_data)__old).data));
+        var __old = (_SharedAppModel__shared_app_data)oldWidget;
+        return (!Equals(this.data, ((_SharedAppModel__shared_app_data)__old).data));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool updateShouldNotifyDependent(InheritedModel<object> old, HashSet<object> keys)
     {
-        var __old = (_SharedAppModel__shared_app_data)(object)old;
+        var __old = (_SharedAppModel__shared_app_data)old;
         foreach (var key in keys)
         {
-            if ((!object.Equals(this.data.GetValueOrDefault(key), ((_SharedAppModel__shared_app_data)__old).data.GetValueOrDefault(key))))
+            if ((!Equals(this.data.GetValueOrDefault(key), ((_SharedAppModel__shared_app_data)__old).data.GetValueOrDefault(key))))
             {
                 return true;
             }

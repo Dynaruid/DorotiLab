@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart
-#pragma warning disable CS0693, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8620
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -52,9 +51,9 @@ public class RawAutocomplete<T> : StatefulWidget
         System.Diagnostics.Debug.Assert(!(((textEditingController is not null) && (initialValue is not null))));
     }
 
-    public static void onFieldSubmitted<T>(GlobalKey<IState> key)
+    public static void onFieldSubmitted<TOption>(GlobalKey<IState> key)
     {
-        var rawAutocomplete = ((_RawAutocompleteState__autocomplete<T>?)(object?)((GlobalKey<IState>)key).currentState!)!;
+        var rawAutocomplete = ((_RawAutocompleteState__autocomplete<TOption>?)((GlobalKey<IState>)key).currentState!)!;
         rawAutocomplete._onFieldSubmitted();
     }
 
@@ -76,34 +75,34 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
     internal virtual TextEditingController? _internalTextEditingController { get; set; } = default;
     internal virtual FocusNode? _internalFocusNode { get; set; } = default;
     private bool __late__actionMap_initialized;
-    private DartMap<Type, CallbackAction<Intent>> __late__actionMap = default!;
-    internal virtual DartMap<Type, CallbackAction<Intent>> _actionMap
+    private DartMap<Type, IIntentAction> __late__actionMap = default!;
+    internal virtual DartMap<Type, IIntentAction> _actionMap
     {
         get
         {
             if (!__late__actionMap_initialized)
             {
-                __late__actionMap = new DartMap<Type, CallbackAction<Intent>> { [typeof(AutocompletePreviousOptionIntent)] = ((CallbackAction<Intent>)(object?)new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompletePreviousOptionIntent>)this._highlightPreviousOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteNextOptionIntent)] = ((CallbackAction<Intent>)(object?)new _AutocompleteCallbackAction__autocomplete<AutocompleteNextOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteNextOptionIntent>)this._highlightNextOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteFirstOptionIntent)] = ((CallbackAction<Intent>)(object?)new _AutocompleteCallbackAction__autocomplete<AutocompleteFirstOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteFirstOptionIntent>)this._highlightFirstOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteLastOptionIntent)] = ((CallbackAction<Intent>)(object?)new _AutocompleteCallbackAction__autocomplete<AutocompleteLastOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteLastOptionIntent>)this._highlightLastOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteNextPageOptionIntent)] = ((CallbackAction<Intent>)(object?)new _AutocompleteCallbackAction__autocomplete<AutocompleteNextPageOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteNextPageOptionIntent>)this._highlightNextPageOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompletePreviousPageOptionIntent)] = ((CallbackAction<Intent>)(object?)new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousPageOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompletePreviousPageOptionIntent>)this._highlightPreviousPageOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(DismissIntent)] = ((CallbackAction<Intent>)(object?)new CallbackAction<DismissIntent>(onInvoke: (global::System.Func<DismissIntent, object?>)this._hideOptions)) };
+                __late__actionMap = new DartMap<Type, IIntentAction> { [typeof(AutocompletePreviousOptionIntent)] = ((IIntentAction)new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompletePreviousOptionIntent>)this._highlightPreviousOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteNextOptionIntent)] = ((IIntentAction)new _AutocompleteCallbackAction__autocomplete<AutocompleteNextOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteNextOptionIntent>)this._highlightNextOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteFirstOptionIntent)] = ((IIntentAction)new _AutocompleteCallbackAction__autocomplete<AutocompleteFirstOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteFirstOptionIntent>)this._highlightFirstOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteLastOptionIntent)] = ((IIntentAction)new _AutocompleteCallbackAction__autocomplete<AutocompleteLastOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteLastOptionIntent>)this._highlightLastOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompleteNextPageOptionIntent)] = ((IIntentAction)new _AutocompleteCallbackAction__autocomplete<AutocompleteNextPageOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompleteNextPageOptionIntent>)this._highlightNextPageOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(AutocompletePreviousPageOptionIntent)] = ((IIntentAction)new _AutocompleteCallbackAction__autocomplete<AutocompletePreviousPageOptionIntent>(onInvoke: (__arg0) => { ((global::System.Action<AutocompletePreviousPageOptionIntent>)this._highlightPreviousPageOption)(__arg0); return default!; }, isEnabledCallback: ((global::System.Func<bool>)(() => this._canShowOptionsView)))), [typeof(DismissIntent)] = ((IIntentAction)new CallbackAction<DismissIntent>(onInvoke: (global::System.Func<DismissIntent, object?>)this._hideOptions)) };
                 __late__actionMap_initialized = true;
             }
             return __late__actionMap;
         }
     }
-    internal virtual IEnumerable<T> _options { get; set; } = System.Linq.Enumerable.Empty<T>();
+    internal virtual IEnumerable<T> _options { get; set; } = Enumerable.Empty<T>();
     internal virtual T? _selection { get; set; } = default;
     internal virtual string? _lastFieldText { get; set; } = default;
     internal virtual global::Doroti.Framework.Foundation.ValueNotifier<long> _highlightedOptionIndex { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<long>(0L);
-    internal static DartMap<ShortcutActivator, Intent> _appleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp, meta: true)] = ((Intent)(object?)new AutocompleteFirstOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown, meta: true)] = ((Intent)(object?)new AutocompleteLastOptionIntent()) };
-    internal static DartMap<ShortcutActivator, Intent> _nonAppleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp, control: true)] = ((Intent)(object?)new AutocompleteFirstOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown, control: true)] = ((Intent)(object?)new AutocompleteLastOptionIntent()) };
-    internal static DartMap<ShortcutActivator, Intent> _commonShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new AutocompletePreviousOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new AutocompleteNextOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageUp)] = ((Intent)(object?)new AutocompletePreviousPageOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageDown)] = ((Intent)(object?)new AutocompleteNextPageOptionIntent()) };
+    internal static DartMap<ShortcutActivator, Intent> _appleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] = ((Intent)new AutocompleteFirstOptionIntent()), [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] = ((Intent)new AutocompleteLastOptionIntent()) };
+    internal static DartMap<ShortcutActivator, Intent> _nonAppleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp, control: true)] = ((Intent)new AutocompleteFirstOptionIntent()), [new SingleActivator(LogicalKeyboardKey.arrowDown, control: true)] = ((Intent)new AutocompleteLastOptionIntent()) };
+    internal static DartMap<ShortcutActivator, Intent> _commonShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new AutocompletePreviousOptionIntent()), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new AutocompleteNextOptionIntent()), [new SingleActivator(LogicalKeyboardKey.pageUp)] = ((Intent)new AutocompletePreviousPageOptionIntent()), [new SingleActivator(LogicalKeyboardKey.pageDown)] = ((Intent)new AutocompleteNextPageOptionIntent()) };
     internal virtual long _onChangedCallId { get; set; } = 0L;
-    internal static double _kMinUsableHeight = global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension;
+    internal static double _kMinUsableHeight = ConstantsLibrary.kMinInteractiveDimension;
 
     internal virtual TextEditingController _textEditingController
     {
         get
         {
-            return (((RawAutocomplete<T>)(object)this.widget).textEditingController ?? (_internalTextEditingController ??= ((Func<TextEditingController>)(() =>
+            return (((RawAutocomplete<T>)this.widget).textEditingController ?? (_internalTextEditingController ??= ((Func<TextEditingController>)(() =>
 {
     var __cascade = new TextEditingController();
     __cascade.addListener(this._onChangedFieldListener);
@@ -115,7 +114,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
     {
         get
         {
-            return (((RawAutocomplete<T>)(object)this.widget).focusNode ?? (_internalFocusNode ??= ((Func<FocusNode>)(() =>
+            return (((RawAutocomplete<T>)this.widget).focusNode ?? (_internalFocusNode ??= ((Func<FocusNode>)(() =>
 {
     var __cascade = new FocusNode();
     __cascade.addListener(this._onFocusChange);
@@ -124,7 +123,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         }
     }
     internal static DartMap<ShortcutActivator, Intent> _shortcuts => new DartMap<ShortcutActivator, Intent>();
-    internal virtual bool _canShowOptionsView => DartRuntimePrimitives.ConvertValue<bool>((((FocusNode)this._focusNode).hasFocus && System.Linq.Enumerable.Any(this._options)));
+    internal virtual bool _canShowOptionsView => DartRuntimePrimitives.ConvertValue<bool>((((FocusNode)this._focusNode).hasFocus && Enumerable.Any(this._options)));
     internal virtual void _onFocusChange()
     {
         if ((((FocusNode)this._focusNode).hasFocus != this._hasFocus))
@@ -155,9 +154,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             return;
         }
-        WidgetsLocalizations localizations = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(this.context));
+        WidgetsLocalizations localizations = ((WidgetsLocalizations)WidgetsLocalizations.of(this.context));
         string optionsHint = (resultsAvailable ? ((WidgetsLocalizations)localizations).searchResultsFound : ((WidgetsLocalizations)localizations).noResultsFound);
-        DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), optionsHint, ((WidgetsLocalizations)localizations).textDirection).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+        DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), optionsHint, ((WidgetsLocalizations)localizations).textDirection).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stack) =>
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
         }))));
@@ -171,7 +170,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             return;
         }
-        global::Doroti.Framework.Services.TextEditingValue valueLocal = ((global::Doroti.Framework.Services.TextEditingValue)(object?)this._textEditingController.value);
+        global::Doroti.Framework.Services.TextEditingValue valueLocal = ((global::Doroti.Framework.Services.TextEditingValue)this._textEditingController.value);
         var shouldUpdateOptions = false;
         if ((((global::Doroti.Framework.Services.TextEditingValue)valueLocal).text != this._lastFieldText))
         {
@@ -189,9 +188,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             return;
         }
-        if ((!System.Linq.Enumerable.Any(this._options) != !System.Linq.Enumerable.Any(options)))
+        if ((!Enumerable.Any(this._options) != !Enumerable.Any(options)))
         {
-            _announceSemantics(System.Linq.Enumerable.Any(options));
+            _announceSemantics(Enumerable.Any(options));
         }
         _options = options;
         _updateHighlight(((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value);
@@ -220,9 +219,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         _selecting = true;
         _selection = nextSelection;
         string selectionString = this.widget.displayStringForOption(nextSelection);
-        this._textEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: selectionString.Length), text: selectionString);
+        this._textEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(selection: TextSelection.CreateCollapsed(offset: selectionString.Length), text: selectionString);
         _lastFieldText = selectionString;
-        ((RawAutocomplete<T>)(object)this.widget).onSelected?.Invoke(nextSelection);
+        ((RawAutocomplete<T>)this.widget).onSelected?.Invoke(nextSelection);
         if (((OverlayPortalController)this._optionsViewController).isShowing)
         {
             this._optionsViewController.hide();
@@ -232,7 +231,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
 
     internal virtual void _updateHighlight(long nextIndex)
     {
-        this._highlightedOptionIndex.value = (!System.Linq.Enumerable.Any(this._options) ? 0L : nextIndex.clamp(0L, (this._options.Count() - 1L)));
+        this._highlightedOptionIndex.value = (!Enumerable.Any(this._options) ? 0L : nextIndex.clamp(0L, (this._options.Count() - 1L)));
     }
 
     internal virtual void _highlightPreviousOption(AutocompletePreviousOptionIntent intent)
@@ -291,22 +290,22 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
     {
         if ((((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.determinant == 0.0))
         {
-            return ((Widget)(object?)SizedBox.CreateShrink());
+            return ((Widget)SizedBox.CreateShrink());
         }
-        global::Doroti.Ui.Size fieldSize = ((global::Doroti.Ui.Size)(object?)((OverlayChildLayoutInfo)layoutInfo).childSize);
+        global::Doroti.Ui.Size fieldSize = ((global::Doroti.Ui.Size)((OverlayChildLayoutInfo)layoutInfo).childSize);
         Matrix4 invertTransform = ((Func<Matrix4>)(() =>
 {
     var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
     __cascade.invert();
     return __cascade;
 }))();
-        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        global::Doroti.Framework.Painting.EdgeInsets viewInsets = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.viewInsetsOf(context));
-        global::Doroti.Ui.Rect overlayRect = ((global::Doroti.Ui.Rect)(object?)mediaQueryPadding.deflateRect(viewInsets.deflateRect((Offset.zero & ((OverlayChildLayoutInfo)layoutInfo).overlaySize))));
-        global::Doroti.Ui.Rect overlayRectInField = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(invertTransform, overlayRect));
+        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = ((global::Doroti.Framework.Painting.EdgeInsets)MediaQuery.paddingOf(context));
+        global::Doroti.Framework.Painting.EdgeInsets viewInsets = ((global::Doroti.Framework.Painting.EdgeInsets)MediaQuery.viewInsetsOf(context));
+        global::Doroti.Ui.Rect overlayRect = ((global::Doroti.Ui.Rect)mediaQueryPadding.deflateRect(viewInsets.deflateRect((Offset.zero & ((OverlayChildLayoutInfo)layoutInfo).overlaySize))));
+        global::Doroti.Ui.Rect overlayRectInField = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(invertTransform, overlayRect));
         double spaceAbove = -overlayRectInField.top;
         double spaceBelow = (overlayRectInField.bottom - fieldSize.height);
-        bool opensUp = (((RawAutocomplete<T>)(object)this.widget).optionsViewOpenDirection switch { OptionsViewOpenDirection.up => true, OptionsViewOpenDirection.down => false, OptionsViewOpenDirection.mostSpace => (spaceAbove > spaceBelow), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool opensUp = (((RawAutocomplete<T>)this.widget).optionsViewOpenDirection switch { OptionsViewOpenDirection.up => true, OptionsViewOpenDirection.down => false, OptionsViewOpenDirection.mostSpace => (spaceAbove > spaceBelow), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double optionsViewMaxHeight = (opensUp ? -overlayRectInField.top : (overlayRectInField.bottom - fieldSize.height));
         var optionsViewBoundingBox = new global::Doroti.Ui.Size(fieldSize.width, Math.Max(optionsViewMaxHeight, _kMinUsableHeight));
         double originY = (opensUp ? overlayRectInField.top : (overlayRectInField.bottom - optionsViewBoundingBox.height));
@@ -316,24 +315,24 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
     __cascade.translateByDouble(0.0, originY, 0, 1);
     return __cascade;
 }))();
-        Widget childLocal = ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => this.widget.optionsViewBuilder(context, this._select, this._options)))));
-        return ((Widget)(object?)new Transform(transform: transformLocal, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(optionsViewBoundingBox), child: new Align(alignment: (opensUp ? global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart : global::Doroti.Framework.Painting.AlignmentDirectional.topStart), child: new TextFieldTapRegion(child: new AutocompleteHighlightedOption(highlightIndexNotifier: this._highlightedOptionIndex, child: new ExcludeFocus(child: childLocal))))))));
+        Widget childLocal = ((Widget)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => this.widget.optionsViewBuilder(context, this._select, this._options)))));
+        return ((Widget)new Transform(transform: transformLocal, child: new Align(alignment: Alignment.topLeft, child: new ConstrainedBox(constraints: BoxConstraints.CreateTight(optionsViewBoundingBox), child: new Align(alignment: (opensUp ? AlignmentDirectional.bottomStart : AlignmentDirectional.topStart), child: new TextFieldTapRegion(child: new AutocompleteHighlightedOption(highlightIndexNotifier: this._highlightedOptionIndex, child: new ExcludeFocus(child: childLocal))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void initState()
     {
         base.initState();
-        TextEditingController initialController = (((RawAutocomplete<T>)(object)this.widget).textEditingController ?? (_internalTextEditingController = TextEditingController.CreateFromValue(((RawAutocomplete<T>)(object)this.widget).initialValue)));
+        TextEditingController initialController = (((RawAutocomplete<T>)this.widget).textEditingController ?? (_internalTextEditingController = TextEditingController.CreateFromValue(((RawAutocomplete<T>)this.widget).initialValue)));
         initialController.addListener(this._onChangedFieldListener);
         _hasFocus = ((FocusNode)this._focusNode).hasFocus;
-        ((RawAutocomplete<T>)(object)this.widget).focusNode?.addListener(this._onFocusChange);
+        ((RawAutocomplete<T>)this.widget).focusNode?.addListener(this._onFocusChange);
     }
 
     public override void didUpdateWidget(RawAutocomplete<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (!DartRuntimePrimitives.Identical(((RawAutocomplete<T>)oldWidget).textEditingController, ((RawAutocomplete<T>)(object)this.widget).textEditingController))
+        if (!DartRuntimePrimitives.Identical(((RawAutocomplete<T>)oldWidget).textEditingController, ((RawAutocomplete<T>)this.widget).textEditingController))
         {
             ((RawAutocomplete<T>)oldWidget).textEditingController?.removeListener(this._onChangedFieldListener);
             if ((((RawAutocomplete<T>)oldWidget).textEditingController is null))
@@ -341,9 +340,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
                 this._internalTextEditingController?.dispose();
                 _internalTextEditingController = null;
             }
-            ((RawAutocomplete<T>)(object)this.widget).textEditingController?.addListener(this._onChangedFieldListener);
+            ((RawAutocomplete<T>)this.widget).textEditingController?.addListener(this._onChangedFieldListener);
         }
-        if (!DartRuntimePrimitives.Identical(((RawAutocomplete<T>)oldWidget).focusNode, ((RawAutocomplete<T>)(object)this.widget).focusNode))
+        if (!DartRuntimePrimitives.Identical(((RawAutocomplete<T>)oldWidget).focusNode, ((RawAutocomplete<T>)this.widget).focusNode))
         {
             ((RawAutocomplete<T>)oldWidget).focusNode?.removeListener(this._updateOptionsViewVisibility);
             if ((((RawAutocomplete<T>)oldWidget).focusNode is null))
@@ -351,15 +350,15 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
                 this._internalFocusNode?.dispose();
                 _internalFocusNode = null;
             }
-            ((RawAutocomplete<T>)(object)this.widget).focusNode?.addListener(this._updateOptionsViewVisibility);
+            ((RawAutocomplete<T>)this.widget).focusNode?.addListener(this._updateOptionsViewVisibility);
         }
     }
 
     public override void dispose()
     {
-        ((RawAutocomplete<T>)(object)this.widget).textEditingController?.removeListener(this._onChangedFieldListener);
+        ((RawAutocomplete<T>)this.widget).textEditingController?.removeListener(this._onChangedFieldListener);
         this._internalTextEditingController?.dispose();
-        ((RawAutocomplete<T>)(object)this.widget).focusNode?.removeListener(this._updateOptionsViewVisibility);
+        ((RawAutocomplete<T>)this.widget).focusNode?.removeListener(this._updateOptionsViewVisibility);
         this._internalFocusNode?.dispose();
         this._highlightedOptionIndex.dispose();
         base.dispose();
@@ -367,8 +366,8 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
 
     public override Widget build(BuildContext context)
     {
-        Widget fieldView = ((((RawAutocomplete<T>)(object)this.widget).fieldViewBuilder is null ? new SizedBox(width: double.PositiveInfinity, height: 0.0) : ((RawAutocomplete<T>)(object)this.widget).fieldViewBuilder.Invoke(context, this._textEditingController, this._focusNode, this._onFieldSubmitted)));
-        return ((Widget)(object?)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._optionsViewController, overlayChildBuilder: this._buildOptionsView, child: new TextFieldTapRegion(child: new Shortcuts(shortcuts: _shortcuts, child: new Actions(actions: this._actionMap.cast<Type, dynamic>(), child: fieldView)))));
+        Widget fieldView = ((((RawAutocomplete<T>)this.widget).fieldViewBuilder is null ? new SizedBox(width: double.PositiveInfinity, height: 0.0) : ((RawAutocomplete<T>)this.widget).fieldViewBuilder.Invoke(context, this._textEditingController, this._focusNode, this._onFieldSubmitted)));
+        return ((Widget)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._optionsViewController, overlayChildBuilder: this._buildOptionsView, child: new TextFieldTapRegion(child: new Shortcuts(shortcuts: _shortcuts, child: new Actions(actions: this._actionMap.cast<Type, dynamic>(), child: fieldView)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/time_picker_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -70,9 +70,9 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
             {
                 return this._dayPeriodColor;
             }
-            return ((Color?)(object?)global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
+            return ((Color?)WidgetStateColor.CreateResolveWith(((states) =>
             {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                if (states.Contains(WidgetState.selected))
                 {
                     return this._dayPeriodColor;
                 }
@@ -127,7 +127,7 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
                 }
             }
         }
-        return new TimePickerThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), cancelButtonStyle: ButtonStyle.lerp(a?.cancelButtonStyle, b?.cancelButtonStyle, t), confirmButtonStyle: ButtonStyle.lerp(a?.confirmButtonStyle, b?.confirmButtonStyle, t), dayPeriodBorderSide: lerpedBorderSide, dayPeriodColor: Dart_uiLibrary.Color.lerp(a?.dayPeriodColor, b?.dayPeriodColor, t), dayPeriodShape: ((global::Doroti.Framework.Painting.OutlinedBorder?)(object?)ShapeBorder.lerp(a?.dayPeriodShape, b?.dayPeriodShape, t))!, dayPeriodTextColor: Dart_uiLibrary.Color.lerp(a?.dayPeriodTextColor, b?.dayPeriodTextColor, t), dayPeriodTextStyle: TextStyle.lerp(a?.dayPeriodTextStyle, b?.dayPeriodTextStyle, t), dialBackgroundColor: Dart_uiLibrary.Color.lerp(a?.dialBackgroundColor, b?.dialBackgroundColor, t), dialHandColor: Dart_uiLibrary.Color.lerp(a?.dialHandColor, b?.dialHandColor, t), dialTextColor: Dart_uiLibrary.Color.lerp(a?.dialTextColor, b?.dialTextColor, t), dialTextStyle: TextStyle.lerp(a?.dialTextStyle, b?.dialTextStyle, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), entryModeIconColor: Dart_uiLibrary.Color.lerp(a?.entryModeIconColor, b?.entryModeIconColor, t), helpTextStyle: TextStyle.lerp(a?.helpTextStyle, b?.helpTextStyle, t), hourMinuteColor: Dart_uiLibrary.Color.lerp(a?.hourMinuteColor, b?.hourMinuteColor, t), hourMinuteShape: ShapeBorder.lerp(a?.hourMinuteShape, b?.hourMinuteShape, t), hourMinuteTextColor: Dart_uiLibrary.Color.lerp(a?.hourMinuteTextColor, b?.hourMinuteTextColor, t), hourMinuteTextStyle: TextStyle.lerp(a?.hourMinuteTextStyle, b?.hourMinuteTextStyle, t), inputDecorationTheme: ((t < 0.5) ? a?.inputDecorationTheme : b?.inputDecorationTheme), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), timeSelectorSeparatorColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.timeSelectorSeparatorColor, b?.timeSelectorSeparatorColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), timeSelectorSeparatorTextStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.timeSelectorSeparatorTextStyle, b?.timeSelectorSeparatorTextStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)global::Doroti.Framework.Painting.TextStyle.lerp));
+        return new TimePickerThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), cancelButtonStyle: ButtonStyle.lerp(a?.cancelButtonStyle, b?.cancelButtonStyle, t), confirmButtonStyle: ButtonStyle.lerp(a?.confirmButtonStyle, b?.confirmButtonStyle, t), dayPeriodBorderSide: lerpedBorderSide, dayPeriodColor: Dart_uiLibrary.Color.lerp(a?.dayPeriodColor, b?.dayPeriodColor, t), dayPeriodShape: ((global::Doroti.Framework.Painting.OutlinedBorder?)ShapeBorder.lerp(a?.dayPeriodShape, b?.dayPeriodShape, t))!, dayPeriodTextColor: Dart_uiLibrary.Color.lerp(a?.dayPeriodTextColor, b?.dayPeriodTextColor, t), dayPeriodTextStyle: TextStyle.lerp(a?.dayPeriodTextStyle, b?.dayPeriodTextStyle, t), dialBackgroundColor: Dart_uiLibrary.Color.lerp(a?.dialBackgroundColor, b?.dialBackgroundColor, t), dialHandColor: Dart_uiLibrary.Color.lerp(a?.dialHandColor, b?.dialHandColor, t), dialTextColor: Dart_uiLibrary.Color.lerp(a?.dialTextColor, b?.dialTextColor, t), dialTextStyle: TextStyle.lerp(a?.dialTextStyle, b?.dialTextStyle, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), entryModeIconColor: Dart_uiLibrary.Color.lerp(a?.entryModeIconColor, b?.entryModeIconColor, t), helpTextStyle: TextStyle.lerp(a?.helpTextStyle, b?.helpTextStyle, t), hourMinuteColor: Dart_uiLibrary.Color.lerp(a?.hourMinuteColor, b?.hourMinuteColor, t), hourMinuteShape: ShapeBorder.lerp(a?.hourMinuteShape, b?.hourMinuteShape, t), hourMinuteTextColor: Dart_uiLibrary.Color.lerp(a?.hourMinuteTextColor, b?.hourMinuteTextColor, t), hourMinuteTextStyle: TextStyle.lerp(a?.hourMinuteTextStyle, b?.hourMinuteTextStyle, t), inputDecorationTheme: ((t < 0.5) ? a?.inputDecorationTheme : b?.inputDecorationTheme), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t), shape: ShapeBorder.lerp(a?.shape, b?.shape, t), timeSelectorSeparatorColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.timeSelectorSeparatorColor, b?.timeSelectorSeparatorColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), timeSelectorSeparatorTextStyle: WidgetStateProperty.lerp<global::Doroti.Framework.Painting.TextStyle?>(a?.timeSelectorSeparatorTextStyle, b?.timeSelectorSeparatorTextStyle, t, (global::System.Func<global::Doroti.Framework.Painting.TextStyle?, global::Doroti.Framework.Painting.TextStyle?, double, global::Doroti.Framework.Painting.TextStyle?>)TextStyle.lerp));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -140,11 +140,11 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((((((((((((((((((__other is TimePickerThemeData) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).cancelButtonStyle, this.cancelButtonStyle))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).confirmButtonStyle, this.confirmButtonStyle))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodBorderSide, this.dayPeriodBorderSide))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodColor, this.dayPeriodColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodShape, this.dayPeriodShape))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodTextColor, this.dayPeriodTextColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodTextStyle, this.dayPeriodTextStyle))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialBackgroundColor, this.dialBackgroundColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialHandColor, this.dialHandColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialTextColor, this.dialTextColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialTextStyle, this.dialTextStyle))) && (((TimePickerThemeData)((TimePickerThemeData)__other)).elevation == this.elevation)) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).entryModeIconColor, this.entryModeIconColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).helpTextStyle, this.helpTextStyle))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteColor, this.hourMinuteColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteShape, this.hourMinuteShape))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteTextColor, this.hourMinuteTextColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteTextStyle, this.hourMinuteTextStyle))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).padding, this.padding))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).shape, this.shape))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).timeSelectorSeparatorColor, this.timeSelectorSeparatorColor))) && (object.Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).timeSelectorSeparatorTextStyle, this.timeSelectorSeparatorTextStyle)));
+        return (((((((((((((((((((((((((__other is TimePickerThemeData) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).cancelButtonStyle, this.cancelButtonStyle))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).confirmButtonStyle, this.confirmButtonStyle))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodBorderSide, this.dayPeriodBorderSide))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodColor, this.dayPeriodColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodShape, this.dayPeriodShape))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodTextColor, this.dayPeriodTextColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dayPeriodTextStyle, this.dayPeriodTextStyle))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialBackgroundColor, this.dialBackgroundColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialHandColor, this.dialHandColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialTextColor, this.dialTextColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).dialTextStyle, this.dialTextStyle))) && (((TimePickerThemeData)((TimePickerThemeData)__other)).elevation == this.elevation)) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).entryModeIconColor, this.entryModeIconColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).helpTextStyle, this.helpTextStyle))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteColor, this.hourMinuteColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteShape, this.hourMinuteShape))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteTextColor, this.hourMinuteTextColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).hourMinuteTextStyle, this.hourMinuteTextStyle))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).padding, this.padding))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).shape, this.shape))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).timeSelectorSeparatorColor, this.timeSelectorSeparatorColor))) && (Equals(((TimePickerThemeData)((TimePickerThemeData)__other)).timeSelectorSeparatorTextStyle, this.timeSelectorSeparatorTextStyle)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -175,8 +175,8 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>("timeSelectorSeparatorTextStyle", this.timeSelectorSeparatorTextStyle, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -192,7 +192,7 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -209,16 +209,16 @@ public class TimePickerTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static TimePickerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TimePickerTheme? timePickerThemeLocal = ((TimePickerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TimePickerTheme>());
+        TimePickerTheme? timePickerThemeLocal = ((TimePickerTheme?)context.dependOnInheritedWidgetOfExactType<TimePickerTheme>());
         return (timePickerThemeLocal?.data ?? Theme.of(context).timePickerTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TimePickerTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new TimePickerTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TimePickerTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((TimePickerTheme)oldWidget).data)));
 }

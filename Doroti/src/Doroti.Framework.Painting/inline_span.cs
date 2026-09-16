@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/inline_span.dart
-#pragma warning disable CS8602
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -54,11 +53,11 @@ public class InlineSpanSemanticsInformation
     {
         var __other = other as InlineSpanSemanticsInformation;
         if (__other is null) return false;
-        return (((((((__other is InlineSpanSemanticsInformation) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).text == this.text)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsLabel == this.semanticsLabel)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (object.Equals(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).recognizer, this.recognizer))) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).isPlaceholder == this.isPlaceholder)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).stringAttributes, this.stringAttributes));
+        return (((((((__other is InlineSpanSemanticsInformation) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).text == this.text)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsLabel == this.semanticsLabel)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (Equals(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).recognizer, this.recognizer))) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).isPlaceholder == this.isPlaceholder)) && CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).stringAttributes, this.stringAttributes));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.text, this.semanticsLabel, this.semanticsIdentifier, this.recognizer, this.isPlaceholder);
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "InlineSpanSemanticsInformation"))}{{text: {this.text}, semanticsLabel: {this.semanticsLabel}, semanticsIdentifier: {this.semanticsIdentifier}, recognizer: {this.recognizer}}}";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "InlineSpanSemanticsInformation"))}{{text: {this.text}, semanticsLabel: {this.semanticsLabel}, semanticsIdentifier: {this.semanticsIdentifier}, recognizer: {this.recognizer}}}";
 }
 
 public static partial class Inline_spanLibrary
@@ -169,14 +168,14 @@ public abstract class InlineSpan : DiagnosticableTree
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((__other is InlineSpan) && (object.Equals(((InlineSpan)((InlineSpan)__other)).style, this.style)));
+        return ((__other is InlineSpan) && (Equals(((InlineSpan)((InlineSpan)__other)).style, this.style)));
     }
 
-    public override int GetHashCode() => this.style.GetHashCode();
+    public override int GetHashCode() => this.style?.GetHashCode() ?? 0;
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);

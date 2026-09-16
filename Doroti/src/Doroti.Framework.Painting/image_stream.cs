@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/image_stream.dart
-#pragma warning disable CS8600, CS8602, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -37,21 +36,21 @@ public class ImageInfo
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => !this.image.debugDisposed);
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this.image.dispose();
     }
 
-    public override string ToString() => $"{((this.debugLabel is not null) ? $"{this.debugLabel} " : "")}{this.image} @ {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.scale))}x";
+    public override string ToString() => $"{((this.debugLabel is not null) ? $"{this.debugLabel} " : "")}{this.image} @ {(Foundation.DebugLibrary.debugFormatDouble(this.scale))}x";
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.image, this.scale, this.debugLabel);
     public override bool Equals(object? other)
     {
         var __other = other as ImageInfo;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is ImageInfo) && (object.Equals(((ImageInfo)((ImageInfo)__other)).image, this.image))) && (((ImageInfo)((ImageInfo)__other)).scale == this.scale)) && (((ImageInfo)((ImageInfo)__other)).debugLabel == this.debugLabel));
+        return ((((__other is ImageInfo) && (Equals(((ImageInfo)((ImageInfo)__other)).image, this.image))) && (((ImageInfo)((ImageInfo)__other)).scale == this.scale)) && (((ImageInfo)((ImageInfo)__other)).debugLabel == this.debugLabel));
     }
 
 }
@@ -76,11 +75,11 @@ public class ImageStreamListener
     {
         var __other = other as ImageStreamListener;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is ImageStreamListener) && (object.Equals((Action<ImageInfo, bool>)((ImageStreamListener)((ImageStreamListener)__other)).onImage, (Action<ImageInfo, bool>)this.onImage))) && (object.Equals((Action<ImageChunkEvent>?)((ImageStreamListener)((ImageStreamListener)__other)).onChunk, (Action<ImageChunkEvent>?)this.onChunk))) && (object.Equals((Action<object, global::System.Diagnostics.StackTrace?>?)((ImageStreamListener)((ImageStreamListener)__other)).onError, (Action<object, global::System.Diagnostics.StackTrace?>?)this.onError))) && (((ImageStreamListener)((ImageStreamListener)__other)).reportErrors == this.reportErrors));
+        return (((((__other is ImageStreamListener) && (Equals((Action<ImageInfo, bool>)((ImageStreamListener)((ImageStreamListener)__other)).onImage, (Action<ImageInfo, bool>)this.onImage))) && (Equals((Action<ImageChunkEvent>?)((ImageStreamListener)((ImageStreamListener)__other)).onChunk, (Action<ImageChunkEvent>?)this.onChunk))) && (Equals((Action<object, global::System.Diagnostics.StackTrace?>?)((ImageStreamListener)((ImageStreamListener)__other)).onError, (Action<object, global::System.Diagnostics.StackTrace?>?)this.onError))) && (((ImageStreamListener)((ImageStreamListener)__other)).reportErrors == this.reportErrors));
     }
 
 }
@@ -158,7 +157,7 @@ public class ImageStream : Diagnosticable
         DartRuntimePrimitives.Assert(() => (this._listeners is not null));
         for (var i = 0L; (i < checked((long)(this._listeners!.Count))); i += 1L)
         {
-            if ((object.Equals(this._listeners![(int)(i)], listener)))
+            if ((Equals(this._listeners![(int)(i)], listener)))
             {
                 this._listeners!.removeAt(i);
                 break;
@@ -166,11 +165,11 @@ public class ImageStream : Diagnosticable
         }
     }
 
-    public virtual object key => (((object?)this._completer ?? (object?)this));
+    public virtual object key => (object?)_completer ?? this;
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new ObjectFlagProperty<ImageStreamCompleter>("completer", this._completer, ifPresent: ((Diagnosticable)this._completer).toStringShort(), ifNull: "unresolved"));
+        properties.add(new ObjectFlagProperty<ImageStreamCompleter>("completer", this._completer, ifPresent: ((Diagnosticable?)this._completer)?.toStringShort(), ifNull: "unresolved"));
         properties.add(new ObjectFlagProperty<List<ImageStreamListener>>("listeners", this._listeners, ifPresent: $"{((long?)(this._listeners?.Count))} listener{((((long?)(this._listeners?.Count)) == 1L) ? "" : "s")}", ifNull: "no listeners", level: ((this._completer is not null) ? DiagnosticLevel.hidden : DiagnosticLevel.info)));
         this._completer?.debugFillProperties(properties);
     }
@@ -195,7 +194,7 @@ public class ImageStreamCompleterHandle
         this._completer!._keepAliveHandles -= 1L;
         this._completer!._maybeDispose();
         _completer = null;
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
     }
 
 }
@@ -243,7 +242,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
             catch (Exception newException)
             {
                 var newStack = new System.Diagnostics.StackTrace();
-                if ((!object.Equals(newException, this._currentError!.exception)))
+                if ((!Equals(newException, this._currentError!.exception)))
                 {
                     FlutterError.reportError(new FlutterErrorDetails(exception: newException, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack));
                 }
@@ -263,7 +262,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
             catch (Exception newException)
             {
                 var newStack = new System.Diagnostics.StackTrace();
-                if ((!object.Equals(newException, this._currentError!.exception)))
+                if ((!Equals(newException, this._currentError!.exception)))
                 {
                     FlutterError.reportError(new FlutterErrorDetails(exception: newException, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack));
                 }
@@ -290,7 +289,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
         _checkDisposed();
         for (var i = 0L; (i < checked((long)(this._listeners.Count))); i += 1L)
         {
-            if ((object.Equals(this._listeners[(int)(i)], listener)))
+            if ((Equals(this._listeners[(int)(i)], listener)))
             {
                 this._listeners.removeAt(i);
                 break;
@@ -392,7 +391,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
             catch (Exception newException)
             {
                 var newStack = new System.Diagnostics.StackTrace();
-                if ((!object.Equals(newException, exception)))
+                if ((!Equals(newException, exception)))
                 {
                     FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("when reporting an error to an image listener"), library: "image resource service", exception: newException, stack: newStack));
                 }
@@ -532,7 +531,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
             return;
         }
         Duration delay = (DartRuntimePrimitives.RequireValue(this._frameDuration) - ((timestamp - this._shownTimestamp)));
-        _timer = new Timer((delay * global::Doroti.Framework.Scheduler.BindingLibrary.timeDilation), (() =>
+        _timer = new Timer((delay * Scheduler.BindingLibrary.timeDilation), (() =>
         {
             _scheduleAppFrame();
         }));

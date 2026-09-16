@@ -56,6 +56,9 @@ def click(hwnd, x, y, scale):
     finally: mouse(4)
 
 def type_text(text):
+    # XAML focus telemetry can precede completion of the pointer-up/input handoff.
+    # Exercise normal typing after that handoff, rather than a zero-time burst.
+    time.sleep(.15)
     for char in text:
         for flags in (4, 6):
             event = Input(1, InputUnion(keyboard=KeyboardInput(0, ord(char), flags, 0, 0x444f5250)))

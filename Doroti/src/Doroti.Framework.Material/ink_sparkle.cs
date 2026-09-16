@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_sparkle.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -28,14 +28,14 @@ public class InkSparkle : InteractiveInkFeature
     internal virtual TextDirection _textDirection { get; private set; } = default!;
     internal virtual global::Doroti.Ui.FragmentShader _fragmentShader { get; private set; } = default!;
     internal virtual bool _fragmentShaderInitialized { get; set; } = false;
-    public static InteractiveInkFeatureFactory splashFactory = ((InteractiveInkFeatureFactory)(object?)new _InkSparkleFactory__ink_sparkle());
-    public static InteractiveInkFeatureFactory constantTurbulenceSeedSplashFactory = ((InteractiveInkFeatureFactory)(object?)_InkSparkleFactory__ink_sparkle.CreateConstantTurbulenceSeed());
+    public static InteractiveInkFeatureFactory splashFactory = ((InteractiveInkFeatureFactory)new _InkSparkleFactory__ink_sparkle());
+    public static InteractiveInkFeatureFactory constantTurbulenceSeedSplashFactory = ((InteractiveInkFeatureFactory)_InkSparkleFactory__ink_sparkle.CreateConstantTurbulenceSeed());
 
     public InkSparkle(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Color color, Offset position, TextDirection textDirection, bool containedInkWell = true, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null, double? turbulenceSeed = null) : base(controller: controller, referenceBox: referenceBox, color: color, customBorder: customBorder, onRemoved: onRemoved)
     {
         this._color = color;
         this._position = position;
-        this._borderRadius = (borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero);
+        this._borderRadius = (borderRadius ?? BorderRadius.zero);
         this._textDirection = DartRuntimePrimitives.RequireValue(textDirection);
         this._targetRadius = (((radius ?? Ink_sparkleLibrary._getTargetRadius(referenceBox, containedInkWell, rectCallback, position))) * _targetRadiusMultiplier);
         this._clipCallback = Ink_sparkleLibrary._getClipCallback(referenceBox, containedInkWell, rectCallback);
@@ -50,9 +50,9 @@ public class InkSparkle : InteractiveInkFeature
     __cascade.forward();
     return __cascade;
 }))();
-        _radiusScale = new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn), weight: 75), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 25) }).animate(this._animationController);
+        _radiusScale = new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.CurveTween(curve: Curves.fastOutSlowIn), weight: 75), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 25) }).animate(this._animationController);
         var centerTween = new global::Doroti.Framework.Animation.Tween<global::System.Numerics.Vector2>(begin: new global::System.Numerics.Vector2(checked((float)this._position.dx), checked((float)this._position.dy)), end: new global::System.Numerics.Vector2(checked((float)(((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.width / 2L)), checked((float)(((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.height / 2L))));
-        global::Doroti.Framework.Animation.Animation<double> centerProgress = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0), weight: 50), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 50) }).animate(this._radiusScale));
+        global::Doroti.Framework.Animation.Animation<double> centerProgress = ((global::Doroti.Framework.Animation.Animation<double>)new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0), weight: 50), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 50) }).animate(this._radiusScale));
         _center = centerTween.animate(centerProgress);
         _alpha = new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0), weight: 13), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 27), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0), weight: 60) }).animate(this._animationController);
         _sparkleAlpha = new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0), weight: 13), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 27), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0), weight: 50) }).animate(this._animationController);
@@ -66,7 +66,7 @@ public class InkSparkle : InteractiveInkFeature
 
     internal virtual void _handleStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        if (AnimationStatusMembers.isCompleted(status))
         {
             dispose();
         }
@@ -148,25 +148,25 @@ public class InkSparkle : InteractiveInkFeature
     __cascade.setFloat(13L, (_noiseDensity / this._width));
     __cascade.setFloat(14L, (_noiseDensity / this._height));
     __cascade.setFloat(15L, (noisePhase / 1000.0));
-    __cascade.setFloat(16L, ((turbulenceScale * 0.5) + (((turbulencePhase * 0.01) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale * 0.55))))));
-    __cascade.setFloat(17L, ((turbulenceScale * 0.5) + (((turbulencePhase * 0.01) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale * 0.55))))));
-    __cascade.setFloat(18L, ((turbulenceScale * 0.2) + (((turbulencePhase * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale * 0.45))))));
-    __cascade.setFloat(19L, ((turbulenceScale * 0.2) + (((turbulencePhase * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale * 0.45))))));
-    __cascade.setFloat(20L, (turbulenceScale + (((turbulencePhase * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale * 0.35))))));
-    __cascade.setFloat(21L, (turbulenceScale + (((turbulencePhase * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale * 0.35))))));
-    __cascade.setFloat(22L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation1));
-    __cascade.setFloat(23L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation1));
-    __cascade.setFloat(24L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation2));
-    __cascade.setFloat(25L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation2));
-    __cascade.setFloat(26L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation3));
-    __cascade.setFloat(27L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation3));
+    __cascade.setFloat(16L, ((turbulenceScale * 0.5) + (((turbulencePhase * 0.01) * Dart_mathLibrary.cos((turbulenceScale * 0.55))))));
+    __cascade.setFloat(17L, ((turbulenceScale * 0.5) + (((turbulencePhase * 0.01) * Dart_mathLibrary.sin((turbulenceScale * 0.55))))));
+    __cascade.setFloat(18L, ((turbulenceScale * 0.2) + (((turbulencePhase * -0.0066) * Dart_mathLibrary.cos((turbulenceScale * 0.45))))));
+    __cascade.setFloat(19L, ((turbulenceScale * 0.2) + (((turbulencePhase * -0.0066) * Dart_mathLibrary.sin((turbulenceScale * 0.45))))));
+    __cascade.setFloat(20L, (turbulenceScale + (((turbulencePhase * -0.0066) * Dart_mathLibrary.cos((turbulenceScale * 0.35))))));
+    __cascade.setFloat(21L, (turbulenceScale + (((turbulencePhase * -0.0066) * Dart_mathLibrary.sin((turbulenceScale * 0.35))))));
+    __cascade.setFloat(22L, Dart_mathLibrary.cos(rotation1));
+    __cascade.setFloat(23L, Dart_mathLibrary.sin(rotation1));
+    __cascade.setFloat(24L, Dart_mathLibrary.cos(rotation2));
+    __cascade.setFloat(25L, Dart_mathLibrary.sin(rotation2));
+    __cascade.setFloat(26L, Dart_mathLibrary.cos(rotation3));
+    __cascade.setFloat(27L, Dart_mathLibrary.sin(rotation3));
     return __cascade;
 }))());
     }
 
     internal virtual void _transformCanvas(Canvas canvas, Matrix4 transform)
     {
-        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
+        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)MatrixUtils.getAsTranslation(transform));
         if ((originOffset is null))
         {
             canvas.transform(transform.storage);
@@ -179,16 +179,16 @@ public class InkSparkle : InteractiveInkFeature
 
     internal virtual void _clipCanvas(Canvas canvas, global::System.Func<Rect> clipCallback, TextDirection? textDirection = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!)
     {
-        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)clipCallback());
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)clipCallback());
         if ((customBorder is not null))
         {
             canvas.clipPath(customBorder.getOuterPath(rect, textDirection: textDirection));
         }
         else
         {
-            if ((!object.Equals(borderRadius, global::Doroti.Framework.Painting.BorderRadius.zero)))
+            if ((!Equals(borderRadius, BorderRadius.zero)))
             {
-                canvas.clipRRect(global::Doroti.Ui.RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomRight));
+                canvas.clipRRect(RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomRight));
             }
             else
             {
@@ -214,7 +214,7 @@ internal class _InkSparkleFactory__ink_sparkle : InteractiveInkFeatureFactory
     internal static _InkSparkleFactory__ink_sparkle CreateConstantTurbulenceSeed()
     {
         var __instance = new _InkSparkleFactory__ink_sparkle();
-        __instance.turbulenceSeed = _InkSparkleFactory__ink_sparkle.constantSeed;
+        __instance.turbulenceSeed = constantSeed;
         return __instance;
     }
 
@@ -226,8 +226,8 @@ internal class _InkSparkleFactory__ink_sparkle : InteractiveInkFeatureFactory
             return;
         }
         _initCalled = true;
-        global::Doroti.Ui.FrameworkShaderLoader.RegisterResourceOwner(typeof(InkSparkle).Assembly);
-        global::Doroti.Ui.FrameworkShaderLoader.BeginLoad(
+        FrameworkShaderLoader.RegisterResourceOwner(typeof(InkSparkle).Assembly);
+        FrameworkShaderLoader.BeginLoad(
             "material.ink-sparkle",
             program =>
             {
@@ -238,7 +238,7 @@ internal class _InkSparkleFactory__ink_sparkle : InteractiveInkFeatureFactory
 
     public virtual InteractiveInkFeature create(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null)
     {
-        return ((InteractiveInkFeature)(object?)new InkSparkle(controller: controller, referenceBox: referenceBox, position: position, color: color, textDirection: textDirection, containedInkWell: containedInkWell, rectCallback: (global::System.Func<Rect>?)rectCallback, borderRadius: borderRadius, customBorder: customBorder, radius: radius, onRemoved: () => onRemoved(), turbulenceSeed: this.turbulenceSeed));
+        return ((InteractiveInkFeature)new InkSparkle(controller: controller, referenceBox: referenceBox, position: position, color: color, textDirection: textDirection, containedInkWell: containedInkWell, rectCallback: (global::System.Func<Rect>?)rectCallback, borderRadius: borderRadius, customBorder: customBorder, radius: radius, onRemoved: onRemoved, turbulenceSeed: this.turbulenceSeed));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -266,7 +266,7 @@ public static partial class Ink_sparkleLibrary
 {
     internal static double _getTargetRadius(global::Doroti.Framework.Rendering.RenderBox referenceBox, bool containedInkWell, global::System.Func<Rect>? rectCallback, Offset position)
     {
-        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
+        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
         double d1 = sizeLocal.bottomRight(Offset.zero).distance;
         double d2 = ((sizeLocal.topRight(Offset.zero) - sizeLocal.bottomLeft(Offset.zero))).distance;
         return (Math.Max(d1, d2) / 2.0);

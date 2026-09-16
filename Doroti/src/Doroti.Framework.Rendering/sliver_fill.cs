@@ -116,7 +116,7 @@ public class RenderSliverFillRemaining : RenderSliverSingleBoxAdapter
         double extent = (((SliverConstraints)constraintsLocal).viewportMainAxisExtent - ((SliverConstraints)constraintsLocal).precedingScrollExtent);
         if ((child is not null))
         {
-            double childExtent = (((SliverConstraints)constraintsLocal).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraintsLocal).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraintsLocal).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double childExtent = (((SliverConstraints)constraintsLocal).axis switch { Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraintsLocal).crossAxisExtent), Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraintsLocal).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             extent = Math.Max(extent, childExtent);
             child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: extent));
         }
@@ -147,7 +147,7 @@ public class RenderSliverFillRemainingAndOverscroll : RenderSliverSingleBoxAdapt
         double maxExtentLocal = (((SliverConstraints)constraintsLocal).remainingPaintExtent - Math.Min(((SliverConstraints)constraintsLocal).overlap, 0.0));
         if ((child is not null))
         {
-            double childExtent = (((SliverConstraints)constraintsLocal).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraintsLocal).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraintsLocal).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double childExtent = (((SliverConstraints)constraintsLocal).axis switch { Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraintsLocal).crossAxisExtent), Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraintsLocal).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             extent = Math.Max(extent, childExtent);
             maxExtentLocal = Math.Max(extent, maxExtentLocal);
             child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: maxExtentLocal));

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/scheduler/ticker.dart
-#pragma warning disable CS8604
 using System.Diagnostics;
 using Doroti.Runtime;
 using Doroti.Ui;
@@ -71,7 +70,7 @@ public class Ticker
             {
                 return true;
             }
-            if ((!object.Equals(SchedulerBinding.instance.schedulerPhase, SchedulerPhase.idle)))
+            if ((!Equals(SchedulerBinding.instance.schedulerPhase, SchedulerPhase.idle)))
             {
                 return true;
             }
@@ -198,7 +197,7 @@ public class Ticker
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         if ((_future is not null))
         {
             TickerFuture localFuture = _future!;
@@ -228,7 +227,7 @@ public class Ticker
     public virtual string ToString(bool debugIncludeStack = false)
     {
         var buffer = new StringBuffer();
-        buffer.write($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Ticker"))}(");
+        buffer.write($"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Ticker"))}(");
         DartRuntimePrimitives.Assert(() =>
             {
                 buffer.write((debugLabel ?? ""));
@@ -253,12 +252,17 @@ public class Ticker
 
 public class TickerFuture : Future
 {
-    internal virtual Completer<object?> _primaryCompleter { get; private set; } = new Completer<object?>();
+    internal virtual Completer<object?> _primaryCompleter { get; private set; }
     internal virtual Completer<object?>? _secondaryCompleter { get; set; } = default;
     internal virtual bool? _completed { get; set; } = default;
 
-    public TickerFuture()
+    public TickerFuture() : this(new Completer<object?>())
     {
+    }
+
+    private TickerFuture(Completer<object?> completer) : base(completer.future.asTask())
+    {
+        _primaryCompleter = completer;
     }
 
     public static TickerFuture CreateComplete()
@@ -344,7 +348,7 @@ public class TickerFuture : Future
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({((_completed is null) ? "active" : (DartRuntimePrimitives.RequireValue(_completed) ? "complete" : "canceled"))})";
+    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}({((_completed is null) ? "active" : (DartRuntimePrimitives.RequireValue(_completed) ? "complete" : "canceled"))})";
 }
 
 public class TickerCanceled : Exception

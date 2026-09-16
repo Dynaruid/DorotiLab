@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/radio_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -53,7 +53,7 @@ public class RadioThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         }
         a ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)a).color.withAlpha(0L));
-        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(a, b, t));
+        return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -63,7 +63,7 @@ public class RadioThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return a;
         }
-        return new RadioThemeData(mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), fillColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.fillColor, b?.fillColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), materialTapTargetSize: ((t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t), visualDensity: ((t < 0.5) ? a?.visualDensity : b?.visualDensity), backgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.backgroundColor, b?.backgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), side: RadioThemeData._lerpSides(a?.side, b?.side, t), innerRadius: WidgetStateProperty.lerp<double?>(a?.innerRadius, b?.innerRadius, t, (global::System.Func<double?, double?, double, double?>)Dart_uiLibrary.lerpDouble));
+        return new RadioThemeData(mouseCursor: ((t < 0.5) ? a?.mouseCursor : b?.mouseCursor), fillColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.fillColor, b?.fillColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), materialTapTargetSize: ((t < 0.5) ? a?.materialTapTargetSize : b?.materialTapTargetSize), overlayColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.overlayColor, b?.overlayColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), splashRadius: Dart_uiLibrary.lerpDouble(a?.splashRadius, b?.splashRadius, t), visualDensity: ((t < 0.5) ? a?.visualDensity : b?.visualDensity), backgroundColor: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.backgroundColor, b?.backgroundColor, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), side: _lerpSides(a?.side, b?.side, t), innerRadius: WidgetStateProperty.lerp<double?>(a?.innerRadius, b?.innerRadius, t, (global::System.Func<double?, double?, double, double?>)Dart_uiLibrary.lerpDouble));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -76,11 +76,11 @@ public class RadioThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((__other is RadioThemeData) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).mouseCursor, this.mouseCursor))) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).fillColor, this.fillColor))) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).overlayColor, this.overlayColor))) && (((RadioThemeData)((RadioThemeData)__other)).splashRadius == this.splashRadius)) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).visualDensity, this.visualDensity))) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).side, this.side))) && (object.Equals(((RadioThemeData)((RadioThemeData)__other)).innerRadius, this.innerRadius)));
+        return ((((((((((__other is RadioThemeData) && (Equals(((RadioThemeData)((RadioThemeData)__other)).mouseCursor, this.mouseCursor))) && (Equals(((RadioThemeData)((RadioThemeData)__other)).fillColor, this.fillColor))) && (Equals(((RadioThemeData)((RadioThemeData)__other)).overlayColor, this.overlayColor))) && (((RadioThemeData)((RadioThemeData)__other)).splashRadius == this.splashRadius)) && (Equals(((RadioThemeData)((RadioThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (Equals(((RadioThemeData)((RadioThemeData)__other)).visualDensity, this.visualDensity))) && (Equals(((RadioThemeData)((RadioThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((RadioThemeData)((RadioThemeData)__other)).side, this.side))) && (Equals(((RadioThemeData)((RadioThemeData)__other)).innerRadius, this.innerRadius)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -96,8 +96,8 @@ public class RadioThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>("innerRadius", this.innerRadius, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -113,7 +113,7 @@ public class RadioThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -130,10 +130,10 @@ public class RadioTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static RadioThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        RadioTheme? radioThemeLocal = ((RadioTheme?)(object?)context.dependOnInheritedWidgetOfExactType<RadioTheme>());
+        RadioTheme? radioThemeLocal = ((RadioTheme?)context.dependOnInheritedWidgetOfExactType<RadioTheme>());
         return (radioThemeLocal?.data ?? Theme.of(context).radioTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((RadioTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((RadioTheme)oldWidget).data)));
 }

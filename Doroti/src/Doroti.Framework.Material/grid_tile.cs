@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/grid_tile.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -24,7 +24,7 @@ public class GridTile : global::Doroti.Framework.Widgets.StatelessWidget
         {
             return this.child;
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection1501 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection1501.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Positioned.CreateFill(child: this.child))); if ((this.header is not null)) { __collection1501.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: 0.0, left: 0.0, right: 0.0, child: this.header!))); } if ((this.footer is not null)) { __collection1501.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(left: 0.0, bottom: 0.0, right: 0.0, child: this.footer!))); } return __collection1501; }))()));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection1501 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection1501.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateFill(child: this.child))); if ((this.header is not null)) { __collection1501.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: 0.0, left: 0.0, right: 0.0, child: this.header!))); } if ((this.footer is not null)) { __collection1501.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(left: 0.0, bottom: 0.0, right: 0.0, child: this.footer!))); } return __collection1501; }))()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

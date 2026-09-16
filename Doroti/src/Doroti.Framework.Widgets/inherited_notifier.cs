@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/inherited_notifier.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -16,7 +15,7 @@ public abstract class InheritedNotifier<T> : InheritedWidget where T : global::D
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __oldWidget = (InheritedNotifier<T>)(object)oldWidget;
+        var __oldWidget = (InheritedNotifier<T>)oldWidget;
         return !EqualityComparer<T>.Default.Equals(((InheritedNotifier<T>)__oldWidget).notifier, this.notifier);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -35,8 +34,8 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
 
     public override void update(Widget newWidget)
     {
-        var __newWidget = (InheritedNotifier<T>)(object)newWidget;
-        T? oldNotifier = (((InheritedNotifier<T>?)(object?)this.widget)!).notifier;
+        var __newWidget = (InheritedNotifier<T>)newWidget;
+        T? oldNotifier = (((InheritedNotifier<T>?)this.widget)!).notifier;
         T? newNotifier = ((InheritedNotifier<T>)__newWidget).notifier;
         if (!EqualityComparer<T>.Default.Equals(oldNotifier, newNotifier))
         {
@@ -50,9 +49,9 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
     {
         if (this._dirty)
         {
-            notifyClients(((InheritedNotifier<T>?)(object?)this.widget)!);
+            notifyClients(((InheritedNotifier<T>?)this.widget)!);
         }
-        return ((Widget)(object?)base.build());
+        return ((Widget)base.build());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,14 +63,14 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
 
     public override void notifyClients(ProxyWidget oldWidget)
     {
-        var __oldWidget = (InheritedNotifier<T>)(object)oldWidget;
+        var __oldWidget = (InheritedNotifier<T>)oldWidget;
         base.notifyClients(__oldWidget);
         _dirty = false;
     }
 
     public override void unmount()
     {
-        (((InheritedNotifier<T>?)(object?)this.widget)!).notifier?.removeListener(this._handleUpdate);
+        (((InheritedNotifier<T>?)this.widget)!).notifier?.removeListener(this._handleUpdate);
         base.unmount();
     }
 

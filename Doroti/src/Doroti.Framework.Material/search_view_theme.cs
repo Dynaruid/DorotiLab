@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/search_view_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -51,7 +51,7 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
         {
             return a;
         }
-        return new SearchViewThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), side: SearchViewThemeData._lerpSides(a?.side, b?.side, t), shape: OutlinedBorder.lerp(a?.shape, b?.shape, t), headerHeight: Dart_uiLibrary.lerpDouble(a?.headerHeight, b?.headerHeight, t), headerTextStyle: TextStyle.lerp(a?.headerTextStyle, b?.headerTextStyle, t), headerHintStyle: TextStyle.lerp(a?.headerTextStyle, b?.headerTextStyle, t), constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t), barPadding: EdgeInsetsGeometry.lerp(a?.barPadding, b?.barPadding, t), shrinkWrap: ((t < 0.5) ? a?.shrinkWrap : b?.shrinkWrap), dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t));
+        return new SearchViewThemeData(backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), side: _lerpSides(a?.side, b?.side, t), shape: OutlinedBorder.lerp(a?.shape, b?.shape, t), headerHeight: Dart_uiLibrary.lerpDouble(a?.headerHeight, b?.headerHeight, t), headerTextStyle: TextStyle.lerp(a?.headerTextStyle, b?.headerTextStyle, t), headerHintStyle: TextStyle.lerp(a?.headerTextStyle, b?.headerTextStyle, t), constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t), barPadding: EdgeInsetsGeometry.lerp(a?.barPadding, b?.barPadding, t), shrinkWrap: ((t < 0.5) ? a?.shrinkWrap : b?.shrinkWrap), dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,11 +64,11 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((__other is SearchViewThemeData) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).backgroundColor, this.backgroundColor))) && (((SearchViewThemeData)((SearchViewThemeData)__other)).elevation == this.elevation)) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).side, this.side))) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).shape, this.shape))) && (((SearchViewThemeData)((SearchViewThemeData)__other)).headerHeight == this.headerHeight)) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).headerTextStyle, this.headerTextStyle))) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).headerHintStyle, this.headerHintStyle))) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).constraints, this.constraints))) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).padding, this.padding))) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).barPadding, this.barPadding))) && (((SearchViewThemeData)((SearchViewThemeData)__other)).shrinkWrap == this.shrinkWrap)) && (object.Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).dividerColor, this.dividerColor)));
+        return ((((((((((((((__other is SearchViewThemeData) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).backgroundColor, this.backgroundColor))) && (((SearchViewThemeData)((SearchViewThemeData)__other)).elevation == this.elevation)) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).side, this.side))) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).shape, this.shape))) && (((SearchViewThemeData)((SearchViewThemeData)__other)).headerHeight == this.headerHeight)) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).headerTextStyle, this.headerTextStyle))) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).headerHintStyle, this.headerHintStyle))) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).constraints, this.constraints))) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).padding, this.padding))) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).barPadding, this.barPadding))) && (((SearchViewThemeData)((SearchViewThemeData)__other)).shrinkWrap == this.shrinkWrap)) && (Equals(((SearchViewThemeData)((SearchViewThemeData)__other)).dividerColor, this.dividerColor)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -104,12 +104,12 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
         }
         a ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)a).color.withAlpha(0L));
-        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(a, b, t));
+        return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -125,7 +125,7 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -142,16 +142,16 @@ public class SearchViewTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static SearchViewThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SearchViewTheme? searchViewThemeLocal = ((SearchViewTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SearchViewTheme>());
+        SearchViewTheme? searchViewThemeLocal = ((SearchViewTheme?)context.dependOnInheritedWidgetOfExactType<SearchViewTheme>());
         return (searchViewThemeLocal?.data ?? Theme.of(context).searchViewTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new SearchViewTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new SearchViewTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((SearchViewTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((SearchViewTheme)oldWidget).data)));
 }

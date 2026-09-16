@@ -37,7 +37,7 @@ public class BoxDecoration : Decoration
 
     public override bool debugAssertIsValid()
     {
-        DartRuntimePrimitives.Assert(() => ((!object.Equals(this.shape, BoxShape.circle)) || (this.borderRadius is null)));
+        DartRuntimePrimitives.Assert(() => ((!Equals(this.shape, BoxShape.circle)) || (this.borderRadius is null)));
         return base.debugAssertIsValid();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -51,7 +51,7 @@ public class BoxDecoration : Decoration
                 {
                     global::Doroti.Ui.Offset centerLocal = rect.center;
                     double radiusLocal = (rect.shortestSide / 2.0);
-                    var square = global::Doroti.Ui.Rect.fromCircle(center: centerLocal, radius: radiusLocal);
+                    var square = Rect.fromCircle(center: centerLocal, radius: radiusLocal);
                     return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -88,8 +88,8 @@ public class BoxDecoration : Decoration
     }
 
     public override bool isComplex => (this.boxShadow is not null);
-    public override BoxDecoration? lerpFrom(Decoration? a, double t) => (a switch { null => scale(t), BoxDecoration __object9248 => BoxDecoration.lerp(((BoxDecoration)__object9248), this, t), _ => ((BoxDecoration?)(object?)base.lerpFrom(a, t))! });
-    public override BoxDecoration? lerpTo(Decoration? b, double t) => (b switch { null => scale((1.0 - t)), BoxDecoration __object9463 => BoxDecoration.lerp(this, ((BoxDecoration)__object9463), t), _ => ((BoxDecoration?)(object?)base.lerpTo(b, t))! });
+    public override BoxDecoration? lerpFrom(Decoration? a, double t) => (a switch { null => scale(t), BoxDecoration __object9248 => lerp(((BoxDecoration)__object9248), this, t), _ => ((BoxDecoration?)(object?)base.lerpFrom(a, t))! });
+    public override BoxDecoration? lerpTo(Decoration? b, double t) => (b switch { null => scale((1.0 - t)), BoxDecoration __object9463 => lerp(this, ((BoxDecoration)__object9463), t), _ => ((BoxDecoration?)(object?)base.lerpTo(b, t))! });
     public static BoxDecoration? lerp(BoxDecoration? a, BoxDecoration? b, double t)
     {
         if (DartRuntimePrimitives.Identical(a, b))
@@ -124,11 +124,11 @@ public class BoxDecoration : Decoration
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((__other is BoxDecoration) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).color, this.color))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).image, this.image))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).border, this.border))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).borderRadius, this.borderRadius))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<BoxShadow>(((BoxDecoration)((BoxDecoration)__other)).boxShadow, this.boxShadow)) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).gradient, this.gradient))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).backgroundBlendMode, this.backgroundBlendMode))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).shape, this.shape)));
+        return (((((((((__other is BoxDecoration) && (Equals(((BoxDecoration)((BoxDecoration)__other)).color, this.color))) && (Equals(((BoxDecoration)((BoxDecoration)__other)).image, this.image))) && (Equals(((BoxDecoration)((BoxDecoration)__other)).border, this.border))) && (Equals(((BoxDecoration)((BoxDecoration)__other)).borderRadius, this.borderRadius))) && CollectionsLibrary.listEquals<BoxShadow>(((BoxDecoration)((BoxDecoration)__other)).boxShadow, this.boxShadow)) && (Equals(((BoxDecoration)((BoxDecoration)__other)).gradient, this.gradient))) && (Equals(((BoxDecoration)((BoxDecoration)__other)).backgroundBlendMode, this.backgroundBlendMode))) && (Equals(((BoxDecoration)((BoxDecoration)__other)).shape, this.shape)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.color, this.image, this.border, this.borderRadius, ((this.boxShadow is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.boxShadow!)), this.gradient, this.backgroundBlendMode, this.shape);
@@ -199,7 +199,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
     internal virtual global::Doroti.Ui.Paint _getBackgroundPaint(Rect rect, TextDirection? textDirection)
     {
         DartRuntimePrimitives.Assert(() => ((((BoxDecoration)this._decoration).gradient is not null) || (this._rectForCachedBackgroundPaint is null)));
-        if (((this._cachedBackgroundPaint is null) || (((((BoxDecoration)this._decoration).gradient is not null) && (!object.Equals(this._rectForCachedBackgroundPaint, rect))))))
+        if (((this._cachedBackgroundPaint is null) || (((((BoxDecoration)this._decoration).gradient is not null) && (!Equals(this._rectForCachedBackgroundPaint, rect))))))
         {
             var paint = new global::Doroti.Ui.Paint();
             if ((((BoxDecoration)this._decoration).backgroundBlendMode is not null))
@@ -235,7 +235,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
                 }
             case BoxShape.rectangle:
                 {
-                    if (((((BoxDecoration)this._decoration).borderRadius is null) || (object.Equals(((BoxDecoration)this._decoration).borderRadius, BorderRadius.zero))))
+                    if (((((BoxDecoration)this._decoration).borderRadius is null) || (Equals(((BoxDecoration)this._decoration).borderRadius, BorderRadius.zero))))
                     {
                         canvas.drawRect(rect, paint);
                     }
@@ -260,7 +260,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             global::Doroti.Ui.Rect bounds = rect.shift(boxShadowLocal.offset).inflate(((BoxShadow)boxShadowLocal).spreadRadius);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadowLocal).blurStyle, BlurStyle.outer))))
+                    if ((DebugLibrary.debugDisableShadows && (Equals(((BoxShadow)boxShadowLocal).blurStyle, BlurStyle.outer))))
                     {
                         canvas.save();
                         canvas.clipRect(bounds);
@@ -270,7 +270,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             _paintBox(canvas, bounds, paint, textDirection);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadowLocal).blurStyle, BlurStyle.outer))))
+                    if ((DebugLibrary.debugDisableShadows && (Equals(((BoxShadow)boxShadowLocal).blurStyle, BlurStyle.outer))))
                     {
                         canvas.restore();
                     }
@@ -290,7 +290,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
 
     internal virtual double _calculateAdjustedSide(BorderSide side)
     {
-        if (((((BorderSide)side).color.alpha == 255L) && (object.Equals(((BorderSide)side).style, BorderStyle.solid))))
+        if (((((BorderSide)side).color.alpha == 255L) && (Equals(((BorderSide)side).style, BorderStyle.solid))))
         {
             return ((BorderSide)side).strokeInset;
         }
@@ -308,7 +308,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         {
             var borderLocal = ((Border?)(object?)((BoxDecoration)this._decoration).border!)!;
             EdgeInsets insets = (new EdgeInsets(_calculateAdjustedSide(((Border)borderLocal).left), _calculateAdjustedSide(((Border)borderLocal).top), _calculateAdjustedSide(((Border)borderLocal).right), _calculateAdjustedSide(((Border)borderLocal).bottom)).op_Divide(2));
-            return global::Doroti.Ui.Rect.fromLTRB((rect.left + ((EdgeInsets)insets).left), (rect.top + ((EdgeInsets)insets).top), (rect.right - ((EdgeInsets)insets).right), (rect.bottom - ((EdgeInsets)insets).bottom));
+            return Rect.fromLTRB((rect.left + ((EdgeInsets)insets).left), (rect.top + ((EdgeInsets)insets).top), (rect.right - ((EdgeInsets)insets).right), (rect.bottom - ((EdgeInsets)insets).bottom));
         }
         else
         {
@@ -316,10 +316,10 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             {
                 TextDirection textDirection__value18244 = DartRuntimePrimitives.RequireValue(textDirection);
                 var borderAlternate = ((BorderDirectional?)(object?)((BoxDecoration)this._decoration).border!)!;
-                BorderSide leftSide = ((object.Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)borderAlternate).end : ((BorderDirectional)borderAlternate).start);
-                BorderSide rightSide = ((object.Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)borderAlternate).start : ((BorderDirectional)borderAlternate).end);
+                BorderSide leftSide = ((Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)borderAlternate).end : ((BorderDirectional)borderAlternate).start);
+                BorderSide rightSide = ((Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)borderAlternate).start : ((BorderDirectional)borderAlternate).end);
                 EdgeInsets insetsLocal = (new EdgeInsets(_calculateAdjustedSide(leftSide), _calculateAdjustedSide(((BorderDirectional)borderAlternate).top), _calculateAdjustedSide(rightSide), _calculateAdjustedSide(((BorderDirectional)borderAlternate).bottom)).op_Divide(2));
-                return global::Doroti.Ui.Rect.fromLTRB((rect.left + ((EdgeInsets)insetsLocal).left), (rect.top + ((EdgeInsets)insetsLocal).top), (rect.right - ((EdgeInsets)insetsLocal).right), (rect.bottom - ((EdgeInsets)insetsLocal).bottom));
+                return Rect.fromLTRB((rect.left + ((EdgeInsets)insetsLocal).left), (rect.top + ((EdgeInsets)insetsLocal).top), (rect.right - ((EdgeInsets)insetsLocal).right), (rect.bottom - ((EdgeInsets)insetsLocal).bottom));
             }
         }
         return rect;
@@ -341,7 +341,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
                     DartRuntimePrimitives.Assert(() => (((BoxDecoration)this._decoration).borderRadius is null));
                     global::Doroti.Ui.Offset centerLocal = rect.center;
                     double radiusLocal = (rect.shortestSide / 2.0);
-                    var square = global::Doroti.Ui.Rect.fromCircle(center: centerLocal, radius: radiusLocal);
+                    var square = Rect.fromCircle(center: centerLocal, radius: radiusLocal);
                     clipPath = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();

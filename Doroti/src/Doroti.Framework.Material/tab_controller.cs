@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/tab_controller.dart
-#pragma warning disable CS8600, CS8602, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -20,12 +20,12 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
         this._index = initialIndex;
         this._previousIndex = initialIndex;
         this._animationDuration = (animationDuration ?? ConstantsLibrary.kTabScrollDuration);
-        this._animationController = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(value: initialIndex.toDouble(), vsync: vsync);
+        this._animationController = AnimationController.CreateUnbounded(value: initialIndex.toDouble(), vsync: vsync);
         System.Diagnostics.Debug.Assert((length >= 0L));
         System.Diagnostics.Debug.Assert(((initialIndex >= 0L) && (((DartRuntimePrimitives.RequireValue(length) == 0L) || (initialIndex < DartRuntimePrimitives.RequireValue(length))))));
-        if (global::Doroti.Framework.Foundation.MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
+        if (MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
         {
-            ChangeNotifier.maybeDispatchObjectCreation(this);
+            maybeDispatchObjectCreation(this);
         }
     }
 
@@ -37,9 +37,9 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
         __instance._previousIndex = DartRuntimePrimitives.RequireValue(previousIndex);
         __instance._animationController = animationController;
         __instance._animationDuration = DartRuntimePrimitives.RequireValue(animationDuration);
-        if (global::Doroti.Framework.Foundation.MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
+        if (MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
         {
-            ChangeNotifier.maybeDispatchObjectCreation(__instance);
+            maybeDispatchObjectCreation(__instance);
         }
         return __instance;
     }
@@ -51,7 +51,7 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
             long index__value5320 = DartRuntimePrimitives.RequireValue(index);
             this._animationController!.value = DartRuntimePrimitives.RequireValue(index__value5320).toDouble();
         }
-        var result = TabController.Create_(index: (index ?? this._index), length: (length ?? this.length), animationController: this._animationController, previousIndex: (previousIndex ?? this._previousIndex), animationDuration: (animationDuration ?? this._animationDuration));
+        var result = Create_(index: (index ?? this._index), length: (length ?? this.length), animationController: this._animationController, previousIndex: (previousIndex ?? this._previousIndex), animationDuration: (animationDuration ?? this._animationDuration));
         _animationController = null;
         dispose();
         return result;
@@ -147,8 +147,8 @@ internal class _TabControllerScope__tab_controller : global::Doroti.Framework.Wi
 
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
-        var __old = (_TabControllerScope__tab_controller)(object)oldWidget;
-        return ((this.enabled != ((_TabControllerScope__tab_controller)__old).enabled) || (!object.Equals(this.controller, ((_TabControllerScope__tab_controller)__old).controller)));
+        var __old = (_TabControllerScope__tab_controller)oldWidget;
+        return ((this.enabled != ((_TabControllerScope__tab_controller)__old).enabled) || (!Equals(this.controller, ((_TabControllerScope__tab_controller)__old).controller)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -179,12 +179,12 @@ public class DefaultTabController : global::Doroti.Framework.Widgets.StatefulWid
 
     public static TabController of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TabController? controller = ((TabController?)(object?)DefaultTabController.maybeOf(context));
+        TabController? controller = ((TabController?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((controller is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("DefaultTabController.of() was called with a context that does not " + "contain a DefaultTabController widget.\n" + "No DefaultTabController widget ancestor could be found starting from " + "the context that was passed to DefaultTabController.of(). This can " + "happen because you are using a widget that looks for a DefaultTabController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("DefaultTabController.of() was called with a context that does not " + "contain a DefaultTabController widget.\n" + "No DefaultTabController widget ancestor could be found starting from " + "the context that was passed to DefaultTabController.of(). This can " + "happen because you are using a widget that looks for a DefaultTabController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
             });
@@ -225,7 +225,7 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _TabControllerScope__tab_controller(controller: this._controller, enabled: TickerMode.of(context), child: ((DefaultTabController)this.widget).child));
+        return ((global::Doroti.Framework.Widgets.Widget)new _TabControllerScope__tab_controller(controller: this._controller, enabled: TickerMode.of(context), child: ((DefaultTabController)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -243,7 +243,7 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
             }
             _controller = this._controller._copyWithAndDispose(length: ((DefaultTabController)this.widget).length, animationDuration: ((DefaultTabController)this.widget).animationDuration, index: newIndex, previousIndex: previousIndexLocal);
         }
-        if ((!object.Equals(((DefaultTabController)oldWidget).animationDuration, ((DefaultTabController)this.widget).animationDuration)))
+        if ((!Equals(((DefaultTabController)oldWidget).animationDuration, ((DefaultTabController)this.widget).animationDuration)))
         {
             _controller = this._controller._copyWithAndDispose(length: ((DefaultTabController)this.widget).length, animationDuration: ((DefaultTabController)this.widget).animationDuration, index: ((TabController)this._controller).index, previousIndex: ((TabController)this._controller).previousIndex);
         }
@@ -259,7 +259,7 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -285,8 +285,8 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }

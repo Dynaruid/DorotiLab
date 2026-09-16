@@ -17,5 +17,5 @@ public class Tolerance
         this.velocity = velocity;
     }
 
-    public override string ToString() => $"{Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Tolerance")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})";
+    public override string ToString() => $"{Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Tolerance")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})";
 }

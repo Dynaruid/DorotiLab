@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/card.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -84,7 +84,7 @@ public class Card : global::Doroti.Framework.Widgets.StatelessWidget
         {
             defaults = (this._variant switch { _CardVariant__card.elevated => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM3__card(context)), _CardVariant__card.filled => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _FilledCardDefaultsM3__card(context)), _CardVariant__card.outlined => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _OutlinedCardDefaultsM3__card(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: this.semanticContainer, child: new global::Doroti.Framework.Widgets.Padding(padding: ((this.margin ?? cardTheme.margin) ?? defaults.margin!), child: new Material(type: MaterialType.card, color: ((this.color ?? cardTheme.color) ?? defaults.color), shadowColor: ((this.shadowColor ?? cardTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? cardTheme.surfaceTintColor) ?? defaults.surfaceTintColor), elevation: ((this.elevation ?? cardTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shape: ((this.shape ?? cardTheme.shape) ?? defaults.shape), borderOnForeground: this.borderOnForeground, clipBehavior: ((this.clipBehavior ?? cardTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior)), child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: !this.semanticContainer, child: this.child)))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(container: this.semanticContainer, child: new global::Doroti.Framework.Widgets.Padding(padding: ((this.margin ?? cardTheme.margin) ?? defaults.margin!), child: new Material(type: MaterialType.card, color: ((this.color ?? cardTheme.color) ?? defaults.color), shadowColor: ((this.shadowColor ?? cardTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? cardTheme.surfaceTintColor) ?? defaults.surfaceTintColor), elevation: ((this.elevation ?? cardTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shape: ((this.shape ?? cardTheme.shape) ?? defaults.shape), borderOnForeground: this.borderOnForeground, clipBehavior: ((this.clipBehavior ?? cardTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior)), child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: !this.semanticContainer, child: this.child)))));
     }
 
 }
@@ -107,7 +107,7 @@ internal class _CardDefaultsM3__card : CardThemeData
         }
     }
 
-    internal _CardDefaultsM3__card(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none, elevation: 1.0, margin: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0))
+    internal _CardDefaultsM3__card(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none, elevation: 1.0, margin: EdgeInsets.CreateAll(4.0))
     {
         this.context = context;
     }
@@ -115,7 +115,7 @@ internal class _CardDefaultsM3__card : CardThemeData
     public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainerLow);
     public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.shadow);
     public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12.0))));
+    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))));
 }
 
 internal class _FilledCardDefaultsM3__card : CardThemeData
@@ -136,7 +136,7 @@ internal class _FilledCardDefaultsM3__card : CardThemeData
         }
     }
 
-    internal _FilledCardDefaultsM3__card(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none, elevation: 0.0, margin: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0))
+    internal _FilledCardDefaultsM3__card(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none, elevation: 0.0, margin: EdgeInsets.CreateAll(4.0))
     {
         this.context = context;
     }
@@ -144,7 +144,7 @@ internal class _FilledCardDefaultsM3__card : CardThemeData
     public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainerHighest);
     public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.shadow);
     public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12.0))));
+    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))));
 }
 
 internal class _OutlinedCardDefaultsM3__card : CardThemeData
@@ -165,7 +165,7 @@ internal class _OutlinedCardDefaultsM3__card : CardThemeData
         }
     }
 
-    internal _OutlinedCardDefaultsM3__card(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none, elevation: 0.0, margin: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0))
+    internal _OutlinedCardDefaultsM3__card(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none, elevation: 0.0, margin: EdgeInsets.CreateAll(4.0))
     {
         this.context = context;
     }
@@ -173,5 +173,5 @@ internal class _OutlinedCardDefaultsM3__card : CardThemeData
     public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surface);
     public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.shadow);
     public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12.0))).copyWith(side: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outlineVariant)));
+    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))).copyWith(side: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outlineVariant)));
 }

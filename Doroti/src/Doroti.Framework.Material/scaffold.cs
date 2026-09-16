@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/scaffold.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -71,7 +71,7 @@ public class ScaffoldMessenger : global::Doroti.Framework.Widgets.StatefulWidget
 
     public static ScaffoldMessengerState? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _ScaffoldMessengerScope__scaffold? scope = ((_ScaffoldMessengerScope__scaffold?)(object?)context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>());
+        _ScaffoldMessengerScope__scaffold? scope = ((_ScaffoldMessengerScope__scaffold?)context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>());
         return scope?._scaffoldMessengerState;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -102,11 +102,11 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
         this._scaffolds.add(scaffold);
         if (_isRoot(scaffold))
         {
-            if (System.Linq.Enumerable.Any(this._snackBars))
+            if (Enumerable.Any(this._snackBars))
             {
                 scaffold._updateSnackBar();
             }
-            if (System.Linq.Enumerable.Any(this._materialBanners))
+            if (Enumerable.Any(this._materialBanners))
             {
                 scaffold._updateMaterialBanner();
             }
@@ -133,14 +133,14 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     internal virtual bool _isRoot(ScaffoldState scaffold)
     {
-        ScaffoldState? parent = ((ScaffoldState?)(object?)scaffold.context.findAncestorStateOfType<ScaffoldState>());
+        ScaffoldState? parent = ((ScaffoldState?)scaffold.context.findAncestorStateOfType<ScaffoldState>());
         return ((parent is null) || !this._scaffolds.contains(parent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(SnackBar snackBar, global::Doroti.Framework.Animation.AnimationStyle? snackBarAnimationStyle = null)
     {
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._scaffolds), () => (object?)"ScaffoldMessenger.showSnackBar was called, but there are currently no " + "descendant Scaffolds to present to.");
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(this._scaffolds), () => (object?)"ScaffoldMessenger.showSnackBar was called, but there are currently no " + "descendant Scaffolds to present to.");
         _didUpdateAnimationStyle(snackBarAnimationStyle);
         _snackBarController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
@@ -148,7 +148,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
     __cascade.addStatusListener((AnimationStatusListener)this._handleSnackBarStatusChanged);
     return __cascade;
 }))();
-        if (!System.Linq.Enumerable.Any(this._snackBars))
+        if (!Enumerable.Any(this._snackBars))
         {
             DartRuntimePrimitives.Assert(() => this._snackBarController!.isDismissed);
             this._snackBarController!.forward();
@@ -156,7 +156,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
         ScaffoldFeatureController<SnackBar, SnackBarClosedReason> controller = default!;
         controller = new ScaffoldFeatureController<SnackBar, SnackBarClosedReason>(snackBar.withAnimation(this._snackBarController!, fallbackKey: new global::Doroti.Framework.Foundation.UniqueKey()), new Completer<SnackBarClosedReason>(), ((global::System.Action)(() =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._snackBars.Peek(), controller)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._snackBars.Peek(), controller)));
             hideCurrentSnackBar();
         })), null);
         try
@@ -174,7 +174,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
                     if ((exception is global::Doroti.Framework.Foundation.FlutterError))
                     {
                         global::Doroti.Framework.Foundation.FlutterError exception__13918__as13961 = (global::Doroti.Framework.Foundation.FlutterError)exception;
-                        string summary = ((string)(object?)((global::Doroti.Framework.Foundation.FlutterError)((global::Doroti.Framework.Foundation.FlutterError)exception__13918__as13961)).diagnostics.toDescription());
+                        string summary = ((string)((global::Doroti.Framework.Foundation.FlutterError)((global::Doroti.Framework.Foundation.FlutterError)exception__13918__as13961)).diagnostics.toDescription());
                         if ((summary == "setState() or markNeedsBuild() called during build."))
                         {
                             var information = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The showSnackBar() method cannot be called during build."), new global::Doroti.Framework.Foundation.ErrorDescription("The showSnackBar() method was called during build, which is " + "prohibited as showing snack bars requires updating state. Updating " + "state is not possible during build."), new global::Doroti.Framework.Foundation.ErrorHint("Instead of calling showSnackBar() during build, call it directly " + "in your on tap (and related) callbacks. If you need to immediately " + "show a snack bar, make the call in initState() or " + "didChangeDependencies() instead. Otherwise, you can also schedule a " + "post-frame callback using SchedulerBinding.addPostFrameCallback to " + "show the snack bar after the current frame."), this.context.describeOwnershipChain("The ownership chain for the particular ScaffoldMessenger is") };
@@ -193,7 +193,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
     {
         if ((snackBarAnimationStyle is not null))
         {
-            if (((!object.Equals(this._snackBarController?.duration, ((global::Doroti.Framework.Animation.AnimationStyle)snackBarAnimationStyle).duration)) || (!object.Equals(this._snackBarController?.reverseDuration, ((global::Doroti.Framework.Animation.AnimationStyle)snackBarAnimationStyle).reverseDuration))))
+            if (((!Equals(this._snackBarController?.duration, ((global::Doroti.Framework.Animation.AnimationStyle)snackBarAnimationStyle).duration)) || (!Equals(this._snackBarController?.reverseDuration, ((global::Doroti.Framework.Animation.AnimationStyle)snackBarAnimationStyle).reverseDuration))))
             {
                 this._snackBarController?.dispose();
                 _snackBarController = null;
@@ -205,21 +205,21 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
     {
         switch (status)
         {
-            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+            case AnimationStatus.dismissed:
                 {
-                    DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._snackBars));
+                    DartRuntimePrimitives.Assert(() => Enumerable.Any(this._snackBars));
                     setState(((global::System.Action)(() =>
                     {
                         this._snackBars.Dequeue();
                     })));
                     _updateScaffolds();
-                    if (System.Linq.Enumerable.Any(this._snackBars))
+                    if (Enumerable.Any(this._snackBars))
                     {
                         this._snackBarController!.forward();
                     }
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.completed:
+            case AnimationStatus.completed:
                 {
                     setState(((global::System.Action)(() =>
                     {
@@ -228,8 +228,8 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
                     _updateScaffolds();
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.forward:
-            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+            case AnimationStatus.forward:
+            case AnimationStatus.reverse:
                 {
                     break;
                 }
@@ -238,7 +238,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual void removeCurrentSnackBar(SnackBarClosedReason reason = SnackBarClosedReason.remove)
     {
-        if (!System.Linq.Enumerable.Any(this._snackBars))
+        if (!Enumerable.Any(this._snackBars))
         {
             return;
         }
@@ -254,7 +254,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual void hideCurrentSnackBar(SnackBarClosedReason reason = SnackBarClosedReason.hide)
     {
-        if ((!System.Linq.Enumerable.Any(this._snackBars) || this._snackBarController!.isDismissed))
+        if ((!Enumerable.Any(this._snackBars) || this._snackBarController!.isDismissed))
         {
             return;
         }
@@ -282,7 +282,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual void clearSnackBars()
     {
-        if ((!System.Linq.Enumerable.Any(this._snackBars) || this._snackBarController!.isDismissed))
+        if ((!Enumerable.Any(this._snackBars) || this._snackBarController!.isDismissed))
         {
             return;
         }
@@ -294,14 +294,14 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason> showMaterialBanner(MaterialBanner materialBanner)
     {
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._scaffolds), () => (object?)"ScaffoldMessenger.showMaterialBanner was called, but there are currently no " + "descendant Scaffolds to present to.");
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(this._scaffolds), () => (object?)"ScaffoldMessenger.showMaterialBanner was called, but there are currently no " + "descendant Scaffolds to present to.");
         _materialBannerController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = MaterialBanner.createAnimationController(vsync: this);
     __cascade.addStatusListener((AnimationStatusListener)this._handleMaterialBannerStatusChanged);
     return __cascade;
 }))();
-        if (!System.Linq.Enumerable.Any(this._materialBanners))
+        if (!Enumerable.Any(this._materialBanners))
         {
             DartRuntimePrimitives.Assert(() => this._materialBannerController!.isDismissed);
             this._materialBannerController!.forward();
@@ -309,7 +309,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
         ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason> controller = default!;
         controller = new ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>(materialBanner.withAnimation(this._materialBannerController!, fallbackKey: new global::Doroti.Framework.Foundation.UniqueKey()), new Completer<MaterialBannerClosedReason>(), ((global::System.Action)(() =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._materialBanners.Peek(), controller)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._materialBanners.Peek(), controller)));
             hideCurrentMaterialBanner();
         })), null);
         setState(((global::System.Action)(() =>
@@ -325,27 +325,27 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
     {
         switch (status)
         {
-            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+            case AnimationStatus.dismissed:
                 {
-                    DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._materialBanners));
+                    DartRuntimePrimitives.Assert(() => Enumerable.Any(this._materialBanners));
                     setState(((global::System.Action)(() =>
                     {
                         this._materialBanners.Dequeue();
                     })));
                     _updateScaffolds();
-                    if (System.Linq.Enumerable.Any(this._materialBanners))
+                    if (Enumerable.Any(this._materialBanners))
                     {
                         this._materialBannerController!.forward();
                     }
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.completed:
+            case AnimationStatus.completed:
                 {
                     _updateScaffolds();
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.forward:
-            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+            case AnimationStatus.forward:
+            case AnimationStatus.reverse:
                 {
                     break;
                 }
@@ -354,7 +354,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual void removeCurrentMaterialBanner(MaterialBannerClosedReason reason = default!)
     {
-        if (!System.Linq.Enumerable.Any(this._materialBanners))
+        if (!Enumerable.Any(this._materialBanners))
         {
             return;
         }
@@ -368,7 +368,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual void hideCurrentMaterialBanner(MaterialBannerClosedReason reason = default!)
     {
-        if ((!System.Linq.Enumerable.Any(this._materialBanners) || this._materialBannerController!.isDismissed))
+        if ((!Enumerable.Any(this._materialBanners) || this._materialBannerController!.isDismissed))
         {
             return;
         }
@@ -394,7 +394,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual void clearMaterialBanners()
     {
-        if ((!System.Linq.Enumerable.Any(this._materialBanners) || this._materialBannerController!.isDismissed))
+        if ((!Enumerable.Any(this._materialBanners) || this._materialBannerController!.isDismissed))
         {
             return;
         }
@@ -406,11 +406,11 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         _accessibleNavigation = MediaQuery.accessibleNavigationOf(context);
-        if (System.Linq.Enumerable.Any(this._snackBars))
+        if (Enumerable.Any(this._snackBars))
         {
-            global::Doroti.Framework.Widgets.IModalRoute? route = global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(context);
+            global::Doroti.Framework.Widgets.IModalRoute? route = ModalRoute<object>.untypedOf(context);
             if (((route is null) || ((bool)route.isCurrent)))
             {
                 if ((this._snackBarController!.isCompleted && (this._snackBarTimer is null)))
@@ -428,7 +428,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
                 }
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ScaffoldMessengerScope__scaffold(scaffoldMessengerState: this, child: ((ScaffoldMessenger)(object)this.widget).child));
+        return ((global::Doroti.Framework.Widgets.Widget)new _ScaffoldMessengerScope__scaffold(scaffoldMessengerState: this, child: ((ScaffoldMessenger)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -468,13 +468,13 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -508,8 +508,8 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -535,7 +535,7 @@ internal class _ScaffoldMessengerScope__scaffold : global::Doroti.Framework.Widg
         this._scaffoldMessengerState = scaffoldMessengerState;
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => (!object.Equals(this._scaffoldMessengerState, ((_ScaffoldMessengerScope__scaffold)oldWidget)._scaffoldMessengerState));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => (!Equals(this._scaffoldMessengerState, ((_ScaffoldMessengerScope__scaffold)oldWidget)._scaffoldMessengerState));
 }
 
 public class ScaffoldPrelayoutGeometry
@@ -584,13 +584,13 @@ internal class _TransitionSnapshotFabLocation__scaffold : FloatingActionButtonLo
 
     public override global::Doroti.Ui.Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry)
     {
-        return ((global::Doroti.Ui.Offset)(object?)this.animator.getOffset(begin: this.begin.getOffset(scaffoldGeometry), end: this.end.getOffset(scaffoldGeometry), progress: this.progress));
+        return ((global::Doroti.Ui.Offset)this.animator.getOffset(begin: this.begin.getOffset(scaffoldGeometry), end: this.end.getOffset(scaffoldGeometry), progress: this.progress));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "_TransitionSnapshotFabLocation"))}(begin: {this.begin}, end: {this.end}, progress: {this.progress})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "_TransitionSnapshotFabLocation"))}(begin: {this.begin}, end: {this.end}, progress: {this.progress})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -617,8 +617,8 @@ public class ScaffoldGeometry
         {
             return new ScaffoldGeometry(bottomNavigationBarTop: this.bottomNavigationBarTop);
         }
-        global::Doroti.Ui.Rect scaledButton = ((global::Doroti.Ui.Rect)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp((((Offset)(DartRuntimePrimitives.RequireValue(this.floatingActionButtonArea)).center) & Size.zero), this.floatingActionButtonArea, scaleFactor)));
-        return ((ScaffoldGeometry)(object?)copyWith(floatingActionButtonArea: scaledButton));
+        global::Doroti.Ui.Rect scaledButton = ((global::Doroti.Ui.Rect)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp((((Offset)(DartRuntimePrimitives.RequireValue(this.floatingActionButtonArea)).center) & Size.zero), this.floatingActionButtonArea, scaleFactor)));
+        return ((ScaffoldGeometry)copyWith(floatingActionButtonArea: scaledButton));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -648,14 +648,14 @@ public class _ScaffoldGeometryNotifier__scaffold : global::Doroti.Framework.Foun
         {
             DartRuntimePrimitives.Assert(() =>
                 {
-                    global::Doroti.Framework.Rendering.RenderObject? renderObject = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)this.context.findRenderObject());
+                    global::Doroti.Framework.Rendering.RenderObject? renderObject = ((global::Doroti.Framework.Rendering.RenderObject?)this.context.findRenderObject());
                     if (((renderObject is null) || !((global::Doroti.Framework.Rendering.RenderObject)renderObject).owner!.debugDoingPaint))
                     {
-                        throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Scaffold.geometryOf() must only be accessed during the paint phase.\n" + "The ScaffoldGeometry is only available during the paint phase, because " + "its value is computed during the animation and layout phases prior to painting."));
+                        throw DartRuntimePrimitives.AsException(FlutterError.Create("Scaffold.geometryOf() must only be accessed during the paint phase.\n" + "The ScaffoldGeometry is only available during the paint phase, because " + "its value is computed during the animation and layout phases prior to painting."));
                     }
                     return true;
                 });
-            return ((ScaffoldGeometry)(object?)this.geometry._scaleFloatingActionButton(DartRuntimePrimitives.RequireValue(this.floatingActionButtonScale)));
+            return ((ScaffoldGeometry)this.geometry._scaleFloatingActionButton(DartRuntimePrimitives.RequireValue(this.floatingActionButtonScale)));
         }
     }
     internal virtual void _updateWith(double? bottomNavigationBarTop = null, Rect? floatingActionButtonArea = null, double? floatingActionButtonScale = null)
@@ -716,13 +716,13 @@ internal class _BodyBuilder__scaffold : global::Doroti.Framework.Widgets.Statele
         {
             return this.body;
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
         {
-            var bodyConstraints = ((_BodyBoxConstraints__scaffold?)(object?)constraints)!;
-            global::Doroti.Framework.Widgets.MediaQueryData metrics = ((global::Doroti.Framework.Widgets.MediaQueryData)(object?)MediaQuery.of(context));
+            var bodyConstraints = ((_BodyBoxConstraints__scaffold?)constraints)!;
+            global::Doroti.Framework.Widgets.MediaQueryData metrics = ((global::Doroti.Framework.Widgets.MediaQueryData)MediaQuery.of(context));
             double bottomLocal = (this.extendBody ? Math.Max(((global::Doroti.Framework.Widgets.MediaQueryData)metrics).padding.bottom, ((_BodyBoxConstraints__scaffold)bodyConstraints).bottomWidgetsHeight) : ((global::Doroti.Framework.Widgets.MediaQueryData)metrics).padding.bottom);
             double topLocal = (this.extendBodyBehindAppBar ? Math.Max(((global::Doroti.Framework.Widgets.MediaQueryData)metrics).padding.top, (((_BodyBoxConstraints__scaffold)bodyConstraints).appBarHeight + ((_BodyBoxConstraints__scaffold)bodyConstraints).materialBannerHeight)) : ((global::Doroti.Framework.Widgets.MediaQueryData)metrics).padding.top);
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MediaQuery(data: metrics.copyWith(padding: ((global::Doroti.Framework.Widgets.MediaQueryData)metrics).padding.copyWith(top: topLocal, bottom: bottomLocal)), child: this.body));
+            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.MediaQuery(data: metrics.copyWith(padding: ((global::Doroti.Framework.Widgets.MediaQueryData)metrics).padding.copyWith(top: topLocal, bottom: bottomLocal)), child: this.body));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -765,8 +765,8 @@ internal class _ScaffoldLayout__scaffold : global::Doroti.Framework.Rendering.Mu
 
     public override void performLayout(Size size)
     {
-        var looseConstraints = global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size);
-        global::Doroti.Framework.Rendering.BoxConstraints fullWidthConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)looseConstraints.tighten(width: size.width));
+        var looseConstraints = BoxConstraints.CreateLoose(size);
+        global::Doroti.Framework.Rendering.BoxConstraints fullWidthConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)looseConstraints.tighten(width: size.width));
         double bottomLocal = size.height;
         var contentTopLocal = 0.0;
         var bottomWidgetsHeightLocal = 0.0;
@@ -792,7 +792,7 @@ internal class _ScaffoldLayout__scaffold : global::Doroti.Framework.Rendering.Mu
             bottomWidgetsHeightLocal += persistentFooterHeight;
             positionChild(_ScaffoldSlot__scaffold.persistentFooter, new global::Doroti.Ui.Offset(0.0, Math.Max(0.0, (bottomLocal - bottomWidgetsHeightLocal))));
         }
-        global::Doroti.Ui.Size materialBannerSizeLocal = ((global::Doroti.Ui.Size)(object?)Size.zero);
+        global::Doroti.Ui.Size materialBannerSizeLocal = ((global::Doroti.Ui.Size)Size.zero);
         if (hasChild(_ScaffoldSlot__scaffold.materialBanner))
         {
             materialBannerSizeLocal = layoutChild(_ScaffoldSlot__scaffold.materialBanner, fullWidthConstraints);
@@ -816,12 +816,12 @@ internal class _ScaffoldLayout__scaffold : global::Doroti.Framework.Rendering.Mu
             {
                 bottomWidgetsHeightLocal = 0.0;
             }
-            global::Doroti.Framework.Rendering.BoxConstraints bodyConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)new _BodyBoxConstraints__scaffold(maxWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)fullWidthConstraints).maxWidth, maxHeight: bodyMaxHeight, materialBannerHeight: materialBannerSizeLocal.height, bottomWidgetsHeight: bottomWidgetsHeightLocal, appBarHeight: appBarHeightLocal));
+            global::Doroti.Framework.Rendering.BoxConstraints bodyConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)new _BodyBoxConstraints__scaffold(maxWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)fullWidthConstraints).maxWidth, maxHeight: bodyMaxHeight, materialBannerHeight: materialBannerSizeLocal.height, bottomWidgetsHeight: bottomWidgetsHeightLocal, appBarHeight: appBarHeightLocal));
             layoutChild(_ScaffoldSlot__scaffold.body, bodyConstraints);
             positionChild(_ScaffoldSlot__scaffold.body, new global::Doroti.Ui.Offset(0.0, contentTopLocal));
         }
-        global::Doroti.Ui.Size bottomSheetSizeLocal = ((global::Doroti.Ui.Size)(object?)Size.zero);
-        global::Doroti.Ui.Size snackBarSizeLocal = ((global::Doroti.Ui.Size)(object?)Size.zero);
+        global::Doroti.Ui.Size bottomSheetSizeLocal = ((global::Doroti.Ui.Size)Size.zero);
+        global::Doroti.Ui.Size snackBarSizeLocal = ((global::Doroti.Ui.Size)Size.zero);
         if (hasChild(_ScaffoldSlot__scaffold.bodyScrim))
         {
             var bottomSheetScrimConstraints = new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)fullWidthConstraints).maxWidth, maxHeight: contentBottomLocal);
@@ -841,24 +841,24 @@ internal class _ScaffoldLayout__scaffold : global::Doroti.Framework.Rendering.Mu
         global::Doroti.Ui.Rect floatingActionButtonRect = default!;
         if (hasChild(_ScaffoldSlot__scaffold.floatingActionButton))
         {
-            global::Doroti.Ui.Size fabSize = ((global::Doroti.Ui.Size)(object?)layoutChild(_ScaffoldSlot__scaffold.floatingActionButton, looseConstraints));
+            global::Doroti.Ui.Size fabSize = ((global::Doroti.Ui.Size)layoutChild(_ScaffoldSlot__scaffold.floatingActionButton, looseConstraints));
             var currentGeometry = new ScaffoldPrelayoutGeometry(bottomSheetSize: bottomSheetSizeLocal, contentBottom: contentBottomLocal, contentTop: appBarHeightLocal, floatingActionButtonSize: fabSize, minInsets: this.minInsets, scaffoldSize: size, snackBarSize: snackBarSizeLocal, materialBannerSize: materialBannerSizeLocal, textDirection: this.textDirection, minViewPadding: this.minViewPadding);
-            global::Doroti.Ui.Offset currentFabOffset = ((global::Doroti.Ui.Offset)(object?)this.currentFloatingActionButtonLocation.getOffset(currentGeometry));
-            global::Doroti.Ui.Offset previousFabOffset = ((global::Doroti.Ui.Offset)(object?)this.previousFloatingActionButtonLocation.getOffset(currentGeometry));
-            global::Doroti.Ui.Offset fabOffset = ((global::Doroti.Ui.Offset)(object?)this.floatingActionButtonMotionAnimator.getOffset(begin: previousFabOffset, end: currentFabOffset, progress: ((global::Doroti.Framework.Foundation.ValueListenable<double>)this.floatingActionButtonMoveAnimation).value));
+            global::Doroti.Ui.Offset currentFabOffset = ((global::Doroti.Ui.Offset)this.currentFloatingActionButtonLocation.getOffset(currentGeometry));
+            global::Doroti.Ui.Offset previousFabOffset = ((global::Doroti.Ui.Offset)this.previousFloatingActionButtonLocation.getOffset(currentGeometry));
+            global::Doroti.Ui.Offset fabOffset = ((global::Doroti.Ui.Offset)this.floatingActionButtonMotionAnimator.getOffset(begin: previousFabOffset, end: currentFabOffset, progress: ((global::Doroti.Framework.Foundation.ValueListenable<double>)this.floatingActionButtonMoveAnimation).value));
             positionChild(_ScaffoldSlot__scaffold.floatingActionButton, fabOffset);
             floatingActionButtonRect = (fabOffset & fabSize);
         }
         if (hasChild(_ScaffoldSlot__scaffold.snackBar))
         {
             bool hasCustomWidth = ((this.snackBarWidth is not null) && (DartRuntimePrimitives.RequireValue(this.snackBarWidth) < size.width));
-            if ((object.Equals(snackBarSizeLocal, Size.zero)))
+            if ((Equals(snackBarSizeLocal, Size.zero)))
             {
                 snackBarSizeLocal = layoutChild(_ScaffoldSlot__scaffold.snackBar, (hasCustomWidth ? looseConstraints : fullWidthConstraints));
             }
             double snackBarYOffsetBase = default!;
             bool showAboveFab = this.currentFloatingActionButtonLocation is not null;
-            if ((((!object.Equals(floatingActionButtonRect.size, Size.zero)) && this.isSnackBarFloating) && showAboveFab))
+            if ((((!Equals(floatingActionButtonRect.size, Size.zero)) && this.isSnackBarFloating) && showAboveFab))
             {
                 if ((bottomNavigationBarTopLocal is not null))
                 {
@@ -897,12 +897,12 @@ internal class _ScaffoldLayout__scaffold : global::Doroti.Framework.Rendering.Mu
         }
         if (hasChild(_ScaffoldSlot__scaffold.drawer))
         {
-            layoutChild(_ScaffoldSlot__scaffold.drawer, global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(size));
+            layoutChild(_ScaffoldSlot__scaffold.drawer, BoxConstraints.CreateTight(size));
             positionChild(_ScaffoldSlot__scaffold.drawer, Offset.zero);
         }
         if (hasChild(_ScaffoldSlot__scaffold.endDrawer))
         {
-            layoutChild(_ScaffoldSlot__scaffold.endDrawer, global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(size));
+            layoutChild(_ScaffoldSlot__scaffold.endDrawer, BoxConstraints.CreateTight(size));
             positionChild(_ScaffoldSlot__scaffold.endDrawer, Offset.zero);
         }
         this.geometryNotifier._updateWith(bottomNavigationBarTop: bottomNavigationBarTopLocal, floatingActionButtonArea: floatingActionButtonRect);
@@ -910,8 +910,8 @@ internal class _ScaffoldLayout__scaffold : global::Doroti.Framework.Rendering.Mu
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.MultiChildLayoutDelegate oldDelegate)
     {
-        var __oldDelegate = (_ScaffoldLayout__scaffold)(object)oldDelegate;
-        return (((((((!object.Equals(((_ScaffoldLayout__scaffold)__oldDelegate).minInsets, this.minInsets)) || (!object.Equals(((_ScaffoldLayout__scaffold)__oldDelegate).minViewPadding, this.minViewPadding))) || (!object.Equals(((_ScaffoldLayout__scaffold)__oldDelegate).textDirection, this.textDirection))) || (!object.Equals(((_ScaffoldLayout__scaffold)__oldDelegate).previousFloatingActionButtonLocation, this.previousFloatingActionButtonLocation))) || (!object.Equals(((_ScaffoldLayout__scaffold)__oldDelegate).currentFloatingActionButtonLocation, this.currentFloatingActionButtonLocation))) || (((_ScaffoldLayout__scaffold)__oldDelegate).extendBody != this.extendBody)) || (((_ScaffoldLayout__scaffold)__oldDelegate).extendBodyBehindAppBar != this.extendBodyBehindAppBar));
+        var __oldDelegate = (_ScaffoldLayout__scaffold)oldDelegate;
+        return (((((((!Equals(((_ScaffoldLayout__scaffold)__oldDelegate).minInsets, this.minInsets)) || (!Equals(((_ScaffoldLayout__scaffold)__oldDelegate).minViewPadding, this.minViewPadding))) || (!Equals(((_ScaffoldLayout__scaffold)__oldDelegate).textDirection, this.textDirection))) || (!Equals(((_ScaffoldLayout__scaffold)__oldDelegate).previousFloatingActionButtonLocation, this.previousFloatingActionButtonLocation))) || (!Equals(((_ScaffoldLayout__scaffold)__oldDelegate).currentFloatingActionButtonLocation, this.currentFloatingActionButtonLocation))) || (((_ScaffoldLayout__scaffold)__oldDelegate).extendBody != this.extendBody)) || (((_ScaffoldLayout__scaffold)__oldDelegate).extendBodyBehindAppBar != this.extendBodyBehindAppBar));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -949,7 +949,7 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
     internal virtual global::Doroti.Framework.Animation.Animation<double> _extendedCurrentScaleAnimation { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.TrainHoppingAnimation _currentRotationAnimation { get; set; } = default!;
     internal virtual global::Doroti.Framework.Widgets.Widget? _previousChild { get; set; } = default;
-    internal static global::Doroti.Framework.Animation.Animatable<double> _entranceTurnTween = new global::Doroti.Framework.Animation.Tween<double>(begin: (1.0 - Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval), end: 1.0).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.easeIn));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _entranceTurnTween = new global::Doroti.Framework.Animation.Tween<double>(begin: (1.0 - Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval), end: 1.0).chain(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.easeIn));
     public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
@@ -963,9 +963,9 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
     return __cascade;
 }))();
         _updateAnimations();
-        if ((((_FloatingActionButtonTransition__scaffold)(object)this.widget).child is not null))
+        if ((((_FloatingActionButtonTransition__scaffold)this.widget).child is not null))
         {
-            ((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController.value = 1.0;
+            ((_FloatingActionButtonTransition__scaffold)this.widget).currentController.value = 1.0;
             _updateGeometryScale(1.0);
         }
         else
@@ -1003,26 +1003,26 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
     public override void didUpdateWidget(_FloatingActionButtonTransition__scaffold oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (((!object.Equals(((_FloatingActionButtonTransition__scaffold)oldWidget).fabMotionAnimator, ((_FloatingActionButtonTransition__scaffold)(object)this.widget).fabMotionAnimator)) || (!object.Equals(((_FloatingActionButtonTransition__scaffold)oldWidget).fabMoveAnimation, ((_FloatingActionButtonTransition__scaffold)(object)this.widget).fabMoveAnimation))))
+        if (((!Equals(((_FloatingActionButtonTransition__scaffold)oldWidget).fabMotionAnimator, ((_FloatingActionButtonTransition__scaffold)this.widget).fabMotionAnimator)) || (!Equals(((_FloatingActionButtonTransition__scaffold)oldWidget).fabMoveAnimation, ((_FloatingActionButtonTransition__scaffold)this.widget).fabMoveAnimation))))
         {
             _disposeAnimations();
             _updateAnimations();
         }
         var oldChildIsNull = (((_FloatingActionButtonTransition__scaffold)oldWidget).child is null);
-        var newChildIsNull = (((_FloatingActionButtonTransition__scaffold)(object)this.widget).child is null);
-        if (((oldChildIsNull == newChildIsNull) && (object.Equals(((_FloatingActionButtonTransition__scaffold)oldWidget).child?.key, ((_FloatingActionButtonTransition__scaffold)(object)this.widget).child?.key))))
+        var newChildIsNull = (((_FloatingActionButtonTransition__scaffold)this.widget).child is null);
+        if (((oldChildIsNull == newChildIsNull) && (Equals(((_FloatingActionButtonTransition__scaffold)oldWidget).child?.key, ((_FloatingActionButtonTransition__scaffold)this.widget).child?.key))))
         {
             return;
         }
         if (this._previousController.isDismissed)
         {
-            double currentValue = ((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController.value;
+            double currentValue = ((_FloatingActionButtonTransition__scaffold)this.widget).currentController.value;
             if (((currentValue == 0.0) || (((_FloatingActionButtonTransition__scaffold)oldWidget).child is null)))
             {
                 _previousChild = null;
-                if ((((_FloatingActionButtonTransition__scaffold)(object)this.widget).child is not null))
+                if ((((_FloatingActionButtonTransition__scaffold)this.widget).child is not null))
                 {
-                    ((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController.forward();
+                    ((_FloatingActionButtonTransition__scaffold)this.widget).currentController.forward();
                 }
             }
             else
@@ -1035,7 +1035,7 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
     __cascade.reverse();
     return __cascade;
 }))());
-                ((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController.value = 0.0;
+                ((_FloatingActionButtonTransition__scaffold)this.widget).currentController.value = 0.0;
             }
         }
     }
@@ -1049,16 +1049,16 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
     internal virtual void _updateAnimations()
     {
         this._previousExitScaleAnimation?.dispose();
-        _previousExitScaleAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._previousController, curve: global::Doroti.Framework.Animation.Curves.easeIn);
+        _previousExitScaleAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._previousController, curve: Curves.easeIn);
         this._previousExitRotationCurvedAnimation?.dispose();
-        _previousExitRotationCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._previousController, curve: global::Doroti.Framework.Animation.Curves.easeIn);
-        global::Doroti.Framework.Animation.Animation<double> previousExitRotationAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 1.0).animate(this._previousExitRotationCurvedAnimation!));
+        _previousExitRotationCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._previousController, curve: Curves.easeIn);
+        global::Doroti.Framework.Animation.Animation<double> previousExitRotationAnimation = ((global::Doroti.Framework.Animation.Animation<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 1.0).animate(this._previousExitRotationCurvedAnimation!));
         this._currentEntranceScaleAnimation?.dispose();
-        _currentEntranceScaleAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController, curve: global::Doroti.Framework.Animation.Curves.easeIn);
-        global::Doroti.Framework.Animation.Animation<double> currentEntranceRotationAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController.drive(_entranceTurnTween));
-        global::Doroti.Framework.Animation.Animation<double> moveScaleAnimation = ((_FloatingActionButtonTransition__scaffold)(object)this.widget).fabMotionAnimator.getScaleAnimation(parent: ((_FloatingActionButtonTransition__scaffold)(object)this.widget).fabMoveAnimation);
-        global::Doroti.Framework.Animation.Animation<double> moveRotationAnimation = ((_FloatingActionButtonTransition__scaffold)(object)this.widget).fabMotionAnimator.getRotationAnimation(parent: ((_FloatingActionButtonTransition__scaffold)(object)this.widget).fabMoveAnimation);
-        if ((object.Equals(((_FloatingActionButtonTransition__scaffold)(object)this.widget).fabMotionAnimator, FloatingActionButtonAnimator.noAnimation)))
+        _currentEntranceScaleAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_FloatingActionButtonTransition__scaffold)this.widget).currentController, curve: Curves.easeIn);
+        global::Doroti.Framework.Animation.Animation<double> currentEntranceRotationAnimation = ((global::Doroti.Framework.Animation.Animation<double>)((_FloatingActionButtonTransition__scaffold)this.widget).currentController.drive(_entranceTurnTween));
+        global::Doroti.Framework.Animation.Animation<double> moveScaleAnimation = ((_FloatingActionButtonTransition__scaffold)this.widget).fabMotionAnimator.getScaleAnimation(parent: ((_FloatingActionButtonTransition__scaffold)this.widget).fabMoveAnimation);
+        global::Doroti.Framework.Animation.Animation<double> moveRotationAnimation = ((_FloatingActionButtonTransition__scaffold)this.widget).fabMotionAnimator.getRotationAnimation(parent: ((_FloatingActionButtonTransition__scaffold)this.widget).fabMoveAnimation);
+        if ((Equals(((_FloatingActionButtonTransition__scaffold)this.widget).fabMotionAnimator, FloatingActionButtonAnimator.noAnimation)))
         {
             _previousScaleAnimation = moveScaleAnimation;
             _currentScaleAnimation = moveScaleAnimation;
@@ -1081,10 +1081,10 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
     {
         setState(((global::System.Action)(() =>
         {
-            if (((((_FloatingActionButtonTransition__scaffold)(object)this.widget).child is not null) && global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status)))
+            if (((((_FloatingActionButtonTransition__scaffold)this.widget).child is not null) && AnimationStatusMembers.isDismissed(status)))
             {
-                DartRuntimePrimitives.Assert(() => ((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController.isDismissed);
-                ((_FloatingActionButtonTransition__scaffold)(object)this.widget).currentController.forward();
+                DartRuntimePrimitives.Assert(() => ((_FloatingActionButtonTransition__scaffold)this.widget).currentController.isDismissed);
+                ((_FloatingActionButtonTransition__scaffold)this.widget).currentController.forward();
             }
         })));
     }
@@ -1097,7 +1097,7 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.centerRight, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection59262 = new List<global::Doroti.Framework.Widgets.Widget>(); if (!this._previousController.isDismissed) { if (_isExtendedFloatingActionButton(this._previousChild)) { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._previousScaleAnimation, child: this._previousChild))); } else { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._previousScaleAnimation, child: new global::Doroti.Framework.Widgets.RotationTransition(turns: this._previousRotationAnimation, child: this._previousChild)))); } } if (_isExtendedFloatingActionButton(((_FloatingActionButtonTransition__scaffold)(object)this.widget).child)) { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._extendedCurrentScaleAnimation, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._currentScaleAnimation, child: ((_FloatingActionButtonTransition__scaffold)(object)this.widget).child)))); } else { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._currentScaleAnimation, child: new global::Doroti.Framework.Widgets.RotationTransition(turns: this._currentRotationAnimation, child: ((_FloatingActionButtonTransition__scaffold)(object)this.widget).child)))); } return __collection59262; }))()));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Stack(alignment: Alignment.centerRight, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection59262 = new List<global::Doroti.Framework.Widgets.Widget>(); if (!this._previousController.isDismissed) { if (_isExtendedFloatingActionButton(this._previousChild)) { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._previousScaleAnimation, child: this._previousChild))); } else { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._previousScaleAnimation, child: new global::Doroti.Framework.Widgets.RotationTransition(turns: this._previousRotationAnimation, child: this._previousChild)))); } } if (_isExtendedFloatingActionButton(((_FloatingActionButtonTransition__scaffold)this.widget).child)) { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._extendedCurrentScaleAnimation, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._currentScaleAnimation, child: ((_FloatingActionButtonTransition__scaffold)this.widget).child)))); } else { __collection59262.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._currentScaleAnimation, child: new global::Doroti.Framework.Widgets.RotationTransition(turns: this._currentRotationAnimation, child: ((_FloatingActionButtonTransition__scaffold)this.widget).child)))); } return __collection59262; }))()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1108,7 +1108,7 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
 
     internal virtual void _updateGeometryScale(double scale)
     {
-        ((_FloatingActionButtonTransition__scaffold)(object)this.widget).geometryNotifier._updateWith(floatingActionButtonScale: scale);
+        ((_FloatingActionButtonTransition__scaffold)this.widget).geometryNotifier._updateWith(floatingActionButtonScale: scale);
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -1122,13 +1122,13 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1162,8 +1162,8 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -1210,9 +1210,9 @@ public class Scaffold : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual bool endDrawerEnableOpenDragGesture { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
 
-    public Scaffold(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.PreferredSizeWidget? appBar = null, global::Doroti.Framework.Widgets.Widget? body = null, global::Doroti.Framework.Widgets.Widget? floatingActionButton = null, FloatingActionButtonLocation? floatingActionButtonLocation = null, FloatingActionButtonAnimator? floatingActionButtonAnimator = null, List<global::Doroti.Framework.Widgets.Widget>? persistentFooterButtons = null, global::Doroti.Framework.Painting.AlignmentDirectional persistentFooterAlignment = default!, global::Doroti.Framework.Painting.BoxDecoration? persistentFooterDecoration = null, global::Doroti.Framework.Widgets.Widget? drawer = null, global::System.Action<bool>? onDrawerChanged = null, global::Doroti.Framework.Widgets.Widget? endDrawer = null, global::System.Action<bool>? onEndDrawerChanged = null, global::Doroti.Framework.Widgets.Widget? bottomNavigationBar = null, global::Doroti.Framework.Widgets.Widget? bottomSheet = null, Color? backgroundColor = null, bool? resizeToAvoidBottomInset = null, bool primary = true, global::Doroti.Framework.Gestures.DragStartBehavior drawerDragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, bool extendBody = false, bool drawerBarrierDismissible = true, bool extendBodyBehindAppBar = false, Color? drawerScrimColor = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?> bottomSheetScrimBuilder = default!, double? drawerEdgeDragWidth = null, bool drawerEnableOpenDragGesture = true, bool endDrawerEnableOpenDragGesture = true, string? restorationId = null) : base(key: key)
+    public Scaffold(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.PreferredSizeWidget? appBar = null, global::Doroti.Framework.Widgets.Widget? body = null, global::Doroti.Framework.Widgets.Widget? floatingActionButton = null, FloatingActionButtonLocation? floatingActionButtonLocation = null, FloatingActionButtonAnimator? floatingActionButtonAnimator = null, List<global::Doroti.Framework.Widgets.Widget>? persistentFooterButtons = null, global::Doroti.Framework.Painting.AlignmentDirectional persistentFooterAlignment = default!, global::Doroti.Framework.Painting.BoxDecoration? persistentFooterDecoration = null, global::Doroti.Framework.Widgets.Widget? drawer = null, global::System.Action<bool>? onDrawerChanged = null, global::Doroti.Framework.Widgets.Widget? endDrawer = null, global::System.Action<bool>? onEndDrawerChanged = null, global::Doroti.Framework.Widgets.Widget? bottomNavigationBar = null, global::Doroti.Framework.Widgets.Widget? bottomSheet = null, Color? backgroundColor = null, bool? resizeToAvoidBottomInset = null, bool primary = true, global::Doroti.Framework.Gestures.DragStartBehavior drawerDragStartBehavior = Gestures.DragStartBehavior.start, bool extendBody = false, bool drawerBarrierDismissible = true, bool extendBodyBehindAppBar = false, Color? drawerScrimColor = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?> bottomSheetScrimBuilder = default!, double? drawerEdgeDragWidth = null, bool drawerEnableOpenDragGesture = true, bool endDrawerEnableOpenDragGesture = true, string? restorationId = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.AlignmentDirectional __persistentFooterAlignment = persistentFooterAlignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd;
+        global::Doroti.Framework.Painting.AlignmentDirectional __persistentFooterAlignment = persistentFooterAlignment ?? AlignmentDirectional.centerEnd;
         global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?> __bottomSheetScrimBuilder = bottomSheetScrimBuilder ?? _defaultBottomSheetScrimBuilder;
         this.appBar = appBar;
         this.body = body;
@@ -1245,7 +1245,7 @@ public class Scaffold : global::Doroti.Framework.Widgets.StatefulWidget
 
     public static ScaffoldState of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ScaffoldState? result = ((ScaffoldState?)(object?)context.findAncestorStateOfType<ScaffoldState>());
+        ScaffoldState? result = ((ScaffoldState?)context.findAncestorStateOfType<ScaffoldState>());
         if ((result is not null))
         {
             return result;
@@ -1256,18 +1256,18 @@ public class Scaffold : global::Doroti.Framework.Widgets.StatefulWidget
 
     public static ScaffoldState? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((ScaffoldState?)(object?)context.findAncestorStateOfType<ScaffoldState>());
+        return ((ScaffoldState?)context.findAncestorStateOfType<ScaffoldState>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Framework.Foundation.ValueListenable<ScaffoldGeometry> geometryOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _ScaffoldScope__scaffold? scaffoldScope = ((_ScaffoldScope__scaffold?)(object?)context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>());
+        _ScaffoldScope__scaffold? scaffoldScope = ((_ScaffoldScope__scaffold?)context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>());
         if ((scaffoldScope is null))
         {
             throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Scaffold.geometryOf() called with a context that does not contain a Scaffold."), new global::Doroti.Framework.Foundation.ErrorDescription("This usually happens when the context provided is from the same StatefulWidget as that " + "whose build function actually creates the Scaffold widget being sought."), new global::Doroti.Framework.Foundation.ErrorHint("There are several ways to avoid this problem. The simplest is to use a Builder to get a " + "context that is \"under\" the Scaffold. For an example of this, please see the " + "documentation for Scaffold.of():\n" + "  https://api.flutter.dev/flutter/material/Scaffold/of.html"), new global::Doroti.Framework.Foundation.ErrorHint("A more efficient solution is to split your build function into several widgets. This " + "introduces a new context from which you can obtain the Scaffold. In this solution, " + "you would have an outer widget that creates the Scaffold populated by instances of " + "your new inner widgets, and then in these inner widgets you would use Scaffold.geometryOf()."), context.describeElement("The context used was") }));
         }
-        return ((global::Doroti.Framework.Foundation.ValueListenable<ScaffoldGeometry>)(object?)((_ScaffoldScope__scaffold)scaffoldScope).geometryNotifier);
+        return ((global::Doroti.Framework.Foundation.ValueListenable<ScaffoldGeometry>)((_ScaffoldScope__scaffold)scaffoldScope).geometryNotifier);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1275,12 +1275,12 @@ public class Scaffold : global::Doroti.Framework.Widgets.StatefulWidget
     {
         if (registerForUpdates)
         {
-            _ScaffoldScope__scaffold? scaffold = ((_ScaffoldScope__scaffold?)(object?)context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>());
+            _ScaffoldScope__scaffold? scaffold = ((_ScaffoldScope__scaffold?)context.dependOnInheritedWidgetOfExactType<_ScaffoldScope__scaffold>());
             return (scaffold?.hasDrawer ?? false);
         }
         else
         {
-            ScaffoldState? scaffoldLocal = ((ScaffoldState?)(object?)context.findAncestorStateOfType<ScaffoldState>());
+            ScaffoldState? scaffoldLocal = ((ScaffoldState?)context.findAncestorStateOfType<ScaffoldState>());
             return (scaffoldLocal?.hasDrawer ?? false);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1288,12 +1288,12 @@ public class Scaffold : global::Doroti.Framework.Widgets.StatefulWidget
 
     internal static global::Doroti.Framework.Widgets.Widget _defaultBottomSheetScrimBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
             double extentRemaining = (ScaffoldLibrary._kBottomSheetDominatesPercentage * ((1.0 - ((global::Doroti.Framework.Animation.Animation<double>)animation).value)));
             double floatingButtonVisibilityValue = ((extentRemaining * ScaffoldLibrary._kBottomSheetDominatesPercentage) * 10L);
             double opacity = Math.Max(ScaffoldLibrary._kMinBottomSheetScrimOpacity, (ScaffoldLibrary._kMaxBottomSheetScrimOpacity - floatingButtonVisibilityValue));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ModalBarrier(dismissible: false, color: Colors.black.withOpacity(opacity)));
+            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ModalBarrier(dismissible: false, color: Colors.black.withOpacity(opacity)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1304,9 +1304,9 @@ public class Scaffold : global::Doroti.Framework.Widgets.StatefulWidget
 
 public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, global::Doroti.Framework.Widgets.TickerProviderStateMixin<Scaffold>, global::Doroti.Framework.Widgets.RestorationMixin<Scaffold>, global::Doroti.Framework.Widgets.WidgetsBindingObserver
 {
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<DrawerControllerState> _drawerKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<DrawerControllerState>.Create();
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<DrawerControllerState> _endDrawerKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<DrawerControllerState>.Create();
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _bodyKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<DrawerControllerState> _drawerKey { get; private set; } = GlobalKey<DrawerControllerState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<DrawerControllerState> _endDrawerKey { get; private set; } = GlobalKey<DrawerControllerState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _bodyKey { get; private set; } = GlobalKey<IState>.Create();
     private bool __late__statusBarKey_initialized;
     private global::Doroti.Framework.Widgets.GlobalKey<IState> __late__statusBarKey = default!;
     internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _statusBarKey
@@ -1315,7 +1315,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         {
             if (!__late__statusBarKey_initialized)
             {
-                __late__statusBarKey = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
+                __late__statusBarKey = GlobalKey<IState>.Create();
                 __late__statusBarKey_initialized = true;
             }
             return __late__statusBarKey;
@@ -1329,7 +1329,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
     internal virtual ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>? _messengerMaterialBanner { get; set; } = default;
     internal virtual List<_StandardBottomSheet__scaffold> _dismissedBottomSheets { get; private set; } = new List<_StandardBottomSheet__scaffold>();
     internal virtual PersistentBottomSheetController? _currentBottomSheet { get; set; } = default;
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _currentBottomSheetKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _currentBottomSheetKey { get; private set; } = GlobalKey<IState>.Create();
     internal virtual global::Doroti.Framework.Widgets.LocalHistoryEntry? _persistentSheetHistoryEntry { get; set; } = default;
     internal virtual global::Doroti.Framework.Animation.AnimationController _floatingActionButtonMoveController { get; set; } = default!;
     internal virtual FloatingActionButtonAnimator _floatingActionButtonAnimator { get; set; } = default!;
@@ -1347,20 +1347,20 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
     public virtual bool _firstRestorePending { get; set; } = true;
     public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
-    public virtual string? restorationId => ((Scaffold)(object)this.widget).restorationId;
+    public virtual string? restorationId => ((Scaffold)this.widget).restorationId;
     public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
         registerForRestoration(this._drawerOpened, "drawer_open");
         registerForRestoration(this._endDrawerOpened, "end_drawer_open");
     }
 
-    public virtual bool hasAppBar => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)(object)this.widget).appBar is not null));
-    public virtual bool hasDrawer => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)(object)this.widget).drawer is not null));
-    public virtual bool hasEndDrawer => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)(object)this.widget).endDrawer is not null));
-    public virtual bool hasFloatingActionButton => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)(object)this.widget).floatingActionButton is not null));
+    public virtual bool hasAppBar => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)this.widget).appBar is not null));
+    public virtual bool hasDrawer => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)this.widget).drawer is not null));
+    public virtual bool hasEndDrawer => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)this.widget).endDrawer is not null));
+    public virtual bool hasFloatingActionButton => DartRuntimePrimitives.ConvertValue<bool>((((Scaffold)this.widget).floatingActionButton is not null));
     public virtual double? appBarMaxHeight => this._appBarMaxHeight;
     public virtual bool isDrawerOpen => this._drawerOpened.value;
-    public virtual bool isDrawerBarrierDismissible => ((Scaffold)(object)this.widget).drawerBarrierDismissible;
+    public virtual bool isDrawerBarrierDismissible => ((Scaffold)this.widget).drawerBarrierDismissible;
     public virtual bool isEndDrawerOpen => this._endDrawerOpened.value;
     internal virtual void _drawerOpenedCallback(bool isOpened)
     {
@@ -1370,7 +1370,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             {
                 this._drawerOpened.value = isOpened;
             })));
-            ((Scaffold)(object)this.widget).onDrawerChanged?.Invoke(isOpened);
+            ((Scaffold)this.widget).onDrawerChanged?.Invoke(isOpened);
         }
     }
 
@@ -1382,7 +1382,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             {
                 this._endDrawerOpened.value = isOpened;
             })));
-            ((Scaffold)(object)this.widget).onEndDrawerChanged?.Invoke(isOpened);
+            ((Scaffold)this.widget).onEndDrawerChanged?.Invoke(isOpened);
         }
     }
 
@@ -1406,8 +1406,8 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     internal virtual void _updateSnackBar()
     {
-        ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? messengerSnackBar = (System.Linq.Enumerable.Any(this._scaffoldMessenger!._snackBars) ? this._scaffoldMessenger!._snackBars.Peek() : null);
-        if ((!object.Equals(this._messengerSnackBar, messengerSnackBar)))
+        ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? messengerSnackBar = (Enumerable.Any(this._scaffoldMessenger!._snackBars) ? this._scaffoldMessenger!._snackBars.Peek() : null);
+        if ((!Equals(this._messengerSnackBar, messengerSnackBar)))
         {
             setState(((global::System.Action)(() =>
             {
@@ -1418,8 +1418,8 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     internal virtual void _updateMaterialBanner()
     {
-        ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>? messengerMaterialBanner = (System.Linq.Enumerable.Any(this._scaffoldMessenger!._materialBanners) ? this._scaffoldMessenger!._materialBanners.Peek() : null);
-        if ((!object.Equals(this._messengerMaterialBanner, messengerMaterialBanner)))
+        ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason>? messengerMaterialBanner = (Enumerable.Any(this._scaffoldMessenger!._materialBanners) ? this._scaffoldMessenger!._materialBanners.Peek() : null);
+        if ((!Equals(this._messengerMaterialBanner, messengerMaterialBanner)))
         {
             setState(((global::System.Action)(() =>
             {
@@ -1430,7 +1430,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     internal virtual void _maybeBuildPersistentBottomSheet()
     {
-        if (((((Scaffold)(object)this.widget).bottomSheet is not null) && (this._currentBottomSheet is null)))
+        if (((((Scaffold)this.widget).bottomSheet is not null) && (this._currentBottomSheet is null)))
         {
             global::Doroti.Framework.Animation.AnimationController animationControllerLocal = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
@@ -1440,7 +1440,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 }))();
             bool persistentBottomSheetExtentChanged(global::Doroti.Framework.Widgets.DraggableScrollableNotification notification)
             {
-                if (((((global::Doroti.Framework.Widgets.DraggableScrollableNotification)notification).extent - ((global::Doroti.Framework.Widgets.DraggableScrollableNotification)notification).initialExtent) > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                if (((((global::Doroti.Framework.Widgets.DraggableScrollableNotification)notification).extent - ((global::Doroti.Framework.Widgets.DraggableScrollableNotification)notification).initialExtent) > Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
                     if ((this._persistentSheetHistoryEntry is null))
                     {
@@ -1451,7 +1451,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
                             this._floatingActionButtonVisibilityController.value = 1.0;
                             _persistentSheetHistoryEntry = null;
                         })));
-                        global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(this.context)!.addLocalHistoryEntry(this._persistentSheetHistoryEntry!);
+                        ModalRoute<object>.untypedOf(this.context)!.addLocalHistoryEntry(this._persistentSheetHistoryEntry!);
                     }
                 }
                 else
@@ -1464,20 +1464,20 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
                 return false;
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            if (System.Linq.Enumerable.Any(this._dismissedBottomSheets))
+            if (Enumerable.Any(this._dismissedBottomSheets))
             {
                 var sheets = new List<_StandardBottomSheet__scaffold>(this._dismissedBottomSheets);
                 foreach (var sheet in sheets)
                 {
                     ((_StandardBottomSheet__scaffold)sheet).animationController.reset();
                 }
-                DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this._dismissedBottomSheets));
+                DartRuntimePrimitives.Assert(() => !Enumerable.Any(this._dismissedBottomSheets));
             }
             _currentBottomSheet = _buildBottomSheet(((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
             {
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.DraggableScrollableNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.DraggableScrollableNotification, bool>)persistentBottomSheetExtentChanged, child: new global::Doroti.Framework.Widgets.DraggableScrollableActuator(child: new global::Doroti.Framework.Widgets.StatefulBuilder(key: this._currentBottomSheetKey, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::System.Action<global::System.Action>, global::Doroti.Framework.Widgets.Widget>)((context, setState) =>
+                return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.DraggableScrollableNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.DraggableScrollableNotification, bool>)persistentBottomSheetExtentChanged, child: new global::Doroti.Framework.Widgets.DraggableScrollableActuator(child: new global::Doroti.Framework.Widgets.StatefulBuilder(key: this._currentBottomSheetKey, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::System.Action<global::System.Action>, global::Doroti.Framework.Widgets.Widget>)((context, setState) =>
                 {
-                    return (((Scaffold)(object)this.widget).bottomSheet ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+                    return (((Scaffold)this.widget).bottomSheet ?? SizedBox.CreateShrink());
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 }))))));
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1531,14 +1531,14 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((((Scaffold)(object)this.widget).bottomSheet is not null) && isPersistent) && (this._currentBottomSheet is not null)))
+                if ((((((Scaffold)this.widget).bottomSheet is not null) && isPersistent) && (this._currentBottomSheet is not null)))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Scaffold.bottomSheet cannot be specified while a bottom sheet " + "displayed with showBottomSheet() is still visible.\n" + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Scaffold.bottomSheet cannot be specified while a bottom sheet " + "displayed with showBottomSheet() is still visible.\n" + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."));
                 }
                 return true;
             });
         var completer = new Completer<object?>();
-        var bottomSheetKey = global::Doroti.Framework.Widgets.GlobalKey<_StandardBottomSheetState__scaffold>.Create();
+        var bottomSheetKey = GlobalKey<_StandardBottomSheetState__scaffold>.Create();
         _StandardBottomSheet__scaffold bottomSheetLocal = default!;
         var removedEntry = false;
         var doingDispose = false;
@@ -1558,7 +1558,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             {
                 return;
             }
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._currentBottomSheet!._widget, bottomSheetLocal)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._currentBottomSheet!._widget, bottomSheetLocal)));
             DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Widgets.GlobalKey<_StandardBottomSheetState__scaffold>)bottomSheetKey).currentState is not null));
             _showFloatingActionButton();
             if (isPersistent)
@@ -1580,7 +1580,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         }
         global::Doroti.Framework.Widgets.LocalHistoryEntry? entry = (isPersistent ? null : new global::Doroti.Framework.Widgets.LocalHistoryEntry(onRemove: ((global::System.Action)(() =>
         {
-            if (((!removedEntry && (object.Equals(this._currentBottomSheet?._widget, bottomSheetLocal))) && !doingDispose))
+            if (((!removedEntry && (Equals(this._currentBottomSheet?._widget, bottomSheetLocal))) && !doingDispose))
             {
                 removeCurrentBottomSheet();
             }
@@ -1600,7 +1600,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             {
                 return;
             }
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._currentBottomSheet!._widget, bottomSheetLocal)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._currentBottomSheet!._widget, bottomSheetLocal)));
             removeEntryIfNeeded();
         })), onDismissed: ((global::System.Action)(() =>
         {
@@ -1622,7 +1622,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         })), builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder, isPersistent: isPersistent, backgroundColor: backgroundColor, elevation: elevation, shape: shape, clipBehavior: clipBehavior, constraints: constraints);
         if (!isPersistent)
         {
-            global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(this.context)!.addLocalHistoryEntry(entry!);
+            ModalRoute<object>.untypedOf(this.context)!.addLocalHistoryEntry(entry!);
         }
         return new PersistentBottomSheetController(bottomSheetLocal, completer, ((global::System.Action)((entry is not null) ? ((global::Doroti.Framework.Widgets.LocalHistoryEntry)entry).remove : removeCurrentBottomSheet)), ((global::System.Action<global::System.Action>)((fn) =>
         {
@@ -1635,13 +1635,13 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((Scaffold)(object)this.widget).bottomSheet is not null))
+                if ((((Scaffold)this.widget).bottomSheet is not null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Scaffold.bottomSheet cannot be specified while a bottom sheet " + "displayed with showBottomSheet() is still visible.\n" + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Scaffold.bottomSheet cannot be specified while a bottom sheet " + "displayed with showBottomSheet() is still visible.\n" + "Rebuild the Scaffold with a null bottomSheet before calling showBottomSheet()."));
                 }
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(this.context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(this.context));
         _closeCurrentBottomSheet();
         global::Doroti.Framework.Animation.AnimationController controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
@@ -1659,7 +1659,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     internal virtual global::Doroti.Framework.Scheduler.TickerFuture _showFloatingActionButton()
     {
-        return ((global::Doroti.Framework.Scheduler.TickerFuture)(object?)this._floatingActionButtonVisibilityController.forward());
+        return ((global::Doroti.Framework.Scheduler.TickerFuture)this._floatingActionButtonVisibilityController.forward());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1682,11 +1682,11 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     public virtual void handleStatusBarTap()
     {
-        DartRuntimePrimitives.Assert(() => ((Scaffold)(object)this.widget).primary);
-        global::Doroti.Framework.Widgets.ScrollController? primaryScrollController = ((global::Doroti.Framework.Widgets.ScrollController?)(object?)PrimaryScrollController.maybeOf(this.context));
+        DartRuntimePrimitives.Assert(() => ((Scaffold)this.widget).primary);
+        global::Doroti.Framework.Widgets.ScrollController? primaryScrollController = ((global::Doroti.Framework.Widgets.ScrollController?)PrimaryScrollController.maybeOf(this.context));
         if ((((primaryScrollController is not null) && ((global::Doroti.Framework.Widgets.ScrollController)primaryScrollController).hasClients) && _HitTestableAtOrigin__scaffold.hitTestableAtOrigin(this._statusBarKey)))
         {
-            DartRuntimePrimitives.Ignore(primaryScrollController.animateTo(0.0, duration: Duration.Create(milliseconds: 1000L), curve: global::Doroti.Framework.Animation.Curves.easeOutCirc));
+            DartRuntimePrimitives.Ignore(primaryScrollController.animateTo(0.0, duration: Duration.Create(milliseconds: 1000L), curve: Curves.easeOutCirc));
         }
     }
 
@@ -1694,22 +1694,22 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
     {
         get
         {
-            return (((Scaffold)(object)this.widget).resizeToAvoidBottomInset ?? true);
+            return (((Scaffold)this.widget).resizeToAvoidBottomInset ?? true);
         }
     }
     public override void initState()
     {
         base.initState();
         _geometryNotifier = new _ScaffoldGeometryNotifier__scaffold(new ScaffoldGeometry(), this.context);
-        _floatingActionButtonLocation = (((Scaffold)(object)this.widget).floatingActionButtonLocation ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation);
-        _floatingActionButtonAnimator = (((Scaffold)(object)this.widget).floatingActionButtonAnimator ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator);
+        _floatingActionButtonLocation = (((Scaffold)this.widget).floatingActionButtonLocation ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation);
+        _floatingActionButtonAnimator = (((Scaffold)this.widget).floatingActionButtonAnimator ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator);
         _previousFloatingActionButtonLocation = this._floatingActionButtonLocation;
         _floatingActionButtonMoveController = new global::Doroti.Framework.Animation.AnimationController(vsync: this, value: 1.0, duration: (Floating_action_button_locationLibrary.kFloatingActionButtonSegue * 2L));
         _floatingActionButtonVisibilityController = new global::Doroti.Framework.Animation.AnimationController(duration: Floating_action_button_locationLibrary.kFloatingActionButtonSegue, vsync: this);
         _bottomSheetScrimAnimationController = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
-        if (((Scaffold)(object)this.widget).primary)
+        if (((Scaffold)this.widget).primary)
         {
-            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addObserver(this);
+            WidgetsBinding.instance.addObserver(this);
         }
     }
 
@@ -1717,31 +1717,31 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
     {
         base.didUpdateWidget(oldWidget);
         didUpdateRestorationId();
-        if ((!object.Equals(((Scaffold)(object)this.widget).floatingActionButtonAnimator, ((Scaffold)oldWidget).floatingActionButtonAnimator)))
+        if ((!Equals(((Scaffold)this.widget).floatingActionButtonAnimator, ((Scaffold)oldWidget).floatingActionButtonAnimator)))
         {
-            _floatingActionButtonAnimator = (((Scaffold)(object)this.widget).floatingActionButtonAnimator ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator);
+            _floatingActionButtonAnimator = (((Scaffold)this.widget).floatingActionButtonAnimator ?? ScaffoldLibrary._kDefaultFloatingActionButtonAnimator);
         }
-        if ((!object.Equals(((Scaffold)(object)this.widget).floatingActionButtonLocation, ((Scaffold)oldWidget).floatingActionButtonLocation)))
+        if ((!Equals(((Scaffold)this.widget).floatingActionButtonLocation, ((Scaffold)oldWidget).floatingActionButtonLocation)))
         {
-            _moveFloatingActionButton((((Scaffold)(object)this.widget).floatingActionButtonLocation ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation));
+            _moveFloatingActionButton((((Scaffold)this.widget).floatingActionButtonLocation ?? ScaffoldLibrary._kDefaultFloatingActionButtonLocation));
         }
-        if ((!object.Equals(((Scaffold)(object)this.widget).bottomSheet, ((Scaffold)oldWidget).bottomSheet)))
+        if ((!Equals(((Scaffold)this.widget).bottomSheet, ((Scaffold)oldWidget).bottomSheet)))
         {
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (((((Scaffold)(object)this.widget).bottomSheet is not null) && ((this._currentBottomSheet?._isLocalHistoryEntry ?? false))))
+                    if (((((Scaffold)this.widget).bottomSheet is not null) && ((this._currentBottomSheet?._isLocalHistoryEntry ?? false))))
                     {
                         throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Scaffold.bottomSheet cannot be specified while a bottom sheet displayed " + "with showBottomSheet() is still visible."), new global::Doroti.Framework.Foundation.ErrorHint("Use the PersistentBottomSheetController " + "returned by showBottomSheet() to close the old bottom sheet before creating " + "a Scaffold with a (non null) bottomSheet.") }));
                     }
                     return true;
                 });
-            if ((((Scaffold)(object)this.widget).bottomSheet is null))
+            if ((((Scaffold)this.widget).bottomSheet is null))
             {
                 _closeCurrentBottomSheet();
             }
             else
             {
-                if (((((Scaffold)(object)this.widget).bottomSheet is not null) && (((Scaffold)oldWidget).bottomSheet is null)))
+                if (((((Scaffold)this.widget).bottomSheet is not null) && (((Scaffold)oldWidget).bottomSheet is null)))
                 {
                     _maybeBuildPersistentBottomSheet();
                 }
@@ -1751,16 +1751,16 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
                 }
             }
         }
-        switch ((((Scaffold)oldWidget).primary, ((Scaffold)(object)this.widget).primary))
+        switch ((((Scaffold)oldWidget).primary, ((Scaffold)this.widget).primary))
         {
             case (true, false):
                 {
-                    global::Doroti.Framework.Widgets.WidgetsBinding.instance.removeObserver(this);
+                    WidgetsBinding.instance.removeObserver(this);
                     break;
                 }
             case (false, true):
                 {
-                    global::Doroti.Framework.Widgets.WidgetsBinding.instance.addObserver(this);
+                    WidgetsBinding.instance.addObserver(this);
                     break;
                 }
             case (true, true) or (false, false):
@@ -1770,8 +1770,8 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     public override void didChangeDependencies()
     {
-        ScaffoldMessengerState? currentScaffoldMessenger = ((ScaffoldMessengerState?)(object?)ScaffoldMessenger.maybeOf(this.context));
-        if (((this._scaffoldMessenger is not null) && (((currentScaffoldMessenger is null) || (!object.Equals(this._scaffoldMessenger, currentScaffoldMessenger))))))
+        ScaffoldMessengerState? currentScaffoldMessenger = ((ScaffoldMessengerState?)ScaffoldMessenger.maybeOf(this.context));
+        if (((this._scaffoldMessenger is not null) && (((currentScaffoldMessenger is null) || (!Equals(this._scaffoldMessenger, currentScaffoldMessenger))))))
         {
             this._scaffoldMessenger?._unregister(this);
         }
@@ -1789,14 +1789,14 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         }
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             oldBucket?.dispose();
         }
     }
 
     public override void deactivate()
     {
-        global::Doroti.Framework.Widgets.WidgetsBinding.instance.removeObserver(this);
+        WidgetsBinding.instance.removeObserver(this);
         base.deactivate();
     }
 
@@ -1805,9 +1805,9 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         base.activate();
         _updateTickerModeNotifier();
         _updateTickers();
-        if (((Scaffold)(object)this.widget).primary)
+        if (((Scaffold)this.widget).primary)
         {
-            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addObserver(this);
+            WidgetsBinding.instance.addObserver(this);
         }
     }
 
@@ -1845,19 +1845,19 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     internal virtual void _buildEndDrawer(List<global::Doroti.Framework.Widgets.LayoutId> children, TextDirection textDirection)
     {
-        if ((((Scaffold)(object)this.widget).endDrawer is not null))
+        if ((((Scaffold)this.widget).endDrawer is not null))
         {
             DartRuntimePrimitives.Assert(() => this.hasEndDrawer);
-            _addIfNonNull(children, new DrawerController(key: this._endDrawerKey, alignment: DrawerAlignment.end, drawerCallback: this._endDrawerOpenedCallback, dragStartBehavior: ((Scaffold)(object)this.widget).drawerDragStartBehavior, scrimColor: ((Scaffold)(object)this.widget).drawerScrimColor, edgeDragWidth: ((Scaffold)(object)this.widget).drawerEdgeDragWidth, enableOpenDragGesture: ((Scaffold)(object)this.widget).endDrawerEnableOpenDragGesture, isDrawerOpen: this._endDrawerOpened.value, drawerBarrierDismissible: ((Scaffold)(object)this.widget).drawerBarrierDismissible, child: ((Scaffold)(object)this.widget).endDrawer!), _ScaffoldSlot__scaffold.endDrawer, removeLeftPadding: (object.Equals(textDirection, TextDirection.ltr)), removeTopPadding: false, removeRightPadding: (object.Equals(textDirection, TextDirection.rtl)), removeBottomPadding: false);
+            _addIfNonNull(children, new DrawerController(key: this._endDrawerKey, alignment: DrawerAlignment.end, drawerCallback: this._endDrawerOpenedCallback, dragStartBehavior: ((Scaffold)this.widget).drawerDragStartBehavior, scrimColor: ((Scaffold)this.widget).drawerScrimColor, edgeDragWidth: ((Scaffold)this.widget).drawerEdgeDragWidth, enableOpenDragGesture: ((Scaffold)this.widget).endDrawerEnableOpenDragGesture, isDrawerOpen: this._endDrawerOpened.value, drawerBarrierDismissible: ((Scaffold)this.widget).drawerBarrierDismissible, child: ((Scaffold)this.widget).endDrawer!), _ScaffoldSlot__scaffold.endDrawer, removeLeftPadding: (Equals(textDirection, TextDirection.ltr)), removeTopPadding: false, removeRightPadding: (Equals(textDirection, TextDirection.rtl)), removeBottomPadding: false);
         }
     }
 
     internal virtual void _buildDrawer(List<global::Doroti.Framework.Widgets.LayoutId> children, TextDirection textDirection)
     {
-        if ((((Scaffold)(object)this.widget).drawer is not null))
+        if ((((Scaffold)this.widget).drawer is not null))
         {
             DartRuntimePrimitives.Assert(() => this.hasDrawer);
-            _addIfNonNull(children, new DrawerController(key: this._drawerKey, alignment: DrawerAlignment.start, drawerCallback: this._drawerOpenedCallback, dragStartBehavior: ((Scaffold)(object)this.widget).drawerDragStartBehavior, scrimColor: ((Scaffold)(object)this.widget).drawerScrimColor, edgeDragWidth: ((Scaffold)(object)this.widget).drawerEdgeDragWidth, enableOpenDragGesture: ((Scaffold)(object)this.widget).drawerEnableOpenDragGesture, isDrawerOpen: this._drawerOpened.value, drawerBarrierDismissible: ((Scaffold)(object)this.widget).drawerBarrierDismissible, child: ((Scaffold)(object)this.widget).drawer!), _ScaffoldSlot__scaffold.drawer, removeLeftPadding: (object.Equals(textDirection, TextDirection.rtl)), removeTopPadding: false, removeRightPadding: (object.Equals(textDirection, TextDirection.ltr)), removeBottomPadding: false);
+            _addIfNonNull(children, new DrawerController(key: this._drawerKey, alignment: DrawerAlignment.start, drawerCallback: this._drawerOpenedCallback, dragStartBehavior: ((Scaffold)this.widget).drawerDragStartBehavior, scrimColor: ((Scaffold)this.widget).drawerScrimColor, edgeDragWidth: ((Scaffold)this.widget).drawerEdgeDragWidth, enableOpenDragGesture: ((Scaffold)this.widget).drawerEnableOpenDragGesture, isDrawerOpen: this._drawerOpened.value, drawerBarrierDismissible: ((Scaffold)this.widget).drawerBarrierDismissible, child: ((Scaffold)this.widget).drawer!), _ScaffoldSlot__scaffold.drawer, removeLeftPadding: (Equals(textDirection, TextDirection.rtl)), removeTopPadding: false, removeRightPadding: (Equals(textDirection, TextDirection.ltr)), removeBottomPadding: false);
         }
     }
 
@@ -1878,37 +1878,37 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         ThemeData themeData = Theme.of(context);
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
         var childrenLocal = new List<global::Doroti.Framework.Widgets.LayoutId>();
-        _addIfNonNull(childrenLocal, ((((Scaffold)(object)this.widget).body is null) ? null : new _BodyBuilder__scaffold(extendBody: ((Scaffold)(object)this.widget).extendBody, extendBodyBehindAppBar: ((Scaffold)(object)this.widget).extendBodyBehindAppBar, body: new global::Doroti.Framework.Widgets.KeyedSubtree(key: this._bodyKey, child: ((Scaffold)(object)this.widget).body!))), _ScaffoldSlot__scaffold.body, removeLeftPadding: false, removeTopPadding: (((Scaffold)(object)this.widget).appBar is not null), removeRightPadding: false, removeBottomPadding: ((((Scaffold)(object)this.widget).bottomNavigationBar is not null) || (((Scaffold)(object)this.widget).persistentFooterButtons is not null)), removeBottomInset: this._resizeToAvoidBottomInset);
+        _addIfNonNull(childrenLocal, ((((Scaffold)this.widget).body is null) ? null : new _BodyBuilder__scaffold(extendBody: ((Scaffold)this.widget).extendBody, extendBodyBehindAppBar: ((Scaffold)this.widget).extendBodyBehindAppBar, body: new global::Doroti.Framework.Widgets.KeyedSubtree(key: this._bodyKey, child: ((Scaffold)this.widget).body!))), _ScaffoldSlot__scaffold.body, removeLeftPadding: false, removeTopPadding: (((Scaffold)this.widget).appBar is not null), removeRightPadding: false, removeBottomPadding: ((((Scaffold)this.widget).bottomNavigationBar is not null) || (((Scaffold)this.widget).persistentFooterButtons is not null)), removeBottomInset: this._resizeToAvoidBottomInset);
         if (this._showBodyScrim)
         {
             _addIfNonNull(childrenLocal, this.widget.bottomSheetScrimBuilder(context, ((global::Doroti.Framework.Animation.AnimationController)this._bottomSheetScrimAnimationController).view), _ScaffoldSlot__scaffold.bodyScrim, removeLeftPadding: true, removeTopPadding: true, removeRightPadding: true, removeBottomPadding: true);
         }
-        if ((((Scaffold)(object)this.widget).appBar is not null))
+        if ((((Scaffold)this.widget).appBar is not null))
         {
-            double topPadding = (((Scaffold)(object)this.widget).primary ? MediaQuery.paddingOf(context).top : 0.0);
-            _appBarMaxHeight = (AppBar.preferredHeightFor(context, ((Scaffold)(object)this.widget).appBar!.preferredSize) + topPadding);
+            double topPadding = (((Scaffold)this.widget).primary ? MediaQuery.paddingOf(context).top : 0.0);
+            _appBarMaxHeight = (AppBar.preferredHeightFor(context, ((Scaffold)this.widget).appBar!.preferredSize) + topPadding);
             DartRuntimePrimitives.Assert(() => ((DartRuntimePrimitives.RequireValue(this._appBarMaxHeight) >= 0.0) && double.IsFinite(DartRuntimePrimitives.RequireValue(this._appBarMaxHeight))));
-            _addIfNonNull(childrenLocal, new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: DartRuntimePrimitives.RequireValue(this._appBarMaxHeight)), child: FlexibleSpaceBar.createSettings(currentExtent: DartRuntimePrimitives.RequireValue(this._appBarMaxHeight), child: (global::Doroti.Framework.Widgets.Widget)(object)((Scaffold)(object)this.widget).appBar!)), _ScaffoldSlot__scaffold.appBar, removeLeftPadding: false, removeTopPadding: false, removeRightPadding: false, removeBottomPadding: true);
+            _addIfNonNull(childrenLocal, new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: DartRuntimePrimitives.RequireValue(this._appBarMaxHeight)), child: FlexibleSpaceBar.createSettings(currentExtent: DartRuntimePrimitives.RequireValue(this._appBarMaxHeight), child: (global::Doroti.Framework.Widgets.Widget)((Scaffold)this.widget).appBar!)), _ScaffoldSlot__scaffold.appBar, removeLeftPadding: false, removeTopPadding: false, removeRightPadding: false, removeBottomPadding: true);
         }
         var isSnackBarFloatingLocal = false;
         double? snackBarWidthLocal = default!;
-        if (((this._currentBottomSheet is not null) || System.Linq.Enumerable.Any(this._dismissedBottomSheets)))
+        if (((this._currentBottomSheet is not null) || Enumerable.Any(this._dismissedBottomSheets)))
         {
-            global::Doroti.Framework.Widgets.Widget stack = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection121351 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection121351.AddRange(this._dismissedBottomSheets); var __collectionElement121387 = this._currentBottomSheet?._widget; if (__collectionElement121387 is { } __nonNullCollectionElement121387) { __collection121351.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement121387)); } return __collection121351; }))()));
+            global::Doroti.Framework.Widgets.Widget stack = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Stack(alignment: Alignment.bottomCenter, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection121351 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection121351.AddRange(this._dismissedBottomSheets); var __collectionElement121387 = this._currentBottomSheet?._widget; if (__collectionElement121387 is { } __nonNullCollectionElement121387) { __collection121351.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement121387)); } return __collection121351; }))()));
             _addIfNonNull(childrenLocal, stack, _ScaffoldSlot__scaffold.bottomSheet, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: this._resizeToAvoidBottomInset);
         }
         if ((this._messengerSnackBar is not null))
         {
             SnackBarThemeData snackBarTheme = SnackBarTheme.of(context);
             SnackBarBehavior snackBarBehavior = ((this._messengerSnackBar?._widget.behavior ?? snackBarTheme.behavior) ?? SnackBarBehavior.@fixed);
-            isSnackBarFloatingLocal = (object.Equals(snackBarBehavior, SnackBarBehavior.floating));
+            isSnackBarFloatingLocal = (Equals(snackBarBehavior, SnackBarBehavior.floating));
             snackBarWidthLocal = (this._messengerSnackBar?._widget.width ?? snackBarTheme.width);
-            _addIfNonNull(childrenLocal, this._messengerSnackBar?._widget, _ScaffoldSlot__scaffold.snackBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: ((((Scaffold)(object)this.widget).bottomNavigationBar is not null) || (((Scaffold)(object)this.widget).persistentFooterButtons is not null)), maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
+            _addIfNonNull(childrenLocal, this._messengerSnackBar?._widget, _ScaffoldSlot__scaffold.snackBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: ((((Scaffold)this.widget).bottomNavigationBar is not null) || (((Scaffold)this.widget).persistentFooterButtons is not null)), maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
         }
         var extendBodyBehindMaterialBannerLocal = false;
         if ((this._messengerMaterialBanner is not null))
@@ -1916,18 +1916,18 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             MaterialBannerThemeData bannerTheme = MaterialBannerTheme.of(context);
             double elevationLocal = ((this._messengerMaterialBanner?._widget.elevation ?? bannerTheme.elevation) ?? 0.0);
             extendBodyBehindMaterialBannerLocal = (DartRuntimePrimitives.RequireValue(elevationLocal) != 0.0);
-            _addIfNonNull(childrenLocal, this._messengerMaterialBanner?._widget, _ScaffoldSlot__scaffold.materialBanner, removeLeftPadding: false, removeTopPadding: (((Scaffold)(object)this.widget).appBar is not null), removeRightPadding: false, removeBottomPadding: true, maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
+            _addIfNonNull(childrenLocal, this._messengerMaterialBanner?._widget, _ScaffoldSlot__scaffold.materialBanner, removeLeftPadding: false, removeTopPadding: (((Scaffold)this.widget).appBar is not null), removeRightPadding: false, removeBottomPadding: true, maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
         }
-        if ((((Scaffold)(object)this.widget).persistentFooterButtons is not null))
+        if ((((Scaffold)this.widget).persistentFooterButtons is not null))
         {
-            _addIfNonNull(childrenLocal, new global::Doroti.Framework.Widgets.Container(decoration: (((Scaffold)(object)this.widget).persistentFooterDecoration ?? new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(top: Divider.createBorderSide(context, width: 1.0)))), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, child: new global::Doroti.Framework.Widgets.IntrinsicHeight(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8), child: new global::Doroti.Framework.Widgets.Align(alignment: ((Scaffold)(object)this.widget).persistentFooterAlignment, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, overflowAlignment: global::Doroti.Framework.Widgets.OverflowBarAlignment.end, children: ((Scaffold)(object)this.widget).persistentFooterButtons!)))))), _ScaffoldSlot__scaffold.persistentFooter, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: (((Scaffold)(object)this.widget).bottomNavigationBar is not null), maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
+            _addIfNonNull(childrenLocal, new global::Doroti.Framework.Widgets.Container(decoration: (((Scaffold)this.widget).persistentFooterDecoration ?? new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(top: Divider.createBorderSide(context, width: 1.0)))), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, child: new global::Doroti.Framework.Widgets.IntrinsicHeight(child: new global::Doroti.Framework.Widgets.Padding(padding: EdgeInsets.CreateAll(8), child: new global::Doroti.Framework.Widgets.Align(alignment: ((Scaffold)this.widget).persistentFooterAlignment, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, overflowAlignment: OverflowBarAlignment.end, children: ((Scaffold)this.widget).persistentFooterButtons!)))))), _ScaffoldSlot__scaffold.persistentFooter, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: (((Scaffold)this.widget).bottomNavigationBar is not null), maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
         }
-        if ((((Scaffold)(object)this.widget).bottomNavigationBar is not null))
+        if ((((Scaffold)this.widget).bottomNavigationBar is not null))
         {
-            _addIfNonNull(childrenLocal, ((Scaffold)(object)this.widget).bottomNavigationBar, _ScaffoldSlot__scaffold.bottomNavigationBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: false, maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
+            _addIfNonNull(childrenLocal, ((Scaffold)this.widget).bottomNavigationBar, _ScaffoldSlot__scaffold.bottomNavigationBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: false, maintainBottomViewPadding: !this._resizeToAvoidBottomInset);
         }
-        _addIfNonNull(childrenLocal, new _FloatingActionButtonTransition__scaffold(fabMoveAnimation: this._floatingActionButtonMoveController, fabMotionAnimator: this._floatingActionButtonAnimator, geometryNotifier: this._geometryNotifier, currentController: this._floatingActionButtonVisibilityController, child: ((Scaffold)(object)this.widget).floatingActionButton), _ScaffoldSlot__scaffold.floatingActionButton, removeLeftPadding: true, removeTopPadding: true, removeRightPadding: true, removeBottomPadding: true);
-        global::Doroti.Framework.Widgets.Widget? statusBarLocal = ((global::Doroti.Framework.Widgets.Widget?)(object?)(themeData.platform switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => (((Scaffold)(object)this.widget).primary ? new _HitTestableAtOrigin__scaffold(this._statusBarKey) : null), global::Doroti.Framework.Foundation.TargetPlatform.macOS => (((Scaffold)(object)this.widget).primary ? new _HitTestableAtOrigin__scaffold(this._statusBarKey) : null), global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.linux => DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null), global::Doroti.Framework.Foundation.TargetPlatform.windows => DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        _addIfNonNull(childrenLocal, new _FloatingActionButtonTransition__scaffold(fabMoveAnimation: this._floatingActionButtonMoveController, fabMotionAnimator: this._floatingActionButtonAnimator, geometryNotifier: this._geometryNotifier, currentController: this._floatingActionButtonVisibilityController, child: ((Scaffold)this.widget).floatingActionButton), _ScaffoldSlot__scaffold.floatingActionButton, removeLeftPadding: true, removeTopPadding: true, removeRightPadding: true, removeBottomPadding: true);
+        global::Doroti.Framework.Widgets.Widget? statusBarLocal = ((global::Doroti.Framework.Widgets.Widget?)(themeData.platform switch { TargetPlatform.iOS => (((Scaffold)this.widget).primary ? new _HitTestableAtOrigin__scaffold(this._statusBarKey) : null), TargetPlatform.macOS => (((Scaffold)this.widget).primary ? new _HitTestableAtOrigin__scaffold(this._statusBarKey) : null), TargetPlatform.android or TargetPlatform.fuchsia or TargetPlatform.linux => DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null), TargetPlatform.windows => DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         _addIfNonNull(childrenLocal, statusBarLocal, _ScaffoldSlot__scaffold.statusBar, removeLeftPadding: false, removeTopPadding: true, removeRightPadding: false, removeBottomPadding: true);
         if (this._endDrawerOpened.value)
         {
@@ -1939,11 +1939,11 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             _buildEndDrawer(childrenLocal, textDirectionLocal);
             _buildDrawer(childrenLocal, textDirectionLocal);
         }
-        global::Doroti.Framework.Painting.EdgeInsets minInsetsLocal = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context).copyWith(bottom: (this._resizeToAvoidBottomInset ? MediaQuery.viewInsetsOf(context).bottom : 0.0)));
-        global::Doroti.Framework.Painting.EdgeInsets minViewPaddingLocal = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.viewPaddingOf(context).copyWith(bottom: ((this._resizeToAvoidBottomInset && (MediaQuery.viewInsetsOf(context).bottom != 0.0)) ? 0.0 : null)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ScaffoldScope__scaffold(hasDrawer: this.hasDrawer, geometryNotifier: this._geometryNotifier, child: new global::Doroti.Framework.Widgets.ScrollNotificationObserver(child: new Material(color: (((Scaffold)(object)this.widget).backgroundColor ?? themeData.scaffoldBackgroundColor), child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        global::Doroti.Framework.Painting.EdgeInsets minInsetsLocal = ((global::Doroti.Framework.Painting.EdgeInsets)MediaQuery.paddingOf(context).copyWith(bottom: (this._resizeToAvoidBottomInset ? MediaQuery.viewInsetsOf(context).bottom : 0.0)));
+        global::Doroti.Framework.Painting.EdgeInsets minViewPaddingLocal = ((global::Doroti.Framework.Painting.EdgeInsets)MediaQuery.viewPaddingOf(context).copyWith(bottom: ((this._resizeToAvoidBottomInset && (MediaQuery.viewInsetsOf(context).bottom != 0.0)) ? 0.0 : null)));
+        return ((global::Doroti.Framework.Widgets.Widget)new _ScaffoldScope__scaffold(hasDrawer: this.hasDrawer, geometryNotifier: this._geometryNotifier, child: new global::Doroti.Framework.Widgets.ScrollNotificationObserver(child: new Material(color: (((Scaffold)this.widget).backgroundColor ?? themeData.scaffoldBackgroundColor), child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.DismissIntent)] = new _DismissDrawerAction__scaffold(context) }, child: new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _ScaffoldLayout__scaffold(extendBody: ((Scaffold)(object)this.widget).extendBody, extendBodyBehindAppBar: ((Scaffold)(object)this.widget).extendBodyBehindAppBar, minInsets: minInsetsLocal, minViewPadding: minViewPaddingLocal, currentFloatingActionButtonLocation: this._floatingActionButtonLocation!, floatingActionButtonMoveAnimation: this._floatingActionButtonMoveController, floatingActionButtonMotionAnimator: this._floatingActionButtonAnimator, geometryNotifier: this._geometryNotifier, previousFloatingActionButtonLocation: this._previousFloatingActionButtonLocation!, textDirection: textDirectionLocal, isSnackBarFloating: isSnackBarFloatingLocal, extendBodyBehindMaterialBanner: extendBodyBehindMaterialBannerLocal, snackBarWidth: snackBarWidthLocal), children: childrenLocal.Cast<global::Doroti.Framework.Widgets.Widget>().ToList())));
+            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.DismissIntent)] = new _DismissDrawerAction__scaffold(context) }, child: new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _ScaffoldLayout__scaffold(extendBody: ((Scaffold)this.widget).extendBody, extendBodyBehindAppBar: ((Scaffold)this.widget).extendBodyBehindAppBar, minInsets: minInsetsLocal, minViewPadding: minViewPaddingLocal, currentFloatingActionButtonLocation: this._floatingActionButtonLocation!, floatingActionButtonMoveAnimation: this._floatingActionButtonMoveController, floatingActionButtonMotionAnimator: this._floatingActionButtonAnimator, geometryNotifier: this._geometryNotifier, previousFloatingActionButtonLocation: this._previousFloatingActionButtonLocation!, textDirection: textDirectionLocal, isSnackBarFloating: isSnackBarFloatingLocal, extendBodyBehindMaterialBanner: extendBodyBehindMaterialBannerLocal, snackBarWidth: snackBarWidthLocal), children: childrenLocal.Cast<global::Doroti.Framework.Widgets.Widget>().ToList())));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1960,13 +1960,13 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1993,8 +1993,8 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -2035,7 +2035,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (Equals(property._owner, this))) && this._properties.ContainsKey(property)));
         property.initWithValueObject(initialValue);
         if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
@@ -2050,7 +2050,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(property._owner, this)));
         this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
@@ -2066,7 +2066,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
             oldBucket?.dispose();
         }
@@ -2084,8 +2084,8 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)RestorationScope.maybeOf(this.context));
+            return ((!Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
@@ -2100,7 +2100,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         this._firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
             {
-                if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
+                if (Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection41817 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\".")); __collection41817.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:")); __collection41817.AddRange(this._debugPropertiesWaitingForReregistration!.map<global::Doroti.Framework.Widgets.IRestorableProperty, global::Doroti.Framework.Foundation.DiagnosticsNode>(((property) => new global::Doroti.Framework.Foundation.ErrorDescription($" * {property._restorationId}")))); return __collection41817; }))()));
                 }
@@ -2120,9 +2120,9 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)parent.claimChild(this.restorationId!, debugOwner: this));
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._bucket, newBucketLocal)));
             return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
@@ -2135,7 +2135,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
     {
-        if ((object.Equals(newBucket, this._bucket)))
+        if ((Equals(newBucket, this._bucket)))
         {
             return false;
         }
@@ -2190,14 +2190,14 @@ internal class _DismissDrawerAction__scaffold : global::Doroti.Framework.Widgets
 
     public override bool isEnabled(global::Doroti.Framework.Widgets.DismissIntent intent, global::Doroti.Framework.Widgets.BuildContext? context = null)
     {
-        ScaffoldState scaffold = ((ScaffoldState)(object?)Scaffold.of(this.context));
+        ScaffoldState scaffold = ((ScaffoldState)Scaffold.of(this.context));
         return (((((ScaffoldState)scaffold).isDrawerOpen || ((ScaffoldState)scaffold).isEndDrawerOpen)) && ((ScaffoldState)scaffold).isDrawerBarrierDismissible);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override object? invoke(global::Doroti.Framework.Widgets.DismissIntent intent, global::Doroti.Framework.Widgets.BuildContext? context = null)
     {
-        ScaffoldState scaffold = ((ScaffoldState)(object?)Scaffold.of(this.context));
+        ScaffoldState scaffold = ((ScaffoldState)Scaffold.of(this.context));
         if (isEnabled(intent))
         {
             scaffold.closeDrawer();
@@ -2264,56 +2264,56 @@ public class _StandardBottomSheet__scaffold : global::Doroti.Framework.Widgets.S
 
 public class _StandardBottomSheetState__scaffold : global::Doroti.Framework.Widgets.State<_StandardBottomSheet__scaffold>
 {
-    public virtual global::Doroti.Framework.Animation.ParametricCurve<double> animationCurve { get; set; } = ((global::Doroti.Framework.Animation.ParametricCurve<double>)(object?)ScaffoldLibrary._standardBottomSheetCurve);
+    public virtual global::Doroti.Framework.Animation.ParametricCurve<double> animationCurve { get; set; } = ((global::Doroti.Framework.Animation.ParametricCurve<double>)ScaffoldLibrary._standardBottomSheetCurve);
 
     public override void initState()
     {
         base.initState();
-        DartRuntimePrimitives.Assert(() => ((_StandardBottomSheet__scaffold)(object)this.widget).animationController.isForwardOrCompleted);
-        ((_StandardBottomSheet__scaffold)(object)this.widget).animationController.addStatusListener((AnimationStatusListener)this._handleStatusChange);
+        DartRuntimePrimitives.Assert(() => ((_StandardBottomSheet__scaffold)this.widget).animationController.isForwardOrCompleted);
+        ((_StandardBottomSheet__scaffold)this.widget).animationController.addStatusListener((AnimationStatusListener)this._handleStatusChange);
     }
 
     public override void dispose()
     {
-        ((_StandardBottomSheet__scaffold)(object)this.widget).animationController.removeStatusListener((AnimationStatusListener)this._handleStatusChange);
-        ((_StandardBottomSheet__scaffold)(object)this.widget).onDispose?.Invoke();
+        ((_StandardBottomSheet__scaffold)this.widget).animationController.removeStatusListener((AnimationStatusListener)this._handleStatusChange);
+        ((_StandardBottomSheet__scaffold)this.widget).onDispose?.Invoke();
         base.dispose();
     }
 
     public override void didUpdateWidget(_StandardBottomSheet__scaffold oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        DartRuntimePrimitives.Assert(() => (object.Equals(((_StandardBottomSheet__scaffold)(object)this.widget).animationController, ((_StandardBottomSheet__scaffold)oldWidget).animationController)));
+        DartRuntimePrimitives.Assert(() => (Equals(((_StandardBottomSheet__scaffold)this.widget).animationController, ((_StandardBottomSheet__scaffold)oldWidget).animationController)));
     }
 
     public virtual void close()
     {
-        ((_StandardBottomSheet__scaffold)(object)this.widget).animationController.reverse();
-        ((_StandardBottomSheet__scaffold)(object)this.widget).onClosing?.Invoke();
+        ((_StandardBottomSheet__scaffold)this.widget).animationController.reverse();
+        ((_StandardBottomSheet__scaffold)this.widget).onClosing?.Invoke();
     }
 
     internal virtual void _handleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
-        animationCurve = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.ParametricCurve<double>>(global::Doroti.Framework.Animation.Curves.linear);
+        animationCurve = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.ParametricCurve<double>>(Curves.linear);
     }
 
     internal virtual void _handleDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details, bool? isClosing = null)
     {
-        animationCurve = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.ParametricCurve<double>>(new global::Doroti.Framework.Animation.Split(((_StandardBottomSheet__scaffold)(object)this.widget).animationController.value, endCurve: ScaffoldLibrary._standardBottomSheetCurve));
+        animationCurve = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.ParametricCurve<double>>(new global::Doroti.Framework.Animation.Split(((_StandardBottomSheet__scaffold)this.widget).animationController.value, endCurve: ScaffoldLibrary._standardBottomSheetCurve));
     }
 
     internal virtual void _handleStatusChange(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
+        if (AnimationStatusMembers.isDismissed(status))
         {
-            ((_StandardBottomSheet__scaffold)(object)this.widget).onDismissed?.Invoke();
+            ((_StandardBottomSheet__scaffold)this.widget).onDismissed?.Invoke();
         }
     }
 
     public virtual bool extentChanged(global::Doroti.Framework.Widgets.DraggableScrollableNotification notification)
     {
         double extentRemaining = (1.0 - ((global::Doroti.Framework.Widgets.DraggableScrollableNotification)notification).extent);
-        ScaffoldState scaffold = ((ScaffoldState)(object?)Scaffold.of(this.context));
+        ScaffoldState scaffold = ((ScaffoldState)Scaffold.of(this.context));
         if ((extentRemaining < ScaffoldLibrary._kBottomSheetDominatesPercentage))
         {
             ((ScaffoldState)scaffold)._floatingActionButtonVisibilityController.value = ((extentRemaining * ScaffoldLibrary._kBottomSheetDominatesPercentage) * 10L);
@@ -2335,11 +2335,11 @@ public class _StandardBottomSheetState__scaffold : global::Doroti.Framework.Widg
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: ((_StandardBottomSheet__scaffold)(object)this.widget).animationController, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: ((_StandardBottomSheet__scaffold)this.widget).animationController, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.topStart, heightFactor: this.animationCurve.transform(((_StandardBottomSheet__scaffold)(object)this.widget).animationController.value), child: child));
+            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Align(alignment: AlignmentDirectional.topStart, heightFactor: this.animationCurve.transform(((_StandardBottomSheet__scaffold)this.widget).animationController.value), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: new global::Doroti.Framework.Widgets.Semantics(container: true, onDismiss: ((global::System.Action)(!((_StandardBottomSheet__scaffold)(object)this.widget).isPersistent ? this.close : null)), child: new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.DraggableScrollableNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.DraggableScrollableNotification, bool>)this.extentChanged, child: new BottomSheet(animationController: ((_StandardBottomSheet__scaffold)(object)this.widget).animationController, enableDrag: ((_StandardBottomSheet__scaffold)(object)this.widget).enableDrag, showDragHandle: ((_StandardBottomSheet__scaffold)(object)this.widget).showDragHandle, onDragStart: this._handleDragStart, onDragEnd: ((details, isClosing) => this._handleDragEnd(details, isClosing)), onClosing: ((_StandardBottomSheet__scaffold)(object)this.widget).onClosing!, builder: ((_StandardBottomSheet__scaffold)(object)this.widget).builder, backgroundColor: ((_StandardBottomSheet__scaffold)(object)this.widget).backgroundColor, elevation: ((_StandardBottomSheet__scaffold)(object)this.widget).elevation, shape: ((_StandardBottomSheet__scaffold)(object)this.widget).shape, clipBehavior: ((_StandardBottomSheet__scaffold)(object)this.widget).clipBehavior, constraints: ((_StandardBottomSheet__scaffold)(object)this.widget).constraints)))));
+        })), child: new global::Doroti.Framework.Widgets.Semantics(container: true, onDismiss: ((global::System.Action?)(!((_StandardBottomSheet__scaffold)this.widget).isPersistent ? this.close : null)), child: new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.DraggableScrollableNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.DraggableScrollableNotification, bool>)this.extentChanged, child: new BottomSheet(animationController: ((_StandardBottomSheet__scaffold)this.widget).animationController, enableDrag: ((_StandardBottomSheet__scaffold)this.widget).enableDrag, showDragHandle: ((_StandardBottomSheet__scaffold)this.widget).showDragHandle, onDragStart: this._handleDragStart, onDragEnd: ((details, isClosing) => this._handleDragEnd(details, isClosing)), onClosing: ((_StandardBottomSheet__scaffold)this.widget).onClosing!, builder: ((_StandardBottomSheet__scaffold)this.widget).builder, backgroundColor: ((_StandardBottomSheet__scaffold)this.widget).backgroundColor, elevation: ((_StandardBottomSheet__scaffold)this.widget).elevation, shape: ((_StandardBottomSheet__scaffold)this.widget).shape, clipBehavior: ((_StandardBottomSheet__scaffold)this.widget).clipBehavior, constraints: ((_StandardBottomSheet__scaffold)this.widget).constraints)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2369,7 +2369,7 @@ internal class _ScaffoldScope__scaffold : global::Doroti.Framework.Widgets.Inher
 
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
-        var __oldWidget = (_ScaffoldScope__scaffold)(object)oldWidget;
+        var __oldWidget = (_ScaffoldScope__scaffold)oldWidget;
         return (this.hasDrawer != ((_ScaffoldScope__scaffold)__oldWidget).hasDrawer);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2387,23 +2387,23 @@ internal class _HitTestableAtOrigin__scaffold : global::Doroti.Framework.Widgets
 
     public static bool hitTestableAtOrigin(global::Doroti.Framework.Widgets.GlobalKey<IState> key)
     {
-        var context = ((global::Doroti.Framework.Widgets.Element?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)key).currentContext)!;
+        var context = ((global::Doroti.Framework.Widgets.Element?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)key).currentContext)!;
         if ((context is null))
         {
             DartRuntimePrimitives.Assert(() => false, () => (object?)$"BuildContext associated with {key} is not mounted. " + "If you see this in a test, this is likely because the test was trying " + "to simulate status bar tap on a non-iOS platform");
             return false;
         }
-        var renderObjectLocal = ((global::Doroti.Framework.Rendering.RenderMetaData?)(object?)((global::Doroti.Framework.Widgets.Element)context).renderObject!)!;
+        var renderObjectLocal = ((global::Doroti.Framework.Rendering.RenderMetaData?)((global::Doroti.Framework.Widgets.Element)context).renderObject!)!;
         long viewIdLocal = checked((long)View.of(context).viewId);
         var result = new global::Doroti.Framework.Gestures.HitTestResult();
-        global::Doroti.Framework.Widgets.WidgetsBinding.instance.hitTestInView(result, Offset.zero, viewIdLocal);
-        return ((global::Doroti.Framework.Gestures.HitTestResult)result).path.any(((entry) => (object.Equals(((global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>)entry).target, renderObjectLocal))));
+        WidgetsBinding.instance.hitTestInView(result, Offset.zero, viewIdLocal);
+        return ((global::Doroti.Framework.Gestures.HitTestResult)result).path.any(((entry) => (Equals(((global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>)entry).target, renderObjectLocal))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MetaData(key: this.globalKey, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand()));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.MetaData(key: this.globalKey, behavior: HitTestBehavior.translucent, child: SizedBox.CreateExpand()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

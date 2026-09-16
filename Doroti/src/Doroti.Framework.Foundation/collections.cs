@@ -6,7 +6,7 @@ namespace Doroti.Framework.Foundation;
 
 public static partial class CollectionsLibrary
 {
-    public static bool setEquals<T>(HashSet<T>? a, HashSet<T>? b) where T : notnull
+    public static bool setEquals<T>(HashSet<T>? a, HashSet<T>? b)
     {
         if ((a is null))
         {
@@ -137,7 +137,7 @@ public static partial class CollectionsLibrary
         int middle = (start + ((((end - start)) >> 1)));
         int firstLength = (middle - start);
         int secondLength = (end - middle);
-        var scratchSpace = new List<T>(System.Linq.Enumerable.Repeat<T>(list[start], secondLength));
+        var scratchSpace = new List<T>(Enumerable.Repeat<T>(list[start], secondLength));
         _mergeSort<T>(list, compare, middle, end, scratchSpace, 0);
         int firstTarget = (end - firstLength);
         _mergeSort<T>(list, compare, start, middle, list, firstTarget);

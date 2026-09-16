@@ -70,7 +70,7 @@ public sealed class SectionFocusCoordinator : IDisposable
                 _pending = false; DrainAfterFrame(request);
             }
         });
-        Doroti.Framework.Scheduler.SchedulerBinding.instance.ensureVisualUpdate();
+        Scheduler.SchedulerBinding.instance.ensureVisualUpdate();
     }
     private void DrainAfterFrame(long request)
     {
@@ -92,7 +92,7 @@ public sealed class SectionFocusCoordinator : IDisposable
             if (reverse) primary.previousFocus(); else primary.nextFocus();
             DrainAfterFrame(request);
         });
-        Doroti.Framework.Scheduler.SchedulerBinding.instance.ensureVisualUpdate();
+        Scheduler.SchedulerBinding.instance.ensureVisualUpdate();
     }
     public void Dispose()
     {

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -87,8 +86,8 @@ public class SliverList : SliverMultiBoxAdaptorWidget
     public override SliverMultiBoxAdaptorElement createElement() => new SliverMultiBoxAdaptorElement(this, replaceMovedChildren: true);
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element = ((SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverList(childManager: element));
+        var element = ((SliverMultiBoxAdaptorElement?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverList(childManager: element));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -126,14 +125,14 @@ public class SliverFixedExtentList : SliverMultiBoxAdaptorWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element = ((SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverFixedExtentList(childManager: element, itemExtent: this.itemExtent));
+        var element = ((SliverMultiBoxAdaptorElement?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverFixedExtentList(childManager: element, itemExtent: this.itemExtent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverFixedExtentList)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverFixedExtentList)renderObject;
         __renderObject.itemExtent = this.itemExtent;
     }
 
@@ -170,14 +169,14 @@ public class SliverVariedExtentList : SliverMultiBoxAdaptorWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element = ((SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverVariedExtentList(childManager: element, itemExtentBuilder: (ItemExtentBuilder)this.itemExtentBuilder));
+        var element = ((SliverMultiBoxAdaptorElement?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverVariedExtentList(childManager: element, itemExtentBuilder: (ItemExtentBuilder)this.itemExtentBuilder));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverVariedExtentList)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverVariedExtentList)renderObject;
         __renderObject.itemExtentBuilder = this.itemExtentBuilder;
     }
 
@@ -228,14 +227,14 @@ public class SliverGrid : SliverMultiBoxAdaptorWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element = ((SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverGrid(childManager: element, gridDelegate: this.gridDelegate));
+        var element = ((SliverMultiBoxAdaptorElement?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverGrid(childManager: element, gridDelegate: this.gridDelegate));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverGrid)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverGrid)renderObject;
         __renderObject.gridDelegate = this.gridDelegate;
     }
 
@@ -263,13 +262,13 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
     public override global::Doroti.Framework.Rendering.RenderSliverMultiBoxAdaptor renderObject => (global::Doroti.Framework.Rendering.RenderSliverMultiBoxAdaptor)base.renderObject;
     public override void update(Widget newWidget)
     {
-        var __newWidget = (SliverMultiBoxAdaptorWidget)(object)newWidget;
-        var oldWidget = ((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!;
+        var __newWidget = (SliverMultiBoxAdaptorWidget)newWidget;
+        var oldWidget = ((SliverMultiBoxAdaptorWidget?)this.widget)!;
         base.update(__newWidget);
         FrameworkWorkCounters.Add(FrameworkWork.DelegateUpdate);
         SliverChildDelegate newDelegate = ((SliverMultiBoxAdaptorWidget)__newWidget).@delegate;
         SliverChildDelegate oldDelegate = ((SliverMultiBoxAdaptorWidget)oldWidget).@delegate;
-        if (((!object.Equals(newDelegate, oldDelegate)) && (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))))
+        if (((!Equals(newDelegate, oldDelegate)) && (((!Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))))
         {
             performRebuild();
         }
@@ -286,21 +285,21 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
         {
             var newChildren = new SortedDictionary<long, Element?>();
             DartMap<long, double> indexToLayoutOffset = new DartMap<long, double>();
-            var adaptorWidget = ((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!;
+            var adaptorWidget = ((SliverMultiBoxAdaptorWidget?)this.widget)!;
             void processElement(long index)
             {
                 _currentlyUpdatingChildIndex = index;
-                if (((this._childElements.ContainsKey(index)) && (!object.Equals(this._childElements.GetValueOrDefault(index), newChildren.GetValueOrDefault(index)))))
+                if (((this._childElements.ContainsKey(index)) && (!Equals(this._childElements.GetValueOrDefault(index), newChildren.GetValueOrDefault(index)))))
                 {
-                    this._childElements[index] = updateChild(this._childElements.GetValueOrDefault(index), ((Widget)(object)null), index);
+                    this._childElements[index] = updateChild(this._childElements.GetValueOrDefault(index), ((Widget?)null), index);
                     childrenUpdated = true;
                 }
-                Element? newChild = ((Element?)(object?)updateChild(newChildren.GetValueOrDefault(index), _build(index, adaptorWidget), index));
+                Element? newChild = ((Element?)updateChild(newChildren.GetValueOrDefault(index), _build(index, adaptorWidget), index));
                 if ((newChild is not null))
                 {
-                    childrenUpdated = (childrenUpdated || (!object.Equals(this._childElements.GetValueOrDefault(index), newChild)));
+                    childrenUpdated = (childrenUpdated || (!Equals(this._childElements.GetValueOrDefault(index), newChild)));
                     this._childElements[index] = newChild;
-                    var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(((Element)newChild).renderObject!).parentData)!)!;
+                    var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)((global::Doroti.Framework.Rendering.ParentData?)(((Element)newChild).renderObject!).parentData)!)!;
                     if ((index == 0L))
                     {
                         parentDataLocal.layoutOffset = 0.0;
@@ -314,7 +313,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
                     }
                     if (!((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)parentDataLocal).keptAlive)
                     {
-                        _currentBeforeChild = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((Element)newChild).renderObject)!;
+                        _currentBeforeChild = ((global::Doroti.Framework.Rendering.RenderBox?)((Element)newChild).renderObject)!;
                     }
                 }
                 else
@@ -328,7 +327,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
                 FrameworkWorkCounters.Add(FrameworkWork.RetainedChildVisit);
                 global::Doroti.Framework.Foundation.Key? keyLocal = this._childElements.GetValueOrDefault(indexLocal)!.widget.key;
                 long? newIndex = ((keyLocal is null) ? null : ((SliverMultiBoxAdaptorWidget)adaptorWidget).@delegate.findIndexByKey(keyLocal));
-                var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(this._childElements.GetValueOrDefault(indexLocal)!.renderObject)?.parentData))!;
+                var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)((global::Doroti.Framework.Rendering.ParentData?)(this._childElements.GetValueOrDefault(indexLocal)!.renderObject)?.parentData))!;
                 if (((childParentData is not null) && (childParentData.layoutOffset is not null)))
                 {
                     indexToLayoutOffset[indexLocal] = DartRuntimePrimitives.RequireValue(childParentData.layoutOffset);
@@ -371,7 +370,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
 
     internal virtual Widget? _build(long index, SliverMultiBoxAdaptorWidget widget)
     {
-        return ((Widget?)(object?)((SliverMultiBoxAdaptorWidget)widget).@delegate.build(this, index));
+        return ((Widget?)((SliverMultiBoxAdaptorWidget)widget).@delegate.build(this, index));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -382,11 +381,11 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
         {
             var insertFirst = (after is null);
             DartRuntimePrimitives.Assert(() => (insertFirst || (this._childElements.ContainsKey((index - 1L)))));
-            _currentBeforeChild = (insertFirst ? null : (((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._childElements.GetValueOrDefault((index - 1L))!.renderObject)!));
+            _currentBeforeChild = (insertFirst ? null : (((global::Doroti.Framework.Rendering.RenderBox?)this._childElements.GetValueOrDefault((index - 1L))!.renderObject)!));
             Element? newChild = default!;
             try
             {
-                var adaptorWidget = ((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!;
+                var adaptorWidget = ((SliverMultiBoxAdaptorWidget?)this.widget)!;
                 _currentlyUpdatingChildIndex = index;
                 newChild = updateChild(this._childElements.GetValueOrDefault(index), _build(index, adaptorWidget), index);
             }
@@ -407,10 +406,10 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
 
     public override Element? updateChild(Element? child, Widget? newWidget, object? newSlot)
     {
-        var oldParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(child?.renderObject)?.parentData))!;
-        Element? newChild = ((Element?)(object?)base.updateChild(child, newWidget, newSlot));
-        var newParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(newChild?.renderObject)?.parentData))!;
-        if ((((!object.Equals(oldParentData, newParentData)) && (oldParentData is not null)) && (newParentData is not null)))
+        var oldParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)((global::Doroti.Framework.Rendering.ParentData?)(child?.renderObject)?.parentData))!;
+        Element? newChild = ((Element?)base.updateChild(child, newWidget, newSlot));
+        var newParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)((global::Doroti.Framework.Rendering.ParentData?)(newChild?.renderObject)?.parentData))!;
+        if ((((!Equals(oldParentData, newParentData)) && (oldParentData is not null)) && (newParentData is not null)))
         {
             newParentData.layoutOffset = oldParentData.layoutOffset;
         }
@@ -437,7 +436,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
             try
             {
                 _currentlyUpdatingChildIndex = index;
-                Element? result = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index), ((Widget)(object)null), index));
+                Element? result = ((Element?)updateChild(this._childElements.GetValueOrDefault(index), ((Widget?)null), index));
                 DartRuntimePrimitives.Assert(() => (result is null));
             }
             finally
@@ -469,11 +468,11 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
         {
             return double.PositiveInfinity;
         }
-        return (((((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!).estimateMaxScrollOffset(constraints, DartRuntimePrimitives.RequireValue(firstIndex), DartRuntimePrimitives.RequireValue(lastIndex), DartRuntimePrimitives.RequireValue(leadingScrollOffset), DartRuntimePrimitives.RequireValue(trailingScrollOffset)) ?? (double)SliverMultiBoxAdaptorElement._extrapolateMaxScrollOffset(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(lastIndex)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leadingScrollOffset)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(trailingScrollOffset)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(childCount)))));
+        return (((((SliverMultiBoxAdaptorWidget?)this.widget)!).estimateMaxScrollOffset(constraints, DartRuntimePrimitives.RequireValue(firstIndex), DartRuntimePrimitives.RequireValue(lastIndex), DartRuntimePrimitives.RequireValue(leadingScrollOffset), DartRuntimePrimitives.RequireValue(trailingScrollOffset)) ?? (double)_extrapolateMaxScrollOffset(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(lastIndex)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leadingScrollOffset)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(trailingScrollOffset)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(childCount)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long? estimatedChildCount => (((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!).@delegate.estimatedChildCount;
+    public virtual long? estimatedChildCount => (((SliverMultiBoxAdaptorWidget?)this.widget)!).@delegate.estimatedChildCount;
     public virtual long childCount
     {
         get
@@ -483,8 +482,8 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
             {
                 var lo = 0L;
                 var hi = 1L;
-                var adaptorWidget = ((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!;
-                long max = (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? 9007199254740992L : ((long.MaxValue)));
+                var adaptorWidget = ((SliverMultiBoxAdaptorWidget?)this.widget)!;
+                long max = (Foundation.ConstantsLibrary.kIsWeb ? 9007199254740992L : ((long.MaxValue)));
                 while ((_build((hi - 1L), adaptorWidget) is not null))
                 {
                     lo = (hi - 1L);
@@ -500,7 +499,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
                         }
                         else
                         {
-                            throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Could not find the number of children in {((SliverMultiBoxAdaptorWidget)adaptorWidget).@delegate}.\n" + "The childCount getter was called (implying that the delegate's builder returned null " + $"for a positive index), but even building the child with index {hi} (the maximum " + "possible integer) did not return null. Consider implementing childCount to avoid " + "the cost of searching for the final child."));
+                            throw DartRuntimePrimitives.AsException(FlutterError.Create($"Could not find the number of children in {((SliverMultiBoxAdaptorWidget)adaptorWidget).@delegate}.\n" + "The childCount getter was called (implying that the delegate's builder returned null " + $"for a positive index), but even building the child with index {hi} (the maximum " + "possible integer) did not return null. Consider implementing childCount to avoid " + "the cost of searching for the final child."));
                         }
                     }
                 }
@@ -531,7 +530,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
         DartRuntimePrimitives.Assert(() => debugAssertChildListLocked());
         long firstIndex = (DartCollectionRuntime.FirstKeyOrNull<long, Element?>(this._childElements) ?? 0L);
         long lastIndex = (DartCollectionRuntime.LastKeyOrNull<long, Element?>(this._childElements) ?? 0L);
-        (((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!).@delegate.didFinishLayout(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(lastIndex)));
+        (((SliverMultiBoxAdaptorWidget?)this.widget)!).@delegate.didFinishLayout(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(lastIndex)));
     }
 
     public virtual bool debugAssertChildListLocked()
@@ -544,7 +543,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
     public virtual void didAdoptChild(global::Doroti.Framework.Rendering.RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (this._currentlyUpdatingChildIndex is not null));
-        var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!;
+        var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         childParentData.index = this._currentlyUpdatingChildIndex;
     }
 
@@ -558,10 +557,10 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
         DartRuntimePrimitives.Assert(() => (this._currentlyUpdatingChildIndex == __slot));
         DartRuntimePrimitives.Assert(() => ((bool)this.renderObject.debugValidateChild(child)));
-        this.renderObject.insert(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!, after: this._currentBeforeChild);
+        this.renderObject.insert(((global::Doroti.Framework.Rendering.RenderBox?)child)!, after: this._currentBeforeChild);
         DartRuntimePrimitives.Assert(() =>
             {
-                var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)((global::Doroti.Framework.Rendering.RenderBox)child).parentData!)!;
+                var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)((global::Doroti.Framework.Rendering.RenderBox)child).parentData!)!;
                 DartRuntimePrimitives.Assert(() => (__slot == ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)childParentData).index));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -573,14 +572,14 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
         long __oldSlot = DartRuntimePrimitives.ConvertValue<long>(oldSlot);
         long __newSlot = DartRuntimePrimitives.ConvertValue<long>(newSlot);
         DartRuntimePrimitives.Assert(() => (this._currentlyUpdatingChildIndex == DartRuntimePrimitives.RequireValue(__newSlot)));
-        this.renderObject.move(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!, after: this._currentBeforeChild);
+        this.renderObject.move(((global::Doroti.Framework.Rendering.RenderBox?)child)!, after: this._currentBeforeChild);
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
         DartRuntimePrimitives.Assert(() => (this._currentlyUpdatingChildIndex is not null));
-        this.renderObject.remove(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!);
+        this.renderObject.remove(((global::Doroti.Framework.Rendering.RenderBox?)child)!);
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)
@@ -593,8 +592,8 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
     {
         this._childElements.Values.cast<Element>().where(((child) =>
         {
-            var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)(((Element)child).renderObject!).parentData)!)!;
-            double itemExtent = DartRuntimePrimitives.ConvertValue<double>((this.renderObject.constraints.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => ((Rect)(((Element)child).renderObject!).paintBounds).width, global::Doroti.Framework.Painting.Axis.vertical => ((Rect)(((Element)child).renderObject!).paintBounds).height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)((global::Doroti.Framework.Rendering.ParentData?)(((Element)child).renderObject!).parentData)!)!;
+            double itemExtent = DartRuntimePrimitives.ConvertValue<double>((this.renderObject.constraints.axis switch { Axis.horizontal => ((Rect)(((Element)child).renderObject!).paintBounds).width, Axis.vertical => ((Rect)(((Element)child).renderObject!).paintBounds).height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             return (((parentDataLocal.layoutOffset is not null) && (DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) < (this.renderObject.constraints.scrollOffset + this.renderObject.constraints.remainingPaintExtent))) && ((DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) + itemExtent) > this.renderObject.constraints.scrollOffset));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })).forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));
@@ -616,13 +615,13 @@ public class SliverOpacity : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverOpacity(opacity: this.opacity, alwaysIncludeSemantics: this.alwaysIncludeSemantics));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverOpacity(opacity: this.opacity, alwaysIncludeSemantics: this.alwaysIncludeSemantics));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverOpacity)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverOpacity)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSliverOpacity>)(() =>
 {
     var __cascade = __renderObject;
@@ -654,13 +653,13 @@ public class SliverIgnorePointer : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverIgnorePointer(ignoring: this.ignoring, ignoringSemantics: this.ignoringSemantics));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverIgnorePointer(ignoring: this.ignoring, ignoringSemantics: this.ignoringSemantics));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverIgnorePointer)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverIgnorePointer)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSliverIgnorePointer>)(() =>
 {
     var __cascade = __renderObject;
@@ -691,7 +690,7 @@ public class SliverOffstage : SingleChildRenderObjectWidget
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderSliverOffstage(offstage: this.offstage));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverOffstage)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverOffstage)renderObject;
         __renderObject.offstage = this.offstage;
     }
 
@@ -712,7 +711,7 @@ internal class _SliverOffstageElement__sliver : SingleChildRenderObjectElement
 
     public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
     {
-        if (!(((SliverOffstage?)(object?)this.widget)!).offstage)
+        if (!(((SliverOffstage?)this.widget)!).offstage)
         {
             base.debugVisitOnstageChildren((global::System.Action<Element>)visitor);
         }
@@ -732,7 +731,7 @@ public class KeepAlive : ParentDataWidget<global::Doroti.Framework.Rendering.Kee
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.KeepAliveParentDataMixin));
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.KeepAliveParentDataMixin?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.KeepAliveParentDataMixin?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
         if ((((global::Doroti.Framework.Rendering.KeepAliveParentDataMixin)parentDataLocal).keepAlive != this.keepAlive))
         {
             parentDataLocal.keepAlive = this.keepAlive;
@@ -746,7 +745,7 @@ public class KeepAlive : ParentDataWidget<global::Doroti.Framework.Rendering.Kee
     }
 
     public override bool debugCanApplyOutOfTurn() => this.keepAlive;
-    public override Type debugTypicalAncestorWidgetClass => throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Multiple Types are supported, use debugTypicalAncestorWidgetDescription."));
+    public override Type debugTypicalAncestorWidgetClass => throw DartRuntimePrimitives.AsException(FlutterError.Create("Multiple Types are supported, use debugTypicalAncestorWidgetDescription."));
     public override string debugTypicalAncestorWidgetDescription => "SliverWithKeepAliveWidget or TwoDimensionalViewport";
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
@@ -769,7 +768,7 @@ public class SliverConstrainedCrossAxis : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _SliverZeroFlexParentDataWidget__sliver(sliver: new _SliverConstrainedCrossAxis__sliver(maxExtent: this.maxExtent, sliver: this.sliver)));
+        return ((Widget)new _SliverZeroFlexParentDataWidget__sliver(sliver: new _SliverConstrainedCrossAxis__sliver(maxExtent: this.maxExtent, sliver: this.sliver)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -784,7 +783,7 @@ internal class _SliverZeroFlexParentDataWidget__sliver : ParentDataWidget<global
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.SliverPhysicalParentData));
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
         var needsLayout = false;
         if ((((global::Doroti.Framework.Rendering.SliverPhysicalParentData)parentDataLocal).crossAxisFlex != 0L))
         {
@@ -812,13 +811,13 @@ internal class _SliverConstrainedCrossAxis__sliver : SingleChildRenderObjectWidg
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverConstrainedCrossAxis(maxExtent: this.maxExtent));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverConstrainedCrossAxis(maxExtent: this.maxExtent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverConstrainedCrossAxis)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverConstrainedCrossAxis)renderObject;
         __renderObject.maxExtent = this.maxExtent;
     }
 
@@ -838,7 +837,7 @@ public class SliverCrossAxisExpanded : ParentDataWidget<global::Doroti.Framework
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.SliverPhysicalContainerParentData));
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent is global::Doroti.Framework.Rendering.RenderSliverCrossAxisGroup));
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.SliverPhysicalParentData?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
         var needsLayout = false;
         if ((((global::Doroti.Framework.Rendering.SliverPhysicalParentData)parentDataLocal).crossAxisFlex != this.flex))
         {
@@ -862,7 +861,7 @@ public class SliverCrossAxisGroup : MultiChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverCrossAxisGroup());
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverCrossAxisGroup());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -877,7 +876,7 @@ public class SliverMainAxisGroup : MultiChildRenderObjectWidget
     public override MultiChildRenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<MultiChildRenderObjectElement>(new _SliverMainAxisGroupElement__sliver(this));
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverMainAxisGroup());
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverMainAxisGroup());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -893,7 +892,7 @@ internal class _SliverMainAxisGroupElement__sliver : MultiChildRenderObjectEleme
     {
         this.children.where(((e) =>
         {
-            var renderSliver = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject!)!;
+            var renderSliver = ((global::Doroti.Framework.Rendering.RenderSliver?)((Element)e).renderObject!)!;
             return ((global::Doroti.Framework.Rendering.RenderSliver)renderSliver).geometry!.visible;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })).forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));

@@ -404,7 +404,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                                 setState(() => PlatformViewFixtureProbe.ForegroundClicks++),
                             child: new ClipRect(
                                 child: new BackdropFilter(
-                                    filterConfig: Doroti.Framework.Rendering.ImageFilterConfig.CreateBlur(
+                                    filterConfig: ImageFilterConfig.CreateBlur(
                                         sigmaX: 6,
                                         sigmaY: 6,
                                         tileMode: TileMode.clamp,

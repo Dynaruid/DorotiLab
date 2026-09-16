@@ -37,7 +37,7 @@ public class LinearBorderEdge
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
@@ -47,7 +47,7 @@ public class LinearBorderEdge
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.size, this.alignment);
     public override string ToString()
     {
-        var s = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge"))}(");
+        var s = new StringBuffer($"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge"))}(");
         if ((this.size != 1.0))
         {
             s.write($"size: {this.size}");
@@ -188,7 +188,7 @@ public class LinearBorder : OutlinedBorder
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
         EdgeInsets insets = this.dimensions.resolve(textDirection);
-        var rtlLocal = (object.Equals(textDirection, TextDirection.rtl));
+        var rtlLocal = (Equals(textDirection, TextDirection.rtl));
         var path = new global::Doroti.Ui.Path();
         var paintLocal = ((Func<Paint>)(() =>
 {
@@ -223,40 +223,40 @@ public class LinearBorder : OutlinedBorder
             }
             canvas.drawPath(path, paintLocal);
         }
-        if ((((this.start is not null) && (this.start!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((((this.start is not null) && (this.start!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
         {
-            var insetRect = global::Doroti.Ui.Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
+            var insetRect = Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
             double x = (rtlLocal ? (rect.right - ((EdgeInsets)insets).right) : rect.left);
             double widthLocal = (rtlLocal ? ((EdgeInsets)insets).right : ((EdgeInsets)insets).left);
             double heightLocal = (insetRect.height * this.start!.size);
             double y = (((insetRect.height - heightLocal)) * ((((this.start!.alignment + 1.0)) / 2.0)));
-            var r = global::Doroti.Ui.Rect.fromLTWH(x, y, widthLocal, heightLocal);
+            var r = Rect.fromLTWH(x, y, widthLocal, heightLocal);
             drawEdge(r, ((BorderSide)side).color);
         }
-        if ((((this.end is not null) && (this.end!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((((this.end is not null) && (this.end!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
         {
-            var insetRectLocal = global::Doroti.Ui.Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
+            var insetRectLocal = Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
             double xLocal = (rtlLocal ? rect.left : (rect.right - ((EdgeInsets)insets).right));
             double widthAlternate = (rtlLocal ? ((EdgeInsets)insets).left : ((EdgeInsets)insets).right);
             double heightAlternate = (insetRectLocal.height * this.end!.size);
             double yLocal = (((insetRectLocal.height - heightAlternate)) * ((((this.end!.alignment + 1.0)) / 2.0)));
-            var rLocal = global::Doroti.Ui.Rect.fromLTWH(xLocal, yLocal, widthAlternate, heightAlternate);
+            var rLocal = Rect.fromLTWH(xLocal, yLocal, widthAlternate, heightAlternate);
             drawEdge(rLocal, ((BorderSide)side).color);
         }
-        if ((((this.top is not null) && (this.top!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((((this.top is not null) && (this.top!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
         {
             double widthNested = (rect.width * this.top!.size);
             double startX = (((rect.width - widthNested)) * ((((this.top!.alignment + 1.0)) / 2.0)));
             double xAlternate = (rtlLocal ? ((rect.width - startX) - widthNested) : startX);
-            var rAlternate = global::Doroti.Ui.Rect.fromLTWH(xAlternate, rect.top, widthNested, ((EdgeInsets)insets).top);
+            var rAlternate = Rect.fromLTWH(xAlternate, rect.top, widthNested, ((EdgeInsets)insets).top);
             drawEdge(rAlternate, ((BorderSide)side).color);
         }
-        if ((((this.bottom is not null) && (this.bottom!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
+        if ((((this.bottom is not null) && (this.bottom!.size != 0.0)) && (!Equals(((BorderSide)side).style, BorderStyle.none))))
         {
             double widthCurrent = (rect.width * this.bottom!.size);
             double startXLocal = (((rect.width - widthCurrent)) * ((((this.bottom!.alignment + 1.0)) / 2.0)));
             double xNested = (rtlLocal ? ((rect.width - startXLocal) - widthCurrent) : startXLocal);
-            var rNested = global::Doroti.Ui.Rect.fromLTWH(xNested, (rect.bottom - ((EdgeInsets)insets).bottom), widthCurrent, ((BorderSide)side).width);
+            var rNested = Rect.fromLTWH(xNested, (rect.bottom - ((EdgeInsets)insets).bottom), widthCurrent, ((BorderSide)side).width);
             drawEdge(rNested, ((BorderSide)side).color);
         }
     }
@@ -269,21 +269,21 @@ public class LinearBorder : OutlinedBorder
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((__other is LinearBorder) && (object.Equals(((LinearBorder)__other).side, side))) && (object.Equals(((LinearBorder)((LinearBorder)__other)).start, this.start))) && (object.Equals(((LinearBorder)((LinearBorder)__other)).end, this.end))) && (object.Equals(((LinearBorder)((LinearBorder)__other)).top, this.top))) && (object.Equals(((LinearBorder)((LinearBorder)__other)).bottom, this.bottom)));
+        return ((((((__other is LinearBorder) && (Equals(((LinearBorder)__other).side, side))) && (Equals(((LinearBorder)((LinearBorder)__other)).start, this.start))) && (Equals(((LinearBorder)((LinearBorder)__other)).end, this.end))) && (Equals(((LinearBorder)((LinearBorder)__other)).top, this.top))) && (Equals(((LinearBorder)((LinearBorder)__other)).bottom, this.bottom)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.start, this.end, this.top, this.bottom);
     public override string ToString()
     {
-        if ((object.Equals(this, LinearBorder.none)))
+        if ((Equals(this, none)))
         {
             return "LinearBorder.none";
         }
-        var s = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder"))}(side: {side}");
+        var s = new StringBuffer($"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder"))}(side: {side}");
         if ((this.start is not null))
         {
             s.write($", start: {this.start}");

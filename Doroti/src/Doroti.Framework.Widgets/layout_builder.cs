@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/layout_builder.dart
-#pragma warning disable CS8600, CS8629
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -67,14 +66,14 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
         {
             return;
         }
-        bool deferMarkNeedsLayout = (global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase switch { global::Doroti.Framework.Scheduler.SchedulerPhase.idle => true, global::Doroti.Framework.Scheduler.SchedulerPhase.postFrameCallbacks => true, global::Doroti.Framework.Scheduler.SchedulerPhase.transientCallbacks or global::Doroti.Framework.Scheduler.SchedulerPhase.midFrameMicrotasks => false, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool deferMarkNeedsLayout = (Scheduler.SchedulerBinding.instance.schedulerPhase switch { Scheduler.SchedulerPhase.idle => true, Scheduler.SchedulerPhase.postFrameCallbacks => true, Scheduler.SchedulerPhase.transientCallbacks or Scheduler.SchedulerPhase.midFrameMicrotasks => false, Scheduler.SchedulerPhase.persistentCallbacks => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if (!deferMarkNeedsLayout)
         {
             this.renderObject.scheduleLayoutCallback();
             return;
         }
         _deferredCallbackScheduled = true;
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleFrameCallback((global::System.Action<Duration>)this._frameCallback);
+        Scheduler.SchedulerBinding.instance.scheduleFrameCallback((global::System.Action<Duration>)this._frameCallback);
     }
 
     internal virtual void _frameCallback(Duration timestamp)
@@ -96,7 +95,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
 
     public override void forgetChild(Element child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child, this._child)));
+        DartRuntimePrimitives.Assert(() => (Equals(child, this._child)));
         _child = null;
         base.forgetChild(child);
     }
@@ -109,11 +108,11 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
 
     public override void update(Widget newWidget)
     {
-        var __newWidget = (AbstractLayoutBuilder<LayoutInfoType>)(object)newWidget;
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this.widget, __newWidget)));
-        var oldWidget = ((AbstractLayoutBuilder<LayoutInfoType>?)(object?)this.widget)!;
+        var __newWidget = (AbstractLayoutBuilder<LayoutInfoType>)newWidget;
+        DartRuntimePrimitives.Assert(() => (!Equals(this.widget, __newWidget)));
+        var oldWidget = ((AbstractLayoutBuilder<LayoutInfoType>?)this.widget)!;
         base.update(__newWidget);
-        DartRuntimePrimitives.Assert(() => (object.Equals(this.widget, __newWidget)));
+        DartRuntimePrimitives.Assert(() => (Equals(this.widget, __newWidget)));
         this.layoutBuilder._updateCallback((global::System.Action<global::Doroti.Framework.Rendering.Constraints>)this._rebuildWithConstraints);
         if (__newWidget.updateShouldRebuild(oldWidget))
         {
@@ -150,8 +149,8 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
             try
             {
                 DartRuntimePrimitives.Assert(() => EqualityComparer<LayoutInfoType>.Default.Equals(layoutInfoLocal, this.layoutBuilder.layoutInfo));
-                built = (((AbstractLayoutBuilder<LayoutInfoType>?)(object?)this.widget)!).builder(this, layoutInfoLocal);
-                global::Doroti.Framework.Widgets.DebugLibrary.debugWidgetBuilderValue(this.widget, built);
+                built = (((AbstractLayoutBuilder<LayoutInfoType>?)this.widget)!).builder(this, layoutInfoLocal);
+                DebugLibrary.debugWidgetBuilderValue(this.widget, built);
             }
             catch (Exception e)
             {
@@ -167,10 +166,10 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
             {
                 var stackLocal = new System.Diagnostics.StackTrace();
                 built = ErrorWidget.builder(Layout_builderLibrary._reportException(new global::Doroti.Framework.Foundation.ErrorDescription($"building {this.widget}"), eLocal, stackLocal, informationCollector: (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode>())));
-                _child = updateChild(((Element)(object)null), built, this.slot);
+                _child = updateChild(((Element?)null), built, this.slot);
             }
         }
-        global::System.Action? callback = ((global::System.Action)((this._needsBuild || (!EqualityComparer<LayoutInfoType>.Default.Equals(layoutInfoLocal, this._previousLayoutInfo))) ? updateChildCallback : null));
+        global::System.Action? callback = ((global::System.Action?)((this._needsBuild || (!EqualityComparer<LayoutInfoType>.Default.Equals(layoutInfoLocal, this._previousLayoutInfo))) ? updateChildCallback : null));
         this.owner!.buildScope(this, callback);
     }
 
@@ -180,7 +179,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
         var childOwner = (global::Doroti.Framework.Rendering.IRenderObjectWithChild)renderObjectLocal;
         DartRuntimePrimitives.Assert(() => (slot is null));
         childOwner.child = child;
-        DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
+        DartRuntimePrimitives.Assert(() => (Equals(renderObjectLocal, this.renderObject)));
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -192,9 +191,9 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
     {
         var renderObjectLocal = this.renderObject;
         var childOwner = (global::Doroti.Framework.Rendering.IRenderObjectWithChild)renderObjectLocal;
-        DartRuntimePrimitives.Assert(() => (object.Equals(childOwner.child, child)));
+        DartRuntimePrimitives.Assert(() => (Equals(childOwner.child, child)));
         childOwner.child = null;
-        DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
+        DartRuntimePrimitives.Assert(() => (Equals(renderObjectLocal, this.renderObject)));
     }
 
 }
@@ -283,7 +282,7 @@ internal class _RenderLayoutBuilder__layout_builder : global::Doroti.Framework.R
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        return ((this.child?.getDistanceToActualBaseline(baseline) ?? (double)base.computeDistanceToActualBaseline(baseline)));
+        return ((this.child?.getDistanceToActualBaseline(baseline) ?? base.computeDistanceToActualBaseline(baseline)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -305,9 +304,9 @@ internal class _RenderLayoutBuilder__layout_builder : global::Doroti.Framework.R
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!global::Doroti.Framework.Rendering.RenderObject.debugCheckingIntrinsics)
+                if (!debugCheckingIntrinsics)
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("LayoutBuilder does not support returning intrinsic dimensions.\n" + "Calculating the intrinsic dimensions would require running the layout " + "callback speculatively, which might mutate the live render object tree."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("LayoutBuilder does not support returning intrinsic dimensions.\n" + "Calculating the intrinsic dimensions would require running the layout " + "callback speculatively, which might mutate the live render object tree."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -322,7 +321,7 @@ internal class _RenderLayoutBuilder__layout_builder : global::Doroti.Framework.R
             {
                 if ((child is not RenderBox))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", child.debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -384,7 +383,7 @@ internal class _RenderLayoutBuilder__layout_builder : global::Doroti.Framework.R
 
     public virtual void _updateCallback(global::System.Action<global::Doroti.Framework.Rendering.Constraints> value)
     {
-        if ((object.Equals((global::System.Action<global::Doroti.Framework.Rendering.Constraints>)value, (global::System.Action<global::Doroti.Framework.Rendering.Constraints>?)this._callback)))
+        if ((Equals((global::System.Action<global::Doroti.Framework.Rendering.Constraints>)value, (global::System.Action<global::Doroti.Framework.Rendering.Constraints>?)this._callback)))
         {
             return;
         }
@@ -393,7 +392,7 @@ internal class _RenderLayoutBuilder__layout_builder : global::Doroti.Framework.R
     }
 
     public virtual void layoutCallback() => this._callback!(this.constraints);
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints layoutInfo => ((global::Doroti.Framework.Rendering.BoxConstraints?)(object?)this.constraints)!;
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints layoutInfo => ((global::Doroti.Framework.Rendering.BoxConstraints?)this.constraints)!;
 }
 
 public static partial class Layout_builderLibrary

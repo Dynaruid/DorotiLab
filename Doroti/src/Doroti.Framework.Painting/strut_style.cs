@@ -60,7 +60,7 @@ public class StrutStyle : Diagnosticable
         {
             return RenderComparison.identical;
         }
-        if ((((((((((this.fontFamily != ((StrutStyle)other).fontFamily) || (this.fontSize != ((StrutStyle)other).fontSize)) || (!object.Equals(this.fontWeight, ((StrutStyle)other).fontWeight))) || (!object.Equals(this.fontStyle, ((StrutStyle)other).fontStyle))) || (this.height != ((StrutStyle)other).height)) || (this.leading != ((StrutStyle)other).leading)) || (this.forceStrutHeight != ((StrutStyle)other).forceStrutHeight)) || (!global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(this.fontFamilyFallback, ((StrutStyle)other).fontFamilyFallback))) || (((this.height is not null) && (!object.Equals(this.leadingDistribution, ((StrutStyle)other).leadingDistribution))))))
+        if ((((((((((this.fontFamily != ((StrutStyle)other).fontFamily) || (this.fontSize != ((StrutStyle)other).fontSize)) || (!Equals(this.fontWeight, ((StrutStyle)other).fontWeight))) || (!Equals(this.fontStyle, ((StrutStyle)other).fontStyle))) || (this.height != ((StrutStyle)other).height)) || (this.leading != ((StrutStyle)other).leading)) || (this.forceStrutHeight != ((StrutStyle)other).forceStrutHeight)) || (!CollectionsLibrary.listEquals(this.fontFamilyFallback, ((StrutStyle)other).fontFamilyFallback))) || (((this.height is not null) && (!Equals(this.leadingDistribution, ((StrutStyle)other).leadingDistribution))))))
         {
             return RenderComparison.layout;
         }
@@ -97,15 +97,15 @@ public class StrutStyle : Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((__other is StrutStyle) && (((StrutStyle)((StrutStyle)__other)).fontFamily == this.fontFamily)) && (((StrutStyle)((StrutStyle)__other)).fontSize == this.fontSize)) && (object.Equals(((StrutStyle)((StrutStyle)__other)).fontWeight, this.fontWeight))) && (object.Equals(((StrutStyle)((StrutStyle)__other)).fontStyle, this.fontStyle))) && (((StrutStyle)((StrutStyle)__other)).height == this.height)) && (((StrutStyle)((StrutStyle)__other)).leading == this.leading)) && (((StrutStyle)((StrutStyle)__other)).forceStrutHeight == this.forceStrutHeight)) && (((this.height is null) || (object.Equals(this.leadingDistribution, ((StrutStyle)((StrutStyle)__other)).leadingDistribution))))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((StrutStyle)((StrutStyle)__other)).fontFamilyFallback, this.fontFamilyFallback));
+        return ((((((((((__other is StrutStyle) && (((StrutStyle)((StrutStyle)__other)).fontFamily == this.fontFamily)) && (((StrutStyle)((StrutStyle)__other)).fontSize == this.fontSize)) && (Equals(((StrutStyle)((StrutStyle)__other)).fontWeight, this.fontWeight))) && (Equals(((StrutStyle)((StrutStyle)__other)).fontStyle, this.fontStyle))) && (((StrutStyle)((StrutStyle)__other)).height == this.height)) && (((StrutStyle)((StrutStyle)__other)).leading == this.leading)) && (((StrutStyle)((StrutStyle)__other)).forceStrutHeight == this.forceStrutHeight)) && (((this.height is null) || (Equals(this.leadingDistribution, ((StrutStyle)((StrutStyle)__other)).leadingDistribution))))) && CollectionsLibrary.listEquals(((StrutStyle)((StrutStyle)__other)).fontFamilyFallback, this.fontFamilyFallback));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.fontFamily, this.fontSize, this.fontWeight, this.fontStyle, this.height, this.leading, this.forceStrutHeight);
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "StrutStyle");
+    public virtual string toStringShort() => objectRuntimeTypeFunctions.objectRuntimeType(this, "StrutStyle");
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties, string prefix = "")
     {
         DiagnosticableDefaults.debugFillProperties(properties);

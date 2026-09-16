@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/sliver_tree.dart
-#pragma warning disable CS8602
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -57,7 +56,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         set
         {
             var __value = value;
-            if ((object.Equals(this._activeAnimations, __value)))
+            if ((Equals(this._activeAnimations, __value)))
             {
                 return;
             }
@@ -101,7 +100,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     public override void setupParentData(RenderObject child)
     {
-        var __child = (RenderBox)(object)child;
+        var __child = (RenderBox)child;
         if ((__child.parentData is not TreeSliverNodeParentData))
         {
             __child.parentData = new TreeSliverNodeParentData();
@@ -120,7 +119,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     public override void performLayout()
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((SliverConstraints)constraints).axisDirection, global::Doroti.Framework.Painting.AxisDirection.down)));
+        DartRuntimePrimitives.Assert(() => (Equals(((SliverConstraints)constraints).axisDirection, AxisDirection.down)));
         _updateAnimationCache();
         base.performLayout();
     }
@@ -197,7 +196,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     public override double childCrossAxisPosition(RenderObject child)
     {
-        var parentDataLocal = ((TreeSliverNodeParentData?)(object?)((RenderObject)child).parentData!)!;
+        var parentDataLocal = ((TreeSliverNodeParentData?)((RenderObject)child).parentData!)!;
         return (((TreeSliverNodeParentData)parentDataLocal).depth * this.indentation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -247,7 +246,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             while (((child is not null) && (indexOf(child) <= index)))
             {
                 double mainAxisDelta = childMainAxisPosition(child);
-                var parentDataLocal = ((TreeSliverNodeParentData?)(object?)child.parentData!)!;
+                var parentDataLocal = ((TreeSliverNodeParentData?)child.parentData!)!;
                 global::Doroti.Ui.Offset childOffset = (new global::Doroti.Ui.Offset((((TreeSliverNodeParentData)parentDataLocal).depth * this.indentation), (DartRuntimePrimitives.RequireValue(parentDataLocal.layoutOffset) - ((SliverConstraints)constraints).scrollOffset)) + offset);
                 if (((mainAxisDelta < ((SliverConstraints)constraints).remainingPaintExtent) && ((mainAxisDelta + paintExtentOf(child)) > 0L)))
                 {
@@ -284,7 +283,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             long parentIndex = Math.Max((segment.leadingIndex - 1L), 0L);
             double leadingOffset = (indexToLayoutOffset(0.0, parentIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(parentIndex, layoutDimensions)));
             double trailingOffset = (indexToLayoutOffset(0.0, segment.trailingIndex) + DartRuntimePrimitives.RequireValue(itemExtentBuilder(segment.trailingIndex, layoutDimensions)));
-            var rect = global::Doroti.Ui.Rect.fromPoints(new global::Doroti.Ui.Offset(0.0, leadingOffset), new global::Doroti.Ui.Offset(((SliverConstraints)constraints).crossAxisExtent, trailingOffset));
+            var rect = Rect.fromPoints(new global::Doroti.Ui.Offset(0.0, leadingOffset), new global::Doroti.Ui.Offset(((SliverConstraints)constraints).crossAxisExtent, trailingOffset));
             UniqueKey key = this._animationLeadingIndices.GetValueOrDefault(parentIndex)!;
             var clipHandle = this._clipHandles.putIfAbsent(key, () => new LayerHandle<ClipRectLayer>());
             clipHandle.layer = context.pushClipRect(needsCompositing, offset, rect, ((Action<PaintingContext, Offset>)((context, offset) =>

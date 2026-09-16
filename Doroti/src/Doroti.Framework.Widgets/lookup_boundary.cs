@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/lookup_boundary.dart
-#pragma warning disable CS8600
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -14,38 +13,38 @@ public class LookupBoundary : InheritedWidget
     public static T? dependOnInheritedWidgetOfExactType<T>(BuildContext context, object? aspect = null) where T : InheritedWidget
     {
         context.dependOnInheritedWidgetOfExactType<LookupBoundary>();
-        InheritedElement? candidate = ((InheritedElement?)(object?)LookupBoundary.getElementForInheritedWidgetOfExactType<T>(context));
+        InheritedElement? candidate = ((InheritedElement?)getElementForInheritedWidgetOfExactType<T>(context));
         if ((candidate is null))
         {
             return default;
         }
         context.dependOnInheritedElement(candidate, aspect: aspect);
-        return ((T?)(object?)candidate.widget)!;
+        return ((T?)candidate.widget)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static T? getInheritedWidgetOfExactType<T>(BuildContext context, object? aspect = null) where T : InheritedWidget
     {
-        InheritedElement? candidate = ((InheritedElement?)(object?)LookupBoundary.getElementForInheritedWidgetOfExactType<T>(context));
+        InheritedElement? candidate = ((InheritedElement?)getElementForInheritedWidgetOfExactType<T>(context));
         if ((candidate is null))
         {
             return default;
         }
-        return ((T?)(object?)candidate.widget)!;
+        return ((T?)candidate.widget)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static InheritedElement? getElementForInheritedWidgetOfExactType<T>(BuildContext context) where T : InheritedWidget
     {
-        InheritedElement? candidate = ((InheritedElement?)(object?)context.getElementForInheritedWidgetOfExactType<T>());
+        InheritedElement? candidate = ((InheritedElement?)context.getElementForInheritedWidgetOfExactType<T>());
         if ((candidate is null))
         {
-            return ((InheritedElement)(object)null);
+            return ((InheritedElement?)null);
         }
-        Element? boundary = ((Element?)(object?)context.getElementForInheritedWidgetOfExactType<LookupBoundary>());
+        Element? boundary = ((Element?)context.getElementForInheritedWidgetOfExactType<LookupBoundary>());
         if (((boundary is not null) && (((Element)boundary).depth > candidate.depth)))
         {
-            return ((InheritedElement)(object)null);
+            return ((InheritedElement?)null);
         }
         return candidate;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -56,15 +55,15 @@ public class LookupBoundary : InheritedWidget
         Element? target = default!;
         context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
         {
-            if ((object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
+            if ((Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
             {
                 target = ancestor;
                 return false;
             }
-            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            return (!Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return ((T?)(object?)target?.widget)!;
+        return ((T?)target?.widget)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -78,7 +77,7 @@ public class LookupBoundary : InheritedWidget
                 target = ((StatefulElement)ancestor);
                 return false;
             }
-            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            return (!Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         return ((T?)(object?)target?.state)!;
@@ -94,7 +93,7 @@ public class LookupBoundary : InheritedWidget
             {
                 target = ((StatefulElement)ancestor);
             }
-            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            return (!Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         return ((T?)(object?)target?.state)!;
@@ -111,10 +110,10 @@ public class LookupBoundary : InheritedWidget
                 target = DartRuntimePrimitives.ConvertValue<Element>(((RenderObjectElement)ancestor));
                 return false;
             }
-            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            return (!Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return ((T?)(object?)target?.renderObject)!;
+        return ((T?)target?.renderObject)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -122,7 +121,7 @@ public class LookupBoundary : InheritedWidget
     {
         context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
         {
-            return (visitor(ancestor) && (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+            return (visitor(ancestor) && (!Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
     }
@@ -131,7 +130,7 @@ public class LookupBoundary : InheritedWidget
     {
         context.visitChildElements(((global::System.Action<Element>)((child) =>
         {
-            if ((!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)child).widget), typeof(LookupBoundary))))
+            if ((!Equals(DartRuntimePrimitives.RuntimeType(((Element)child).widget), typeof(LookupBoundary))))
             {
                 visitor(child);
             }
@@ -147,12 +146,12 @@ public class LookupBoundary : InheritedWidget
                 var ancestorFound = false;
                 context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
                 {
-                    if ((object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
+                    if ((Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
                     {
                         ancestorFound = true;
                         return false;
                     }
-                    hiddenByBoundary = (hiddenByBoundary || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+                    hiddenByBoundary = (hiddenByBoundary || (Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 })));
@@ -178,7 +177,7 @@ public class LookupBoundary : InheritedWidget
                         ancestorFound = true;
                         return false;
                     }
-                    hiddenByBoundary = (hiddenByBoundary || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+                    hiddenByBoundary = (hiddenByBoundary || (Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 })));
@@ -204,7 +203,7 @@ public class LookupBoundary : InheritedWidget
                         ancestorFound = true;
                         return false;
                     }
-                    hiddenByBoundary = (hiddenByBoundary || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+                    hiddenByBoundary = (hiddenByBoundary || (Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 })));

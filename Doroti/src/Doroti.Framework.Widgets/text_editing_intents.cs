@@ -173,7 +173,7 @@ public class SelectAllTextIntent : Intent
 
 public class CopySelectionTextIntent : Intent
 {
-    public static CopySelectionTextIntent copy = new CopySelectionTextIntent(global::Doroti.Framework.Services.SelectionChangedCause.keyboard, false);
+    public static CopySelectionTextIntent copy = new CopySelectionTextIntent(SelectionChangedCause.keyboard, false);
     public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
     public virtual bool collapseSelection { get; private set; } = default!;
 

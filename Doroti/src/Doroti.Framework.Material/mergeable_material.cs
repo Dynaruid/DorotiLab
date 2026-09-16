@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/mergeable_material.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -61,7 +61,7 @@ public class MergeableMaterial : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual bool hasDividers { get; private set; } = default!;
     public virtual Color? dividerColor { get; private set; }
 
-    public MergeableMaterial(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis mainAxis = global::Doroti.Framework.Painting.Axis.vertical, double elevation = 2, bool hasDividers = false, List<MergeableMaterialItem> children = default!, Color? dividerColor = null) : base(key: key)
+    public MergeableMaterial(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis mainAxis = Axis.vertical, double elevation = 2, bool hasDividers = false, List<MergeableMaterialItem> children = default!, Color? dividerColor = null) : base(key: key)
     {
         List<MergeableMaterialItem> __children = children ?? new List<MergeableMaterialItem>();
         this.mainAxis = mainAxis;
@@ -95,12 +95,12 @@ internal class _AnimationTuple__mergeable_material
         this.startAnimation = startAnimation;
         this.endAnimation = endAnimation;
         this.gapAnimation = gapAnimation;
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "_AnimationTuple", this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchCreated("material", "_AnimationTuple", this));
     }
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this.controller.dispose();
         this.startAnimation.dispose();
         this.endAnimation.dispose();
@@ -136,9 +136,9 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
     internal virtual void _initGap(MaterialGap gap)
     {
         var controllerLocal = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
-        var startAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-        var endAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-        var gapAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
+        var startAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: Curves.fastOutSlowIn);
+        var endAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: Curves.fastOutSlowIn);
+        var gapAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: Curves.fastOutSlowIn);
         controllerLocal.addListener(this._handleTick);
         this._animationTuples[gap.key] = new _AnimationTuple__mergeable_material(controller: controllerLocal, startAnimation: startAnimationLocal, endAnimation: endAnimationLocal, gapAnimation: gapAnimationLocal);
     }
@@ -198,7 +198,7 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
         {
             return false;
         }
-        if (System.Linq.Enumerable.Any(children))
+        if (Enumerable.Any(children))
         {
             if (((children.First() is MaterialGap) || (children.Last() is MaterialGap)))
             {
@@ -234,7 +234,7 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
     {
         if (((index < (checked((long)(this._children.Count)) - 1L)) && (this._children[(int)(index)] is MaterialGap)))
         {
-            return (object.Equals(this._animationTuples.GetValueOrDefault(this._children[(int)(index)].key)!.controller.status, global::Doroti.Framework.Animation.AnimationStatus.reverse));
+            return (Equals(this._animationTuples.GetValueOrDefault(this._children[(int)(index)].key)!.controller.status, AnimationStatus.reverse));
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -325,7 +325,7 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
                     {
                         if ((oldLength == 1L))
                         {
-                            if ((((newLength == 1L) && (newChildren[(int)(startNew)] is MaterialGap)) && (object.Equals(this._children[(int)(startOld)].key, newChildren[(int)(startNew)].key))))
+                            if ((((newLength == 1L) && (newChildren[(int)(startNew)] is MaterialGap)) && (Equals(this._children[(int)(startOld)].key, newChildren[(int)(startNew)].key))))
                             {
                                 this._animationTuples.GetValueOrDefault(newChildren[(int)(startNew)].key)!.controller.forward();
                             }
@@ -417,7 +417,7 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
                     {
                         if ((oldLength == 1L))
                         {
-                            var gapAlternate = ((MaterialGap?)(object?)this._children[(int)(startOld)])!;
+                            var gapAlternate = ((MaterialGap?)this._children[(int)(startOld)])!;
                             this._animationTuples[gapAlternate.key]!.gapStart = 0.0;
                             this._animationTuples.GetValueOrDefault(gapAlternate.key)!.controller.reverse();
                         }
@@ -459,12 +459,12 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
 
     internal virtual global::Doroti.Framework.Painting.BorderRadius _borderRadius(long index, bool start, bool end)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topRight)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomLeft)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomRight)));
-        global::Doroti.Ui.Radius cardRadius = ((global::Doroti.Ui.Radius)(object?)MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft);
-        global::Doroti.Ui.Radius startRadius = ((global::Doroti.Ui.Radius)(object?)Radius.zero);
-        global::Doroti.Ui.Radius endRadius = ((global::Doroti.Ui.Radius)(object?)Radius.zero);
+        DartRuntimePrimitives.Assert(() => (Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topRight)));
+        DartRuntimePrimitives.Assert(() => (Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomLeft)));
+        DartRuntimePrimitives.Assert(() => (Equals(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft, MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.bottomRight)));
+        global::Doroti.Ui.Radius cardRadius = ((global::Doroti.Ui.Radius)MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.topLeft);
+        global::Doroti.Ui.Radius startRadius = ((global::Doroti.Ui.Radius)Radius.zero);
+        global::Doroti.Ui.Radius endRadius = ((global::Doroti.Ui.Radius)Radius.zero);
         if (((index > 0L) && (this._children[(int)((index - 1L))] is MaterialGap)))
         {
             startRadius = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(Radius.zero, cardRadius, this._animationTuples.GetValueOrDefault(this._children[(int)((index - 1L))].key)!.startAnimation.value));
@@ -473,20 +473,20 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
         {
             endRadius = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Radius.lerp(Radius.zero, cardRadius, this._animationTuples.GetValueOrDefault(this._children[(int)((index + 1L))].key)!.endAnimation.value));
         }
-        if ((object.Equals(((MergeableMaterial)this.widget).mainAxis, global::Doroti.Framework.Painting.Axis.vertical)))
+        if ((Equals(((MergeableMaterial)this.widget).mainAxis, Axis.vertical)))
         {
-            return global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: (start ? cardRadius : startRadius), bottom: (end ? cardRadius : endRadius));
+            return BorderRadius.CreateVertical(top: (start ? cardRadius : startRadius), bottom: (end ? cardRadius : endRadius));
         }
         else
         {
-            return global::Doroti.Framework.Painting.BorderRadius.CreateHorizontal(left: (start ? cardRadius : startRadius), right: (end ? cardRadius : endRadius));
+            return BorderRadius.CreateHorizontal(left: (start ? cardRadius : startRadius), right: (end ? cardRadius : endRadius));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _getGapSize(long index)
     {
-        var gap = ((MaterialGap?)(object?)this._children[(int)(index)])!;
+        var gap = ((MaterialGap?)this._children[(int)(index)])!;
         return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this._animationTuples.GetValueOrDefault(gap.key)!.gapStart, ((MaterialGap)gap).size, this._animationTuples.GetValueOrDefault(gap.key)!.gapAnimation.value));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -515,14 +515,14 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
         {
             if ((this._children[(int)(i)] is MaterialGap))
             {
-                DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(slices));
+                DartRuntimePrimitives.Assert(() => Enumerable.Any(slices));
                 widgets.Add(new global::Doroti.Framework.Widgets.ListBody(mainAxis: ((MergeableMaterial)this.widget).mainAxis, children: slices));
                 slices = new List<global::Doroti.Framework.Widgets.Widget>();
-                widgets.Add((((MergeableMaterial)this.widget).mainAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Framework.Widgets.SizedBox(width: _getGapSize(i)), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Framework.Widgets.SizedBox(height: _getGapSize(i)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+                widgets.Add((((MergeableMaterial)this.widget).mainAxis switch { Axis.horizontal => new global::Doroti.Framework.Widgets.SizedBox(width: _getGapSize(i)), Axis.vertical => new global::Doroti.Framework.Widgets.SizedBox(height: _getGapSize(i)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             }
             else
             {
-                var slice = ((MaterialSlice?)(object?)this._children[(int)(i)])!;
+                var slice = ((MaterialSlice?)this._children[(int)(i)])!;
                 global::Doroti.Framework.Widgets.Widget childLocal = ((MaterialSlice)slice).child;
                 if (((MergeableMaterial)this.widget).hasDividers)
                 {
@@ -532,30 +532,30 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
                     global::Doroti.Framework.Painting.Border borderLocal = default!;
                     if ((i == 0L))
                     {
-                        borderLocal = new global::Doroti.Framework.Painting.Border(bottom: (hasBottomDivider ? divider : global::Doroti.Framework.Painting.BorderSide.none));
+                        borderLocal = new global::Doroti.Framework.Painting.Border(bottom: (hasBottomDivider ? divider : BorderSide.none));
                     }
                     else
                     {
                         if ((i == (checked((long)(this._children.Count)) - 1L)))
                         {
-                            borderLocal = new global::Doroti.Framework.Painting.Border(top: (hasTopDivider ? divider : global::Doroti.Framework.Painting.BorderSide.none));
+                            borderLocal = new global::Doroti.Framework.Painting.Border(top: (hasTopDivider ? divider : BorderSide.none));
                         }
                         else
                         {
-                            borderLocal = new global::Doroti.Framework.Painting.Border(top: (hasTopDivider ? divider : global::Doroti.Framework.Painting.BorderSide.none), bottom: (hasBottomDivider ? divider : global::Doroti.Framework.Painting.BorderSide.none));
+                            borderLocal = new global::Doroti.Framework.Painting.Border(top: (hasTopDivider ? divider : BorderSide.none), bottom: (hasBottomDivider ? divider : BorderSide.none));
                         }
                     }
-                    childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedContainer(key: new _MergeableMaterialSliceKey__mergeable_material(this._children[(int)(i)].key), decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: borderLocal), duration: ThemeLibrary.kThemeAnimationDuration, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: childLocal));
+                    childLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedContainer(key: new _MergeableMaterialSliceKey__mergeable_material(this._children[(int)(i)].key), decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: borderLocal), duration: ThemeLibrary.kThemeAnimationDuration, curve: Curves.fastOutSlowIn, child: childLocal));
                 }
-                slices.Add(new global::Doroti.Framework.Widgets.Container(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: ((((MaterialSlice?)(object?)this._children[(int)(i)])!).color ?? Theme.of(context).cardColor), borderRadius: _borderRadius(i, (i == 0L), (i == (checked((long)(this._children.Count)) - 1L)))), child: new Material(type: MaterialType.transparency, child: childLocal)));
+                slices.Add(new global::Doroti.Framework.Widgets.Container(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: ((((MaterialSlice?)this._children[(int)(i)])!).color ?? Theme.of(context).cardColor), borderRadius: _borderRadius(i, (i == 0L), (i == (checked((long)(this._children.Count)) - 1L)))), child: new Material(type: MaterialType.transparency, child: childLocal)));
             }
         }
-        if (System.Linq.Enumerable.Any(slices))
+        if (Enumerable.Any(slices))
         {
             widgets.Add(new global::Doroti.Framework.Widgets.ListBody(mainAxis: ((MergeableMaterial)this.widget).mainAxis, children: slices));
             slices = new List<global::Doroti.Framework.Widgets.Widget>();
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _MergeableMaterialListBody__mergeable_material(mainAxis: ((MergeableMaterial)this.widget).mainAxis, elevation: ((MergeableMaterial)this.widget).elevation, items: this._children, children: widgets));
+        return ((global::Doroti.Framework.Widgets.Widget)new _MergeableMaterialListBody__mergeable_material(mainAxis: ((MergeableMaterial)this.widget).mainAxis, elevation: ((MergeableMaterial)this.widget).elevation, items: this._children, children: widgets));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -570,13 +570,13 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -610,8 +610,8 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -641,7 +641,7 @@ internal class _MergeableMaterialSliceKey__mergeable_material : global::Doroti.F
     {
         var __other = other as _MergeableMaterialSliceKey__mergeable_material;
         if (__other is null) return false;
-        return ((__other is _MergeableMaterialSliceKey__mergeable_material) && (object.Equals(((_MergeableMaterialSliceKey__mergeable_material)((_MergeableMaterialSliceKey__mergeable_material)__other)).value, this.value)));
+        return ((__other is _MergeableMaterialSliceKey__mergeable_material) && (Equals(((_MergeableMaterialSliceKey__mergeable_material)((_MergeableMaterialSliceKey__mergeable_material)__other)).value, this.value)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(this.value.GetHashCode());
@@ -658,29 +658,29 @@ internal class _MergeableMaterialListBody__mergeable_material : global::Doroti.F
     public virtual List<MergeableMaterialItem> items { get; private set; } = default!;
     public virtual double elevation { get; private set; } = default!;
 
-    internal _MergeableMaterialListBody__mergeable_material(List<global::Doroti.Framework.Widgets.Widget> children, global::Doroti.Framework.Painting.Axis mainAxis = global::Doroti.Framework.Painting.Axis.vertical, List<MergeableMaterialItem> items = default!, double elevation = default!) : base(children: children, mainAxis: mainAxis)
+    internal _MergeableMaterialListBody__mergeable_material(List<global::Doroti.Framework.Widgets.Widget> children, global::Doroti.Framework.Painting.Axis mainAxis = Axis.vertical, List<MergeableMaterialItem> items = default!, double elevation = default!) : base(children: children, mainAxis: mainAxis)
     {
         this.items = items;
         this.elevation = elevation;
     }
 
     // Dart library-private member: distinct from the same name in the base library.
-    internal virtual global::Doroti.Framework.Painting.AxisDirection _getDirection(global::Doroti.Framework.Widgets.BuildContext context)
+    internal new virtual global::Doroti.Framework.Painting.AxisDirection _getDirection(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return global::Doroti.Framework.Widgets.BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, this.mainAxis, false);
+        return BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, this.mainAxis, false);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderMergeableMaterialListBody__mergeable_material(axisDirection: _getDirection(context), elevation: this.elevation));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderMergeableMaterialListBody__mergeable_material(axisDirection: _getDirection(context), elevation: this.elevation));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderListBody)(object)renderObject;
-        var materialRenderListBody = ((_RenderMergeableMaterialListBody__mergeable_material?)(object?)__renderObject)!;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderListBody)renderObject;
+        var materialRenderListBody = ((_RenderMergeableMaterialListBody__mergeable_material?)__renderObject)!;
         DartRuntimePrimitives.Ignore(((Func<_RenderMergeableMaterialListBody__mergeable_material>)(() =>
 {
     var __cascade = materialRenderListBody;
@@ -696,7 +696,7 @@ internal class _RenderMergeableMaterialListBody__mergeable_material : global::Do
 {
     internal virtual double _elevation { get; set; } = default!;
 
-    internal _RenderMergeableMaterialListBody__mergeable_material(global::Doroti.Framework.Painting.AxisDirection axisDirection = global::Doroti.Framework.Painting.AxisDirection.down, double elevation = 0.0) : base(axisDirection: axisDirection)
+    internal _RenderMergeableMaterialListBody__mergeable_material(global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, double elevation = 0.0) : base(axisDirection: axisDirection)
     {
         this._elevation = elevation;
     }
@@ -730,12 +730,12 @@ internal class _RenderMergeableMaterialListBody__mergeable_material : global::Do
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.firstChild);
+        global::Doroti.Framework.Rendering.RenderBox? child = ((global::Doroti.Framework.Rendering.RenderBox?)this.firstChild);
         var index = 0L;
         while ((child is not null))
         {
-            var childParentData = ((global::Doroti.Framework.Rendering.ListBodyParentData?)(object?)child.parentData!)!;
-            global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)(((childParentData.offset + offset)) & ((global::Doroti.Framework.Rendering.RenderBox)child).size));
+            var childParentData = ((global::Doroti.Framework.Rendering.ListBodyParentData?)child.parentData!)!;
+            global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(((childParentData.offset + offset)) & ((global::Doroti.Framework.Rendering.RenderBox)child).size));
             if (((checked((long)(index)) & 1L) == 0L))
             {
                 _paintShadows(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, rect);

@@ -31,7 +31,7 @@ public class FrictionSimulation : Simulation
     public FrictionSimulation(double drag, double position, double velocity, Tolerance tolerance = default!, double constantDeceleration = 0) : base(tolerance: tolerance ?? Tolerance.defaultTolerance)
     {
         this._drag = drag;
-        this._dragLog = global::Doroti.Runtime.Dart_mathLibrary.log(drag);
+        this._dragLog = Dart_mathLibrary.log(drag);
         this._x = position;
         this._v = velocity;
         this._constantDeceleration = (constantDeceleration * Math.Sign(velocity));
@@ -47,7 +47,7 @@ public class FrictionSimulation : Simulation
 
     internal static double _dragFor(double startPosition, double endPosition, double startVelocity, double endVelocity)
     {
-        return ((double)global::Doroti.Runtime.Dart_mathLibrary.pow(global::Doroti.Runtime.Dart_mathLibrary.e, (((startVelocity - endVelocity)) / ((startPosition - endPosition)))));
+        return ((double)Dart_mathLibrary.pow(Dart_mathLibrary.e, (((startVelocity - endVelocity)) / ((startPosition - endPosition)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -57,7 +57,7 @@ public class FrictionSimulation : Simulation
         {
             return this.finalX;
         }
-        return (((this._x + ((this._v * global::Doroti.Runtime.Dart_mathLibrary.pow(this._drag, time)) / this._dragLog)) - (this._v / this._dragLog)) - (((((this._constantDeceleration / 2L)) * time) * time)));
+        return (((this._x + ((this._v * Dart_mathLibrary.pow(this._drag, time)) / this._dragLog)) - (this._v / this._dragLog)) - (((((this._constantDeceleration / 2L)) * time) * time)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -67,7 +67,7 @@ public class FrictionSimulation : Simulation
         {
             return 0;
         }
-        return ((this._v * global::Doroti.Runtime.Dart_mathLibrary.pow(this._drag, time)) - (this._constantDeceleration * time));
+        return ((this._v * Dart_mathLibrary.pow(this._drag, time)) - (this._constantDeceleration * time));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -102,7 +102,7 @@ public class FrictionSimulation : Simulation
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FrictionSimulation"))}(cₓ: {this._drag.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FrictionSimulation"))}(cₓ: {this._drag.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)})";
 }
 
 public class BoundedFrictionSimulation : FrictionSimulation
@@ -129,6 +129,6 @@ public class BoundedFrictionSimulation : FrictionSimulation
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BoundedFrictionSimulation"))}(cₓ: {_drag.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)}, x: {this._minX.toStringAsFixed(1L)}..{this._maxX.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BoundedFrictionSimulation"))}(cₓ: {_drag.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)}, x: {this._minX.toStringAsFixed(1L)}..{this._maxX.toStringAsFixed(1L)})";
 }
 

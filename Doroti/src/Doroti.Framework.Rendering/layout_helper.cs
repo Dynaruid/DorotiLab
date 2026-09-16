@@ -33,7 +33,7 @@ public abstract class ChildLayoutHelper
     public static double? getBaseline(RenderBox child, BoxConstraints constraints, TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !child.debugNeedsLayout);
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderBox)child).constraints, constraints)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderBox)child).constraints, constraints)));
         return child.getDistanceToBaseline(baseline, onlyReal: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

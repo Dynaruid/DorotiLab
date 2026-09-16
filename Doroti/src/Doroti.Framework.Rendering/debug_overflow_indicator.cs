@@ -42,7 +42,7 @@ public interface DebugOverflowIndicatorMixin
     internal static Paint _indicatorPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.shader = global::Doroti.Ui.Gradient.linear(Offset.zero, new global::Doroti.Ui.Offset(10.0, 10.0), new List<global::Doroti.Ui.Color> { _black, _yellow, _yellow, _black }, new List<double> { 0.25, 0.25, 0.75, 0.75 }, TileMode.repeated);
+    __cascade.shader = Ui.Gradient.linear(Offset.zero, new global::Doroti.Ui.Offset(10.0, 10.0), new List<global::Doroti.Ui.Color> { _black, _yellow, _yellow, _black }, new List<double> { 0.25, 0.25, 0.75, 0.75 }, TileMode.repeated);
     return __cascade;
 }))();
     internal static Paint _labelBackgroundPaint = ((Func<Paint>)(() =>

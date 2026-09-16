@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/time.dart
-#pragma warning disable CS8600, CS8603, CS8765
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -35,7 +35,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
 
     public static TimeOfDay CreateNow()
     {
-        return TimeOfDay.CreateFromDateTime(DateTime.Now);
+        return CreateFromDateTime(DateTime.Now);
     }
 
     public virtual TimeOfDay replacing(long? hour = null, long? minute = null)
@@ -48,10 +48,10 @@ public class TimeOfDay : IComparable<TimeOfDay>
 
     public virtual DayPeriod period => ((this.hour < hoursPerPeriod) ? DayPeriod.am : DayPeriod.pm);
     public virtual long hourOfPeriod => (((this.hour == 0L) || (this.hour == 12L)) ? 12L : (this.hour - this.periodOffset));
-    public virtual long periodOffset => ((object.Equals(this.period, DayPeriod.am)) ? 0L : hoursPerPeriod);
+    public virtual long periodOffset => ((Equals(this.period, DayPeriod.am)) ? 0L : hoursPerPeriod);
     public virtual string format(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         return localizations.formatTimeOfDay(this, alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
@@ -84,7 +84,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
             {
                 return $"0{value}";
             }
-            return ((string)(object?)value.ToString());
+            return ((string)value.ToString());
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         string hourLabel = addLeadingZeroIfNeeded(DartRuntimePrimitives.RequireValue(this.hour));
@@ -106,16 +106,16 @@ public class RestorableTimeOfDay : global::Doroti.Framework.Widgets.RestorableVa
     }
 
     public override TimeOfDay createDefaultValue() => this._defaultValue;
-    public override void didUpdateValue(TimeOfDay oldValue)
+    public override void didUpdateValue(TimeOfDay? oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).hour));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).minute));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).hour));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).minute));
         notifyListeners();
     }
 
     public override TimeOfDay fromPrimitives(object? data)
     {
-        var timeData = ((List<object?>?)(object?)data!)!;
+        var timeData = ((List<object?>?)data!)!;
         return new TimeOfDay(minute: ((long)timeData[(int)(0L)]!), hour: ((long)timeData[(int)(1L)]!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

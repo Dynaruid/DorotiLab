@@ -89,7 +89,7 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
     internal virtual PointerDownEvent? _down { get; set; } = default;
     internal virtual PointerUpEvent? _up { get; set; } = default;
 
-    protected BaseTapGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, double? preAcceptSlopTolerance = null, double? postAcceptSlopTolerance = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? GestureRecognizer._defaultButtonAcceptBehavior, preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, deadline: global::Doroti.Framework.Gestures.ConstantsLibrary.kPressTimeout)
+    protected BaseTapGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, double? preAcceptSlopTolerance = null, double? postAcceptSlopTolerance = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior, preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, deadline: ConstantsLibrary.kPressTimeout)
     {
     }
 
@@ -102,7 +102,7 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
     public abstract void handleTapCancel(PointerDownEvent down, PointerCancelEvent? cancel = null, string reason = default!);
     public override void addAllowedPointer(PointerDownEvent @event)
     {
-        if ((object.Equals(state, GestureRecognizerState.ready)))
+        if ((Equals(state, GestureRecognizerState.ready)))
         {
             if (((this._down is not null) && (this._up is not null)))
             {
@@ -165,7 +165,7 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
 
     public override void resolve(GestureDisposition disposition)
     {
-        if ((this._wonArenaForPrimaryPointer && (object.Equals(disposition, GestureDisposition.rejected))))
+        if ((this._wonArenaForPrimaryPointer && (Equals(disposition, GestureDisposition.rejected))))
         {
             DartRuntimePrimitives.Assert(() => this._sentTapDown);
             _checkCancel(null, "spontaneous");
@@ -195,7 +195,7 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
         base.rejectGesture(pointer);
         if ((pointer == primaryPointer))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(state, GestureRecognizerState.possible)));
+            DartRuntimePrimitives.Assert(() => (!Equals(state, GestureRecognizerState.possible)));
             if (this._sentTapDown)
             {
                 _checkCancel(null, "forced");
@@ -272,7 +272,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
     public virtual Action<TapUpDetails>? onTertiaryTapUp { get; set; } = default;
     public virtual Action? onTertiaryTapCancel { get; set; } = default;
 
-    public TapGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, double? preAcceptSlopTolerance = null, double? postAcceptSlopTolerance = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? GestureRecognizer._defaultButtonAcceptBehavior, preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop)
+    public TapGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, double? preAcceptSlopTolerance = null, double? postAcceptSlopTolerance = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior, preAcceptSlopTolerance: preAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop, postAcceptSlopTolerance: postAcceptSlopTolerance ?? RecognizerLibrary._unsetTouchSlop)
     {
     }
 
@@ -280,7 +280,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
     {
         switch (@event.buttons)
         {
-            case var __constant26676 when object.Equals(__constant26676, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant26676 when Equals(__constant26676, EventsLibrary.kPrimaryButton):
                 {
                     if ((((((this.onTapDown is null) && (this.onTap is null)) && (this.onTapUp is null)) && (this.onTapCancel is null)) && (this.onTapMove is null)))
                     {
@@ -288,7 +288,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant26898 when object.Equals(__constant26898, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant26898 when Equals(__constant26898, EventsLibrary.kSecondaryButton):
                 {
                     if (((((this.onSecondaryTap is null) && (this.onSecondaryTapDown is null)) && (this.onSecondaryTapUp is null)) && (this.onSecondaryTapCancel is null)))
                     {
@@ -296,7 +296,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant27125 when object.Equals(__constant27125, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant27125 when Equals(__constant27125, EventsLibrary.kTertiaryButton):
                 {
                     if ((((this.onTertiaryTapDown is null) && (this.onTertiaryTapUp is null)) && (this.onTertiaryTapCancel is null)))
                     {
@@ -318,7 +318,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
         var details = new TapDownDetails(globalPosition: down.position, localPosition: down.localPosition, kind: getKindForPointer(down.pointer));
         switch (down.buttons)
         {
-            case var __constant27652 when object.Equals(__constant27652, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant27652 when Equals(__constant27652, EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onTapDown is not null))
                     {
@@ -326,7 +326,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant27794 when object.Equals(__constant27794, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant27794 when Equals(__constant27794, EventsLibrary.kSecondaryButton):
                 {
                     if ((this.onSecondaryTapDown is not null))
                     {
@@ -334,7 +334,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant27965 when object.Equals(__constant27965, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant27965 when Equals(__constant27965, EventsLibrary.kTertiaryButton):
                 {
                     if ((this.onTertiaryTapDown is not null))
                     {
@@ -352,7 +352,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
         var details = new TapUpDetails(kind: up.kind, globalPosition: up.position, localPosition: up.localPosition);
         switch (down.buttons)
         {
-            case var __constant28430 when object.Equals(__constant28430, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant28430 when Equals(__constant28430, EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onTapUp is not null))
                     {
@@ -364,7 +364,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant28654 when object.Equals(__constant28654, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant28654 when Equals(__constant28654, EventsLibrary.kSecondaryButton):
                 {
                     if ((this.onSecondaryTapUp is not null))
                     {
@@ -376,7 +376,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant28942 when object.Equals(__constant28942, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant28942 when Equals(__constant28942, EventsLibrary.kTertiaryButton):
                 {
                     if ((this.onTertiaryTapUp is not null))
                     {
@@ -391,7 +391,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
 
     public override void handleTapMove(PointerMoveEvent move)
     {
-        if (((this.onTapMove is not null) && (move.buttons == global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton)))
+        if (((this.onTapMove is not null) && (move.buttons == EventsLibrary.kPrimaryButton)))
         {
             var details = new TapMoveDetails(globalPosition: move.position, localPosition: move.localPosition, kind: getKindForPointer(move.pointer), delta: move.delta);
             invokeCallback<object?>("onTapMove", () => { ((Action)((() => this.onTapMove!(details))))(); return null; });
@@ -403,7 +403,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
         var note = ((reason == "") ? reason : $"{reason} ");
         switch (down.buttons)
         {
-            case var __constant29790 when object.Equals(__constant29790, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant29790 when Equals(__constant29790, EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onTapCancel is not null))
                     {
@@ -411,7 +411,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant29930 when object.Equals(__constant29930, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant29930 when Equals(__constant29930, EventsLibrary.kSecondaryButton):
                 {
                     if ((this.onSecondaryTapCancel is not null))
                     {
@@ -419,7 +419,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                     }
                     break;
                 }
-            case var __constant30099 when object.Equals(__constant30099, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant30099 when Equals(__constant30099, EventsLibrary.kTertiaryButton):
                 {
                     if ((this.onTertiaryTapCancel is not null))
                     {

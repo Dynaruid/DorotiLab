@@ -44,7 +44,7 @@ public sealed class DeepCollectionEquality
                 if (!equals(leftEnumerator.Current, rightEnumerator.Current)) return false;
             }
         }
-        return object.Equals(left, right);
+        return Equals(left, right);
     }
 
     public int hash(object? value)

@@ -31,7 +31,7 @@ public class RenderImage : RenderBox
 
     public RenderImage(Image? image = null, string? debugImageLabel = null, double? width = null, double? height = null, double scale = 1.0, Color? color = null, Animation<double>? opacity = null, BlendMode? colorBlendMode = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.ImageRepeat repeat = ImageRepeat.noRepeat, Rect? centerSlice = null, bool matchTextDirection = false, TextDirection? textDirection = null, bool invertColors = false, bool isAntiAlias = false, FilterQuality filterQuality = FilterQuality.medium, BlendMode blendMode = BlendMode.srcOver)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
         this.debugImageLabel = debugImageLabel;
         this._image = image;
         this._width = width;
@@ -59,7 +59,7 @@ public class RenderImage : RenderBox
             return;
         }
         _resolvedAlignment = this.alignment.resolve(this.textDirection);
-        _flipHorizontally = (this.matchTextDirection && (object.Equals(this.textDirection, TextDirection.rtl)));
+        _flipHorizontally = (this.matchTextDirection && (Equals(this.textDirection, TextDirection.rtl)));
     }
 
     internal virtual void _markNeedResolution()
@@ -75,7 +75,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value is null ? null : (Image)(object)value;
-            if ((object.Equals(__value, this._image)))
+            if ((Equals(__value, this._image)))
             {
                 return;
             }
@@ -144,7 +144,7 @@ public class RenderImage : RenderBox
         }
         else
         {
-            _colorFilter = global::Doroti.Ui.ColorFilter.mode(this._color!, (this._colorBlendMode ?? BlendMode.srcIn));
+            _colorFilter = ColorFilter.mode(this._color!, (this._colorBlendMode ?? BlendMode.srcIn));
         }
     }
 
@@ -154,7 +154,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value is null ? null : (Color)(object)value;
-            if ((object.Equals(__value, this._color)))
+            if ((Equals(__value, this._color)))
             {
                 return;
             }
@@ -169,7 +169,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._opacity)))
+            if ((Equals(__value, this._opacity)))
             {
                 return;
             }
@@ -190,7 +190,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(DartRuntimePrimitives.RequireValue(__value), this._filterQuality)))
+            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._filterQuality)))
             {
                 return;
             }
@@ -204,7 +204,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._colorBlendMode)))
+            if ((Equals(__value, this._colorBlendMode)))
             {
                 return;
             }
@@ -219,7 +219,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(DartRuntimePrimitives.RequireValue(__value), this._blendMode)))
+            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._blendMode)))
             {
                 return;
             }
@@ -233,7 +233,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._fit)))
+            if ((Equals(__value, this._fit)))
             {
                 return;
             }
@@ -247,7 +247,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._alignment)))
+            if ((Equals(__value, this._alignment)))
             {
                 return;
             }
@@ -261,7 +261,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(DartRuntimePrimitives.RequireValue(__value), this._repeat)))
+            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._repeat)))
             {
                 return;
             }
@@ -275,7 +275,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._centerSlice)))
+            if ((Equals(__value, this._centerSlice)))
             {
                 return;
             }
@@ -317,7 +317,7 @@ public class RenderImage : RenderBox
         set
         {
             var __value = value;
-            if ((object.Equals(this._textDirection, __value)))
+            if ((Equals(this._textDirection, __value)))
             {
                 return;
             }
@@ -419,7 +419,7 @@ public class RenderImage : RenderBox
         _resolve();
         DartRuntimePrimitives.Assert(() => (this._resolvedAlignment is not null));
         DartRuntimePrimitives.Assert(() => (this._flipHorizontally is not null));
-        global::Doroti.Framework.Painting.Decoration_imageLibrary.paintImage(canvas: ((PaintingContext)context).canvas, rect: (offset & size), image: this._image!, debugImageLabel: this.debugImageLabel, scale: this._scale, opacity: (this._opacity?.value ?? 1.0), colorFilter: this._colorFilter, fit: this._fit, alignment: this._resolvedAlignment!, centerSlice: this._centerSlice, repeat: this._repeat, flipHorizontally: DartRuntimePrimitives.RequireValue(this._flipHorizontally), invertColors: this.invertColors, filterQuality: this._filterQuality, isAntiAlias: this._isAntiAlias, blendMode: this._blendMode);
+        Decoration_imageLibrary.paintImage(canvas: ((PaintingContext)context).canvas, rect: (offset & size), image: this._image!, debugImageLabel: this.debugImageLabel, scale: this._scale, opacity: (this._opacity?.value ?? 1.0), colorFilter: this._colorFilter, fit: this._fit, alignment: this._resolvedAlignment!, centerSlice: this._centerSlice, repeat: this._repeat, flipHorizontally: DartRuntimePrimitives.RequireValue(this._flipHorizontally), invertColors: this.invertColors, filterQuality: this._filterQuality, isAntiAlias: this._isAntiAlias, blendMode: this._blendMode);
     }
 
     public override void dispose()
@@ -441,7 +441,7 @@ public class RenderImage : RenderBox
         properties.add(new EnumProperty<global::Doroti.Ui.BlendMode>("colorBlendMode", this.colorBlendMode, defaultValue: null));
         properties.add(new EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", this.fit, defaultValue: null));
         properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", this.repeat, defaultValue: global::Doroti.Framework.Painting.ImageRepeat.noRepeat));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.ImageRepeat>("repeat", this.repeat, defaultValue: ImageRepeat.noRepeat));
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("centerSlice", this.centerSlice, defaultValue: null));
         properties.add(new FlagProperty("matchTextDirection", value: this.matchTextDirection, ifTrue: "match text direction"));
         properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));

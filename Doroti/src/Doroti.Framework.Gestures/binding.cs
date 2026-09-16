@@ -35,7 +35,7 @@ internal class _Resampler__binding
 
     public virtual void addOrDispatch(PointerEvent @event)
     {
-        if ((object.Equals(((PointerEvent)@event).kind, PointerDeviceKind.touch)))
+        if ((Equals(((PointerEvent)@event).kind, PointerDeviceKind.touch)))
         {
             _lastEventTime = ((PointerEvent)@event).timeStamp;
             PointerEventResampler resampler = this._resamplers.putIfAbsent(((PointerEvent)@event).device, (() => new PointerEventResampler()));
@@ -50,7 +50,7 @@ internal class _Resampler__binding
     public virtual void sample(Duration samplingOffset, SamplingClock clock)
     {
         SchedulerBinding scheduler = SchedulerBinding.instance;
-        if ((object.Equals(this._frameTime, Duration.zero)))
+        if ((Equals(this._frameTime, Duration.zero)))
         {
             _frameTime = Duration.Create(milliseconds: new DateTimeOffset(clock.now()).ToUnixTimeMilliseconds());
             _frameTimeAge = ((Func<Stopwatch>)(() =>
@@ -114,10 +114,10 @@ internal class _Resampler__binding
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintResamplingMargin)
+                if (DebugLibrary.debugPrintResamplingMargin)
                 {
                     Duration resamplingMargin = (this._lastEventTime - this._lastSampleTime);
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{resamplingMargin}");
+                    PrintLibrary.debugPrint($"{resamplingMargin}");
                 }
                 return true;
             });
@@ -179,7 +179,7 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
 }))();
     }
 
-    public new static GestureBinding instance => BindingBase.checkInstance(_instance);
+    public new static GestureBinding instance => checkInstance(_instance);
     protected override void unlocked()
     {
         base.unlocked();
@@ -263,9 +263,9 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
             }
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintHitTestResults)
+                    if (DebugLibrary.debugPrintHitTestResults)
                     {
-                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{@event.toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.debug)}: {hitTestResult}");
+                        PrintLibrary.debugPrint($"{@event.toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.debug)}: {hitTestResult}");
                     }
                     return true;
                 });
@@ -286,10 +286,10 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((global::Doroti.Framework.Gestures.DebugLibrary.debugPrintMouseHoverEvents && (@event is PointerHoverEvent)))
+                if ((DebugLibrary.debugPrintMouseHoverEvents && (@event is PointerHoverEvent)))
                 {
                     PointerHoverEvent @event__as17248 = (PointerHoverEvent)@event;
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{((PointerHoverEvent)@event__as17248)}");
+                    PrintLibrary.debugPrint($"{((PointerHoverEvent)@event__as17248)}");
                 }
                 return true;
             });

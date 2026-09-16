@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/notification_listener.dart
-#pragma warning disable CS8600, CS8603
 namespace Doroti.Framework.Widgets;
 
 public delegate bool NotificationListenerCallback<T>(T notification) where T : Notification;
@@ -20,7 +19,7 @@ public abstract class Notification
     {
         var description = new List<string>();
         debugFillDescription(description);
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Notification"))}({string.Join(", ", description)})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Notification"))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -41,7 +40,7 @@ public class NotificationListener<T> : ProxyWidget where T : Notification
 
     public override Element createElement()
     {
-        return ((Element)(object?)new _NotificationElement__notification_listener<T>(this));
+        return ((Element)new _NotificationElement__notification_listener<T>(this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -56,10 +55,10 @@ internal class _NotificationElement__notification_listener<T> : ProxyElement, No
 
     public virtual bool onNotification(Notification notification)
     {
-        var listener = ((NotificationListener<T>?)(object?)this.widget)!;
+        var listener = ((NotificationListener<T>?)this.widget)!;
         if (((((NotificationListener<T>)listener).onNotification is not null) && (notification is T)))
         {
-            T notification__as5574 = (T)(object)notification;
+            T notification__as5574 = (T)notification;
             return ((NotificationListener<T>)listener).onNotification!(notification__as5574);
         }
         return false;

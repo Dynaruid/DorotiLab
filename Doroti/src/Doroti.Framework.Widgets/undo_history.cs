@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/undo_history.dart
-#pragma warning disable CS8600, CS8602, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -39,7 +38,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
     internal virtual T? _lastValue { get; set; } = default;
     internal virtual UndoHistoryController? _controller { get; set; } = default;
 
-    internal virtual UndoHistoryController _effectiveController => DartRuntimePrimitives.ConvertValue<UndoHistoryController>((((UndoHistory<T>)(object)this.widget).controller ?? (_controller ??= new UndoHistoryController())));
+    internal virtual UndoHistoryController _effectiveController => DartRuntimePrimitives.ConvertValue<UndoHistoryController>((((UndoHistory<T>)this.widget).controller ?? (_controller ??= new UndoHistoryController())));
     public virtual void undo()
     {
         if ((((_UndoStack__undo_history<T>)this._stack).currentValue is null))
@@ -69,11 +68,11 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
     internal virtual void _updateState()
     {
         this._effectiveController.value = new UndoHistoryValue(canUndo: this.canUndo, canRedo: this.canRedo);
-        if ((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))
+        if ((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)))
         {
             return;
         }
-        if ((object.Equals(global::Doroti.Framework.Services.UndoManager.client, this)))
+        if ((Equals(UndoManager.client, this)))
         {
             UndoManager.setUndoState(canUndo: this.canUndo, canRedo: this.canRedo);
         }
@@ -95,7 +94,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
         {
             return;
         }
-        if (object.Equals(nextValue, this._lastValue))
+        if (Equals(nextValue, this._lastValue))
         {
             return;
         }
@@ -104,7 +103,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
         try
         {
             this.widget.onTriggered(nextValue);
-            DartRuntimePrimitives.Assert(() => object.Equals(((UndoHistory<T>)(object)this.widget).value.value, nextValue));
+            DartRuntimePrimitives.Assert(() => Equals(((UndoHistory<T>)this.widget).value.value, nextValue));
         }
         finally
         {
@@ -114,7 +113,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
 
     internal virtual void _push()
     {
-        if (EqualityComparer<T>.Default.Equals(((UndoHistory<T>)(object)this.widget).value.value, this._lastValue))
+        if (EqualityComparer<T>.Default.Equals(((UndoHistory<T>)this.widget).value.value, this._lastValue))
         {
             return;
         }
@@ -122,11 +121,11 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
         {
             return;
         }
-        if (!(((((UndoHistory<T>)(object)this.widget).shouldChangeUndoStack is null ? true : ((UndoHistory<T>)(object)this.widget).shouldChangeUndoStack.Invoke(this._lastValue, ((UndoHistory<T>)(object)this.widget).value.value)))))
+        if (!(((((UndoHistory<T>)this.widget).shouldChangeUndoStack is null ? true : ((UndoHistory<T>)this.widget).shouldChangeUndoStack.Invoke(this._lastValue, ((UndoHistory<T>)this.widget).value.value)))))
         {
             return;
         }
-        T nextValue = ((((UndoHistory<T>)(object)this.widget).undoStackModifier is null ? ((UndoHistory<T>)(object)this.widget).value.value : ((UndoHistory<T>)(object)this.widget).undoStackModifier.Invoke(((UndoHistory<T>)(object)this.widget).value.value)));
+        T nextValue = ((((UndoHistory<T>)this.widget).undoStackModifier is null ? ((UndoHistory<T>)this.widget).value.value : ((UndoHistory<T>)this.widget).undoStackModifier.Invoke(((UndoHistory<T>)this.widget).value.value)));
         if (EqualityComparer<T>.Default.Equals(nextValue, this._lastValue))
         {
             return;
@@ -137,15 +136,15 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
 
     internal virtual void _handleFocus()
     {
-        if (!((UndoHistory<T>)(object)this.widget).focusNode.hasFocus)
+        if (!((UndoHistory<T>)this.widget).focusNode.hasFocus)
         {
-            if ((object.Equals(global::Doroti.Framework.Services.UndoManager.client, this)))
+            if ((Equals(UndoManager.client, this)))
             {
-                global::Doroti.Framework.Services.UndoManager.client = null;
+                UndoManager.client = null;
             }
             return;
         }
-        global::Doroti.Framework.Services.UndoManager.client = this;
+        UndoManager.client = this;
         _updateState();
     }
 
@@ -153,12 +152,12 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
     {
         switch (direction)
         {
-            case global::Doroti.Framework.Services.UndoDirection.undo:
+            case UndoDirection.undo:
                 {
                     undo();
                     break;
                 }
-            case global::Doroti.Framework.Services.UndoDirection.redo:
+            case UndoDirection.redo:
                 {
                     redo();
                     break;
@@ -175,9 +174,9 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
             _updateState();
         })));
         _push();
-        ((UndoHistory<T>)(object)this.widget).value.addListener(this._push);
+        ((UndoHistory<T>)this.widget).value.addListener(this._push);
         _handleFocus();
-        ((UndoHistory<T>)(object)this.widget).focusNode.addListener(this._handleFocus);
+        ((UndoHistory<T>)this.widget).focusNode.addListener(this._handleFocus);
         ((UndoHistoryController)this._effectiveController).onUndo.addListener(this.undo);
         ((UndoHistoryController)this._effectiveController).onRedo.addListener(this.redo);
     }
@@ -185,18 +184,18 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
     public override void didUpdateWidget(UndoHistory<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((UndoHistory<T>)(object)this.widget).value, ((UndoHistory<T>)oldWidget).value)))
+        if ((!Equals(((UndoHistory<T>)this.widget).value, ((UndoHistory<T>)oldWidget).value)))
         {
             this._stack.clear();
             ((UndoHistory<T>)oldWidget).value.removeListener(this._push);
-            ((UndoHistory<T>)(object)this.widget).value.addListener(this._push);
+            ((UndoHistory<T>)this.widget).value.addListener(this._push);
         }
-        if ((!object.Equals(((UndoHistory<T>)(object)this.widget).focusNode, ((UndoHistory<T>)oldWidget).focusNode)))
+        if ((!Equals(((UndoHistory<T>)this.widget).focusNode, ((UndoHistory<T>)oldWidget).focusNode)))
         {
             ((UndoHistory<T>)oldWidget).focusNode.removeListener(this._handleFocus);
-            ((UndoHistory<T>)(object)this.widget).focusNode.addListener(this._handleFocus);
+            ((UndoHistory<T>)this.widget).focusNode.addListener(this._handleFocus);
         }
-        if ((!object.Equals(((UndoHistory<T>)(object)this.widget).controller, ((UndoHistory<T>)oldWidget).controller)))
+        if ((!Equals(((UndoHistory<T>)this.widget).controller, ((UndoHistory<T>)oldWidget).controller)))
         {
             ((UndoHistoryController)this._effectiveController).onUndo.removeListener(this.undo);
             ((UndoHistoryController)this._effectiveController).onRedo.removeListener(this.redo);
@@ -209,12 +208,12 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
 
     public override void dispose()
     {
-        if ((object.Equals(global::Doroti.Framework.Services.UndoManager.client, this)))
+        if ((Equals(UndoManager.client, this)))
         {
-            global::Doroti.Framework.Services.UndoManager.client = null;
+            UndoManager.client = null;
         }
-        ((UndoHistory<T>)(object)this.widget).value.removeListener(this._push);
-        ((UndoHistory<T>)(object)this.widget).focusNode.removeListener(this._handleFocus);
+        ((UndoHistory<T>)this.widget).value.removeListener(this._push);
+        ((UndoHistory<T>)this.widget).focusNode.removeListener(this._handleFocus);
         ((UndoHistoryController)this._effectiveController).onUndo.removeListener(this.undo);
         ((UndoHistoryController)this._effectiveController).onRedo.removeListener(this.redo);
         this._controller?.dispose();
@@ -224,7 +223,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Actions(actions: new DartMap<Type, dynamic> { [typeof(UndoTextIntent)] = Action<UndoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<UndoTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<UndoTextIntent>)this._undoFromIntent)(__arg0); return default!; })), [typeof(RedoTextIntent)] = Action<RedoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<RedoTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<RedoTextIntent>)this._redoFromIntent)(__arg0); return default!; })) }, child: ((UndoHistory<T>)(object)this.widget).child));
+        return ((Widget)new Actions(actions: new DartMap<Type, dynamic> { [typeof(UndoTextIntent)] = Action<UndoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<UndoTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<UndoTextIntent>)this._undoFromIntent)(__arg0); return default!; })), [typeof(RedoTextIntent)] = Action<RedoTextIntent>.CreateOverridable(context: context, defaultAction: new CallbackAction<RedoTextIntent>(onInvoke: (__arg0) => { ((global::System.Action<RedoTextIntent>)this._redoFromIntent)(__arg0); return default!; })) }, child: ((UndoHistory<T>)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -242,7 +241,7 @@ public class UndoHistoryValue
         this.canRedo = canRedo;
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "UndoHistoryValue"))}(canUndo: {this.canUndo}, canRedo: {this.canRedo})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "UndoHistoryValue"))}(canUndo: {this.canUndo}, canRedo: {this.canRedo})";
     public override bool Equals(object? other)
     {
         var __other = other as UndoHistoryValue;
@@ -268,7 +267,7 @@ public class UndoHistoryController : global::Doroti.Framework.Foundation.ValueNo
 
     public virtual void undo()
     {
-        if (!((UndoHistoryValue)(object)this.value).canUndo)
+        if (!((UndoHistoryValue)this.value).canUndo)
         {
             return;
         }
@@ -277,7 +276,7 @@ public class UndoHistoryController : global::Doroti.Framework.Foundation.ValueNo
 
     public virtual void redo()
     {
-        if (!((UndoHistoryValue)(object)this.value).canRedo)
+        if (!((UndoHistoryValue)this.value).canRedo)
         {
             return;
         }
@@ -302,12 +301,12 @@ internal class _UndoStack__undo_history<T>
     {
     }
 
-    public virtual T? currentValue => (!System.Linq.Enumerable.Any(this._list) ? default(T) : this._list[(int)(this._index)]);
-    public virtual bool canUndo => DartRuntimePrimitives.ConvertValue<bool>((System.Linq.Enumerable.Any(this._list) && (this._index > 0L)));
-    public virtual bool canRedo => DartRuntimePrimitives.ConvertValue<bool>((System.Linq.Enumerable.Any(this._list) && (this._index < (checked((long)(this._list.Count)) - 1L))));
+    public virtual T? currentValue => (!Enumerable.Any(this._list) ? default(T) : this._list[(int)(this._index)]);
+    public virtual bool canUndo => DartRuntimePrimitives.ConvertValue<bool>((Enumerable.Any(this._list) && (this._index > 0L)));
+    public virtual bool canRedo => DartRuntimePrimitives.ConvertValue<bool>((Enumerable.Any(this._list) && (this._index < (checked((long)(this._list.Count)) - 1L))));
     public virtual void push(T value)
     {
-        if (!System.Linq.Enumerable.Any(this._list))
+        if (!Enumerable.Any(this._list))
         {
             _index = 0L;
             this._list.Add(value);
@@ -328,7 +327,7 @@ internal class _UndoStack__undo_history<T>
 
     public virtual T? undo()
     {
-        if (!System.Linq.Enumerable.Any(this._list))
+        if (!Enumerable.Any(this._list))
         {
             return default;
         }
@@ -343,7 +342,7 @@ internal class _UndoStack__undo_history<T>
 
     public virtual T? redo()
     {
-        if (!System.Linq.Enumerable.Any(this._list))
+        if (!Enumerable.Any(this._list))
         {
             return default;
         }

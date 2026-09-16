@@ -47,7 +47,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    public static global::Doroti.Framework.Painting.HSVColor debugCurrentRepaintColor = DebugLibrary._kDebugDefaultRepaintColor;
+    public static global::Doroti.Framework.Painting.HSVColor debugCurrentRepaintColor = _kDebugDefaultRepaintColor;
 }
 
 public static partial class DebugLibrary
@@ -143,8 +143,8 @@ public static partial class DebugLibrary
                 if (((innerRect is not null) && !DartRuntimePrimitives.RequireValue(innerRect).isEmpty))
                 {
                     Rect innerRect__value12483 = DartRuntimePrimitives.RequireValue(innerRect);
-                    DebugLibrary._debugDrawDoubleRect(canvas, outerRect, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new global::Doroti.Ui.Color(2415956223L));
-                    DebugLibrary._debugDrawDoubleRect(canvas, DartRuntimePrimitives.RequireValue(innerRect__value12483).inflate(outlineWidth).intersect(outerRect), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new global::Doroti.Ui.Color(4278227199L));
+                    _debugDrawDoubleRect(canvas, outerRect, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new global::Doroti.Ui.Color(2415956223L));
+                    _debugDrawDoubleRect(canvas, DartRuntimePrimitives.RequireValue(innerRect__value12483).inflate(outlineWidth).intersect(outerRect), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerRect__value12483)), new global::Doroti.Ui.Color(4278227199L));
                 }
                 else
                 {
@@ -167,7 +167,7 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((((((((((((((((DebugLibrary.debugPaintSizeEnabled || DebugLibrary.debugPaintBaselinesEnabled) || DebugLibrary.debugPaintLayerBordersEnabled) || DebugLibrary.debugPaintTextLayoutBoxes) || DebugLibrary.debugPaintPointersEnabled) || DebugLibrary.debugRepaintRainbowEnabled) || DebugLibrary.debugRepaintTextRainbowEnabled) || (!object.Equals(DebugLibrary.debugCurrentRepaintColor, DebugLibrary._kDebugDefaultRepaintColor))) || DebugLibrary.debugPrintMarkNeedsLayoutStacks) || DebugLibrary.debugPrintMarkNeedsPaintStacks) || DebugLibrary.debugPrintLayouts) || (DebugLibrary.debugCheckIntrinsicSizes != debugCheckIntrinsicSizesOverride)) || DebugLibrary.debugProfileLayoutsEnabled) || DebugLibrary.debugProfilePaintsEnabled) || (DebugLibrary.debugOnProfilePaint is not null)) || DebugLibrary.debugDisableClipLayers) || DebugLibrary.debugDisablePhysicalShapeLayers) || DebugLibrary.debugDisableOpacityLayers))
+                if ((((((((((((((((((debugPaintSizeEnabled || debugPaintBaselinesEnabled) || debugPaintLayerBordersEnabled) || debugPaintTextLayoutBoxes) || debugPaintPointersEnabled) || debugRepaintRainbowEnabled) || debugRepaintTextRainbowEnabled) || (!Equals(debugCurrentRepaintColor, _kDebugDefaultRepaintColor))) || debugPrintMarkNeedsLayoutStacks) || debugPrintMarkNeedsPaintStacks) || debugPrintLayouts) || (debugCheckIntrinsicSizes != debugCheckIntrinsicSizesOverride)) || debugProfileLayoutsEnabled) || debugProfilePaintsEnabled) || (debugOnProfilePaint is not null)) || debugDisableClipLayers) || debugDisablePhysicalShapeLayers) || debugDisableOpacityLayers))
                 {
                     throw new FlutterError(reason);
                 }
@@ -188,7 +188,7 @@ public static partial class DebugLibrary
                 {
                     switch (axis)
                     {
-                        case global::Doroti.Framework.Painting.Axis.vertical:
+                        case Axis.vertical:
                             {
                                 if (!((BoxConstraints)constraints).hasBoundedHeight)
                                 {
@@ -200,7 +200,7 @@ public static partial class DebugLibrary
                                 }
                                 break;
                             }
-                        case global::Doroti.Framework.Painting.Axis.horizontal:
+                        case Axis.horizontal:
                             {
                                 if (!((BoxConstraints)constraints).hasBoundedWidth)
                                 {

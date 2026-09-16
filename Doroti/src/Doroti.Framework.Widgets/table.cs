@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/table.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -32,7 +31,7 @@ public class TableRow
         {
             result.write($"{this.decoration}, ");
         }
-        if (!System.Linq.Enumerable.Any(this.children))
+        if (!Enumerable.Any(this.children))
         {
             result.write("no children");
         }
@@ -41,7 +40,7 @@ public class TableRow
             result.write($"{this.children}");
         }
         result.write(")");
-        return ((string)(object?)result.ToString());
+        return ((string)result.ToString());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -71,7 +70,7 @@ public class Table : RenderObjectWidget
     public virtual TextBaseline? textBaseline { get; private set; }
     internal virtual List<global::Doroti.Framework.Painting.Decoration?>? _rowDecorations { get; private set; }
 
-    public Table(global::Doroti.Framework.Foundation.Key? key = null, List<TableRow> children = default!, DartMap<long, global::Doroti.Framework.Rendering.TableColumnWidth>? columnWidths = null, global::Doroti.Framework.Rendering.TableColumnWidth defaultColumnWidth = default!, TextDirection? textDirection = null, global::Doroti.Framework.Rendering.TableBorder? border = null, global::Doroti.Framework.Rendering.TableCellVerticalAlignment defaultVerticalAlignment = global::Doroti.Framework.Rendering.TableCellVerticalAlignment.top, TextBaseline? textBaseline = null) : base(key: key)
+    public Table(global::Doroti.Framework.Foundation.Key? key = null, List<TableRow> children = default!, DartMap<long, global::Doroti.Framework.Rendering.TableColumnWidth>? columnWidths = null, global::Doroti.Framework.Rendering.TableColumnWidth defaultColumnWidth = default!, TextDirection? textDirection = null, global::Doroti.Framework.Rendering.TableBorder? border = null, global::Doroti.Framework.Rendering.TableCellVerticalAlignment defaultVerticalAlignment = TableCellVerticalAlignment.top, TextBaseline? textBaseline = null) : base(key: key)
     {
         List<TableRow> __children = children ?? new List<TableRow>();
         global::Doroti.Framework.Rendering.TableColumnWidth __defaultColumnWidth = defaultColumnWidth ?? new global::Doroti.Framework.Rendering.FlexColumnWidth();
@@ -82,29 +81,29 @@ public class Table : RenderObjectWidget
         this.border = border;
         this.defaultVerticalAlignment = defaultVerticalAlignment;
         this.textBaseline = textBaseline;
-        this._rowDecorations = (children.any(((row) => (((TableRow)row).decoration is not null))) ? children.map<TableRow, global::Doroti.Framework.Painting.Decoration?>(((row) => ((TableRow)row).decoration)).ToList() : null);
-        System.Diagnostics.Debug.Assert(((!object.Equals(defaultVerticalAlignment, global::Doroti.Framework.Rendering.TableCellVerticalAlignment.baseline)) || (textBaseline is not null)));
+        this._rowDecorations = (this.children.any(((row) => (((TableRow)row).decoration is not null))) ? this.children.map<TableRow, global::Doroti.Framework.Painting.Decoration?>(((row) => ((TableRow)row).decoration)).ToList() : null);
+        System.Diagnostics.Debug.Assert(((!Equals(defaultVerticalAlignment, TableCellVerticalAlignment.baseline)) || (textBaseline is not null)));
         System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
         {
-            if (__children.any(((row1) => ((((TableRow)row1).key is not null) && __children.any(((row2) => ((!object.Equals(row1, row2)) && (object.Equals(((TableRow)row1).key, ((TableRow)row2).key)))))))))
+            if (__children.any(((row1) => ((((TableRow)row1).key is not null) && __children.any(((row2) => ((!Equals(row1, row2)) && (Equals(((TableRow)row1).key, ((TableRow)row2).key)))))))))
             {
-                throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Two or more TableRow children of this Table had the same key.\n" + "All the keyed TableRow children of a Table must have different Keys."));
+                throw DartRuntimePrimitives.AsException(FlutterError.Create("Two or more TableRow children of this Table had the same key.\n" + "All the keyed TableRow children of a Table must have different Keys."));
             }
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))());
         System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
         {
-            if (System.Linq.Enumerable.Any(__children))
+            if (Enumerable.Any(__children))
             {
                 long cellCount = checked((long)(__children.First().children.Count));
                 if (__children.any(((row) => (checked((long)(((TableRow)row).children.Count)) != cellCount))))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Table contains irregular row lengths.\n" + "Every TableRow in a Table must have the same number of children, so that every cell is filled. " + "Otherwise, the table will contain holes."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("Table contains irregular row lengths.\n" + "Every TableRow in a Table must have the same number of children, so that every cell is filled. " + "Otherwise, the table will contain holes."));
                 }
-                if (__children.any(((row) => !System.Linq.Enumerable.Any(((TableRow)row).children))))
+                if (__children.any(((row) => !Enumerable.Any(((TableRow)row).children))))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("One or more TableRow have no children.\n" + "Every TableRow in a Table must have at least one child, so there is no empty row. "));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("One or more TableRow have no children.\n" + "Every TableRow in a Table must have at least one child, so there is no empty row. "));
                 }
             }
             return true;
@@ -115,16 +114,16 @@ public class Table : RenderObjectWidget
     public override RenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<RenderObjectElement>(new _TableElement__table(this));
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderTable(columns: (System.Linq.Enumerable.Any(this.children) ? checked((long)(this.children[(int)(0L)].children.Count)) : 0L), rows: checked((long)(this.children.Count)), columnWidths: this.columnWidths, defaultColumnWidth: this.defaultColumnWidth, textDirection: ((this.textDirection ?? (TextDirection)Directionality.of(context))), border: this.border, rowDecorations: this._rowDecorations, configuration: global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context), defaultVerticalAlignment: this.defaultVerticalAlignment, textBaseline: this.textBaseline));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderTable(columns: (Enumerable.Any(this.children) ? checked((long)(this.children[(int)(0L)].children.Count)) : 0L), rows: checked((long)(this.children.Count)), columnWidths: this.columnWidths, defaultColumnWidth: this.defaultColumnWidth, textDirection: ((this.textDirection ?? (TextDirection)Directionality.of(context))), border: this.border, rowDecorations: this._rowDecorations, configuration: ImageLibrary.createLocalImageConfiguration(context), defaultVerticalAlignment: this.defaultVerticalAlignment, textBaseline: this.textBaseline));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderTable)(object)renderObject;
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderTable)__renderObject).columns == ((System.Linq.Enumerable.Any(this.children) ? checked((long)(this.children[(int)(0L)].children.Count)) : 0L))));
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderTable)renderObject;
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderTable)__renderObject).columns == ((Enumerable.Any(this.children) ? checked((long)(this.children[(int)(0L)].children.Count)) : 0L))));
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderTable)__renderObject).rows == checked((long)(this.children.Count))));
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderTable>)(() =>
 {
@@ -134,7 +133,7 @@ public class Table : RenderObjectWidget
     __cascade.textDirection = ((this.textDirection ?? (TextDirection)Directionality.of(context)));
     __cascade.border = this.border;
     __cascade.rowDecorations = this._rowDecorations;
-    __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
+    __cascade.configuration = ImageLibrary.createLocalImageConfiguration(context);
     __cascade.defaultVerticalAlignment = this.defaultVerticalAlignment;
     __cascade.textBaseline = this.textBaseline;
     return __cascade;
@@ -160,13 +159,13 @@ internal class _TableElement__table : RenderObjectElement
         _doingMountOrUpdate = true;
         base.mount(parent, newSlot);
         var rowIndex = -1L;
-        _children = (((Table?)(object?)this.widget)!).children.map<TableRow, _TableElementRow__table>(((row) =>
+        _children = (((Table?)this.widget)!).children.map<TableRow, _TableElementRow__table>(((row) =>
         {
             var columnIndex = 0L;
             rowIndex += 1L;
             return new _TableElementRow__table(key: ((TableRow)row).key, children: ((TableRow)row).children.map<Widget, Element>(((child) =>
             {
-                return ((Element)(object?)inflateWidget(child, new _TableSlot__table(columnIndex++, rowIndex)));
+                return ((Element)inflateWidget(child, new _TableSlot__table(columnIndex++, rowIndex)));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })).ToList());
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -178,33 +177,33 @@ internal class _TableElement__table : RenderObjectElement
 
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        var __slot = (_TableSlot__table)(object)slot;
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __slot = slot as _TableSlot__table ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
         this.renderObject.setupParentData(__child);
         if (!this._doingMountOrUpdate)
         {
-            this.renderObject.setChild(((_TableSlot__table)__slot).column, ((_TableSlot__table)__slot).row, __child);
+            this.renderObject.setChild(__slot.column, ((_TableSlot__table)__slot).row, __child);
         }
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        var __oldSlot = (_TableSlot__table)(object)oldSlot;
-        var __newSlot = (_TableSlot__table)(object)newSlot;
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __oldSlot = (_TableSlot__table?)oldSlot;
+        var __newSlot = (_TableSlot__table?)newSlot;
         DartRuntimePrimitives.Assert(() => this._doingMountOrUpdate);
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        var __slot = (_TableSlot__table)(object)slot;
-        this.renderObject.setChild(((_TableSlot__table)__slot).column, ((_TableSlot__table)__slot).row, ((global::Doroti.Framework.Rendering.RenderBox)(object)null));
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        var __slot = slot as _TableSlot__table ?? throw new ArgumentException("A table cell requires a table slot.", nameof(slot));
+        this.renderObject.setChild(__slot.column, ((_TableSlot__table)__slot).row, ((global::Doroti.Framework.Rendering.RenderBox?)null));
     }
 
     public override void update(Widget newWidget)
     {
-        var __newWidget = (Table)(object)newWidget;
+        var __newWidget = (Table)newWidget;
         DartRuntimePrimitives.Assert(() => !this._doingMountOrUpdate);
         _doingMountOrUpdate = true;
         var oldKeyedRows = new DartMap<global::Doroti.Framework.Foundation.LocalKey, List<Element>>();
@@ -238,7 +237,7 @@ internal class _TableElement__table : RenderObjectElement
                     oldChildren = new List<Element>();
                 }
             }
-            var slotsLocal = new List<_TableSlot__table>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((TableRow)rowAlternate).children.Count)))), ((columnIndex) => new _TableSlot__table(columnIndex, rowIndex))));
+            var slotsLocal = new List<_TableSlot__table>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)(((TableRow)rowAlternate).children.Count)))), ((columnIndex) => new _TableSlot__table(columnIndex, rowIndex))));
             newChildren.Add(new _TableElementRow__table(key: ((TableRow)rowAlternate).key, children: updateChildren(oldChildren, ((TableRow)rowAlternate).children, forgottenChildren: this._forgottenChildren, slots: slotsLocal.Cast<object>().ToList())));
         }
         while (oldUnkeyedRows.MoveNext())
@@ -253,18 +252,18 @@ internal class _TableElement__table : RenderObjectElement
         _updateRenderObjectChildren();
         this._forgottenChildren.Clear();
         base.update(__newWidget);
-        DartRuntimePrimitives.Assert(() => (object.Equals(this.widget, __newWidget)));
+        DartRuntimePrimitives.Assert(() => (Equals(this.widget, __newWidget)));
         DartRuntimePrimitives.Assert(() => this._doingMountOrUpdate);
         _doingMountOrUpdate = false;
     }
 
     internal virtual void _updateRenderObjectChildren()
     {
-        this.renderObject.setFlatChildren((System.Linq.Enumerable.Any(this._children) ? checked((long)(this._children[(int)(0L)].children.Count)) : 0L), this._children.expand(((row) =>
+        this.renderObject.setFlatChildren((Enumerable.Any(this._children) ? checked((long)(this._children[(int)(0L)].children.Count)) : 0L), this._children.expand(((row) =>
         {
             return ((_TableElementRow__table)row).children.map<Element, global::Doroti.Framework.Rendering.RenderBox>(((child) =>
             {
-                var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((Element)child).renderObject!)!;
+                var box = ((global::Doroti.Framework.Rendering.RenderBox?)((Element)child).renderObject!)!;
                 return box;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
@@ -306,7 +305,7 @@ public class TableCell : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _TableCell__table(verticalAlignment: this.verticalAlignment, child: new Semantics(role: SemanticsRole.cell, child: this.child)));
+        return ((Widget)new _TableCell__table(verticalAlignment: this.verticalAlignment, child: new Semantics(role: SemanticsRole.cell, child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -323,8 +322,8 @@ internal class _TableCell__table : ParentDataWidget<global::Doroti.Framework.Ren
 
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.TableCellParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
-        if ((!object.Equals(((global::Doroti.Framework.Rendering.TableCellParentData)parentDataLocal).verticalAlignment, this.verticalAlignment)))
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.TableCellParentData?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        if ((!Equals(((global::Doroti.Framework.Rendering.TableCellParentData)parentDataLocal).verticalAlignment, this.verticalAlignment)))
         {
             parentDataLocal.verticalAlignment = this.verticalAlignment;
             (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
@@ -355,7 +354,7 @@ public class _TableSlot__table : global::Doroti.Framework.Foundation.Diagnostica
     {
         var __other = other as _TableSlot__table;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
@@ -369,8 +368,8 @@ public class _TableSlot__table : global::Doroti.Framework.Foundation.Diagnostica
         properties.add(new global::Doroti.Framework.Foundation.IntProperty("y", this.row));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -387,7 +386,7 @@ public class _TableSlot__table : global::Doroti.Framework.Foundation.Diagnostica
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

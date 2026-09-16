@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/animated_size.dart
-#pragma warning disable CS8600, CS8602, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -18,8 +17,8 @@ public class AnimatedSize : StatefulWidget
 
     public AnimatedSize(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, Clip clipBehavior = Clip.hardEdge, global::System.Action? onEnd = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
-        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? Curves.linear;
         this.child = child;
         this.alignment = __alignment;
         this.curve = __curve;
@@ -39,7 +38,7 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _AnimatedSize__animated_size(alignment: ((AnimatedSize)this.widget).alignment, curve: ((AnimatedSize)this.widget).curve, duration: ((AnimatedSize)this.widget).duration, reverseDuration: ((AnimatedSize)this.widget).reverseDuration, vsync: this, clipBehavior: ((AnimatedSize)this.widget).clipBehavior, onEnd: ((AnimatedSize)this.widget).onEnd, child: ((AnimatedSize)this.widget).child));
+        return ((Widget)new _AnimatedSize__animated_size(alignment: ((AnimatedSize)this.widget).alignment, curve: ((AnimatedSize)this.widget).curve, duration: ((AnimatedSize)this.widget).duration, reverseDuration: ((AnimatedSize)this.widget).reverseDuration, vsync: this, clipBehavior: ((AnimatedSize)this.widget).clipBehavior, onEnd: ((AnimatedSize)this.widget).onEnd, child: ((AnimatedSize)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -54,7 +53,7 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -96,8 +95,8 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -127,8 +126,8 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
 
     internal _AnimatedSize__animated_size(Widget? child = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, global::Doroti.Framework.Scheduler.TickerProvider vsync = default!, Clip clipBehavior = Clip.hardEdge, global::System.Action? onEnd = null) : base(child: child)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
-        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? Alignment.center;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? Curves.linear;
         this.alignment = __alignment;
         this.curve = __curve;
         this.duration = duration;
@@ -140,13 +139,13 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderAnimatedSize(alignment: this.alignment, duration: this.duration, reverseDuration: this.reverseDuration, curve: this.curve, vsync: this.vsync, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior, onEnd: this.onEnd));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderAnimatedSize(alignment: this.alignment, duration: this.duration, reverseDuration: this.reverseDuration, curve: this.curve, vsync: this.vsync, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior, onEnd: this.onEnd));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderAnimatedSize)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderAnimatedSize)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnimatedSize>)(() =>
 {
     var __cascade = __renderObject;
@@ -165,7 +164,7 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: global::Doroti.Framework.Painting.Alignment.topCenter));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: Alignment.topCenter));
         properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
         properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", this.reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
     }

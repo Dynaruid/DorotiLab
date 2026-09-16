@@ -400,7 +400,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                 new Text("Custom SkSL · shared GPU runtime effect · all targets",
                                     style: new Doroti.Framework.Painting.TextStyle(color: palette.primary)),
                                 new ExcludeSemantics(child: new ShaderMask(
-                                    blendMode: Doroti.Ui.BlendMode.srcIn,
+                                    blendMode: BlendMode.srcIn,
                                     shaderCallback: bounds =>
                                     {
                                         _galleryShader.setFloat(0, bounds.width);

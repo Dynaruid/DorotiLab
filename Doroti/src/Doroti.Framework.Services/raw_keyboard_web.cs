@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/raw_keyboard_web.dart
-#pragma warning disable CS8602
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Services;
@@ -48,19 +47,19 @@ public class RawKeyEventDataWeb : RawKeyEventData
     {
         get
         {
-            return (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWebToPhysicalKey.GetValueOrDefault(code) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + code.GetHashCode())));
+            return (Keyboard_maps_gLibrary.kWebToPhysicalKey.GetValueOrDefault(code) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + code.GetHashCode())));
         }
     }
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
-            LogicalKeyboardKey? maybeLocationKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWebLocationMap.GetValueOrDefault(key)[(int)(location)];
+            LogicalKeyboardKey? maybeLocationKey = Keyboard_maps_gLibrary.kWebLocationMap.GetValueOrDefault(key)?[(int)location];
             if ((maybeLocationKey is not null))
             {
                 return maybeLocationKey;
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWebToLogicalKey.GetValueOrDefault(key);
+            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kWebToLogicalKey.GetValueOrDefault(key);
             if ((newKey is not null))
             {
                 return newKey;
@@ -75,7 +74,7 @@ public class RawKeyEventDataWeb : RawKeyEventData
     }
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
     {
-        return (key switch { var __case4855 when object.Equals(__case4855, ModifierKey.controlModifier) => ((metaState & modifierControl) != 0L), var __case4926 when object.Equals(__case4926, ModifierKey.shiftModifier) => ((metaState & modifierShift) != 0L), var __case4993 when object.Equals(__case4993, ModifierKey.altModifier) => ((metaState & modifierAlt) != 0L), var __case5056 when object.Equals(__case5056, ModifierKey.metaModifier) => ((metaState & modifierMeta) != 0L), var __case5121 when object.Equals(__case5121, ModifierKey.numLockModifier) => ((metaState & modifierNumLock) != 0L), var __case5192 when object.Equals(__case5192, ModifierKey.capsLockModifier) => ((metaState & modifierCapsLock) != 0L), var __case5265 when object.Equals(__case5265, ModifierKey.scrollLockModifier) => ((metaState & modifierScrollLock) != 0L), var __case5425 when object.Equals(__case5425, ModifierKey.functionModifier) || object.Equals(__case5425, ModifierKey.symbolModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (key switch { var __case4855 when Equals(__case4855, ModifierKey.controlModifier) => ((metaState & modifierControl) != 0L), var __case4926 when Equals(__case4926, ModifierKey.shiftModifier) => ((metaState & modifierShift) != 0L), var __case4993 when Equals(__case4993, ModifierKey.altModifier) => ((metaState & modifierAlt) != 0L), var __case5056 when Equals(__case5056, ModifierKey.metaModifier) => ((metaState & modifierMeta) != 0L), var __case5121 when Equals(__case5121, ModifierKey.numLockModifier) => ((metaState & modifierNumLock) != 0L), var __case5192 when Equals(__case5192, ModifierKey.capsLockModifier) => ((metaState & modifierCapsLock) != 0L), var __case5265 when Equals(__case5265, ModifierKey.scrollLockModifier) => ((metaState & modifierScrollLock) != 0L), var __case5425 when Equals(__case5425, ModifierKey.functionModifier) || Equals(__case5425, ModifierKey.symbolModifier) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -103,7 +102,7 @@ public class RawKeyEventDataWeb : RawKeyEventData
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }

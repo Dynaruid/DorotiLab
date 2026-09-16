@@ -134,7 +134,7 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             builder.AppendLine($"public static partial class {LibraryStaticClassName(library)}");
             builder.AppendLine("{");
-            builder.AppendLine("    public static class developer");
+            builder.AppendLine("    public static class @developer");
             builder.AppendLine("    {");
             builder.AppendLine("        public static class CreationLocation");
             builder.AppendLine("        {");

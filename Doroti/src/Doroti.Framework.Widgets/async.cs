@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/async.dart
-#pragma warning disable CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -17,7 +16,7 @@ public abstract class StreamBuilderBase<T, S> : StatefulWidget
     public abstract S initial();
     public virtual S afterConnected(S current) => current;
     public abstract S afterData(S current, T data);
-    public virtual S afterError(S current, object error, global::System.Diagnostics.StackTrace stackTrace) => current;
+    public virtual S afterError(S current, object error, global::System.Diagnostics.StackTrace? stackTrace) => current;
     public virtual S afterDone(S current) => current;
     public virtual S afterDisconnected(S current) => current;
     public abstract Widget build(BuildContext context, S currentSummary);
@@ -39,7 +38,7 @@ internal class _StreamBuilderBaseState__async<T, S> : State<StreamBuilderBase<T,
     public override void didUpdateWidget(StreamBuilderBase<T, S> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((StreamBuilderBase<T, S>)oldWidget).stream, ((StreamBuilderBase<T, S>)(object)this.widget).stream)))
+        if ((!Equals(((StreamBuilderBase<T, S>)oldWidget).stream, ((StreamBuilderBase<T, S>)this.widget).stream)))
         {
             if ((this._subscription is not null))
             {
@@ -59,9 +58,9 @@ internal class _StreamBuilderBaseState__async<T, S> : State<StreamBuilderBase<T,
 
     internal virtual void _subscribe()
     {
-        if ((((StreamBuilderBase<T, S>)(object)this.widget).stream is not null))
+        if ((((StreamBuilderBase<T, S>)this.widget).stream is not null))
         {
-            _subscription = ((StreamBuilderBase<T, S>)(object)this.widget).stream!.listen(((global::System.Action<T>)((data) =>
+            _subscription = ((StreamBuilderBase<T, S>)this.widget).stream!.listen(((global::System.Action<T>)((data) =>
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -135,7 +134,7 @@ public class AsyncSnapshot<T>
         return new AsyncSnapshot<T>(state, data, default, default);
     }
 
-    public static AsyncSnapshot<T> CreateWithError(ConnectionState state, object error, global::System.Diagnostics.StackTrace stackTrace = default!)
+    public static AsyncSnapshot<T> CreateWithError(ConnectionState state, object error, global::System.Diagnostics.StackTrace? stackTrace = default!)
     {
         return new AsyncSnapshot<T>(state, default, error, stackTrace);
     }
@@ -146,7 +145,7 @@ public class AsyncSnapshot<T>
         {
             if (this.hasData)
             {
-                return ((T)(object?)this.data!);
+                return ((T)this.data!);
             }
             if (this.hasError)
             {
@@ -158,7 +157,7 @@ public class AsyncSnapshot<T>
     public virtual AsyncSnapshot<T> inState(ConnectionState state) => new AsyncSnapshot<T>(state, this.data, this.error, this.stackTrace);
     public virtual bool hasData => DartRuntimePrimitives.ConvertValue<bool>((this.data is not null));
     public virtual bool hasError => DartRuntimePrimitives.ConvertValue<bool>((this.error is not null));
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AsyncSnapshot"))}({this.connectionState}, {this.data}, {this.error}, {this.stackTrace})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "AsyncSnapshot"))}({this.connectionState}, {this.data}, {this.error}, {this.stackTrace})";
     public override bool Equals(object? other)
     {
         var __other = other as AsyncSnapshot<T>;
@@ -167,7 +166,7 @@ public class AsyncSnapshot<T>
         {
             return true;
         }
-        return (((((__other is AsyncSnapshot<T>) && (object.Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).connectionState, this.connectionState))) && EqualityComparer<T>.Default.Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).data, this.data)) && (object.Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).error, this.error))) && (object.Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).stackTrace, this.stackTrace)));
+        return (((((__other is AsyncSnapshot<T>) && (Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).connectionState, this.connectionState))) && EqualityComparer<T>.Default.Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).data, this.data)) && (Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).error, this.error))) && (Equals(((AsyncSnapshot<T>)((AsyncSnapshot<T>)__other)).stackTrace, this.stackTrace)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.connectionState, this.data, this.error));
@@ -186,7 +185,7 @@ public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
         this.builder = builder;
     }
 
-    public override AsyncSnapshot<T> initial() => ((this.initialData is null) ? AsyncSnapshot<T>.CreateNothing() : AsyncSnapshot<T>.CreateWithData(ConnectionState.none, ((T?)(object?)this.initialData)!));
+    public override AsyncSnapshot<T> initial() => ((this.initialData is null) ? AsyncSnapshot<T>.CreateNothing() : AsyncSnapshot<T>.CreateWithData(ConnectionState.none, ((T?)this.initialData)!));
     public override AsyncSnapshot<T> afterConnected(AsyncSnapshot<T> current) => current.inState(ConnectionState.waiting);
     public override AsyncSnapshot<T> afterData(AsyncSnapshot<T> current, T data)
     {
@@ -194,7 +193,7 @@ public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override AsyncSnapshot<T> afterError(AsyncSnapshot<T> current, object error, global::System.Diagnostics.StackTrace stackTrace)
+    public override AsyncSnapshot<T> afterError(AsyncSnapshot<T> current, object error, global::System.Diagnostics.StackTrace? stackTrace)
     {
         return AsyncSnapshot<T>.CreateWithError(ConnectionState.active, error, stackTrace);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -230,14 +229,14 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
     public override void initState()
     {
         base.initState();
-        _snapshot = ((((FutureBuilder<T>)(object)this.widget).initialData is null) ? AsyncSnapshot<T>.CreateNothing() : AsyncSnapshot<T>.CreateWithData(ConnectionState.none, ((T?)(object?)((FutureBuilder<T>)(object)this.widget).initialData)!));
+        _snapshot = ((((FutureBuilder<T>)this.widget).initialData is null) ? AsyncSnapshot<T>.CreateNothing() : AsyncSnapshot<T>.CreateWithData(ConnectionState.none, ((T?)((FutureBuilder<T>)this.widget).initialData)!));
         _subscribe();
     }
 
     public override void didUpdateWidget(FutureBuilder<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((object.Equals(((FutureBuilder<T>)oldWidget).future, ((FutureBuilder<T>)(object)this.widget).future)))
+        if ((Equals(((FutureBuilder<T>)oldWidget).future, ((FutureBuilder<T>)this.widget).future)))
         {
             return;
         }
@@ -258,15 +257,15 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
 
     internal virtual void _subscribe()
     {
-        if ((((FutureBuilder<T>)(object)this.widget).future is null))
+        if ((((FutureBuilder<T>)this.widget).future is null))
         {
             return;
         }
         var callbackIdentity = new object();
         _activeCallbackIdentity = callbackIdentity;
-        DartRuntimePrimitives.Ignore(((FutureBuilder<T>)(object)this.widget).future!.then(((data) =>
+        DartRuntimePrimitives.Ignore(((FutureBuilder<T>)this.widget).future!.then(((data) =>
         {
-            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity)))
+            if ((Equals(this._activeCallbackIdentity, callbackIdentity)))
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -275,7 +274,7 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
             }
         }), onError: ((error, stackTrace) =>
         {
-            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity)))
+            if ((Equals(this._activeCallbackIdentity, callbackIdentity)))
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -292,7 +291,7 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
         })));
-        if ((!object.Equals(((AsyncSnapshot<T>)this._snapshot).connectionState, ConnectionState.done)))
+        if ((!Equals(((AsyncSnapshot<T>)this._snapshot).connectionState, ConnectionState.done)))
         {
             _snapshot = this._snapshot.inState(ConnectionState.waiting);
         }

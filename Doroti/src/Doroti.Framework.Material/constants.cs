@@ -22,7 +22,7 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static double kTextTabBarHeight = ConstantsLibrary.kMinInteractiveDimension;
+    public static double kTextTabBarHeight = kMinInteractiveDimension;
 }
 
 public static partial class ConstantsLibrary
@@ -52,12 +52,12 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static global::Doroti.Framework.Painting.EdgeInsets kTabLabelPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0);
+    public static global::Doroti.Framework.Painting.EdgeInsets kTabLabelPadding = EdgeInsets.CreateSymmetric(horizontal: 16.0);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static global::Doroti.Framework.Painting.EdgeInsets kMaterialListPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 8.0);
+    public static global::Doroti.Framework.Painting.EdgeInsets kMaterialListPadding = EdgeInsets.CreateSymmetric(vertical: 8.0);
 }
 
 public static partial class ConstantsLibrary

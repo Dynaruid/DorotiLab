@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scrollable.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -27,7 +26,7 @@ public class Scrollable : StatefulWidget
     public virtual ScrollBehavior? scrollBehavior { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public Scrollable(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = global::Doroti.Framework.Painting.AxisDirection.down, ScrollController? controller = null, ScrollPhysics? physics = null, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, bool excludeFromSemantics = false, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, string? restorationId = null, ScrollBehavior? scrollBehavior = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque) : base(key: key)
+    public Scrollable(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down, ScrollController? controller = null, ScrollPhysics? physics = null, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, bool excludeFromSemantics = false, long? semanticChildCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, string? restorationId = null, ScrollBehavior? scrollBehavior = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key)
     {
         this.axisDirection = axisDirection;
         this.controller = controller;
@@ -44,7 +43,7 @@ public class Scrollable : StatefulWidget
         System.Diagnostics.Debug.Assert(((semanticChildCount is null) || (semanticChildCount >= 0L)));
     }
 
-    public virtual global::Doroti.Framework.Painting.Axis axis => global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
+    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new ScrollableState());
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
@@ -57,11 +56,11 @@ public class Scrollable : StatefulWidget
     public static ScrollableState? maybeOf(BuildContext context, global::Doroti.Framework.Painting.Axis? axis = null)
     {
         var originalContext = context;
-        InheritedElement? element = ((InheritedElement?)(object?)context.getElementForInheritedWidgetOfExactType<_ScrollableScope__scrollable>());
+        InheritedElement? element = ((InheritedElement?)context.getElementForInheritedWidgetOfExactType<_ScrollableScope__scrollable>());
         while ((element is not null))
         {
-            ScrollableState scrollableLocal = (((_ScrollableScope__scrollable?)(object?)element.widget)!).scrollable;
-            if (((axis is null) || (object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((ScrollableState)scrollableLocal).axisDirection), DartRuntimePrimitives.RequireValue(axis)))))
+            ScrollableState scrollableLocal = (((_ScrollableScope__scrollable?)element.widget)!).scrollable;
+            if (((axis is null) || (Equals(Basic_typesLibrary.axisDirectionToAxis(((ScrollableState)scrollableLocal).axisDirection), DartRuntimePrimitives.RequireValue(axis)))))
             {
                 originalContext.dependOnInheritedElement(element);
                 return scrollableLocal;
@@ -69,13 +68,13 @@ public class Scrollable : StatefulWidget
             context = scrollableLocal.context;
             element = context.getElementForInheritedWidgetOfExactType<_ScrollableScope__scrollable>();
         }
-        return ((ScrollableState)(object)null);
+        return ((ScrollableState?)null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static ScrollableState of(BuildContext context, global::Doroti.Framework.Painting.Axis? axis = null)
     {
-        ScrollableState? scrollableState = ((ScrollableState?)(object?)Scrollable.maybeOf(context, axis: axis));
+        ScrollableState? scrollableState = ((ScrollableState?)maybeOf(context, axis: axis));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((scrollableState is null))
@@ -91,10 +90,10 @@ public class Scrollable : StatefulWidget
 
     public static bool recommendDeferredLoadingForContext(BuildContext context, global::Doroti.Framework.Painting.Axis? axis = null)
     {
-        _ScrollableScope__scrollable? widget = ((_ScrollableScope__scrollable?)(object?)context.getInheritedWidgetOfExactType<_ScrollableScope__scrollable>());
+        _ScrollableScope__scrollable? widget = ((_ScrollableScope__scrollable?)context.getInheritedWidgetOfExactType<_ScrollableScope__scrollable>());
         while ((widget is not null))
         {
-            if (((axis is null) || (object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((_ScrollableScope__scrollable)widget).scrollable.axisDirection), DartRuntimePrimitives.RequireValue(axis)))))
+            if (((axis is null) || (Equals(Basic_typesLibrary.axisDirectionToAxis(((_ScrollableScope__scrollable)widget).scrollable.axisDirection), DartRuntimePrimitives.RequireValue(axis)))))
             {
                 return ((_ScrollableScope__scrollable)widget).position.recommendDeferredLoading(context);
             }
@@ -109,7 +108,7 @@ public class Scrollable : StatefulWidget
     {
         var futures = new List<Future>();
         global::Doroti.Framework.Rendering.RenderObject? targetRenderObjectLocal = default!;
-        ScrollableState? scrollable = ((ScrollableState?)(object?)Scrollable.maybeOf(context));
+        ScrollableState? scrollable = ((ScrollableState?)maybeOf(context));
         while ((scrollable is not null))
         {
             List<Future> newFutures = default!;
@@ -117,9 +116,9 @@ public class Scrollable : StatefulWidget
             futures.AddRange(newFutures.Cast<Future>());
             targetRenderObjectLocal ??= context.findRenderObject();
             context = scrollable.context;
-            scrollable = Scrollable.maybeOf(context);
+            scrollable = maybeOf(context);
         }
-        if ((!System.Linq.Enumerable.Any(futures) || (object.Equals(duration, Duration.zero))))
+        if ((!Enumerable.Any(futures) || (Equals(duration, Duration.zero))))
         {
             return Future.value();
         }
@@ -127,7 +126,7 @@ public class Scrollable : StatefulWidget
         {
             return futures.Single();
         }
-        return global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(futures).then((global::System.Action<List<object?>>)((_) => { }));
+        return DartAsyncRuntime.wait<object?>(futures).then((global::System.Action<List<object?>>)((_) => { }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -146,8 +145,8 @@ internal class _ScrollableScope__scrollable : InheritedWidget
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __old = (_ScrollableScope__scrollable)(object)oldWidget;
-        return (!object.Equals(this.position, ((_ScrollableScope__scrollable)__old).position));
+        var __old = (_ScrollableScope__scrollable)oldWidget;
+        return (!Equals(this.position, ((_ScrollableScope__scrollable)__old).position));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -181,7 +180,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     public virtual ScrollPosition position => DartRuntimePrimitives.ConvertValue<ScrollPosition>(this._position!);
     public virtual ScrollPhysics? resolvedPhysics => this._physics;
-    public virtual global::Doroti.Ui.Offset deltaToScrollOrigin => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>((this.axisDirection switch { global::Doroti.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0, -((ScrollPosition)this.position).pixels), global::Doroti.Framework.Painting.AxisDirection.down => new global::Doroti.Ui.Offset(0, ((ScrollPosition)this.position).pixels), global::Doroti.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(-((ScrollPosition)this.position).pixels, 0), global::Doroti.Framework.Painting.AxisDirection.right => new global::Doroti.Ui.Offset(((ScrollPosition)this.position).pixels, 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+    public virtual global::Doroti.Ui.Offset deltaToScrollOrigin => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>((this.axisDirection switch { AxisDirection.up => new global::Doroti.Ui.Offset(0, -((ScrollPosition)this.position).pixels), AxisDirection.down => new global::Doroti.Ui.Offset(0, ((ScrollPosition)this.position).pixels), AxisDirection.left => new global::Doroti.Ui.Offset(-((ScrollPosition)this.position).pixels, 0), AxisDirection.right => new global::Doroti.Ui.Offset(((ScrollPosition)this.position).pixels, 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
     internal virtual ScrollController _effectiveScrollController => DartRuntimePrimitives.ConvertValue<ScrollController>((((Scrollable)this.widget).controller ?? this._fallbackScrollController!));
     public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection => ((Scrollable)this.widget).axisDirection;
     public virtual global::Doroti.Framework.Scheduler.TickerProvider vsync => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Scheduler.TickerProvider>(this);
@@ -192,7 +191,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
     internal virtual void _updatePosition()
     {
         _configuration = ((((Scrollable)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(this.context)));
-        ScrollPhysics? physicsFromWidget = ((((Scrollable)this.widget).physics ?? (ScrollPhysics)((Scrollable)this.widget).scrollBehavior?.getScrollPhysics(this.context)));
+        ScrollPhysics? physicsFromWidget = ((((Scrollable)this.widget).physics ?? (ScrollPhysics?)((Scrollable)this.widget).scrollBehavior?.getScrollPhysics(this.context)));
         _physics = this._configuration.getScrollPhysics(this.context);
         _physics = (physicsFromWidget?.applyTo(this._physics) ?? this._physics);
         ScrollPosition? oldPosition = this._position;
@@ -218,9 +217,9 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     public virtual void saveOffset(double offset)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(offset));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(offset));
         this._persistedScrollOffset.value = offset;
-        global::Doroti.Framework.Services.ServicesBinding.instance.restorationManager.flushData();
+        ServicesBinding.instance.restorationManager.flushData();
     }
 
     public override void initState()
@@ -248,7 +247,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         }
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             oldBucket?.dispose();
         }
     }
@@ -263,11 +262,11 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         {
             return true;
         }
-        ScrollPhysics? newPhysics = ((((Scrollable)this.widget).physics ?? (ScrollPhysics)((Scrollable)this.widget).scrollBehavior?.getScrollPhysics(this.context)));
-        ScrollPhysics? oldPhysics = ((((Scrollable)oldWidget).physics ?? (ScrollPhysics)((Scrollable)oldWidget).scrollBehavior?.getScrollPhysics(this.context)));
+        ScrollPhysics? newPhysics = ((((Scrollable)this.widget).physics ?? (ScrollPhysics?)((Scrollable)this.widget).scrollBehavior?.getScrollPhysics(this.context)));
+        ScrollPhysics? oldPhysics = ((((Scrollable)oldWidget).physics ?? (ScrollPhysics?)((Scrollable)oldWidget).scrollBehavior?.getScrollPhysics(this.context)));
         do
         {
-            if ((!object.Equals(DartRuntimePrimitives.RuntimeType(newPhysics), DartRuntimePrimitives.RuntimeType(oldPhysics))))
+            if ((!Equals(DartRuntimePrimitives.RuntimeType(newPhysics), DartRuntimePrimitives.RuntimeType(oldPhysics))))
             {
                 return true;
             }
@@ -275,7 +274,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
             oldPhysics = oldPhysics?.parent;
         }
         while (((newPhysics is not null) || (oldPhysics is not null)));
-        return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Scrollable)this.widget).controller), DartRuntimePrimitives.RuntimeType(((Scrollable)oldWidget).controller)));
+        return (!Equals(DartRuntimePrimitives.RuntimeType(((Scrollable)this.widget).controller), DartRuntimePrimitives.RuntimeType(((Scrollable)oldWidget).controller)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -283,7 +282,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
     {
         base.didUpdateWidget(oldWidget);
         didUpdateRestorationId();
-        if ((!object.Equals(((Scrollable)this.widget).controller, ((Scrollable)oldWidget).controller)))
+        if ((!Equals(((Scrollable)this.widget).controller, ((Scrollable)oldWidget).controller)))
         {
             if ((((Scrollable)oldWidget).controller is null))
             {
@@ -344,7 +343,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     public virtual void setCanDrag(bool value)
     {
-        if (((value == this._lastCanDrag) && ((!value || (object.Equals(((Scrollable)this.widget).axis, this._lastAxisDirection))))))
+        if (((value == this._lastCanDrag) && ((!value || (Equals(((Scrollable)this.widget).axis, this._lastAxisDirection))))))
         {
             return;
         }
@@ -357,7 +356,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         {
             switch (((Scrollable)this.widget).axis)
             {
-                case global::Doroti.Framework.Painting.Axis.vertical:
+                case Axis.vertical:
                     {
                         _gestureRecognizers = new DartMap<Type, dynamic>
                         {
@@ -385,7 +384,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
                         };
                         break;
                     }
-                case global::Doroti.Framework.Painting.Axis.horizontal:
+                case Axis.horizontal:
                     {
                         _gestureRecognizers = new DartMap<Type, dynamic>
                         {
@@ -432,7 +431,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         _shouldIgnorePointer = value;
         if ((((GlobalKey<IState>)this._ignorePointerKey).currentContext is not null))
         {
-            var renderBox = ((global::Doroti.Framework.Rendering.RenderIgnorePointer?)(object?)((GlobalKey<IState>)this._ignorePointerKey).currentContext!.findRenderObject()!)!;
+            var renderBox = ((global::Doroti.Framework.Rendering.RenderIgnorePointer?)((GlobalKey<IState>)this._ignorePointerKey).currentContext!.findRenderObject()!)!;
             renderBox.ignoring = this._shouldIgnorePointer;
         }
     }
@@ -499,11 +498,11 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     internal virtual double _pointerSignalEventDelta(global::Doroti.Framework.Gestures.PointerScrollEvent @event)
     {
-        HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> pressed = global::Doroti.Framework.Services.HardwareKeyboard.instance.logicalKeysPressed;
-        bool flipAxes = (pressed.any(__item => ((ScrollBehavior)this._configuration).pointerAxisModifiers.Contains(__item)) && (object.Equals(@event.kind, PointerDeviceKind.mouse)));
-        global::Doroti.Framework.Painting.Axis axisLocal = (flipAxes ? global::Doroti.Framework.Painting.Basic_typesLibrary.flipAxis(((Scrollable)this.widget).axis) : ((Scrollable)this.widget).axis);
-        double delta = (axisLocal switch { global::Doroti.Framework.Painting.Axis.horizontal => ((global::Doroti.Framework.Gestures.PointerScrollEvent)@event).scrollDelta.dx, global::Doroti.Framework.Painting.Axis.vertical => ((global::Doroti.Framework.Gestures.PointerScrollEvent)@event).scrollDelta.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return (global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((Scrollable)this.widget).axisDirection) ? -delta : delta);
+        HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> pressed = HardwareKeyboard.instance.logicalKeysPressed;
+        bool flipAxes = (pressed.any(__item => ((ScrollBehavior)this._configuration).pointerAxisModifiers.Contains(__item)) && (Equals(@event.kind, PointerDeviceKind.mouse)));
+        global::Doroti.Framework.Painting.Axis axisLocal = (flipAxes ? Basic_typesLibrary.flipAxis(((Scrollable)this.widget).axis) : ((Scrollable)this.widget).axis);
+        double delta = (axisLocal switch { Axis.horizontal => ((global::Doroti.Framework.Gestures.PointerScrollEvent)@event).scrollDelta.dx, Axis.vertical => ((global::Doroti.Framework.Gestures.PointerScrollEvent)@event).scrollDelta.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (Basic_typesLibrary.axisDirectionIsReversed(((Scrollable)this.widget).axisDirection) ? -delta : delta);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -520,7 +519,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
             double targetScrollOffset = _targetScrollOffsetForPointerScroll(delta);
             if (((delta != 0.0) && (targetScrollOffset != ((ScrollPosition)this.position).pixels)))
             {
-                global::Doroti.Framework.Gestures.GestureBinding.instance.pointerSignalResolver.register(((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as37801), (__arg0) => ((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this._handlePointerScroll)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.PointerEvent>(__arg0)));
+                GestureBinding.instance.pointerSignalResolver.register(((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as37801), (__arg0) => ((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this._handlePointerScroll)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.PointerEvent>(__arg0)));
                 return;
             }
         }
@@ -537,7 +536,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
     internal virtual void _handlePointerScroll(global::Doroti.Framework.Gestures.PointerEvent @event)
     {
         DartRuntimePrimitives.Assert(() => (@event is global::Doroti.Framework.Gestures.PointerScrollEvent));
-        var scrollEvent = ((global::Doroti.Framework.Gestures.PointerScrollEvent?)(object?)@event)!;
+        var scrollEvent = ((global::Doroti.Framework.Gestures.PointerScrollEvent?)@event)!;
         double delta = _pointerSignalEventDelta(scrollEvent);
         double targetScrollOffset = _targetScrollOffsetForPointerScroll(delta);
         if (((delta != 0.0) && (targetScrollOffset != ((ScrollPosition)this.position).pixels)))
@@ -551,7 +550,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
     {
         if ((notification.depth == 0L))
         {
-            global::Doroti.Framework.Rendering.RenderObject? scrollSemanticsRenderObject = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)((GlobalKey<IState>)this._scrollSemanticsKey).currentContext?.findRenderObject());
+            global::Doroti.Framework.Rendering.RenderObject? scrollSemanticsRenderObject = ((global::Doroti.Framework.Rendering.RenderObject?)((GlobalKey<IState>)this._scrollSemanticsKey).currentContext?.findRenderObject());
             if ((scrollSemanticsRenderObject is not null))
             {
                 (scrollSemanticsRenderObject).markNeedsSemanticsUpdate();
@@ -564,20 +563,20 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
     internal virtual Widget _buildChrome(BuildContext context, Widget child)
     {
         var details = new ScrollableDetails(direction: ((Scrollable)this.widget).axisDirection, controller: this._effectiveScrollController, decorationClipBehavior: ((Scrollable)this.widget).clipBehavior);
-        return ((Widget)(object?)this._configuration.buildScrollbar(context, this._configuration.buildOverscrollIndicator(context, child, details), details));
+        return ((Widget)this._configuration.buildScrollbar(context, this._configuration.buildOverscrollIndicator(context, child, details), details));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => (this._position is not null));
-        Widget result = ((Widget)(object?)new _ScrollableScope__scrollable(scrollable: this, position: this.position, child: new Listener(onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>)this._receivedPointerSignal, child: new RawGestureDetector(key: this._gestureDetectorKey, gestures: this._gestureRecognizers, behavior: ((Scrollable)this.widget).hitTestBehavior, excludeFromSemantics: ((Scrollable)this.widget).excludeFromSemantics, child: new Semantics(explicitChildNodes: !((Scrollable)this.widget).excludeFromSemantics, child: new IgnorePointer(key: this._ignorePointerKey, ignoring: this._shouldIgnorePointer, child: this.widget.viewportBuilder(context, this.position)))))));
+        Widget result = ((Widget)new _ScrollableScope__scrollable(scrollable: this, position: this.position, child: new Listener(onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>)this._receivedPointerSignal, child: new RawGestureDetector(key: this._gestureDetectorKey, gestures: this._gestureRecognizers, behavior: ((Scrollable)this.widget).hitTestBehavior, excludeFromSemantics: ((Scrollable)this.widget).excludeFromSemantics, child: new Semantics(explicitChildNodes: !((Scrollable)this.widget).excludeFromSemantics, child: new IgnorePointer(key: this._ignorePointerKey, ignoring: this._shouldIgnorePointer, child: this.widget.viewportBuilder(context, this.position)))))));
         if (!((Scrollable)this.widget).excludeFromSemantics)
         {
             result = DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollMetricsNotification>(onNotification: (global::System.Func<ScrollMetricsNotification, bool>)this._handleScrollMetricsNotification, child: new _ScrollSemantics__scrollable(key: this._scrollSemanticsKey, position: this.position, allowImplicitScrolling: this._physics!.allowImplicitScrolling, axis: ((Scrollable)this.widget).axis, semanticChildCount: ((Scrollable)this.widget).semanticChildCount, child: result)));
         }
         result = _buildChrome(context, result);
-        global::Doroti.Framework.Rendering.SelectionRegistrar? registrarLocal = ((global::Doroti.Framework.Rendering.SelectionRegistrar?)(object?)SelectionContainer.maybeOf(context));
+        global::Doroti.Framework.Rendering.SelectionRegistrar? registrarLocal = ((global::Doroti.Framework.Rendering.SelectionRegistrar?)SelectionContainer.maybeOf(context));
         if ((registrarLocal is not null))
         {
             result = DartRuntimePrimitives.ConvertValue<Widget>(new _ScrollableSelectionHandler__scrollable(state: this, position: this.position, registrar: registrarLocal, child: result));
@@ -588,7 +587,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     internal virtual (List<Future>, ScrollableState) _performEnsureVisible(global::Doroti.Framework.Rendering.RenderObject @object, double alignment = 0.0, Duration duration = default, global::Doroti.Framework.Animation.Curve curve = default!, ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.@explicit, global::Doroti.Framework.Rendering.RenderObject? targetRenderObject = null)
     {
-        Future ensureVisibleFuture = ((Future)(object?)this.position.ensureVisible(@object, alignment: alignment, duration: duration, curve: curve, alignmentPolicy: alignmentPolicy, targetRenderObject: targetRenderObject));
+        Future ensureVisibleFuture = ((Future)this.position.ensureVisible(@object, alignment: alignment, duration: duration, curve: curve, alignmentPolicy: alignmentPolicy, targetRenderObject: targetRenderObject));
         return (new List<Future> { ensureVisibleFuture }, this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -612,13 +611,13 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -652,8 +651,8 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -688,7 +687,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
             property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
-        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (object.Equals(property._owner, this))) && this._properties.ContainsKey(property)));
+        DartRuntimePrimitives.Assert(() => (((property._restorationId == restorationId) && (Equals(property._owner, this))) && this._properties.ContainsKey(property)));
         property.initWithValueObject(initialValue);
         if (((!hasSerializedValue && property.enabled) && (this.bucket is not null)))
         {
@@ -704,7 +703,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     public virtual void unregisterFromRestoration(global::Doroti.Framework.Widgets.IRestorableProperty property)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(property._owner, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(property._owner, this)));
         this._bucket?.remove<object?>(property._restorationId!);
         _unregister(property);
     }
@@ -720,7 +719,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
         if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => (!Equals(oldBucket, this._bucket)));
             DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
             oldBucket?.dispose();
         }
@@ -738,8 +737,8 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)RestorationScope.maybeOf(this.context));
+            return ((!Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
@@ -755,7 +754,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         this._firstRestorePending = false;
         DartRuntimePrimitives.Assert(() =>
             {
-                if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
+                if (Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
                 }
@@ -769,16 +768,16 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Framework.Services.RestorationBucket)(object)null), restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Framework.Services.RestorationBucket?)null), restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
             return didReplace;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)parent.claimChild(this.restorationId!, debugOwner: this));
             bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._bucket, newBucketLocal)));
             return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
@@ -791,7 +790,7 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
 
     public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
     {
-        if ((object.Equals(newBucket, this._bucket)))
+        if ((Equals(newBucket, this._bucket)))
         {
             return false;
         }
@@ -867,7 +866,7 @@ public class _ScrollableSelectionHandlerState__scrollable : State<_ScrollableSel
     public override void didUpdateWidget(_ScrollableSelectionHandler__scrollable oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((_ScrollableSelectionHandler__scrollable)oldWidget).position, ((_ScrollableSelectionHandler__scrollable)this.widget).position)))
+        if ((!Equals(((_ScrollableSelectionHandler__scrollable)oldWidget).position, ((_ScrollableSelectionHandler__scrollable)this.widget).position)))
         {
             this._selectionDelegate.position = ((_ScrollableSelectionHandler__scrollable)this.widget).position;
         }
@@ -881,7 +880,7 @@ public class _ScrollableSelectionHandlerState__scrollable : State<_ScrollableSel
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new SelectionContainer(registrar: ((_ScrollableSelectionHandler__scrollable)this.widget).registrar, @delegate: this._selectionDelegate, child: ((_ScrollableSelectionHandler__scrollable)this.widget).child));
+        return ((Widget)new SelectionContainer(registrar: ((_ScrollableSelectionHandler__scrollable)this.widget).registrar, @delegate: this._selectionDelegate, child: ((_ScrollableSelectionHandler__scrollable)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -915,7 +914,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
         set
         {
             var other = value;
-            if ((object.Equals(other, this._position)))
+            if ((Equals(other, this._position)))
             {
                 return;
             }
@@ -931,7 +930,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
             return;
         }
         _scheduledLayoutChange = true;
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
         {
             if (!this._scheduledLayoutChange)
             {
@@ -968,21 +967,21 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
             DartRuntimePrimitives.Assert(() => !this._selectionStartsInScrollable);
             _selectionStartsInScrollable = _globalPositionInScrollable(((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).globalPosition);
         }
-        global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)(object?)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
-        if ((object.Equals(@event.type, global::Doroti.Framework.Rendering.SelectionEventType.endEdgeUpdate)))
+        global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
+        if ((Equals(@event.type, SelectionEventType.endEdgeUpdate)))
         {
             _currentDragEndRelatedToOrigin = _inferPositionRelatedToOrigin(((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).globalPosition);
-            global::Doroti.Ui.Offset endOffset = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this._currentDragEndRelatedToOrigin).translate(-deltaToOrigin.dx, -deltaToOrigin.dy));
-            @event = global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: endOffset, granularity: ((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).granularity);
+            global::Doroti.Ui.Offset endOffset = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(this._currentDragEndRelatedToOrigin).translate(-deltaToOrigin.dx, -deltaToOrigin.dy));
+            @event = SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: endOffset, granularity: ((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).granularity);
         }
         else
         {
             _currentDragStartRelatedToOrigin = _inferPositionRelatedToOrigin(((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).globalPosition);
-            global::Doroti.Ui.Offset startOffset = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this._currentDragStartRelatedToOrigin).translate(-deltaToOrigin.dx, -deltaToOrigin.dy));
+            global::Doroti.Ui.Offset startOffset = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(this._currentDragStartRelatedToOrigin).translate(-deltaToOrigin.dx, -deltaToOrigin.dy));
             @event = new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: startOffset, granularity: ((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).granularity);
         }
         global::Doroti.Framework.Rendering.SelectionResult result = base.handleSelectionEdgeUpdate(@event);
-        if ((object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.pending)))
+        if ((Equals(result, SelectionResult.pending)))
         {
             this._autoScroller.stopAutoScroll();
             return result;
@@ -992,7 +991,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
             this._autoScroller.startAutoScrollIfNecessary(_dragTargetFromEvent(@event));
             if (((EdgeDraggingAutoScroller)this._autoScroller).scrolling)
             {
-                return global::Doroti.Framework.Rendering.SelectionResult.pending;
+                return SelectionResult.pending;
             }
         }
         return result;
@@ -1001,36 +1000,36 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
 
     internal virtual global::Doroti.Ui.Offset _inferPositionRelatedToOrigin(Offset globalPosition)
     {
-        var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.state.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)((Offset)(box).globalToLocal(globalPosition)));
+        var box = ((global::Doroti.Framework.Rendering.RenderBox?)this.state.context.findRenderObject()!)!;
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)((Offset)(box).globalToLocal(globalPosition)));
         if (!this._selectionStartsInScrollable)
         {
             if (((localPosition.dy < 0L) || (localPosition.dx < 0L)))
             {
-                return ((global::Doroti.Ui.Offset)(object?)((Offset)(box).localToGlobal(Offset.zero)));
+                return ((global::Doroti.Ui.Offset)((Offset)(box).localToGlobal(Offset.zero)));
             }
             if (((localPosition.dy > ((global::Doroti.Framework.Rendering.RenderBox)box).size.height) || (localPosition.dx > ((global::Doroti.Framework.Rendering.RenderBox)box).size.width)))
             {
                 return Offset.infinite;
             }
         }
-        global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)(object?)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
-        return ((global::Doroti.Ui.Offset)(object?)((Offset)(box).localToGlobal(localPosition.translate(deltaToOrigin.dx, deltaToOrigin.dy))));
+        global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
+        return ((global::Doroti.Ui.Offset)((Offset)(box).localToGlobal(localPosition.translate(deltaToOrigin.dx, deltaToOrigin.dy))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _updateDragLocationsFromGeometries(bool forceUpdateStart = true, bool forceUpdateEnd = true)
     {
-        global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)(object?)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
-        var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.state.context.findRenderObject()!)!;
-        Matrix4 transform = ((Matrix4)(object?)box.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+        global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
+        var box = ((global::Doroti.Framework.Rendering.RenderBox?)this.state.context.findRenderObject()!)!;
+        Matrix4 transform = ((Matrix4)box.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject?)null)));
         if (((this.currentSelectionStartIndex != -1L) && (((this._currentDragStartRelatedToOrigin is null) || forceUpdateStart))))
         {
             global::Doroti.Framework.Rendering.SelectionGeometry geometry = this.selectables[(int)(this.currentSelectionStartIndex)].value;
             DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.SelectionGeometry)geometry).hasSelection);
             global::Doroti.Framework.Rendering.SelectionPoint start = ((global::Doroti.Framework.Rendering.SelectionGeometry)geometry).startSelectionPoint!;
-            Matrix4 childTransform = ((Matrix4)(object?)this.selectables[(int)(this.currentSelectionStartIndex)].getTransformTo(box));
-            global::Doroti.Ui.Offset localDragStart = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(childTransform, (((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition + new global::Doroti.Ui.Offset(0, (-((global::Doroti.Framework.Rendering.SelectionPoint)start).lineHeight / 2L)))));
+            Matrix4 childTransform = ((Matrix4)this.selectables[(int)(this.currentSelectionStartIndex)].getTransformTo(box));
+            global::Doroti.Ui.Offset localDragStart = ((global::Doroti.Ui.Offset)MatrixUtils.transformPoint(childTransform, (((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition + new global::Doroti.Ui.Offset(0, (-((global::Doroti.Framework.Rendering.SelectionPoint)start).lineHeight / 2L)))));
             _currentDragStartRelatedToOrigin = MatrixUtils.transformPoint(transform, (localDragStart + deltaToOrigin));
         }
         if (((this.currentSelectionEndIndex != -1L) && (((this._currentDragEndRelatedToOrigin is null) || forceUpdateEnd))))
@@ -1038,8 +1037,8 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
             global::Doroti.Framework.Rendering.SelectionGeometry geometryLocal = this.selectables[(int)(this.currentSelectionEndIndex)].value;
             DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.SelectionGeometry)geometryLocal).hasSelection);
             global::Doroti.Framework.Rendering.SelectionPoint end = ((global::Doroti.Framework.Rendering.SelectionGeometry)geometryLocal).endSelectionPoint!;
-            Matrix4 childTransformLocal = ((Matrix4)(object?)this.selectables[(int)(this.currentSelectionEndIndex)].getTransformTo(box));
-            global::Doroti.Ui.Offset localDragEnd = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(childTransformLocal, (((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition + new global::Doroti.Ui.Offset(0, (-((global::Doroti.Framework.Rendering.SelectionPoint)end).lineHeight / 2L)))));
+            Matrix4 childTransformLocal = ((Matrix4)this.selectables[(int)(this.currentSelectionEndIndex)].getTransformTo(box));
+            global::Doroti.Ui.Offset localDragEnd = ((global::Doroti.Ui.Offset)MatrixUtils.transformPoint(childTransformLocal, (((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition + new global::Doroti.Ui.Offset(0, (-((global::Doroti.Framework.Rendering.SelectionPoint)end).lineHeight / 2L)))));
             _currentDragEndRelatedToOrigin = MatrixUtils.transformPoint(transform, (localDragEnd + deltaToOrigin));
         }
     }
@@ -1111,13 +1110,13 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
         {
             return;
         }
-        var scrollableBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.state.context.findRenderObject()!)!;
-        Matrix4 transform = ((Matrix4)(object?)selectable.getTransformTo(scrollableBox));
-        global::Doroti.Ui.Offset edgeOffsetInScrollableCoordinates = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(transform, ((global::Doroti.Framework.Rendering.SelectionPoint)edge).localPosition));
-        var scrollableRect = global::Doroti.Ui.Rect.fromLTRB(0, 0, ((global::Doroti.Framework.Rendering.RenderBox)scrollableBox).size.width, ((global::Doroti.Framework.Rendering.RenderBox)scrollableBox).size.height);
+        var scrollableBox = ((global::Doroti.Framework.Rendering.RenderBox?)this.state.context.findRenderObject()!)!;
+        Matrix4 transform = ((Matrix4)selectable.getTransformTo(scrollableBox));
+        global::Doroti.Ui.Offset edgeOffsetInScrollableCoordinates = ((global::Doroti.Ui.Offset)MatrixUtils.transformPoint(transform, ((global::Doroti.Framework.Rendering.SelectionPoint)edge).localPosition));
+        var scrollableRect = Rect.fromLTRB(0, 0, ((global::Doroti.Framework.Rendering.RenderBox)scrollableBox).size.width, ((global::Doroti.Framework.Rendering.RenderBox)scrollableBox).size.height);
         switch (((ScrollableState)this.state).axisDirection)
         {
-            case global::Doroti.Framework.Painting.AxisDirection.up:
+            case AxisDirection.up:
                 {
                     double edgeBottom = edgeOffsetInScrollableCoordinates.dy;
                     double edgeTop = (edgeOffsetInScrollableCoordinates.dy - DartRuntimePrimitives.RequireValue(lineHeightLocal));
@@ -1136,7 +1135,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
                     }
                     return;
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.right:
+            case AxisDirection.right:
                 {
                     double edgeLocal = edgeOffsetInScrollableCoordinates.dx;
                     if (((edgeLocal >= scrollableRect.right) && (edgeLocal <= scrollableRect.left)))
@@ -1154,7 +1153,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
                     }
                     return;
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.down:
+            case AxisDirection.down:
                 {
                     double edgeBottomLocal = edgeOffsetInScrollableCoordinates.dy;
                     double edgeTopLocal = (edgeOffsetInScrollableCoordinates.dy - DartRuntimePrimitives.RequireValue(lineHeightLocal));
@@ -1173,7 +1172,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
                     }
                     return;
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.left:
+            case AxisDirection.left:
                 {
                     double edgeAlternate = edgeOffsetInScrollableCoordinates.dx;
                     if (((edgeAlternate >= scrollableRect.right) && (edgeAlternate <= scrollableRect.left)))
@@ -1198,16 +1197,16 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
 
     internal virtual bool _globalPositionInScrollable(Offset globalPosition)
     {
-        var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.state.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)((Offset)(box).globalToLocal(globalPosition)));
-        var rect = global::Doroti.Ui.Rect.fromLTWH(0, 0, ((global::Doroti.Framework.Rendering.RenderBox)box).size.width, ((global::Doroti.Framework.Rendering.RenderBox)box).size.height);
+        var box = ((global::Doroti.Framework.Rendering.RenderBox?)this.state.context.findRenderObject()!)!;
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)((Offset)(box).globalToLocal(globalPosition)));
+        var rect = Rect.fromLTWH(0, 0, ((global::Doroti.Framework.Rendering.RenderBox)box).size.width, ((global::Doroti.Framework.Rendering.RenderBox)box).size.height);
         return rect.contains(localPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Rect _dragTargetFromEvent(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event)
     {
-        return global::Doroti.Ui.Rect.fromCenter(center: ((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).globalPosition, width: _kDefaultDragTargetSize, height: _kDefaultDragTargetSize);
+        return Rect.fromCenter(center: ((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent)@event).globalPosition, width: _kDefaultDragTargetSize, height: _kDefaultDragTargetSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1215,35 +1214,35 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
     {
         switch (((global::Doroti.Framework.Rendering.SelectionEvent)@event).type)
         {
-            case global::Doroti.Framework.Rendering.SelectionEventType.startEdgeUpdate:
+            case SelectionEventType.startEdgeUpdate:
                 {
                     this._selectableStartEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
                     ensureChildUpdated(selectable);
                     break;
                 }
-            case global::Doroti.Framework.Rendering.SelectionEventType.endEdgeUpdate:
+            case SelectionEventType.endEdgeUpdate:
                 {
                     this._selectableEndEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
                     ensureChildUpdated(selectable);
                     break;
                 }
-            case global::Doroti.Framework.Rendering.SelectionEventType.granularlyExtendSelection:
-            case global::Doroti.Framework.Rendering.SelectionEventType.directionallyExtendSelection:
+            case SelectionEventType.granularlyExtendSelection:
+            case SelectionEventType.directionallyExtendSelection:
                 {
                     ensureChildUpdated(selectable);
                     this._selectableStartEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
                     this._selectableEndEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
                     break;
                 }
-            case global::Doroti.Framework.Rendering.SelectionEventType.clear:
+            case SelectionEventType.clear:
                 {
                     this._selectableEndEdgeUpdateRecords.remove(selectable);
                     this._selectableStartEdgeUpdateRecords.remove(selectable);
                     break;
                 }
-            case global::Doroti.Framework.Rendering.SelectionEventType.selectAll:
-            case global::Doroti.Framework.Rendering.SelectionEventType.selectWord:
-            case global::Doroti.Framework.Rendering.SelectionEventType.selectParagraph:
+            case SelectionEventType.selectAll:
+            case SelectionEventType.selectWord:
+            case SelectionEventType.selectParagraph:
                 {
                     this._selectableEndEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
                     this._selectableStartEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
@@ -1258,19 +1257,19 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
     {
         double newRecord = ((ScrollableState)this.state).position.pixels;
         double? previousStartRecord = DartCollectionRuntime.NullableMapValue<double>(this._selectableStartEdgeUpdateRecords, selectable);
-        if (((this._currentDragStartRelatedToOrigin is not null) && (((previousStartRecord is null) || (((newRecord - DartRuntimePrimitives.RequireValue(previousStartRecord))).abs() > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)))))
+        if (((this._currentDragStartRelatedToOrigin is not null) && (((previousStartRecord is null) || (((newRecord - DartRuntimePrimitives.RequireValue(previousStartRecord))).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance)))))
         {
-            global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)(object?)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
-            global::Doroti.Ui.Offset startOffset = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this._currentDragStartRelatedToOrigin).translate(-deltaToOrigin.dx, -deltaToOrigin.dy));
+            global::Doroti.Ui.Offset deltaToOrigin = ((global::Doroti.Ui.Offset)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
+            global::Doroti.Ui.Offset startOffset = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(this._currentDragStartRelatedToOrigin).translate(-deltaToOrigin.dx, -deltaToOrigin.dy));
             selectable.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: startOffset));
             this._selectableStartEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
         }
         double? previousEndRecord = DartCollectionRuntime.NullableMapValue<double>(this._selectableEndEdgeUpdateRecords, selectable);
-        if (((this._currentDragEndRelatedToOrigin is not null) && (((previousEndRecord is null) || (((newRecord - DartRuntimePrimitives.RequireValue(previousEndRecord))).abs() > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)))))
+        if (((this._currentDragEndRelatedToOrigin is not null) && (((previousEndRecord is null) || (((newRecord - DartRuntimePrimitives.RequireValue(previousEndRecord))).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance)))))
         {
-            global::Doroti.Ui.Offset deltaToOriginLocal = ((global::Doroti.Ui.Offset)(object?)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
-            global::Doroti.Ui.Offset endOffset = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this._currentDragEndRelatedToOrigin).translate(-deltaToOriginLocal.dx, -deltaToOriginLocal.dy));
-            selectable.dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: endOffset));
+            global::Doroti.Ui.Offset deltaToOriginLocal = ((global::Doroti.Ui.Offset)ScrollableLibrary._getDeltaToScrollOrigin(this.state));
+            global::Doroti.Ui.Offset endOffset = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(this._currentDragEndRelatedToOrigin).translate(-deltaToOriginLocal.dx, -deltaToOriginLocal.dy));
+            selectable.dispatchSelectionEvent(SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: endOffset));
             this._selectableEndEdgeUpdateRecords[selectable] = ((ScrollableState)this.state).position.pixels;
         }
     }
@@ -1290,7 +1289,7 @@ public static partial class ScrollableLibrary
 {
     internal static Offset _getDeltaToScrollOrigin(ScrollableState scrollableState)
     {
-        return (((ScrollableState)scrollableState).axisDirection switch { global::Doroti.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0, -((ScrollableState)scrollableState).position.pixels), global::Doroti.Framework.Painting.AxisDirection.down => new global::Doroti.Ui.Offset(0, ((ScrollableState)scrollableState).position.pixels), global::Doroti.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(-((ScrollableState)scrollableState).position.pixels, 0), global::Doroti.Framework.Painting.AxisDirection.right => new global::Doroti.Ui.Offset(((ScrollableState)scrollableState).position.pixels, 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((ScrollableState)scrollableState).axisDirection switch { AxisDirection.up => new global::Doroti.Ui.Offset(0, -((ScrollableState)scrollableState).position.pixels), AxisDirection.down => new global::Doroti.Ui.Offset(0, ((ScrollableState)scrollableState).position.pixels), AxisDirection.left => new global::Doroti.Ui.Offset(-((ScrollableState)scrollableState).position.pixels, 0), AxisDirection.right => new global::Doroti.Ui.Offset(((ScrollableState)scrollableState).position.pixels, 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1313,13 +1312,13 @@ internal class _ScrollSemantics__scrollable : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderScrollSemantics__scrollable(position: this.position, allowImplicitScrolling: this.allowImplicitScrolling, semanticChildCount: this.semanticChildCount, axis: this.axis));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderScrollSemantics__scrollable(position: this.position, allowImplicitScrolling: this.allowImplicitScrolling, semanticChildCount: this.semanticChildCount, axis: this.axis));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderScrollSemantics__scrollable)(object)renderObject;
+        var __renderObject = (_RenderScrollSemantics__scrollable)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderScrollSemantics__scrollable>)(() =>
 {
     var __cascade = __renderObject;
@@ -1356,7 +1355,7 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._position)))
+            if ((Equals(__value, this._position)))
             {
                 return;
             }
@@ -1396,7 +1395,7 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
     }
     internal virtual void _onScrollToOffset(Offset targetOffset)
     {
-        double offset = (this.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => targetOffset.dx, global::Doroti.Framework.Painting.Axis.vertical => targetOffset.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double offset = (this.axis switch { Axis.horizontal => targetOffset.dx, Axis.vertical => targetOffset.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         this._position.jumpTo(offset);
     }
 
@@ -1430,7 +1429,7 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
 
     public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
-        if ((!System.Linq.Enumerable.Any(children) || !children.First().isTagged(global::Doroti.Framework.Rendering.RenderViewport.useTwoPaneSemantics)))
+        if ((!Enumerable.Any(children) || !children.First().isTagged(RenderViewport.useTwoPaneSemantics)))
         {
             _innerNode = null;
             base.assembleSemanticsNode(node, config, children.Cast<global::Doroti.Framework.Semantics.SemanticsNode>());
@@ -1442,8 +1441,8 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
         var included = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
         foreach (var child in children)
         {
-            DartRuntimePrimitives.Assert(() => child.isTagged(global::Doroti.Framework.Rendering.RenderViewport.useTwoPaneSemantics));
-            if (child.isTagged(global::Doroti.Framework.Rendering.RenderViewport.excludeFromScrolling))
+            DartRuntimePrimitives.Assert(() => child.isTagged(RenderViewport.useTwoPaneSemantics));
+            if (child.isTagged(RenderViewport.excludeFromScrolling))
             {
                 excluded.Add(child);
             }
@@ -1457,7 +1456,7 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
             }
         }
         config.scrollIndex = firstVisibleIndex;
-        node.updateWith(config: ((global::Doroti.Framework.Semantics.SemanticsConfiguration)(object)null), childrenInInversePaintOrder: excluded);
+        node.updateWith(config: ((global::Doroti.Framework.Semantics.SemanticsConfiguration?)null), childrenInInversePaintOrder: excluded);
         this._innerNode!.updateWith(config: config, childrenInInversePaintOrder: included);
     }
 
@@ -1512,7 +1511,7 @@ public class TwoDimensionalScrollable : StatefulWidget
     public virtual global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
 
-    public TwoDimensionalScrollable(global::Doroti.Framework.Foundation.Key? key = null, ScrollableDetails horizontalDetails = default!, ScrollableDetails verticalDetails = default!, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, string? restorationId = null, bool excludeFromSemantics = false, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque) : base(key: key)
+    public TwoDimensionalScrollable(global::Doroti.Framework.Foundation.Key? key = null, ScrollableDetails horizontalDetails = default!, ScrollableDetails verticalDetails = default!, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, string? restorationId = null, bool excludeFromSemantics = false, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque) : base(key: key)
     {
         this.horizontalDetails = horizontalDetails;
         this.verticalDetails = verticalDetails;
@@ -1528,14 +1527,14 @@ public class TwoDimensionalScrollable : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new TwoDimensionalScrollableState());
     public static TwoDimensionalScrollableState? maybeOf(BuildContext context)
     {
-        _TwoDimensionalScrollableScope__scrollable? widget = ((_TwoDimensionalScrollableScope__scrollable?)(object?)context.dependOnInheritedWidgetOfExactType<_TwoDimensionalScrollableScope__scrollable>());
+        _TwoDimensionalScrollableScope__scrollable? widget = ((_TwoDimensionalScrollableScope__scrollable?)context.dependOnInheritedWidgetOfExactType<_TwoDimensionalScrollableScope__scrollable>());
         return widget?.twoDimensionalScrollable;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static TwoDimensionalScrollableState of(BuildContext context)
     {
-        TwoDimensionalScrollableState? scrollableState = ((TwoDimensionalScrollableState?)(object?)TwoDimensionalScrollable.maybeOf(context));
+        TwoDimensionalScrollableState? scrollableState = ((TwoDimensionalScrollableState?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((scrollableState is null))
@@ -1590,7 +1589,7 @@ public class TwoDimensionalScrollableState : State<TwoDimensionalScrollable>
     public override void didUpdateWidget(TwoDimensionalScrollable oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((TwoDimensionalScrollable)oldWidget).verticalDetails.controller, ((TwoDimensionalScrollable)this.widget).verticalDetails.controller)))
+        if ((!Equals(((TwoDimensionalScrollable)oldWidget).verticalDetails.controller, ((TwoDimensionalScrollable)this.widget).verticalDetails.controller)))
         {
             if ((((TwoDimensionalScrollable)oldWidget).verticalDetails.controller is null))
             {
@@ -1608,7 +1607,7 @@ public class TwoDimensionalScrollableState : State<TwoDimensionalScrollable>
                 }
             }
         }
-        if ((!object.Equals(((TwoDimensionalScrollable)oldWidget).horizontalDetails.controller, ((TwoDimensionalScrollable)this.widget).horizontalDetails.controller)))
+        if ((!Equals(((TwoDimensionalScrollable)oldWidget).horizontalDetails.controller, ((TwoDimensionalScrollable)this.widget).horizontalDetails.controller)))
         {
             if ((((TwoDimensionalScrollable)oldWidget).horizontalDetails.controller is null))
             {
@@ -1630,18 +1629,18 @@ public class TwoDimensionalScrollableState : State<TwoDimensionalScrollable>
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((TwoDimensionalScrollable)this.widget).verticalDetails.direction), global::Doroti.Framework.Painting.Axis.vertical)), () => (object?)"TwoDimensionalScrollable.verticalDetails are not Axis.vertical.");
-        DartRuntimePrimitives.Assert(() => (object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((TwoDimensionalScrollable)this.widget).horizontalDetails.direction), global::Doroti.Framework.Painting.Axis.horizontal)), () => (object?)"TwoDimensionalScrollable.horizontalDetails are not Axis.horizontal.");
-        Widget result = ((Widget)(object?)new RestorationScope(restorationId: ((TwoDimensionalScrollable)this.widget).restorationId, child: new _VerticalOuterDimension__scrollable(key: this._verticalOuterScrollableKey, horizontalKey: this._horizontalInnerScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).verticalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).verticalDetails.controller ?? this._verticalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).verticalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).verticalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).verticalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "OuterVerticalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, verticalOffset) =>
+        DartRuntimePrimitives.Assert(() => (Equals(Basic_typesLibrary.axisDirectionToAxis(((TwoDimensionalScrollable)this.widget).verticalDetails.direction), Axis.vertical)), () => (object?)"TwoDimensionalScrollable.verticalDetails are not Axis.vertical.");
+        DartRuntimePrimitives.Assert(() => (Equals(Basic_typesLibrary.axisDirectionToAxis(((TwoDimensionalScrollable)this.widget).horizontalDetails.direction), Axis.horizontal)), () => (object?)"TwoDimensionalScrollable.horizontalDetails are not Axis.horizontal.");
+        Widget result = ((Widget)new RestorationScope(restorationId: ((TwoDimensionalScrollable)this.widget).restorationId, child: new _VerticalOuterDimension__scrollable(key: this._verticalOuterScrollableKey, horizontalKey: this._horizontalInnerScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).verticalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).verticalDetails.controller ?? this._verticalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).verticalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).verticalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).verticalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "OuterVerticalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, verticalOffset) =>
         {
-            return ((Widget)(object?)new _HorizontalInnerDimension__scrollable(key: this._horizontalInnerScrollableKey, verticalOuterKey: this._verticalOuterScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).horizontalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).horizontalDetails.controller ?? this._horizontalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).horizontalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).horizontalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).horizontalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "InnerHorizontalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, horizontalOffset) =>
+            return ((Widget)new _HorizontalInnerDimension__scrollable(key: this._horizontalInnerScrollableKey, verticalOuterKey: this._verticalOuterScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).horizontalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).horizontalDetails.controller ?? this._horizontalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).horizontalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).horizontalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).horizontalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "InnerHorizontalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, horizontalOffset) =>
             {
                 return this.widget.viewportBuilder(context, verticalOffset, horizontalOffset);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
-        return ((Widget)(object?)new _TwoDimensionalScrollableScope__scrollable(twoDimensionalScrollable: this, child: result));
+        return ((Widget)new _TwoDimensionalScrollableScope__scrollable(twoDimensionalScrollable: this, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1671,11 +1670,11 @@ internal class _VerticalOuterDimension__scrollable : Scrollable
     public virtual DiagonalDragBehavior diagonalDragBehavior { get; private set; } = default!;
     public virtual GlobalKey<ScrollableState> horizontalKey { get; private set; } = default!;
 
-    internal _VerticalOuterDimension__scrollable(global::Doroti.Framework.Foundation.Key? key = null, GlobalKey<ScrollableState> horizontalKey = default!, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::Doroti.Framework.Painting.AxisDirection axisDirection = default!, ScrollController? controller = null, ScrollPhysics? physics = null, Clip clipBehavior = Clip.hardEdge, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, bool excludeFromSemantics = false, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, string? restorationId = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none) : base(key: key, viewportBuilder: viewportBuilder, axisDirection: axisDirection, controller: controller, physics: physics, clipBehavior: clipBehavior, incrementCalculator: incrementCalculator, excludeFromSemantics: excludeFromSemantics, dragStartBehavior: dragStartBehavior, restorationId: restorationId, hitTestBehavior: hitTestBehavior)
+    internal _VerticalOuterDimension__scrollable(global::Doroti.Framework.Foundation.Key? key = null, GlobalKey<ScrollableState> horizontalKey = default!, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::Doroti.Framework.Painting.AxisDirection axisDirection = default!, ScrollController? controller = null, ScrollPhysics? physics = null, Clip clipBehavior = Clip.hardEdge, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, bool excludeFromSemantics = false, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, string? restorationId = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none) : base(key: key, viewportBuilder: viewportBuilder, axisDirection: axisDirection, controller: controller, physics: physics, clipBehavior: clipBehavior, incrementCalculator: incrementCalculator, excludeFromSemantics: excludeFromSemantics, dragStartBehavior: dragStartBehavior, restorationId: restorationId, hitTestBehavior: hitTestBehavior)
     {
         this.horizontalKey = horizontalKey;
         this.diagonalDragBehavior = diagonalDragBehavior;
-        System.Diagnostics.Debug.Assert(((object.Equals(axisDirection, global::Doroti.Framework.Painting.AxisDirection.up)) || (object.Equals(axisDirection, global::Doroti.Framework.Painting.AxisDirection.down))));
+        System.Diagnostics.Debug.Assert(((Equals(axisDirection, AxisDirection.up)) || (Equals(axisDirection, AxisDirection.down))));
     }
 
     public override _VerticalOuterDimensionState__scrollable createState() => new _VerticalOuterDimensionState__scrollable();
@@ -1686,8 +1685,8 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
     public virtual global::Doroti.Framework.Painting.Axis? lockedAxis { get; set; } = default;
     public virtual Offset? lastDragOffset { get; set; } = default;
 
-    public virtual DiagonalDragBehavior diagonalDragBehavior => (((_VerticalOuterDimension__scrollable?)(object?)this.widget)!).diagonalDragBehavior;
-    public virtual ScrollableState horizontalScrollable => DartRuntimePrimitives.ConvertValue<ScrollableState>((((_VerticalOuterDimension__scrollable?)(object?)this.widget)!).horizontalKey.currentState!);
+    public virtual DiagonalDragBehavior diagonalDragBehavior => (((_VerticalOuterDimension__scrollable?)this.widget)!).diagonalDragBehavior;
+    public virtual ScrollableState horizontalScrollable => DartRuntimePrimitives.ConvertValue<ScrollableState>((((_VerticalOuterDimension__scrollable?)this.widget)!).horizontalKey.currentState!);
     internal override (List<Future>, ScrollableState) _performEnsureVisible(global::Doroti.Framework.Rendering.RenderObject @object, double alignment = 0.0, Duration duration = default, global::Doroti.Framework.Animation.Curve curve = default!, ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.@explicit, global::Doroti.Framework.Rendering.RenderObject? targetRenderObject = null)
     {
         DartRuntimePrimitives.Assert(() => false, () => (object?)"The _performEnsureVisible method was called for the vertical scrollable " + "of a TwoDimensionalScrollable. This should not happen as the horizontal " + "scrollable handles both axes.");
@@ -1698,11 +1697,11 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
     internal virtual void _evaluateLockedAxis(Offset offset)
     {
         DartRuntimePrimitives.Assert(() => (this.lastDragOffset is not null));
-        global::Doroti.Ui.Offset offsetDelta = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(this.lastDragOffset) - offset));
+        global::Doroti.Ui.Offset offsetDelta = ((global::Doroti.Ui.Offset)(DartRuntimePrimitives.RequireValue(this.lastDragOffset) - offset));
         double axisDifferential = (offsetDelta.dx.abs() - offsetDelta.dy.abs());
-        if ((axisDifferential.abs() >= global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop))
+        if ((axisDifferential.abs() >= Gestures.ConstantsLibrary.kTouchSlop))
         {
-            lockedAxis = ((axisDifferential > 0.0) ? global::Doroti.Framework.Painting.Axis.horizontal : global::Doroti.Framework.Painting.Axis.vertical);
+            lockedAxis = ((axisDifferential > 0.0) ? Axis.horizontal : Axis.vertical);
         }
         else
         {
@@ -1754,12 +1753,12 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
                                 this.horizontalScrollable._handleDragStart(details);
                                 break;
                             }
-                        case global::Doroti.Framework.Painting.Axis.horizontal:
+                        case Axis.horizontal:
                             {
                                 this.horizontalScrollable._handleDragStart(details);
                                 return;
                             }
-                        case global::Doroti.Framework.Painting.Axis.vertical:
+                        case Axis.vertical:
                             break;
                     }
                     break;
@@ -1807,12 +1806,12 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
                     this.horizontalScrollable._handleDragUpdate(horizontalDragDetails);
                     break;
                 }
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
                     this.horizontalScrollable._handleDragUpdate(horizontalDragDetails);
                     return;
                 }
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 break;
         }
         base._handleDragUpdate(verticalDragDetails);
@@ -1919,7 +1918,7 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
     internal override Widget _buildChrome(BuildContext context, Widget child)
     {
         var details = new ScrollableDetails(direction: this.widget.axisDirection, controller: this._effectiveScrollController, clipBehavior: this.widget.clipBehavior);
-        return ((Widget)(object?)this._configuration.buildOverscrollIndicator(context, child, details));
+        return ((Widget)this._configuration.buildOverscrollIndicator(context, child, details));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1930,11 +1929,11 @@ internal class _HorizontalInnerDimension__scrollable : Scrollable
     public virtual GlobalKey<ScrollableState> verticalOuterKey { get; private set; } = default!;
     public virtual DiagonalDragBehavior diagonalDragBehavior { get; private set; } = default!;
 
-    internal _HorizontalInnerDimension__scrollable(global::Doroti.Framework.Foundation.Key? key = null, GlobalKey<ScrollableState> verticalOuterKey = default!, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::Doroti.Framework.Painting.AxisDirection axisDirection = default!, ScrollController? controller = null, ScrollPhysics? physics = null, Clip clipBehavior = Clip.hardEdge, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, bool excludeFromSemantics = false, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, string? restorationId = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none) : base(key: key, viewportBuilder: viewportBuilder, axisDirection: axisDirection, controller: controller, physics: physics, clipBehavior: clipBehavior, incrementCalculator: incrementCalculator, excludeFromSemantics: excludeFromSemantics, dragStartBehavior: dragStartBehavior, restorationId: restorationId, hitTestBehavior: hitTestBehavior)
+    internal _HorizontalInnerDimension__scrollable(global::Doroti.Framework.Foundation.Key? key = null, GlobalKey<ScrollableState> verticalOuterKey = default!, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::Doroti.Framework.Painting.AxisDirection axisDirection = default!, ScrollController? controller = null, ScrollPhysics? physics = null, Clip clipBehavior = Clip.hardEdge, global::System.Func<ScrollIncrementDetails, double>? incrementCalculator = null, bool excludeFromSemantics = false, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, string? restorationId = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = HitTestBehavior.opaque, DiagonalDragBehavior diagonalDragBehavior = DiagonalDragBehavior.none) : base(key: key, viewportBuilder: viewportBuilder, axisDirection: axisDirection, controller: controller, physics: physics, clipBehavior: clipBehavior, incrementCalculator: incrementCalculator, excludeFromSemantics: excludeFromSemantics, dragStartBehavior: dragStartBehavior, restorationId: restorationId, hitTestBehavior: hitTestBehavior)
     {
         this.verticalOuterKey = verticalOuterKey;
         this.diagonalDragBehavior = diagonalDragBehavior;
-        System.Diagnostics.Debug.Assert(((object.Equals(axisDirection, global::Doroti.Framework.Painting.AxisDirection.left)) || (object.Equals(axisDirection, global::Doroti.Framework.Painting.AxisDirection.right))));
+        System.Diagnostics.Debug.Assert(((Equals(axisDirection, AxisDirection.left)) || (Equals(axisDirection, AxisDirection.right))));
     }
 
     public override _HorizontalInnerDimensionState__scrollable createState() => new _HorizontalInnerDimensionState__scrollable();
@@ -1944,12 +1943,12 @@ internal class _HorizontalInnerDimensionState__scrollable : ScrollableState
 {
     public virtual ScrollableState verticalScrollable { get; set; } = default!;
 
-    public virtual GlobalKey<ScrollableState> verticalOuterKey => (((_HorizontalInnerDimension__scrollable?)(object?)this.widget)!).verticalOuterKey;
-    public virtual DiagonalDragBehavior diagonalDragBehavior => (((_HorizontalInnerDimension__scrollable?)(object?)this.widget)!).diagonalDragBehavior;
+    public virtual GlobalKey<ScrollableState> verticalOuterKey => (((_HorizontalInnerDimension__scrollable?)this.widget)!).verticalOuterKey;
+    public virtual DiagonalDragBehavior diagonalDragBehavior => (((_HorizontalInnerDimension__scrollable?)this.widget)!).diagonalDragBehavior;
     public override void didChangeDependencies()
     {
         verticalScrollable = Scrollable.of(this.context);
-        DartRuntimePrimitives.Assert(() => (object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((ScrollableState)this.verticalScrollable).axisDirection), global::Doroti.Framework.Painting.Axis.vertical)));
+        DartRuntimePrimitives.Assert(() => (Equals(Basic_typesLibrary.axisDirectionToAxis(((ScrollableState)this.verticalScrollable).axisDirection), Axis.vertical)));
         base.didChangeDependencies();
     }
 
@@ -1995,7 +1994,7 @@ internal class _HorizontalInnerDimensionState__scrollable : ScrollableState
     internal override Widget _buildChrome(BuildContext context, Widget child)
     {
         var details = new ScrollableDetails(direction: this.widget.axisDirection, controller: this._effectiveScrollController, clipBehavior: this.widget.clipBehavior);
-        return ((Widget)(object?)this._configuration.buildOverscrollIndicator(context, child, details));
+        return ((Widget)this._configuration.buildOverscrollIndicator(context, child, details));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

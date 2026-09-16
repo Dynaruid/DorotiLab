@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_highlight.dart
-#pragma warning disable CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -22,12 +22,12 @@ public class InkHighlight : InteractiveInkFeature
     internal virtual global::Doroti.Framework.Animation.AnimationController _alphaController { get; set; } = default!;
     internal virtual bool _active { get; set; } = true;
 
-    public InkHighlight(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Color color, TextDirection textDirection, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::System.Func<Rect>? rectCallback = null, global::System.Action? onRemoved = null, Duration? fadeDuration = null) : base(controller: controller, referenceBox: referenceBox, color: color, customBorder: customBorder, onRemoved: onRemoved)
+    public InkHighlight(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Color color, TextDirection textDirection, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::System.Func<Rect>? rectCallback = null, global::System.Action? onRemoved = null, Duration? fadeDuration = null) : base(controller: controller, referenceBox: referenceBox, color: color, customBorder: customBorder, onRemoved: onRemoved)
     {
         Duration __fadeDuration = fadeDuration ?? Ink_highlightLibrary._kDefaultHighlightFadeDuration;
         this._shape = shape;
         this._radius = radius;
-        this._borderRadius = (borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero);
+        this._borderRadius = (borderRadius ?? BorderRadius.zero);
         this._textDirection = textDirection;
         this._rectCallback = rectCallback;
         _alphaController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
@@ -57,7 +57,7 @@ public class InkHighlight : InteractiveInkFeature
 
     internal virtual void _handleAlphaStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if ((global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status) && !this._active))
+        if ((AnimationStatusMembers.isDismissed(status) && !this._active))
         {
             dispose();
         }
@@ -78,16 +78,16 @@ public class InkHighlight : InteractiveInkFeature
         }
         switch (this._shape)
         {
-            case global::Doroti.Framework.Painting.BoxShape.circle:
+            case BoxShape.circle:
                 {
                     canvas.drawCircle(((Offset)(rect).center), (this._radius ?? Material.defaultSplashRadius), paint);
                     break;
                 }
-            case global::Doroti.Framework.Painting.BoxShape.rectangle:
+            case BoxShape.rectangle:
                 {
-                    if ((!object.Equals(this._borderRadius, global::Doroti.Framework.Painting.BorderRadius.zero)))
+                    if ((!Equals(this._borderRadius, BorderRadius.zero)))
                     {
-                        var clipRRect = global::Doroti.Ui.RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomRight);
+                        var clipRRect = RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomRight);
                         canvas.drawRRect(clipRRect, paint);
                     }
                     else
@@ -108,8 +108,8 @@ public class InkHighlight : InteractiveInkFeature
     __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
-        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)((this._rectCallback is not null) ? this._rectCallback() : (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size)));
+        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)MatrixUtils.getAsTranslation(transform));
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)((this._rectCallback is not null) ? this._rectCallback() : (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size)));
         if ((originOffset is null))
         {
             canvas.save();

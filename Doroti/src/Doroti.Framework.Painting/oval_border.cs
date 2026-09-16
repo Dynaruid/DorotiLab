@@ -44,9 +44,9 @@ public class OvalBorder : CircleBorder
     {
         if ((DartRuntimePrimitives.RequireValue(eccentricity) != 1.0))
         {
-            return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side}, eccentricity: {DartRuntimePrimitives.RequireValue(eccentricity)})";
+            return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side}, eccentricity: {DartRuntimePrimitives.RequireValue(eccentricity)})";
         }
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

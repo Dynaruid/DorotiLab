@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/card_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -53,12 +53,12 @@ public class CardTheme : global::Doroti.Framework.Widgets.InheritedWidget, globa
 
     public static CardThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CardTheme? cardThemeLocal = ((CardTheme?)(object?)context.dependOnInheritedWidgetOfExactType<CardTheme>());
+        CardTheme? cardThemeLocal = ((CardTheme?)context.dependOnInheritedWidgetOfExactType<CardTheme>());
         return (cardThemeLocal?.data ?? Theme.of(context).cardTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((CardTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((CardTheme)oldWidget).data)));
     public static CardTheme lerp(CardTheme? a, CardTheme? b, double t)
     {
         if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
@@ -80,7 +80,7 @@ public class CardTheme : global::Doroti.Framework.Widgets.InheritedWidget, globa
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
     }
 
-    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
     public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -95,7 +95,7 @@ public class CardTheme : global::Doroti.Framework.Widgets.InheritedWidget, globa
 
     public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -148,11 +148,11 @@ public class CardThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((__other is CardThemeData) && (object.Equals(((CardThemeData)((CardThemeData)__other)).clipBehavior, this.clipBehavior))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).color, this.color))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (((CardThemeData)((CardThemeData)__other)).elevation == this.elevation)) && (object.Equals(((CardThemeData)((CardThemeData)__other)).margin, this.margin))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).shape, this.shape)));
+        return ((((((((__other is CardThemeData) && (Equals(((CardThemeData)((CardThemeData)__other)).clipBehavior, this.clipBehavior))) && (Equals(((CardThemeData)((CardThemeData)__other)).color, this.color))) && (Equals(((CardThemeData)((CardThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((CardThemeData)((CardThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (((CardThemeData)((CardThemeData)__other)).elevation == this.elevation)) && (Equals(((CardThemeData)((CardThemeData)__other)).margin, this.margin))) && (Equals(((CardThemeData)((CardThemeData)__other)).shape, this.shape)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -166,8 +166,8 @@ public class CardThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -183,7 +183,7 @@ public class CardThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

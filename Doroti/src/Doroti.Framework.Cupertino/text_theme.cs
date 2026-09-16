@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/text_theme.dart
-#pragma warning disable CS8600, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -50,7 +50,7 @@ public static partial class Text_themeLibrary
 {
     internal static global::Doroti.Framework.Painting.TextStyle? _resolveTextStyle(global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Painting.TextStyle?)(object?)style?.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)style).color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)style).backgroundColor, context), decorationColor: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)style).decorationColor, context)));
+        return ((global::Doroti.Framework.Painting.TextStyle?)style?.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)style).color, context), backgroundColor: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)style).backgroundColor, context), decorationColor: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)style).decorationColor, context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -150,16 +150,16 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((__other is CupertinoTextThemeData) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._defaults, this._defaults))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._primaryColor, this._primaryColor))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._textStyle, this._textStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._actionTextStyle, this._actionTextStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._actionSmallTextStyle, this._actionSmallTextStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._tabLabelTextStyle, this._tabLabelTextStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._navTitleTextStyle, this._navTitleTextStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._navLargeTitleTextStyle, this._navLargeTitleTextStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._navActionTextStyle, this._navActionTextStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._pickerTextStyle, this._pickerTextStyle))) && (object.Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._dateTimePickerTextStyle, this._dateTimePickerTextStyle)));
+        return ((((((((((((__other is CupertinoTextThemeData) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._defaults, this._defaults))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._primaryColor, this._primaryColor))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._textStyle, this._textStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._actionTextStyle, this._actionTextStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._actionSmallTextStyle, this._actionSmallTextStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._tabLabelTextStyle, this._tabLabelTextStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._navTitleTextStyle, this._navTitleTextStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._navLargeTitleTextStyle, this._navLargeTitleTextStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._navActionTextStyle, this._navActionTextStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._pickerTextStyle, this._pickerTextStyle))) && (Equals(((CupertinoTextThemeData)((CupertinoTextThemeData)__other))._dateTimePickerTextStyle, this._dateTimePickerTextStyle)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this._defaults, this._primaryColor, this._textStyle, this._actionTextStyle, this._actionSmallTextStyle, this._tabLabelTextStyle, this._navTitleTextStyle, this._navLargeTitleTextStyle, this._navActionTextStyle, this._pickerTextStyle, this._dateTimePickerTextStyle));
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -175,7 +175,7 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -194,24 +194,24 @@ internal class _TextThemeDefaultsBuilder__text_theme
 
     internal static global::Doroti.Framework.Painting.TextStyle _applyLabelColor(global::Doroti.Framework.Painting.TextStyle original, Color color)
     {
-        return ((object.Equals(((global::Doroti.Framework.Painting.TextStyle)original).color, color)) ? original : original.copyWith(color: color));
+        return ((Equals(((global::Doroti.Framework.Painting.TextStyle)original).color, color)) ? original : original.copyWith(color: color));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Painting.TextStyle textStyle => _TextThemeDefaultsBuilder__text_theme._applyLabelColor(Text_themeLibrary._kDefaultTextStyle, this.labelColor);
-    public virtual global::Doroti.Framework.Painting.TextStyle tabLabelTextStyle => _TextThemeDefaultsBuilder__text_theme._applyLabelColor(Text_themeLibrary._kDefaultTabLabelTextStyle, this.inactiveGrayColor);
-    public virtual global::Doroti.Framework.Painting.TextStyle navTitleTextStyle => _TextThemeDefaultsBuilder__text_theme._applyLabelColor(Text_themeLibrary._kDefaultMiddleTitleTextStyle, this.labelColor);
-    public virtual global::Doroti.Framework.Painting.TextStyle navLargeTitleTextStyle => _TextThemeDefaultsBuilder__text_theme._applyLabelColor(Text_themeLibrary._kDefaultLargeTitleTextStyle, this.labelColor);
-    public virtual global::Doroti.Framework.Painting.TextStyle pickerTextStyle => _TextThemeDefaultsBuilder__text_theme._applyLabelColor(Text_themeLibrary._kDefaultPickerTextStyle, this.labelColor);
-    public virtual global::Doroti.Framework.Painting.TextStyle dateTimePickerTextStyle => _TextThemeDefaultsBuilder__text_theme._applyLabelColor(Text_themeLibrary._kDefaultDateTimePickerTextStyle, this.labelColor);
+    public virtual global::Doroti.Framework.Painting.TextStyle textStyle => _applyLabelColor(Text_themeLibrary._kDefaultTextStyle, this.labelColor);
+    public virtual global::Doroti.Framework.Painting.TextStyle tabLabelTextStyle => _applyLabelColor(Text_themeLibrary._kDefaultTabLabelTextStyle, this.inactiveGrayColor);
+    public virtual global::Doroti.Framework.Painting.TextStyle navTitleTextStyle => _applyLabelColor(Text_themeLibrary._kDefaultMiddleTitleTextStyle, this.labelColor);
+    public virtual global::Doroti.Framework.Painting.TextStyle navLargeTitleTextStyle => _applyLabelColor(Text_themeLibrary._kDefaultLargeTitleTextStyle, this.labelColor);
+    public virtual global::Doroti.Framework.Painting.TextStyle pickerTextStyle => _applyLabelColor(Text_themeLibrary._kDefaultPickerTextStyle, this.labelColor);
+    public virtual global::Doroti.Framework.Painting.TextStyle dateTimePickerTextStyle => _applyLabelColor(Text_themeLibrary._kDefaultDateTimePickerTextStyle, this.labelColor);
     public virtual global::Doroti.Framework.Painting.TextStyle actionTextStyle(Color? primaryColor = null) => Text_themeLibrary._kDefaultActionTextStyle.copyWith(color: primaryColor);
     public virtual global::Doroti.Framework.Painting.TextStyle actionSmallTextStyle(Color? primaryColor = null) => Text_themeLibrary._kDefaultActionSmallTextStyle.copyWith(color: primaryColor);
     public virtual global::Doroti.Framework.Painting.TextStyle navActionTextStyle(Color? primaryColor = null) => actionTextStyle(primaryColor: primaryColor);
     public virtual _TextThemeDefaultsBuilder__text_theme resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color resolvedLabelColor = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.labelColor, context));
-        global::Doroti.Ui.Color resolvedInactiveGray = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.inactiveGrayColor, context));
-        return (((object.Equals(resolvedLabelColor, this.labelColor)) && (object.Equals(resolvedInactiveGray, CupertinoColors.inactiveGray))) ? this : new _TextThemeDefaultsBuilder__text_theme(resolvedLabelColor, resolvedInactiveGray));
+        global::Doroti.Ui.Color resolvedLabelColor = ((global::Doroti.Ui.Color)CupertinoDynamicColor.resolve(this.labelColor, context));
+        global::Doroti.Ui.Color resolvedInactiveGray = ((global::Doroti.Ui.Color)CupertinoDynamicColor.resolve(this.inactiveGrayColor, context));
+        return (((Equals(resolvedLabelColor, this.labelColor)) && (Equals(resolvedInactiveGray, CupertinoColors.inactiveGray))) ? this : new _TextThemeDefaultsBuilder__text_theme(resolvedLabelColor, resolvedInactiveGray));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -223,11 +223,11 @@ internal class _TextThemeDefaultsBuilder__text_theme
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is _TextThemeDefaultsBuilder__text_theme) && (object.Equals(((_TextThemeDefaultsBuilder__text_theme)((_TextThemeDefaultsBuilder__text_theme)__other)).labelColor, this.labelColor))) && (object.Equals(((_TextThemeDefaultsBuilder__text_theme)((_TextThemeDefaultsBuilder__text_theme)__other)).inactiveGrayColor, this.inactiveGrayColor)));
+        return (((__other is _TextThemeDefaultsBuilder__text_theme) && (Equals(((_TextThemeDefaultsBuilder__text_theme)((_TextThemeDefaultsBuilder__text_theme)__other)).labelColor, this.labelColor))) && (Equals(((_TextThemeDefaultsBuilder__text_theme)((_TextThemeDefaultsBuilder__text_theme)__other)).inactiveGrayColor, this.inactiveGrayColor)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.labelColor, this.inactiveGrayColor));

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/segmented_button_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -41,11 +41,11 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is SegmentedButtonThemeData) && (object.Equals(((SegmentedButtonThemeData)((SegmentedButtonThemeData)__other)).style, this.style))) && (object.Equals(((SegmentedButtonThemeData)((SegmentedButtonThemeData)__other)).selectedIcon, this.selectedIcon)));
+        return (((__other is SegmentedButtonThemeData) && (Equals(((SegmentedButtonThemeData)((SegmentedButtonThemeData)__other)).style, this.style))) && (Equals(((SegmentedButtonThemeData)((SegmentedButtonThemeData)__other)).selectedIcon, this.selectedIcon)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -53,8 +53,8 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", this.style, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -70,7 +70,7 @@ public class SegmentedButtonThemeData : global::Doroti.Framework.Foundation.Diag
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -87,7 +87,7 @@ public class SegmentedButtonTheme : global::Doroti.Framework.Widgets.InheritedTh
 
     public static SegmentedButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return (SegmentedButtonTheme.maybeOf(context) ?? Theme.of(context).segmentedButtonTheme);
+        return (maybeOf(context) ?? Theme.of(context).segmentedButtonTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -99,9 +99,9 @@ public class SegmentedButtonTheme : global::Doroti.Framework.Widgets.InheritedTh
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new SegmentedButtonTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new SegmentedButtonTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((SegmentedButtonTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((SegmentedButtonTheme)oldWidget).data)));
 }

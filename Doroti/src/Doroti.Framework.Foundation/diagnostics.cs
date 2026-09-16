@@ -197,7 +197,7 @@ public class DiagnosticsNode
     public virtual DartMap<string, object?> toJsonMapIterative(DiagnosticsSerializationDelegate? serializer = null) =>
         toJsonMap(serializer);
 
-    public static List<DartMap<string, object>> toJsonList(
+    public static List<DartMap<string, object?>> toJsonList(
         List<DiagnosticsNode>? nodes,
         DiagnosticsNode? parent,
         DiagnosticsSerializationDelegate serializer)
@@ -218,8 +218,7 @@ public class DiagnosticsNode
         var result = selected.Select(node =>
         {
             var source = node.toJsonMap(serializer.delegateForNode(node));
-            return new DartMap<string, object>(source.Select(pair =>
-                new KeyValuePair<string, object>(pair.Key, pair.Value!)));
+            return new DartMap<string, object?>(source);
         }).ToList();
         if (truncated)
         {
@@ -279,6 +278,8 @@ public class DiagnosticsProperty<T> : DiagnosticsNode
 {
     private readonly ComputePropertyValueCallback<T>? _computeValue;
     private readonly object? _defaultValue;
+    private readonly string? _valueDescription;
+    private readonly string? _ifNullDescription;
 
     public DiagnosticsProperty(
         string? name,
@@ -298,12 +299,14 @@ public class DiagnosticsProperty<T> : DiagnosticsNode
     {
         _computeValue = computeValue;
         _defaultValue = defaultValue;
+        _valueDescription = description;
+        _ifNullDescription = ifNull;
         _ = missingIfNull;
         _ = tooltip;
         _ = linePrefix;
     }
 
-    public DiagnosticsProperty(string? name, object? value, string description)
+    public DiagnosticsProperty(string? name, object? value, string? description)
         : this(name, value, DiagnosticsTreeStyle.singleLine, description: description)
     {
     }
@@ -320,7 +323,12 @@ public class DiagnosticsProperty<T> : DiagnosticsNode
 
     public bool isInteresting => true;
 
-    public override string toDescription() => propertyValue?.ToString() ?? "null";
+    public override string toDescription()
+    {
+        var currentValue = propertyValue;
+        return currentValue is null && _ifNullDescription is not null
+            ? _ifNullDescription : _valueDescription ?? currentValue?.ToString() ?? "null";
+    }
 
     public override bool isFiltered(DiagnosticLevel minLevel) => base.isFiltered(minLevel) ||
         _defaultValue is not null && Equals(propertyValue, _defaultValue);
@@ -391,10 +399,10 @@ public sealed class FlagProperty : DiagnosticsProperty<bool?>
 
 public sealed class ObjectFlagProperty<T> : DiagnosticsProperty<T>
 {
-    public ObjectFlagProperty(string? name, T? value, string ifPresent = "present", DiagnosticLevel level = DiagnosticLevel.info, string? ifNull = null)
+    public ObjectFlagProperty(string? name, T? value, string? ifPresent = "present", DiagnosticLevel level = DiagnosticLevel.info, string? ifNull = null)
         : base(name, value, level: level, description: value is null ? ifNull : null) => this.ifPresent = ifPresent;
-    public string ifPresent { get; }
-    public override string toDescription() => propertyValue is null ? "null" : ifPresent;
+    public string? ifPresent { get; }
+    public override string toDescription() => propertyValue is null || ifPresent is null ? base.toDescription() : ifPresent;
     public static ObjectFlagProperty<T> CreateHas(
         string? name,
         T? value,

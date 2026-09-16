@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/radio_group.dart
-#pragma warning disable CS0693, CS8600, CS8601, CS8602, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -24,9 +23,9 @@ public class RadioGroup<T> : StatefulWidget
         this.child = child;
     }
 
-    public static RadioGroupRegistry<T>? maybeOf<T>(BuildContext context)
+    public static RadioGroupRegistry<TValue>? maybeOf<TValue>(BuildContext context)
     {
-        return ((RadioGroupRegistry<T>?)(object?)DartRuntimePrimitives.NullAware(context.dependOnInheritedWidgetOfExactType<_RadioGroupStateScope__radio_group<T>>(), __target => __target.state));
+        return ((RadioGroupRegistry<TValue>?)DartRuntimePrimitives.NullAware(context.dependOnInheritedWidgetOfExactType<_RadioGroupStateScope__radio_group<TValue>>(), __target => __target.state));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -43,7 +42,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         {
             if (!__late__radioGroupShortcuts_initialized)
             {
-                __late__radioGroupShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.space)] = ((Intent)(object?)new VoidCallbackIntent(() => this._toggleFocusedRadio())) };
+                __late__radioGroupShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(LogicalKeyboardKey.space)] = ((Intent)new VoidCallbackIntent(() => this._toggleFocusedRadio())) };
                 __late__radioGroupShortcuts_initialized = true;
             }
             return __late__radioGroupShortcuts;
@@ -79,7 +78,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
             {
                 return;
             }
-            throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("RadioGroupPolicy can't be used for a radio group that allows multiple selection."));
+            throw DartRuntimePrimitives.AsException(FlutterError.Create("RadioGroupPolicy can't be used for a radio group that allows multiple selection."));
         })), debugLabel: "RadioGroup.singleSelectionCheck");
         _debugHasScheduledSingleSelectionCheck = true;
         return true;
@@ -92,7 +91,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual T? groupValue => ((RadioGroup<T>)(object)this.widget).groupValue;
+    public virtual T? groupValue => ((RadioGroup<T>)this.widget).groupValue;
     public override void dispose()
     {
         this._radioGroupShortcutManager.dispose();
@@ -113,7 +112,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         {
             return;
         }
-        if (!EqualityComparer<T>.Default.Equals(((RadioClient<T>)radioLocal).radioValue, ((RadioGroup<T>)(object)this.widget).groupValue))
+        if (!EqualityComparer<T>.Default.Equals(((RadioClient<T>)radioLocal).radioValue, ((RadioGroup<T>)this.widget).groupValue))
         {
             this.onChanged(((RadioClient<T>)radioLocal).radioValue);
             return;
@@ -124,7 +123,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         }
     }
 
-    public virtual global::System.Action<T?> onChanged => ((RadioGroup<T>)(object)this.widget).onChanged;
+    public virtual global::System.Action<T?> onChanged => ((RadioGroup<T>)this.widget).onChanged;
     internal virtual void _selectNextRadio() => _selectRadioInDirection(true);
     internal virtual void _selectPreviousRadio() => _selectRadioInDirection(false);
     internal virtual void _selectRadioInDirection(bool forward)
@@ -139,13 +138,13 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
             return;
         }
         List<FocusNode> sorted = ReadingOrderTraversalPolicy.sort(this._radios.where(((radio) => ((RadioClient<T>)radio).enabled)).map<RadioClient<T>, FocusNode>(((radio) => ((RadioClient<T>)radio).focusNode)).Cast<FocusNode>()).ToList().ToList();
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(sorted));
-        IEnumerable<FocusNode> nodesInEffectiveOrder = (forward ? sorted : System.Linq.Enumerable.Reverse(sorted));
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(sorted));
+        IEnumerable<FocusNode> nodesInEffectiveOrder = (forward ? sorted : Enumerable.Reverse(sorted));
         IEnumerator<FocusNode> iterator = nodesInEffectiveOrder.GetEnumerator();
         FocusNode? nextFocus = default!;
         while (iterator.MoveNext())
         {
-            if ((object.Equals(iterator.Current, currentFocus)))
+            if ((Equals(iterator.Current, currentFocus)))
             {
                 if (iterator.MoveNext())
                 {
@@ -155,7 +154,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
             }
         }
         nextFocus ??= nodesInEffectiveOrder.First();
-        RadioClient<T> radioToSelect = this._radios.firstWhere(((radio) => (object.Equals(((RadioClient<T>)radio).focusNode, nextFocus))));
+        RadioClient<T> radioToSelect = this._radios.firstWhere(((radio) => (Equals(((RadioClient<T>)radio).focusNode, nextFocus))));
         this.onChanged(((RadioClient<T>)radioToSelect).radioValue);
         nextFocus.requestFocus();
     }
@@ -163,7 +162,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _debugScheduleSingleSelectionCheck());
-        return ((Widget)(object?)new Semantics(container: true, role: SemanticsRole.radioGroup, child: Shortcuts.CreateManager(manager: this._radioGroupShortcutManager, child: new FocusTraversalGroup(policy: new _SkipUnselectedRadioPolicy__radio_group<T>(this._radios, ((RadioGroup<T>)(object)this.widget).groupValue), child: new _RadioGroupStateScope__radio_group<T>(state: this, groupValue: ((RadioGroup<T>)(object)this.widget).groupValue, child: ((RadioGroup<T>)(object)this.widget).child)))));
+        return ((Widget)new Semantics(container: true, role: SemanticsRole.radioGroup, child: Shortcuts.CreateManager(manager: this._radioGroupShortcutManager, child: new FocusTraversalGroup(policy: new _SkipUnselectedRadioPolicy__radio_group<T>(this._radios, ((RadioGroup<T>)this.widget).groupValue), child: new _RadioGroupStateScope__radio_group<T>(state: this, groupValue: ((RadioGroup<T>)this.widget).groupValue, child: ((RadioGroup<T>)this.widget).child)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -204,8 +203,8 @@ internal class _RadioGroupStateScope__radio_group<T> : InheritedWidget
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __oldWidget = (_RadioGroupStateScope__radio_group<T>)(object)oldWidget;
-        return ((!object.Equals(this.state, ((_RadioGroupStateScope__radio_group<T>)__oldWidget).state)) || !EqualityComparer<T>.Default.Equals(this.groupValue, ((_RadioGroupStateScope__radio_group<T>)__oldWidget).groupValue));
+        var __oldWidget = (_RadioGroupStateScope__radio_group<T>)oldWidget;
+        return ((!Equals(this.state, ((_RadioGroupStateScope__radio_group<T>)__oldWidget).state)) || !EqualityComparer<T>.Default.Equals(this.groupValue, ((_RadioGroupStateScope__radio_group<T>)__oldWidget).groupValue));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -244,7 +243,7 @@ internal class _SkipUnselectedRadioPolicy__radio_group<T> : ReadingOrderTraversa
     internal virtual bool _radioSelected(RadioClient<T> radio) => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(((RadioClient<T>)radio).radioValue, this.groupValue));
     public override IEnumerable<FocusNode> sortDescendants(IEnumerable<FocusNode> descendants, FocusNode currentNode)
     {
-        IEnumerable<FocusNode> nodesInReadOrder = ((IEnumerable<FocusNode>)(object?)base.sortDescendants(descendants.Cast<FocusNode>(), currentNode));
+        IEnumerable<FocusNode> nodesInReadOrder = ((IEnumerable<FocusNode>)base.sortDescendants(descendants.Cast<FocusNode>(), currentNode));
         RadioClient<T>? selected = this.radios.firstWhereOrNull(this._radioSelected);
         if ((selected is null))
         {
@@ -266,9 +265,9 @@ internal class _SkipUnselectedRadioPolicy__radio_group<T> : ReadingOrderTraversa
         {
             return nodesInReadOrder;
         }
-        HashSet<FocusNode> nodeToSkip = this.radios.where(((radio) => ((!object.Equals(selected, radio)) && (!object.Equals(((RadioClient<T>)radio).focusNode, currentNode))))).map<RadioClient<T>, FocusNode>(((radio) => ((RadioClient<T>)radio).focusNode)).toSet();
+        HashSet<FocusNode> nodeToSkip = this.radios.where(((radio) => ((!Equals(selected, radio)) && (!Equals(((RadioClient<T>)radio).focusNode, currentNode))))).map<RadioClient<T>, FocusNode>(((radio) => ((RadioClient<T>)radio).focusNode)).toSet();
         IEnumerable<FocusNode> skipsNonSelected = descendants.where(((node) => !nodeToSkip.Contains(node)));
-        return ((IEnumerable<FocusNode>)(object?)base.sortDescendants(skipsNonSelected.Cast<FocusNode>(), currentNode));
+        return ((IEnumerable<FocusNode>)base.sortDescendants(skipsNonSelected.Cast<FocusNode>(), currentNode));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

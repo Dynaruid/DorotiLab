@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/feedback.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -10,18 +9,18 @@ public abstract class Feedback
     public static async Future forTap(BuildContext context)
     {
         (context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
                 {
-                    await SystemSound.play(global::Doroti.Framework.Services.SystemSoundType.click);
+                    await SystemSound.play(SystemSoundType.click);
                     return;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.iOS:
+            case TargetPlatform.linux:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 {
                     await Future.value();
                     return;
@@ -35,11 +34,11 @@ public abstract class Feedback
     {
         if ((callback is null))
         {
-            return ((global::System.Action)(object)null);
+            return ((global::System.Action?)null);
         }
         return ((global::System.Action)(() =>
         {
-            DartRuntimePrimitives.Ignore(Feedback.forTap(context));
+            DartRuntimePrimitives.Ignore(forTap(context));
             callback();
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -48,20 +47,20 @@ public abstract class Feedback
     public static Future forLongPress(BuildContext context)
     {
         (context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.LongPressSemanticsEvent());
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
                 {
-                    return ((Future)(object?)HapticFeedback.vibrate());
+                    return ((Future)HapticFeedback.vibrate());
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.iOS:
                 {
-                    return ((Future)(object?)global::Doroti.Runtime.DartAsyncRuntime.wait(new List<Future> { SystemSound.play(global::Doroti.Framework.Services.SystemSoundType.click), HapticFeedback.heavyImpact() }));
+                    return ((Future)DartAsyncRuntime.wait(new List<Future> { SystemSound.play(SystemSoundType.click), HapticFeedback.heavyImpact() }));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.linux:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 {
                     return Future.value();
                 }
@@ -75,11 +74,11 @@ public abstract class Feedback
     {
         if ((callback is null))
         {
-            return ((global::System.Action)(object)null);
+            return ((global::System.Action?)null);
         }
         return ((global::System.Action)(() =>
         {
-            DartRuntimePrimitives.Ignore(Feedback.forLongPress(context));
+            DartRuntimePrimitives.Ignore(forLongPress(context));
             callback();
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");

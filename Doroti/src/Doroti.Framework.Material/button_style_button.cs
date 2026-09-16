@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/button_style_button.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -64,7 +64,7 @@ public abstract class ButtonStyleButton : global::Doroti.Framework.Widgets.State
         {
             return null;
         }
-        return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [global::Doroti.Framework.Widgets.WidgetState.disabled.asConstraint()] = disabled, [global::Doroti.Framework.Widgets.WidgetStateMembers.any] = enabled }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>()));
+        return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)WidgetStateProperty<Color?>.CreateFromMap(new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?> { [WidgetState.disabled.asConstraint()] = disabled, [WidgetStateMembers.any] = enabled }.cast<global::Doroti.Framework.Widgets.WidgetStatesConstraint, global::Doroti.Ui.Color?>()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -99,7 +99,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         {
             internalStatesController = new global::Doroti.Framework.Widgets.WidgetStatesController();
         }
-        this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !((ButtonStyleButton)this.widget).enabled);
+        this.statesController.update(WidgetState.disabled, !((ButtonStyleButton)this.widget).enabled);
         this.statesController.addListener(this.handleStatesControllerChange);
     }
 
@@ -112,7 +112,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
     public override void didUpdateWidget(ButtonStyleButton oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((ButtonStyleButton)this.widget).statesController, ((ButtonStyleButton)oldWidget).statesController)))
+        if ((!Equals(((ButtonStyleButton)this.widget).statesController, ((ButtonStyleButton)oldWidget).statesController)))
         {
             ((ButtonStyleButton)oldWidget).statesController?.removeListener(this.handleStatesControllerChange);
             if ((((ButtonStyleButton)this.widget).statesController is not null))
@@ -124,10 +124,10 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         }
         if ((((ButtonStyleButton)this.widget).enabled != ((ButtonStyleButton)oldWidget).enabled))
         {
-            this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !((ButtonStyleButton)this.widget).enabled);
+            this.statesController.update(WidgetState.disabled, !((ButtonStyleButton)this.widget).enabled);
             if (!((ButtonStyleButton)this.widget).enabled)
             {
-                this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.pressed, false);
+                this.statesController.update(WidgetState.pressed, false);
             }
         }
     }
@@ -158,11 +158,11 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme = ((ThemeData)(object?)Theme.of(context));
-        global::Doroti.Framework.Widgets.IconThemeData iconThemeLocal = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)IconTheme.of(context));
+        ThemeData theme = ((ThemeData)Theme.of(context));
+        global::Doroti.Framework.Widgets.IconThemeData iconThemeLocal = ((global::Doroti.Framework.Widgets.IconThemeData)IconTheme.of(context));
         ButtonStyle? widgetStyle = ((ButtonStyleButton)this.widget).style;
-        ButtonStyle? themeStyle = ((ButtonStyle?)(object?)this.widget.themeStyleOf(context));
-        ButtonStyle defaultStyle = ((ButtonStyle)(object?)this.widget.defaultStyleOf(context));
+        ButtonStyle? themeStyle = ((ButtonStyle?)this.widget.themeStyleOf(context));
+        ButtonStyle defaultStyle = ((ButtonStyle)this.widget.defaultStyleOf(context));
         P? effectiveValue<P>(global::System.Func<ButtonStyle?, P?> getProperty)
         {
             P? widgetValue = getProperty(widgetStyle);
@@ -191,35 +191,35 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         }
         double? resolvedElevation = resolve<double?>(((style) => style?.elevation)) ?? 0.0;
         global::Doroti.Framework.Painting.TextStyle? resolvedTextStyle = resolve<global::Doroti.Framework.Painting.TextStyle?>(((style) => style?.textStyle));
-        global::Doroti.Ui.Color? resolvedBackgroundColor = ((global::Doroti.Ui.Color?)(object?)resolve<global::Doroti.Ui.Color?>(((style) => style?.backgroundColor)));
-        global::Doroti.Ui.Color? resolvedForegroundColor = ((global::Doroti.Ui.Color?)(object?)resolve<global::Doroti.Ui.Color?>(((style) => style?.foregroundColor)));
-        global::Doroti.Ui.Color? resolvedShadowColor = ((global::Doroti.Ui.Color?)(object?)resolve<global::Doroti.Ui.Color?>(((style) => style?.shadowColor)));
-        global::Doroti.Ui.Color? resolvedSurfaceTintColor = ((global::Doroti.Ui.Color?)(object?)resolve<global::Doroti.Ui.Color?>(((style) => style?.surfaceTintColor)));
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? resolvedPadding = resolve<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding)) ?? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 8);
-        global::Doroti.Ui.Size? resolvedMinimumSize = ((global::Doroti.Ui.Size?)(object?)resolve<global::Doroti.Ui.Size?>(((style) => style?.minimumSize))) ?? new global::Doroti.Ui.Size(64, 40);
-        global::Doroti.Ui.Size? resolvedFixedSize = ((global::Doroti.Ui.Size?)(object?)resolve<global::Doroti.Ui.Size?>(((style) => style?.fixedSize)));
-        global::Doroti.Ui.Size? resolvedMaximumSize = ((global::Doroti.Ui.Size?)(object?)resolve<global::Doroti.Ui.Size?>(((style) => style?.maximumSize))) ?? new global::Doroti.Ui.Size(double.PositiveInfinity, double.PositiveInfinity);
-        global::Doroti.Ui.Color? resolvedIconColor = ((global::Doroti.Ui.Color?)(object?)effectiveIconColor());
+        global::Doroti.Ui.Color? resolvedBackgroundColor = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((style) => style?.backgroundColor)));
+        global::Doroti.Ui.Color? resolvedForegroundColor = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((style) => style?.foregroundColor)));
+        global::Doroti.Ui.Color? resolvedShadowColor = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((style) => style?.shadowColor)));
+        global::Doroti.Ui.Color? resolvedSurfaceTintColor = ((global::Doroti.Ui.Color?)resolve<global::Doroti.Ui.Color?>(((style) => style?.surfaceTintColor)));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? resolvedPadding = resolve<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding)) ?? EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 8);
+        global::Doroti.Ui.Size? resolvedMinimumSize = ((global::Doroti.Ui.Size?)resolve<global::Doroti.Ui.Size?>(((style) => style?.minimumSize))) ?? new global::Doroti.Ui.Size(64, 40);
+        global::Doroti.Ui.Size? resolvedFixedSize = ((global::Doroti.Ui.Size?)resolve<global::Doroti.Ui.Size?>(((style) => style?.fixedSize)));
+        global::Doroti.Ui.Size? resolvedMaximumSize = ((global::Doroti.Ui.Size?)resolve<global::Doroti.Ui.Size?>(((style) => style?.maximumSize))) ?? new global::Doroti.Ui.Size(double.PositiveInfinity, double.PositiveInfinity);
+        global::Doroti.Ui.Color? resolvedIconColor = ((global::Doroti.Ui.Color?)effectiveIconColor());
         double? resolvedIconSize = resolve<double?>(((style) => style?.iconSize));
         global::Doroti.Framework.Painting.BorderSide? resolvedSide = resolve<global::Doroti.Framework.Painting.BorderSide?>(((style) => style?.side));
         global::Doroti.Framework.Painting.OutlinedBorder? resolvedShape = resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(((style) => style?.shape)) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder();
-        global::Doroti.Framework.Widgets.WidgetStateMouseCursor mouseCursorLocal = ((global::Doroti.Framework.Widgets.WidgetStateMouseCursor)(object?)new _MouseCursor__button_style_button(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor?>)((states) => effectiveValue(((style) => style?.mouseCursor?.resolve(states)))))));
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> overlayColorLocal = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>)((states) => effectiveValue(((style) => style?.overlayColor?.resolve(states)))))));
+        global::Doroti.Framework.Widgets.WidgetStateMouseCursor mouseCursorLocal = ((global::Doroti.Framework.Widgets.WidgetStateMouseCursor)new _MouseCursor__button_style_button(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor?>)((states) => effectiveValue(((style) => style?.mouseCursor?.resolve(states)))))));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> overlayColorLocal = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>)((states) => effectiveValue(((style) => style?.overlayColor?.resolve(states)))))));
         VisualDensity? resolvedVisualDensity = effectiveValue(((style) => style?.visualDensity)) ?? theme.visualDensity;
         MaterialTapTargetSize? resolvedTapTargetSize = effectiveValue(((style) => style?.tapTargetSize)) ?? MaterialTapTargetSize.padded;
         Duration? resolvedAnimationDuration = effectiveValue(((style) => style?.animationDuration)) ?? Duration.Create(milliseconds: 200);
         bool resolvedEnableFeedback = (effectiveValue(((style) => style?.enableFeedback)) ?? true);
-        global::Doroti.Framework.Painting.AlignmentGeometry? resolvedAlignment = effectiveValue(((style) => style?.alignment)) ?? global::Doroti.Framework.Painting.Alignment.center;
-        global::Doroti.Ui.Offset densityAdjustment = ((global::Doroti.Ui.Offset)(object?)resolvedVisualDensity!.baseSizeAdjustment);
+        global::Doroti.Framework.Painting.AlignmentGeometry? resolvedAlignment = effectiveValue(((style) => style?.alignment)) ?? Alignment.center;
+        global::Doroti.Ui.Offset densityAdjustment = ((global::Doroti.Ui.Offset)resolvedVisualDensity!.baseSizeAdjustment);
         InteractiveInkFeatureFactory? resolvedSplashFactory = effectiveValue(((style) => style?.splashFactory));
         global::System.Func<global::Doroti.Framework.Widgets.BuildContext, HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? resolvedBackgroundBuilder = effectiveValue(((style) => style?.backgroundBuilder));
         global::System.Func<global::Doroti.Framework.Widgets.BuildContext, HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? resolvedForegroundBuilder = effectiveValue(((style) => style?.foregroundBuilder));
-        global::Doroti.Ui.Clip effectiveClipBehavior = (((ButtonStyleButton)this.widget).clipBehavior ?? ((((((resolvedBackgroundBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)resolvedForegroundBuilder))) is not null) ? Clip.antiAlias : Clip.none)));
-        global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraintsLocal = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)resolvedVisualDensity.effectiveConstraints(new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: DartRuntimePrimitives.RequireValue(resolvedMinimumSize).width, minHeight: DartRuntimePrimitives.RequireValue(resolvedMinimumSize).height, maxWidth: DartRuntimePrimitives.RequireValue(resolvedMaximumSize).width, maxHeight: DartRuntimePrimitives.RequireValue(resolvedMaximumSize).height)));
+        global::Doroti.Ui.Clip effectiveClipBehavior = (((ButtonStyleButton)this.widget).clipBehavior ?? ((((((resolvedBackgroundBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)resolvedForegroundBuilder))) is not null) ? Clip.antiAlias : Clip.none)));
+        global::Doroti.Framework.Rendering.BoxConstraints effectiveConstraintsLocal = ((global::Doroti.Framework.Rendering.BoxConstraints)resolvedVisualDensity.effectiveConstraints(new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: DartRuntimePrimitives.RequireValue(resolvedMinimumSize).width, minHeight: DartRuntimePrimitives.RequireValue(resolvedMinimumSize).height, maxWidth: DartRuntimePrimitives.RequireValue(resolvedMaximumSize).width, maxHeight: DartRuntimePrimitives.RequireValue(resolvedMaximumSize).height)));
         if ((resolvedFixedSize is not null))
         {
             Size resolvedFixedSize__16402__value18999 = DartRuntimePrimitives.RequireValue(resolvedFixedSize);
-            global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)effectiveConstraintsLocal.constrain(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(resolvedFixedSize__16402__value18999))));
+            global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)effectiveConstraintsLocal.constrain(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(resolvedFixedSize__16402__value18999))));
             if (double.IsFinite(sizeLocal.width))
             {
                 effectiveConstraintsLocal = effectiveConstraintsLocal.copyWith(minWidth: sizeLocal.width, maxWidth: sizeLocal.width);
@@ -231,10 +231,10 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         }
         double dyLocal = densityAdjustment.dy;
         double dxLocal = Math.Max(0, densityAdjustment.dx);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)resolvedPadding!.add(new global::Doroti.Framework.Painting.EdgeInsets(dxLocal, dyLocal, dxLocal, dyLocal)).clamp(global::Doroti.Framework.Painting.EdgeInsets.zero, global::Doroti.Framework.Painting.EdgeInsetsGeometry.infinity));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)resolvedPadding!.add(new global::Doroti.Framework.Painting.EdgeInsets(dxLocal, dyLocal, dxLocal, dyLocal)).clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity));
         if (((((((((DartRuntimePrimitives.RequireValue(resolvedAnimationDuration) > Duration.zero) && (this.elevation is not null)) && (this.backgroundColor is not null)) && (this.elevation != resolvedElevation)) && (this.backgroundColor!.value != resolvedBackgroundColor!.value)) && (this.backgroundColor!.opacity == 1L)) && (resolvedBackgroundColor.opacity < 1L)) && (resolvedElevation == 0L)))
         {
-            if ((!object.Equals(this.controller?.duration, DartRuntimePrimitives.RequireValue(resolvedAnimationDuration))))
+            if ((!Equals(this.controller?.duration, DartRuntimePrimitives.RequireValue(resolvedAnimationDuration))))
             {
                 this.controller?.dispose();
                 controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
@@ -242,7 +242,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(resolvedAnimationDuration), vsync: this);
     __cascade.addStatusListener(((AnimationStatusListener)((status) =>
     {
-        if ((object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.completed)))
+        if ((Equals(status, AnimationStatus.completed)))
         {
             setState(((global::System.Action)(() =>
             {
@@ -258,7 +258,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         }
         elevation = resolvedElevation;
         backgroundColor = resolvedBackgroundColor;
-        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Align(alignment: resolvedAlignment!, widthFactor: 1.0, heightFactor: 1.0, child: ((resolvedForegroundBuilder is not null) ? resolvedForegroundBuilder(context, this.statesController.value, ((ButtonStyleButton)this.widget).child) : ((ButtonStyleButton)this.widget).child))));
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Align(alignment: resolvedAlignment!, widthFactor: 1.0, heightFactor: 1.0, child: ((resolvedForegroundBuilder is not null) ? resolvedForegroundBuilder(context, this.statesController.value, ((ButtonStyleButton)this.widget).child) : ((ButtonStyleButton)this.widget).child))));
         if ((resolvedBackgroundBuilder is not null))
         {
             result = resolvedBackgroundBuilder(context, this.statesController.value, result);
@@ -273,7 +273,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         {
             case MaterialTapTargetSize.padded:
                 {
-                    minSizeLocal = new global::Doroti.Ui.Size((global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dx), (global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy));
+                    minSizeLocal = new global::Doroti.Ui.Size((Widgets.ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dx), (Widgets.ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy));
                     DartRuntimePrimitives.Assert(() => (minSizeLocal.width >= 0.0));
                     DartRuntimePrimitives.Assert(() => (minSizeLocal.height >= 0.0));
                     break;
@@ -284,7 +284,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, button: ((ButtonStyleButton)this.widget).isSemanticButton, enabled: ((ButtonStyleButton)this.widget).enabled, child: new _InputPadding__button_style_button(minSize: minSizeLocal, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: effectiveConstraintsLocal, child: new Material(elevation: DartRuntimePrimitives.RequireValue(resolvedElevation), textStyle: resolvedTextStyle?.copyWith(color: resolvedForegroundColor), shape: resolvedShape.copyWith(side: resolvedSide), color: resolvedBackgroundColor, shadowColor: resolvedShadowColor, surfaceTintColor: resolvedSurfaceTintColor, type: ((resolvedBackgroundColor is null) ? MaterialType.transparency : MaterialType.button), animationDuration: DartRuntimePrimitives.RequireValue(resolvedAnimationDuration), clipBehavior: effectiveClipBehavior, borderOnForeground: false, child: result)))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(container: true, button: ((ButtonStyleButton)this.widget).isSemanticButton, enabled: ((ButtonStyleButton)this.widget).enabled, child: new _InputPadding__button_style_button(minSize: minSizeLocal, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: effectiveConstraintsLocal, child: new Material(elevation: DartRuntimePrimitives.RequireValue(resolvedElevation), textStyle: resolvedTextStyle?.copyWith(color: resolvedForegroundColor), shape: resolvedShape.copyWith(side: resolvedSide), color: resolvedBackgroundColor, shadowColor: resolvedShadowColor, surfaceTintColor: resolvedSurfaceTintColor, type: ((resolvedBackgroundColor is null) ? MaterialType.transparency : MaterialType.button), animationDuration: DartRuntimePrimitives.RequireValue(resolvedAnimationDuration), clipBehavior: effectiveClipBehavior, borderOnForeground: false, child: result)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -299,13 +299,13 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -339,8 +339,8 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -381,13 +381,13 @@ internal class _InputPadding__button_style_button : global::Doroti.Framework.Wid
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderInputPadding__button_style_button(this.minSize));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderInputPadding__button_style_button(this.minSize));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderInputPadding__button_style_button)(object)renderObject;
+        var __renderObject = (_RenderInputPadding__button_style_button)renderObject;
         __renderObject.minSize = this.minSize;
     }
 
@@ -408,7 +408,7 @@ public class _RenderInputPadding__button_style_button : global::Doroti.Framework
         set
         {
             var __value = value;
-            if ((object.Equals(this._minSize, __value)))
+            if ((Equals(this._minSize, __value)))
             {
                 return;
             }
@@ -460,10 +460,10 @@ public class _RenderInputPadding__button_style_button : global::Doroti.Framework
     {
         if ((this.child is not null))
         {
-            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)layoutChild(this.child!, constraints));
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)layoutChild(this.child!, constraints));
             double widthLocal = Math.Max(childSize.width, this.minSize.width);
             double heightLocal = Math.Max(childSize.height, this.minSize.height);
-            return ((global::Doroti.Ui.Size)(object?)constraints.constrain(new global::Doroti.Ui.Size(widthLocal, heightLocal)));
+            return ((global::Doroti.Ui.Size)constraints.constrain(new global::Doroti.Ui.Size(widthLocal, heightLocal)));
         }
         return Size.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -471,13 +471,13 @@ public class _RenderInputPadding__button_style_button : global::Doroti.Framework
 
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return _computeSize(constraints: constraints, layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.dryLayoutChild);
+        return _computeSize(constraints: constraints, layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(this).child);
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)child);
         if ((childLocal is null))
         {
             return null;
@@ -487,18 +487,18 @@ public class _RenderInputPadding__button_style_button : global::Doroti.Framework
         {
             return null;
         }
-        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)childLocal.getDryLayout(constraints));
-        return (DartRuntimePrimitives.RequireValue(result) + global::Doroti.Framework.Painting.Alignment.center.alongOffset((getDryLayout(constraints) - childSize)).dy);
+        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)childLocal.getDryLayout(constraints));
+        return (DartRuntimePrimitives.RequireValue(result) + Alignment.center.alongOffset((getDryLayout(constraints) - childSize)).dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        size = _computeSize(constraints: this.constraints, layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.layoutChild);
+        size = _computeSize(constraints: this.constraints, layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)ChildLayoutHelper.layoutChild);
         if ((this.child is not null))
         {
-            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
-            childParentData.offset = global::Doroti.Framework.Painting.Alignment.center.alongOffset((this.size - this.child!.size));
+            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)this.child!.parentData!)!;
+            childParentData.offset = Alignment.center.alongOffset((this.size - this.child!.size));
         }
     }
 
@@ -508,10 +508,10 @@ public class _RenderInputPadding__button_style_button : global::Doroti.Framework
         {
             return true;
         }
-        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)this.child!.size.center(Offset.zero));
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)this.child!.size.center(Offset.zero));
         return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(centerLocal), position: centerLocal, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(position, centerLocal)));
+            DartRuntimePrimitives.Assert(() => (Equals(position, centerLocal)));
             return this.child!.hitTest(result, position: centerLocal);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));

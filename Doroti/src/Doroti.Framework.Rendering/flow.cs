@@ -27,7 +27,7 @@ public abstract class FlowDelegate
     public abstract void paintChildren(FlowPaintingContext context);
     public virtual bool shouldRelayout(FlowDelegate oldDelegate) => false;
     public abstract bool shouldRepaint(FlowDelegate oldDelegate);
-    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FlowDelegate");
+    public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "FlowDelegate");
 }
 
 public class FlowParentData : ContainerBoxParentData<RenderBox>
@@ -76,13 +76,13 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         set
         {
             var newDelegate = value;
-            if ((object.Equals(this._delegate, newDelegate)))
+            if ((Equals(this._delegate, newDelegate)))
             {
                 return;
             }
             FlowDelegate oldDelegate = this._delegate;
             _delegate = newDelegate;
-            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRelayout(oldDelegate)))
+            if (((!Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRelayout(oldDelegate)))
             {
                 markNeedsLayout();
             }
@@ -106,7 +106,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this._clipBehavior)))
+            if ((!Equals(__value, this._clipBehavior)))
             {
                 _clipBehavior = __value;
                 markNeedsPaint();
@@ -341,11 +341,11 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
             child = childParentData.previousSibling!;
             childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -354,11 +354,11 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
             child = childParentData.nextSibling!;
             childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -404,7 +404,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
             var afterParentData = ((FlowParentData?)(object?)after.parentData!)!;
             if ((afterParentData.nextSibling is null))
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
                 this._lastChild = child;
@@ -417,18 +417,18 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
                 var childNextSiblingParentData = ((FlowParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
         adoptChild(child);
         DartRuntimePrimitives.Assert(() => (child.parentData is FlowParentData));
         _insertIntoChildList(child, after: after);
@@ -452,7 +452,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
         if ((childParentData.previousSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
             this._firstChild = childParentData.nextSibling;
         }
         else
@@ -462,7 +462,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         }
         if ((childParentData.nextSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
             this._lastChild = childParentData.previousSibling;
         }
         else
@@ -500,12 +500,12 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData.previousSibling, after)))
+        if ((Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -540,7 +540,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public virtual RenderBox? lastChild => this._lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -548,7 +548,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -564,7 +564,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((object.Equals(child, this.lastChild)))
+                if ((Equals(child, this.lastChild)))
                 {
                     break;
                 }
@@ -620,7 +620,7 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
             var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
             bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
                 return child!.hitTest(result, position: transformed);
             })));
             if (isHit)

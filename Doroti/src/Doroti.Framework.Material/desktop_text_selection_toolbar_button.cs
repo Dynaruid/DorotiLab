@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/desktop_text_selection_toolbar_button.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
@@ -30,16 +30,16 @@ public class DesktopTextSelectionToolbarButton : global::Doroti.Framework.Widget
     {
         var __instance = new DesktopTextSelectionToolbarButton(key: key, onPressed: onPressed, child: default!);
         __instance.onPressed = onPressed;
-        __instance.child = new global::Doroti.Framework.Widgets.Text(text, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: ((object.Equals(Theme.of(context).colorScheme.brightness, Brightness.dark)) ? Colors.white : Colors.black87)));
+        __instance.child = new global::Doroti.Framework.Widgets.Text(text, overflow: TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: ((Equals(Theme.of(context).colorScheme.brightness, Brightness.dark)) ? Colors.white : Colors.black87)));
         return __instance;
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        var isDark = (object.Equals(theme.colorScheme.brightness, Brightness.dark));
-        global::Doroti.Ui.Color foregroundColorLocal = ((global::Doroti.Ui.Color)(object?)(isDark ? Colors.white : Colors.black87));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new TextButton(style: TextButton.styleFrom(alignment: global::Doroti.Framework.Painting.Alignment.centerLeft, enabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, disabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, foregroundColor: foregroundColorLocal, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, 36.0), padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding), onPressed: this.onPressed, child: this.child)));
+        var isDark = (Equals(theme.colorScheme.brightness, Brightness.dark));
+        global::Doroti.Ui.Color foregroundColorLocal = ((global::Doroti.Ui.Color)(isDark ? Colors.white : Colors.black87));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new TextButton(style: TextButton.styleFrom(alignment: Alignment.centerLeft, enabledMouseCursor: SystemMouseCursors.basic, disabledMouseCursor: SystemMouseCursors.basic, foregroundColor: foregroundColorLocal, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, 36.0), padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding), onPressed: this.onPressed, child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

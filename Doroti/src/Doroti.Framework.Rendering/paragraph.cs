@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/paragraph.dart
-#pragma warning disable CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -61,10 +60,10 @@ public interface RenderInlineChildrenContainerDefaults
     public void setupParentData(RenderObject child);
     public static global::Doroti.Framework.Painting.PlaceholderDimensions _layoutChild(RenderBox child, BoxConstraints childConstraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
     {
-        var parentDataLocal = ((TextParentData?)(object?)child.parentData!)!;
+        var parentDataLocal = ((TextParentData?)child.parentData!)!;
         global::Doroti.Framework.Painting.PlaceholderSpan? spanLocal = ((TextParentData)parentDataLocal).span;
         DartRuntimePrimitives.Assert(() => (spanLocal is not null));
-        return ((spanLocal is null) ? global::Doroti.Framework.Painting.PlaceholderDimensions.empty : new global::Doroti.Framework.Painting.PlaceholderDimensions(size: layoutChild(child, childConstraints), alignment: ((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).alignment, baseline: ((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).baseline, baselineOffset: (((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).alignment switch { Dart_uiLibrary.PlaceholderAlignment.aboveBaseline or Dart_uiLibrary.PlaceholderAlignment.belowBaseline or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle => null, Dart_uiLibrary.PlaceholderAlignment.top => null, Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(child, childConstraints, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).baseline)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+        return ((spanLocal is null) ? PlaceholderDimensions.empty : new global::Doroti.Framework.Painting.PlaceholderDimensions(size: layoutChild(child, childConstraints), alignment: ((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).alignment, baseline: ((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).baseline, baselineOffset: (((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).alignment switch { Dart_uiLibrary.PlaceholderAlignment.aboveBaseline or Dart_uiLibrary.PlaceholderAlignment.belowBaseline or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle => null, Dart_uiLibrary.PlaceholderAlignment.top => null, Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(child, childConstraints, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).baseline)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
     }
     public List<global::Doroti.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline);
     public void positionInlineChildren(List<TextBox> boxes);
@@ -85,7 +84,7 @@ internal class _UnspecifiedTextScaler__paragraph : global::Doroti.Framework.Pain
 
 public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, TextParentData>, RenderInlineChildrenContainerDefaults, RelayoutWhenSystemFontsChangeMixin
 {
-    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit));
+    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)PlaceholderSpan.placeholderCodeUnit));
     internal virtual global::Doroti.Framework.Painting.TextPainter _textPainter { get; private set; } = default!;
     internal virtual global::Doroti.Framework.Painting.TextPainter? _textIntrinsicsCache { get; set; } = default;
     internal virtual List<global::Doroti.Framework.Semantics.AttributedString>? _cachedAttributedLabels { get; set; } = default;
@@ -113,7 +112,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         this._overflow = overflow;
         this._devicePixelRatio = devicePixelRatio;
         this._selectionColor = selectionColor;
-        this._textPainter = new global::Doroti.Framework.Painting.TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: ((object.Equals(textScaler, new _UnspecifiedTextScaler__paragraph())) ? global::Doroti.Framework.Painting.TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ((object.Equals(overflow, global::Doroti.Framework.Painting.TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null), locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
+        this._textPainter = new global::Doroti.Framework.Painting.TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: ((Equals(textScaler, new _UnspecifiedTextScaler__paragraph())) ? TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ((Equals(overflow, TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null), locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
         System.Diagnostics.Debug.Assert(text.debugAssertIsValid());
         System.Diagnostics.Debug.Assert(((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)));
         System.Diagnostics.Debug.Assert((DartRuntimePrimitives.Identical(__textScaler, new _UnspecifiedTextScaler__paragraph()) || (textScaleFactor == 1.0)));
@@ -148,18 +147,18 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             var __value = value;
             switch (((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.compareTo(__value))
             {
-                case global::Doroti.Framework.Painting.RenderComparison.identical:
+                case RenderComparison.identical:
                     {
                         return;
                     }
-                case global::Doroti.Framework.Painting.RenderComparison.metadata:
+                case RenderComparison.metadata:
                     {
                         this._textPainter.text = __value;
                         _cachedCombinedSemanticsInfos = null;
                         markNeedsSemanticsUpdate();
                         break;
                     }
-                case global::Doroti.Framework.Painting.RenderComparison.paint:
+                case RenderComparison.paint:
                     {
                         this._textPainter.text = __value;
                         _cachedAttributedLabels = null;
@@ -168,7 +167,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                         markNeedsSemanticsUpdate();
                         break;
                     }
-                case global::Doroti.Framework.Painting.RenderComparison.layout:
+                case RenderComparison.layout:
                     {
                         this._textPainter.text = __value;
                         _overflowShader = null;
@@ -208,7 +207,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._registrar)))
+            if ((Equals(__value, this._registrar)))
             {
                 return;
             }
@@ -309,7 +308,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -323,7 +322,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -351,12 +350,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(this._overflow, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._overflow, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
             _overflow = DartRuntimePrimitives.RequireValue(__value);
-            this._textPainter.ellipsis = ((object.Equals(DartRuntimePrimitives.RequireValue(__value), global::Doroti.Framework.Painting.TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null);
+            this._textPainter.ellipsis = ((Equals(DartRuntimePrimitives.RequireValue(__value), TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null);
             markNeedsLayout();
         }
     }
@@ -366,7 +365,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            textScaler = global::Doroti.Framework.Painting.TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
+            textScaler = TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
         }
     }
     public virtual global::Doroti.Framework.Painting.TextScaler textScaler
@@ -375,7 +374,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler, __value)))
+            if ((Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler, __value)))
             {
                 return;
             }
@@ -395,7 +394,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 return;
             }
             _devicePixelRatio = DartRuntimePrimitives.RequireValue(__value);
-            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            if (Foundation.ConstantsLibrary.kIsWeb)
             {
                 markNeedsPaint();
             }
@@ -423,7 +422,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale, __value)))
+            if ((Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale, __value)))
             {
                 return;
             }
@@ -438,7 +437,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle, __value)))
+            if ((Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle, __value)))
             {
                 return;
             }
@@ -453,7 +452,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -467,8 +466,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
         set
         {
-            var __value = value is null ? null : (TextHeightBehavior)(object)value;
-            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior, __value)))
+            var __value = value is null ? null : (TextHeightBehavior)value;
+            if ((Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior, __value)))
             {
                 return;
             }
@@ -482,8 +481,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         get => this._selectionColor;
         set
         {
-            var __value = value is null ? null : (Color)(object)value;
-            if ((object.Equals(this._selectionColor, __value)))
+            var __value = value is null ? null : (Color)value;
+            if ((Equals(this._selectionColor, __value)))
             {
                 return;
             }
@@ -580,7 +579,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     internal virtual double _adjustMaxWidth(double maxWidth)
     {
-        return ((this.softWrap || (object.Equals(this.overflow, global::Doroti.Framework.Painting.TextOverflow.ellipsis))) ? maxWidth : double.PositiveInfinity);
+        return ((this.softWrap || (Equals(this.overflow, TextOverflow.ellipsis))) ? maxWidth : double.PositiveInfinity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -647,20 +646,20 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         {
             switch (this._overflow)
             {
-                case global::Doroti.Framework.Painting.TextOverflow.visible:
+                case TextOverflow.visible:
                     {
                         _needsClipping = false;
                         _overflowShader = null;
                         break;
                     }
-                case global::Doroti.Framework.Painting.TextOverflow.clip:
-                case global::Doroti.Framework.Painting.TextOverflow.ellipsis:
+                case TextOverflow.clip:
+                case TextOverflow.ellipsis:
                     {
                         _needsClipping = true;
                         _overflowShader = null;
                         break;
                     }
-                case global::Doroti.Framework.Painting.TextOverflow.fade:
+                case TextOverflow.fade:
                     {
                         _needsClipping = true;
                         var fadeSizePainter = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
@@ -672,13 +671,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                         if (didOverflowWidth)
                         {
                             var (fadeStart, fadeEnd) = (this.textDirection switch { TextDirection.rtl => (((double, double))((((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter).width, 0.0))), TextDirection.ltr => (((double, double))(((size.width - ((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter).width), size.width))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                            _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(fadeStart, 0.0), new global::Doroti.Ui.Offset(fadeEnd, 0.0), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
+                            _overflowShader = Ui.Gradient.linear(new global::Doroti.Ui.Offset(fadeStart, 0.0), new global::Doroti.Ui.Offset(fadeEnd, 0.0), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
                         }
                         else
                         {
                             double fadeEndLocal = size.height;
                             double fadeStartLocal = (fadeEndLocal - (((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter).height / 2.0));
-                            _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(0.0, fadeStartLocal), new global::Doroti.Ui.Offset(0.0, fadeEndLocal), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
+                            _overflowShader = Ui.Gradient.linear(new global::Doroti.Ui.Offset(0.0, fadeStartLocal), new global::Doroti.Ui.Offset(0.0, fadeEndLocal), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
                         }
                         fadeSizePainter.dispose();
                         break;
@@ -694,7 +693,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
-        var __child = (RenderBox)(object)child;
+        var __child = (RenderBox)child;
         defaultApplyPaintTransform(__child, transform);
     }
 
@@ -703,12 +702,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         _layoutTextWithConstraints(constraints);
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled)
+                if (DebugLibrary.debugRepaintTextRainbowEnabled)
                 {
                     var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.toColor();
+    __cascade.color = DebugLibrary.debugCurrentRepaintColor.toColor();
     return __cascade;
 }))();
                     ((PaintingContext)context).canvas.drawRect((offset & size), paintLocal);
@@ -746,7 +745,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                this._textPainter.debugPaintTextLayoutBoxes = global::Doroti.Framework.Rendering.DebugLibrary.debugPaintTextLayoutBoxes;
+                this._textPainter.debugPaintTextLayoutBoxes = DebugLibrary.debugPaintTextLayoutBoxes;
                 return true;
             });
         this._textPainter.paint(((PaintingContext)context).canvas, offset);
@@ -915,7 +914,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         var placeholderIndex = 0L;
         var childConfigsIndex = 0L;
         var attributedLabelCacheIndex = 0L;
-        _cachedCombinedSemanticsInfos ??= global::Doroti.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
+        _cachedCombinedSemanticsInfos ??= Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
         foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info in this._cachedCombinedSemanticsInfos!)
         {
             if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).isPlaceholder)
@@ -995,7 +994,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         var childIndex = 0L;
         RenderBox? child = firstChild;
         var newChildCache = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
-        _cachedCombinedSemanticsInfos ??= global::Doroti.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
+        _cachedCombinedSemanticsInfos ??= Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
         foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info in this._cachedCombinedSemanticsInfos!)
         {
             var selection = new TextSelection(baseOffset: start, extentOffset: (start + ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).text.Length));
@@ -1005,7 +1004,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 while (((children.Count() > childIndex) && children.elementAt(childIndex).isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex))))
                 {
                     global::Doroti.Framework.Semantics.SemanticsNode childNode = children.elementAt(childIndex);
-                    var parentDataLocal = ((TextParentData?)(object?)child!.parentData!)!;
+                    var parentDataLocal = ((TextParentData?)child!.parentData!)!;
                     if ((((TextParentData)parentDataLocal).offset is not null))
                     {
                         newChildren.Add(childNode);
@@ -1030,8 +1029,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                     rectLocal = rectLocal.expandToInclude(textBox.toRect());
                     currentDirection = textBox.direction;
                 }
-                rectLocal = global::Doroti.Ui.Rect.fromLTWH(Math.Max(0.0, rectLocal.left), Math.Max(0.0, rectLocal.top), Math.Min(rectLocal.width, ((BoxConstraints)constraints).maxWidth), Math.Min(rectLocal.height, ((BoxConstraints)constraints).maxHeight));
-                currentRect = global::Doroti.Ui.Rect.fromLTRB((rectLocal.left.floorToDouble() - 4.0), (rectLocal.top.floorToDouble() - 4.0), (rectLocal.right.ceilToDouble() + 4.0), (rectLocal.bottom.ceilToDouble() + 4.0));
+                rectLocal = Rect.fromLTWH(Math.Max(0.0, rectLocal.left), Math.Max(0.0, rectLocal.top), Math.Min(rectLocal.width, ((BoxConstraints)constraints).maxWidth), Math.Min(rectLocal.height, ((BoxConstraints)constraints).maxHeight));
+                currentRect = Rect.fromLTRB((rectLocal.left.floorToDouble() - 4.0), (rectLocal.top.floorToDouble() - 4.0), (rectLocal.right.ceilToDouble() + 4.0), (rectLocal.bottom.ceilToDouble() + 4.0));
                 var configuration = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
@@ -1140,7 +1139,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection));
         properties.add(new FlagProperty("softWrap", value: this.softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
         properties.add(new EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", this.overflow));
-        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: global::Doroti.Framework.Painting.TextScaler.noScaling));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: TextScaler.noScaling));
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", this.locale, defaultValue: null));
         properties.add(new IntProperty("maxLines", this.maxLines, ifNull: "unlimited"));
         properties.add(new DoubleProperty("devicePixelRatio", this.devicePixelRatio, defaultValue: 1.0));
@@ -1148,27 +1147,27 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        var childParentData = ((TextParentData?)child.parentData!)!;
         while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
             child = childParentData.previousSibling!;
-            childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            childParentData = ((TextParentData?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        var childParentData = ((TextParentData?)child.parentData!)!;
         while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
             child = childParentData.nextSibling!;
-            childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            childParentData = ((TextParentData?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1189,7 +1188,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        var childParentData = ((TextParentData?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
         DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
         this._childCount += 1L;
@@ -1199,7 +1198,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             childParentData.nextSibling = this._firstChild;
             if ((this._firstChild is not null))
             {
-                var firstChildParentData = ((TextParentData?)(object?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((TextParentData?)this._firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
             this._firstChild = child;
@@ -1211,10 +1210,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
             DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
             DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
-            var afterParentData = ((TextParentData?)(object?)after.parentData!)!;
+            var afterParentData = ((TextParentData?)after.parentData!)!;
             if ((afterParentData.nextSibling is null))
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
                 this._lastChild = child;
@@ -1223,22 +1222,22 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             {
                 childParentData.nextSibling = afterParentData.nextSibling;
                 childParentData.previousSibling = after;
-                var childPreviousSiblingParentData = ((TextParentData?)(object?)childParentData.previousSibling!.parentData!)!;
-                var childNextSiblingParentData = ((TextParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+                var childPreviousSiblingParentData = ((TextParentData?)childParentData.previousSibling!.parentData!)!;
+                var childNextSiblingParentData = ((TextParentData?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
         adoptChild(child);
         DartRuntimePrimitives.Assert(() => (child.parentData is TextParentData));
         _insertIntoChildList(child, after: after);
@@ -1256,28 +1255,28 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual void _removeFromChildList(RenderBox child)
     {
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        var childParentData = ((TextParentData?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
         if ((childParentData.previousSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
             this._firstChild = childParentData.nextSibling;
         }
         else
         {
-            var childPreviousSiblingParentData = ((TextParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+            var childPreviousSiblingParentData = ((TextParentData?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
         if ((childParentData.nextSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
             this._lastChild = childParentData.previousSibling;
         }
         else
         {
-            var childNextSiblingParentData = ((TextParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+            var childNextSiblingParentData = ((TextParentData?)childParentData.nextSibling!.parentData!)!;
             childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
         childParentData.previousSibling = null;
@@ -1296,7 +1295,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var childParentData = ((TextParentData?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
             childParentData.previousSibling = null;
             childParentData.nextSibling = null;
@@ -1310,12 +1309,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData.previousSibling, after)))
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        var childParentData = ((TextParentData?)child.parentData!)!;
+        if ((Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -1331,7 +1330,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         while ((child is not null))
         {
             child.attach(owner);
-            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var childParentData = ((TextParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -1343,7 +1342,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         while ((child is not null))
         {
             child.detach();
-            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var childParentData = ((TextParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -1354,7 +1353,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         while ((child is not null))
         {
             redepthChild(child);
-            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var childParentData = ((TextParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -1365,7 +1364,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         while ((child is not null))
         {
             visitor(child);
-            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var childParentData = ((TextParentData?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -1374,23 +1373,23 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public virtual RenderBox? lastChild => this._lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        var childParentData = ((TextParentData?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        var childParentData = ((TextParentData?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void setupParentData(RenderObject child)
     {
-        var __child = (RenderBox)(object)child;
+        var __child = (RenderBox)child;
         if ((__child.parentData is not TextParentData))
         {
             __child.parentData = new TextParentData();
@@ -1417,13 +1416,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                     });
                 return;
             }
-            var textParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var textParentData = ((TextParentData?)child.parentData!)!;
             textParentData._offset = new global::Doroti.Ui.Offset(box.left, box.top);
             child = childAfter(child);
         }
         while ((child is not null))
         {
-            var textParentDataLocal = ((TextParentData?)(object?)child.parentData!)!;
+            var textParentDataLocal = ((TextParentData?)child.parentData!)!;
             textParentDataLocal._offset = null;
             child = childAfter(child);
         }
@@ -1431,7 +1430,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual void defaultApplyPaintTransform(RenderBox child, Matrix4 transform)
     {
-        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        var childParentData = ((TextParentData?)child.parentData!)!;
         global::Doroti.Ui.Offset? offsetLocal = ((TextParentData)childParentData).offset;
         if ((offsetLocal is null))
         {
@@ -1448,7 +1447,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         RenderBox? child = firstChild;
         while ((child is not null))
         {
-            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var childParentData = ((TextParentData?)child.parentData!)!;
             global::Doroti.Ui.Offset? childOffset = ((TextParentData)childParentData).offset;
             if ((childOffset is null))
             {
@@ -1464,7 +1463,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         RenderBox? child = firstChild;
         while ((child is not null))
         {
-            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            var childParentData = ((TextParentData?)child.parentData!)!;
             global::Doroti.Ui.Offset? childOffset = ((TextParentData)childParentData).offset;
             if ((childOffset is null))
             {
@@ -1513,7 +1512,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual LayerLink? _startHandleLayerLink { get; set; } = default;
     internal virtual LayerLink? _endHandleLayerLink { get; set; } = default;
     internal virtual SelectionGeometry _selectionGeometry { get; set; } = default!;
-    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit));
+    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)PlaceholderSpan.placeholderCodeUnit));
     internal static long _placeholderLength = _placeholderCharacter.Length;
     internal virtual List<Rect>? _cachedBoundingBoxes { get; set; } = default;
     internal virtual Rect? _cachedRect { get; set; } = default;
@@ -1530,7 +1529,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual void _updateSelectionGeometry()
     {
         SelectionGeometry newValue = _getSelectionGeometry();
-        if ((object.Equals(this._selectionGeometry, newValue)))
+        if ((Equals(this._selectionGeometry, newValue)))
         {
             return;
         }
@@ -1549,7 +1548,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         bool isReversed = (selectionStart > selectionEnd);
         global::Doroti.Ui.Offset startOffsetInParagraphCoordinates = this.paragraph._getOffsetForPosition(this._textSelectionStart!);
         global::Doroti.Ui.Offset endOffsetInParagraphCoordinates = ((selectionStart == selectionEnd) ? startOffsetInParagraphCoordinates : this.paragraph._getOffsetForPosition(this._textSelectionEnd!));
-        var flipHandles = (isReversed != ((object.Equals(TextDirection.rtl, ((RenderParagraph)this.paragraph).textDirection))));
+        var flipHandles = (isReversed != ((Equals(TextDirection.rtl, ((RenderParagraph)this.paragraph).textDirection))));
         var selection = new TextSelection(baseOffset: selectionStart, extentOffset: selectionEnd);
         var selectionRectsLocal = new List<global::Doroti.Ui.Rect>();
         foreach (global::Doroti.Ui.TextBox textBox in this.paragraph.getBoxesForSelection(selection))
@@ -1572,23 +1571,23 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             case SelectionEventType.startEdgeUpdate:
             case SelectionEventType.endEdgeUpdate:
                 {
-                    var edgeUpdate = ((SelectionEdgeUpdateEvent?)(object?)@event)!;
+                    var edgeUpdate = ((SelectionEdgeUpdateEvent?)@event)!;
                     TextGranularity granularityLocal = ((SelectionEdgeUpdateEvent)((SelectionEdgeUpdateEvent)@event)).granularity;
                     switch (granularityLocal)
                     {
                         case TextGranularity.character:
                             {
-                                result = _updateSelectionEdge(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (object.Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)));
+                                result = _updateSelectionEdge(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)));
                                 break;
                             }
                         case TextGranularity.word:
                             {
-                                result = _updateSelectionEdgeByTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (object.Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getWordBoundaryAtPosition);
+                                result = _updateSelectionEdgeByTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getWordBoundaryAtPosition);
                                 break;
                             }
                         case TextGranularity.paragraph:
                             {
-                                result = _updateSelectionEdgeByMultiSelectableTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (object.Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getParagraphBoundaryAtPosition, getClampedTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getClampedParagraphBoundaryAtPosition);
+                                result = _updateSelectionEdgeByMultiSelectableTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getParagraphBoundaryAtPosition, getClampedTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getClampedParagraphBoundaryAtPosition);
                                 break;
                             }
                         case TextGranularity.document:
@@ -1612,13 +1611,13 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
             case SelectionEventType.selectWord:
                 {
-                    var selectWordLocal = ((SelectWordSelectionEvent?)(object?)@event)!;
+                    var selectWordLocal = ((SelectWordSelectionEvent?)@event)!;
                     result = _handleSelectWord(((SelectWordSelectionEvent)selectWordLocal).globalPosition);
                     break;
                 }
             case SelectionEventType.selectParagraph:
                 {
-                    var selectParagraphLocal = ((SelectParagraphSelectionEvent?)(object?)@event)!;
+                    var selectParagraphLocal = ((SelectParagraphSelectionEvent?)@event)!;
                     if (((SelectParagraphSelectionEvent)selectParagraphLocal).absorb)
                     {
                         _handleSelectAll();
@@ -1633,18 +1632,18 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
             case SelectionEventType.granularlyExtendSelection:
                 {
-                    var granularlyExtendSelectionLocal = ((GranularlyExtendSelectionEvent?)(object?)@event)!;
+                    var granularlyExtendSelectionLocal = ((GranularlyExtendSelectionEvent?)@event)!;
                     result = _handleGranularlyExtendSelection(((GranularlyExtendSelectionEvent)granularlyExtendSelectionLocal).forward, ((GranularlyExtendSelectionEvent)granularlyExtendSelectionLocal).isEnd, ((GranularlyExtendSelectionEvent)granularlyExtendSelectionLocal).granularity);
                     break;
                 }
             case SelectionEventType.directionallyExtendSelection:
                 {
-                    var directionallyExtendSelectionLocal = ((DirectionallyExtendSelectionEvent?)(object?)@event)!;
+                    var directionallyExtendSelectionLocal = ((DirectionallyExtendSelectionEvent?)@event)!;
                     result = _handleDirectionallyExtendSelection(((DirectionallyExtendSelectionEvent)directionallyExtendSelectionLocal).dx, ((DirectionallyExtendSelectionEvent)directionallyExtendSelectionLocal).isEnd, ((DirectionallyExtendSelectionEvent)directionallyExtendSelectionLocal).direction);
                     break;
                 }
         }
-        if (((!object.Equals(existingSelectionStart, this._textSelectionStart)) || (!object.Equals(existingSelectionEnd, this._textSelectionEnd))))
+        if (((!Equals(existingSelectionStart, this._textSelectionStart)) || (!Equals(existingSelectionEnd, this._textSelectionEnd))))
         {
             _didChangeSelection();
         }
@@ -1857,7 +1856,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         if (this._rect.isEmpty)
         {
             SelectionResult result = SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
-            _setSelectionPosition(((object.Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
+            _setSelectionPosition(((Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
             return result;
         }
         global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(this._rect, localPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
@@ -1891,7 +1890,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         if (this._rect.isEmpty)
         {
             SelectionResult result = SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
-            _setSelectionPosition(((object.Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
+            _setSelectionPosition(((Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
             return result;
         }
         global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(this._rect, localPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
@@ -2012,7 +2011,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             if ((existingSelectionEnd is not null))
             {
                 (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal = getTextBoundary(position, this.fullText);
-                bool backwardSelection = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                bool backwardSelection = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
                 if (((boundaryAtPositionLocal.boundaryStart.offset < this.range.start) && (boundaryAtPositionLocal.boundaryEnd.offset < this.range.start)))
                 {
                     _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
@@ -2157,7 +2156,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             if ((existingSelectionStart is not null))
             {
                 (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal = getTextBoundary(position, this.fullText);
-                bool backwardSelection = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                bool backwardSelection = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
                 if (((boundaryAtPositionLocal.boundaryStart.offset < this.range.start) && (boundaryAtPositionLocal.boundaryEnd.offset < this.range.start)))
                 {
                     _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
@@ -2206,7 +2205,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             bool forwardSelection = (existingSelectionEnd.offset >= existingSelectionStart.offset);
             RenderParagraph originParagraph = _getOriginParagraph();
-            var fragmentBelongsToOriginParagraph = (object.Equals(originParagraph, this.paragraph));
+            var fragmentBelongsToOriginParagraph = (Equals(originParagraph, this.paragraph));
             if (fragmentBelongsToOriginParagraph)
             {
                 return _updateSelectionStartEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
@@ -2329,7 +2328,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     return null;
                 }
-                bool backwardSelection = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                bool backwardSelection = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
                 (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(positionRelativeToTargetParagraph, targetText);
                 global::Doroti.Ui.TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(targetParagraph);
                 var targetParagraphPlaceholderRange = new global::Doroti.Ui.TextRange(start: targetParagraphPlaceholderTextPosition.offset, end: (targetParagraphPlaceholderTextPosition.offset + _placeholderLength));
@@ -2382,7 +2381,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             bool forwardSelection = (existingSelectionEnd.offset >= existingSelectionStart.offset);
             RenderParagraph originParagraph = _getOriginParagraph();
-            var fragmentBelongsToOriginParagraph = (object.Equals(originParagraph, this.paragraph));
+            var fragmentBelongsToOriginParagraph = (Equals(originParagraph, this.paragraph));
             if (fragmentBelongsToOriginParagraph)
             {
                 return _updateSelectionEndEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
@@ -2505,7 +2504,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     return null;
                 }
-                bool backwardSelection = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                bool backwardSelection = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
                 (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(positionRelativeToTargetParagraph, targetText);
                 global::Doroti.Ui.TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(targetParagraph);
                 var targetParagraphPlaceholderRange = new global::Doroti.Ui.TextRange(start: targetParagraphPlaceholderTextPosition.offset, end: (targetParagraphPlaceholderTextPosition.offset + _placeholderLength));
@@ -2562,7 +2561,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         if (this._rect.isEmpty)
         {
             SelectionResult result = SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
-            _setSelectionPosition(((object.Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
+            _setSelectionPosition(((Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
             return result;
         }
         global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(this._rect, localPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
@@ -2699,7 +2698,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual global::Doroti.Ui.TextPosition _clampTextPosition(TextPosition position)
     {
-        if (((position.offset > this.range.end) || (((position.offset == this.range.end) && (object.Equals(position.affinity, TextAffinity.downstream))))))
+        if (((position.offset > this.range.end) || (((position.offset == this.range.end) && (Equals(position.affinity, TextAffinity.downstream))))))
         {
             return new global::Doroti.Ui.TextPosition(offset: this.range.end, affinity: TextAffinity.upstream);
         }
@@ -2825,7 +2824,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual SelectionResult _handleSelectWord(Offset globalPosition)
     {
         global::Doroti.Ui.TextPosition position = this.paragraph.getPositionForOffset(this.paragraph.globalToLocal(globalPosition));
-        if ((_positionIsWithinCurrentSelection(position) && (!object.Equals(this._textSelectionStart, this._textSelectionEnd))))
+        if ((_positionIsWithinCurrentSelection(position) && (!Equals(this._textSelectionStart, this._textSelectionEnd))))
         {
             return SelectionResult.end;
         }
@@ -2864,7 +2863,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getParagraphBoundaryAtPosition(TextPosition position, string text)
     {
         var paragraphBoundary = new ParagraphBoundary(text);
-        long paragraphStart = (paragraphBoundary.getLeadingTextBoundaryAt((((position.offset == text.Length) || (object.Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
+        long paragraphStart = (paragraphBoundary.getLeadingTextBoundaryAt((((position.offset == text.Length) || (Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
         long paragraphEnd = (paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? text.Length);
         var paragraphRange = new global::Doroti.Ui.TextRange(start: paragraphStart, end: paragraphEnd);
         DartRuntimePrimitives.Assert(() => paragraphRange.isNormalized);
@@ -2875,7 +2874,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getClampedParagraphBoundaryAtPosition(TextPosition position)
     {
         var paragraphBoundary = new ParagraphBoundary(this.fullText);
-        long paragraphStart = (paragraphBoundary.getLeadingTextBoundaryAt((((position.offset == this.fullText.Length) || (object.Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
+        long paragraphStart = (paragraphBoundary.getLeadingTextBoundaryAt((((position.offset == this.fullText.Length) || (Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
         long paragraphEnd = (paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? this.fullText.Length);
         paragraphStart = ((paragraphStart < this.range.start) ? this.range.start : ((paragraphStart > this.range.end) ? this.range.end : paragraphStart));
         paragraphEnd = ((paragraphEnd > this.range.end) ? this.range.end : ((paragraphEnd < this.range.start) ? this.range.start : paragraphEnd));
@@ -2915,7 +2914,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     DartRuntimePrimitives.Assert(() => ((this._textSelectionEnd is not null) && (this._textSelectionStart is not null)));
                     global::Doroti.Ui.TextPosition targetedEdge = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
-                    MapEntry<global::Doroti.Ui.TextPosition, SelectionResult> moveResult = _handleVerticalMovement(targetedEdge, horizontalBaselineInParagraphCoordinates: baselineInParagraphCoordinates, below: (object.Equals(movement, SelectionExtendDirection.nextLine)));
+                    MapEntry<global::Doroti.Ui.TextPosition, SelectionResult> moveResult = _handleVerticalMovement(targetedEdge, horizontalBaselineInParagraphCoordinates: baselineInParagraphCoordinates, below: (Equals(movement, SelectionExtendDirection.nextLine)));
                     newPosition = moveResult.key;
                     result = moveResult.value;
                     break;
@@ -2923,7 +2922,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             case SelectionExtendDirection.forward:
             case SelectionExtendDirection.backward:
                 {
-                    _textSelectionEnd ??= ((object.Equals(movement, SelectionExtendDirection.forward)) ? new global::Doroti.Ui.TextPosition(offset: this.range.start) : new global::Doroti.Ui.TextPosition(offset: this.range.end, affinity: TextAffinity.upstream));
+                    _textSelectionEnd ??= ((Equals(movement, SelectionExtendDirection.forward)) ? new global::Doroti.Ui.TextPosition(offset: this.range.start) : new global::Doroti.Ui.TextPosition(offset: this.range.end, affinity: TextAffinity.upstream));
                     _textSelectionStart ??= this._textSelectionEnd;
                     global::Doroti.Ui.TextPosition targetedEdgeLocal = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
                     global::Doroti.Ui.Offset edgeOffsetInParagraphCoordinates = this.paragraph._getOffsetForPosition(targetedEdgeLocal);
@@ -3104,8 +3103,8 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 result = SelectionResult.end;
             }
         }
-        DartRuntimePrimitives.Assert(() => ((!object.Equals(result, SelectionResult.next)) || below));
-        DartRuntimePrimitives.Assert(() => ((!object.Equals(result, SelectionResult.previous)) || !below));
+        DartRuntimePrimitives.Assert(() => ((!Equals(result, SelectionResult.next)) || below));
+        DartRuntimePrimitives.Assert(() => ((!Equals(result, SelectionResult.previous)) || !below));
         return new MapEntry<global::Doroti.Ui.TextPosition, SelectionResult>(newPosition, result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3146,13 +3145,13 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             else
             {
-                if ((object.Equals(position.affinity, otherPosition.affinity)))
+                if ((Equals(position.affinity, otherPosition.affinity)))
                 {
                     return 0L;
                 }
                 else
                 {
-                    return ((object.Equals(position.affinity, TextAffinity.upstream)) ? 1L : -1L);
+                    return ((Equals(position.affinity, TextAffinity.upstream)) ? 1L : -1L);
                 }
             }
         }
@@ -3172,12 +3171,12 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             DartRuntimePrimitives.Assert(() => ((startHandle is null) && (endHandle is null)));
             return;
         }
-        if ((!object.Equals(this._startHandleLayerLink, startHandle)))
+        if ((!Equals(this._startHandleLayerLink, startHandle)))
         {
             _startHandleLayerLink = startHandle;
             this.paragraph.markNeedsPaint();
         }
-        if ((!object.Equals(this._endHandleLayerLink, endHandle)))
+        if ((!Equals(this._endHandleLayerLink, endHandle)))
         {
             _endHandleLayerLink = endHandle;
             this.paragraph.markNeedsPaint();
@@ -3202,7 +3201,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 else
                 {
                     global::Doroti.Ui.Offset offsetLocal = this.paragraph._getOffsetForPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start));
-                    var rect = global::Doroti.Ui.Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
+                    var rect = Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
                     _cachedBoundingBoxes = new List<global::Doroti.Ui.Rect> { rect };
                 }
             }
@@ -3228,7 +3227,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 else
                 {
                     global::Doroti.Ui.Offset offsetLocal = this.paragraph._getOffsetForPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start));
-                    _cachedRect = global::Doroti.Ui.Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
+                    _cachedRect = Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
                 }
             }
             return DartRuntimePrimitives.RequireValue(this._cachedRect);

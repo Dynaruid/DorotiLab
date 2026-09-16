@@ -63,7 +63,7 @@ internal class _GestureArena__arena
         {
             buffer.write(string.Join(", ", this.members.map<GestureArenaMember, string>(((member) =>
             {
-                if ((object.Equals(member, this.eagerWinner)))
+                if ((Equals(member, this.eagerWinner)))
                 {
                     return $"{member} (eager winner)";
                 }
@@ -197,7 +197,7 @@ public class GestureArenaManager
             case GestureDisposition.rejected:
                 {
                     DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Rejecting: {member}"));
-                    if ((object.Equals(((_GestureArena__arena)state).eagerWinner, member)))
+                    if ((Equals(((_GestureArena__arena)state).eagerWinner, member)))
                     {
                         state.eagerWinner = null;
                     }
@@ -214,7 +214,7 @@ public class GestureArenaManager
 
     internal virtual void _tryToResolveArena(long pointer, _GestureArena__arena state)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(this._arenas.GetValueOrDefault(pointer), state)));
+        DartRuntimePrimitives.Assert(() => (Equals(this._arenas.GetValueOrDefault(pointer), state)));
         DartRuntimePrimitives.Assert(() => !((_GestureArena__arena)state).isOpen);
         if ((checked((long)(((_GestureArena__arena)state).members.Count)) == 1L))
         {
@@ -244,7 +244,7 @@ public class GestureArenaManager
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(this._arenas.GetValueOrDefault(pointer), state)));
+        DartRuntimePrimitives.Assert(() => (Equals(this._arenas.GetValueOrDefault(pointer), state)));
         DartRuntimePrimitives.Assert(() => !((_GestureArena__arena)state).isOpen);
         List<GestureArenaMember> membersLocal = ((_GestureArena__arena)state).members;
         DartRuntimePrimitives.Assert(() => (checked((long)(membersLocal.Count)) == 1L));
@@ -255,13 +255,13 @@ public class GestureArenaManager
 
     internal virtual void _resolveInFavorOf(long pointer, _GestureArena__arena state, GestureArenaMember member)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(state, this._arenas.GetValueOrDefault(pointer))));
-        DartRuntimePrimitives.Assert(() => ((((_GestureArena__arena)state).eagerWinner is null) || (object.Equals(((_GestureArena__arena)state).eagerWinner, member))));
+        DartRuntimePrimitives.Assert(() => (Equals(state, this._arenas.GetValueOrDefault(pointer))));
+        DartRuntimePrimitives.Assert(() => ((((_GestureArena__arena)state).eagerWinner is null) || (Equals(((_GestureArena__arena)state).eagerWinner, member))));
         DartRuntimePrimitives.Assert(() => !((_GestureArena__arena)state).isOpen);
         this._arenas.remove(pointer);
         foreach (GestureArenaMember rejectedMember in ((_GestureArena__arena)state).members)
         {
-            if ((!object.Equals(rejectedMember, member)))
+            if ((!Equals(rejectedMember, member)))
             {
                 rejectedMember.rejectGesture(pointer);
             }
@@ -273,11 +273,11 @@ public class GestureArenaManager
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintGestureArenaDiagnostics)
+                if (DebugLibrary.debugPrintGestureArenaDiagnostics)
                 {
                     long? count = ((long?)(state?.members?.Count));
                     var s = ((count != 1L) ? "s" : "");
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {DartRuntimePrimitives.RequireValue(count)} member{s}." : "")}");
+                    PrintLibrary.debugPrint($"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {DartRuntimePrimitives.RequireValue(count)} member{s}." : "")}");
                 }
                 return true;
             });

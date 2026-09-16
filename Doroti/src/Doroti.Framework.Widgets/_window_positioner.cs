@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/_window_positioner.dart
-#pragma warning disable CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -90,7 +89,7 @@ public class WindowPositionerIo
     public virtual global::Doroti.Ui.Rect placeWindow(Size childSize, Rect anchorRect, Rect parentRect, Rect displayRect)
     {
         global::Doroti.Ui.Rect defaultResult = default!;
-        global::Doroti.Ui.Offset result = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
+        global::Doroti.Ui.Offset result = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
         defaultResult = (result & childSize);
         if (_window_positionerLibrary._rectContains(displayRect, defaultResult))
         {
@@ -98,7 +97,7 @@ public class WindowPositionerIo
         }
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipX)
         {
-            global::Doroti.Ui.Offset resultLocal = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipX()._offsetFor(childSize)));
+            global::Doroti.Ui.Offset resultLocal = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipX()._offsetFor(childSize)));
             if (_window_positionerLibrary._rectContains(displayRect, (resultLocal & childSize)))
             {
                 return (resultLocal & childSize);
@@ -106,7 +105,7 @@ public class WindowPositionerIo
         }
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipY)
         {
-            global::Doroti.Ui.Offset resultAlternate = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipY()._offsetFor(childSize)));
+            global::Doroti.Ui.Offset resultAlternate = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipY()._offsetFor(childSize)));
             if (_window_positionerLibrary._rectContains(displayRect, (resultAlternate & childSize)))
             {
                 return (resultAlternate & childSize);
@@ -114,13 +113,13 @@ public class WindowPositionerIo
         }
         if ((((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipX && ((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipY))
         {
-            global::Doroti.Ui.Offset resultNested = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(_window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset))))) + this.childAnchor._flipY()._flipX()._offsetFor(childSize)));
+            global::Doroti.Ui.Offset resultNested = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(_window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset))))) + this.childAnchor._flipY()._flipX()._offsetFor(childSize)));
             if (_window_positionerLibrary._rectContains(displayRect, (resultNested & childSize)))
             {
                 return (resultNested & childSize);
             }
         }
-        global::Doroti.Ui.Offset resultCurrent = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
+        global::Doroti.Ui.Offset resultCurrent = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).slideX)
         {
             double leftOverhang = (resultCurrent.dx - displayRect.left);
@@ -157,7 +156,7 @@ public class WindowPositionerIo
         {
             return (resultCurrent & childSize);
         }
-        global::Doroti.Ui.Offset resultNext = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
+        global::Doroti.Ui.Offset resultNext = ((global::Doroti.Ui.Offset)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).resizeX)
         {
             double leftOverhangLocal = (resultNext.dx - displayRect.left);

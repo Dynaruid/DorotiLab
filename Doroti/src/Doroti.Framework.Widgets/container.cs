@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/container.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -11,7 +10,7 @@ public class DecoratedBox : SingleChildRenderObjectWidget
     public virtual global::Doroti.Framework.Painting.Decoration decoration { get; private set; } = default!;
     public virtual global::Doroti.Framework.Rendering.DecorationPosition position { get; private set; } = default!;
 
-    public DecoratedBox(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Decoration decoration = default!, global::Doroti.Framework.Rendering.DecorationPosition position = global::Doroti.Framework.Rendering.DecorationPosition.background, Widget? child = null) : base(key: key, child: child)
+    public DecoratedBox(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Decoration decoration = default!, global::Doroti.Framework.Rendering.DecorationPosition position = DecorationPosition.background, Widget? child = null) : base(key: key, child: child)
     {
         this.decoration = decoration;
         this.position = position;
@@ -19,18 +18,18 @@ public class DecoratedBox : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderDecoratedBox(decoration: this.decoration, position: this.position, configuration: global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context)));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderDecoratedBox(decoration: this.decoration, position: this.position, configuration: ImageLibrary.createLocalImageConfiguration(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderDecoratedBox)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderDecoratedBox)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderDecoratedBox>)(() =>
 {
     var __cascade = __renderObject;
     __cascade.decoration = this.decoration;
-    __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
+    __cascade.configuration = ImageLibrary.createLocalImageConfiguration(context);
     __cascade.position = this.position;
     return __cascade;
 }))());
@@ -39,8 +38,8 @@ public class DecoratedBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string label = (this.position switch { global::Doroti.Framework.Rendering.DecorationPosition.background => "bg", global::Doroti.Framework.Rendering.DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.DecorationPosition>("position", this.position, level: global::Doroti.Framework.Foundation.DiagnosticLevel.hidden));
+        string label = (this.position switch { DecorationPosition.background => "bg", DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.DecorationPosition>("position", this.position, level: DiagnosticLevel.hidden));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>(label, this.decoration));
     }
 
@@ -74,12 +73,12 @@ public class Container : StatelessWidget
         this.transformAlignment = transformAlignment;
         this.child = child;
         this.clipBehavior = clipBehavior;
-        this.constraints = ((((width is not null) || (height is not null))) ? (constraints?.tighten(width: width, height: height) ?? global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: width, height: height)) : constraints);
+        this.constraints = ((((width is not null) || (height is not null))) ? (constraints?.tighten(width: width, height: height) ?? BoxConstraints.CreateTightFor(width: width, height: height)) : constraints);
         System.Diagnostics.Debug.Assert(((margin is null) || ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)margin).isNonNegative));
         System.Diagnostics.Debug.Assert(((padding is null) || ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative));
         System.Diagnostics.Debug.Assert(((decoration is null) || decoration.debugAssertIsValid()));
         System.Diagnostics.Debug.Assert(((constraints is null) || constraints.debugAssertIsValid()));
-        System.Diagnostics.Debug.Assert(((decoration is not null) || (object.Equals(clipBehavior, Clip.none))));
+        System.Diagnostics.Debug.Assert(((decoration is not null) || (Equals(clipBehavior, Clip.none))));
         System.Diagnostics.Debug.Assert(((color is null) || (decoration is null)));
     }
 
@@ -101,7 +100,7 @@ public class Container : StatelessWidget
         Widget? current = this.child;
         if (((this.child is null) && (((this.constraints is null) || !this.constraints!.isTight))))
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand())));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: new ConstrainedBox(constraints: BoxConstraints.CreateExpand())));
         }
         else
         {
@@ -119,7 +118,7 @@ public class Container : StatelessWidget
         {
             current = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: this.color!, isAntiAlias: this.isAntiAlias, child: current));
         }
-        if ((!object.Equals(this.clipBehavior, Clip.none)))
+        if ((!Equals(this.clipBehavior, Clip.none)))
         {
             DartRuntimePrimitives.Assert(() => (this.decoration is not null));
             current = DartRuntimePrimitives.ConvertValue<Widget>(new ClipPath(clipper: new _DecorationClipper__container(textDirection: Directionality.maybeOf(context), decoration: this.decoration!), clipBehavior: this.clipBehavior, child: current));
@@ -130,7 +129,7 @@ public class Container : StatelessWidget
         }
         if ((this.foregroundDecoration is not null))
         {
-            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.foregroundDecoration!, position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, child: current));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.foregroundDecoration!, position: DecorationPosition.foreground, child: current));
         }
         if ((this.constraints is not null))
         {
@@ -165,7 +164,7 @@ public class Container : StatelessWidget
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("fg", this.foregroundDecoration, defaultValue: null));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
-        properties.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<Matrix4>.CreateHas("transform", this.transform));
+        properties.add(ObjectFlagProperty<Matrix4>.CreateHas("transform", this.transform));
     }
 
 }
@@ -183,14 +182,14 @@ internal class _DecorationClipper__container : global::Doroti.Framework.Renderin
 
     public override Path getClip(Size size)
     {
-        return ((Path)(object?)this.decoration.getClipPath((Offset.zero & size), DartRuntimePrimitives.RequireValue(this.textDirection)));
+        return ((Path)this.decoration.getClipPath((Offset.zero & size), DartRuntimePrimitives.RequireValue(this.textDirection)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool shouldReclip(global::Doroti.Framework.Rendering.CustomClipper<Path> oldClipper)
     {
-        var __oldClipper = (_DecorationClipper__container)(object)oldClipper;
-        return ((!object.Equals(((_DecorationClipper__container)__oldClipper).decoration, this.decoration)) || (!object.Equals(((_DecorationClipper__container)__oldClipper).textDirection, this.textDirection)));
+        var __oldClipper = (_DecorationClipper__container)oldClipper;
+        return ((!Equals(((_DecorationClipper__container)__oldClipper).decoration, this.decoration)) || (!Equals(((_DecorationClipper__container)__oldClipper).textDirection, this.textDirection)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/icon_button_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -33,11 +33,11 @@ public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((__other is IconButtonThemeData) && (object.Equals(((IconButtonThemeData)((IconButtonThemeData)__other)).style, this.style)));
+        return ((__other is IconButtonThemeData) && (Equals(((IconButtonThemeData)((IconButtonThemeData)__other)).style, this.style)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -45,8 +45,8 @@ public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", this.style, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -62,7 +62,7 @@ public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -79,16 +79,16 @@ public class IconButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static IconButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        IconButtonTheme? buttonTheme = ((IconButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<IconButtonTheme>());
+        IconButtonTheme? buttonTheme = ((IconButtonTheme?)context.dependOnInheritedWidgetOfExactType<IconButtonTheme>());
         return (buttonTheme?.data ?? Theme.of(context).iconButtonTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new IconButtonTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new IconButtonTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((IconButtonTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((IconButtonTheme)oldWidget).data)));
 }

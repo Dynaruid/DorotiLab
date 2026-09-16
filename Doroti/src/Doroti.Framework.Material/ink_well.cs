@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_well.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -30,8 +30,8 @@ public abstract class InteractiveInkFeature : InkFeature
         get => this._color;
         set
         {
-            var __value = (Color)(object)value;
-            if ((object.Equals(__value, this._color)))
+            var __value = (Color)value;
+            if ((Equals(__value, this._color)))
             {
                 return;
             }
@@ -45,7 +45,7 @@ public abstract class InteractiveInkFeature : InkFeature
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._customBorder)))
+            if ((Equals(__value, this._customBorder)))
             {
                 return;
             }
@@ -55,7 +55,7 @@ public abstract class InteractiveInkFeature : InkFeature
     }
     public virtual void paintInkCircle(Canvas canvas, Matrix4 transform, Paint paint, Offset center, double radius, TextDirection? textDirection = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!, global::System.Func<Rect>? clipCallback = null)
     {
-        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
+        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)MatrixUtils.getAsTranslation(transform));
         canvas.save();
         if ((originOffset is null))
         {
@@ -67,16 +67,16 @@ public abstract class InteractiveInkFeature : InkFeature
         }
         if ((clipCallback is not null))
         {
-            global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)clipCallback());
+            global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)clipCallback());
             if ((customBorder is not null))
             {
                 canvas.clipPath(customBorder.getOuterPath(rect, textDirection: textDirection));
             }
             else
             {
-                if ((!object.Equals(borderRadius, global::Doroti.Framework.Painting.BorderRadius.zero)))
+                if ((!Equals(borderRadius, BorderRadius.zero)))
                 {
-                    canvas.clipRRect(global::Doroti.Ui.RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomRight));
+                    canvas.clipRRect(RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius).bottomRight));
                 }
                 else
                 {
@@ -109,7 +109,7 @@ internal class _ParentInkResponseProvider__ink_well : global::Doroti.Framework.W
         this.state = state;
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.state, ((_ParentInkResponseProvider__ink_well)oldWidget).state)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.state, ((_ParentInkResponseProvider__ink_well)oldWidget).state)));
     public static _ParentInkResponseState__ink_well? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<_ParentInkResponseProvider__ink_well>()?.state;
@@ -159,7 +159,7 @@ public class InkResponse : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual global::Doroti.Framework.Widgets.WidgetStatesController? statesController { get; private set; }
     public virtual Duration? hoverDuration { get; private set; }
 
-    public InkResponse(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp = null, global::System.Action? onTapCancel = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action? onLongPressUp = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::System.Action? onSecondaryTapCancel = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool containedInkWell = false, global::Doroti.Framework.Painting.BoxShape highlightShape = global::Doroti.Framework.Painting.BoxShape.circle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, Color? splashColor = null, InteractiveInkFeatureFactory? splashFactory = null, bool enableFeedback = true, bool excludeFromSemantics = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool canRequestFocus = true, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, Duration? hoverDuration = null) : base(key: key)
+    public InkResponse(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp = null, global::System.Action? onTapCancel = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action? onLongPressUp = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::System.Action? onSecondaryTapCancel = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool containedInkWell = false, global::Doroti.Framework.Painting.BoxShape highlightShape = BoxShape.circle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, Color? splashColor = null, InteractiveInkFeatureFactory? splashFactory = null, bool enableFeedback = true, bool excludeFromSemantics = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool canRequestFocus = true, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, Duration? hoverDuration = null) : base(key: key)
     {
         this.child = child;
         this.onTap = onTap;
@@ -200,15 +200,15 @@ public class InkResponse : global::Doroti.Framework.Widgets.StatelessWidget
     public virtual global::System.Func<Rect>? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox) => DartRuntimePrimitives.ConvertValue<global::System.Func<Rect>>(null);
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _ParentInkResponseState__ink_well? parentStateLocal = ((_ParentInkResponseState__ink_well?)(object?)_ParentInkResponseProvider__ink_well.maybeOf(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _InkResponseStateWidget__ink_well(onTap: this.onTap, onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)this.onTapDown, onTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)this.onTapUp, onTapCancel: this.onTapCancel, onDoubleTap: this.onDoubleTap, onLongPress: this.onLongPress, onLongPressUp: this.onLongPressUp, onSecondaryTap: this.onSecondaryTap, onSecondaryTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)this.onSecondaryTapUp, onSecondaryTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)this.onSecondaryTapDown, onSecondaryTapCancel: this.onSecondaryTapCancel, onHighlightChanged: (global::System.Action<bool>?)this.onHighlightChanged, onHover: (global::System.Action<bool>?)this.onHover, mouseCursor: this.mouseCursor, containedInkWell: this.containedInkWell, highlightShape: this.highlightShape, radius: this.radius, borderRadius: this.borderRadius, customBorder: this.customBorder, focusColor: this.focusColor, hoverColor: this.hoverColor, highlightColor: this.highlightColor, overlayColor: this.overlayColor, splashColor: this.splashColor, splashFactory: this.splashFactory, enableFeedback: this.enableFeedback, excludeFromSemantics: this.excludeFromSemantics, focusNode: this.focusNode, canRequestFocus: this.canRequestFocus, onFocusChange: (global::System.Action<bool>?)this.onFocusChange, autofocus: this.autofocus, parentState: parentStateLocal, getRectCallback: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::System.Func<Rect>?>)this.getRectCallback, debugCheckContext: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, bool>)this.debugCheckContext, statesController: this.statesController, hoverDuration: this.hoverDuration, child: this.child));
+        _ParentInkResponseState__ink_well? parentStateLocal = ((_ParentInkResponseState__ink_well?)_ParentInkResponseProvider__ink_well.maybeOf(context));
+        return ((global::Doroti.Framework.Widgets.Widget)new _InkResponseStateWidget__ink_well(onTap: this.onTap, onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)this.onTapDown, onTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)this.onTapUp, onTapCancel: this.onTapCancel, onDoubleTap: this.onDoubleTap, onLongPress: this.onLongPress, onLongPressUp: this.onLongPressUp, onSecondaryTap: this.onSecondaryTap, onSecondaryTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)this.onSecondaryTapUp, onSecondaryTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)this.onSecondaryTapDown, onSecondaryTapCancel: this.onSecondaryTapCancel, onHighlightChanged: (global::System.Action<bool>?)this.onHighlightChanged, onHover: (global::System.Action<bool>?)this.onHover, mouseCursor: this.mouseCursor, containedInkWell: this.containedInkWell, highlightShape: this.highlightShape, radius: this.radius, borderRadius: this.borderRadius, customBorder: this.customBorder, focusColor: this.focusColor, hoverColor: this.hoverColor, highlightColor: this.highlightColor, overlayColor: this.overlayColor, splashColor: this.splashColor, splashFactory: this.splashFactory, enableFeedback: this.enableFeedback, excludeFromSemantics: this.excludeFromSemantics, focusNode: this.focusNode, canRequestFocus: this.canRequestFocus, onFocusChange: (global::System.Action<bool>?)this.onFocusChange, autofocus: this.autofocus, parentState: parentStateLocal, getRectCallback: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::System.Func<Rect>?>)this.getRectCallback, debugCheckContext: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, bool>)this.debugCheckContext, statesController: this.statesController, hoverDuration: this.hoverDuration, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool debugCheckContext(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -255,7 +255,7 @@ public class _InkResponseStateWidget__ink_well : global::Doroti.Framework.Widget
     public virtual global::Doroti.Framework.Widgets.WidgetStatesController? statesController { get; private set; }
     public virtual Duration? hoverDuration { get; private set; }
 
-    internal _InkResponseStateWidget__ink_well(global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp = null, global::System.Action? onTapCancel = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action? onLongPressUp = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::System.Action? onSecondaryTapCancel = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool containedInkWell = false, global::Doroti.Framework.Painting.BoxShape highlightShape = global::Doroti.Framework.Painting.BoxShape.circle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, Color? splashColor = null, InteractiveInkFeatureFactory? splashFactory = null, bool enableFeedback = true, bool excludeFromSemantics = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool canRequestFocus = true, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, _ParentInkResponseState__ink_well? parentState = null, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::System.Func<Rect>?>? getRectCallback = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, bool> debugCheckContext = default!, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, Duration? hoverDuration = null)
+    internal _InkResponseStateWidget__ink_well(global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp = null, global::System.Action? onTapCancel = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action? onLongPressUp = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::System.Action? onSecondaryTapCancel = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool containedInkWell = false, global::Doroti.Framework.Painting.BoxShape highlightShape = BoxShape.circle, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, Color? splashColor = null, InteractiveInkFeatureFactory? splashFactory = null, bool enableFeedback = true, bool excludeFromSemantics = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool canRequestFocus = true, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, _ParentInkResponseState__ink_well? parentState = null, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::System.Func<Rect>?>? getRectCallback = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, bool> debugCheckContext = default!, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, Duration? hoverDuration = null)
     {
         this.child = child;
         this.onTap = onTap;
@@ -303,7 +303,7 @@ public class _InkResponseStateWidget__ink_well : global::Doroti.Framework.Widget
         var gestures = ((Func<List<string>>)(() => { var __collection30382 = new List<string>(); if ((this.onTap is not null)) { __collection30382.Add("tap"); } if ((this.onDoubleTap is not null)) { __collection30382.Add("double tap"); } if ((this.onLongPress is not null)) { __collection30382.Add("long press"); } if ((this.onLongPressUp is not null)) { __collection30382.Add("long press up"); } if ((this.onTapDown is not null)) { __collection30382.Add("tap down"); } if ((this.onTapUp is not null)) { __collection30382.Add("tap up"); } if ((this.onTapCancel is not null)) { __collection30382.Add("tap cancel"); } if ((this.onSecondaryTap is not null)) { __collection30382.Add("secondary tap"); } if ((this.onSecondaryTapUp is not null)) { __collection30382.Add("secondary tap up"); } if ((this.onSecondaryTapDown is not null)) { __collection30382.Add("secondary tap down"); } if ((this.onSecondaryTapCancel is not null)) { __collection30382.Add("secondary tap cancel"); } return __collection30382; }))();
         properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("gestures", gestures.Cast<string>(), ifEmpty: "<none>"));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.MouseCursor>("mouseCursor", this.mouseCursor));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("containedInkWell", this.containedInkWell, level: global::Doroti.Framework.Foundation.DiagnosticLevel.fine));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("containedInkWell", this.containedInkWell, level: DiagnosticLevel.fine));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BoxShape>("highlightShape", this.highlightShape, description: $"{(this.containedInkWell ? "clipped to " : "")}{this.highlightShape}", showName: false));
     }
 
@@ -343,7 +343,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
     internal virtual bool _hasFocus { get; set; } = false;
     public virtual KeepAliveHandle? _keepAliveHandle { get; set; } = default;
 
-    public virtual bool highlightsExist => System.Linq.Enumerable.Any(this._highlights.Values.where(((highlight) => (highlight is not null))));
+    public virtual bool highlightsExist => Enumerable.Any(this._highlights.Values.where(((highlight) => (highlight is not null))));
     public virtual void markChildInkResponsePressed(_ParentInkResponseState__ink_well childState, bool value)
     {
         bool lastAnyPressed = this._anyChildInkResponsePressed;
@@ -362,7 +362,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         }
     }
 
-    internal virtual bool _anyChildInkResponsePressed => System.Linq.Enumerable.Any(this._activeChildren);
+    internal virtual bool _anyChildInkResponsePressed => Enumerable.Any(this._activeChildren);
     public virtual void activateOnIntent(global::Doroti.Framework.Widgets.Intent? intent)
     {
         this._activationTimer?.cancel();
@@ -410,7 +410,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         {
             internalStatesController = new global::Doroti.Framework.Widgets.WidgetStatesController();
         }
-        this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !this.enabled);
+        this.statesController.update(WidgetState.disabled, !this.enabled);
         this.statesController.addListener(this.handleStatesControllerChange);
     }
 
@@ -422,13 +422,13 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             _ensureKeepAlive();
         }
         initStatesController();
-        global::Doroti.Framework.Widgets.FocusManager.instance.addHighlightModeListener((global::System.Action<global::Doroti.Framework.Widgets.FocusHighlightMode>)this.handleFocusHighlightModeChange);
+        FocusManager.instance.addHighlightModeListener((global::System.Action<global::Doroti.Framework.Widgets.FocusHighlightMode>)this.handleFocusHighlightModeChange);
     }
 
     public override void didUpdateWidget(_InkResponseStateWidget__ink_well oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((_InkResponseStateWidget__ink_well)this.widget).statesController, ((_InkResponseStateWidget__ink_well)oldWidget).statesController)))
+        if ((!Equals(((_InkResponseStateWidget__ink_well)this.widget).statesController, ((_InkResponseStateWidget__ink_well)oldWidget).statesController)))
         {
             ((_InkResponseStateWidget__ink_well)oldWidget).statesController?.removeListener(this.handleStatesControllerChange);
             if ((((_InkResponseStateWidget__ink_well)this.widget).statesController is not null))
@@ -438,7 +438,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             }
             initStatesController();
         }
-        if ((((((_InkResponseStateWidget__ink_well)this.widget).radius != ((_InkResponseStateWidget__ink_well)oldWidget).radius) || (!object.Equals(((_InkResponseStateWidget__ink_well)this.widget).highlightShape, ((_InkResponseStateWidget__ink_well)oldWidget).highlightShape))) || (!object.Equals(((_InkResponseStateWidget__ink_well)this.widget).borderRadius, ((_InkResponseStateWidget__ink_well)oldWidget).borderRadius))))
+        if ((((((_InkResponseStateWidget__ink_well)this.widget).radius != ((_InkResponseStateWidget__ink_well)oldWidget).radius) || (!Equals(((_InkResponseStateWidget__ink_well)this.widget).highlightShape, ((_InkResponseStateWidget__ink_well)oldWidget).highlightShape))) || (!Equals(((_InkResponseStateWidget__ink_well)this.widget).borderRadius, ((_InkResponseStateWidget__ink_well)oldWidget).borderRadius))))
         {
             InkHighlight? hoverHighlight = this._highlights.GetValueOrDefault(_HighlightType__ink_well.hover);
             if ((hoverHighlight is not null))
@@ -452,16 +452,16 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
                 focusHighlight.dispose();
             }
         }
-        if ((!object.Equals(((_InkResponseStateWidget__ink_well)this.widget).customBorder, ((_InkResponseStateWidget__ink_well)oldWidget).customBorder)))
+        if ((!Equals(((_InkResponseStateWidget__ink_well)this.widget).customBorder, ((_InkResponseStateWidget__ink_well)oldWidget).customBorder)))
         {
             _updateHighlightsAndSplashes();
         }
         if ((this.enabled != isWidgetEnabled(oldWidget)))
         {
-            this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !this.enabled);
+            this.statesController.update(WidgetState.disabled, !this.enabled);
             if (!this.enabled)
             {
-                this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.pressed, false);
+                this.statesController.update(WidgetState.pressed, false);
                 InkHighlight? hoverHighlightLocal = this._highlights.GetValueOrDefault(_HighlightType__ink_well.hover);
                 hoverHighlightLocal?.dispose();
             }
@@ -472,7 +472,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
     public override void dispose()
     {
-        global::Doroti.Framework.Widgets.FocusManager.instance.removeHighlightModeListener((global::System.Action<global::Doroti.Framework.Widgets.FocusHighlightMode>)this.handleFocusHighlightModeChange);
+        FocusManager.instance.removeHighlightModeListener((global::System.Action<global::Doroti.Framework.Widgets.FocusHighlightMode>)this.handleFocusHighlightModeChange);
         this.statesController.removeListener(this.handleStatesControllerChange);
         this.internalStatesController?.dispose();
         this._activationTimer?.cancel();
@@ -480,7 +480,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         base.dispose();
     }
 
-    public virtual bool wantKeepAlive => DartRuntimePrimitives.ConvertValue<bool>((this.highlightsExist || (((this._splashes is not null) && System.Linq.Enumerable.Any(this._splashes!)))));
+    public virtual bool wantKeepAlive => DartRuntimePrimitives.ConvertValue<bool>((this.highlightsExist || (((this._splashes is not null) && Enumerable.Any(this._splashes!)))));
     public virtual Duration getFadeDurationForType(_HighlightType__ink_well type)
     {
         switch (type)
@@ -513,14 +513,14 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         {
             case _HighlightType__ink_well.pressed:
                 {
-                    this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.pressed, value);
+                    this.statesController.update(WidgetState.pressed, value);
                     break;
                 }
             case _HighlightType__ink_well.hover:
                 {
                     if (callOnHover)
                     {
-                        this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.hovered, value);
+                        this.statesController.update(WidgetState.hovered, value);
                     }
                     break;
                 }
@@ -529,7 +529,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
                     break;
                 }
         }
-        if ((object.Equals(type, _HighlightType__ink_well.pressed)))
+        if ((Equals(type, _HighlightType__ink_well.pressed)))
         {
             ((_InkResponseStateWidget__ink_well)this.widget).parentState?.markChildInkResponsePressed(this, value);
         }
@@ -541,8 +541,8 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         {
             if ((highlight is null))
             {
-                global::Doroti.Ui.Color resolvedOverlayColor = ((global::Doroti.Ui.Color)(object?)(((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? (type switch { _HighlightType__ink_well.pressed => (((_InkResponseStateWidget__ink_well)this.widget).highlightColor ?? Theme.of(this.context).highlightColor), _HighlightType__ink_well.focus => (((_InkResponseStateWidget__ink_well)this.widget).focusColor ?? Theme.of(this.context).focusColor), _HighlightType__ink_well.hover => (((_InkResponseStateWidget__ink_well)this.widget).hoverColor ?? Theme.of(this.context).hoverColor), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
-                var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
+                global::Doroti.Ui.Color resolvedOverlayColor = ((global::Doroti.Ui.Color)(((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? (type switch { _HighlightType__ink_well.pressed => (((_InkResponseStateWidget__ink_well)this.widget).highlightColor ?? Theme.of(this.context).highlightColor), _HighlightType__ink_well.focus => (((_InkResponseStateWidget__ink_well)this.widget).focusColor ?? Theme.of(this.context).focusColor), _HighlightType__ink_well.hover => (((_InkResponseStateWidget__ink_well)this.widget).hoverColor ?? Theme.of(this.context).hoverColor), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+                var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)this.context.findRenderObject()!)!;
                 this._highlights[type] = new InkHighlight(controller: Material.of(this.context), referenceBox: referenceBoxLocal, color: (this.enabled ? resolvedOverlayColor : resolvedOverlayColor.withAlpha(0L)), shape: ((_InkResponseStateWidget__ink_well)this.widget).highlightShape, radius: ((_InkResponseStateWidget__ink_well)this.widget).radius, borderRadius: ((_InkResponseStateWidget__ink_well)this.widget).borderRadius, customBorder: ((_InkResponseStateWidget__ink_well)this.widget).customBorder, rectCallback: ((_InkResponseStateWidget__ink_well)this.widget).getRectCallback!(referenceBoxLocal), onRemoved: () => handleInkRemoval(), textDirection: Directionality.of(this.context), fadeDuration: getFadeDurationForType(type));
                 updateKeepAlive();
             }
@@ -585,7 +585,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             highlight?.customBorder = ((_InkResponseStateWidget__ink_well)this.widget).customBorder;
         }
         this._currentSplash?.customBorder = ((_InkResponseStateWidget__ink_well)this.widget).customBorder;
-        if (((this._splashes is not null) && System.Linq.Enumerable.Any(this._splashes!)))
+        if (((this._splashes is not null) && Enumerable.Any(this._splashes!)))
         {
             foreach (InteractiveInkFeature inkFeature in this._splashes!)
             {
@@ -596,11 +596,11 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
     internal virtual InteractiveInkFeature _createSplash(Offset globalPosition)
     {
-        MaterialInkController inkController = ((MaterialInkController)(object?)Material.of(this.context));
-        var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset positionLocal = ((global::Doroti.Ui.Offset)(object?)((Offset)(referenceBoxLocal).globalToLocal(globalPosition)));
-        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? ((_InkResponseStateWidget__ink_well)this.widget).splashColor) ?? Theme.of(this.context).splashColor));
-        global::System.Func<Rect>? rectCallbackLocal = ((global::System.Func<Rect>)(((_InkResponseStateWidget__ink_well)this.widget).containedInkWell ? ((_InkResponseStateWidget__ink_well)this.widget).getRectCallback!(referenceBoxLocal) : null));
+        MaterialInkController inkController = ((MaterialInkController)Material.of(this.context));
+        var referenceBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)this.context.findRenderObject()!)!;
+        global::Doroti.Ui.Offset positionLocal = ((global::Doroti.Ui.Offset)((Offset)(referenceBoxLocal).globalToLocal(globalPosition)));
+        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? ((_InkResponseStateWidget__ink_well)this.widget).splashColor) ?? Theme.of(this.context).splashColor));
+        global::System.Func<Rect>? rectCallbackLocal = ((global::System.Func<Rect>?)(((_InkResponseStateWidget__ink_well)this.widget).containedInkWell ? ((_InkResponseStateWidget__ink_well)this.widget).getRectCallback!(referenceBoxLocal) : null));
         global::Doroti.Framework.Painting.BorderRadius? borderRadiusLocal = ((_InkResponseStateWidget__ink_well)this.widget).borderRadius;
         global::Doroti.Framework.Painting.ShapeBorder? customBorderLocal = ((_InkResponseStateWidget__ink_well)this.widget).customBorder;
         InteractiveInkFeature? splash = default!;
@@ -610,7 +610,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             {
                 DartRuntimePrimitives.Assert(() => this._splashes!.Contains(splash));
                 this._splashes!.Remove(splash);
-                if ((object.Equals(this._currentSplash, splash)))
+                if ((Equals(this._currentSplash, splash)))
                 {
                     _currentSplash = null;
                 }
@@ -634,17 +634,17 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         })));
     }
 
-    internal virtual bool _shouldShowFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { global::Doroti.Framework.Widgets.NavigationMode.traditional => (this.enabled && this._hasFocus), null => (this.enabled && this._hasFocus), global::Doroti.Framework.Widgets.NavigationMode.directional => this._hasFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual bool _shouldShowFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { NavigationMode.traditional => (this.enabled && this._hasFocus), null => (this.enabled && this._hasFocus), NavigationMode.directional => this._hasFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public virtual void updateFocusHighlights()
     {
-        bool showFocus = (global::Doroti.Framework.Widgets.FocusManager.instance.highlightMode switch { global::Doroti.Framework.Widgets.FocusHighlightMode.touch => false, global::Doroti.Framework.Widgets.FocusHighlightMode.traditional => this._shouldShowFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool showFocus = (FocusManager.instance.highlightMode switch { FocusHighlightMode.touch => false, FocusHighlightMode.traditional => this._shouldShowFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         updateHighlight(_HighlightType__ink_well.focus, value: showFocus);
     }
 
     public virtual void handleFocusUpdate(bool hasFocus)
     {
         _hasFocus = hasFocus;
-        this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.focused, hasFocus);
+        this.statesController.update(WidgetState.focused, hasFocus);
         updateFocusHighlights();
         ((_InkResponseStateWidget__ink_well)this.widget).onFocusChange?.Invoke(hasFocus);
     }
@@ -686,7 +686,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         global::Doroti.Ui.Offset globalPositionLocal = default!;
         if ((context is not null))
         {
-            var referenceBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
+            var referenceBox = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
             DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).hasSize, () => (object?)"InkResponse must be done with layout before starting a splash.");
             globalPositionLocal = ((Offset)(referenceBox).localToGlobal(((Offset)(((global::Doroti.Framework.Rendering.RenderBox)referenceBox).paintBounds).center)));
         }
@@ -694,8 +694,8 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         {
             globalPositionLocal = details!.globalPosition;
         }
-        this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.pressed, true);
-        InteractiveInkFeature splash = ((InteractiveInkFeature)(object?)_createSplash(globalPositionLocal));
+        this.statesController.update(WidgetState.pressed, true);
+        InteractiveInkFeature splash = ((InteractiveInkFeature)_createSplash(globalPositionLocal));
         _splashes ??= new HashSet<InteractiveInkFeature>();
         this._splashes!.Add(splash);
         this._currentSplash?.cancel();
@@ -839,7 +839,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         updateHighlight(_HighlightType__ink_well.hover, value: this._hovering);
     }
 
-    internal virtual bool _canRequestFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { global::Doroti.Framework.Widgets.NavigationMode.traditional => (this.enabled && ((_InkResponseStateWidget__ink_well)this.widget).canRequestFocus), null => (this.enabled && ((_InkResponseStateWidget__ink_well)this.widget).canRequestFocus), global::Doroti.Framework.Widgets.NavigationMode.directional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual bool _canRequestFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { NavigationMode.traditional => (this.enabled && ((_InkResponseStateWidget__ink_well)this.widget).canRequestFocus), null => (this.enabled && ((_InkResponseStateWidget__ink_well)this.widget).canRequestFocus), NavigationMode.directional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => this.widget.debugCheckContext(context));
@@ -848,11 +848,11 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             _ensureKeepAlive();
         }
         ThemeData theme = Theme.of(context);
-        var highlightableStates = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.focused, global::Doroti.Framework.Widgets.WidgetState.hovered, global::Doroti.Framework.Widgets.WidgetState.pressed };
+        var highlightableStates = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { WidgetState.focused, WidgetState.hovered, WidgetState.pressed };
         HashSet<global::Doroti.Framework.Widgets.WidgetState> nonHighlightableStates = this.statesController.value.difference<global::Doroti.Framework.Widgets.WidgetState>(highlightableStates);
-        var pressedLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48677 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48677.UnionWith(nonHighlightableStates); __collection48677.Add(global::Doroti.Framework.Widgets.WidgetState.pressed); return __collection48677; }))();
-        var focusedLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48760 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48760.UnionWith(nonHighlightableStates); __collection48760.Add(global::Doroti.Framework.Widgets.WidgetState.focused); return __collection48760; }))();
-        var hoveredLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48843 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48843.UnionWith(nonHighlightableStates); __collection48843.Add(global::Doroti.Framework.Widgets.WidgetState.hovered); return __collection48843; }))();
+        var pressedLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48677 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48677.UnionWith(nonHighlightableStates); __collection48677.Add(WidgetState.pressed); return __collection48677; }))();
+        var focusedLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48760 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48760.UnionWith(nonHighlightableStates); __collection48760.Add(WidgetState.focused); return __collection48760; }))();
+        var hoveredLocal = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection48843 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); __collection48843.UnionWith(nonHighlightableStates); __collection48843.Add(WidgetState.hovered); return __collection48843; }))();
         Color getHighlightColorForType(_HighlightType__ink_well type)
         {
             return (type switch { _HighlightType__ink_well.pressed => ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(pressedLocal) ?? ((_InkResponseStateWidget__ink_well)this.widget).highlightColor) ?? theme.highlightColor), _HighlightType__ink_well.focus => ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(focusedLocal) ?? ((_InkResponseStateWidget__ink_well)this.widget).focusColor) ?? theme.focusColor), _HighlightType__ink_well.hover => ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(hoveredLocal) ?? ((_InkResponseStateWidget__ink_well)this.widget).hoverColor) ?? theme.hoverColor), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -863,8 +863,8 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             this._highlights[typeLocal]?.color = getHighlightColorForType(typeLocal);
         }
         this._currentSplash?.color = ((((_InkResponseStateWidget__ink_well)this.widget).overlayColor?.resolve(this.statesController.value) ?? ((_InkResponseStateWidget__ink_well)this.widget).splashColor) ?? Theme.of(context).splashColor);
-        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((global::Doroti.Framework.Services.MouseCursor)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>((((_InkResponseStateWidget__ink_well)this.widget).mouseCursor ?? global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable), this.statesController.value));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ParentInkResponseProvider__ink_well(state: this, child: new global::Doroti.Framework.Widgets.Actions(actions: this._actionMap, child: new global::Doroti.Framework.Widgets.Focus(focusNode: ((_InkResponseStateWidget__ink_well)this.widget).focusNode, canRequestFocus: this._canRequestFocus, onFocusChange: (global::System.Action<bool>)this.handleFocusUpdate, autofocus: ((_InkResponseStateWidget__ink_well)this.widget).autofocus, child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this.handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this.handleMouseExit, child: DefaultSelectionStyle.merge(mouseCursor: effectiveMouseCursor, child: new global::Doroti.Framework.Widgets.Semantics(onTap: () => ((global::System.Action<global::Doroti.Framework.Widgets.Intent?>)((((_InkResponseStateWidget__ink_well)this.widget).excludeFromSemantics || (((_InkResponseStateWidget__ink_well)this.widget).onTap is null)) ? null : this.simulateTap))(default), onLongPress: ((global::System.Action)((((_InkResponseStateWidget__ink_well)this.widget).excludeFromSemantics || (((_InkResponseStateWidget__ink_well)this.widget).onLongPress is null)) ? null : this.simulateLongPress)), child: new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(this._primaryEnabled ? this.handleTapDown : null)), onTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)(this._primaryEnabled ? this.handleTapUp : null)), onTap: ((global::System.Action)(this._primaryEnabled ? this.handleTap : null)), onTapCancel: ((global::System.Action)(this._primaryEnabled ? this.handleTapCancel : null)), onDoubleTap: ((global::System.Action)((((_InkResponseStateWidget__ink_well)this.widget).onDoubleTap is not null) ? this.handleDoubleTap : null)), onLongPress: ((global::System.Action)((((_InkResponseStateWidget__ink_well)this.widget).onLongPress is not null) ? this.handleLongPress : null)), onLongPressUp: ((global::System.Action)((((_InkResponseStateWidget__ink_well)this.widget).onLongPressUp is not null) ? this.handleLongPressUp : null)), onSecondaryTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(this._secondaryEnabled ? this.handleSecondaryTapDown : null)), onSecondaryTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)(this._secondaryEnabled ? this.handleSecondaryTapUp : null)), onSecondaryTap: ((global::System.Action)(this._secondaryEnabled ? this.handleSecondaryTap : null)), onSecondaryTapCancel: ((global::System.Action)(this._secondaryEnabled ? this.handleSecondaryTapCancel : null)), behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, excludeFromSemantics: true, child: ((_InkResponseStateWidget__ink_well)this.widget).child))))))));
+        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((global::Doroti.Framework.Services.MouseCursor)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>((((_InkResponseStateWidget__ink_well)this.widget).mouseCursor ?? WidgetStateMouseCursor.adaptiveClickable), this.statesController.value));
+        return ((global::Doroti.Framework.Widgets.Widget)new _ParentInkResponseProvider__ink_well(state: this, child: new global::Doroti.Framework.Widgets.Actions(actions: this._actionMap, child: new global::Doroti.Framework.Widgets.Focus(focusNode: ((_InkResponseStateWidget__ink_well)this.widget).focusNode, canRequestFocus: this._canRequestFocus, onFocusChange: (global::System.Action<bool>)this.handleFocusUpdate, autofocus: ((_InkResponseStateWidget__ink_well)this.widget).autofocus, child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this.handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this.handleMouseExit, child: DefaultSelectionStyle.merge(mouseCursor: effectiveMouseCursor, child: new global::Doroti.Framework.Widgets.Semantics(onTap: (((_InkResponseStateWidget__ink_well)this.widget).excludeFromSemantics || ((_InkResponseStateWidget__ink_well)this.widget).onTap is null) ? null : () => this.simulateTap(null), onLongPress: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).excludeFromSemantics || (((_InkResponseStateWidget__ink_well)this.widget).onLongPress is null)) ? null : this.simulateLongPress)), child: new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)(this._primaryEnabled ? this.handleTapDown : null)), onTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)(this._primaryEnabled ? this.handleTapUp : null)), onTap: ((global::System.Action?)(this._primaryEnabled ? this.handleTap : null)), onTapCancel: ((global::System.Action?)(this._primaryEnabled ? this.handleTapCancel : null)), onDoubleTap: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).onDoubleTap is not null) ? this.handleDoubleTap : null)), onLongPress: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).onLongPress is not null) ? this.handleLongPress : null)), onLongPressUp: ((global::System.Action?)((((_InkResponseStateWidget__ink_well)this.widget).onLongPressUp is not null) ? this.handleLongPressUp : null)), onSecondaryTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)(this._secondaryEnabled ? this.handleSecondaryTapDown : null)), onSecondaryTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>?)(this._secondaryEnabled ? this.handleSecondaryTapUp : null)), onSecondaryTap: ((global::System.Action?)(this._secondaryEnabled ? this.handleSecondaryTap : null)), onSecondaryTapCancel: ((global::System.Action?)(this._secondaryEnabled ? this.handleSecondaryTapCancel : null)), behavior: HitTestBehavior.opaque, excludeFromSemantics: true, child: ((_InkResponseStateWidget__ink_well)this.widget).child))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -903,7 +903,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
 
 public class InkWell : InkResponse
 {
-    public InkWell(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action? onLongPressUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp = null, global::System.Action? onTapCancel = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::System.Action? onSecondaryTapCancel = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, Color? splashColor = null, InteractiveInkFeatureFactory? splashFactory = null, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, bool enableFeedback = true, bool excludeFromSemantics = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool canRequestFocus = true, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, Duration? hoverDuration = null) : base(key: key, child: child, onTap: onTap, onDoubleTap: onDoubleTap, onLongPress: onLongPress, onLongPressUp: onLongPressUp, onTapDown: onTapDown, onTapUp: onTapUp, onTapCancel: onTapCancel, onSecondaryTap: onSecondaryTap, onSecondaryTapUp: onSecondaryTapUp, onSecondaryTapDown: onSecondaryTapDown, onSecondaryTapCancel: onSecondaryTapCancel, onHighlightChanged: onHighlightChanged, onHover: onHover, mouseCursor: mouseCursor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, overlayColor: overlayColor, splashColor: splashColor, splashFactory: splashFactory, radius: radius, borderRadius: borderRadius, customBorder: customBorder, enableFeedback: enableFeedback, excludeFromSemantics: excludeFromSemantics, focusNode: focusNode, canRequestFocus: canRequestFocus, onFocusChange: onFocusChange, autofocus: autofocus, statesController: statesController, hoverDuration: hoverDuration, containedInkWell: true, highlightShape: global::Doroti.Framework.Painting.BoxShape.rectangle)
+    public InkWell(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::System.Action? onDoubleTap = null, global::System.Action? onLongPress = null, global::System.Action? onLongPressUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onTapDown = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onTapUp = null, global::System.Action? onTapCancel = null, global::System.Action? onSecondaryTap = null, global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>? onSecondaryTapUp = null, global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>? onSecondaryTapDown = null, global::System.Action? onSecondaryTapCancel = null, global::System.Action<bool>? onHighlightChanged = null, global::System.Action<bool>? onHover = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Color? focusColor = null, Color? hoverColor = null, Color? highlightColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, Color? splashColor = null, InteractiveInkFeatureFactory? splashFactory = null, double? radius = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, bool enableFeedback = true, bool excludeFromSemantics = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool canRequestFocus = true, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStatesController? statesController = null, Duration? hoverDuration = null) : base(key: key, child: child, onTap: onTap, onDoubleTap: onDoubleTap, onLongPress: onLongPress, onLongPressUp: onLongPressUp, onTapDown: onTapDown, onTapUp: onTapUp, onTapCancel: onTapCancel, onSecondaryTap: onSecondaryTap, onSecondaryTapUp: onSecondaryTapUp, onSecondaryTapDown: onSecondaryTapDown, onSecondaryTapCancel: onSecondaryTapCancel, onHighlightChanged: onHighlightChanged, onHover: onHover, mouseCursor: mouseCursor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, overlayColor: overlayColor, splashColor: splashColor, splashFactory: splashFactory, radius: radius, borderRadius: borderRadius, customBorder: customBorder, enableFeedback: enableFeedback, excludeFromSemantics: excludeFromSemantics, focusNode: focusNode, canRequestFocus: canRequestFocus, onFocusChange: onFocusChange, autofocus: autofocus, statesController: statesController, hoverDuration: hoverDuration, containedInkWell: true, highlightShape: BoxShape.rectangle)
     {
     }
 

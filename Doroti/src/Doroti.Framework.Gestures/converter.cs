@@ -20,11 +20,11 @@ public static partial class ConverterLibrary
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
                 {
-                    return ((buttons == 0L) ? global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton : buttons);
+                    return ((buttons == 0L) ? EventsLibrary.kPrimaryButton : buttons);
                 }
             case PointerDeviceKind.unknown:
                 {
-                    return ((buttons == 0L) ? global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton : buttons);
+                    return ((buttons == 0L) ? EventsLibrary.kPrimaryButton : buttons);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -37,7 +37,7 @@ public abstract class PointerEventConverter
 {
     public static IEnumerable<PointerEvent> expand(IEnumerable<PointerData> data, Func<long, double?> devicePixelRatioForView)
     {
-        return data.where(((datum) => (!object.Equals(datum.signalKind, Dart_uiLibrary.PointerSignalKind.unknown)))).map<PointerData, PointerEvent?>(((datum) =>
+        return data.where(((datum) => (!Equals(datum.signalKind, Dart_uiLibrary.PointerSignalKind.unknown)))).map<PointerData, PointerEvent?>(((datum) =>
         {
             double? devicePixelRatio = devicePixelRatioForView(checked((long)datum.viewId));
             if ((devicePixelRatio is null))

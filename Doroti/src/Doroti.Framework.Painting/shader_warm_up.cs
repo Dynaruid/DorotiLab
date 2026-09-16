@@ -19,9 +19,9 @@ public abstract class ShaderWarmUp
         var canvas = new global::Doroti.Ui.Canvas(recorder);
         await warmUpOnCanvas(canvas);
         global::Doroti.Ui.Picture picture = recorder.endRecording();
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCaptureShaderWarmUpPicture(picture));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCaptureShaderWarmUpPicture(picture));
         TimelineTask? debugShaderWarmUpTask = default!;
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             debugShaderWarmUpTask = ((Func<TimelineTask>)(() =>
 {
@@ -33,12 +33,12 @@ public abstract class ShaderWarmUp
         try
         {
             global::Doroti.Ui.Image image = await picture.toImage(this.size.width.ceil(), this.size.height.ceil());
-            DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCaptureShaderWarmUpImage(image));
+            DartRuntimePrimitives.Assert(() => DebugLibrary.debugCaptureShaderWarmUpImage(image));
             image.dispose();
         }
         finally
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugShaderWarmUpTask!.finish();
             }

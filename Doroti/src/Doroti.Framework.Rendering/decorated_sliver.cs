@@ -13,7 +13,7 @@ public class RenderDecoratedSliver : RenderProxySliver
 
     public RenderDecoratedSliver(global::Doroti.Framework.Painting.Decoration decoration, DecorationPosition position = DecorationPosition.background, global::Doroti.Framework.Painting.ImageConfiguration configuration = default!)
     {
-        global::Doroti.Framework.Painting.ImageConfiguration __configuration = configuration ?? global::Doroti.Framework.Painting.ImageConfiguration.empty;
+        global::Doroti.Framework.Painting.ImageConfiguration __configuration = configuration ?? ImageConfiguration.empty;
         this._decoration = decoration;
         this._position = position;
         this._configuration = __configuration;
@@ -25,7 +25,7 @@ public class RenderDecoratedSliver : RenderProxySliver
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this.decoration)))
+            if ((Equals(__value, this.decoration)))
             {
                 return;
             }
@@ -41,7 +41,7 @@ public class RenderDecoratedSliver : RenderProxySliver
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this.position)))
+            if ((Equals(__value, this.position)))
             {
                 return;
             }
@@ -55,7 +55,7 @@ public class RenderDecoratedSliver : RenderProxySliver
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this.configuration)))
+            if ((Equals(__value, this.configuration)))
             {
                 return;
             }

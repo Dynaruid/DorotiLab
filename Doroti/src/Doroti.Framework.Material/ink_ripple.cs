@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_ripple.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -58,7 +58,7 @@ public static partial class Ink_rippleLibrary
 {
     internal static double _getTargetRadius(global::Doroti.Framework.Rendering.RenderBox referenceBox, bool containedInkWell, global::System.Func<Rect>? rectCallback, Offset position)
     {
-        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
+        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
         double d1 = sizeLocal.bottomRight(Offset.zero).distance;
         double d2 = ((sizeLocal.topRight(Offset.zero) - sizeLocal.bottomLeft(Offset.zero))).distance;
         return (Math.Max(d1, d2) / 2.0);
@@ -74,7 +74,7 @@ internal class _InkRippleFactory__ink_ripple : InteractiveInkFeatureFactory
 
     public virtual InteractiveInkFeature create(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null)
     {
-        return ((InteractiveInkFeature)(object?)new InkRipple(controller: controller, referenceBox: referenceBox, position: position, color: color, containedInkWell: containedInkWell, rectCallback: (global::System.Func<Rect>?)rectCallback, borderRadius: borderRadius, customBorder: customBorder, radius: radius, onRemoved: () => onRemoved(), textDirection: textDirection));
+        return ((InteractiveInkFeature)new InkRipple(controller: controller, referenceBox: referenceBox, position: position, color: color, containedInkWell: containedInkWell, rectCallback: (global::System.Func<Rect>?)rectCallback, borderRadius: borderRadius, customBorder: customBorder, radius: radius, onRemoved: onRemoved, textDirection: textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -93,14 +93,14 @@ public class InkRipple : InteractiveInkFeature
     internal virtual global::Doroti.Framework.Animation.AnimationController _fadeInController { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.Animation<long> _fadeOut { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.AnimationController _fadeOutController { get; set; } = default!;
-    public static InteractiveInkFeatureFactory splashFactory = ((InteractiveInkFeatureFactory)(object?)new _InkRippleFactory__ink_ripple());
-    internal static global::Doroti.Framework.Animation.Animatable<double> _easeCurveTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.ease));
-    internal static global::Doroti.Framework.Animation.Animatable<double> _fadeOutIntervalTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(Ink_rippleLibrary._kFadeOutIntervalStart, 1.0)));
+    public static InteractiveInkFeatureFactory splashFactory = ((InteractiveInkFeatureFactory)new _InkRippleFactory__ink_ripple());
+    internal static global::Doroti.Framework.Animation.Animatable<double> _easeCurveTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.CurveTween(curve: Curves.ease));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _fadeOutIntervalTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(Ink_rippleLibrary._kFadeOutIntervalStart, 1.0)));
 
     public InkRipple(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null) : base(referenceBox: referenceBox, customBorder: customBorder, onRemoved: onRemoved, controller: controller, color: color)
     {
         this._position = position;
-        this._borderRadius = (borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero);
+        this._borderRadius = (borderRadius ?? BorderRadius.zero);
         this._textDirection = textDirection;
         this._targetRadius = (radius ?? Ink_rippleLibrary._getTargetRadius(referenceBox, containedInkWell, rectCallback, position));
         this._clipCallback = Ink_rippleLibrary._getClipCallback(referenceBox, containedInkWell, rectCallback);
@@ -157,7 +157,7 @@ public class InkRipple : InteractiveInkFeature
 
     internal virtual void _handleAlphaStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        if (AnimationStatusMembers.isCompleted(status))
         {
             dispose();
         }
@@ -180,8 +180,8 @@ public class InkRipple : InteractiveInkFeature
     __cascade.color = this.color.withAlpha(alpha);
     return __cascade;
 }))();
-        global::Doroti.Ui.Rect? rect = ((global::Doroti.Ui.Rect?)(object?)this._clipCallback?.Invoke());
-        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._position, ((rect is not null) ? ((Offset)(DartRuntimePrimitives.RequireValue(rect)).center) : ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero)), global::Doroti.Framework.Animation.Curves.ease.transform(((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value))));
+        global::Doroti.Ui.Rect? rect = ((global::Doroti.Ui.Rect?)this._clipCallback?.Invoke());
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._position, ((rect is not null) ? ((Offset)(DartRuntimePrimitives.RequireValue(rect)).center) : ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero)), Curves.ease.transform(((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value))));
         paintInkCircle(canvas: canvas, transform: transform, paint: paintLocal, center: centerLocal, textDirection: this._textDirection, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value, customBorder: this.customBorder, borderRadius: this._borderRadius, clipCallback: (global::System.Func<Rect>?)this._clipCallback);
     }
 

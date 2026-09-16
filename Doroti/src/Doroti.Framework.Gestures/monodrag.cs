@@ -58,7 +58,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     }
 
     internal static VelocityTracker _defaultBuilder(PointerEvent @event) => new VelocityTracker(((PointerEvent)@event).kind);
-    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton);
+    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == EventsLibrary.kPrimaryButton);
     public virtual OffsetPair lastPosition => this._lastPosition;
     public virtual Duration? debugLastPendingEventTimestamp
     {
@@ -132,7 +132,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     public override void addAllowedPointer(PointerDownEvent @event)
     {
         base.addAllowedPointer(@event);
-        if ((object.Equals(this._state, _DragState__monodrag.ready)))
+        if ((Equals(this._state, _DragState__monodrag.ready)))
         {
             _initialButtons = @event.buttons;
         }
@@ -143,9 +143,9 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     {
         base.addAllowedPointerPanZoom(@event);
         startTrackingPointer(@event.pointer, @event.transform);
-        if ((object.Equals(this._state, _DragState__monodrag.ready)))
+        if ((Equals(this._state, _DragState__monodrag.ready)))
         {
-            _initialButtons = global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton;
+            _initialButtons = EventsLibrary.kPrimaryButton;
         }
         _addPointer(@event);
     }
@@ -173,14 +173,14 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _recordMoveDeltaForMultitouch(long pointer, Offset localDelta)
     {
-        if ((!object.Equals(this.multitouchDragStrategy, MultitouchDragStrategy.averageBoundaryPointers)))
+        if ((!Equals(this.multitouchDragStrategy, MultitouchDragStrategy.averageBoundaryPointers)))
         {
             DartRuntimePrimitives.Assert(() => (this._frameTimeStamp is null));
             DartRuntimePrimitives.Assert(() => (checked((long)(this._moveDeltaBeforeFrame.Count)) == 0));
             return;
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(this._frameTimeStamp, SchedulerBinding.instance.currentSystemFrameTimeStamp)));
-        if (((!object.Equals(this._state, _DragState__monodrag.accepted)) || (object.Equals(localDelta, Offset.zero))))
+        DartRuntimePrimitives.Assert(() => (Equals(this._frameTimeStamp, SchedulerBinding.instance.currentSystemFrameTimeStamp)));
+        if (((!Equals(this._state, _DragState__monodrag.accepted)) || (Equals(localDelta, Offset.zero))))
         {
             return;
         }
@@ -205,7 +205,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         global::Doroti.Ui.Offset offset = DartRuntimePrimitives.RequireValue(this._moveDeltaBeforeFrame.GetValueOrDefault(pointer));
         if (positive)
         {
-            if ((object.Equals(axis, _DragDirection__monodrag.vertical)))
+            if ((Equals(axis, _DragDirection__monodrag.vertical)))
             {
                 sum = Math.Max(offset.dy, 0.0);
             }
@@ -216,7 +216,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         }
         else
         {
-            if ((object.Equals(axis, _DragDirection__monodrag.vertical)))
+            if ((Equals(axis, _DragDirection__monodrag.vertical)))
             {
                 sum = Math.Min(offset.dy, 0.0);
             }
@@ -273,7 +273,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual global::Doroti.Ui.Offset _resolveLocalDeltaForMultitouch(long pointer, Offset localDelta)
     {
-        if ((!object.Equals(this.multitouchDragStrategy, MultitouchDragStrategy.averageBoundaryPointers)))
+        if ((!Equals(this.multitouchDragStrategy, MultitouchDragStrategy.averageBoundaryPointers)))
         {
             if ((this._frameTimeStamp is not null))
             {
@@ -284,21 +284,21 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             return localDelta;
         }
         Duration currentSystemFrameTimeStampLocal = SchedulerBinding.instance.currentSystemFrameTimeStamp;
-        if ((!object.Equals(this._frameTimeStamp, currentSystemFrameTimeStampLocal)))
+        if ((!Equals(this._frameTimeStamp, currentSystemFrameTimeStampLocal)))
         {
             this._moveDeltaBeforeFrame.Clear();
             _lastUpdatedDeltaForPan = Offset.zero;
             _frameTimeStamp = currentSystemFrameTimeStampLocal;
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(this._frameTimeStamp, SchedulerBinding.instance.currentSystemFrameTimeStamp)));
+        DartRuntimePrimitives.Assert(() => (Equals(this._frameTimeStamp, SchedulerBinding.instance.currentSystemFrameTimeStamp)));
         _DragDirection__monodrag? axisLocal = _getPrimaryDragAxis();
-        if ((((!object.Equals(this._state, _DragState__monodrag.accepted)) || (object.Equals(localDelta, Offset.zero))) || (((checked((long)(this._moveDeltaBeforeFrame.Count)) == 0) && (axisLocal is not null)))))
+        if ((((!Equals(this._state, _DragState__monodrag.accepted)) || (Equals(localDelta, Offset.zero))) || (((checked((long)(this._moveDeltaBeforeFrame.Count)) == 0) && (axisLocal is not null)))))
         {
             return localDelta;
         }
         double dxLocal = default!;
         double dyLocal = default!;
-        if ((object.Equals(axisLocal, _DragDirection__monodrag.horizontal)))
+        if ((Equals(axisLocal, _DragDirection__monodrag.horizontal)))
         {
             dxLocal = _resolveDelta(pointer: pointer, axis: _DragDirection__monodrag.horizontal, localDelta: localDelta);
             DartRuntimePrimitives.Assert(() => (dxLocal.abs() <= localDelta.dx.abs()));
@@ -306,7 +306,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         }
         else
         {
-            if ((object.Equals(axisLocal, _DragDirection__monodrag.vertical)))
+            if ((Equals(axisLocal, _DragDirection__monodrag.vertical)))
             {
                 dxLocal = 0.0;
                 dyLocal = _resolveDelta(pointer: pointer, axis: _DragDirection__monodrag.vertical, localDelta: localDelta);
@@ -328,8 +328,8 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual double _resolveDelta(long pointer, _DragDirection__monodrag axis, Offset localDelta)
     {
-        bool positiveLocal = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? (localDelta.dx > 0L) : (localDelta.dy > 0L));
-        double delta = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
+        bool positiveLocal = ((Equals(axis, _DragDirection__monodrag.horizontal)) ? (localDelta.dx > 0L) : (localDelta.dy > 0L));
+        double delta = ((Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
         long? maxSumDeltaPointer = _getMaxSumDeltaPointer(positive: positiveLocal, axis: axis);
         DartRuntimePrimitives.Assert(() => (maxSumDeltaPointer is not null));
         if ((maxSumDeltaPointer == pointer))
@@ -368,13 +368,13 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual double _resolveDeltaForPanGesture(_DragDirection__monodrag axis, Offset localDelta)
     {
-        double delta = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
+        double delta = ((Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
         long pointerCount = checked((long)(this._acceptedActivePointers.Count));
         DartRuntimePrimitives.Assert(() => (pointerCount >= 1L));
         var sum = delta;
         foreach (global::Doroti.Ui.Offset offset in this._moveDeltaBeforeFrame.Values)
         {
-            if ((object.Equals(axis, _DragDirection__monodrag.horizontal)))
+            if ((Equals(axis, _DragDirection__monodrag.horizontal)))
             {
                 sum += offset.dx;
             }
@@ -389,7 +389,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void handleEvent(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._state, _DragState__monodrag.ready)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._state, _DragState__monodrag.ready)));
         if ((!((PointerEvent)@event).synthesized && (((((@event is PointerDownEvent) || (@event is PointerMoveEvent)) || (@event is PointerPanZoomStartEvent)) || (@event is PointerPanZoomUpdateEvent)))))
         {
             global::Doroti.Ui.Offset positionLocal = (@event switch { PointerPanZoomStartEvent __object24693 => Offset.zero, PointerPanZoomUpdateEvent __object24744 => ((PointerPanZoomUpdateEvent)((PointerPanZoomUpdateEvent)__object24744)).pan, _ => ((PointerEvent)@event).localPosition });
@@ -465,7 +465,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void didStopTrackingLastPointer(long pointer)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._state, _DragState__monodrag.ready)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._state, _DragState__monodrag.ready)));
         switch (this._state)
         {
             case _DragState__monodrag.ready:
@@ -515,7 +515,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _checkDrag(long pointer)
     {
-        if ((object.Equals(this._state, _DragState__monodrag.accepted)))
+        if ((Equals(this._state, _DragState__monodrag.accepted)))
         {
             return;
         }
@@ -542,7 +542,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         _lastPendingEventTimestamp = null;
         _lastTransform = null;
         _checkStart(timestamp, pointer);
-        if (((!object.Equals(localUpdateDelta, Offset.zero)) && (this.onUpdate is not null)))
+        if (((!Equals(localUpdateDelta, Offset.zero)) && (this.onUpdate is not null)))
         {
             Matrix4? localToGlobal = ((transformLocal is not null) ? Matrix4.tryInvert(transformLocal) : null);
             global::Doroti.Ui.Offset correctedLocalPosition = (((OffsetPair)this._initialPosition).local + localUpdateDelta);
@@ -619,14 +619,14 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
 public class VerticalDragGestureRecognizer : DragGestureRecognizer
 {
-    public VerticalDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? DragGestureRecognizer._defaultButtonAcceptBehavior)
+    public VerticalDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
     }
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        double minVelocity = (minFlingVelocity ?? ConstantsLibrary.kMinFlingVelocity);
+        double minDistance = (minFlingDistance ?? EventsLibrary.computeHitSlop(kind, gestureSettings));
         return ((((VelocityEstimate)estimate).pixelsPerSecond.dy.abs() > minVelocity) && (((VelocityEstimate)estimate).offset.dy.abs() > minDistance));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -637,7 +637,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        double maxVelocity = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
+        double maxVelocity = (maxFlingVelocity ?? ConstantsLibrary.kMaxFlingVelocity);
         double dyLocal = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dy, -maxVelocity, maxVelocity);
         return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(0, dyLocal)), primaryVelocity: dyLocal, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -645,7 +645,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop)
     {
-        return (globalDistanceMoved.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
+        return (globalDistanceMoved.abs() > EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -657,14 +657,14 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
 
 public class HorizontalDragGestureRecognizer : DragGestureRecognizer
 {
-    public HorizontalDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? DragGestureRecognizer._defaultButtonAcceptBehavior)
+    public HorizontalDragGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
     }
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        double minVelocity = (minFlingVelocity ?? ConstantsLibrary.kMinFlingVelocity);
+        double minDistance = (minFlingDistance ?? EventsLibrary.computeHitSlop(kind, gestureSettings));
         return ((((VelocityEstimate)estimate).pixelsPerSecond.dx.abs() > minVelocity) && (((VelocityEstimate)estimate).offset.dx.abs() > minDistance));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -675,7 +675,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        double maxVelocity = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
+        double maxVelocity = (maxFlingVelocity ?? ConstantsLibrary.kMaxFlingVelocity);
         double dxLocal = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dx, -maxVelocity, maxVelocity);
         return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(dxLocal, 0)), primaryVelocity: dxLocal, globalPosition: ((OffsetPair)_lastPosition).global, localPosition: ((OffsetPair)_lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -683,7 +683,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop)
     {
-        return (globalDistanceMoved.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
+        return (globalDistanceMoved.abs() > EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -695,14 +695,14 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
 
 public class PanGestureRecognizer : DragGestureRecognizer
 {
-    public PanGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? DragGestureRecognizer._defaultButtonAcceptBehavior)
+    public PanGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
     }
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        double minVelocity = (minFlingVelocity ?? ConstantsLibrary.kMinFlingVelocity);
+        double minDistance = (minFlingDistance ?? EventsLibrary.computeHitSlop(kind, gestureSettings));
         return ((((VelocityEstimate)estimate).pixelsPerSecond.distanceSquared > (minVelocity * minVelocity)) && (((VelocityEstimate)estimate).offset.distanceSquared > (minDistance * minDistance)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -713,14 +713,14 @@ public class PanGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        Velocity velocityLocal = new Velocity(pixelsPerSecond: ((VelocityEstimate)estimate).pixelsPerSecond).clampMagnitude((minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity), (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
+        Velocity velocityLocal = new Velocity(pixelsPerSecond: ((VelocityEstimate)estimate).pixelsPerSecond).clampMagnitude((minFlingVelocity ?? ConstantsLibrary.kMinFlingVelocity), (maxFlingVelocity ?? ConstantsLibrary.kMaxFlingVelocity));
         return new DragEndDetails(velocity: velocityLocal, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop)
     {
-        return (globalDistanceMoved.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings));
+        return (globalDistanceMoved.abs() > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

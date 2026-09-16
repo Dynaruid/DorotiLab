@@ -48,7 +48,7 @@ public class AnimationStyle : Diagnosticable
 
     internal static T? _lerp<T>(T? a, T? b, double t, Func<T?, T?, double, T> lerp)
     {
-        if (((object.Equals(a, b)) || (t == 0.0)))
+        if (((Equals(a, b)) || (t == 0.0)))
         {
             return a;
         }
@@ -74,11 +74,11 @@ public class AnimationStyle : Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is AnimationStyle) && (object.Equals(((AnimationStyle)((AnimationStyle)__other)).curve, this.curve))) && (object.Equals(((AnimationStyle)((AnimationStyle)__other)).duration, this.duration))) && (object.Equals(((AnimationStyle)((AnimationStyle)__other)).reverseCurve, this.reverseCurve))) && (object.Equals(((AnimationStyle)((AnimationStyle)__other)).reverseDuration, this.reverseDuration)));
+        return (((((__other is AnimationStyle) && (Equals(((AnimationStyle)((AnimationStyle)__other)).curve, this.curve))) && (Equals(((AnimationStyle)((AnimationStyle)__other)).duration, this.duration))) && (Equals(((AnimationStyle)((AnimationStyle)__other)).reverseCurve, this.reverseCurve))) && (Equals(((AnimationStyle)((AnimationStyle)__other)).reverseDuration, this.reverseDuration)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.curve, this.duration, this.reverseCurve, this.reverseDuration);
@@ -118,7 +118,7 @@ internal class _LerpedCurve__animation_style : Curve
     {
         var __other = other as _LerpedCurve__animation_style;
         if (__other is null) return false;
-        return ((((__other is _LerpedCurve__animation_style) && (object.Equals(((_LerpedCurve__animation_style)((_LerpedCurve__animation_style)__other)).first, this.first))) && (object.Equals(((_LerpedCurve__animation_style)((_LerpedCurve__animation_style)__other)).second, this.second))) && (((_LerpedCurve__animation_style)((_LerpedCurve__animation_style)__other))._t == this._t));
+        return ((((__other is _LerpedCurve__animation_style) && (Equals(((_LerpedCurve__animation_style)((_LerpedCurve__animation_style)__other)).first, this.first))) && (Equals(((_LerpedCurve__animation_style)((_LerpedCurve__animation_style)__other)).second, this.second))) && (((_LerpedCurve__animation_style)((_LerpedCurve__animation_style)__other))._t == this._t));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.first, this.second, this._t);

@@ -30,7 +30,7 @@ public class ContextMenuController
             _menuOverlayEntry?.markNeedsBuild();
             return;
         }
-        ContextMenuController.removeAny();
+        removeAny();
         _contextMenuBuilder = (global::System.Func<BuildContext, Widget>)contextMenuBuilder;
         _capturedThemes = capturedThemes;
         _menuOverlayEntry = new OverlayEntry(builder: overlayContext =>
@@ -53,7 +53,7 @@ public class ContextMenuController
         }
     }
 
-    public virtual bool isShown => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(_shownInstance, this)));
+    public virtual bool isShown => DartRuntimePrimitives.ConvertValue<bool>((Equals(_shownInstance, this)));
     public virtual void markNeedsBuild()
     {
         DartRuntimePrimitives.Assert(() => this.isShown);
@@ -66,7 +66,7 @@ public class ContextMenuController
         {
             return;
         }
-        ContextMenuController.removeAny();
+        removeAny();
     }
 
 }

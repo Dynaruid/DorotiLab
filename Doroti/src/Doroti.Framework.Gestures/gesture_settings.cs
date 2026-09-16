@@ -26,7 +26,7 @@ public class DeviceGestureSettings
     {
         var __other = other as DeviceGestureSettings;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }

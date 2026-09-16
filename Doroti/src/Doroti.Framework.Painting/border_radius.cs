@@ -80,9 +80,9 @@ public abstract class BorderRadiusGeometry
     {
         string? visual = default!;
         string? logical = default!;
-        if ((((object.Equals(this._topLeft, this._topRight)) && (object.Equals(this._topRight, this._bottomLeft))) && (object.Equals(this._bottomLeft, this._bottomRight))))
+        if ((((Equals(this._topLeft, this._topRight)) && (Equals(this._topRight, this._bottomLeft))) && (Equals(this._bottomLeft, this._bottomRight))))
         {
-            if ((!object.Equals(this._topLeft, Radius.zero)))
+            if ((!Equals(this._topLeft, Radius.zero)))
             {
                 if ((this._topLeft.x == this._topLeft.y))
                 {
@@ -99,12 +99,12 @@ public abstract class BorderRadiusGeometry
             var result = new StringBuffer();
             result.write("BorderRadius.only(");
             var comma = false;
-            if ((!object.Equals(this._topLeft, Radius.zero)))
+            if ((!Equals(this._topLeft, Radius.zero)))
             {
                 result.write($"topLeft: {this._topLeft}");
                 comma = true;
             }
-            if ((!object.Equals(this._topRight, Radius.zero)))
+            if ((!Equals(this._topRight, Radius.zero)))
             {
                 if (comma)
                 {
@@ -113,7 +113,7 @@ public abstract class BorderRadiusGeometry
                 result.write($"topRight: {this._topRight}");
                 comma = true;
             }
-            if ((!object.Equals(this._bottomLeft, Radius.zero)))
+            if ((!Equals(this._bottomLeft, Radius.zero)))
             {
                 if (comma)
                 {
@@ -122,7 +122,7 @@ public abstract class BorderRadiusGeometry
                 result.write($"bottomLeft: {this._bottomLeft}");
                 comma = true;
             }
-            if ((!object.Equals(this._bottomRight, Radius.zero)))
+            if ((!Equals(this._bottomRight, Radius.zero)))
             {
                 if (comma)
                 {
@@ -133,9 +133,9 @@ public abstract class BorderRadiusGeometry
             result.write(")");
             visual = result.ToString();
         }
-        if ((((object.Equals(this._topStart, this._topEnd)) && (object.Equals(this._topEnd, this._bottomEnd))) && (object.Equals(this._bottomEnd, this._bottomStart))))
+        if ((((Equals(this._topStart, this._topEnd)) && (Equals(this._topEnd, this._bottomEnd))) && (Equals(this._bottomEnd, this._bottomStart))))
         {
-            if ((!object.Equals(this._topStart, Radius.zero)))
+            if ((!Equals(this._topStart, Radius.zero)))
             {
                 if ((this._topStart.x == this._topStart.y))
                 {
@@ -152,12 +152,12 @@ public abstract class BorderRadiusGeometry
             var resultLocal = new StringBuffer();
             resultLocal.write("BorderRadiusDirectional.only(");
             var commaLocal = false;
-            if ((!object.Equals(this._topStart, Radius.zero)))
+            if ((!Equals(this._topStart, Radius.zero)))
             {
                 resultLocal.write($"topStart: {this._topStart}");
                 commaLocal = true;
             }
-            if ((!object.Equals(this._topEnd, Radius.zero)))
+            if ((!Equals(this._topEnd, Radius.zero)))
             {
                 if (commaLocal)
                 {
@@ -166,7 +166,7 @@ public abstract class BorderRadiusGeometry
                 resultLocal.write($"topEnd: {this._topEnd}");
                 commaLocal = true;
             }
-            if ((!object.Equals(this._bottomStart, Radius.zero)))
+            if ((!Equals(this._bottomStart, Radius.zero)))
             {
                 if (commaLocal)
                 {
@@ -175,7 +175,7 @@ public abstract class BorderRadiusGeometry
                 resultLocal.write($"bottomStart: {this._bottomStart}");
                 commaLocal = true;
             }
-            if ((!object.Equals(this._bottomEnd, Radius.zero)))
+            if ((!Equals(this._bottomEnd, Radius.zero)))
             {
                 if (commaLocal)
                 {
@@ -202,11 +202,11 @@ public abstract class BorderRadiusGeometry
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((__other is BorderRadiusGeometry) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topLeft, this._topLeft))) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topRight, this._topRight))) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomLeft, this._bottomLeft))) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomRight, this._bottomRight))) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topStart, this._topStart))) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topEnd, this._topEnd))) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomStart, this._bottomStart))) && (object.Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomEnd, this._bottomEnd)));
+        return (((((((((__other is BorderRadiusGeometry) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topLeft, this._topLeft))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topRight, this._topRight))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomLeft, this._bottomLeft))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomRight, this._bottomRight))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topStart, this._topStart))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._topEnd, this._topEnd))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomStart, this._bottomStart))) && (Equals(((BorderRadiusGeometry)((BorderRadiusGeometry)__other))._bottomEnd, this._bottomEnd)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this._topLeft, this._topRight, this._bottomLeft, this._bottomRight, this._topStart, this._topEnd, this._bottomStart, this._bottomEnd);
@@ -214,7 +214,7 @@ public abstract class BorderRadiusGeometry
 
 public class BorderRadius : BorderRadiusGeometry
 {
-    public new static BorderRadius zero = BorderRadius.CreateAll(Radius.zero);
+    public new static BorderRadius zero = CreateAll(Radius.zero);
     public virtual Radius topLeft { get; private set; } = default!;
     public virtual Radius topRight { get; private set; } = default!;
     public virtual Radius bottomLeft { get; private set; } = default!;
@@ -227,7 +227,7 @@ public class BorderRadius : BorderRadiusGeometry
 
     public new static BorderRadius CreateCircular(double radius)
     {
-        return BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(radius));
+        return CreateAll(Radius.circular(radius));
     }
 
     public new static BorderRadius CreateVertical(Radius top = default, Radius bottom = default)
@@ -264,13 +264,13 @@ public class BorderRadius : BorderRadiusGeometry
     internal override Radius _bottomEnd => Radius.zero;
     public virtual global::Doroti.Ui.RRect toRRect(Rect rect)
     {
-        return global::Doroti.Ui.RRect.fromRectAndCorners(rect, topLeft: this.topLeft.clamp(minimum: Radius.zero), topRight: this.topRight.clamp(minimum: Radius.zero), bottomLeft: this.bottomLeft.clamp(minimum: Radius.zero), bottomRight: this.bottomRight.clamp(minimum: Radius.zero));
+        return RRect.fromRectAndCorners(rect, topLeft: this.topLeft.clamp(minimum: Radius.zero), topRight: this.topRight.clamp(minimum: Radius.zero), bottomLeft: this.bottomLeft.clamp(minimum: Radius.zero), bottomRight: this.bottomRight.clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.RSuperellipse toRSuperellipse(Rect rect)
     {
-        return global::Doroti.Ui.RSuperellipse.fromRectAndCorners(rect, topLeft: this.topLeft.clamp(minimum: Radius.zero), topRight: this.topRight.clamp(minimum: Radius.zero), bottomLeft: this.bottomLeft.clamp(minimum: Radius.zero), bottomRight: this.bottomRight.clamp(minimum: Radius.zero));
+        return RSuperellipse.fromRectAndCorners(rect, topLeft: this.topLeft.clamp(minimum: Radius.zero), topRight: this.topRight.clamp(minimum: Radius.zero), bottomLeft: this.bottomLeft.clamp(minimum: Radius.zero), bottomRight: this.bottomRight.clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -361,7 +361,7 @@ public class BorderRadius : BorderRadiusGeometry
 
 public class BorderRadiusDirectional : BorderRadiusGeometry
 {
-    public new static BorderRadiusDirectional zero = BorderRadiusDirectional.CreateAll(Radius.zero);
+    public new static BorderRadiusDirectional zero = CreateAll(Radius.zero);
     public virtual Radius topStart { get; private set; } = default!;
     public virtual Radius topEnd { get; private set; } = default!;
     public virtual Radius bottomStart { get; private set; } = default!;
@@ -374,7 +374,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
 
     public new static BorderRadiusDirectional CreateCircular(double radius)
     {
-        return BorderRadiusDirectional.CreateAll(global::Doroti.Ui.Radius.circular(radius));
+        return CreateAll(Radius.circular(radius));
     }
 
     public new static BorderRadiusDirectional CreateVertical(Radius top = default, Radius bottom = default)
@@ -487,7 +487,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
 
     public override BorderRadius resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(BorderRadiusDirectional)}"));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(BorderRadiusDirectional)}"));
         switch (DartRuntimePrimitives.RequireValue(direction))
         {
             case TextDirection.rtl:
@@ -567,7 +567,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
 
     public override BorderRadius resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedBorderRadius__border_radius)}"));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedBorderRadius__border_radius)}"));
         switch (DartRuntimePrimitives.RequireValue(direction))
         {
             case TextDirection.rtl:

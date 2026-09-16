@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/platform_menu_bar.dart
-#pragma warning disable CS8600, CS8603, CS8609, CS8619, CS8620
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -77,7 +76,7 @@ public static partial class Platform_menu_barLibrary
 
 public class ShortcutSerialization
 {
-    internal virtual DartMap<string, object> _internal { get; private set; } = default!;
+    internal virtual DartMap<string, object?> _internal { get; private set; } = default!;
     internal virtual global::Doroti.Framework.Services.LogicalKeyboardKey? _trigger { get; private set; }
     internal virtual string? _character { get; private set; }
     internal virtual bool? _alt { get; private set; }
@@ -97,7 +96,7 @@ public class ShortcutSerialization
         this._control = control;
         this._meta = meta;
         this._shift = null;
-        this._internal = new DartMap<string, object> { [Platform_menu_barLibrary._kShortcutCharacter] = character, [Platform_menu_barLibrary._kShortcutModifiers] = ((((control ? _shortcutModifierControl : 0L)) | ((alt ? _shortcutModifierAlt : 0L))) | ((meta ? _shortcutModifierMeta : 0L))) };
+        this._internal = new DartMap<string, object?> { [Platform_menu_barLibrary._kShortcutCharacter] = character, [Platform_menu_barLibrary._kShortcutModifiers] = ((((control ? _shortcutModifierControl : 0L)) | ((alt ? _shortcutModifierAlt : 0L))) | ((meta ? _shortcutModifierMeta : 0L))) };
         System.Diagnostics.Debug.Assert((character.Length == 1L));
     }
 
@@ -110,7 +109,7 @@ public class ShortcutSerialization
         __instance._control = control;
         __instance._meta = meta;
         __instance._shift = shift;
-        __instance._internal = new DartMap<string, object> { [Platform_menu_barLibrary._kShortcutTrigger] = ((global::Doroti.Framework.Services.LogicalKeyboardKey)trigger).keyId, [Platform_menu_barLibrary._kShortcutModifiers] = (((((alt ? _shortcutModifierAlt : 0L)) | ((control ? _shortcutModifierControl : 0L))) | ((meta ? _shortcutModifierMeta : 0L))) | ((shift ? _shortcutModifierShift : 0L))) };
+        __instance._internal = new DartMap<string, object?> { [Platform_menu_barLibrary._kShortcutTrigger] = ((global::Doroti.Framework.Services.LogicalKeyboardKey)trigger).keyId, [Platform_menu_barLibrary._kShortcutModifiers] = (((((alt ? _shortcutModifierAlt : 0L)) | ((control ? _shortcutModifierControl : 0L))) | ((meta ? _shortcutModifierMeta : 0L))) | ((shift ? _shortcutModifierShift : 0L))) };
         return __instance;
     }
 
@@ -147,7 +146,7 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
 
     public DefaultPlatformMenuDelegate(global::Doroti.Framework.Services.MethodChannel? channel = null)
     {
-        this.channel = (channel ?? global::Doroti.Framework.Services.SystemChannels.menu);
+        this.channel = (channel ?? SystemChannels.menu);
         this._idMap = new DartMap<long, PlatformMenuItem>();
     }
 
@@ -156,14 +155,14 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
     {
         this._idMap.Clear();
         var representation = new List<DartMap<string, object?>>();
-        if (System.Linq.Enumerable.Any(topLevelMenus))
+        if (Enumerable.Any(topLevelMenus))
         {
             foreach (var childItem in topLevelMenus)
             {
                 representation.AddRange(childItem.toChannelRepresentation(this, getId: (global::System.Func<PlatformMenuItem, long>)this._getId));
             }
         }
-        var windowMenu = new DartMap<string, object> { ["0"] = representation };
+        var windowMenu = new DartMap<string, object?> { ["0"] = representation };
         DartRuntimePrimitives.Ignore(this.channel.invokeMethod<object?>(Platform_menu_barLibrary._kMenuSetMethod, windowMenu).then(((_) =>
         {
         }), onError: ((error, stack) =>
@@ -184,7 +183,7 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((this._lockedContext is not null) && (!object.Equals(this._lockedContext, context))))
+                if (((this._lockedContext is not null) && (!Equals(this._lockedContext, context))))
                 {
                     return false;
                 }
@@ -200,7 +199,7 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (((this._lockedContext is not null) && (!object.Equals(this._lockedContext, context))))
+                if (((this._lockedContext is not null) && (!Equals(this._lockedContext, context))))
                 {
                     return false;
                 }
@@ -214,7 +213,8 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
 
     internal async virtual Future _methodCallHandler(global::Doroti.Framework.Services.MethodCall call)
     {
-        var id = ((long)((global::Doroti.Framework.Services.MethodCall)call).arguments);
+        var id = call.arguments is long menuId
+            ? menuId : throw new FormatException("Platform menu callbacks require an integer menu ID.");
         DartRuntimePrimitives.Assert(() => this._idMap.ContainsKey(id), () => (object?)$"Received a menu {(((global::Doroti.Framework.Services.MethodCall)call).method)} for a menu item with an ID that was not recognized: {id}");
         if (!this._idMap.ContainsKey(id))
         {
@@ -291,7 +291,7 @@ internal class _PlatformMenuBarState__platform_menu_bar : State<PlatformMenuBar>
     {
         base.didUpdateWidget(oldWidget);
         var newDescendants = new List<PlatformMenuItem>();
-        if (!global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(newDescendants, this.descendants))
+        if (!CollectionsLibrary.listEquals(newDescendants, this.descendants))
         {
             descendants = newDescendants;
             _updateMenu();
@@ -326,16 +326,16 @@ public class PlatformMenu : PlatformMenuItem
         this.menus = menus;
     }
 
-    public override List<PlatformMenuItem> descendants => PlatformMenu.getDescendants(this);
+    public override List<PlatformMenuItem> descendants => getDescendants(this);
     public static List<PlatformMenuItem> getDescendants(PlatformMenu item)
     {
         return new List<PlatformMenuItem>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IEnumerable<DartMap<string, object>> toChannelRepresentation(PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
+    public override IEnumerable<DartMap<string, object?>> toChannelRepresentation(PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
     {
-        return ((IEnumerable<DartMap<string, object>>)(object?)new List<DartMap<string, object?>> { PlatformMenu.serialize(this, @delegate, (global::System.Func<PlatformMenuItem, long>)getId) });
+        return ((IEnumerable<DartMap<string, object?>>)new List<DartMap<string, object?>> { serialize(this, @delegate, (global::System.Func<PlatformMenuItem, long>)getId) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -349,23 +349,23 @@ public class PlatformMenu : PlatformMenuItem
         DartMap<string, object?>? previousItem = default!;
         result.removeWhere(((item) =>
         {
-            if (((previousItem is null) && (object.Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
+            if (((previousItem is null) && (Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
             {
                 return true;
             }
-            if ((((previousItem is not null) && (object.Equals(previousItem!.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))) && (object.Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
+            if ((((previousItem is not null) && (Equals(previousItem!.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))) && (Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
             {
                 return true;
             }
-            previousItem = item.cast<string, object>();
+            previousItem = item.cast<string, object?>();
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         if (result.LastOrDefault() is var __match22940 && DartPatternRuntime.IsMap(__match22940) && DartPatternRuntime.TryGetMapValue(__match22940, Platform_menu_barLibrary._kIsDividerKey, out var __entry22940_0) && __entry22940_0 is true)
         {
-            result.removeLast<DartMap<string, object>>();
+            result.removeLast<DartMap<string, object?>>();
         }
-        return ((DartMap<string, object?>)(object?)new DartMap<string, object> { [Platform_menu_barLibrary._kIdKey] = getId(item), [Platform_menu_barLibrary._kLabelKey] = item.label, [Platform_menu_barLibrary._kEnabledKey] = System.Linq.Enumerable.Any(((PlatformMenu)item).menus), [Platform_menu_barLibrary._kChildrenKey] = result });
+        return ((DartMap<string, object?>)new DartMap<string, object?> { [Platform_menu_barLibrary._kIdKey] = getId(item), [Platform_menu_barLibrary._kLabelKey] = item.label, [Platform_menu_barLibrary._kEnabledKey] = Enumerable.Any(((PlatformMenu)item).menus), [Platform_menu_barLibrary._kChildrenKey] = result });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -378,7 +378,7 @@ public class PlatformMenu : PlatformMenuItem
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         properties.add(new global::Doroti.Framework.Foundation.StringProperty("label", this.label));
-        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: System.Linq.Enumerable.Any(this.menus), ifFalse: "DISABLED"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: Enumerable.Any(this.menus), ifFalse: "DISABLED"));
     }
 
 }
@@ -393,16 +393,16 @@ public class PlatformMenuItemGroup : PlatformMenuItem
         this.__field_members = members;
     }
 
-    public override IEnumerable<DartMap<string, object>> toChannelRepresentation(PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
+    public override IEnumerable<DartMap<string, object?>> toChannelRepresentation(PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
     {
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this.members), () => (object?)"There must be at least one member in a PlatformMenuItemGroup");
-        return ((IEnumerable<DartMap<string, object>>)(object?)PlatformMenuItemGroup.serialize(this, @delegate, getId: (global::System.Func<PlatformMenuItem, long>)getId));
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(this.members), () => (object?)"There must be at least one member in a PlatformMenuItemGroup");
+        return ((IEnumerable<DartMap<string, object?>>)serialize(this, @delegate, getId: (global::System.Func<PlatformMenuItem, long>)getId));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public new static IEnumerable<DartMap<string, object?>> serialize(PlatformMenuItem group, PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
     {
-        return ((IEnumerable<DartMap<string, object?>>)(object?)new List<DartMap<string, object?>> { new DartMap<string, object> { [Platform_menu_barLibrary._kIdKey] = getId(group), [Platform_menu_barLibrary._kIsDividerKey] = true }, new DartMap<string, object> { [Platform_menu_barLibrary._kIdKey] = getId(group), [Platform_menu_barLibrary._kIsDividerKey] = true } });
+        return ((IEnumerable<DartMap<string, object?>>)new List<DartMap<string, object?>> { new DartMap<string, object?> { [Platform_menu_barLibrary._kIdKey] = getId(group), [Platform_menu_barLibrary._kIsDividerKey] = true }, new DartMap<string, object?> { [Platform_menu_barLibrary._kIdKey] = getId(group), [Platform_menu_barLibrary._kIsDividerKey] = true } });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -438,18 +438,18 @@ public class PlatformMenuItem : global::Doroti.Framework.Foundation.Diagnosticab
     public virtual List<PlatformMenuItem> members => new List<PlatformMenuItem>();
     public virtual IEnumerable<DartMap<string, object?>> toChannelRepresentation(PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
     {
-        return ((IEnumerable<DartMap<string, object?>>)(object?)new List<DartMap<string, object?>> { PlatformMenuItem.serialize(this, @delegate, (global::System.Func<PlatformMenuItem, long>)getId) });
+        return ((IEnumerable<DartMap<string, object?>>)new List<DartMap<string, object?>> { serialize(this, @delegate, (global::System.Func<PlatformMenuItem, long>)getId) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static DartMap<string, object?> serialize(PlatformMenuItem item, PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
     {
         MenuSerializableShortcut? shortcutLocal = ((PlatformMenuItem)item).shortcut;
-        return ((DartMap<string, object?>)(object?)new DartMap<string, object> { [Platform_menu_barLibrary._kIdKey] = getId(item), [Platform_menu_barLibrary._kLabelKey] = ((PlatformMenuItem)item).label, [Platform_menu_barLibrary._kEnabledKey] = ((((PlatformMenuItem)item).onSelected is not null) || (((PlatformMenuItem)item).onSelectedIntent is not null)) });
+        return ((DartMap<string, object?>)new DartMap<string, object?> { [Platform_menu_barLibrary._kIdKey] = getId(item), [Platform_menu_barLibrary._kLabelKey] = ((PlatformMenuItem)item).label, [Platform_menu_barLibrary._kEnabledKey] = ((((PlatformMenuItem)item).onSelected is not null) || (((PlatformMenuItem)item).onSelectedIntent is not null)) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShort() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this.label})";
+    public virtual string toStringShort() => $"{(DiagnosticsLibrary.describeIdentity(this))}({this.label})";
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         properties.add(new global::Doroti.Framework.Foundation.StringProperty("label", this.label));
@@ -458,7 +458,7 @@ public class PlatformMenuItem : global::Doroti.Framework.Foundation.Diagnosticab
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: (this.onSelected is not null), ifFalse: "DISABLED"));
     }
 
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -475,7 +475,7 @@ public class PlatformMenuItem : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -494,17 +494,17 @@ public class PlatformProvidedMenuItem : PlatformMenuItem
 
     public static bool hasMenu(PlatformProvidedMenuItemType menu)
     {
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.iOS:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     return false;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.macOS:
                 {
                     return new HashSet<PlatformProvidedMenuItemType> { PlatformProvidedMenuItemType.about, PlatformProvidedMenuItemType.quit, PlatformProvidedMenuItemType.servicesSubmenu, PlatformProvidedMenuItemType.hide, PlatformProvidedMenuItemType.hideOtherApplications, PlatformProvidedMenuItemType.showAllApplications, PlatformProvidedMenuItemType.startSpeaking, PlatformProvidedMenuItemType.stopSpeaking, PlatformProvidedMenuItemType.toggleFullScreen, PlatformProvidedMenuItemType.minimizeWindow, PlatformProvidedMenuItemType.zoomWindow, PlatformProvidedMenuItemType.arrangeWindowsInFront }.Contains(menu);
                 }
@@ -514,18 +514,18 @@ public class PlatformProvidedMenuItem : PlatformMenuItem
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override IEnumerable<DartMap<string, object>> toChannelRepresentation(PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
+    public override IEnumerable<DartMap<string, object?>> toChannelRepresentation(PlatformMenuDelegate @delegate, global::System.Func<PlatformMenuItem, long> getId)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!PlatformProvidedMenuItem.hasMenu(this.type))
+                if (!hasMenu(this.type))
                 {
-                    throw DartRuntimePrimitives.AsException(new DartArgumentError($"Platform {(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform.ToString())} has no platform provided menu for " + $"{this.type}. Call PlatformProvidedMenuItem.hasMenu to determine this before " + "instantiating one."));
+                    throw DartRuntimePrimitives.AsException(new DartArgumentError($"Platform {(PlatformLibrary.defaultTargetPlatform.ToString())} has no platform provided menu for " + $"{this.type}. Call PlatformProvidedMenuItem.hasMenu to determine this before " + "instantiating one."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((IEnumerable<DartMap<string, object>>)(object?)new List<DartMap<string, object?>> { new DartMap<string, object> { [Platform_menu_barLibrary._kIdKey] = getId(this), [Platform_menu_barLibrary._kEnabledKey] = this.enabled, [Platform_menu_barLibrary._kPlatformDefaultMenuKey] = FoundationRuntimePorts.EnumIndex(this.type) } });
+        return ((IEnumerable<DartMap<string, object?>>)new List<DartMap<string, object?>> { new DartMap<string, object?> { [Platform_menu_barLibrary._kIdKey] = getId(this), [Platform_menu_barLibrary._kEnabledKey] = this.enabled, [Platform_menu_barLibrary._kPlatformDefaultMenuKey] = FoundationRuntimePorts.EnumIndex(this.type) } });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scroll_delegate.dart
-#pragma warning disable CS8600, CS8603, CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -31,7 +30,7 @@ public abstract class SliverChildDelegate
     {
         var description = new List<string>();
         debugFillDescription(description);
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -113,7 +112,7 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
     {
         if (((index < 0L) || (((this.childCount is not null) && (index >= DartRuntimePrimitives.RequireValue(this.childCount))))))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
         Widget? childLocal = default!;
         try
@@ -127,9 +126,9 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
         }
         if ((childLocal is null))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
-        global::Doroti.Framework.Foundation.Key? keyLocal = ((global::Doroti.Framework.Foundation.Key?)(object?)((((Widget)childLocal).key is not null) ? new _SaltedValueKey__scroll_delegate(((Widget)childLocal).key!) : null));
+        global::Doroti.Framework.Foundation.Key? keyLocal = ((global::Doroti.Framework.Foundation.Key?)((((Widget)childLocal).key is not null) ? new _SaltedValueKey__scroll_delegate(((Widget)childLocal).key!) : null));
         if (this.addRepaintBoundaries)
         {
             childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: childLocal));
@@ -147,7 +146,7 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
         {
             childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new AutomaticKeepAlive(child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)));
         }
-        return ((Widget?)(object?)new KeyedSubtree(key: keyLocal, child: childLocal));
+        return ((Widget?)new KeyedSubtree(key: keyLocal, child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -208,7 +207,7 @@ public class SliverChildListDelegate : SliverChildDelegate
                 {
                     this._keyToIndex[DartRuntimePrimitives.RequireReference(((Widget)child).key)] = index;
                 }
-                if ((object.Equals(((Widget)child).key, key)))
+                if ((Equals(((Widget)child).key, key)))
                 {
                     this._keyToIndex[null] = (index + 1L);
                     return index;
@@ -246,10 +245,10 @@ public class SliverChildListDelegate : SliverChildDelegate
     {
         if (((index < 0L) || (index >= checked((long)(this.children.Count)))))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
         Widget childLocal = this.children[(int)(index)];
-        global::Doroti.Framework.Foundation.Key? keyLocal = ((global::Doroti.Framework.Foundation.Key?)(object?)((((Widget)childLocal).key is not null) ? new _SaltedValueKey__scroll_delegate(((Widget)childLocal).key!) : null));
+        global::Doroti.Framework.Foundation.Key? keyLocal = ((global::Doroti.Framework.Foundation.Key?)((((Widget)childLocal).key is not null) ? new _SaltedValueKey__scroll_delegate(((Widget)childLocal).key!) : null));
         if (this.addRepaintBoundaries)
         {
             childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: childLocal));
@@ -267,15 +266,15 @@ public class SliverChildListDelegate : SliverChildDelegate
         {
             childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new AutomaticKeepAlive(child: new _SelectionKeepAlive__scroll_delegate(child: childLocal)));
         }
-        return ((Widget?)(object?)new KeyedSubtree(key: keyLocal, child: childLocal));
+        return ((Widget?)new KeyedSubtree(key: keyLocal, child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override long? estimatedChildCount => checked((long)(this.children.Count));
     public override bool shouldRebuild(SliverChildDelegate oldDelegate)
     {
-        var __oldDelegate = (SliverChildListDelegate)(object)oldDelegate;
-        return (!object.Equals(this.children, ((SliverChildListDelegate)__oldDelegate).children));
+        var __oldDelegate = (SliverChildListDelegate)oldDelegate;
+        return (!Equals(this.children, ((SliverChildListDelegate)__oldDelegate).children));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -348,8 +347,8 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Rendering.SelectionRegistrar? newRegistrar = ((global::Doroti.Framework.Rendering.SelectionRegistrar?)(object?)SelectionContainer.maybeOf(this.context));
-        if ((!object.Equals(this._registrar, newRegistrar)))
+        global::Doroti.Framework.Rendering.SelectionRegistrar? newRegistrar = ((global::Doroti.Framework.Rendering.SelectionRegistrar?)SelectionContainer.maybeOf(this.context));
+        if ((!Equals(this._registrar, newRegistrar)))
         {
             if ((this._registrar is not null))
             {
@@ -365,7 +364,7 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
 
     public virtual void add(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        global::System.Action attachment = ((global::System.Action)(object?)listensTo(selectable));
+        global::System.Action attachment = ((global::System.Action)listensTo(selectable));
         selectable.addListener(attachment);
         _selectableAttachments ??= new DartMap<global::Doroti.Framework.Rendering.Selectable, global::System.Action>();
         this._selectableAttachments![selectable] = (global::System.Action)attachment;
@@ -414,7 +413,7 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
         {
             return ((_SelectionKeepAlive__scroll_delegate)this.widget).child;
         }
-        return ((Widget)(object?)new SelectionRegistrarScope(registrar: this, child: ((_SelectionKeepAlive__scroll_delegate)this.widget).child));
+        return ((Widget)new SelectionRegistrarScope(registrar: this, child: ((_SelectionKeepAlive__scroll_delegate)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -543,11 +542,11 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
     {
         if (((((ChildVicinity)vicinity).xIndex < 0L) || (((this.maxXIndex is not null) && (((ChildVicinity)vicinity).xIndex > DartRuntimePrimitives.RequireValue(this.maxXIndex))))))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
         if (((((ChildVicinity)vicinity).yIndex < 0L) || (((this.maxYIndex is not null) && (((ChildVicinity)vicinity).yIndex > DartRuntimePrimitives.RequireValue(this.maxYIndex))))))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
         Widget? childLocal = default!;
         try
@@ -561,7 +560,7 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
         }
         if ((childLocal is null))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
         if (this.addRepaintBoundaries)
         {
@@ -595,11 +594,11 @@ public class TwoDimensionalChildListDelegate : TwoDimensionalChildDelegate
     {
         if (((((ChildVicinity)vicinity).yIndex < 0L) || (((ChildVicinity)vicinity).yIndex >= checked((long)(this.children.Count)))))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
         if (((((ChildVicinity)vicinity).xIndex < 0L) || (((ChildVicinity)vicinity).xIndex >= checked((long)(this.children[(int)(((ChildVicinity)vicinity).yIndex)].Count)))))
         {
-            return ((Widget)(object)null);
+            return ((Widget?)null);
         }
         Widget childLocal = this.children[(int)(((ChildVicinity)vicinity).yIndex)][(int)(((ChildVicinity)vicinity).xIndex)];
         if (this.addRepaintBoundaries)
@@ -616,8 +615,8 @@ public class TwoDimensionalChildListDelegate : TwoDimensionalChildDelegate
 
     public override bool shouldRebuild(TwoDimensionalChildDelegate oldDelegate)
     {
-        var __oldDelegate = (TwoDimensionalChildListDelegate)(object)oldDelegate;
-        return (!object.Equals(this.children, ((TwoDimensionalChildListDelegate)__oldDelegate).children));
+        var __oldDelegate = (TwoDimensionalChildListDelegate)oldDelegate;
+        return (!Equals(this.children, ((TwoDimensionalChildListDelegate)__oldDelegate).children));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

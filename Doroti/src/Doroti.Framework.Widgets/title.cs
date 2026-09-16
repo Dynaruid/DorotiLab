@@ -33,7 +33,7 @@ internal class _TitleState__title : State<Title>
     public override void didUpdateWidget(Title oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (((((Title)oldWidget).title != ((Title)this.widget).title) || (!object.Equals(((Title)oldWidget).color, ((Title)this.widget).color))))
+        if (((((Title)oldWidget).title != ((Title)this.widget).title) || (!Equals(((Title)oldWidget).color, ((Title)this.widget).color))))
         {
             _updateChrome();
         }

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/repeating_animation_builder.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -23,7 +22,7 @@ public class RepeatingAnimationBuilder<T> : StatefulWidget
 
     public RepeatingAnimationBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animatable<T> animatable = default!, Duration duration = default!, global::Doroti.Framework.Animation.Curve curve = default!, RepeatMode repeatMode = RepeatMode.restart, bool paused = false, global::System.Func<BuildContext, T, Widget?, Widget> builder = default!, Widget? child = null) : base(key: key)
     {
-        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? Curves.linear;
         this.animatable = animatable;
         this.duration = duration;
         this.curve = __curve;
@@ -35,7 +34,7 @@ public class RepeatingAnimationBuilder<T> : StatefulWidget
 
     public override IState createState()
     {
-        return ((IState)(object?)new _RepeatingAnimationBuilderState__repeating_animation_builder<T>());
+        return ((IState)new _RepeatingAnimationBuilderState__repeating_animation_builder<T>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -51,26 +50,26 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
     public override void initState()
     {
         base.initState();
-        _controller = new global::Doroti.Framework.Animation.AnimationController(duration: ((RepeatingAnimationBuilder<T>)(object)this.widget).duration, vsync: this);
-        _curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._controller, curve: ((RepeatingAnimationBuilder<T>)(object)this.widget).curve);
-        if (!((RepeatingAnimationBuilder<T>)(object)this.widget).paused)
+        _controller = new global::Doroti.Framework.Animation.AnimationController(duration: ((RepeatingAnimationBuilder<T>)this.widget).duration, vsync: this);
+        _curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._controller, curve: ((RepeatingAnimationBuilder<T>)this.widget).curve);
+        if (!((RepeatingAnimationBuilder<T>)this.widget).paused)
         {
-            this._controller.repeat(reverse: (object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).repeatMode, RepeatMode.reverse)));
+            this._controller.repeat(reverse: (Equals(((RepeatingAnimationBuilder<T>)this.widget).repeatMode, RepeatMode.reverse)));
         }
     }
 
     public override void didUpdateWidget(RepeatingAnimationBuilder<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).duration, ((RepeatingAnimationBuilder<T>)oldWidget).duration)))
+        if ((!Equals(((RepeatingAnimationBuilder<T>)this.widget).duration, ((RepeatingAnimationBuilder<T>)oldWidget).duration)))
         {
-            this._controller.duration = ((RepeatingAnimationBuilder<T>)(object)this.widget).duration;
+            this._controller.duration = ((RepeatingAnimationBuilder<T>)this.widget).duration;
         }
-        if ((!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).curve, ((RepeatingAnimationBuilder<T>)oldWidget).curve)))
+        if ((!Equals(((RepeatingAnimationBuilder<T>)this.widget).curve, ((RepeatingAnimationBuilder<T>)oldWidget).curve)))
         {
-            this._curvedAnimation.curve = ((RepeatingAnimationBuilder<T>)(object)this.widget).curve;
+            this._curvedAnimation.curve = ((RepeatingAnimationBuilder<T>)this.widget).curve;
         }
-        if (((RepeatingAnimationBuilder<T>)(object)this.widget).paused)
+        if (((RepeatingAnimationBuilder<T>)this.widget).paused)
         {
             if ((!((RepeatingAnimationBuilder<T>)oldWidget).paused || ((global::Doroti.Framework.Animation.AnimationController)this._controller).isAnimating))
             {
@@ -78,10 +77,10 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
             }
             return;
         }
-        bool shouldRestart = (((((RepeatingAnimationBuilder<T>)oldWidget).paused || (!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).repeatMode, ((RepeatingAnimationBuilder<T>)oldWidget).repeatMode))) || (!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).duration, ((RepeatingAnimationBuilder<T>)oldWidget).duration))) || !((global::Doroti.Framework.Animation.AnimationController)this._controller).isAnimating);
+        bool shouldRestart = (((((RepeatingAnimationBuilder<T>)oldWidget).paused || (!Equals(((RepeatingAnimationBuilder<T>)this.widget).repeatMode, ((RepeatingAnimationBuilder<T>)oldWidget).repeatMode))) || (!Equals(((RepeatingAnimationBuilder<T>)this.widget).duration, ((RepeatingAnimationBuilder<T>)oldWidget).duration))) || !((global::Doroti.Framework.Animation.AnimationController)this._controller).isAnimating);
         if (shouldRestart)
         {
-            this._controller.repeat(reverse: (object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).repeatMode, RepeatMode.reverse)));
+            this._controller.repeat(reverse: (Equals(((RepeatingAnimationBuilder<T>)this.widget).repeatMode, RepeatMode.reverse)));
         }
     }
 
@@ -105,12 +104,12 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new AnimatedBuilder(animation: this._curvedAnimation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        return ((Widget)new AnimatedBuilder(animation: this._curvedAnimation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
         {
-            T valueLocal = ((T)(object?)((RepeatingAnimationBuilder<T>)(object)this.widget).animatable.transform(((global::Doroti.Framework.Animation.CurvedAnimation)this._curvedAnimation).value));
+            T valueLocal = ((T)((RepeatingAnimationBuilder<T>)this.widget).animatable.transform(((global::Doroti.Framework.Animation.CurvedAnimation)this._curvedAnimation).value));
             return this.widget.builder(context, valueLocal, child);
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: ((RepeatingAnimationBuilder<T>)(object)this.widget).child));
+        })), child: ((RepeatingAnimationBuilder<T>)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -125,7 +124,7 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -151,8 +150,8 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }

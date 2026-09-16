@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/animated_switcher.dart
-#pragma warning disable CS8600, CS8602, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -20,7 +19,7 @@ internal class _ChildEntry__animated_switcher
         this.widgetChild = widgetChild;
     }
 
-    public override string ToString() => $"Entry#{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.shortHash(this))}({this.widgetChild})";
+    public override string ToString() => $"Entry#{(DiagnosticsLibrary.shortHash(this))}({this.widgetChild})";
 }
 
 public delegate Widget AnimatedSwitcherTransitionBuilder(Widget child, global::Doroti.Framework.Animation.Animation<double> animation);
@@ -39,10 +38,10 @@ public class AnimatedSwitcher : StatefulWidget
 
     public AnimatedSwitcher(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, Duration duration = default!, Duration? reverseDuration = null, global::Doroti.Framework.Animation.Curve switchInCurve = default!, global::Doroti.Framework.Animation.Curve switchOutCurve = default!, global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> transitionBuilder = default!, global::System.Func<Widget?, List<Widget>, Widget> layoutBuilder = default!) : base(key: key)
     {
-        global::Doroti.Framework.Animation.Curve __switchInCurve = switchInCurve ?? global::Doroti.Framework.Animation.Curves.linear;
-        global::Doroti.Framework.Animation.Curve __switchOutCurve = switchOutCurve ?? global::Doroti.Framework.Animation.Curves.linear;
-        global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> __transitionBuilder = transitionBuilder ?? AnimatedSwitcher.defaultTransitionBuilder;
-        global::System.Func<Widget?, List<Widget>, Widget> __layoutBuilder = layoutBuilder ?? AnimatedSwitcher.defaultLayoutBuilder;
+        global::Doroti.Framework.Animation.Curve __switchInCurve = switchInCurve ?? Curves.linear;
+        global::Doroti.Framework.Animation.Curve __switchOutCurve = switchOutCurve ?? Curves.linear;
+        global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> __transitionBuilder = transitionBuilder ?? defaultTransitionBuilder;
+        global::System.Func<Widget?, List<Widget>, Widget> __layoutBuilder = layoutBuilder ?? defaultLayoutBuilder;
         this.child = child;
         this.duration = duration;
         this.reverseDuration = reverseDuration;
@@ -55,13 +54,13 @@ public class AnimatedSwitcher : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _AnimatedSwitcherState__animated_switcher());
     public static Widget defaultTransitionBuilder(Widget child, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        return ((Widget)(object?)new FadeTransition(key: new global::Doroti.Framework.Foundation.ValueKey<global::Doroti.Framework.Foundation.Key?>(((Widget)child).key), opacity: animation, child: child));
+        return ((Widget)new FadeTransition(key: new global::Doroti.Framework.Foundation.ValueKey<global::Doroti.Framework.Foundation.Key?>(((Widget)child).key), opacity: animation, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Widget defaultLayoutBuilder(Widget? currentChild, List<Widget> previousChildren)
     {
-        return ((Widget)(object?)new Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<Widget>()));
+        return ((Widget)new Stack(alignment: Alignment.center, children: new List<Widget>()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -92,7 +91,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
     public override void didUpdateWidget(AnimatedSwitcher oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals((global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)this.widget).transitionBuilder, (global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)oldWidget).transitionBuilder)))
+        if ((!Equals((global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)this.widget).transitionBuilder, (global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)oldWidget).transitionBuilder)))
         {
             this._outgoingEntries.forEach((__arg0) => ((global::System.Action<_ChildEntry__animated_switcher>)this._updateTransitionForEntry)(__arg0));
             if ((this._currentEntry is not null))
@@ -146,7 +145,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this._outgoingEntries));
+            DartRuntimePrimitives.Assert(() => !Enumerable.Any(this._outgoingEntries));
             controllerLocal.value = 1.0;
         }
     }
@@ -156,7 +155,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
         var entry = new _ChildEntry__animated_switcher(widgetChild: child, transition: KeyedSubtree.CreateWrap(builder(child, animation), this._childNumber), animation: animation, controller: controller);
         animation.addStatusListener(((AnimationStatusListener)((status) =>
         {
-            if (global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
+            if (AnimationStatusMembers.isDismissed(status))
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -187,7 +186,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
     {
         _outgoingWidgets ??= new List<Widget>(DartRuntimePrimitives.ConvertEnumerable<Widget>(this._outgoingEntries.map<_ChildEntry__animated_switcher, Widget>(((entry) => ((_ChildEntry__animated_switcher)entry).transition))));
         DartRuntimePrimitives.Assert(() => (checked((long)(this._outgoingEntries.Count)) == checked((long)(this._outgoingWidgets!.Count))));
-        DartRuntimePrimitives.Assert(() => (!System.Linq.Enumerable.Any(this._outgoingEntries) || (object.Equals(this._outgoingEntries.Last().transition, this._outgoingWidgets!.Last()))));
+        DartRuntimePrimitives.Assert(() => (!Enumerable.Any(this._outgoingEntries) || (Equals(this._outgoingEntries.Last().transition, this._outgoingWidgets!.Last()))));
     }
 
     public override void dispose()
@@ -222,7 +221,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
     public override Widget build(BuildContext context)
     {
         _rebuildOutgoingWidgetsIfNeeded();
-        return this.widget.layoutBuilder(this._currentEntry?.transition, this._outgoingWidgets!.where(((outgoing) => (!object.Equals(((Widget)outgoing).key, this._currentEntry?.transition.key)))).toSet().ToList());
+        return this.widget.layoutBuilder(this._currentEntry?.transition, this._outgoingWidgets!.where(((outgoing) => (!Equals(((Widget)outgoing).key, this._currentEntry?.transition.key)))).toSet().ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -237,13 +236,13 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -277,8 +276,8 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }

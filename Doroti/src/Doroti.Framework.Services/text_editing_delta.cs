@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/text_editing_delta.dart
-#pragma warning disable CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -10,7 +9,7 @@ public static partial class Text_editing_deltaLibrary
 {
     internal static TextAffinity? _toTextAffinity(string? affinity)
     {
-        return (affinity switch { var __case576 when object.Equals(__case576, "TextAffinity.downstream") => TextAffinity.downstream, var __case634 when object.Equals(__case634, "TextAffinity.upstream") => TextAffinity.upstream, _ => null });
+        return (affinity switch { var __case576 when Equals(__case576, "TextAffinity.downstream") => TextAffinity.downstream, var __case634 when Equals(__case634, "TextAffinity.upstream") => TextAffinity.upstream, _ => null });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -54,8 +53,10 @@ public abstract class TextEditingDelta : Diagnosticable
     public static TextEditingDelta CreateFromJSON(DartMap<string, object> encoded)
     {
         var oldText = ((string?)encoded.GetValueOrDefault("oldText"))!;
-        var replacementDestinationStart = ((long)encoded.GetValueOrDefault("deltaStart"));
-        var replacementDestinationEnd = ((long)encoded.GetValueOrDefault("deltaEnd"));
+        var replacementDestinationStart = encoded.GetValueOrDefault("deltaStart") is long start
+            ? start : throw new FormatException("Text editing delta requires an integer deltaStart.");
+        var replacementDestinationEnd = encoded.GetValueOrDefault("deltaEnd") is long end
+            ? end : throw new FormatException("Text editing delta requires an integer deltaEnd.");
         var replacementSource = ((string?)encoded.GetValueOrDefault("deltaText"))!;
         var replacementSourceStart = 0L;
         long replacementSourceEnd = replacementSource.Length;

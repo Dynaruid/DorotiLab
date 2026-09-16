@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection_toolbar_button.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -76,8 +76,8 @@ internal class _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_se
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = (((CupertinoDesktopTextSelectionToolbarButton)this.widget).child ?? new global::Doroti.Framework.Widgets.Text(((((CupertinoDesktopTextSelectionToolbarButton)this.widget).text ?? (string)CupertinoTextSelectionToolbarButton.getButtonLabel(context, ((CupertinoDesktopTextSelectionToolbarButton)this.widget).buttonItem!))), overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: (this._isHovered ? CupertinoTheme.of(context).primaryContrastingColor : new CupertinoDynamicColor(color: CupertinoColors.black, darkColor: CupertinoColors.white).resolveFrom(context)))));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new global::Doroti.Framework.Widgets.MouseRegion(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._onExit, child: new CupertinoButton(alignment: global::Doroti.Framework.Painting.Alignment.centerLeft, borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4.0)), color: (this._isHovered ? CupertinoTheme.of(context).primaryColor : null), minSize: 0.0, onPressed: ((CupertinoDesktopTextSelectionToolbarButton)this.widget).onPressed, padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 0.7, child: childLocal))));
+        global::Doroti.Framework.Widgets.Widget childLocal = (((CupertinoDesktopTextSelectionToolbarButton)this.widget).child ?? new global::Doroti.Framework.Widgets.Text(((((CupertinoDesktopTextSelectionToolbarButton)this.widget).text ?? (string)CupertinoTextSelectionToolbarButton.getButtonLabel(context, ((CupertinoDesktopTextSelectionToolbarButton)this.widget).buttonItem!))), overflow: TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: (this._isHovered ? CupertinoTheme.of(context).primaryContrastingColor : new CupertinoDynamicColor(color: CupertinoColors.black, darkColor: CupertinoColors.white).resolveFrom(context)))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new global::Doroti.Framework.Widgets.MouseRegion(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._onExit, child: new CupertinoButton(alignment: Alignment.centerLeft, borderRadius: BorderRadius.CreateAll(Radius.circular(4.0)), color: (this._isHovered ? CupertinoTheme.of(context).primaryColor : null), minSize: 0.0, onPressed: ((CupertinoDesktopTextSelectionToolbarButton)this.widget).onPressed, padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 0.7, child: childLocal))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/app_bar_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -78,7 +78,7 @@ public class AppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
 
     public static AppBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        AppBarTheme? appBarThemeLocal = ((AppBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<AppBarTheme>());
+        AppBarTheme? appBarThemeLocal = ((AppBarTheme?)context.dependOnInheritedWidgetOfExactType<AppBarTheme>());
         return (appBarThemeLocal?.data ?? Theme.of(context).appBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -93,14 +93,14 @@ public class AppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((AppBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((AppBarTheme)oldWidget).data)));
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new AppBarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new AppBarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
     public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -115,7 +115,7 @@ public class AppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
 
     public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -192,11 +192,11 @@ public class AppBarThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((((__other is AppBarThemeData) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).foregroundColor, this.foregroundColor))) && (((AppBarThemeData)((AppBarThemeData)__other)).elevation == this.elevation)) && (((AppBarThemeData)((AppBarThemeData)__other)).scrolledUnderElevation == this.scrolledUnderElevation)) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).shape, this.shape))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).iconTheme, this.iconTheme))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).actionsIconTheme, this.actionsIconTheme))) && (((AppBarThemeData)((AppBarThemeData)__other)).centerTitle == this.centerTitle)) && (((AppBarThemeData)((AppBarThemeData)__other)).titleSpacing == this.titleSpacing)) && (((AppBarThemeData)((AppBarThemeData)__other)).leadingWidth == this.leadingWidth)) && (((AppBarThemeData)((AppBarThemeData)__other)).toolbarHeight == this.toolbarHeight)) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).toolbarTextStyle, this.toolbarTextStyle))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).systemOverlayStyle, this.systemOverlayStyle))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).actionsPadding, this.actionsPadding)));
+        return ((((((((((((((((((__other is AppBarThemeData) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).foregroundColor, this.foregroundColor))) && (((AppBarThemeData)((AppBarThemeData)__other)).elevation == this.elevation)) && (((AppBarThemeData)((AppBarThemeData)__other)).scrolledUnderElevation == this.scrolledUnderElevation)) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).shape, this.shape))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).iconTheme, this.iconTheme))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).actionsIconTheme, this.actionsIconTheme))) && (((AppBarThemeData)((AppBarThemeData)__other)).centerTitle == this.centerTitle)) && (((AppBarThemeData)((AppBarThemeData)__other)).titleSpacing == this.titleSpacing)) && (((AppBarThemeData)((AppBarThemeData)__other)).leadingWidth == this.leadingWidth)) && (((AppBarThemeData)((AppBarThemeData)__other)).toolbarHeight == this.toolbarHeight)) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).toolbarTextStyle, this.toolbarTextStyle))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).systemOverlayStyle, this.systemOverlayStyle))) && (Equals(((AppBarThemeData)((AppBarThemeData)__other)).actionsPadding, this.actionsPadding)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -220,8 +220,8 @@ public class AppBarThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("actionsPadding", this.actionsPadding, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -237,7 +237,7 @@ public class AppBarThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

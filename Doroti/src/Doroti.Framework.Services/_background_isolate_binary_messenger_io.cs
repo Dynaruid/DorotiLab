@@ -59,7 +59,7 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<ByteData?>? send(string channel, ByteData? message)
+    public virtual Future<ByteData?> send(string channel, ByteData? message)
     {
         var completer = new Completer<ByteData?>();
         _messageCount += 1L;

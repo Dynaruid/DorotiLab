@@ -27,7 +27,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     internal virtual Size _currentSize { get; set; } = default!;
     internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
 
-    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? global::Doroti.Framework.Painting.Alignment.center, textDirection: textDirection, child: child)
+    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? Alignment.center, textDirection: textDirection, child: child)
     {
         Curve __curve = curve ?? Curves.linear;
         this._vsync = vsync;
@@ -77,7 +77,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if ((object.Equals(DartRuntimePrimitives.RequireValue(__value), this._controller.duration)))
+            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._controller.duration)))
             {
                 return;
             }
@@ -90,7 +90,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._controller.reverseDuration)))
+            if ((Equals(__value, this._controller.reverseDuration)))
             {
                 return;
             }
@@ -103,7 +103,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._animation.curve)))
+            if ((Equals(__value, this._animation.curve)))
             {
                 return;
             }
@@ -116,7 +116,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if ((!object.Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -131,7 +131,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._vsync)))
+            if ((Equals(__value, this._vsync)))
             {
                 return;
             }
@@ -145,7 +145,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         set
         {
             var __value = value;
-            if ((object.Equals((Action?)__value, (Action?)this._onEnd)))
+            if ((Equals((Action?)__value, (Action?)this._onEnd)))
             {
                 return;
             }
@@ -246,7 +246,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
                 }
             case RenderAnimatedSizeState.stable:
                 {
-                    if ((!object.Equals(this._sizeTween.end, childSize)))
+                    if ((!Equals(this._sizeTween.end, childSize)))
                     {
                         return constraints.constrain(this._currentSize);
                     }
@@ -262,7 +262,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
             case RenderAnimatedSizeState.unstable:
             case RenderAnimatedSizeState.changed:
                 {
-                    if ((!object.Equals(this._sizeTween.end, childSize)))
+                    if ((!Equals(this._sizeTween.end, childSize)))
                     {
                         return constraints.constrain(childSize);
                     }
@@ -287,7 +287,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     internal virtual void _layoutStable()
     {
-        if ((!object.Equals(this._sizeTween.end, child!.size)))
+        if ((!Equals(this._sizeTween.end, child!.size)))
         {
             this._sizeTween.begin = size;
             this._sizeTween.end = debugAdoptSize(child!.size);
@@ -312,7 +312,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     internal virtual void _layoutChanged()
     {
-        if ((!object.Equals(this._sizeTween.end, child!.size)))
+        if ((!Equals(this._sizeTween.end, child!.size)))
         {
             this._sizeTween.begin = this._sizeTween.end = debugAdoptSize(child!.size);
             _restartAnimation();
@@ -330,7 +330,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     internal virtual void _layoutUnstable()
     {
-        if ((!object.Equals(this._sizeTween.end, child!.size)))
+        if ((!Equals(this._sizeTween.end, child!.size)))
         {
             this._sizeTween.begin = this._sizeTween.end = debugAdoptSize(child!.size);
             _restartAnimation();
@@ -344,7 +344,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     internal virtual void _animationStatusListener(AnimationStatus status)
     {
-        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        if (AnimationStatusMembers.isCompleted(status))
         {
             this._onEnd?.Invoke();
         }
@@ -352,7 +352,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((((child is not null) && this._hasVisualOverflow) && (!object.Equals(this.clipBehavior, Clip.none))))
+        if ((((child is not null) && this._hasVisualOverflow) && (!Equals(this.clipBehavior, Clip.none))))
         {
             global::Doroti.Ui.Rect rect = (Offset.zero & size);
             this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, rect, (Action<PaintingContext, Offset>)base.paint, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);

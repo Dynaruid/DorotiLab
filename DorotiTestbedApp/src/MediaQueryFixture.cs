@@ -25,7 +25,7 @@ internal sealed class MediaQueryFixture : StatefulWidget
         public override Widget build(BuildContext context)
         {
             var media = MediaQuery.of(context);
-            var view = Doroti.Framework.Widgets.View.of(context);
+            var view = View.of(context);
             var raw = view.metrics;
             var report = $"view={view.viewId} metrics={raw.generation} surface={raw.surfaceGeneration}\n" +
                 $"physical={raw.physicalSize.width}×{raw.physicalSize.height} DPR={raw.devicePixelRatio}\n" +

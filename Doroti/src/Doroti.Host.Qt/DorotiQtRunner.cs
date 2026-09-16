@@ -34,7 +34,7 @@ public static unsafe partial class DorotiQtRunner
         }
 
         QtNativeV2.ValidateLayout();
-        if (QtSkiaSurface.GraphiteEnabled) Doroti.Skia.Vulkan.GraphiteNativeLibrary.Configure(Doroti.Skia.Vulkan.GraphiteNativeLibrary.GetPackagedAsset());
+        if (QtSkiaSurface.GraphiteEnabled) Skia.Vulkan.GraphiteNativeLibrary.Configure(Skia.Vulkan.GraphiteNativeLibrary.GetPackagedAsset());
         using var platformViews = new QtPlatformViewHost();
         using var application = DorotiApplicationBoundary.Load(
             descriptor.ManifestAssembly,

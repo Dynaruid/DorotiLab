@@ -16,14 +16,14 @@ public class PerformanceOverlay : LeafRenderObjectWidget
     public static PerformanceOverlay CreateAllEnabled(global::Doroti.Framework.Foundation.Key? key = null)
     {
         var __instance = new PerformanceOverlay(key, default!);
-        __instance.optionsMask = ((((1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.displayRasterizerStatistics))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.visualizeRasterizerStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.displayEngineStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.visualizeEngineStatistics))));
+        __instance.optionsMask = ((((1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayRasterizerStatistics))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeRasterizerStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.displayEngineStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(PerformanceOverlayOption.visualizeEngineStatistics))));
         return __instance;
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderPerformanceOverlay(optionsMask: this.optionsMask));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderPerformanceOverlay)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderPerformanceOverlay)renderObject;
         __renderObject.optionsMask = this.optionsMask;
     }
 

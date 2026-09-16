@@ -337,7 +337,7 @@ public class Future<T> : Future
     public Future then(Action<T> callback, Delegate? onError = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        return Future.fromTask(ThenActionAsync(
+        return fromTask(ThenActionAsync(
             _typedTask, callback, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
     }
 
@@ -383,7 +383,7 @@ public class Future<T> : Future
     public Future<T> timeout(Duration timeLimit, Func<Future>? onTimeout = null) =>
         fromTask(TimeoutAsync(_typedTask, timeLimit, onTimeout));
 
-    public Future<T> timeout(Duration timeLimit, Func<object> onTimeout) =>
+    public Future<T> timeout(Duration timeLimit, Func<object>? onTimeout) =>
         fromTask(TimeoutFutureOrAsync(_typedTask, timeLimit, onTimeout));
 
     public Future<T> whenComplete(Func<object> action)
@@ -477,38 +477,41 @@ public class Future<T> : Future
         }
     }
 
+    private static async Task<bool> CompletesBeforeDeadlineAsync(Task<T> task, Duration limit)
+    {
+        using var cancellation = new CancellationTokenSource();
+        var deadline = Task.Delay((TimeSpan)limit, DartAsyncRuntime.timeProvider, cancellation.Token);
+        var completed = await Task.WhenAny(task, deadline).ConfigureAwait(false);
+        if (completed != task) return false;
+        await cancellation.CancelAsync().ConfigureAwait(false);
+        return true;
+    }
+
     private static async Task<T> TimeoutAsync(Task<T> task, Duration limit, Func<Future>? onTimeout)
     {
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
-        try
-        {
-            return await task.WaitAsync((TimeSpan)limit, DartAsyncRuntime.timeProvider).ConfigureAwait(false);
-        }
-        catch (TimeoutException) when (onTimeout is not null)
-        {
-            var recovery = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, onTimeout).ConfigureAwait(false);
-            await recovery;
-            return default!;
-        }
+        if (await CompletesBeforeDeadlineAsync(task, limit).ConfigureAwait(false))
+            return await task.ConfigureAwait(false);
+        if (onTimeout is null) throw new TimeoutException();
+        var recovery = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, onTimeout).ConfigureAwait(false);
+        if (recovery is Future<T> typedRecovery) return await typedRecovery;
+        await recovery;
+        return default!;
     }
 
-    private static async Task<T> TimeoutFutureOrAsync(Task<T> task, Duration limit, Func<object> onTimeout)
+    private static async Task<T> TimeoutFutureOrAsync(Task<T> task, Duration limit, Func<object>? onTimeout)
     {
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
-        try
+        if (await CompletesBeforeDeadlineAsync(task, limit).ConfigureAwait(false))
+            return await task.ConfigureAwait(false);
+        if (onTimeout is null) throw new TimeoutException();
+        var result = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, onTimeout).ConfigureAwait(false);
+        return result switch
         {
-            return await task.WaitAsync((TimeSpan)limit, DartAsyncRuntime.timeProvider).ConfigureAwait(false);
-        }
-        catch (TimeoutException)
-        {
-            var result = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, onTimeout).ConfigureAwait(false);
-            return result switch
-            {
-                Future<T> future => await future,
-                T value => value,
-                _ => default!,
-            };
-        }
+            Future<T> future => await future,
+            T value => value,
+            _ => default!,
+        };
     }
 
     private static async Task<T> WhenCompleteAsync(

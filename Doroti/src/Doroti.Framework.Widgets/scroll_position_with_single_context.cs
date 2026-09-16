@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -8,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDelegate
 {
     internal virtual double _heldPreviousVelocity { get; set; } = 0.0;
-    internal virtual global::Doroti.Framework.Rendering.ScrollDirection _userScrollDirection { get; set; } = global::Doroti.Framework.Rendering.ScrollDirection.idle;
+    internal virtual global::Doroti.Framework.Rendering.ScrollDirection _userScrollDirection { get; set; } = ScrollDirection.idle;
     internal virtual ScrollDragController? _currentDrag { get; set; } = default;
 
     public ScrollPositionWithSingleContext(ScrollPhysics physics, ScrollContext context, double? initialPixels = 0.0, bool keepScrollOffset = true, ScrollPosition? oldPosition = null, string? debugLabel = null) : base(physics: physics, context: context, keepScrollOffset: keepScrollOffset, oldPosition: oldPosition, debugLabel: debugLabel)
@@ -63,19 +62,19 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(((ScrollActivity)newActivity).@delegate, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((ScrollActivity)newActivity).@delegate, this)));
         base.beginActivity(newActivity);
         this._currentDrag?.dispose();
         _currentDrag = null;
         if (!this.activity!.isScrolling)
         {
-            updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection.idle);
+            updateUserScrollDirection(ScrollDirection.idle);
         }
     }
 
     public virtual void applyUserOffset(double delta)
     {
-        updateUserScrollDirection(((delta > 0.0) ? global::Doroti.Framework.Rendering.ScrollDirection.forward : global::Doroti.Framework.Rendering.ScrollDirection.reverse));
+        updateUserScrollDirection(((delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse));
         setPixels((this.pixels - this.physics.applyPhysicsToUserOffset(this, delta)));
     }
 
@@ -87,7 +86,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public virtual void goBallistic(double velocity)
     {
         DartRuntimePrimitives.Assert(() => this.hasPixels);
-        global::Doroti.Framework.Physics.Simulation? simulation = ((global::Doroti.Framework.Physics.Simulation?)(object?)this.physics.createBallisticSimulation(this, velocity));
+        global::Doroti.Framework.Physics.Simulation? simulation = ((global::Doroti.Framework.Physics.Simulation?)this.physics.createBallisticSimulation(this, velocity));
         if ((simulation is not null))
         {
             beginActivity(new BallisticScrollActivity(this, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
@@ -101,7 +100,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public override global::Doroti.Framework.Rendering.ScrollDirection userScrollDirection => this._userScrollDirection;
     public virtual void updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection value)
     {
-        if ((object.Equals(this.userScrollDirection, value)))
+        if ((Equals(this.userScrollDirection, value)))
         {
             return;
         }
@@ -111,7 +110,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
 
     public override Future animateTo(double to, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
-        if (global::Doroti.Framework.Physics.UtilsLibrary.nearEqual(to, this.pixels, this.physics.toleranceFor(this).distance))
+        if (Physics.UtilsLibrary.nearEqual(to, this.pixels, this.physics.toleranceFor(this).distance))
         {
             jumpTo(to);
             return Future.value();
@@ -147,7 +146,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         if ((targetPixels != this.pixels))
         {
             goIdle();
-            updateUserScrollDirection(((-delta > 0.0) ? global::Doroti.Framework.Rendering.ScrollDirection.forward : global::Doroti.Framework.Rendering.ScrollDirection.reverse));
+            updateUserScrollDirection(((-delta > 0.0) ? ScrollDirection.forward : ScrollDirection.reverse));
             double oldPixels = this.pixels;
             this.isScrollingNotifier.value = true;
             forcePixels(targetPixels);
@@ -177,7 +176,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         var holdActivity = new HoldScrollActivity(@delegate: this, onHoldCanceled: () => holdCancelCallback());
         beginActivity(holdActivity);
         _heldPreviousVelocity = previousVelocity;
-        return ((ScrollHoldController)(object?)holdActivity);
+        return ((ScrollHoldController)holdActivity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -187,7 +186,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         beginActivity(new DragScrollActivity(this, dragLocal));
         DartRuntimePrimitives.Assert(() => (this._currentDrag is null));
         _currentDrag = dragLocal;
-        return ((global::Doroti.Framework.Gestures.Drag)(object?)dragLocal);
+        return ((global::Doroti.Framework.Gestures.Drag)dragLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

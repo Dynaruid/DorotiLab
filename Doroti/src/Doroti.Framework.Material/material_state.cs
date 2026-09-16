@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/material_state.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -26,7 +26,7 @@ public abstract class MaterialStateOutlineInputBorder : OutlineInputBorder, glob
     }
 
     public static MaterialStateOutlineInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
-        => ((MaterialStateOutlineInputBorder)(object?)new _MaterialStateOutlineInputBorder__material_state(callback));
+        => ((MaterialStateOutlineInputBorder)new _MaterialStateOutlineInputBorder__material_state(callback));
 
     public abstract InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states);
 }
@@ -50,7 +50,7 @@ public abstract class MaterialStateUnderlineInputBorder : UnderlineInputBorder, 
     }
 
     public static MaterialStateUnderlineInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
-        => ((MaterialStateUnderlineInputBorder)(object?)new _MaterialStateUnderlineInputBorder__material_state(callback));
+        => ((MaterialStateUnderlineInputBorder)new _MaterialStateUnderlineInputBorder__material_state(callback));
 
     public abstract InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states);
 }
@@ -72,30 +72,10 @@ public abstract class WidgetStateInputBorder : InputBorder, global::Doroti.Frame
     public WidgetStateInputBorder() { }
 
     public static WidgetStateInputBorder CreateResolveWith(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> callback)
-        => ((WidgetStateInputBorder)(object?)new _WidgetStateInputBorder__material_state(callback));
+        => new _WidgetStateInputBorder__material_state(callback);
 
     public static WidgetStateInputBorder CreateFromMap(DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, InputBorder> map)
-        => ((WidgetStateInputBorder)(object?)new _WidgetInputBorderMapper__material_state(map));
+        => new _WidgetInputBorderMapper__material_state(map);
 
     public virtual InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => throw new NotSupportedException();
-}
-
-internal class _WidgetStateInputBorder__material_state : OutlineInputBorder
-{
-    internal virtual global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> _resolve { get; private set; } = default!;
-
-    internal _WidgetStateInputBorder__material_state(global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, InputBorder> _resolve)
-    {
-        this._resolve = _resolve;
-    }
-
-    public virtual InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states) => this._resolve(states);
-}
-
-internal class _WidgetInputBorderMapper__material_state : global::Doroti.Framework.Widgets.WidgetStateMapper<InputBorder>
-{
-    internal _WidgetInputBorderMapper__material_state(DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, InputBorder> map) : base(map)
-    {
-    }
-
 }

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/spell_check_suggestions_toolbar_layout_delegate.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Ui;
 
 namespace Doroti.Framework.Material;
@@ -16,7 +16,7 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : global::Doroti.Framewo
 
     public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
+        return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.loosen());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -28,8 +28,8 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : global::Doroti.Framewo
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
     {
-        var __oldDelegate = (SpellCheckSuggestionsToolbarLayoutDelegate)(object)oldDelegate;
-        return (!object.Equals(this.anchor, ((SpellCheckSuggestionsToolbarLayoutDelegate)__oldDelegate).anchor));
+        var __oldDelegate = (SpellCheckSuggestionsToolbarLayoutDelegate)oldDelegate;
+        return (!Equals(this.anchor, ((SpellCheckSuggestionsToolbarLayoutDelegate)__oldDelegate).anchor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

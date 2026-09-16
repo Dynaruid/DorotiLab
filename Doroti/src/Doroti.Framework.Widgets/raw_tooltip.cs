@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/raw_tooltip.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -8,7 +7,7 @@ namespace Doroti.Framework.Widgets;
 
 public static partial class Raw_tooltipLibrary
 {
-    internal static global::Doroti.Framework.Animation.AnimationStyle _kDefaultAnimationStyle = new global::Doroti.Framework.Animation.AnimationStyle(curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, duration: Duration.Create(milliseconds: 150L), reverseDuration: Duration.Create(milliseconds: 75L));
+    internal static global::Doroti.Framework.Animation.AnimationStyle _kDefaultAnimationStyle = new global::Doroti.Framework.Animation.AnimationStyle(curve: Curves.fastOutSlowIn, duration: Duration.Create(milliseconds: 150L), reverseDuration: Duration.Create(milliseconds: 75L));
 }
 
 public delegate Widget TooltipComponentBuilder(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation);
@@ -43,11 +42,11 @@ public class TooltipPositionContext
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((__other is TooltipPositionContext) && (object.Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).target, this.target))) && (object.Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).targetSize, this.targetSize))) && (object.Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).tooltipSize, this.tooltipSize))) && (object.Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).overlaySize, this.overlaySize))) && (((TooltipPositionContext)((TooltipPositionContext)__other)).verticalOffset == this.verticalOffset)) && (((TooltipPositionContext)((TooltipPositionContext)__other)).preferBelow == this.preferBelow));
+        return (((((((__other is TooltipPositionContext) && (Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).target, this.target))) && (Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).targetSize, this.targetSize))) && (Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).tooltipSize, this.tooltipSize))) && (Equals(((TooltipPositionContext)((TooltipPositionContext)__other)).overlaySize, this.overlaySize))) && (((TooltipPositionContext)((TooltipPositionContext)__other)).verticalOffset == this.verticalOffset)) && (((TooltipPositionContext)((TooltipPositionContext)__other)).preferBelow == this.preferBelow));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.target, this.targetSize, this.tooltipSize, DartRuntimePrimitives.RequireValue(this.overlaySize), this.verticalOffset, this.preferBelow));
@@ -70,7 +69,7 @@ internal class _ExclusiveMouseRegion__raw_tooltip : MouseRegion
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderExclusiveMouseRegion__raw_tooltip(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>?)this.onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>?)this.onExit));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderExclusiveMouseRegion__raw_tooltip(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>?)this.onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>?)this.onExit));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -93,7 +92,7 @@ public class _RenderExclusiveMouseRegion__raw_tooltip : global::Doroti.Framework
         if (this.size.contains(position))
         {
             isHit = (hitTestChildren(result, position: position) || hitTestSelf(position));
-            if ((((isHit || (object.Equals(this.behavior, global::Doroti.Framework.Rendering.HitTestBehavior.translucent)))) && !foundInnermostMouseRegion))
+            if ((((isHit || (Equals(this.behavior, HitTestBehavior.translucent)))) && !foundInnermostMouseRegion))
             {
                 foundInnermostMouseRegion = true;
                 result.add(new global::Doroti.Framework.Rendering.BoxHitTestEntry(this, position));
@@ -149,7 +148,7 @@ public class RawTooltip : StatefulWidget
 
     public static bool dismissAllToolTips()
     {
-        if (!System.Linq.Enumerable.Any(_openedTooltips))
+        if (!Enumerable.Any(_openedTooltips))
         {
             return false;
         }
@@ -167,7 +166,7 @@ public class RawTooltip : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.StringProperty("semantics", this.semanticsTooltip, showName: ((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)), defaultValue: (((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)) ? null : global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue.ToString())));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("semantics", this.semanticsTooltip, showName: ((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)), defaultValue: (((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)) ? null : DiagnosticsLibrary.kNoDefaultValue.ToString())));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("hover delay", this.hoverDelay, defaultValue: null));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("touch delay", DartRuntimePrimitives.RequireValue(this.touchDelay), defaultValue: null));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("dismiss delay", DartRuntimePrimitives.RequireValue(this.dismissDelay), defaultValue: null));
@@ -187,7 +186,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
     internal virtual global::Doroti.Framework.Gestures.LongPressGestureRecognizer? _longPressRecognizer { get; set; } = default;
     internal virtual global::Doroti.Framework.Gestures.TapGestureRecognizer? _tapRecognizer { get; set; } = default;
     internal virtual HashSet<long> _activeHoveringPointerDevices { get; private set; } = new HashSet<long>();
-    internal virtual global::Doroti.Framework.Animation.AnimationStatus _animationStatus { get; set; } = global::Doroti.Framework.Animation.AnimationStatus.dismissed;
+    internal virtual global::Doroti.Framework.Animation.AnimationStatus _animationStatus { get; set; } = AnimationStatus.dismissed;
     public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
@@ -213,7 +212,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
     internal virtual void _handleStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
         DartRuntimePrimitives.Assert(() => this.mounted);
-        switch ((global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(this._animationStatus), global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status)))
+        switch ((AnimationStatusMembers.isDismissed(this._animationStatus), AnimationStatusMembers.isDismissed(status)))
         {
             case (false, true):
                 {
@@ -246,7 +245,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
             this._timer?.cancel();
             _timer = ((touchDelay is null) ? null : new Timer(DartRuntimePrimitives.RequireValue(touchDelay), () => { _ = ((global::System.Func<double?, global::Doroti.Framework.Scheduler.TickerFuture>)((global::Doroti.Framework.Animation.AnimationController)this._controller).reverse)(default); }));
         }
-        DartRuntimePrimitives.Assert(() => (!((this._timer?.isActive ?? false)) || (!object.Equals(((global::Doroti.Framework.Animation.AnimationController)this._controller).status, global::Doroti.Framework.Animation.AnimationStatus.reverse))), () => (object?)"timer must not be active when the tooltip is animating out");
+        DartRuntimePrimitives.Assert(() => (!((this._timer?.isActive ?? false)) || (!Equals(((global::Doroti.Framework.Animation.AnimationController)this._controller).status, AnimationStatus.reverse))), () => (object?)"timer must not be active when the tooltip is animating out");
         if ((this._controller.isDismissed && (withDelay.inMicroseconds > 0L)))
         {
             this._timer?.cancel();
@@ -261,7 +260,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
     internal virtual void _scheduleDismissTooltip(Duration withDelay = default)
     {
         DartRuntimePrimitives.Assert(() => this.mounted);
-        DartRuntimePrimitives.Assert(() => (!((this._timer?.isActive ?? false)) || (!object.Equals(this._backingController?.status, global::Doroti.Framework.Animation.AnimationStatus.reverse))), () => (object?)"timer must not be active when the tooltip is animating out");
+        DartRuntimePrimitives.Assert(() => (!((this._timer?.isActive ?? false)) || (!Equals(this._backingController?.status, AnimationStatus.reverse))), () => (object?)"timer must not be active when the tooltip is animating out");
         this._timer?.cancel();
         _timer = null;
         if ((this._backingController?.isForwardOrCompleted ?? false))
@@ -323,7 +322,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         {
             return;
         }
-        if (((((this._timer is null) && this._controller.isDismissed)) || (@event is not global::Doroti.Framework.Gestures.PointerDownEvent)))
+        if (((((this._timer is null) && this._controller.isDismissed)) || (@event is not Gestures.PointerDownEvent)))
         {
             return;
         }
@@ -345,11 +344,11 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         bool tooltipCreated = this._controller.isDismissed;
         if ((tooltipCreated && ((RawTooltip)this.widget).enableFeedback))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(((RawTooltip)this.widget).triggerMode, TooltipTriggerMode.tap)));
+            DartRuntimePrimitives.Assert(() => (Equals(((RawTooltip)this.widget).triggerMode, TooltipTriggerMode.tap)));
             DartRuntimePrimitives.Ignore(Feedback.forTap(this.context));
         }
         ((RawTooltip)this.widget).onTriggered?.Invoke();
-        _scheduleShowTooltip(withDelay: Duration.zero, touchDelay: (!System.Linq.Enumerable.Any(this._activeHoveringPointerDevices) ? ((RawTooltip)this.widget).touchDelay : null));
+        _scheduleShowTooltip(withDelay: Duration.zero, touchDelay: (!Enumerable.Any(this._activeHoveringPointerDevices) ? ((RawTooltip)this.widget).touchDelay : null));
     }
 
     internal virtual void _handleLongPress()
@@ -357,7 +356,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         bool tooltipCreated = this._controller.isDismissed;
         if ((tooltipCreated && ((RawTooltip)this.widget).enableFeedback))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(((RawTooltip)this.widget).triggerMode, TooltipTriggerMode.longPress)));
+            DartRuntimePrimitives.Assert(() => (Equals(((RawTooltip)this.widget).triggerMode, TooltipTriggerMode.longPress)));
             DartRuntimePrimitives.Ignore(Feedback.forLongPress(this.context));
         }
         ((RawTooltip)this.widget).onTriggered?.Invoke();
@@ -366,7 +365,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
 
     internal virtual void _handlePressUp()
     {
-        if (System.Linq.Enumerable.Any(this._activeHoveringPointerDevices))
+        if (Enumerable.Any(this._activeHoveringPointerDevices))
         {
             return;
         }
@@ -376,23 +375,23 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
     internal virtual void _handleMouseEnter(global::Doroti.Framework.Gestures.PointerEnterEvent @event)
     {
         this._activeHoveringPointerDevices.Add(@event.device);
-        List<RawTooltipState> tooltipsToDismiss = RawTooltip._openedTooltips.where(((tooltip) => !System.Linq.Enumerable.Any(((RawTooltipState)tooltip)._activeHoveringPointerDevices))).ToList().ToList();
+        List<RawTooltipState> tooltipsToDismiss = RawTooltip._openedTooltips.where(((tooltip) => !Enumerable.Any(((RawTooltipState)tooltip)._activeHoveringPointerDevices))).ToList().ToList();
         foreach (var tooltipLocal in tooltipsToDismiss)
         {
             DartRuntimePrimitives.Assert(() => tooltipLocal.mounted);
             tooltipLocal._scheduleDismissTooltip();
         }
-        _scheduleShowTooltip(withDelay: (System.Linq.Enumerable.Any(tooltipsToDismiss) ? Duration.zero : ((RawTooltip)this.widget).hoverDelay));
+        _scheduleShowTooltip(withDelay: (Enumerable.Any(tooltipsToDismiss) ? Duration.zero : ((RawTooltip)this.widget).hoverDelay));
     }
 
     internal virtual void _handleMouseExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
     {
-        if (!System.Linq.Enumerable.Any(this._activeHoveringPointerDevices))
+        if (!Enumerable.Any(this._activeHoveringPointerDevices))
         {
             return;
         }
         this._activeHoveringPointerDevices.Remove(@event.device);
-        if (!System.Linq.Enumerable.Any(this._activeHoveringPointerDevices))
+        if (!Enumerable.Any(this._activeHoveringPointerDevices))
         {
             _scheduleDismissTooltip(withDelay: ((RawTooltip)this.widget).dismissDelay);
         }
@@ -414,25 +413,25 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
     public override void initState()
     {
         base.initState();
-        global::Doroti.Framework.Gestures.GestureBinding.instance.pointerRouter.addGlobalRoute((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this._handleGlobalPointerEvent);
+        GestureBinding.instance.pointerRouter.addGlobalRoute((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this._handleGlobalPointerEvent);
     }
 
     internal virtual Widget _buildTooltipOverlay(BuildContext context, OverlayChildLayoutInfo layoutInfo)
     {
         if ((((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.determinant == 0.0))
         {
-            return ((Widget)(object?)SizedBox.CreateShrink());
+            return ((Widget)SizedBox.CreateShrink());
         }
-        global::Doroti.Ui.Offset targetLocal = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((OverlayChildLayoutInfo)layoutInfo).childPaintTransform, ((OverlayChildLayoutInfo)layoutInfo).childSize.center(Offset.zero)));
-        Widget tooltip = ((Widget)(object?)new IgnorePointer(ignoring: ((RawTooltip)this.widget).ignorePointer, child: new _ExclusiveMouseRegion__raw_tooltip(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, child: this.widget.tooltipBuilder(context, this._overlayAnimation))));
-        Widget overlayChild = ((Widget)(object?)Positioned.CreateFill(bottom: (MediaQuery.maybeViewInsetsOf(context)?.bottom ?? 0.0), child: new CustomSingleChildLayout(@delegate: new _TooltipPositionDelegate__raw_tooltip(target: targetLocal, targetSize: ((OverlayChildLayoutInfo)layoutInfo).childSize, positionDelegate: (global::System.Func<TooltipPositionContext, Offset>?)((RawTooltip)this.widget).positionDelegate), child: tooltip)));
+        global::Doroti.Ui.Offset targetLocal = ((global::Doroti.Ui.Offset)MatrixUtils.transformPoint(((OverlayChildLayoutInfo)layoutInfo).childPaintTransform, ((OverlayChildLayoutInfo)layoutInfo).childSize.center(Offset.zero)));
+        Widget tooltip = ((Widget)new IgnorePointer(ignoring: ((RawTooltip)this.widget).ignorePointer, child: new _ExclusiveMouseRegion__raw_tooltip(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, child: this.widget.tooltipBuilder(context, this._overlayAnimation))));
+        Widget overlayChild = ((Widget)Positioned.CreateFill(bottom: (MediaQuery.maybeViewInsetsOf(context)?.bottom ?? 0.0), child: new CustomSingleChildLayout(@delegate: new _TooltipPositionDelegate__raw_tooltip(target: targetLocal, targetSize: ((OverlayChildLayoutInfo)layoutInfo).childSize, positionDelegate: (global::System.Func<TooltipPositionContext, Offset>?)((RawTooltip)this.widget).positionDelegate), child: tooltip)));
         return ((SelectionContainer.maybeOf(context) is null) ? overlayChild : SelectionContainer.CreateDisabled(child: overlayChild));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void dispose()
     {
-        global::Doroti.Framework.Gestures.GestureBinding.instance.pointerRouter.removeGlobalRoute((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this._handleGlobalPointerEvent);
+        GestureBinding.instance.pointerRouter.removeGlobalRoute((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this._handleGlobalPointerEvent);
         RawTooltip._openedTooltips.Remove(this);
         this._longPressRecognizer?.onLongPressCancel = null;
         this._longPressRecognizer?.dispose();
@@ -461,11 +460,11 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         {
             return ((RawTooltip)this.widget).child;
         }
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasOverlay(context));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasOverlay(context));
         bool excludeFromSemantics = ((((RawTooltip)this.widget).semanticsTooltip is null) || (((RawTooltip)this.widget).semanticsTooltip!.Length == 0));
-        Widget result = ((Widget)(object?)new Semantics(tooltip: (excludeFromSemantics ? null : ((RawTooltip)this.widget).semanticsTooltip), child: ((RawTooltip)this.widget).child));
-        result = DartRuntimePrimitives.ConvertValue<Widget>(new _ExclusiveMouseRegion__raw_tooltip(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, child: new Listener(onPointerDown: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this._handlePointerDown, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, child: result)));
-        return ((Widget)(object?)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._overlayController, overlayChildBuilder: this._buildTooltipOverlay, child: result));
+        Widget result = ((Widget)new Semantics(tooltip: (excludeFromSemantics ? null : ((RawTooltip)this.widget).semanticsTooltip), child: ((RawTooltip)this.widget).child));
+        result = DartRuntimePrimitives.ConvertValue<Widget>(new _ExclusiveMouseRegion__raw_tooltip(onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, child: new Listener(onPointerDown: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this._handlePointerDown, behavior: HitTestBehavior.opaque, child: result)));
+        return ((Widget)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._overlayController, overlayChildBuilder: this._buildTooltipOverlay, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -480,7 +479,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -506,8 +505,8 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -545,14 +544,14 @@ internal class _TooltipPositionDelegate__raw_tooltip : global::Doroti.Framework.
         {
             return this.positionDelegate!(new TooltipPositionContext(target: this.target, targetSize: this.targetSize, tooltipSize: childSize, overlaySize: size, verticalOffset: 0.0));
         }
-        return global::Doroti.Framework.Painting.GeometryLibrary.positionDependentBox(size: size, childSize: childSize, target: this.target, preferBelow: true);
+        return GeometryLibrary.positionDependentBox(size: size, childSize: childSize, target: this.target, preferBelow: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
     {
-        var __oldDelegate = (_TooltipPositionDelegate__raw_tooltip)(object)oldDelegate;
-        return (((!object.Equals(this.target, ((_TooltipPositionDelegate__raw_tooltip)__oldDelegate).target)) || (!object.Equals(this.targetSize, ((_TooltipPositionDelegate__raw_tooltip)__oldDelegate).targetSize))) || (!object.Equals((global::System.Func<TooltipPositionContext, Offset>?)this.positionDelegate, (global::System.Func<TooltipPositionContext, Offset>?)((_TooltipPositionDelegate__raw_tooltip)__oldDelegate).positionDelegate)));
+        var __oldDelegate = (_TooltipPositionDelegate__raw_tooltip)oldDelegate;
+        return (((!Equals(this.target, ((_TooltipPositionDelegate__raw_tooltip)__oldDelegate).target)) || (!Equals(this.targetSize, ((_TooltipPositionDelegate__raw_tooltip)__oldDelegate).targetSize))) || (!Equals((global::System.Func<TooltipPositionContext, Offset>?)this.positionDelegate, (global::System.Func<TooltipPositionContext, Offset>?)((_TooltipPositionDelegate__raw_tooltip)__oldDelegate).positionDelegate)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

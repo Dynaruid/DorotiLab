@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/refresh_indicator.dart
-#pragma warning disable CS4014, CS8600, CS8601, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -162,9 +162,9 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         }
         set { __late__effectiveValueColor = value; __late__effectiveValueColor_initialized = true; }
     }
-    internal static global::Doroti.Framework.Animation.Animatable<double> _threeQuarterTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.75));
-    internal static global::Doroti.Framework.Animation.Animatable<double> _kDragSizeFactorLimitTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: Refresh_indicatorLibrary._kDragSizeFactorLimit));
-    internal static global::Doroti.Framework.Animation.Animatable<double> _oneToZeroTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _threeQuarterTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.75));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _kDragSizeFactorLimitTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: Refresh_indicatorLibrary._kDragSizeFactorLimit));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _oneToZeroTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0));
     public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
@@ -187,7 +187,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
     public override void didUpdateWidget(RefreshIndicator oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((RefreshIndicator)oldWidget).color, ((RefreshIndicator)this.widget).color)))
+        if ((!Equals(((RefreshIndicator)oldWidget).color, ((RefreshIndicator)this.widget).color)))
         {
             _setupColorTween();
         }
@@ -219,7 +219,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
     internal virtual void _setupColorTween()
     {
         _effectiveValueColor = (((RefreshIndicator)this.widget).color ?? Theme.of(this.context).colorScheme.primary);
-        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)this._effectiveValueColor);
+        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)this._effectiveValueColor);
         if ((colorLocal.alpha == 0L))
         {
             _valueColor = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<Color?>>(new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<global::Doroti.Ui.Color>(colorLocal));
@@ -232,7 +232,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
 
     internal virtual bool _shouldStart(global::Doroti.Framework.Widgets.ScrollNotification notification)
     {
-        return ((((((((notification is global::Doroti.Framework.Widgets.ScrollStartNotification) && (((global::Doroti.Framework.Widgets.ScrollStartNotification)((global::Doroti.Framework.Widgets.ScrollStartNotification)notification)).dragDetails is not null))) || ((((notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification) && (((global::Doroti.Framework.Widgets.ScrollUpdateNotification)((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification)).dragDetails is not null)) && (object.Equals(((RefreshIndicator)this.widget).triggerMode, RefreshIndicatorTriggerMode.anywhere)))))) && (((((object.Equals(((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection, global::Doroti.Framework.Painting.AxisDirection.up)) && (((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.extentAfter == 0.0))) || (((object.Equals(((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection, global::Doroti.Framework.Painting.AxisDirection.down)) && (((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.extentBefore == 0.0)))))) && (this._status is null)) && _start(((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection));
+        return ((((((((notification is global::Doroti.Framework.Widgets.ScrollStartNotification) && (((global::Doroti.Framework.Widgets.ScrollStartNotification)((global::Doroti.Framework.Widgets.ScrollStartNotification)notification)).dragDetails is not null))) || ((((notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification) && (((global::Doroti.Framework.Widgets.ScrollUpdateNotification)((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification)).dragDetails is not null)) && (Equals(((RefreshIndicator)this.widget).triggerMode, RefreshIndicatorTriggerMode.anywhere)))))) && (((((Equals(((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection, AxisDirection.up)) && (((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.extentAfter == 0.0))) || (((Equals(((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection, AxisDirection.down)) && (((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.extentBefore == 0.0)))))) && (this._status is null)) && _start(((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -251,10 +251,10 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
             })));
             return false;
         }
-        bool? indicatorAtTopNow = (((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection switch { global::Doroti.Framework.Painting.AxisDirection.down => true, global::Doroti.Framework.Painting.AxisDirection.up => true, global::Doroti.Framework.Painting.AxisDirection.left => DartRuntimePrimitives.ConvertValue<bool>(null), global::Doroti.Framework.Painting.AxisDirection.right => DartRuntimePrimitives.ConvertValue<bool>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool? indicatorAtTopNow = (((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection switch { AxisDirection.down => true, AxisDirection.up => true, AxisDirection.left => DartRuntimePrimitives.ConvertValue<bool>(null), AxisDirection.right => DartRuntimePrimitives.ConvertValue<bool>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if ((indicatorAtTopNow != this._isIndicatorAtTop))
         {
-            if (((object.Equals(this._status, RefreshIndicatorStatus.drag)) || (object.Equals(this._status, RefreshIndicatorStatus.armed))))
+            if (((Equals(this._status, RefreshIndicatorStatus.drag)) || (Equals(this._status, RefreshIndicatorStatus.armed))))
             {
                 DartRuntimePrimitives.Ignore(_dismiss(RefreshIndicatorStatus.canceled));
             }
@@ -264,22 +264,22 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
             if ((notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification))
             {
                 global::Doroti.Framework.Widgets.ScrollUpdateNotification notification__as16986 = (global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification;
-                if (((object.Equals(this._status, RefreshIndicatorStatus.drag)) || (object.Equals(this._status, RefreshIndicatorStatus.armed))))
+                if (((Equals(this._status, RefreshIndicatorStatus.drag)) || (Equals(this._status, RefreshIndicatorStatus.armed))))
                 {
-                    if ((object.Equals(((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986).metrics.axisDirection, global::Doroti.Framework.Painting.AxisDirection.down)))
+                    if ((Equals(((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986).metrics.axisDirection, AxisDirection.down)))
                     {
                         _dragOffset = (DartRuntimePrimitives.RequireValue(this._dragOffset) - DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.ScrollUpdateNotification)((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986)).scrollDelta));
                     }
                     else
                     {
-                        if ((object.Equals(((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986).metrics.axisDirection, global::Doroti.Framework.Painting.AxisDirection.up)))
+                        if ((Equals(((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986).metrics.axisDirection, AxisDirection.up)))
                         {
                             _dragOffset = (DartRuntimePrimitives.RequireValue(this._dragOffset) + DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.ScrollUpdateNotification)((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986)).scrollDelta));
                         }
                     }
                     _checkDragOffset(((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986).metrics.viewportDimension);
                 }
-                if (((object.Equals(this._status, RefreshIndicatorStatus.armed)) && (((global::Doroti.Framework.Widgets.ScrollUpdateNotification)((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986)).dragDetails is null)))
+                if (((Equals(this._status, RefreshIndicatorStatus.armed)) && (((global::Doroti.Framework.Widgets.ScrollUpdateNotification)((global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification__as16986)).dragDetails is null)))
                 {
                     _show();
                 }
@@ -289,15 +289,15 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                 if ((notification is global::Doroti.Framework.Widgets.OverscrollNotification))
                 {
                     global::Doroti.Framework.Widgets.OverscrollNotification notification__as17855 = (global::Doroti.Framework.Widgets.OverscrollNotification)notification;
-                    if (((object.Equals(this._status, RefreshIndicatorStatus.drag)) || (object.Equals(this._status, RefreshIndicatorStatus.armed))))
+                    if (((Equals(this._status, RefreshIndicatorStatus.drag)) || (Equals(this._status, RefreshIndicatorStatus.armed))))
                     {
-                        if ((object.Equals(((global::Doroti.Framework.Widgets.OverscrollNotification)notification__as17855).metrics.axisDirection, global::Doroti.Framework.Painting.AxisDirection.down)))
+                        if ((Equals(((global::Doroti.Framework.Widgets.OverscrollNotification)notification__as17855).metrics.axisDirection, AxisDirection.down)))
                         {
                             _dragOffset = (DartRuntimePrimitives.RequireValue(this._dragOffset) - ((global::Doroti.Framework.Widgets.OverscrollNotification)((global::Doroti.Framework.Widgets.OverscrollNotification)notification__as17855)).overscroll);
                         }
                         else
                         {
-                            if ((object.Equals(((global::Doroti.Framework.Widgets.OverscrollNotification)notification__as17855).metrics.axisDirection, global::Doroti.Framework.Painting.AxisDirection.up)))
+                            if ((Equals(((global::Doroti.Framework.Widgets.OverscrollNotification)notification__as17855).metrics.axisDirection, AxisDirection.up)))
                             {
                                 _dragOffset = (DartRuntimePrimitives.RequireValue(this._dragOffset) + ((global::Doroti.Framework.Widgets.OverscrollNotification)((global::Doroti.Framework.Widgets.OverscrollNotification)notification__as17855)).overscroll);
                             }
@@ -352,7 +352,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         {
             return false;
         }
-        if ((object.Equals(this._status, RefreshIndicatorStatus.drag)))
+        if ((Equals(this._status, RefreshIndicatorStatus.drag)))
         {
             notification.disallowIndicator();
             return true;
@@ -368,14 +368,14 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         DartRuntimePrimitives.Assert(() => (this._dragOffset is null));
         switch (direction)
         {
-            case global::Doroti.Framework.Painting.AxisDirection.down:
-            case global::Doroti.Framework.Painting.AxisDirection.up:
+            case AxisDirection.down:
+            case AxisDirection.up:
                 {
                     _isIndicatorAtTop = true;
                     break;
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.left:
-            case global::Doroti.Framework.Painting.AxisDirection.right:
+            case AxisDirection.left:
+            case AxisDirection.right:
                 {
                     _isIndicatorAtTop = null;
                     return false;
@@ -390,14 +390,14 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
 
     internal virtual void _checkDragOffset(double containerExtent)
     {
-        DartRuntimePrimitives.Assert(() => ((object.Equals(this._status, RefreshIndicatorStatus.drag)) || (object.Equals(this._status, RefreshIndicatorStatus.armed))));
+        DartRuntimePrimitives.Assert(() => ((Equals(this._status, RefreshIndicatorStatus.drag)) || (Equals(this._status, RefreshIndicatorStatus.armed))));
         double newValue = (DartRuntimePrimitives.RequireValue(this._dragOffset) / ((containerExtent * Refresh_indicatorLibrary._kDragContainerExtentPercentage)));
-        if ((object.Equals(this._status, RefreshIndicatorStatus.armed)))
+        if ((Equals(this._status, RefreshIndicatorStatus.armed)))
         {
             newValue = Math.Max(newValue, (1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit));
         }
         this._positionController.value = Dart_uiLibrary.clampDouble(newValue, 0.0, 1.0);
-        if (((object.Equals(this._status, RefreshIndicatorStatus.drag)) && (((global::Doroti.Framework.Animation.Animation<Color?>)this._valueColor).value!.alpha == this._effectiveValueColor.alpha)))
+        if (((Equals(this._status, RefreshIndicatorStatus.drag)) && (((global::Doroti.Framework.Animation.Animation<Color?>)this._valueColor).value!.alpha == this._effectiveValueColor.alpha)))
         {
             _status = RefreshIndicatorStatus.armed;
             ((RefreshIndicator)this.widget).onStatusChange?.Invoke(this._status);
@@ -407,7 +407,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
     internal async virtual Future _dismiss(RefreshIndicatorStatus newMode)
     {
         await Future.value();
-        DartRuntimePrimitives.Assert(() => ((object.Equals(newMode, RefreshIndicatorStatus.canceled)) || (object.Equals(newMode, RefreshIndicatorStatus.done))));
+        DartRuntimePrimitives.Assert(() => ((Equals(newMode, RefreshIndicatorStatus.canceled)) || (Equals(newMode, RefreshIndicatorStatus.done))));
         setState(((global::System.Action)(() =>
         {
             _status = newMode;
@@ -417,12 +417,12 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         {
             case RefreshIndicatorStatus.done:
                 {
-                    this._scaleController.animateTo(1.0, duration: Refresh_indicatorLibrary._kIndicatorScaleDuration);
+                    await this._scaleController.animateTo(1.0, duration: Refresh_indicatorLibrary._kIndicatorScaleDuration);
                     break;
                 }
             case RefreshIndicatorStatus.canceled:
                 {
-                    this._positionController.animateTo(0.0, duration: Refresh_indicatorLibrary._kIndicatorScaleDuration);
+                    await this._positionController.animateTo(0.0, duration: Refresh_indicatorLibrary._kIndicatorScaleDuration);
                     break;
                 }
             case RefreshIndicatorStatus.armed:
@@ -434,7 +434,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                     break;
                 }
         }
-        if ((this.mounted && (object.Equals(this._status, newMode))))
+        if ((this.mounted && (Equals(this._status, newMode))))
         {
             _dragOffset = null;
             _isIndicatorAtTop = null;
@@ -447,15 +447,15 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
 
     internal virtual void _show()
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._status, RefreshIndicatorStatus.refresh)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._status, RefreshIndicatorStatus.snap)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._status, RefreshIndicatorStatus.refresh)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._status, RefreshIndicatorStatus.snap)));
         var completer = new Completer<object?>();
         DartRuntimePrimitives.Ignore(_pendingRefreshFuture = completer.future);
         _status = RefreshIndicatorStatus.snap;
         ((RefreshIndicator)this.widget).onStatusChange?.Invoke(this._status);
         DartRuntimePrimitives.Ignore(this._positionController.animateTo((1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit), duration: Refresh_indicatorLibrary._kIndicatorSnapDuration).then(((global::System.Func<object?, object>)((value) =>
         {
-            if ((this.mounted && (object.Equals(this._status, RefreshIndicatorStatus.snap))))
+            if ((this.mounted && (Equals(this._status, RefreshIndicatorStatus.snap))))
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -464,7 +464,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                 Future refreshResult = this.widget.onRefresh();
                 DartRuntimePrimitives.Ignore(refreshResult.whenComplete((() =>
                 {
-                    if ((this.mounted && (object.Equals(this._status, RefreshIndicatorStatus.refresh))))
+                    if ((this.mounted && (Equals(this._status, RefreshIndicatorStatus.refresh))))
                     {
                         completer.complete();
                         DartRuntimePrimitives.Ignore(_dismiss(RefreshIndicatorStatus.done));
@@ -477,11 +477,11 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
 
     public virtual Future show(bool atTop = true)
     {
-        if (((!object.Equals(this._status, RefreshIndicatorStatus.refresh)) && (!object.Equals(this._status, RefreshIndicatorStatus.snap))))
+        if (((!Equals(this._status, RefreshIndicatorStatus.refresh)) && (!Equals(this._status, RefreshIndicatorStatus.snap))))
         {
             if ((this._status is null))
             {
-                _start((atTop ? global::Doroti.Framework.Painting.AxisDirection.down : global::Doroti.Framework.Painting.AxisDirection.up));
+                _start((atTop ? AxisDirection.down : AxisDirection.up));
             }
             _show();
         }
@@ -492,7 +492,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)this._handleScrollNotification, child: new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.OverscrollIndicatorNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.OverscrollIndicatorNotification, bool>)this._handleIndicatorNotification, child: ((RefreshIndicator)this.widget).child)));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)this._handleScrollNotification, child: new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.OverscrollIndicatorNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.OverscrollIndicatorNotification, bool>)this._handleIndicatorNotification, child: ((RefreshIndicator)this.widget).child)));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((this._status is null))
@@ -507,15 +507,15 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                 }
                 return true;
             });
-        bool showIndeterminateIndicator = ((object.Equals(this._status, RefreshIndicatorStatus.refresh)) || (object.Equals(this._status, RefreshIndicatorStatus.done)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        bool showIndeterminateIndicator = ((Equals(this._status, RefreshIndicatorStatus.refresh)) || (Equals(this._status, RefreshIndicatorStatus.done)));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
         {
             var __collection24667 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(childLocal)); if ((this._status is not null))
             {
-                __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), bottom: (!DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), left: 0.0, right: 0.0, child: new global::Doroti.Framework.Widgets.SizeTransition(alignment: new global::Doroti.Framework.Painting.AlignmentDirectional(-1.0, (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? 1.0 : -1.0)), sizeFactor: this._positionFactor, child: new global::Doroti.Framework.Widgets.Padding(padding: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: ((RefreshIndicator)this.widget).displacement) : global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((RefreshIndicator)this.widget).displacement)), child: new global::Doroti.Framework.Widgets.Align(alignment: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? global::Doroti.Framework.Painting.Alignment.topCenter : global::Doroti.Framework.Painting.Alignment.bottomCenter), child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._scaleFactor, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._positionController, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+                __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), bottom: (!DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), left: 0.0, right: 0.0, child: new global::Doroti.Framework.Widgets.SizeTransition(alignment: new global::Doroti.Framework.Painting.AlignmentDirectional(-1.0, (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? 1.0 : -1.0)), sizeFactor: this._positionFactor, child: new global::Doroti.Framework.Widgets.Padding(padding: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? EdgeInsets.CreateOnly(top: ((RefreshIndicator)this.widget).displacement) : EdgeInsets.CreateOnly(bottom: ((RefreshIndicator)this.widget).displacement)), child: new global::Doroti.Framework.Widgets.Align(alignment: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? Alignment.topCenter : Alignment.bottomCenter), child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._scaleFactor, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._positionController, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
                 {
-                    global::Doroti.Framework.Widgets.Widget materialIndicator = ((global::Doroti.Framework.Widgets.Widget)(object?)new RefreshProgressIndicator(semanticsLabel: (((RefreshIndicator)this.widget).semanticsLabel ?? MaterialLocalizations.of(context).refreshIndicatorSemanticLabel), semanticsValue: ((RefreshIndicator)this.widget).semanticsValue, value: (showIndeterminateIndicator ? null : ((global::Doroti.Framework.Animation.Animation<double>)this._value).value), valueColor: this._valueColor, backgroundColor: ((RefreshIndicator)this.widget).backgroundColor, strokeWidth: ((RefreshIndicator)this.widget).strokeWidth, elevation: ((RefreshIndicator)this.widget).elevation));
-                    global::Doroti.Framework.Widgets.Widget cupertinoIndicator = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(color: ((RefreshIndicator)this.widget).color));
+                    global::Doroti.Framework.Widgets.Widget materialIndicator = ((global::Doroti.Framework.Widgets.Widget)new RefreshProgressIndicator(semanticsLabel: (((RefreshIndicator)this.widget).semanticsLabel ?? MaterialLocalizations.of(context).refreshIndicatorSemanticLabel), semanticsValue: ((RefreshIndicator)this.widget).semanticsValue, value: (showIndeterminateIndicator ? null : ((global::Doroti.Framework.Animation.Animation<double>)this._value).value), valueColor: this._valueColor, backgroundColor: ((RefreshIndicator)this.widget).backgroundColor, strokeWidth: ((RefreshIndicator)this.widget).strokeWidth, elevation: ((RefreshIndicator)this.widget).elevation));
+                    global::Doroti.Framework.Widgets.Widget cupertinoIndicator = ((global::Doroti.Framework.Widgets.Widget)new CupertinoActivityIndicator(color: ((RefreshIndicator)this.widget).color));
                     switch (((RefreshIndicator)this.widget)._indicatorType)
                     {
                         case _IndicatorType__refresh_indicator.material:
@@ -527,15 +527,15 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                                 ThemeData theme = Theme.of(context);
                                 switch (theme.platform)
                                 {
-                                    case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                                    case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                                    case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                                    case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                                    case TargetPlatform.android:
+                                    case TargetPlatform.fuchsia:
+                                    case TargetPlatform.linux:
+                                    case TargetPlatform.windows:
                                         {
                                             return materialIndicator;
                                         }
-                                    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                                    case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                                    case TargetPlatform.iOS:
+                                    case TargetPlatform.macOS:
                                         {
                                             return cupertinoIndicator;
                                         }
@@ -545,7 +545,7 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
                             }
                         case _IndicatorType__refresh_indicator.noSpinner:
                             {
-                                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container());
+                                return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container());
                             }
                     }
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -567,13 +567,13 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -607,8 +607,8 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }

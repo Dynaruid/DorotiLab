@@ -127,7 +127,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         global::Doroti.Ui.TextAffinity affinityLocal = position.affinity;
         long targetOffset = position.offset;
         long endOffset = (((Accumulator)offset).value + textLocal.Length);
-        if (((((((Accumulator)offset).value == targetOffset) && (object.Equals(affinityLocal, TextAffinity.downstream))) || ((((Accumulator)offset).value < targetOffset) && (targetOffset < endOffset))) || ((endOffset == targetOffset) && (object.Equals(affinityLocal, TextAffinity.upstream)))))
+        if (((((((Accumulator)offset).value == targetOffset) && (Equals(affinityLocal, TextAffinity.downstream))) || ((((Accumulator)offset).value < targetOffset) && (targetOffset < endOffset))) || ((endOffset == targetOffset) && (Equals(affinityLocal, TextAffinity.upstream)))))
         {
             return this;
         }
@@ -224,7 +224,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return RenderComparison.identical;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(other), this.GetType())))
         {
             return RenderComparison.layout;
         }
@@ -233,7 +233,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return RenderComparison.layout;
         }
-        RenderComparison result = ((object.Equals(this.recognizer, ((TextSpan)textSpan).recognizer)) ? RenderComparison.identical : RenderComparison.metadata);
+        RenderComparison result = ((Equals(this.recognizer, ((TextSpan)textSpan).recognizer)) ? RenderComparison.identical : RenderComparison.metadata);
         if ((style is not null))
         {
             RenderComparison candidate = style!.compareTo(textSpan.style!);
@@ -241,7 +241,7 @@ public class TextSpan : InlineSpan, HitTestTarget
             {
                 result = candidate;
             }
-            if ((object.Equals(result, RenderComparison.layout)))
+            if ((Equals(result, RenderComparison.layout)))
             {
                 return result;
             }
@@ -255,7 +255,7 @@ public class TextSpan : InlineSpan, HitTestTarget
                 {
                     result = candidateLocal;
                 }
-                if ((object.Equals(result, RenderComparison.layout)))
+                if ((Equals(result, RenderComparison.layout)))
                 {
                     return result;
                 }
@@ -273,7 +273,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
@@ -281,11 +281,11 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return false;
         }
-        return (((((((((__other is TextSpan) && (((TextSpan)((TextSpan)__other)).text == this.text)) && (object.Equals(((TextSpan)((TextSpan)__other)).recognizer, this.recognizer))) && (((TextSpan)((TextSpan)__other)).semanticsLabel == this.semanticsLabel)) && (((TextSpan)((TextSpan)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (object.Equals((Action<PointerEnterEvent>?)this.onEnter, (Action<PointerEnterEvent>?)((TextSpan)((TextSpan)__other)).onEnter))) && (object.Equals((Action<PointerExitEvent>?)this.onExit, (Action<PointerExitEvent>?)((TextSpan)((TextSpan)__other)).onExit))) && (object.Equals(this.mouseCursor, ((TextSpan)((TextSpan)__other)).mouseCursor))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<InlineSpan>(((TextSpan)((TextSpan)__other)).children, this.children));
+        return (((((((((__other is TextSpan) && (((TextSpan)((TextSpan)__other)).text == this.text)) && (Equals(((TextSpan)((TextSpan)__other)).recognizer, this.recognizer))) && (((TextSpan)((TextSpan)__other)).semanticsLabel == this.semanticsLabel)) && (((TextSpan)((TextSpan)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (Equals((Action<PointerEnterEvent>?)this.onEnter, (Action<PointerEnterEvent>?)((TextSpan)((TextSpan)__other)).onEnter))) && (Equals((Action<PointerExitEvent>?)this.onExit, (Action<PointerExitEvent>?)((TextSpan)((TextSpan)__other)).onExit))) && (Equals(this.mouseCursor, ((TextSpan)((TextSpan)__other)).mouseCursor))) && CollectionsLibrary.listEquals<InlineSpan>(((TextSpan)((TextSpan)__other)).children, this.children));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(base.GetHashCode(), this.text, this.recognizer, this.semanticsLabel, this.semanticsIdentifier, this.onEnter, this.onExit, this.mouseCursor, ((this.children is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.children!)));
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSpan");
+    public virtual string toStringShort() => objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSpan");
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);

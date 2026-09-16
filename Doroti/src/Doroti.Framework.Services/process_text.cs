@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/process_text.dart
-#pragma warning disable CS8600, CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Services;
@@ -58,18 +57,25 @@ public class DefaultProcessTextService : ProcessTextService
         DartMap<object?, object?> rawResults = default!;
         try
         {
-            var result = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)await _processTextChannel.invokeMethod<object>("ProcessText.queryTextActions"));
+            var result = await _processTextChannel.invokeMethod<object>("ProcessText.queryTextActions");
             if ((result is null))
             {
                 return new List<ProcessTextAction>();
             }
-            rawResults = result;
+            rawResults = result is System.Collections.IDictionary entries
+                ? DartRuntimePrimitives.ConvertMap<object?, object?>(entries)
+                : throw new FormatException("Process text actions require a map.");
         }
         catch (Exception)
         {
             return new List<ProcessTextAction>();
         }
-        return new List<ProcessTextAction>();
+        return rawResults.Select(entry =>
+        {
+            if (entry.Key is not string id || entry.Value is not string label)
+                throw new FormatException("Process text action IDs and labels must be strings.");
+            return new ProcessTextAction(id, label);
+        }).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

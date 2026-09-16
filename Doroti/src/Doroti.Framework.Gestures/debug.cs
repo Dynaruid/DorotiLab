@@ -35,7 +35,7 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((DebugLibrary.debugPrintHitTestResults || DebugLibrary.debugPrintGestureArenaDiagnostics) || DebugLibrary.debugPrintRecognizerCallbacksTrace) || DebugLibrary.debugPrintResamplingMargin))
+                if ((((debugPrintHitTestResults || debugPrintGestureArenaDiagnostics) || debugPrintRecognizerCallbacksTrace) || debugPrintResamplingMargin))
                 {
                     throw new FlutterError(reason);
                 }

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/banner_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -50,11 +50,11 @@ public class MaterialBannerThemeData : global::Doroti.Framework.Foundation.Diagn
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((__other is MaterialBannerThemeData) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).dividerColor, this.dividerColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).contentTextStyle, this.contentTextStyle))) && (((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).elevation == this.elevation)) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).padding, this.padding))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).leadingPadding, this.leadingPadding)));
+        return (((((((((__other is MaterialBannerThemeData) && (Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).dividerColor, this.dividerColor))) && (Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).contentTextStyle, this.contentTextStyle))) && (((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).elevation == this.elevation)) && (Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).padding, this.padding))) && (Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).leadingPadding, this.leadingPadding)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -69,8 +69,8 @@ public class MaterialBannerThemeData : global::Doroti.Framework.Foundation.Diagn
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("leadingPadding", this.leadingPadding, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -86,7 +86,7 @@ public class MaterialBannerThemeData : global::Doroti.Framework.Foundation.Diagn
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -103,16 +103,16 @@ public class MaterialBannerTheme : global::Doroti.Framework.Widgets.InheritedThe
 
     public static MaterialBannerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MaterialBannerTheme? bannerThemeLocal = ((MaterialBannerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MaterialBannerTheme>());
+        MaterialBannerTheme? bannerThemeLocal = ((MaterialBannerTheme?)context.dependOnInheritedWidgetOfExactType<MaterialBannerTheme>());
         return (bannerThemeLocal?.data ?? Theme.of(context).bannerTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new MaterialBannerTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new MaterialBannerTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((MaterialBannerTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((MaterialBannerTheme)oldWidget).data)));
 }

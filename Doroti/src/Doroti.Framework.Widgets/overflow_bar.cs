@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/overflow_bar.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -22,7 +21,7 @@ public class OverflowBar : MultiChildRenderObjectWidget
     public virtual global::Doroti.Framework.Painting.VerticalDirection overflowDirection { get; private set; } = default!;
     public virtual TextDirection? textDirection { get; private set; }
 
-    public OverflowBar(global::Doroti.Framework.Foundation.Key? key = null, double spacing = 0.0, global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, global::Doroti.Framework.Painting.VerticalDirection overflowDirection = global::Doroti.Framework.Painting.VerticalDirection.down, TextDirection? textDirection = null, List<Widget> children = default!) : base(key: key, children: children ?? new List<Widget>())
+    public OverflowBar(global::Doroti.Framework.Foundation.Key? key = null, double spacing = 0.0, global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, global::Doroti.Framework.Painting.VerticalDirection overflowDirection = VerticalDirection.down, TextDirection? textDirection = null, List<Widget> children = default!) : base(key: key, children: children ?? new List<Widget>())
     {
         this.spacing = spacing;
         this.alignment = alignment;
@@ -34,7 +33,7 @@ public class OverflowBar : MultiChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderOverflowBar__overflow_bar(spacing: this.spacing, alignment: this.alignment, overflowSpacing: this.overflowSpacing, overflowAlignment: this.overflowAlignment, overflowDirection: this.overflowDirection, textDirection: ((this.textDirection ?? (TextDirection)Directionality.of(context)))));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderOverflowBar__overflow_bar(spacing: this.spacing, alignment: this.alignment, overflowSpacing: this.overflowSpacing, overflowAlignment: this.overflowAlignment, overflowDirection: this.overflowDirection, textDirection: ((this.textDirection ?? (TextDirection)Directionality.of(context)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -42,7 +41,7 @@ public class OverflowBar : MultiChildRenderObjectWidget
     {
         DartRuntimePrimitives.Ignore(((Func<_RenderOverflowBar__overflow_bar>)(() =>
 {
-    var __cascade = (((_RenderOverflowBar__overflow_bar?)(object?)renderObject)!);
+    var __cascade = (((_RenderOverflowBar__overflow_bar?)renderObject)!);
     __cascade.spacing = this.spacing;
     __cascade.alignment = this.alignment;
     __cascade.overflowSpacing = this.overflowSpacing;
@@ -60,7 +59,7 @@ public class OverflowBar : MultiChildRenderObjectWidget
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("alignment", this.alignment, defaultValue: null));
         properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("overflowSpacing", this.overflowSpacing, defaultValue: 0L));
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<OverflowBarAlignment>("overflowAlignment", this.overflowAlignment, defaultValue: OverflowBarAlignment.start));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", this.overflowDirection, defaultValue: global::Doroti.Framework.Painting.VerticalDirection.down));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", this.overflowDirection, defaultValue: VerticalDirection.down));
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
     }
 
@@ -82,7 +81,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    internal _RenderOverflowBar__overflow_bar(List<global::Doroti.Framework.Rendering.RenderBox>? children = null, double spacing = 0.0, global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, global::Doroti.Framework.Painting.VerticalDirection overflowDirection = global::Doroti.Framework.Painting.VerticalDirection.down, TextDirection textDirection = default!)
+    internal _RenderOverflowBar__overflow_bar(List<global::Doroti.Framework.Rendering.RenderBox>? children = null, double spacing = 0.0, global::Doroti.Framework.Rendering.MainAxisAlignment? alignment = null, double overflowSpacing = 0.0, OverflowBarAlignment overflowAlignment = OverflowBarAlignment.start, global::Doroti.Framework.Painting.VerticalDirection overflowDirection = VerticalDirection.down, TextDirection textDirection = default!)
     {
         this._spacing = spacing;
         this._alignment = alignment;
@@ -112,7 +111,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         set
         {
             var __value = value;
-            if ((object.Equals(this._alignment, __value)))
+            if ((Equals(this._alignment, __value)))
             {
                 return;
             }
@@ -140,7 +139,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         set
         {
             var __value = value;
-            if ((object.Equals(this._overflowAlignment, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._overflowAlignment, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -154,7 +153,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         set
         {
             var __value = value;
-            if ((object.Equals(this._overflowDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._overflowDirection, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -168,7 +167,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         set
         {
             var __value = value;
-            if ((object.Equals(this._textDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._textDirection, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -178,7 +177,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
     }
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
         if ((__child.parentData is not _OverflowBarParentData__overflow_bar))
         {
             __child.parentData = new _OverflowBarParentData__overflow_bar();
@@ -303,16 +302,16 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
-        var (next, startChild) = (this.overflowDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => (((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>, global::Doroti.Framework.Rendering.RenderBox?))((this.childAfter, this.firstChild))), global::Doroti.Framework.Painting.VerticalDirection.up => (((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>, global::Doroti.Framework.Rendering.RenderBox?))((this.childBefore, this.lastChild))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.loosen());
+        var (next, startChild) = (this.overflowDirection switch { VerticalDirection.down => (((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>, global::Doroti.Framework.Rendering.RenderBox?))((this.childAfter, this.firstChild))), VerticalDirection.up => (((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderBox?>, global::Doroti.Framework.Rendering.RenderBox?))((this.childBefore, this.lastChild))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var maxChildHeight = 0.0;
         var y = 0.0;
         var childrenWidth = 0.0;
-        global::Doroti.Framework.Rendering.BaselineOffset minHorizontalBaseline = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
-        global::Doroti.Framework.Rendering.BaselineOffset verticalBaseline = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
+        global::Doroti.Framework.Rendering.BaselineOffset minHorizontalBaseline = BaselineOffset.noBaseline;
+        global::Doroti.Framework.Rendering.BaselineOffset verticalBaseline = BaselineOffset.noBaseline;
         for (var child = startChild; (child is not null); child = next(child))
         {
-            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)child.getDryLayout(childConstraints));
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)child.getDryLayout(childConstraints));
             double heightDiff = (childSize.height - maxChildHeight);
             if ((heightDiff > 0L))
             {
@@ -340,13 +339,13 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         {
             return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).smallest;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
+        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.loosen());
         var childrenWidth = 0.0;
         var maxChildHeight = 0.0;
         var y = 0.0;
         while ((child is not null))
         {
-            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)child.getDryLayout(childConstraints));
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)child.getDryLayout(childConstraints));
             childrenWidth += childSize.width;
             maxChildHeight = Math.Max(maxChildHeight, childSize.height);
             y += (childSize.height + this.overflowSpacing);
@@ -373,7 +372,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).smallest;
             return;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)this.constraints.loosen());
+        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints.loosen());
         double childrenWidth = 0;
         double maxChildHeight = 0;
         double maxChildWidth = 0;
@@ -385,20 +384,20 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             maxChildWidth = Math.Max(maxChildWidth, ((global::Doroti.Framework.Rendering.RenderBox)child).size.width);
             child = childAfter(child);
         }
-        var rtlLocal = (object.Equals(this.textDirection, TextDirection.rtl));
+        var rtlLocal = (Equals(this.textDirection, TextDirection.rtl));
         double actualWidth = (childrenWidth + (this.spacing * ((this.childCount - 1L))));
         if ((actualWidth > ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth))
         {
-            child = ((object.Equals(this.overflowDirection, global::Doroti.Framework.Painting.VerticalDirection.down)) ? this.firstChild : this.lastChild);
+            child = ((Equals(this.overflowDirection, VerticalDirection.down)) ? this.firstChild : this.lastChild);
             global::Doroti.Framework.Rendering.RenderBox? nextChild()
             {
-                return ((object.Equals(this.overflowDirection, global::Doroti.Framework.Painting.VerticalDirection.down)) ? childAfter(child!) : childBefore(child!));
+                return ((Equals(this.overflowDirection, VerticalDirection.down)) ? childAfter(child!) : childBefore(child!));
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
             double y = 0;
             while ((child is not null))
             {
-                var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+                var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
                 double x = (this.overflowAlignment switch { OverflowBarAlignment.center => (((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width)) / 2L), OverflowBarAlignment.start => (rtlLocal ? (((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width) : 0), OverflowBarAlignment.end => (rtlLocal ? 0 : (((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 childParentData.offset = new global::Doroti.Ui.Offset(x, y);
                 y += (((global::Doroti.Framework.Rendering.RenderBox)child).size.height + this.overflowSpacing);
@@ -421,35 +420,35 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
                         xLocal = (rtlLocal ? (this.size.width - firstChildWidth) : 0);
                         break;
                     }
-                case global::Doroti.Framework.Rendering.MainAxisAlignment.start:
+                case MainAxisAlignment.start:
                     {
                         xLocal = (rtlLocal ? (this.size.width - firstChildWidth) : 0);
                         break;
                     }
-                case global::Doroti.Framework.Rendering.MainAxisAlignment.center:
+                case MainAxisAlignment.center:
                     {
                         double halfRemainingWidth = (((this.size.width - actualWidth)) / 2L);
                         xLocal = (rtlLocal ? ((this.size.width - halfRemainingWidth) - firstChildWidth) : halfRemainingWidth);
                         break;
                     }
-                case global::Doroti.Framework.Rendering.MainAxisAlignment.end:
+                case MainAxisAlignment.end:
                     {
                         xLocal = (rtlLocal ? (actualWidth - firstChildWidth) : (this.size.width - actualWidth));
                         break;
                     }
-                case global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween:
+                case MainAxisAlignment.spaceBetween:
                     {
                         layoutSpacing = (((this.size.width - childrenWidth)) / ((this.childCount - 1L)));
                         xLocal = (rtlLocal ? (this.size.width - firstChildWidth) : 0);
                         break;
                     }
-                case global::Doroti.Framework.Rendering.MainAxisAlignment.spaceAround:
+                case MainAxisAlignment.spaceAround:
                     {
                         layoutSpacing = ((this.childCount > 0L) ? (((this.size.width - childrenWidth)) / this.childCount) : 0);
                         xLocal = (rtlLocal ? ((this.size.width - (layoutSpacing / 2L)) - firstChildWidth) : (layoutSpacing / 2L));
                         break;
                     }
-                case global::Doroti.Framework.Rendering.MainAxisAlignment.spaceEvenly:
+                case MainAxisAlignment.spaceEvenly:
                     {
                         layoutSpacing = (((this.size.width - childrenWidth)) / ((this.childCount + 1L)));
                         xLocal = (rtlLocal ? ((this.size.width - layoutSpacing) - firstChildWidth) : layoutSpacing);
@@ -458,7 +457,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             }
             while ((child is not null))
             {
-                var childParentDataLocal = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+                var childParentDataLocal = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
                 childParentDataLocal.offset = new global::Doroti.Ui.Offset(xLocal, (((maxChildHeight - ((global::Doroti.Framework.Rendering.RenderBox)child).size.height)) / 2L));
                 if (!rtlLocal)
                 {
@@ -490,33 +489,33 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("spacing", this.spacing, defaultValue: 0L));
         properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("overflowSpacing", this.overflowSpacing, defaultValue: 0L));
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<OverflowBarAlignment>("overflowAlignment", this.overflowAlignment, defaultValue: OverflowBarAlignment.start));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", this.overflowDirection, defaultValue: global::Doroti.Framework.Painting.VerticalDirection.down));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", this.overflowDirection, defaultValue: VerticalDirection.down));
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+        var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
             child = childParentData.previousSibling!;
-            childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+        var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
             child = childParentData.nextSibling!;
-            childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -527,7 +526,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             {
                 if ((child is not RenderBox))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((RenderObject)child).debugCreator, style: DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -538,7 +537,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
-        var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+        var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
         DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
         this._childCount += 1L;
@@ -548,7 +547,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             childParentData.nextSibling = this._firstChild;
             if ((this._firstChild is not null))
             {
-                var firstChildParentData = ((_OverflowBarParentData__overflow_bar?)(object?)this._firstChild!.parentData!)!;
+                var firstChildParentData = ((_OverflowBarParentData__overflow_bar?)this._firstChild!.parentData!)!;
                 firstChildParentData.previousSibling = child;
             }
             this._firstChild = child;
@@ -560,10 +559,10 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
             DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
             DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
-            var afterParentData = ((_OverflowBarParentData__overflow_bar?)(object?)after.parentData!)!;
+            var afterParentData = ((_OverflowBarParentData__overflow_bar?)after.parentData!)!;
             if ((afterParentData.nextSibling is null))
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
                 this._lastChild = child;
@@ -572,22 +571,22 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             {
                 childParentData.nextSibling = afterParentData.nextSibling;
                 childParentData.previousSibling = after;
-                var childPreviousSiblingParentData = ((_OverflowBarParentData__overflow_bar?)(object?)childParentData.previousSibling!.parentData!)!;
-                var childNextSiblingParentData = ((_OverflowBarParentData__overflow_bar?)(object?)childParentData.nextSibling!.parentData!)!;
+                var childPreviousSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.previousSibling!.parentData!)!;
+                var childNextSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)), () => (object?)"A RenderObject cannot be inserted into itself.");
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)), () => (object?)"A RenderObject cannot be inserted after itself.");
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)), () => (object?)"A RenderObject cannot be inserted into itself.");
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)), () => (object?)"A RenderObject cannot simultaneously be both the parent and the sibling of another RenderObject.");
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)), () => (object?)"A RenderObject cannot be inserted after itself.");
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
         adoptChild(child);
         DartRuntimePrimitives.Assert(() => (child.parentData is _OverflowBarParentData__overflow_bar), () => (object?)$"A child of {this.GetType()} has parentData of type {DartRuntimePrimitives.RuntimeType(child.parentData)}, " + $"which does not conform to {typeof(_OverflowBarParentData__overflow_bar)}. Class using ContainerRenderObjectMixin " + $"should override setupParentData() to set parentData to type {typeof(_OverflowBarParentData__overflow_bar)}.");
         _insertIntoChildList(child, after: after);
@@ -605,28 +604,28 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public virtual void _removeFromChildList(RenderBox child)
     {
-        var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+        var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
         if ((childParentData.previousSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
             this._firstChild = childParentData.nextSibling;
         }
         else
         {
-            var childPreviousSiblingParentData = ((_OverflowBarParentData__overflow_bar?)(object?)childParentData.previousSibling!.parentData!)!;
+            var childPreviousSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.previousSibling!.parentData!)!;
             childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
         if ((childParentData.nextSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
             this._lastChild = childParentData.previousSibling;
         }
         else
         {
-            var childNextSiblingParentData = ((_OverflowBarParentData__overflow_bar?)(object?)childParentData.nextSibling!.parentData!)!;
+            var childNextSiblingParentData = ((_OverflowBarParentData__overflow_bar?)childParentData.nextSibling!.parentData!)!;
             childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
         childParentData.previousSibling = null;
@@ -645,7 +644,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this._firstChild;
         while ((child is not null))
         {
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             RenderBox? next = childParentData.nextSibling;
             childParentData.previousSibling = null;
             childParentData.nextSibling = null;
@@ -659,12 +658,12 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData.previousSibling, after)))
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
+        if ((Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -680,7 +679,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         while ((child is not null))
         {
             (child).attach(owner);
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -692,7 +691,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         while ((child is not null))
         {
             (child).detach();
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -703,7 +702,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         while ((child is not null))
         {
             redepthChild(child);
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -714,7 +713,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         while ((child is not null))
         {
             visitor(child);
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
     }
@@ -723,16 +722,16 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
     public virtual RenderBox? lastChild => this._lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -747,12 +746,12 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((object.Equals(child, this.lastChild)))
+                if ((Equals(child, this.lastChild)))
                 {
                     break;
                 }
                 count += 1L;
-                var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+                var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
                 child = childParentData.nextSibling!;
             }
         }
@@ -766,7 +765,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this.firstChild;
         while ((child is not null))
         {
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             double? result = child.getDistanceToActualBaseline(baseline);
             if ((result is not null))
             {
@@ -786,7 +785,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this.firstChild;
         while ((child is not null))
         {
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             BaselineOffset candidate = (new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy));
             minBaseline = minBaseline.minOf(candidate);
             child = childParentData.nextSibling;
@@ -800,10 +799,10 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this.lastChild;
         while ((child is not null))
         {
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
                 return child!.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
@@ -822,7 +821,7 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this.firstChild;
         while ((child is not null))
         {
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
             context.paintChild(child, (childParentData.offset + offset));
             child = childParentData.nextSibling;
         }
@@ -834,8 +833,8 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         RenderBox? child = this.firstChild;
         while ((child is not null))
         {
-            var childParentData = ((_OverflowBarParentData__overflow_bar?)(object?)child.parentData!)!;
-            result.Add(((RenderBox?)(object?)child)!);
+            var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
+            result.Add(((RenderBox?)child)!);
             child = childParentData.nextSibling;
         }
         return result;

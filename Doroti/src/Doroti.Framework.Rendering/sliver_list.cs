@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/sliver_list.dart
-#pragma warning disable CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Rendering;
@@ -62,7 +61,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
             earliestUsefulChild = insertAndLayoutLeadingChild(childConstraints, parentUsesSize: true);
             if ((earliestUsefulChild is null))
             {
-                var childParentData = ((SliverMultiBoxAdaptorParentData?)(object?)firstChild!.parentData!)!;
+                var childParentData = ((SliverMultiBoxAdaptorParentData?)firstChild!.parentData!)!;
                 childParentData.layoutOffset = 0.0;
                 if ((scrollOffsetLocal == 0.0))
                 {
@@ -79,21 +78,21 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                 }
             }
             double firstChildScrollOffset = (earliestScrollOffset - paintExtentOf(firstChild!));
-            if ((firstChildScrollOffset < -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            if ((firstChildScrollOffset < -Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
                 geometry = new SliverGeometry(scrollOffsetCorrection: -firstChildScrollOffset);
-                var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)(object?)firstChild!.parentData!)!;
+                var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)firstChild!.parentData!)!;
                 childParentDataLocal.layoutOffset = 0.0;
                 return;
             }
-            var childParentDataAlternate = ((SliverMultiBoxAdaptorParentData?)(object?)earliestUsefulChild.parentData!)!;
+            var childParentDataAlternate = ((SliverMultiBoxAdaptorParentData?)earliestUsefulChild.parentData!)!;
             childParentDataAlternate.layoutOffset = firstChildScrollOffset;
-            DartRuntimePrimitives.Assert(() => (object.Equals(earliestUsefulChild, firstChild)));
+            DartRuntimePrimitives.Assert(() => (Equals(earliestUsefulChild, firstChild)));
             leadingChildWithLayout = earliestUsefulChild;
             trailingChildWithLayout ??= earliestUsefulChild;
         }
-        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
-        if ((scrollOffsetLocal < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) > -Foundation.ConstantsLibrary.precisionErrorTolerance));
+        if ((scrollOffsetLocal < Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             while ((indexOf(firstChild!) > 0L))
             {
@@ -101,16 +100,16 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                 earliestUsefulChild = insertAndLayoutLeadingChild(childConstraints, parentUsesSize: true);
                 DartRuntimePrimitives.Assert(() => (earliestUsefulChild is not null));
                 double firstChildScrollOffsetLocal = (earliestScrollOffsetLocal - paintExtentOf(firstChild!));
-                var childParentDataNested = ((SliverMultiBoxAdaptorParentData?)(object?)firstChild!.parentData!)!;
+                var childParentDataNested = ((SliverMultiBoxAdaptorParentData?)firstChild!.parentData!)!;
                 childParentDataNested.layoutOffset = 0.0;
-                if ((firstChildScrollOffsetLocal < -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                if ((firstChildScrollOffsetLocal < -Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
                     geometry = new SliverGeometry(scrollOffsetCorrection: -firstChildScrollOffsetLocal);
                     return;
                 }
             }
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(earliestUsefulChild, firstChild)));
+        DartRuntimePrimitives.Assert(() => (Equals(earliestUsefulChild, firstChild)));
         DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(childScrollOffset(earliestUsefulChild!)) <= scrollOffsetLocal));
         if ((leadingChildWithLayout is null))
         {
@@ -119,13 +118,13 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
             trailingChildWithLayout = earliestUsefulChild;
         }
         var inLayoutRange = true;
-        var child = earliestUsefulChild;
+        RenderBox? child = DartRuntimePrimitives.RequireReference(earliestUsefulChild);
         long indexLocal = indexOf(child!);
         double endScrollOffset = (DartRuntimePrimitives.RequireValue(childScrollOffset(child)) + paintExtentOf(child));
         bool advance()
         {
             DartRuntimePrimitives.Assert(() => (child is not null));
-            if ((object.Equals(child, trailingChildWithLayout)))
+            if ((Equals(child, trailingChildWithLayout)))
             {
                 inLayoutRange = false;
             }
@@ -152,7 +151,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                 trailingChildWithLayout = child;
             }
             DartRuntimePrimitives.Assert(() => (child is not null));
-            var childParentDataCurrent = ((SliverMultiBoxAdaptorParentData?)(object?)child!.parentData!)!;
+            var childParentDataCurrent = ((SliverMultiBoxAdaptorParentData?)child!.parentData!)!;
             childParentDataCurrent.layoutOffset = endScrollOffset;
             DartRuntimePrimitives.Assert(() => (((SliverMultiBoxAdaptorParentData)childParentDataCurrent).index == indexLocal));
             endScrollOffset = (DartRuntimePrimitives.RequireValue(childScrollOffset(child!)) + paintExtentOf(child!));
@@ -167,7 +166,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                 DartRuntimePrimitives.Assert(() => (leadingGarbage == childCount));
                 DartRuntimePrimitives.Assert(() => (child is null));
                 collectGarbage((leadingGarbage - 1L), 0L);
-                DartRuntimePrimitives.Assert(() => (object.Equals(firstChild, lastChild)));
+                DartRuntimePrimitives.Assert(() => (Equals(firstChild, lastChild)));
                 double extent = (DartRuntimePrimitives.RequireValue(childScrollOffset(lastChild!)) + paintExtentOf(lastChild!));
                 geometry = new SliverGeometry(scrollExtent: extent, maxPaintExtent: extent);
                 return;

@@ -42,7 +42,7 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     {
         global::Doroti.Framework.Animation.AnimationStatus oldEffective = this._effectiveAnimationStatus;
         _effectiveAnimationStatus = _calculateEffectiveAnimationStatus(lastEffective: this._effectiveAnimationStatus, current: animationStatus);
-        if ((!object.Equals(oldEffective, this._effectiveAnimationStatus)))
+        if ((!Equals(oldEffective, this._effectiveAnimationStatus)))
         {
             _updateAnimations();
         }
@@ -51,7 +51,7 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     public override void didUpdateWidget(DualTransitionBuilder oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((DualTransitionBuilder)oldWidget).animation, ((DualTransitionBuilder)this.widget).animation)))
+        if ((!Equals(((DualTransitionBuilder)oldWidget).animation, ((DualTransitionBuilder)this.widget).animation)))
         {
             ((DualTransitionBuilder)oldWidget).animation.removeStatusListener((AnimationStatusListener)this._animationListener);
             ((DualTransitionBuilder)this.widget).animation.addStatusListener((AnimationStatusListener)this._animationListener);
@@ -63,22 +63,22 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     {
         switch (current)
         {
-            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
-            case global::Doroti.Framework.Animation.AnimationStatus.completed:
+            case AnimationStatus.dismissed:
+            case AnimationStatus.completed:
                 {
                     return current;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.forward:
+            case AnimationStatus.forward:
                 {
                     switch (lastEffective)
                     {
-                        case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
-                        case global::Doroti.Framework.Animation.AnimationStatus.completed:
-                        case global::Doroti.Framework.Animation.AnimationStatus.forward:
+                        case AnimationStatus.dismissed:
+                        case AnimationStatus.completed:
+                        case AnimationStatus.forward:
                             {
                                 return current;
                             }
-                        case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+                        case AnimationStatus.reverse:
                             {
                                 return lastEffective;
                             }
@@ -86,17 +86,17 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
                             throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                     }
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+            case AnimationStatus.reverse:
                 {
                     switch (lastEffective)
                     {
-                        case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
-                        case global::Doroti.Framework.Animation.AnimationStatus.completed:
-                        case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+                        case AnimationStatus.dismissed:
+                        case AnimationStatus.completed:
+                        case AnimationStatus.reverse:
                             {
                                 return current;
                             }
-                        case global::Doroti.Framework.Animation.AnimationStatus.forward:
+                        case AnimationStatus.forward:
                             {
                                 return lastEffective;
                             }
@@ -112,17 +112,17 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     {
         switch (this._effectiveAnimationStatus)
         {
-            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
-            case global::Doroti.Framework.Animation.AnimationStatus.forward:
+            case AnimationStatus.dismissed:
+            case AnimationStatus.forward:
                 {
                     this._forwardAnimation.parent = ((DualTransitionBuilder)this.widget).animation;
-                    this._reverseAnimation.parent = global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation;
+                    this._reverseAnimation.parent = AnimationsLibrary.kAlwaysDismissedAnimation;
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
-            case global::Doroti.Framework.Animation.AnimationStatus.completed:
+            case AnimationStatus.reverse:
+            case AnimationStatus.completed:
                 {
-                    this._forwardAnimation.parent = global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation;
+                    this._forwardAnimation.parent = AnimationsLibrary.kAlwaysCompleteAnimation;
                     this._reverseAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(((DualTransitionBuilder)this.widget).animation));
                     break;
                 }

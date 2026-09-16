@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/text_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -55,7 +55,7 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return this;
         }
-        return ((TextTheme)(object?)copyWith(displayLarge: (this.displayLarge?.merge(((TextTheme)other).displayLarge) ?? ((TextTheme)other).displayLarge), displayMedium: (this.displayMedium?.merge(((TextTheme)other).displayMedium) ?? ((TextTheme)other).displayMedium), displaySmall: (this.displaySmall?.merge(((TextTheme)other).displaySmall) ?? ((TextTheme)other).displaySmall), headlineLarge: (this.headlineLarge?.merge(((TextTheme)other).headlineLarge) ?? ((TextTheme)other).headlineLarge), headlineMedium: (this.headlineMedium?.merge(((TextTheme)other).headlineMedium) ?? ((TextTheme)other).headlineMedium), headlineSmall: (this.headlineSmall?.merge(((TextTheme)other).headlineSmall) ?? ((TextTheme)other).headlineSmall), titleLarge: (this.titleLarge?.merge(((TextTheme)other).titleLarge) ?? ((TextTheme)other).titleLarge), titleMedium: (this.titleMedium?.merge(((TextTheme)other).titleMedium) ?? ((TextTheme)other).titleMedium), titleSmall: (this.titleSmall?.merge(((TextTheme)other).titleSmall) ?? ((TextTheme)other).titleSmall), bodyLarge: (this.bodyLarge?.merge(((TextTheme)other).bodyLarge) ?? ((TextTheme)other).bodyLarge), bodyMedium: (this.bodyMedium?.merge(((TextTheme)other).bodyMedium) ?? ((TextTheme)other).bodyMedium), bodySmall: (this.bodySmall?.merge(((TextTheme)other).bodySmall) ?? ((TextTheme)other).bodySmall), labelLarge: (this.labelLarge?.merge(((TextTheme)other).labelLarge) ?? ((TextTheme)other).labelLarge), labelMedium: (this.labelMedium?.merge(((TextTheme)other).labelMedium) ?? ((TextTheme)other).labelMedium), labelSmall: (this.labelSmall?.merge(((TextTheme)other).labelSmall) ?? ((TextTheme)other).labelSmall)));
+        return ((TextTheme)copyWith(displayLarge: (this.displayLarge?.merge(((TextTheme)other).displayLarge) ?? ((TextTheme)other).displayLarge), displayMedium: (this.displayMedium?.merge(((TextTheme)other).displayMedium) ?? ((TextTheme)other).displayMedium), displaySmall: (this.displaySmall?.merge(((TextTheme)other).displaySmall) ?? ((TextTheme)other).displaySmall), headlineLarge: (this.headlineLarge?.merge(((TextTheme)other).headlineLarge) ?? ((TextTheme)other).headlineLarge), headlineMedium: (this.headlineMedium?.merge(((TextTheme)other).headlineMedium) ?? ((TextTheme)other).headlineMedium), headlineSmall: (this.headlineSmall?.merge(((TextTheme)other).headlineSmall) ?? ((TextTheme)other).headlineSmall), titleLarge: (this.titleLarge?.merge(((TextTheme)other).titleLarge) ?? ((TextTheme)other).titleLarge), titleMedium: (this.titleMedium?.merge(((TextTheme)other).titleMedium) ?? ((TextTheme)other).titleMedium), titleSmall: (this.titleSmall?.merge(((TextTheme)other).titleSmall) ?? ((TextTheme)other).titleSmall), bodyLarge: (this.bodyLarge?.merge(((TextTheme)other).bodyLarge) ?? ((TextTheme)other).bodyLarge), bodyMedium: (this.bodyMedium?.merge(((TextTheme)other).bodyMedium) ?? ((TextTheme)other).bodyMedium), bodySmall: (this.bodySmall?.merge(((TextTheme)other).bodySmall) ?? ((TextTheme)other).bodySmall), labelLarge: (this.labelLarge?.merge(((TextTheme)other).labelLarge) ?? ((TextTheme)other).labelLarge), labelMedium: (this.labelMedium?.merge(((TextTheme)other).labelMedium) ?? ((TextTheme)other).labelMedium), labelSmall: (this.labelSmall?.merge(((TextTheme)other).labelSmall) ?? ((TextTheme)other).labelSmall)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -85,17 +85,17 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((__other is TextTheme) && (object.Equals(this.displayLarge, ((TextTheme)((TextTheme)__other)).displayLarge))) && (object.Equals(this.displayMedium, ((TextTheme)((TextTheme)__other)).displayMedium))) && (object.Equals(this.displaySmall, ((TextTheme)((TextTheme)__other)).displaySmall))) && (object.Equals(this.headlineLarge, ((TextTheme)((TextTheme)__other)).headlineLarge))) && (object.Equals(this.headlineMedium, ((TextTheme)((TextTheme)__other)).headlineMedium))) && (object.Equals(this.headlineSmall, ((TextTheme)((TextTheme)__other)).headlineSmall))) && (object.Equals(this.titleLarge, ((TextTheme)((TextTheme)__other)).titleLarge))) && (object.Equals(this.titleMedium, ((TextTheme)((TextTheme)__other)).titleMedium))) && (object.Equals(this.titleSmall, ((TextTheme)((TextTheme)__other)).titleSmall))) && (object.Equals(this.bodyLarge, ((TextTheme)((TextTheme)__other)).bodyLarge))) && (object.Equals(this.bodyMedium, ((TextTheme)((TextTheme)__other)).bodyMedium))) && (object.Equals(this.bodySmall, ((TextTheme)((TextTheme)__other)).bodySmall))) && (object.Equals(this.labelLarge, ((TextTheme)((TextTheme)__other)).labelLarge))) && (object.Equals(this.labelMedium, ((TextTheme)((TextTheme)__other)).labelMedium))) && (object.Equals(this.labelSmall, ((TextTheme)((TextTheme)__other)).labelSmall)));
+        return ((((((((((((((((__other is TextTheme) && (Equals(this.displayLarge, ((TextTheme)((TextTheme)__other)).displayLarge))) && (Equals(this.displayMedium, ((TextTheme)((TextTheme)__other)).displayMedium))) && (Equals(this.displaySmall, ((TextTheme)((TextTheme)__other)).displaySmall))) && (Equals(this.headlineLarge, ((TextTheme)((TextTheme)__other)).headlineLarge))) && (Equals(this.headlineMedium, ((TextTheme)((TextTheme)__other)).headlineMedium))) && (Equals(this.headlineSmall, ((TextTheme)((TextTheme)__other)).headlineSmall))) && (Equals(this.titleLarge, ((TextTheme)((TextTheme)__other)).titleLarge))) && (Equals(this.titleMedium, ((TextTheme)((TextTheme)__other)).titleMedium))) && (Equals(this.titleSmall, ((TextTheme)((TextTheme)__other)).titleSmall))) && (Equals(this.bodyLarge, ((TextTheme)((TextTheme)__other)).bodyLarge))) && (Equals(this.bodyMedium, ((TextTheme)((TextTheme)__other)).bodyMedium))) && (Equals(this.bodySmall, ((TextTheme)((TextTheme)__other)).bodySmall))) && (Equals(this.labelLarge, ((TextTheme)((TextTheme)__other)).labelLarge))) && (Equals(this.labelMedium, ((TextTheme)((TextTheme)__other)).labelMedium))) && (Equals(this.labelSmall, ((TextTheme)((TextTheme)__other)).labelSmall)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.displayLarge, this.displayMedium, this.displaySmall, this.headlineLarge, this.headlineMedium, this.headlineSmall, this.titleLarge, this.titleMedium, this.titleSmall, this.bodyLarge, this.bodyMedium, this.bodySmall, this.labelLarge, this.labelMedium, this.labelSmall));
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        TextTheme defaultTheme = Typography.CreateMaterial2021(platform: global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform).black;
+        TextTheme defaultTheme = Typography.CreateMaterial2021(platform: PlatformLibrary.defaultTargetPlatform).black;
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayLarge", this.displayLarge, defaultValue: ((TextTheme)defaultTheme).displayLarge));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayMedium", this.displayMedium, defaultValue: ((TextTheme)defaultTheme).displayMedium));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displaySmall", this.displaySmall, defaultValue: ((TextTheme)defaultTheme).displaySmall));
@@ -113,8 +113,8 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelSmall", this.labelSmall, defaultValue: ((TextTheme)defaultTheme).labelSmall));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -130,7 +130,7 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

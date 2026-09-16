@@ -1,13 +1,12 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scroll_aware_image_provider.dart
-#pragma warning disable CS8604
 using System.Diagnostics;
 using Doroti.Runtime;
 using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
 
-public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.ImageProvider<T>
+public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.ImageProvider<T> where T : notnull
 {
     public virtual IDisposableBuildContext context { get; private set; } = default!;
     public virtual global::Doroti.Framework.Painting.ImageProvider<T> imageProvider { get; private set; } = default!;
@@ -20,7 +19,7 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
 
     public override void resolveStreamForKey(global::Doroti.Framework.Painting.ImageConfiguration configuration, global::Doroti.Framework.Painting.ImageStream stream, T key, global::System.Action<object, global::System.Diagnostics.StackTrace?> handleError)
     {
-        if (((((global::Doroti.Framework.Painting.ImageStream)stream).completer is not null) || global::Doroti.Framework.Painting.PaintingBinding.instance.imageCache.containsKey(key)))
+        if (((((global::Doroti.Framework.Painting.ImageStream)stream).completer is not null) || PaintingBinding.instance.imageCache.containsKey(key)))
         {
             this.imageProvider.resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError);
             return;
@@ -32,7 +31,7 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
         }
         if (Scrollable.recommendDeferredLoadingForContext(buildContext))
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.scheduleFrameCallback(((global::System.Action<Duration>)((_) =>
             {
                 DartAsyncRuntime.scheduleMicrotask((() => { resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError); }));
             })));
@@ -54,11 +53,11 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is ScrollAwareImageProvider<T>) && (object.Equals(this.context, ((ScrollAwareImageProvider<T>)(object)__other).context))) && (object.Equals(this.imageProvider, ((ScrollAwareImageProvider<T>)(object)__other).imageProvider)));
+        return (((__other is ScrollAwareImageProvider<T>) && (Equals(this.context, ((ScrollAwareImageProvider<T>)__other).context))) && (Equals(this.imageProvider, ((ScrollAwareImageProvider<T>)__other).imageProvider)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.context, this.imageProvider));

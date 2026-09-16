@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/gestures/events.dart
-#pragma warning disable CS8600, CS8602
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -17,22 +16,22 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static long kPrimaryMouseButton = EventsLibrary.kPrimaryButton;
+    public static long kPrimaryMouseButton = kPrimaryButton;
 }
 
 public static partial class EventsLibrary
 {
-    public static long kSecondaryMouseButton = EventsLibrary.kSecondaryButton;
+    public static long kSecondaryMouseButton = kSecondaryButton;
 }
 
 public static partial class EventsLibrary
 {
-    public static long kStylusContact = EventsLibrary.kPrimaryButton;
+    public static long kStylusContact = kPrimaryButton;
 }
 
 public static partial class EventsLibrary
 {
-    public static long kPrimaryStylusButton = EventsLibrary.kSecondaryButton;
+    public static long kPrimaryStylusButton = kSecondaryButton;
 }
 
 public static partial class EventsLibrary
@@ -42,12 +41,12 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static long kMiddleMouseButton = EventsLibrary.kTertiaryButton;
+    public static long kMiddleMouseButton = kTertiaryButton;
 }
 
 public static partial class EventsLibrary
 {
-    public static long kSecondaryStylusButton = EventsLibrary.kTertiaryButton;
+    public static long kSecondaryStylusButton = kTertiaryButton;
 }
 
 public static partial class EventsLibrary
@@ -62,17 +61,17 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static long kTouchContact = EventsLibrary.kPrimaryButton;
+    public static long kTouchContact = kPrimaryButton;
 }
 
 public static partial class EventsLibrary
 {
-    public static long nthMouseButton(long number) => (((EventsLibrary.kPrimaryMouseButton << (int)(((number - 1L))))) & global::Doroti.Framework.Foundation.BitfieldLibrary.kMaxUnsignedSMI);
+    public static long nthMouseButton(long number) => (((kPrimaryMouseButton << (int)(((number - 1L))))) & BitfieldLibrary.kMaxUnsignedSMI);
 }
 
 public static partial class EventsLibrary
 {
-    public static long nthStylusButton(long number) => (((EventsLibrary.kPrimaryStylusButton << (int)(((number - 1L))))) & global::Doroti.Framework.Foundation.BitfieldLibrary.kMaxUnsignedSMI);
+    public static long nthStylusButton(long number) => (((kPrimaryStylusButton << (int)(((number - 1L))))) & BitfieldLibrary.kMaxUnsignedSMI);
 }
 
 public static partial class EventsLibrary
@@ -82,7 +81,7 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static bool isSingleButton(long buttons) => ((buttons != 0L) && ((EventsLibrary.smallestButton(buttons) == buttons)));
+    public static bool isSingleButton(long buttons) => ((buttons != 0L) && ((smallestButton(buttons) == buttons)));
 }
 
 public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagnosticable
@@ -215,7 +214,7 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -229,14 +228,14 @@ internal abstract class _TransformedPointerEvent__events : _AbstractPointerEvent
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
         }
     }
 
-    public abstract override PointerEvent? original { get; }
+    public abstract override PointerEvent original { get; }
     public abstract override Matrix4? transform { get; }
     public override long embedderId => ((PointerEvent)this.original).embedderId;
     public override Duration timeStamp => ((PointerEvent)this.original).timeStamp;
@@ -321,7 +320,7 @@ public class PointerAddedEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerAddedEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -390,7 +389,7 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -404,7 +403,7 @@ internal class _TransformedPointerAddedEvent__events : PointerAddedEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -468,7 +467,7 @@ public class PointerRemovedEvent : PointerEvent, _PointerEventDescription__event
 
     public override PointerRemovedEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -537,7 +536,7 @@ internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _C
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -551,7 +550,7 @@ internal class _TransformedPointerRemovedEvent__events : PointerRemovedEvent, _C
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -615,7 +614,7 @@ public class PointerHoverEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerHoverEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -684,7 +683,7 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -698,7 +697,7 @@ internal class _TransformedPointerHoverEvent__events : PointerHoverEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -765,7 +764,7 @@ public class PointerEnterEvent : PointerEvent, _PointerEventDescription__events,
 
     public override PointerEnterEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -848,7 +847,7 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -862,7 +861,7 @@ internal class _TransformedPointerEnterEvent__events : PointerEnterEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -929,7 +928,7 @@ public class PointerExitEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerExitEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -1012,7 +1011,7 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1026,7 +1025,7 @@ internal class _TransformedPointerExitEvent__events : PointerExitEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1091,7 +1090,7 @@ public class PointerDownEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerDownEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -1160,7 +1159,7 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1174,7 +1173,7 @@ internal class _TransformedPointerDownEvent__events : PointerDownEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1239,7 +1238,7 @@ public class PointerMoveEvent : PointerEvent, _PointerEventDescription__events, 
 
     public override PointerMoveEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -1308,7 +1307,7 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1322,7 +1321,7 @@ internal class _TransformedPointerMoveEvent__events : PointerMoveEvent, _CopyPoi
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1387,7 +1386,7 @@ public class PointerUpEvent : PointerEvent, _PointerEventDescription__events, _C
 
     public override PointerUpEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -1456,7 +1455,7 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1470,7 +1469,7 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1559,7 +1558,7 @@ public class PointerScrollEvent : PointerSignalEvent, _PointerEventDescription__
 
     public override PointerScrollEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -1634,7 +1633,7 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1648,7 +1647,7 @@ internal class _TransformedPointerScrollEvent__events : PointerScrollEvent, _Cop
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1725,7 +1724,7 @@ public class PointerScrollInertiaCancelEvent : PointerSignalEvent, _PointerEvent
 
     public override PointerScrollInertiaCancelEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -1794,7 +1793,7 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1808,7 +1807,7 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events : PointerScro
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -1879,7 +1878,7 @@ public class PointerScaleEvent : PointerSignalEvent, _PointerEventDescription__e
 
     public override PointerScaleEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -1948,7 +1947,7 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -1962,7 +1961,7 @@ internal class _TransformedPointerScaleEvent__events : PointerScaleEvent, _CopyP
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2031,7 +2030,7 @@ public class PointerPanZoomStartEvent : PointerEvent, _PointerEventDescription__
 
     public override PointerPanZoomStartEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -2101,7 +2100,7 @@ internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStar
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2115,7 +2114,7 @@ internal class _TransformedPointerPanZoomStartEvent__events : PointerPanZoomStar
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2196,7 +2195,7 @@ public class PointerPanZoomUpdateEvent : PointerEvent, _PointerEventDescription_
     public virtual Offset localPanDelta => this.panDelta;
     public override PointerPanZoomUpdateEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -2262,7 +2261,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localPan_initialized)
             {
-                __late_localPan = PointerEvent.transformPosition(this.transform, this.pan);
+                __late_localPan = transformPosition(this.transform, this.pan);
                 __late_localPan_initialized = true;
             }
             return __late_localPan;
@@ -2276,7 +2275,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localPanDelta_initialized)
             {
-                __late_localPanDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.panDelta, untransformedEndPosition: this.pan, transformedEndPosition: this.localPan);
+                __late_localPanDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.panDelta, untransformedEndPosition: this.pan, transformedEndPosition: this.localPan);
                 __late_localPanDelta_initialized = true;
             }
             return __late_localPanDelta;
@@ -2294,7 +2293,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2308,7 +2307,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events : PointerPanZoomUpd
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2377,7 +2376,7 @@ public class PointerPanZoomEndEvent : PointerEvent, _PointerEventDescription__ev
 
     public override PointerPanZoomEndEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -2447,7 +2446,7 @@ internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEve
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2461,7 +2460,7 @@ internal class _TransformedPointerPanZoomEndEvent__events : PointerPanZoomEndEve
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;
@@ -2527,7 +2526,7 @@ public class PointerCancelEvent : PointerEvent, _PointerEventDescription__events
 
     public override PointerCancelEvent transformed(Matrix4? transform)
     {
-        if (((transform is null) || (object.Equals(transform, this.transform))))
+        if (((transform is null) || (Equals(transform, this.transform))))
         {
             return this;
         }
@@ -2590,7 +2589,7 @@ public static partial class EventsLibrary
         {
             case PointerDeviceKind.mouse:
                 {
-                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kPrecisePointerHitSlop;
+                    return ConstantsLibrary.kPrecisePointerHitSlop;
                 }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
@@ -2598,7 +2597,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return (settings?.touchSlop ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop);
+                    return (settings?.touchSlop ?? ConstantsLibrary.kTouchSlop);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2613,7 +2612,7 @@ public static partial class EventsLibrary
         {
             case PointerDeviceKind.mouse:
                 {
-                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kPrecisePointerPanSlop;
+                    return ConstantsLibrary.kPrecisePointerPanSlop;
                 }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
@@ -2621,7 +2620,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return (settings?.panSlop ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kPanSlop);
+                    return (settings?.panSlop ?? ConstantsLibrary.kPanSlop);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2636,7 +2635,7 @@ public static partial class EventsLibrary
         {
             case PointerDeviceKind.mouse:
                 {
-                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kPrecisePointerScaleSlop;
+                    return ConstantsLibrary.kPrecisePointerScaleSlop;
                 }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
@@ -2644,7 +2643,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kScaleSlop;
+                    return ConstantsLibrary.kScaleSlop;
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2665,7 +2664,7 @@ internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _Cop
         {
             if (!__late_localPosition_initialized)
             {
-                __late_localPosition = PointerEvent.transformPosition(this.transform, this.position);
+                __late_localPosition = transformPosition(this.transform, this.position);
                 __late_localPosition_initialized = true;
             }
             return __late_localPosition;
@@ -2679,7 +2678,7 @@ internal class _TransformedPointerCancelEvent__events : PointerCancelEvent, _Cop
         {
             if (!__late_localDelta_initialized)
             {
-                __late_localDelta = PointerEvent.transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
+                __late_localDelta = transformDeltaViaPositions(transform: this.transform, untransformedDelta: this.delta, untransformedEndPosition: this.position, transformedEndPosition: this.localPosition);
                 __late_localDelta_initialized = true;
             }
             return __late_localDelta;

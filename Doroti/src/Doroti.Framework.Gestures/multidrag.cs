@@ -127,7 +127,7 @@ public abstract class MultiDragPointerState
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._arenaEntry?.resolve(GestureDisposition.rejected);
         _arenaEntry = null;
         DartRuntimePrimitives.Assert(() =>
@@ -148,7 +148,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
     {
     }
 
-    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton);
+    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == EventsLibrary.kPrimaryButton);
     public override void addAllowedPointer(PointerDownEvent @event)
     {
         DartRuntimePrimitives.Assert(() => (this._pointers is not null));
@@ -175,7 +175,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
             if ((@event is PointerUpEvent))
             {
                 PointerUpEvent @event__as8876 = (PointerUpEvent)@event;
-                DartRuntimePrimitives.Assert(() => (object.Equals(((PointerUpEvent)@event__as8876).delta, Offset.zero)));
+                DartRuntimePrimitives.Assert(() => (Equals(((PointerUpEvent)@event__as8876).delta, Offset.zero)));
                 state._up();
                 _removeState(((PointerUpEvent)@event__as8876).pointer);
             }
@@ -184,7 +184,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
                 if ((@event is PointerCancelEvent))
                 {
                     PointerCancelEvent @event__as9050 = (PointerCancelEvent)@event;
-                    DartRuntimePrimitives.Assert(() => (object.Equals(((PointerCancelEvent)@event__as9050).delta, Offset.zero)));
+                    DartRuntimePrimitives.Assert(() => (Equals(((PointerCancelEvent)@event__as9050).delta, Offset.zero)));
                     state._cancel();
                     _removeState(((PointerCancelEvent)@event__as9050).pointer);
                 }
@@ -273,7 +273,7 @@ internal class _ImmediatePointerState__multidrag : MultiDragPointerState
     public override void checkForResolutionAfterMove()
     {
         DartRuntimePrimitives.Assert(() => (pendingDelta is not null));
-        if ((DartRuntimePrimitives.RequireValue(pendingDelta).distance > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings)))
+        if ((DartRuntimePrimitives.RequireValue(pendingDelta).distance > EventsLibrary.computeHitSlop(kind, gestureSettings)))
         {
             resolve(GestureDisposition.accepted);
         }
@@ -310,7 +310,7 @@ internal class _HorizontalPointerState__multidrag : MultiDragPointerState
     public override void checkForResolutionAfterMove()
     {
         DartRuntimePrimitives.Assert(() => (pendingDelta is not null));
-        if ((DartRuntimePrimitives.RequireValue(pendingDelta).dx.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings)))
+        if ((DartRuntimePrimitives.RequireValue(pendingDelta).dx.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings)))
         {
             resolve(GestureDisposition.accepted);
         }
@@ -347,7 +347,7 @@ internal class _VerticalPointerState__multidrag : MultiDragPointerState
     public override void checkForResolutionAfterMove()
     {
         DartRuntimePrimitives.Assert(() => (pendingDelta is not null));
-        if ((DartRuntimePrimitives.RequireValue(pendingDelta).dy.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings)))
+        if ((DartRuntimePrimitives.RequireValue(pendingDelta).dy.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings)))
         {
             resolve(GestureDisposition.accepted);
         }
@@ -388,7 +388,7 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
     {
         DartRuntimePrimitives.Assert(() => (this._timer is not null));
         DartRuntimePrimitives.Assert(() => (pendingDelta is not null));
-        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(pendingDelta).distance <= global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings)));
+        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(pendingDelta).distance <= EventsLibrary.computeHitSlop(kind, gestureSettings)));
         _timer = null;
         if ((this._starter is not null))
         {
@@ -429,7 +429,7 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
             return;
         }
         DartRuntimePrimitives.Assert(() => (pendingDelta is not null));
-        if ((DartRuntimePrimitives.RequireValue(pendingDelta).distance > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings)))
+        if ((DartRuntimePrimitives.RequireValue(pendingDelta).distance > EventsLibrary.computeHitSlop(kind, gestureSettings)))
         {
             resolve(GestureDisposition.rejected);
             _ensureTimerStopped();

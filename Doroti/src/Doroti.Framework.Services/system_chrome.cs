@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/system_chrome.dart
-#pragma warning disable CS8601
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -67,9 +66,9 @@ public class SystemUiOverlayStyle : Diagnosticable
         this.systemStatusBarContrastEnforced = systemStatusBarContrastEnforced;
     }
 
-    internal virtual DartMap<string, object> _toMap()
+    internal virtual DartMap<string, object?> _toMap()
     {
-        return new DartMap<string, object> { ["systemNavigationBarColor"] = systemNavigationBarColor?.value, ["systemNavigationBarDividerColor"] = systemNavigationBarDividerColor?.value, ["systemStatusBarContrastEnforced"] = systemStatusBarContrastEnforced, ["statusBarColor"] = statusBarColor?.value, ["statusBarBrightness"] = statusBarBrightness?.ToString(), ["statusBarIconBrightness"] = statusBarIconBrightness?.ToString(), ["systemNavigationBarIconBrightness"] = systemNavigationBarIconBrightness?.ToString(), ["systemNavigationBarContrastEnforced"] = systemNavigationBarContrastEnforced };
+        return new DartMap<string, object?> { ["systemNavigationBarColor"] = systemNavigationBarColor?.value, ["systemNavigationBarDividerColor"] = systemNavigationBarDividerColor?.value, ["systemStatusBarContrastEnforced"] = systemStatusBarContrastEnforced, ["statusBarColor"] = statusBarColor?.value, ["statusBarBrightness"] = statusBarBrightness?.ToString(), ["statusBarIconBrightness"] = statusBarIconBrightness?.ToString(), ["systemNavigationBarIconBrightness"] = systemNavigationBarIconBrightness?.ToString(), ["systemNavigationBarContrastEnforced"] = systemNavigationBarContrastEnforced };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -84,11 +83,11 @@ public class SystemUiOverlayStyle : Diagnosticable
     {
         var __other = other as SystemUiOverlayStyle;
         if (__other is null) return false;
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }
-        return (((((((((__other is SystemUiOverlayStyle) && (object.Equals(((SystemUiOverlayStyle)__other).systemNavigationBarColor, systemNavigationBarColor))) && (object.Equals(((SystemUiOverlayStyle)__other).systemNavigationBarDividerColor, systemNavigationBarDividerColor))) && (((SystemUiOverlayStyle)__other).systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced)) && (object.Equals(((SystemUiOverlayStyle)__other).statusBarColor, statusBarColor))) && (object.Equals(((SystemUiOverlayStyle)__other).statusBarIconBrightness, statusBarIconBrightness))) && (object.Equals(((SystemUiOverlayStyle)__other).statusBarBrightness, statusBarBrightness))) && (((SystemUiOverlayStyle)__other).systemStatusBarContrastEnforced == systemStatusBarContrastEnforced)) && (object.Equals(((SystemUiOverlayStyle)__other).systemNavigationBarIconBrightness, systemNavigationBarIconBrightness)));
+        return (((((((((__other is SystemUiOverlayStyle) && (Equals(((SystemUiOverlayStyle)__other).systemNavigationBarColor, systemNavigationBarColor))) && (Equals(((SystemUiOverlayStyle)__other).systemNavigationBarDividerColor, systemNavigationBarDividerColor))) && (((SystemUiOverlayStyle)__other).systemNavigationBarContrastEnforced == systemNavigationBarContrastEnforced)) && (Equals(((SystemUiOverlayStyle)__other).statusBarColor, statusBarColor))) && (Equals(((SystemUiOverlayStyle)__other).statusBarIconBrightness, statusBarIconBrightness))) && (Equals(((SystemUiOverlayStyle)__other).statusBarBrightness, statusBarBrightness))) && (((SystemUiOverlayStyle)__other).systemStatusBarContrastEnforced == systemStatusBarContrastEnforced)) && (Equals(((SystemUiOverlayStyle)__other).systemNavigationBarIconBrightness, systemNavigationBarIconBrightness)));
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -123,18 +122,18 @@ public abstract class SystemChrome
 
     public static async Future setApplicationSwitcherDescription(ApplicationSwitcherDescription description)
     {
-        await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setApplicationSwitcherDescription", new DartMap<string, object> { ["label"] = description.label, ["primaryColor"] = description.primaryColor });
+        await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setApplicationSwitcherDescription", new DartMap<string, object?> { ["label"] = description.label, ["primaryColor"] = description.primaryColor });
     }
 
     public static async Future setEnabledSystemUIMode(SystemUiMode mode, List<SystemUiOverlay>? overlays = null)
     {
-        if ((!object.Equals(mode, SystemUiMode.manual)))
+        if ((!Equals(mode, SystemUiMode.manual)))
         {
             await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setEnabledSystemUIMode", mode.ToString());
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => ((object.Equals(mode, SystemUiMode.manual)) && (overlays is not null)));
+            DartRuntimePrimitives.Assert(() => ((Equals(mode, SystemUiMode.manual)) && (overlays is not null)));
             await SystemChannels.platform.invokeMethod<object?>("SystemChrome.setEnabledSystemUIOverlays", System_chromeLibrary._stringify(overlays!));
         }
     }
@@ -160,7 +159,7 @@ public abstract class SystemChrome
             _pendingStyle = style;
             return;
         }
-        if ((object.Equals(style, _latestStyle)))
+        if ((Equals(style, _latestStyle)))
         {
             return;
         }
@@ -168,7 +167,7 @@ public abstract class SystemChrome
         DartAsyncRuntime.scheduleMicrotask((() =>
         {
             DartRuntimePrimitives.Assert(() => (_pendingStyle is not null));
-            if ((!object.Equals(_pendingStyle, _latestStyle)))
+            if ((!Equals(_pendingStyle, _latestStyle)))
             {
                 _ = SystemChannels.platform.invokeMethod<object?>("SystemChrome.setSystemUIOverlayStyle", _pendingStyle!._toMap()).then(((_) =>
                 {
@@ -184,7 +183,7 @@ public abstract class SystemChrome
 
     public static void handleAppLifecycleStateChanged(AppLifecycleState state)
     {
-        if ((object.Equals(state, AppLifecycleState.detached)))
+        if ((Equals(state, AppLifecycleState.detached)))
         {
             DartAsyncRuntime.scheduleMicrotask((() =>
             {

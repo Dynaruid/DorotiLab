@@ -1,7 +1,7 @@
 # A1 — 남은 컴파일러 경고의 원인 수정 및 억제 제거
 
 작성일: 2026-09-16  
-상태: **계획 작성 완료 / A1 구현 미착수**
+상태: **완료 — 대상 pragma 0 / IDE0002 잔여 0 / 통합·계약·대표 제품 검증 통과**
 
 ## 1. 목표와 범위
 
@@ -9,7 +9,7 @@
 
 최종 목표는 **현재 대상 410개 파일의 억제 0개**, Debug·Release의 대상 경고 0개, 변경한 동작 계약의 검증 통과다. 경고만 보이지 않게 만드는 변경은 완료로 인정하지 않는다.
 
-이번 요청에서는 이 계획만 작성한다. 앞선 정리 작업의 소스 변경을 출발점으로 유지하며, 이 문서 작성 때문에 구현이나 빌드를 다시 실행하지 않는다.
+당초 문서 작성 요청은 계획만 작성하는 범위였다. 이후 사용자의 전체 작업 실행 요청에 따라 A1 구현을 진행하며, 추가 요청한 IDE0002 정리를 모듈별로 병행한다. 앞선 정리 작업의 소스 변경을 출발점으로 유지한다.
 
 ### 포함
 
@@ -102,44 +102,44 @@ Foundation·Physics·Animation·WidgetPreviews는 이 대상 억제가 현재 0�
 
 ### A1-0 — 현재 진단과 계약별 작업 목록 확보
 
-- [ ] 현재 HEAD, dirty diff, .NET SDK, 설정, 대상 프로젝트 그래프와 소스 hash를 기록한다. 기준선은 커밋뿐 아니라 **앞선 미커밋 정리를 포함한 작업 트리**다.
-- [ ] 410개 파일의 억제 목록과 기존 전역·국소 억제를 분리해 저장한다.
-- [ ] 현재 작업 트리의 격리 복사본에서 대상 pragma만 제거하고 Debug·Release 진단을 수집한다. 기존 산출물 때문에 진단이 생략되지 않도록 격리된 중간 출력과 재컴파일을 보장한다.
-- [ ] 진단 수집에 한해 격리 실행의 `TreatWarningsAsErrors=false` 사용을 허용한다. 제품 설정 파일은 변경하지 않으며, 최종 검증에는 이 override를 사용하지 않는다.
-- [ ] `(project, configuration, file, symbol, code, location)`을 보존한다. MSBuild 요약 재출력으로 같은 진단을 중복 집계하지 않는다. Debug·Release는 각각 집계하고 합집합도 별도 기록한다.
-- [ ] 진단을 `공통 선언 오류 / 지역 흐름 오류 / 수명 오류 / 변환기 패턴 / 외부 계약 한계`로 분류한다. 파일 수, 파일·코드 조합 수, 실제 진단 위치 수를 따로 관리한다.
-- [ ] 공개 API와 고위험 경로를 표시하고 첫 작업 묶음을 확정한다.
+- [x] 현재 HEAD, dirty diff, .NET SDK, 설정, 대상 프로젝트 그래프와 소스 hash를 기록한다. 기준선은 커밋뿐 아니라 **앞선 미커밋 정리를 포함한 작업 트리**다.
+- [x] 410개 파일의 억제 목록과 기존 전역·국소 억제를 분리해 저장한다.
+- [x] 현재 작업 트리의 격리 복사본에서 대상 pragma만 제거하고 Debug·Release 진단을 수집한다. 기존 산출물 때문에 진단이 생략되지 않도록 격리된 중간 출력과 재컴파일을 보장한다.
+- [x] 진단 수집에 한해 격리 실행의 `TreatWarningsAsErrors=false` 사용을 허용한다. 제품 설정 파일은 변경하지 않으며, 최종 검증에는 이 override를 사용하지 않는다.
+- [x] `(project, configuration, file, symbol, code, location)`을 보존한다. MSBuild 요약 재출력으로 같은 진단을 중복 집계하지 않는다. Debug·Release는 각각 집계하고 합집합도 별도 기록한다.
+- [x] 진단을 `공통 선언 오류 / 지역 흐름 오류 / 수명 오류 / 변환기 패턴 / 외부 계약 한계`로 분류한다. 파일 수, 파일·코드 조합 수, 실제 진단 위치 수를 따로 관리한다.
+- [x] 공개 API와 고위험 경로를 표시하고 첫 작업 묶음을 확정한다.
 
 **완료 기준:** 현재 코드의 재현 가능한 진단 목록, 설정·명령·출력 로그, 수정 순서와 계약 소유 위치 확보. 과거 10,764건을 현재 기준선으로 대체하지 않는다.
 
 ### A1-1 — 독립적인 선언·미사용 코드 정리
 
-- [ ] `CS0693`: `Painting/colors.cs`, `Widgets/inherited_model.cs`, `widget_state.cs`, `shortcuts.cs`, `routes.cs`, `router.cs`, `radio_group.cs`, `autocomplete.cs`, Cupertino route/sheet의 메서드 타입 매개변수를 의미에 맞게 구분한다. 몸체·제약·재귀 호출·`typeof` 참조도 함께 수정한다.
-- [ ] 특히 `InheritedModel<T>`의 메서드 내부에 같은 이름의 `T`가 다시 선언되어 있다. 단순 이름 교체 전에 외부 aspect 타입과 내부 widget 타입의 의도를 확인하고 `CS8714`와 연결된 잘못된 타입 사용 여부를 검토한다.
-- [ ] `CS8321`: Semantics 및 widget inspector의 지역 함수가 실제로 불필요한지, 빠진 연결을 복원해야 하는지 판단한다.
-- [ ] `CS8981`: widget inspector의 해당 타입이 내부 구현인지 확인한다. 내부 이름이면 참조까지 변경하고, 공개·직렬화·reflection 이름이면 호환성 경로부터 설계한다.
-- [ ] 해결한 경고 코드만 해당 파일의 pragma에서 제거한다.
+- [x] `CS0693`: `Painting/colors.cs`, `Widgets/inherited_model.cs`, `widget_state.cs`, `shortcuts.cs`, `routes.cs`, `router.cs`, `radio_group.cs`, `autocomplete.cs`, Cupertino route/sheet의 메서드 타입 매개변수를 의미에 맞게 구분한다. 몸체·제약·재귀 호출·`typeof` 참조도 함께 수정한다.
+- [x] 특히 `InheritedModel<T>`의 메서드 내부에 같은 이름의 `T`가 다시 선언되어 있다. 단순 이름 교체 전에 외부 aspect 타입과 내부 widget 타입의 의도를 확인하고 `CS8714`와 연결된 잘못된 타입 사용 여부를 검토한다.
+- [x] `CS8321`: Semantics 및 widget inspector의 지역 함수가 실제로 불필요한지, 빠진 연결을 복원해야 하는지 판단한다.
+- [x] `CS8981`: widget inspector의 해당 타입이 내부 구현인지 확인한다. 내부 이름이면 참조까지 변경하고, 공개·직렬화·reflection 이름이면 호환성 경로부터 설계한다.
+- [x] 해결한 경고 코드만 해당 파일의 pragma에서 제거한다.
 
 **완료 기준:** 대상 경고 0, 타입 참조·제네릭 호출 컴파일 통과. 단순 이름 변경에 구현을 그대로 반복하는 테스트는 추가하지 않는다. 실제 계약 오류를 고친 경우에만 의미 있는 재현 검증을 추가한다.
 
 ### A1-2 — 공통 Runtime·Ui·Foundation 계약 정리
 
-- [ ] `DartRuntimePrimitives.RequireValue`, `RequireReference`, `ConvertValue`, null-aware helper, `DartAsync.Future<T>`, 컬렉션·callback adapter의 입력·출력 계약을 표로 작성한다.
-- [ ] 현재 `ConvertValue<T>(null)`은 `default!`를 반환한다. 이 동작을 non-null 보장으로 취급하지 않는다. 변경이 필요하면 참조형·값형·nullable 값형 호출자와 Dart 변환 의미를 먼저 확인한다.
-- [ ] `RequireValue`의 기존 null assertion 예외와 발생 시점을 보존한다. 경고 제거만을 위해 새로운 실패 경로나 예외 종류를 삽입하지 않는다.
-- [ ] `Scheduler/ticker.cs`의 nullable `onTimeout` 전달과 `DartAsync.cs`의 `timeout` 오버로드를 추적한다. null callback 허용 여부·오버로드 선택·timeout 결과 전달을 함께 수정한다.
-- [ ] 공통 인터페이스의 반환값, 컬렉션 원소, delegate 입력·출력, generic 제약을 호출 그래프에 따라 정리한다. false/true 분기와 정상/예외 경로를 표현할 수 있으면 정확한 분석 속성을 사용한다.
-- [ ] 정상값·null·값 없음·실패·취소를 대표하는 작은 계약 검증을 준비한다. 가상 메서드·interface 호출을 모두 확인한다.
+- [x] `DartRuntimePrimitives.RequireValue`, `RequireReference`, `ConvertValue`, null-aware helper, `DartAsync.Future<T>`, 컬렉션·callback adapter의 입력·출력 계약을 표로 작성한다.
+- [x] 현재 `ConvertValue<T>(null)`은 `default!`를 반환한다. 이 동작을 non-null 보장으로 취급하지 않는다. 변경이 필요하면 참조형·값형·nullable 값형 호출자와 Dart 변환 의미를 먼저 확인한다.
+- [x] `RequireValue`의 기존 null assertion 예외와 발생 시점을 보존한다. 경고 제거만을 위해 새로운 실패 경로나 예외 종류를 삽입하지 않는다.
+- [x] `Scheduler/ticker.cs`의 nullable `onTimeout` 전달과 `DartAsync.cs`의 `timeout` 오버로드를 추적한다. null callback 허용 여부·오버로드 선택·timeout 결과 전달을 함께 수정한다.
+- [x] 공통 인터페이스의 반환값, 컬렉션 원소, delegate 입력·출력, generic 제약을 호출 그래프에 따라 정리한다. false/true 분기와 정상/예외 경로를 표현할 수 있으면 정확한 분석 속성을 사용한다.
+- [x] 정상값·null·값 없음·실패·취소를 대표하는 작은 계약 검증을 준비한다. 가상 메서드·interface 호출을 모두 확인한다.
 
 **완료 기준:** 수정한 공통 계약의 생산자·소비자가 일치하고, 기존 정상 동작과 명시적 실패 동작을 검증한다. 넓은 영향이 확인되면 공통 변경을 작은 단위로 나눠 완료한 뒤 다음 단계로 진행한다.
 
 ### A1-3 — 하위 프레임워크 억제 제거
 
-- [ ] 실제 프로젝트 의존 순서로 Scheduler → Services/Gestures → Painting/Semantics → Rendering을 진행한다.
-- [ ] 이미지·asset 조회 실패, 콜백 부재, 포인터·gesture 종료, parent/child 연결, attach/detach, layout 이전·이후의 값 유무를 확인한다.
-- [ ] `CS8605`, `CS8629`는 cast나 `.Value` 이전의 존재 보장 또는 nullable 반환 계약으로 수정한다. 참조형 null과 값형 default를 혼동하지 않는다.
-- [ ] 반복되는 이중 캐스트는 정적 타입 흐름을 복원한다. 런타임 타입 검사를 없애거나 실패를 기본값으로 삼키지 않는다.
-- [ ] 정리한 파일의 pragma를 제거하고 직접 의존 프로젝트를 검증한다. 앞 단계 변경으로 새로 드러난 경고도 원인과 함께 처리한다.
+- [x] 실제 프로젝트 의존 순서로 Scheduler → Services/Gestures → Painting/Semantics → Rendering을 진행한다.
+- [x] 이미지·asset 조회 실패, 콜백 부재, 포인터·gesture 종료, parent/child 연결, attach/detach, layout 이전·이후의 값 유무를 확인한다.
+- [x] `CS8605`, `CS8629`는 cast나 `.Value` 이전의 존재 보장 또는 nullable 반환 계약으로 수정한다. 참조형 null과 값형 default를 혼동하지 않는다.
+- [x] 반복되는 이중 캐스트는 정적 타입 흐름을 복원한다. 런타임 타입 검사를 없애거나 실패를 기본값으로 삼키지 않는다.
+- [x] 정리한 파일의 pragma를 제거하고 직접 의존 프로젝트를 검증한다. 앞 단계 변경으로 새로 드러난 경고도 원인과 함께 처리한다.
 
 **완료 기준:** 이 단계의 대상 억제 0, 모듈·의존 프로젝트 Debug/Release 통과, 변경한 수명·실패 계약의 검증 통과.
 
@@ -153,44 +153,44 @@ Foundation·Physics·Animation·WidgetPreviews는 이 대상 억제가 현재 0�
 4. scroll/sliver/animation/listener 계열: attach·detach, 완료·취소 후 callback, 연결 객체 존재 조건.
 5. inspector·나머지 widget: diagnostics 값 부재와 도구 연결 수명.
 
-- [ ] 해제된 객체를 `!`로 강제 통과시키지 않고, 어느 상태에서 필드가 유효한지와 callback 취소/해제 소유권을 명시한다.
-- [ ] `CS4014`: `Services/binding.cs`, `Widgets/dismissible.cs`, `draggable_scrollable_sheet.cs`, `Material/refresh_indicator.cs`를 함께 검토한다. 완료를 기다리는 흐름과 독립 실행을 구분하고 오류·취소 전달을 유지한다. [Microsoft 비동기 경고](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/async-await-errors)
-- [ ] 독립 실행이 의도이면 기존 `Observe` 등 관측 경로의 동작을 확인하여 사용한다. Future/Task의 scheduler·프레임 실행 순서·예외 전달 의미를 검증한다.
-- [ ] `CS0659`: `framework.cs`, `shortcuts.cs`, `widget_state.cs`의 값 동등성·참조 동등성 의도를 확인한다. 동일한 객체가 같은 hash를 가져야 하며, Dictionary/HashSet 조회·제거 동작을 검증한다. [Microsoft 동등성 경고](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/overloaded-operator-errors)
-- [ ] callback 부재, navigation 취소, dispose 이후 비동기 완료, listener 연결·해제, 동등한 key 조회를 대표 회귀 항목으로 삼는다.
+- [x] 해제된 객체를 `!`로 강제 통과시키지 않고, 어느 상태에서 필드가 유효한지와 callback 취소/해제 소유권을 명시한다.
+- [x] `CS4014`: `Services/binding.cs`, `Widgets/dismissible.cs`, `draggable_scrollable_sheet.cs`, `Material/refresh_indicator.cs`를 함께 검토한다. 완료를 기다리는 흐름과 독립 실행을 구분하고 오류·취소 전달을 유지한다. [Microsoft 비동기 경고](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/async-await-errors)
+- [x] 독립 실행이 의도이면 기존 `Observe` 등 관측 경로의 동작을 확인하여 사용한다. Future/Task의 scheduler·프레임 실행 순서·예외 전달 의미를 검증한다.
+- [x] `CS0659`: `framework.cs`, `shortcuts.cs`, `widget_state.cs`의 값 동등성·참조 동등성 의도를 확인한다. 동일한 객체가 같은 hash를 가져야 하며, Dictionary/HashSet 조회·제거 동작을 검증한다. [Microsoft 동등성 경고](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/overloaded-operator-errors)
+- [x] callback 부재, navigation 취소, dispose 이후 비동기 완료, listener 연결·해제, 동등한 key 조회를 대표 회귀 항목으로 삼는다.
 
 **완료 기준:** Widgets 대상 억제 0, 상태 전이·비동기·동등성 검증 통과. 비동기/동등성 수정으로 생긴 의미 있는 동작 차이는 수정 근거와 재현을 남긴다.
 
 ### A1-5 — Cupertino·Material 상위 위젯 정리
 
-- [ ] Cupertino를 먼저, 그다음 Material을 공통 theme/style → 단순 control → 복합 입력·menu/search → route/dialog/picker 순으로 정리한다.
-- [ ] `input_decorator.cs`, `menu_anchor.cs`, `search_anchor.cs`, `switch.cs`, `tabs.cs`, `segmented_button.cs` 등 복합 계약이 많은 파일은 독립 작업 묶음으로 나눈다.
-- [ ] theme fallback, disabled 상태의 callback null, 선택값 없음, 취소된 picker 결과, animation 초기값의 의미를 보존한다.
-- [ ] 공개 API·override·delegate nullability와 해당 wrapper·factory 호출자를 함께 수정한다. 설정이 없는 상태와 기본 설정이 있는 상태를 검증한다.
-- [ ] 앞 단계에서 정리한 Widgets 계약의 경고가 상위에서 재등장하면 상위 캐스트로 덮지 않고 선언·구현 불일치부터 수정한다.
-- [ ] 변경한 control의 mount → interaction → dispose 흐름을 Testbed에서 확인한다. UI 동작을 변경한 경우 Windows 및 Web의 해당 화면으로 확인 범위를 좁힌다.
+- [x] Cupertino를 먼저, 그다음 Material을 공통 theme/style → 단순 control → 복합 입력·menu/search → route/dialog/picker 순으로 정리한다.
+- [x] `input_decorator.cs`, `menu_anchor.cs`, `search_anchor.cs`, `switch.cs`, `tabs.cs`, `segmented_button.cs` 등 복합 계약이 많은 파일은 독립 작업 묶음으로 나눈다.
+- [x] theme fallback, disabled 상태의 callback null, 선택값 없음, 취소된 picker 결과, animation 초기값의 의미를 보존한다.
+- [x] 공개 API·override·delegate nullability와 해당 wrapper·factory 호출자를 함께 수정한다. 설정이 없는 상태와 기본 설정이 있는 상태를 검증한다.
+- [x] 앞 단계에서 정리한 Widgets 계약의 경고가 상위에서 재등장하면 상위 캐스트로 덮지 않고 선언·구현 불일치부터 수정한다.
+- [x] 변경한 control의 mount → interaction → dispose 흐름을 Testbed에서 확인한다. UI 동작을 변경한 경우 Windows 및 Web의 해당 화면으로 확인 범위를 좁힌다.
 
 **완료 기준:** Cupertino·Material 대상 억제 0, Debug/Release 통과, 변경한 control 동작 확인. 모든 화면을 매 작업 묶음마다 반복 실행하지 않는다.
 
 ### A1-6 — 변환기 재발 원인 및 검사 자동화
 
-- [ ] `tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.cs`가 여전히 포괄 pragma를 출력하는 사실을 별도 기록한다. 제품 소스 정리와 생성 후보의 상태를 혼합하지 않는다.
-- [ ] 제품 수정에서 반복된 원인을 작은 Dart fixture로 재현한다. nullable callback, return, generic 제약, override/interface 계약, FutureOr, 불필요 cast 중 실제로 해당하는 공통 규칙을 수정한다.
-- [ ] 생성 코드의 `#nullable enable`은 유지하고, 고친 패턴을 검증하는 fixture에서는 대상 경고를 억제 없이 컴파일하여 재발을 검출한다.
-- [ ] 고정된 legacy 후보가 기존 억제를 필요로 한다면 적용 범위·잔여 진단을 기록한다. blanket 출력 문자열 삭제만으로 변환기 수정 완료를 선언하지 않는다.
-- [ ] 기존 [virtual-dispatch 검증](tools/Doroti.DartToCSharp/validation/virtual-dispatch/README.md)을 재사용한다. 새로운 nullable fixture가 필요하면 현재 검증 구조에 맞게 추가하되, 생성 후보를 제품 소스에 자동 복사하지 않는다.
-- [ ] 제품 대상 디렉터리의 포괄 억제 재도입, `Nullable`·`TreatWarningsAsErrors` 약화, 우회용 `NoWarn` 증가를 검출하는 작은 소스/설정 검사를 추가한다. 기존 제외 항목을 명시하고 전체 저장소의 정당한 국소 억제를 일괄 금지하지 않는다.
+- [x] `tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.cs`가 여전히 포괄 pragma를 출력하는 사실을 별도 기록한다. 제품 소스 정리와 생성 후보의 상태를 혼합하지 않는다.
+- [x] 제품 수정에서 반복된 원인을 작은 Dart fixture로 재현한다. nullable callback, return, generic 제약, override/interface 계약, FutureOr, 불필요 cast 중 실제로 해당하는 공통 규칙을 수정한다.
+- [x] 생성 코드의 `#nullable enable`은 유지하고, 고친 패턴을 검증하는 fixture에서는 대상 경고를 억제 없이 컴파일하여 재발을 검출한다.
+- [x] 고정된 legacy 후보가 기존 억제를 필요로 한다면 적용 범위·잔여 진단을 기록한다. blanket 출력 문자열 삭제만으로 변환기 수정 완료를 선언하지 않는다.
+- [x] 기존 [virtual-dispatch 검증](tools/Doroti.DartToCSharp/validation/virtual-dispatch/README.md)을 재사용한다. 새로운 nullable fixture가 필요하면 현재 검증 구조에 맞게 추가하되, 생성 후보를 제품 소스에 자동 복사하지 않는다.
+- [x] 제품 대상 디렉터리의 포괄 억제 재도입, `Nullable`·`TreatWarningsAsErrors` 약화, 우회용 `NoWarn` 증가를 검출하는 작은 소스/설정 검사를 추가한다. 기존 제외 항목을 명시하고 전체 저장소의 정당한 국소 억제를 일괄 금지하지 않는다.
 
 **완료 기준:** 실제 수정한 lowering 패턴의 재현·생성·컴파일 검증 통과, 제품 억제 재도입 검사 동작. 전체 변환기의 무경고 지원으로 확대 해석하지 않는다.
 
 ### A1-7 — 통합 검증과 종료 판정
 
-- [ ] 원래 설정으로 TestbedApp, WidgetPreviews Debug·Release 빌드를 수행한다.
-- [ ] 대상 파일들의 pragma 0, 해당 경고에 대한 다른 억제 경로 추가 0을 확인한다. 간접 계약 수정으로 새로 드러난 경고도 남기지 않는다.
-- [ ] 변경 전후 공개 API·nullable 주석·제네릭 제약·오버로드 차이를 검토한다.
-- [ ] 변경한 경로의 계약 검증과 필요한 제품 화면 검증을 통합한다. 플랫폼 전용 코드가 영향을 받으면 해당 runner의 빌드/실행을 추가한다.
-- [ ] 소스 변경 목록, 제거한 억제, 수정한 계약, 실행 명령, 결과, 남은 위험과 환경상 미검증 항목을 기록한다.
-- [ ] `git diff --check` 및 재발 방지 검사를 통과시킨다.
+- [x] 원래 설정으로 TestbedApp, WidgetPreviews Debug·Release 빌드를 수행한다.
+- [x] 대상 파일들의 pragma 0, 해당 경고에 대한 다른 억제 경로 추가 0을 확인한다. 간접 계약 수정으로 새로 드러난 경고도 남기지 않는다.
+- [x] 변경 전후 공개 API·nullable 주석·제네릭 제약·오버로드 차이를 검토한다.
+- [x] 변경한 경로의 계약 검증과 필요한 제품 화면 검증을 통합한다. 플랫폼 전용 코드가 영향을 받으면 해당 runner의 빌드/실행을 추가한다.
+- [x] 소스 변경 목록, 제거한 억제, 수정한 계약, 실행 명령, 결과, 남은 위험과 환경상 미검증 항목을 기록한다.
+- [x] `git diff --check` 및 재발 방지 검사를 통과시킨다.
 
 **종료 판정:** 소스·컴파일 목표와 필수 동작 검증을 모두 만족하면 완료. 억제·미해결 진단·필수 검증 공백이 남으면 `PARTIAL`로 남기고 파일/심벌/이유/다음 작업을 명시한다.
 
@@ -237,24 +237,66 @@ git diff --check
 
 | 단계 | 상태 | 종료 증거 |
 |---|---|---|
-| A1-0 기준선·진단 | TODO | 현재 소스의 진단 목록과 실행 로그 |
-| A1-1 선언·미사용 코드 | TODO | 대상 경고 제거와 컴파일 |
-| A1-2 공통 계약 | TODO | 입력·출력·실패·가상 호출 계약 검증 |
-| A1-3 하위 Framework | TODO | 모듈 억제 0과 수명 검증 |
-| A1-4 Widgets·비동기·동등성 | TODO | 모듈 억제 0과 회귀 검증 |
-| A1-5 Cupertino·Material | TODO | 모듈 억제 0과 변경 화면 검증 |
-| A1-6 변환기·재발 방지 | TODO | 실제 수정 패턴 fixture와 검사 |
-| A1-7 통합 종료 | TODO | 억제 0, 원래 설정 빌드, 필수 검증 |
+| A1-0 기준선·진단 | 완료 | 구성별 9,923건, 심벌·원인 분류·계약 소유 위치·수정·검증 원장 |
+| A1-1 선언·미사용 코드 | 완료 | 제네릭 충돌 18곳, inspector/semantics 누락 연결, developer metadata 유지 |
+| A1-2 공통 계약 | 완료 | Runtime/nullable 메시지/타이밍/기본값 계약; Debug·Release 각각 84 assertions |
+| A1-3 하위 Framework | 완료 | 대상 pragma 0, 원래 설정 통합 빌드 경고·오류 0 |
+| A1-4 Widgets·비동기·동등성 | 완료 | 상태 팩터리·복원·Inspector·동등성 fixture 및 Windows/Web 입력·재진입 검증 |
+| A1-5 Cupertino·Material | 완료 | pragma 0; 테마 계약 fixture; Web 선택·입력·picker 취소, Windows mount/input/remount |
+| A1-6 변환기·재발 방지 | 완료 | 수정한 factory bridge/developer fixture, strict guard 및 guard 테스트 3개 |
+| A1-7 통합 종료 | 완료 | 4개 필수 Debug/Release 빌드, Windows/Web 제품 검증, IDE0002 재검사, diff 검사 |
 
 ## 7. 최종 완료 체크리스트
 
-- [ ] 현재 대상 410개 파일의 경고 억제를 모두 제거했다.
-- [ ] 전역/국소 다른 경로로 같은 경고를 숨기지 않았다.
-- [ ] `!`, 기본값 반환, 캐스트, 분석 속성으로 실제 계약 문제를 덮지 않았다.
-- [ ] 공개 계약·수명·비동기·동등성 변경의 근거와 의미 있는 검증을 남겼다.
-- [ ] TestbedApp·WidgetPreviews의 Debug·Release가 원래 설정으로 경고 0 / 오류 0이다.
-- [ ] 해당하는 변환기 재발 패턴과 제품 억제 재도입 검사를 확인했다.
-- [ ] 필수 제품 실행 검증을 수행하고, 미검증 범위는 별도로 표시했다.
-- [ ] 앞선 사용자 작업을 보존했고 diff 검사와 결과 기록을 완료했다.
+- [x] 현재 대상 410개 파일의 경고 억제를 모두 제거했다.
+- [x] 전역/국소 다른 경로로 같은 경고를 숨기지 않았다.
+- [x] `!`, 기본값 반환, 캐스트, 분석 속성으로 실제 계약 문제를 덮지 않았다.
+- [x] 공개 계약·수명·비동기·동등성 변경의 근거와 의미 있는 검증을 남겼다.
+- [x] TestbedApp·WidgetPreviews의 Debug·Release가 원래 설정으로 경고 0 / 오류 0이다.
+- [x] 해당하는 변환기 재발 패턴과 제품 억제 재도입 검사를 확인했다.
+- [x] 필수 제품 실행 검증을 수행하고, 미검증 범위는 별도로 표시했다.
+- [x] 앞선 사용자 작업을 보존했고 diff 검사와 결과 기록을 완료했다.
 
 이 목록이 충족되기 전에는 “남은 경고 원인 수정 완료”로 보고하지 않는다.
+
+## 8. 실행 결과 — 2026-09-16
+
+- 기준 HEAD: `6a291c8decec559731beb915cbf899818b84ff5c`.
+- 증거: `Doroti/artifacts/warning-remediation-a1/20260916T094602Z/`.
+- 대상 pragma: **410 → 0개 파일**, 파일·코드 조합: **1,406 → 0**. 다른 경고 억제나 nullable/warnings-as-errors 약화는 추가하지 않았다.
+- 격리 기준선 Debug/Release 각각 **9,923개 고유 진단 → 최종 빌드 0**. `warning-ledger.json`은 구성별 19,846개 기록의 기존 위치·심벌과 원인 분류·수정·검증 범위를 보존한다. 모든 진단마다 별도의 런타임 테스트가 있다는 뜻은 아니다.
+- IDE0002: 공통·지원 호스트·도구·Testbed **27개 프로젝트**, **561개 문서 / 34,747곳** 수정, 같은 범위 재검사 **0개**. 생성 파일과 지원하지 않는 플랫폼 프로젝트는 이 분석 범위에 포함하지 않는다. 목록은 `Doroti/validation/warning-remediation/validated-projects.json`에 있다.
+- SDK Roslyn의 멤버 접근 판정과 code fix를 사용했다. 별도의 전체 타입 이름 분석을 생략하여 이전 장시간 분석 문제를 피했다.
+- `TickerFuture`의 실제 완료 Task 공유, timeout의 원본 오류/기한 만료 구분, nullable 메시지/Future 응답, 기본 테마, 제네릭 상태 팩터리, 동등성, route 복원 및 Inspector JSON 계약을 수정했다.
+- Inspector의 누락된 참조 저장과 nullable 진단 스타일 전달도 부모 경로 회귀 테스트로 확인했다.
+- 상태별 색상·스타일·테두리는 올바른 CLR 상속을 가진 지연 해석 구현으로 바꿨다. 해석 전 속성 접근은 FlutterError로 실패하고, readonly 상태 속성은 공변성을 지원한다.
+- 공개 계약 변화와 CLR의 기존 제네릭 참조 nullability 한계는 `api-diff.md` 및 검증 README에 기록했다.
+- 변환기 검증은 실제 수정한 factory bridge와 developer 패턴을 포함한다. 변환기의 legacy blanket pragma 출력 자체와 전체 프레임워크 재생성을 무경고로 인증한 것은 아니다.
+
+### 최종 검증
+
+| 검증 | 결과 |
+|---|---|
+| TestbedApp Debug / Release | 각각 경고 0 / 오류 0 |
+| WidgetPreviews Debug / Release | 각각 경고 0 / 오류 0 |
+| 계약 fixture Debug / Release | 각각 84 assertions 통과 |
+| 제품 경고 재발 guard / guard 테스트 | pragma 0 / 3개 테스트 통과 |
+| SDK Roslyn IDE0002 재검사 | 0개 |
+| 변환기 virtual-dispatch + nullable fixture | 통과 |
+| Windows App SDK Release | 경고 0 / 오류 0 |
+| Windows OS SendInput | 스크롤 후 버튼·포커스·텍스트 입력, blur 통과, 화면 밖 이동·복귀·remount 통과 |
+| Web Release / Qt host Release | 각각 경고 0 / 오류 0 |
+| Web 실제 제품 / 기본 worker-direct-webgpu | disabled 상태, navigation, 체크박스·스위치, picker 취소, 텍스트 입력, 연결 해제·remount 통과 |
+| git diff --check | 통과 |
+
+Windows의 예전 Win32 HWND 동일성 검사는 현재 WinUI island의 포커스를 잘못 판정했다. 최신 WinUI 검증을 사용하고 pointer-up 직후 키 입력은 실제 타이핑 간격으로 보정했다. Web은 DOM adapter 모형이 아니라 빌드된 제품을 Chrome CDP 입력으로 검증했으며 화면·이벤트·renderer 기록을 남겼다.
+
+마지막 소스 변경은 `material_state.cs` 끝의 빈 줄 제거뿐이다. 검증 시 소스 hash와 최종 hash의 차이가 EOF 공백뿐임을 `post-validation-whitespace.json`으로 확인했으며 diff 검사를 다시 통과했다.
+
+### 검증 경계
+
+- Material/Cupertino의 기존 `NoWarn` 3종(`CS0219`, `CS8524`, `CS8846`)은 계획의 제외 항목대로 유지했다.
+- Windows OS 입력과 Web CDP 입력은 대표 제품 흐름의 자동 검증이다. 모든 Cupertino/Material 화면의 시각적 완전성 인증은 아니다.
+- 사람의 물리 입력·한국어 IME·물리 scan-out, Android/iOS/macOS/Linux 실제 제품 실행은 이번 작업에서 `notVerified`다.
+- 재현 명령과 검사 소스: [검증 README](Doroti/validation/warning-remediation/README.md).
+- 자세한 결과: [validation-summary.md](Doroti/artifacts/warning-remediation-a1/20260916T094602Z/validation-summary.md), [api-diff.md](Doroti/artifacts/warning-remediation-a1/20260916T094602Z/api-diff.md), [summary.json](Doroti/artifacts/warning-remediation-a1/20260916T094602Z/summary.json).

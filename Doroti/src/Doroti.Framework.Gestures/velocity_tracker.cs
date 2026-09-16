@@ -51,7 +51,7 @@ public class Velocity
     {
         var __other = other as Velocity;
         if (__other is null) return false;
-        return ((__other is Velocity) && (object.Equals(((Velocity)((Velocity)__other)).pixelsPerSecond, this.pixelsPerSecond)));
+        return ((__other is Velocity) && (Equals(((Velocity)((Velocity)__other)).pixelsPerSecond, this.pixelsPerSecond)));
     }
 
     public override int GetHashCode() => this.pixelsPerSecond.GetHashCode();
@@ -97,7 +97,7 @@ public class VelocityTracker
     internal const long _minSampleSize = 3L;
     public virtual PointerDeviceKind kind { get; private set; } = default!;
     internal virtual Stopwatch? _stopwatch { get; set; } = default;
-    internal virtual List<_PointAtTime__velocity_tracker?> _samples { get; private set; } = new List<_PointAtTime__velocity_tracker?>(System.Linq.Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_historySize)));
+    internal virtual List<_PointAtTime__velocity_tracker?> _samples { get; private set; } = new List<_PointAtTime__velocity_tracker?>(Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_historySize)));
     internal virtual long _index { get; set; } = 0L;
 
     public VelocityTracker(PointerDeviceKind kind)
@@ -184,7 +184,7 @@ public class VelocityTracker
     public virtual Velocity getVelocity()
     {
         VelocityEstimate? estimate = getVelocityEstimate();
-        if (((estimate is null) || (object.Equals(((VelocityEstimate)estimate).pixelsPerSecond, Offset.zero))))
+        if (((estimate is null) || (Equals(((VelocityEstimate)estimate).pixelsPerSecond, Offset.zero))))
         {
             return Velocity.zero;
         }
@@ -197,7 +197,7 @@ public class VelocityTracker
 public class IOSScrollViewFlingVelocityTracker : VelocityTracker
 {
     internal const long _sampleSize = 20L;
-    internal virtual List<_PointAtTime__velocity_tracker?> _touchSamples { get; private set; } = new List<_PointAtTime__velocity_tracker?>(System.Linq.Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_sampleSize)));
+    internal virtual List<_PointAtTime__velocity_tracker?> _touchSamples { get; private set; } = new List<_PointAtTime__velocity_tracker?>(Enumerable.Repeat<_PointAtTime__velocity_tracker?>(null, checked((int)_sampleSize)));
 
     public IOSScrollViewFlingVelocityTracker(PointerDeviceKind kind) : base(kind)
     {
@@ -238,7 +238,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
 
     public override VelocityEstimate? getVelocityEstimate()
     {
-        if ((_sinceLastSample.ElapsedMilliseconds > VelocityTracker._assumePointerMoveStoppedMilliseconds))
+        if ((_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds))
         {
             return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: Duration.zero, offset: Offset.zero);
         }
@@ -275,16 +275,16 @@ public class MacOSScrollViewFlingVelocityTracker : IOSScrollViewFlingVelocityTra
 
     public override VelocityEstimate getVelocityEstimate()
     {
-        if ((_sinceLastSample.ElapsedMilliseconds > VelocityTracker._assumePointerMoveStoppedMilliseconds))
+        if ((_sinceLastSample.ElapsedMilliseconds > _assumePointerMoveStoppedMilliseconds))
         {
             return new VelocityEstimate(pixelsPerSecond: Offset.zero, confidence: 1.0, duration: Duration.zero, offset: Offset.zero);
         }
         global::Doroti.Ui.Offset estimatedVelocity = (((_previousVelocityAt(-2L) * 0.15) + (_previousVelocityAt(-1L) * 0.65)) + (_previousVelocityAt(0L) * 0.2));
         _PointAtTime__velocity_tracker? newestSample = _touchSamples[(int)(_index)];
         _PointAtTime__velocity_tracker? oldestNonNullSample = default!;
-        for (var i = 1L; (i <= IOSScrollViewFlingVelocityTracker._sampleSize); i += 1L)
+        for (var i = 1L; (i <= _sampleSize); i += 1L)
         {
-            oldestNonNullSample = _touchSamples[(int)((((_index + i)) % IOSScrollViewFlingVelocityTracker._sampleSize))];
+            oldestNonNullSample = _touchSamples[(int)((((_index + i)) % _sampleSize))];
             if ((oldestNonNullSample is not null))
             {
                 break;

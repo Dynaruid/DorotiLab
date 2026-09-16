@@ -25,7 +25,7 @@ public class _AxisSize__wrap
     public static implicit operator global::Doroti.Ui.Size(_AxisSize__wrap value) => value._size;
     public static implicit operator _AxisSize__wrap(global::Doroti.Ui.Size value) => new _AxisSize__wrap(value);
 
-    public static _AxisSize__wrap empty = _AxisSize__wrap.Create_(Size.zero);
+    public static _AxisSize__wrap empty = Create_(Size.zero);
 
     internal _AxisSize__wrap(double mainAxisExtent, double crossAxisExtent)
     {
@@ -34,12 +34,12 @@ public class _AxisSize__wrap
 
     internal static _AxisSize__wrap CreateFromSize(Size size, global::Doroti.Framework.Painting.Axis direction)
     {
-        return _AxisSize__wrap.Create_(_convert(size, direction));
+        return Create_(_convert(size, direction));
     }
 
     internal static global::Doroti.Ui.Size _convert(Size size, global::Doroti.Framework.Painting.Axis direction)
     {
-        return (direction switch { global::Doroti.Framework.Painting.Axis.horizontal => size, global::Doroti.Framework.Painting.Axis.vertical => size.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (direction switch { Axis.horizontal => size, Axis.vertical => size.flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -48,14 +48,14 @@ public class _AxisSize__wrap
     public virtual global::Doroti.Ui.Size toSize(global::Doroti.Framework.Painting.Axis direction) => _convert(_size, direction);
     public virtual _AxisSize__wrap applyConstraints(BoxConstraints constraints, global::Doroti.Framework.Painting.Axis direction)
     {
-        BoxConstraints effectiveConstraints = (direction switch { global::Doroti.Framework.Painting.Axis.horizontal => constraints, global::Doroti.Framework.Painting.Axis.vertical => ((BoxConstraints)constraints).flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return _AxisSize__wrap.Create_(effectiveConstraints.constrain(_size));
+        BoxConstraints effectiveConstraints = (direction switch { Axis.horizontal => constraints, Axis.vertical => ((BoxConstraints)constraints).flipped, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return Create_(effectiveConstraints.constrain(_size));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual _AxisSize__wrap flipped => _AxisSize__wrap.Create_(_size.flipped);
-    public virtual _AxisSize__wrap op_Add(_AxisSize__wrap other) => _AxisSize__wrap.Create_(new global::Doroti.Ui.Size((_size.width + other._size.width), Math.Max(_size.height, other._size.height)));
-    public virtual _AxisSize__wrap op_Subtract(_AxisSize__wrap other) => _AxisSize__wrap.Create_(new global::Doroti.Ui.Size((_size.width - other._size.width), (_size.height - other._size.height)));
+    public virtual _AxisSize__wrap flipped => Create_(_size.flipped);
+    public virtual _AxisSize__wrap op_Add(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size((_size.width + other._size.width), Math.Max(_size.height, other._size.height)));
+    public virtual _AxisSize__wrap op_Subtract(_AxisSize__wrap other) => Create_(new global::Doroti.Ui.Size((_size.width - other._size.width), (_size.height - other._size.height)));
 }
 
 public enum WrapAlignment
@@ -105,7 +105,7 @@ internal class _RunMetrics__wrap
 
     public virtual _RunMetrics__wrap? tryAddingNewChild(RenderBox child, _AxisSize__wrap childSize, bool flipMainAxis, double spacing, double maxMainExtent)
     {
-        bool needsNewRun = ((((((_AxisSize__wrap)this.axisSize).mainAxisExtent + ((_AxisSize__wrap)childSize).mainAxisExtent) + spacing) - maxMainExtent) > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance);
+        bool needsNewRun = ((((((_AxisSize__wrap)this.axisSize).mainAxisExtent + ((_AxisSize__wrap)childSize).mainAxisExtent) + spacing) - maxMainExtent) > Foundation.ConstantsLibrary.precisionErrorTolerance);
         if (needsNewRun)
         {
             return new _RunMetrics__wrap(child, childSize);
@@ -165,7 +165,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         set
         {
             var __value = value;
-            if ((object.Equals(this._direction, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._direction, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -179,7 +179,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         set
         {
             var __value = value;
-            if ((object.Equals(this._alignment, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._alignment, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -207,7 +207,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         set
         {
             var __value = value;
-            if ((object.Equals(this._runAlignment, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._runAlignment, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -235,7 +235,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         set
         {
             var __value = value;
-            if ((object.Equals(this._crossAxisAlignment, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._crossAxisAlignment, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -249,7 +249,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         set
         {
             var __value = value;
-            if ((!object.Equals(this._textDirection, __value)))
+            if ((!Equals(this._textDirection, __value)))
             {
                 _textDirection = __value;
                 markNeedsLayout();
@@ -262,7 +262,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         set
         {
             var __value = value;
-            if ((!object.Equals(this._verticalDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if ((!Equals(this._verticalDirection, DartRuntimePrimitives.RequireValue(__value))))
             {
                 _verticalDirection = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsLayout();
@@ -275,7 +275,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         set
         {
             var __value = value;
-            if ((!object.Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -287,60 +287,60 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         get
         {
-            if (((firstChild is not null) && (!object.Equals(lastChild, firstChild))))
+            if (((firstChild is not null) && (!Equals(lastChild, firstChild))))
             {
                 switch (this.direction)
                 {
-                    case global::Doroti.Framework.Painting.Axis.horizontal:
+                    case Axis.horizontal:
                         {
                             DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
                             break;
                         }
-                    case global::Doroti.Framework.Painting.Axis.vertical:
+                    case Axis.vertical:
                         {
                             break;
                         }
                 }
             }
-            if (((object.Equals(this.alignment, WrapAlignment.start)) || (object.Equals(this.alignment, WrapAlignment.end))))
+            if (((Equals(this.alignment, WrapAlignment.start)) || (Equals(this.alignment, WrapAlignment.end))))
             {
                 switch (this.direction)
                 {
-                    case global::Doroti.Framework.Painting.Axis.horizontal:
+                    case Axis.horizontal:
                         {
                             DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
                             break;
                         }
-                    case global::Doroti.Framework.Painting.Axis.vertical:
+                    case Axis.vertical:
                         {
                             break;
                         }
                 }
             }
-            if (((object.Equals(this.runAlignment, WrapAlignment.start)) || (object.Equals(this.runAlignment, WrapAlignment.end))))
+            if (((Equals(this.runAlignment, WrapAlignment.start)) || (Equals(this.runAlignment, WrapAlignment.end))))
             {
                 switch (this.direction)
                 {
-                    case global::Doroti.Framework.Painting.Axis.horizontal:
+                    case Axis.horizontal:
                         {
                             break;
                         }
-                    case global::Doroti.Framework.Painting.Axis.vertical:
+                    case Axis.vertical:
                         {
                             DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
                             break;
                         }
                 }
             }
-            if (((object.Equals(this.crossAxisAlignment, WrapCrossAlignment.start)) || (object.Equals(this.crossAxisAlignment, WrapCrossAlignment.end))))
+            if (((Equals(this.crossAxisAlignment, WrapCrossAlignment.start)) || (Equals(this.crossAxisAlignment, WrapCrossAlignment.end))))
             {
                 switch (this.direction)
                 {
-                    case global::Doroti.Framework.Painting.Axis.horizontal:
+                    case Axis.horizontal:
                         {
                             break;
                         }
-                    case global::Doroti.Framework.Painting.Axis.vertical:
+                    case Axis.vertical:
                         {
                             DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
                             break;
@@ -363,7 +363,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         switch (this.direction)
         {
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
                     var widthLocal = 0.0;
                     RenderBox? child = firstChild;
@@ -374,7 +374,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                     }
                     return widthLocal;
                 }
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 {
                     return getDryLayout(new BoxConstraints(maxHeight: height)).width;
                 }
@@ -386,7 +386,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         switch (this.direction)
         {
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
                     var widthLocal = 0.0;
                     RenderBox? child = firstChild;
@@ -397,7 +397,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                     }
                     return widthLocal;
                 }
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 {
                     return getDryLayout(new BoxConstraints(maxHeight: height)).width;
                 }
@@ -409,11 +409,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         switch (this.direction)
         {
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
                     return getDryLayout(new BoxConstraints(maxWidth: width)).height;
                 }
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 {
                     var heightLocal = 0.0;
                     RenderBox? child = firstChild;
@@ -432,11 +432,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     {
         switch (this.direction)
         {
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
                     return getDryLayout(new BoxConstraints(maxWidth: width)).height;
                 }
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 {
                     var heightLocal = 0.0;
                     RenderBox? child = firstChild;
@@ -459,19 +459,19 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     internal virtual double _getMainAxisExtent(Size childSize)
     {
-        return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => childSize.width, global::Doroti.Framework.Painting.Axis.vertical => childSize.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.direction switch { Axis.horizontal => childSize.width, Axis.vertical => childSize.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _getCrossAxisExtent(Size childSize)
     {
-        return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => childSize.height, global::Doroti.Framework.Painting.Axis.vertical => childSize.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.direction switch { Axis.horizontal => childSize.height, Axis.vertical => childSize.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Offset _getOffset(double mainAxisOffset, double crossAxisOffset)
     {
-        return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(mainAxisOffset, crossAxisOffset), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(crossAxisOffset, mainAxisOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.direction switch { Axis.horizontal => new global::Doroti.Ui.Offset(mainAxisOffset, crossAxisOffset), Axis.vertical => new global::Doroti.Ui.Offset(crossAxisOffset, mainAxisOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -480,8 +480,8 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         get
         {
             bool flipHorizontal = ((this.textDirection ?? TextDirection.ltr) switch { TextDirection.ltr => false, TextDirection.rtl => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            bool flipVertical = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => false, global::Doroti.Framework.Painting.VerticalDirection.up => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => (((bool, bool))((flipHorizontal, flipVertical))), global::Doroti.Framework.Painting.Axis.vertical => (((bool, bool))((flipVertical, flipHorizontal))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            bool flipVertical = (this.verticalDirection switch { VerticalDirection.down => false, VerticalDirection.up => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return (this.direction switch { Axis.horizontal => (((bool, bool))((flipHorizontal, flipVertical))), Axis.vertical => (((bool, bool))((flipVertical, flipHorizontal))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
     }
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -490,7 +490,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         {
             return null;
         }
-        BoxConstraints childConstraints = (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), global::Doroti.Framework.Painting.Axis.vertical => new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        BoxConstraints childConstraints = (this.direction switch { Axis.horizontal => new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), Axis.vertical => new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var (childrenAxisSize, runMetrics) = _computeRuns(constraints, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild);
         _AxisSize__wrap containerAxisSize = childrenAxisSize.applyConstraints(constraints, this.direction);
         BaselineOffset baselineOffset = BaselineOffset.noBaseline;
@@ -517,7 +517,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     // Dart library-private member: distinct from the same name in the base library.
     internal new virtual global::Doroti.Ui.Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
     {
-        var (childConstraints, mainAxisLimit) = (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => (((BoxConstraints, double))((new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), ((BoxConstraints)constraints).maxWidth))), global::Doroti.Framework.Painting.Axis.vertical => (((BoxConstraints, double))((new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), ((BoxConstraints)constraints).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (childConstraints, mainAxisLimit) = (this.direction switch { Axis.horizontal => (((BoxConstraints, double))((new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), ((BoxConstraints)constraints).maxWidth))), Axis.vertical => (((BoxConstraints, double))((new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), ((BoxConstraints)constraints).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var mainAxisExtent = 0.0;
         var crossAxisExtent = 0.0;
         var runMainAxisExtent = 0.0;
@@ -548,7 +548,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         }
         crossAxisExtent += runCrossAxisExtent;
         mainAxisExtent = Math.Max(mainAxisExtent, runMainAxisExtent);
-        return constraints.constrain((this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Size(crossAxisExtent, mainAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return constraints.constrain((this.direction switch { Axis.horizontal => new global::Doroti.Ui.Size(mainAxisExtent, crossAxisExtent), Axis.vertical => new global::Doroti.Ui.Size(crossAxisExtent, mainAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -579,7 +579,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     internal virtual (_AxisSize__wrap, List<_RunMetrics__wrap>) _computeRuns(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild)
     {
         DartRuntimePrimitives.Assert(() => (firstChild is not null));
-        var (childConstraints, mainAxisLimit) = (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => (((BoxConstraints, double))((new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), ((BoxConstraints)constraints).maxWidth))), global::Doroti.Framework.Painting.Axis.vertical => (((BoxConstraints, double))((new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), ((BoxConstraints)constraints).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (childConstraints, mainAxisLimit) = (this.direction switch { Axis.horizontal => (((BoxConstraints, double))((new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), ((BoxConstraints)constraints).maxWidth))), Axis.vertical => (((BoxConstraints, double))((new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), ((BoxConstraints)constraints).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var (flipMainAxis, _) = this._areAxesFlipped;
         double spacingLocal = this.spacing;
         var runMetrics = new List<_RunMetrics__wrap>();
@@ -613,7 +613,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         var (runLeadingSpace, runBetweenSpace) = this.runAlignment._distributeSpace(crossAxisFreeSpace, this.runSpacing, checked((long)(runMetrics.Count)), flipCrossAxis);
         Func<RenderBox, RenderBox?> nextChild = (flipMainAxis ? childBefore : childAfter);
         var runCrossAxisOffset = runLeadingSpace;
-        IEnumerable<_RunMetrics__wrap> runs = (flipCrossAxis ? System.Linq.Enumerable.Reverse(runMetrics) : runMetrics);
+        IEnumerable<_RunMetrics__wrap> runs = (flipCrossAxis ? Enumerable.Reverse(runMetrics) : runMetrics);
         foreach (var run in runs)
         {
             double runCrossAxisExtent = ((_RunMetrics__wrap)run).axisSize.crossAxisExtent;
@@ -643,7 +643,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if ((this._hasVisualOverflow && (!object.Equals(this.clipBehavior, Clip.none))))
+        if ((this._hasVisualOverflow && (!Equals(this.clipBehavior, Clip.none))))
         {
             this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, (Offset.zero & size), (Action<PaintingContext, Offset>)defaultPaint, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
         }
@@ -670,7 +670,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         properties.add(new DoubleProperty("runSpacing", this.runSpacing));
         properties.add(new DoubleProperty("crossAxisAlignment", this.runSpacing));
         properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", this.verticalDirection, defaultValue: global::Doroti.Framework.Painting.VerticalDirection.down));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.VerticalDirection>("verticalDirection", this.verticalDirection, defaultValue: VerticalDirection.down));
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -678,11 +678,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
             child = childParentData.previousSibling!;
             childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -691,11 +691,11 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
             child = childParentData.nextSibling!;
             childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -741,7 +741,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             var afterParentData = ((WrapParentData?)(object?)after.parentData!)!;
             if ((afterParentData.nextSibling is null))
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
                 this._lastChild = child;
@@ -754,18 +754,18 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
                 var childNextSiblingParentData = ((WrapParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
         adoptChild(child);
         DartRuntimePrimitives.Assert(() => (child.parentData is WrapParentData));
         _insertIntoChildList(child, after: after);
@@ -789,7 +789,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
         if ((childParentData.previousSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
             this._firstChild = childParentData.nextSibling;
         }
         else
@@ -799,7 +799,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         }
         if ((childParentData.nextSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
             this._lastChild = childParentData.previousSibling;
         }
         else
@@ -837,12 +837,12 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData.previousSibling, after)))
+        if ((Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -901,7 +901,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
     public virtual RenderBox? lastChild => this._lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -909,7 +909,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -925,7 +925,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((object.Equals(child, this.lastChild)))
+                if ((Equals(child, this.lastChild)))
                 {
                     break;
                 }
@@ -981,7 +981,7 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
             var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
             bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
                 return child!.hitTest(result, position: transformed);
             })));
             if (isHit)

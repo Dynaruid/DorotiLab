@@ -87,7 +87,7 @@ public class TextSelection : TextRange
     }
     public override string ToString()
     {
-        string typeName = global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSelection");
+        string typeName = objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSelection");
         if (!isValid)
         {
             return $"{typeName}.invalid";
@@ -112,7 +112,7 @@ public class TextSelection : TextRange
         {
             return !((TextSelection)__other).isValid;
         }
-        return ((((((TextSelection)__other).baseOffset == baseOffset) && (((TextSelection)__other).extentOffset == extentOffset)) && ((!isCollapsed || (object.Equals(((TextSelection)__other).affinity, affinity))))) && (((TextSelection)__other).isDirectional == isDirectional));
+        return ((((((TextSelection)__other).baseOffset == baseOffset) && (((TextSelection)__other).extentOffset == extentOffset)) && ((!isCollapsed || (Equals(((TextSelection)__other).affinity, affinity))))) && (((TextSelection)__other).isDirectional == isDirectional));
     }
 
     public override int GetHashCode()
@@ -155,7 +155,7 @@ public class TextSelection : TextRange
 
     public virtual TextSelection extendTo(TextPosition position)
     {
-        if ((object.Equals(extent, position)))
+        if ((Equals(extent, position)))
         {
             return this;
         }

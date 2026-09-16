@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/restoration_properties.dart
-#pragma warning disable CS8600, CS8603, CS8765
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -14,7 +13,7 @@ public abstract class RestorableValue<T> : RestorableProperty<T>
         get
         {
             DartRuntimePrimitives.Assert(() => this.isRegistered);
-            return ((T?)(object?)this._value)!;
+            return ((T?)this._value)!;
         }
         set
         {
@@ -43,13 +42,13 @@ public class _RestorablePrimitiveValueN__restoration_properties<T> : RestorableV
     internal _RestorablePrimitiveValueN__restoration_properties(T _defaultValue)
     {
         this._defaultValue = _defaultValue;
-        System.Diagnostics.Debug.Assert(global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(_defaultValue));
+        System.Diagnostics.Debug.Assert(RestorationLibrary.debugIsSerializableForRestoration(_defaultValue));
     }
 
     public override T createDefaultValue() => this._defaultValue;
-    public override void didUpdateValue(T oldValue)
+    public override void didUpdateValue(T? oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(this.value));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(this.value));
         notifyListeners();
     }
 
@@ -61,7 +60,7 @@ public class _RestorablePrimitiveValue__restoration_properties<T> : _RestorableP
 {
     internal _RestorablePrimitiveValue__restoration_properties(T defaultValue) : base(defaultValue)
     {
-        System.Diagnostics.Debug.Assert(global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(defaultValue));
+        System.Diagnostics.Debug.Assert(RestorationLibrary.debugIsSerializableForRestoration(defaultValue));
     }
 
     public override T value
@@ -75,7 +74,7 @@ public class _RestorablePrimitiveValue__restoration_properties<T> : _RestorableP
     public override T fromPrimitives(object? data)
     {
         DartRuntimePrimitives.Assert(() => (data is not null));
-        return ((T)(object?)base.fromPrimitives(data));
+        return ((T)base.fromPrimitives(data));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -179,7 +178,7 @@ public class RestorableDateTime : RestorableValue<DateTime>
     public override DateTime createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(DateTime oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
         notifyListeners();
     }
 
@@ -199,7 +198,7 @@ public class RestorableDateTimeN : RestorableValue<DateTime?>
     public override DateTime? createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(DateTime? oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
+        DartRuntimePrimitives.Assert(() => RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
         notifyListeners();
     }
 
@@ -262,7 +261,7 @@ public class RestorableTextEditingController : RestorableChangeNotifier<TextEdit
 {
     internal virtual global::Doroti.Framework.Services.TextEditingValue _initialValue { get; private set; } = default!;
 
-    public static RestorableTextEditingController Create(string? text = null) => new RestorableTextEditingController(((text is null) ? global::Doroti.Framework.Services.TextEditingValue.empty : new global::Doroti.Framework.Services.TextEditingValue(text: text)));
+    public static RestorableTextEditingController Create(string? text = null) => new RestorableTextEditingController(((text is null) ? TextEditingValue.empty : new global::Doroti.Framework.Services.TextEditingValue(text: text)));
 
     public RestorableTextEditingController(global::Doroti.Framework.Services.TextEditingValue value)
     {
@@ -277,13 +276,13 @@ public class RestorableTextEditingController : RestorableChangeNotifier<TextEdit
 
     public override TextEditingController fromPrimitives(object? data)
     {
-        return new TextEditingController(text: ((string?)(object?)data!)!);
+        return new TextEditingController(text: ((string?)data!)!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override object? toPrimitives()
     {
-        return ((TextEditingController)(object)this.value).text;
+        return ((TextEditingController)this.value).text;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -363,7 +362,7 @@ public class RestorableEnum<T> : RestorableValue<T> where T : Enum
             base.value = newValue;
         }
     }
-    public override void didUpdateValue(T oldValue)
+    public override void didUpdateValue(T? oldValue)
     {
         notifyListeners();
     }

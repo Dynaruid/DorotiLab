@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/sliver_prototype_extent_list.dart
-#pragma warning disable CS8600, CS8603, CS8605
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -36,8 +35,8 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element = ((_SliverPrototypeExtentListElement__sliver_prototype_extent_list?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element));
+        var element = ((_SliverPrototypeExtentListElement__sliver_prototype_extent_list?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -56,20 +55,20 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
     public override _RenderSliverPrototypeExtentList__sliver_prototype_extent_list renderObject => (_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)base.renderObject;
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        if ((object.Equals(slot, _prototypeSlot)))
+        if ((Equals(slot, _prototypeSlot)))
         {
             DartRuntimePrimitives.Assert(() => (child is global::Doroti.Framework.Rendering.RenderBox));
-            this.renderObject.child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!;
+            this.renderObject.child = ((global::Doroti.Framework.Rendering.RenderBox?)child)!;
         }
         else
         {
-            base.insertRenderObjectChild(child, ((long)slot));
+            base.insertRenderObjectChild(child, (slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot))));
         }
     }
 
     public override void didAdoptChild(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        if ((!object.Equals(child, ((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)this.renderObject).child)))
+        if ((!Equals(child, ((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)this.renderObject).child)))
         {
             base.didAdoptChild(child);
         }
@@ -77,27 +76,27 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        if ((object.Equals(newSlot, _prototypeSlot)))
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        if ((Equals(newSlot, _prototypeSlot)))
         {
             DartRuntimePrimitives.Assert(() => false);
         }
         else
         {
-            base.moveRenderObjectChild(__child, ((long)oldSlot), ((long)newSlot));
+            base.moveRenderObjectChild(__child, (oldSlot is long indexoldSlot ? indexoldSlot : throw new ArgumentException("A sliver child requires an index.", nameof(oldSlot))), (newSlot is long indexnewSlot ? indexnewSlot : throw new ArgumentException("A sliver child requires an index.", nameof(newSlot))));
         }
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        if ((object.Equals(((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)this.renderObject).child, __child)))
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
+        if ((Equals(((_RenderSliverPrototypeExtentList__sliver_prototype_extent_list)this.renderObject).child, __child)))
         {
             this.renderObject.child = null;
         }
         else
         {
-            base.removeRenderObjectChild(__child, ((long)slot));
+            base.removeRenderObjectChild(__child, (slot is long indexslot ? indexslot : throw new ArgumentException("A sliver child requires an index.", nameof(slot))));
         }
     }
 
@@ -113,15 +112,15 @@ public class _SliverPrototypeExtentListElement__sliver_prototype_extent_list : S
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        _prototype = updateChild(this._prototype, (((SliverPrototypeExtentList?)(object?)this.widget)!).prototypeItem, _prototypeSlot);
+        _prototype = updateChild(this._prototype, (((SliverPrototypeExtentList?)this.widget)!).prototypeItem, _prototypeSlot);
     }
 
     public override void update(Widget newWidget)
     {
-        var __newWidget = (SliverPrototypeExtentList)(object)newWidget;
+        var __newWidget = (SliverPrototypeExtentList)newWidget;
         base.update(__newWidget);
-        DartRuntimePrimitives.Assert(() => (object.Equals(this.widget, __newWidget)));
-        _prototype = updateChild(this._prototype, (((SliverPrototypeExtentList?)(object?)this.widget)!).prototypeItem, _prototypeSlot);
+        DartRuntimePrimitives.Assert(() => (Equals(this.widget, __newWidget)));
+        _prototype = updateChild(this._prototype, (((SliverPrototypeExtentList?)this.widget)!).prototypeItem, _prototypeSlot);
     }
 
 }
@@ -193,7 +192,7 @@ public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : gl
         get
         {
             DartRuntimePrimitives.Assert(() => ((this.child is not null) && this.child!.hasSize));
-            return ((object.Equals(((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis, global::Doroti.Framework.Painting.Axis.vertical)) ? this.child!.size.height : this.child!.size.width);
+            return ((Equals(((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis, Axis.vertical)) ? this.child!.size.height : this.child!.size.width);
         }
     }
 }

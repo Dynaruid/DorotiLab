@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/scrollbar.dart
-#pragma warning disable CS8600, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -28,7 +28,7 @@ public static partial class ScrollbarLibrary
 
 public static partial class ScrollbarLibrary
 {
-    internal static Radius _kScrollbarRadius = global::Doroti.Ui.Radius.circular(8.0);
+    internal static Radius _kScrollbarRadius = Radius.circular(8.0);
 }
 
 public static partial class ScrollbarLibrary
@@ -68,11 +68,11 @@ public class Scrollbar : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if ((object.Equals(Theme.of(context).platform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))
+        if ((Equals(Theme.of(context).platform, TargetPlatform.iOS)))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoScrollbar(thumbVisibility: (this.thumbVisibility ?? false), thickness: (this.thickness ?? CupertinoScrollbar.defaultThickness), thicknessWhileDragging: (this.thickness ?? CupertinoScrollbar.defaultThicknessWhileDragging), radius: (this.radius ?? CupertinoScrollbar.defaultRadius), radiusWhileDragging: (this.radius ?? CupertinoScrollbar.defaultRadiusWhileDragging), controller: this.controller, notificationPredicate: this.notificationPredicate, scrollbarOrientation: this.scrollbarOrientation, child: this.child));
+            return ((global::Doroti.Framework.Widgets.Widget)new CupertinoScrollbar(thumbVisibility: (this.thumbVisibility ?? false), thickness: (this.thickness ?? CupertinoScrollbar.defaultThickness), thicknessWhileDragging: (this.thickness ?? CupertinoScrollbar.defaultThicknessWhileDragging), radius: (this.radius ?? CupertinoScrollbar.defaultRadius), radiusWhileDragging: (this.radius ?? CupertinoScrollbar.defaultRadiusWhileDragging), controller: this.controller, notificationPredicate: this.notificationPredicate, scrollbarOrientation: this.scrollbarOrientation, child: this.child));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _MaterialScrollbar__scrollbar(controller: this.controller, thumbVisibility: this.thumbVisibility, trackVisibility: this.trackVisibility, thickness: this.thickness, radius: this.radius, notificationPredicate: (global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>?)this.notificationPredicate, interactive: this.interactive, scrollbarOrientation: this.scrollbarOrientation, child: this.child));
+        return ((global::Doroti.Framework.Widgets.Widget)new _MaterialScrollbar__scrollbar(controller: this.controller, thumbVisibility: this.thumbVisibility, trackVisibility: this.trackVisibility, thickness: this.thickness, radius: this.radius, notificationPredicate: (global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>?)this.notificationPredicate, interactive: this.interactive, scrollbarOrientation: this.scrollbarOrientation, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -80,7 +80,7 @@ public class Scrollbar : global::Doroti.Framework.Widgets.StatelessWidget
 
 internal class _MaterialScrollbar__scrollbar : global::Doroti.Framework.Widgets.RawScrollbar
 {
-    internal _MaterialScrollbar__scrollbar(global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollController? controller = null, bool? thumbVisibility = null, bool? trackVisibility = null, double? thickness = null, Radius? radius = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>? notificationPredicate = null, bool? interactive = null, global::Doroti.Framework.Widgets.ScrollbarOrientation? scrollbarOrientation = null) : base(child: child, controller: controller, thumbVisibility: thumbVisibility, trackVisibility: trackVisibility, thickness: thickness, radius: radius, interactive: interactive, scrollbarOrientation: scrollbarOrientation, fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration, timeToFade: ScrollbarLibrary._kScrollbarTimeToFade, pressDuration: Duration.zero, notificationPredicate: ((notificationPredicate ?? (global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)global::Doroti.Framework.Widgets.Scroll_notificationLibrary.defaultScrollNotificationPredicate)))
+    internal _MaterialScrollbar__scrollbar(global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollController? controller = null, bool? thumbVisibility = null, bool? trackVisibility = null, double? thickness = null, Radius? radius = null, global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>? notificationPredicate = null, bool? interactive = null, global::Doroti.Framework.Widgets.ScrollbarOrientation? scrollbarOrientation = null) : base(child: child, controller: controller, thumbVisibility: thumbVisibility, trackVisibility: trackVisibility, thickness: thickness, radius: radius, interactive: interactive, scrollbarOrientation: scrollbarOrientation, fadeDuration: ScrollbarLibrary._kScrollbarFadeDuration, timeToFade: ScrollbarLibrary._kScrollbarTimeToFade, pressDuration: Duration.zero, notificationPredicate: ((notificationPredicate ?? (global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)Scroll_notificationLibrary.defaultScrollNotificationPredicate)))
     {
     }
 
@@ -92,7 +92,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     internal virtual global::Doroti.Framework.Animation.AnimationController _hoverAnimationController { get; set; } = default!;
     internal virtual bool _dragIsActive { get; set; } = false;
     // Dart library-private member: distinct from the same name in the base library.
-    internal virtual bool _hoverIsActive { get; set; } = false;
+    internal new virtual bool _hoverIsActive { get; set; } = false;
     internal virtual ColorScheme _colorScheme { get; set; } = default!;
     internal virtual ScrollbarThemeData _scrollbarTheme { get; set; } = default!;
     internal virtual bool _useAndroidScrollbar { get; set; } = default!;
@@ -104,12 +104,12 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
         return this.widget.trackVisibility ?? this._scrollbarTheme.trackVisibility?.resolve(states) ?? false;
         throw new InvalidOperationException("Dart closure completed without a value.");
     })));
-    internal virtual HashSet<global::Doroti.Framework.Widgets.WidgetState> _states => ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection8725 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (this._dragIsActive) { __collection8725.Add(global::Doroti.Framework.Widgets.WidgetState.dragged); } if (this._hoverIsActive) { __collection8725.Add(global::Doroti.Framework.Widgets.WidgetState.hovered); } return __collection8725; }))();
+    internal virtual HashSet<global::Doroti.Framework.Widgets.WidgetState> _states => ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection8725 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (this._dragIsActive) { __collection8725.Add(WidgetState.dragged); } if (this._hoverIsActive) { __collection8725.Add(WidgetState.hovered); } return __collection8725; }))();
     internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _thumbColor
     {
         get
         {
-            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
+            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)this._colorScheme.onSurface);
             global::Doroti.Ui.Brightness brightnessLocal = this._colorScheme.brightness;
             global::Doroti.Ui.Color dragColor = default!;
             global::Doroti.Ui.Color hoverColor = default!;
@@ -133,7 +133,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
             }
             return WidgetStateProperty.resolveWith<Color>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color>)((states) =>
             {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.dragged))
+                if (states.Contains(WidgetState.dragged))
                 {
                     return this._scrollbarTheme.thumbColor?.resolve(states) ?? dragColor;
                 }
@@ -150,7 +150,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     {
         get
         {
-            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
+            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)this._colorScheme.onSurface);
             global::Doroti.Ui.Brightness brightnessLocal = this._colorScheme.brightness;
             return WidgetStateProperty.resolveWith<Color>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color>)((states) =>
             {
@@ -167,7 +167,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     {
         get
         {
-            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
+            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)this._colorScheme.onSurface);
             global::Doroti.Ui.Brightness brightnessLocal = this._colorScheme.brightness;
             return WidgetStateProperty.resolveWith<Color>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color>)((states) =>
             {
@@ -184,9 +184,9 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<double>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, double>)((states) =>
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<double>)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, double>)((states) =>
             {
-                if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered) && this._trackVisibility.resolve(states)))
+                if ((states.Contains(WidgetState.hovered) && this._trackVisibility.resolve(states)))
                 {
                     return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;
                 }
@@ -212,16 +212,16 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
         _scrollbarTheme = ScrollbarTheme.of(this.context);
         switch (theme.platform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case TargetPlatform.android:
                 {
                     _useAndroidScrollbar = true;
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.iOS:
+            case TargetPlatform.linux:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 {
                     _useAndroidScrollbar = false;
                     break;

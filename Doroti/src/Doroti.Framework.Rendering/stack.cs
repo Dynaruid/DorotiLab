@@ -74,7 +74,7 @@ public class RelativeRect
 
     public virtual global::Doroti.Ui.Rect toRect(Rect container)
     {
-        return global::Doroti.Ui.Rect.fromLTRB(this.left, this.top, (container.width - this.right), (container.height - this.bottom));
+        return Rect.fromLTRB(this.left, this.top, (container.width - this.right), (container.height - this.bottom));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -187,7 +187,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
 
     public RenderStack(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, StackFit fit = StackFit.loose, Clip clipBehavior = Clip.hardEdge)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.topStart;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.topStart;
         this._alignment = __alignment;
         this._textDirection = textDirection;
         this._fit = fit;
@@ -216,7 +216,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         set
         {
             var __value = value;
-            if ((object.Equals(this._alignment, __value)))
+            if ((Equals(this._alignment, __value)))
             {
                 return;
             }
@@ -230,7 +230,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         set
         {
             var __value = value;
-            if ((object.Equals(this._textDirection, __value)))
+            if ((Equals(this._textDirection, __value)))
             {
                 return;
             }
@@ -244,7 +244,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         set
         {
             var __value = value;
-            if ((!object.Equals(this._fit, DartRuntimePrimitives.RequireValue(__value))))
+            if ((!Equals(this._fit, DartRuntimePrimitives.RequireValue(__value))))
             {
                 _fit = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsLayout();
@@ -257,7 +257,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         set
         {
             var __value = value;
-            if ((!object.Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -276,7 +276,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             {
                 extent = Math.Max(extent, mainChildSizeGetter(child));
             }
-            DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
+            DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentData)));
             child = childParentData.nextSibling;
         }
         return extent;
@@ -316,7 +316,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
     public static bool layoutPositionedChild(RenderBox child, StackParentData childParentData, Size size, global::Doroti.Framework.Painting.Alignment alignment)
     {
         DartRuntimePrimitives.Assert(() => ((StackParentData)childParentData).isPositioned);
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentData)));
         BoxConstraints childConstraints = childParentData.positionedChildConstraints(size);
         child.layout(childConstraints, parentUsesSize: true);
         double x = (childParentData switch { StackParentData { left: double leftLocal } __object19981 => leftLocal, StackParentData { right: double rightLocal } __object20033 => ((size.width - rightLocal) - ((RenderBox)child).size.width), StackParentData __object20119 => alignment.alongOffset((size - ((RenderBox)child).size)).dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -417,7 +417,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             {
                 _hasVisualOverflow = (layoutPositionedChild(child, childParentData, size, resolvedAlignment) || this._hasVisualOverflow);
             }
-            DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
+            DartRuntimePrimitives.Assert(() => (Equals(child.parentData, childParentData)));
             child = childParentData.nextSibling;
         }
     }
@@ -435,7 +435,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
 
     public override void paint(PaintingContext context, Offset offset)
     {
-        if (((!object.Equals(this.clipBehavior, Clip.none)) && this._hasVisualOverflow))
+        if (((!Equals(this.clipBehavior, Clip.none)) && this._hasVisualOverflow))
         {
             this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, (Offset.zero & size), (Action<PaintingContext, Offset>)this.paintStack, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
         }
@@ -484,11 +484,11 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
             child = childParentData.previousSibling!;
             childParentData = ((StackParentData?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -497,11 +497,11 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
             child = childParentData.nextSibling!;
             childParentData = ((StackParentData?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -547,7 +547,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             var afterParentData = ((StackParentData?)(object?)after.parentData!)!;
             if ((afterParentData.nextSibling is null))
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
                 this._lastChild = child;
@@ -560,18 +560,18 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
                 var childNextSiblingParentData = ((StackParentData?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
             }
         }
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
         adoptChild(child);
         DartRuntimePrimitives.Assert(() => (child.parentData is StackParentData));
         _insertIntoChildList(child, after: after);
@@ -595,7 +595,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
         if ((childParentData.previousSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
             this._firstChild = childParentData.nextSibling;
         }
         else
@@ -605,7 +605,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
         }
         if ((childParentData.nextSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
             this._lastChild = childParentData.previousSibling;
         }
         else
@@ -643,12 +643,12 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
 
     public virtual void move(RenderBox child, RenderBox? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData.previousSibling, after)))
+        if ((Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -707,7 +707,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
     public virtual RenderBox? lastChild => this._lastChild;
     public virtual RenderBox? childBefore(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -715,7 +715,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -731,7 +731,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             while (true)
             {
                 children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
-                if ((object.Equals(child, this.lastChild)))
+                if ((Equals(child, this.lastChild)))
                 {
                     break;
                 }
@@ -787,7 +787,7 @@ public class RenderStack : RenderBox, ContainerRenderObjectMixin<RenderBox, Stac
             var childParentData = ((StackParentData?)(object?)child.parentData!)!;
             bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
                 return child!.hitTest(result, position: transformed);
             })));
             if (isHit)
@@ -831,7 +831,7 @@ public class RenderIndexedStack : RenderStack
 {
     internal virtual long? _index { get; set; } = default;
 
-    public RenderIndexedStack(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, StackFit fit = StackFit.loose, Clip clipBehavior = Clip.hardEdge, long? index = 0) : base(children: children, alignment: alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.topStart, textDirection: DartRuntimePrimitives.RequireValue(textDirection), fit: fit, clipBehavior: clipBehavior)
+    public RenderIndexedStack(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, StackFit fit = StackFit.loose, Clip clipBehavior = Clip.hardEdge, long? index = 0) : base(children: children, alignment: alignment ?? AlignmentDirectional.topStart, textDirection: DartRuntimePrimitives.RequireValue(textDirection), fit: fit, clipBehavior: clipBehavior)
     {
         this._index = index;
     }
@@ -898,7 +898,7 @@ public class RenderIndexedStack : RenderStack
         BoxConstraints nonPositionedChildConstraints = (fit switch { StackFit.loose => constraints.loosen(), StackFit.expand => BoxConstraints.CreateTight(((BoxConstraints)constraints).biggest), StackFit.passthrough => constraints, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Framework.Painting.Alignment alignment = _resolvedAlignment;
         global::Doroti.Ui.Size size = getDryLayout(constraints);
-        return RenderStack._baselineForChild(displayedChild, size, nonPositionedChildConstraints, alignment, baseline);
+        return _baselineForChild(displayedChild, size, nonPositionedChildConstraints, alignment, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -912,7 +912,7 @@ public class RenderIndexedStack : RenderStack
         var childParentData = ((StackParentData?)(object?)displayedChild.parentData!)!;
         return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+            DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - childParentData.offset))));
             return displayedChild.hitTest(result, position: transformed);
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");

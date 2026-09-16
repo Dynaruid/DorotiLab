@@ -1,6 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/colors.dart
-#pragma warning disable CS0693
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -47,7 +47,7 @@ public static partial class ColorsLibrary
     internal static Color _colorFromHue(double alpha, double hue, double chroma, double secondary, double match)
     {
         var (red, green, blue) = (hue switch { < 60.0 => (((double, double, double))((chroma, secondary, 0.0))), < 120.0 => (((double, double, double))((secondary, chroma, 0.0))), < 180.0 => (((double, double, double))((0.0, chroma, secondary))), < 240.0 => (((double, double, double))((0.0, secondary, chroma))), < 300.0 => (((double, double, double))((secondary, 0.0, chroma))), _ => (((double, double, double))((chroma, 0.0, secondary))) });
-        return global::Doroti.Ui.Color.fromARGB(((alpha * 255L)).round(), ((((red + match)) * 255L)).round(), ((((green + match)) * 255L)).round(), ((((blue + match)) * 255L)).round());
+        return Color.fromARGB(((alpha * 255L)).round(), ((((red + match)) * 255L)).round(), ((((green + match)) * 255L)).round(), ((((blue + match)) * 255L)).round());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -158,7 +158,7 @@ public class HSVColor
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.alpha, this.hue, this.saturation, this.value);
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "HSVColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.value})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "HSVColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.value})";
 }
 
 public class HSLColor
@@ -268,7 +268,7 @@ public class HSLColor
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.alpha, this.hue, this.saturation, this.lightness);
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "HSLColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.lightness})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "HSLColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.lightness})";
 }
 
 public class ColorSwatch<T> : Color where T : notnull
@@ -297,38 +297,38 @@ public class ColorSwatch<T> : Color where T : notnull
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((base.Equals(__other) && (__other is ColorSwatch<T>)) && global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals<T, global::Doroti.Ui.Color>(((ColorSwatch<T>)((ColorSwatch<T>)__other))._swatch, this._swatch));
+        return ((Equals(__other) && (__other is ColorSwatch<T>)) && CollectionsLibrary.mapEquals<T, global::Doroti.Ui.Color>(((ColorSwatch<T>)((ColorSwatch<T>)__other))._swatch, this._swatch));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.GetType(), value, this._swatch);
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ColorSwatch"))}(primary value: {base.ToString()})";
-    public static ColorSwatch<T>? lerp<T>(ColorSwatch<T>? a, ColorSwatch<T>? b, double t) where T : notnull
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ColorSwatch"))}(primary value: {base.ToString()})";
+    public static ColorSwatch<TKey>? lerp<TKey>(ColorSwatch<TKey>? a, ColorSwatch<TKey>? b, double t) where TKey : notnull
     {
         if (DartRuntimePrimitives.Identical(a, b))
         {
             return a;
         }
-        DartMap<T, global::Doroti.Ui.Color> swatch = default!;
+        DartMap<TKey, global::Doroti.Ui.Color> swatch = default!;
         if ((b is null))
         {
-            swatch = a!._swatch.map<T, Color, T, Color>(((key, color) => new MapEntry<T, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, null, t)!)));
+            swatch = a!._swatch.map<TKey, Color, TKey, Color>(((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, null, t)!)));
         }
         else
         {
             if ((a is null))
             {
-                swatch = ((ColorSwatch<T>)b)._swatch.map<T, Color, T, Color>(((key, color) => new MapEntry<T, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(null, color, t)!)));
+                swatch = ((ColorSwatch<TKey>)b)._swatch.map<TKey, Color, TKey, Color>(((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(null, color, t)!)));
             }
             else
             {
-                swatch = ((ColorSwatch<T>)a)._swatch.map<T, Color, T, Color>(((key, color) => new MapEntry<T, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, b[key], t)!)));
+                swatch = ((ColorSwatch<TKey>)a)._swatch.map<TKey, Color, TKey, Color>(((key, color) => new MapEntry<TKey, global::Doroti.Ui.Color>(key, Dart_uiLibrary.Color.lerp(color, b[key], t)!)));
             }
         }
-        return new ColorSwatch<T>(Dart_uiLibrary.Color.lerp(a, b, t)!.value, swatch);
+        return new ColorSwatch<TKey>(Dart_uiLibrary.Color.lerp(a, b, t)!.value, swatch);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -336,7 +336,7 @@ public class ColorSwatch<T> : Color where T : notnull
 
 public class ColorProperty : DiagnosticsProperty<Color>
 {
-    public ColorProperty(string name, Color? value, bool showName = true, object? defaultValue = default!, DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, showName: showName, defaultValue: defaultValue ?? global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue, style: style, level: level)
+    public ColorProperty(string name, Color? value, bool showName = true, object? defaultValue = default!, DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, showName: showName, defaultValue: defaultValue ?? DiagnosticsLibrary.kNoDefaultValue, style: style, level: level)
     {
     }
 

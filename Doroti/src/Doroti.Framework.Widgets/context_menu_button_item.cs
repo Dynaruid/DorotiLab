@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/context_menu_button_item.dart
-#pragma warning disable CS8600
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -34,7 +33,7 @@ public class ContextMenuButtonItem
 
     public virtual ContextMenuButtonItem copyWith(global::System.Action? onPressed = null, ContextMenuButtonType? type = null, string? label = null)
     {
-        return new ContextMenuButtonItem(onPressed: ((onPressed ?? (global::System.Action)this.onPressed)), type: (type ?? this.type), label: (label ?? this.label));
+        return new ContextMenuButtonItem(onPressed: ((onPressed ?? (global::System.Action?)this.onPressed)), type: (type ?? this.type), label: (label ?? this.label));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -42,11 +41,11 @@ public class ContextMenuButtonItem
     {
         var __other = other as ContextMenuButtonItem;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is ContextMenuButtonItem) && (((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).label == this.label)) && (object.Equals((global::System.Action?)((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).onPressed, (global::System.Action?)this.onPressed))) && (object.Equals(((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).type, this.type)));
+        return ((((__other is ContextMenuButtonItem) && (((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).label == this.label)) && (Equals((global::System.Action?)((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).onPressed, (global::System.Action?)this.onPressed))) && (Equals(((ContextMenuButtonItem)((ContextMenuButtonItem)__other)).type, this.type)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.label, this.onPressed, this.type));

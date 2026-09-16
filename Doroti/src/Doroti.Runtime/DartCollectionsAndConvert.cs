@@ -346,9 +346,9 @@ public sealed class HttpClientRequest(System.Net.Http.HttpClient client, DartUri
     private async Task<HttpClientResponse> SendAsync()
     {
         if (timeProvider is null)
-            return new(await client.GetAsync(uri.ToString(), System.Net.Http.HttpCompletionOption.ResponseHeadersRead));
+            return new(await client.GetAsync(uri.ToString(), HttpCompletionOption.ResponseHeadersRead));
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), timeProvider);
-        return new(await client.GetAsync(uri.ToString(), System.Net.Http.HttpCompletionOption.ResponseHeadersRead, timeout.Token));
+        return new(await client.GetAsync(uri.ToString(), HttpCompletionOption.ResponseHeadersRead, timeout.Token));
     }
 }
 

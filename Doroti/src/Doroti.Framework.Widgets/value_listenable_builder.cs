@@ -29,24 +29,24 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T> : State
     public override void initState()
     {
         base.initState();
-        this.value = ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.value;
-        ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.addListener(this._valueChanged);
+        this.value = ((ValueListenableBuilder<T>)this.widget).valueListenable.value;
+        ((ValueListenableBuilder<T>)this.widget).valueListenable.addListener(this._valueChanged);
     }
 
     public override void didUpdateWidget(ValueListenableBuilder<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((ValueListenableBuilder<T>)oldWidget).valueListenable, ((ValueListenableBuilder<T>)(object)this.widget).valueListenable)))
+        if ((!Equals(((ValueListenableBuilder<T>)oldWidget).valueListenable, ((ValueListenableBuilder<T>)this.widget).valueListenable)))
         {
             ((ValueListenableBuilder<T>)oldWidget).valueListenable.removeListener(this._valueChanged);
-            this.value = ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.value;
-            ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.addListener(this._valueChanged);
+            this.value = ((ValueListenableBuilder<T>)this.widget).valueListenable.value;
+            ((ValueListenableBuilder<T>)this.widget).valueListenable.addListener(this._valueChanged);
         }
     }
 
     public override void dispose()
     {
-        ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.removeListener(this._valueChanged);
+        ((ValueListenableBuilder<T>)this.widget).valueListenable.removeListener(this._valueChanged);
         base.dispose();
     }
 
@@ -54,13 +54,13 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T> : State
     {
         setState(((global::System.Action)(() =>
         {
-            this.value = ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.value;
+            this.value = ((ValueListenableBuilder<T>)this.widget).valueListenable.value;
         })));
     }
 
     public override Widget build(BuildContext context)
     {
-        return this.widget.builder(context, this.value, ((ValueListenableBuilder<T>)(object)this.widget).child);
+        return this.widget.builder(context, this.value, ((ValueListenableBuilder<T>)this.widget).child);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

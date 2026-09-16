@@ -49,7 +49,7 @@ public class TextureBox : RenderBox
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this._filterQuality)))
+            if ((!Equals(__value, this._filterQuality)))
             {
                 _filterQuality = __value;
                 markNeedsPaint();
@@ -68,7 +68,7 @@ public class TextureBox : RenderBox
     public override bool hitTestSelf(Offset position) => true;
     public override void paint(PaintingContext context, Offset offset)
     {
-        context.addLayer(new TextureLayer(rect: global::Doroti.Ui.Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), textureId: this._textureId, freeze: this.freeze, filterQuality: this._filterQuality));
+        context.addLayer(new TextureLayer(rect: Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height), textureId: this._textureId, freeze: this.freeze, filterQuality: this._filterQuality));
     }
 
 }

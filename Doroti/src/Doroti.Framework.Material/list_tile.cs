@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/list_tile.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -127,16 +127,16 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => ((color is not null) || (context is not null)));
         tiles = tiles.ToList();
-        if ((!System.Linq.Enumerable.Any(tiles) || (tiles.Count() == 1L)))
+        if ((!Enumerable.Any(tiles) || (tiles.Count() == 1L)))
         {
             return tiles;
         }
         global::Doroti.Framework.Widgets.Widget wrapTile(global::Doroti.Framework.Widgets.Widget tile)
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DecoratedBox(position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context, color: color))), child: tile));
+            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.DecoratedBox(position: DecorationPosition.foreground, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context, color: color))), child: tile));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        return ((IEnumerable<global::Doroti.Framework.Widgets.Widget>)(object?)((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection30919 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection30919.AddRange(tiles.take((tiles.Count() - 1L)).map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(wrapTile)); __collection30919.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(tiles.Last())); return __collection30919; }))());
+        return ((IEnumerable<global::Doroti.Framework.Widgets.Widget>)((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection30919 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection30919.AddRange(tiles.take((tiles.Count() - 1L)).map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(wrapTile)); __collection30919.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(tiles.Last())); return __collection30919; }))());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -162,17 +162,17 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
         {
             DartRuntimePrimitives.Assert(() => _debugCheckBackgroundIsHidden(context));
         }
-        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection32361 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this.enabled) { __collection32361.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this.selected) { __collection32361.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection32361; }))();
+        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection32361 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this.enabled) { __collection32361.Add(WidgetState.disabled); } if (this.selected) { __collection32361.Add(WidgetState.selected); } return __collection32361; }))();
         Color? resolveColor(Color? explicitColor, Color? selectedColor, Color? enabledColor, Color? disabledColor = null)
         {
-            return ((Color?)(object?)new _IndividualOverrides__list_tile(explicitColor: explicitColor, selectedColor: selectedColor, enabledColor: enabledColor, disabledColor: disabledColor).resolve(states));
+            return ((Color?)new _IndividualOverrides__list_tile(explicitColor: explicitColor, selectedColor: selectedColor, enabledColor: enabledColor, disabledColor: disabledColor).resolve(states));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        global::Doroti.Ui.Color? effectiveIconColor = ((global::Doroti.Ui.Color?)(object?)((resolveColor(this.iconColor, this.selectedColor, this.iconColor) ?? resolveColor(tileTheme.iconColor, tileTheme.selectedColor, tileTheme.iconColor)) ?? resolveColor(theme.listTileTheme.iconColor, theme.listTileTheme.selectedColor, theme.listTileTheme.iconColor)));
-        global::Doroti.Ui.Color? defaultEffectiveIconColor = ((global::Doroti.Ui.Color?)(object?)resolveColor(defaults.iconColor, defaults.selectedColor, defaults.iconColor, theme.disabledColor));
-        global::Doroti.Ui.Color? effectiveIconButtonColor = ((global::Doroti.Ui.Color?)(object?)(((effectiveIconColor ?? (Color)iconButtonTheme.style?.foregroundColor?.resolve(states))) ?? defaultEffectiveIconColor));
+        global::Doroti.Ui.Color? effectiveIconColor = ((global::Doroti.Ui.Color?)((resolveColor(this.iconColor, this.selectedColor, this.iconColor) ?? resolveColor(tileTheme.iconColor, tileTheme.selectedColor, tileTheme.iconColor)) ?? resolveColor(theme.listTileTheme.iconColor, theme.listTileTheme.selectedColor, theme.listTileTheme.iconColor)));
+        global::Doroti.Ui.Color? defaultEffectiveIconColor = ((global::Doroti.Ui.Color?)resolveColor(defaults.iconColor, defaults.selectedColor, defaults.iconColor, theme.disabledColor));
+        global::Doroti.Ui.Color? effectiveIconButtonColor = ((global::Doroti.Ui.Color?)(((effectiveIconColor ?? (Color?)iconButtonTheme.style?.foregroundColor?.resolve(states))) ?? defaultEffectiveIconColor));
         effectiveIconColor ??= defaultEffectiveIconColor;
-        global::Doroti.Ui.Color? effectiveColor = ((global::Doroti.Ui.Color?)(object?)(((resolveColor(this.textColor, this.selectedColor, this.textColor) ?? resolveColor(tileTheme.textColor, tileTheme.selectedColor, tileTheme.textColor)) ?? resolveColor(theme.listTileTheme.textColor, theme.listTileTheme.selectedColor, theme.listTileTheme.textColor)) ?? resolveColor(defaults.textColor, defaults.selectedColor, defaults.textColor, theme.disabledColor)));
+        global::Doroti.Ui.Color? effectiveColor = ((global::Doroti.Ui.Color?)(((resolveColor(this.textColor, this.selectedColor, this.textColor) ?? resolveColor(tileTheme.textColor, tileTheme.selectedColor, tileTheme.textColor)) ?? resolveColor(theme.listTileTheme.textColor, theme.listTileTheme.selectedColor, theme.listTileTheme.textColor)) ?? resolveColor(defaults.textColor, defaults.selectedColor, defaults.textColor, theme.disabledColor)));
         var iconThemeData = new global::Doroti.Framework.Widgets.IconThemeData(color: effectiveIconColor);
         var iconButtonThemeData = new IconButtonThemeData(style: ((IconButtonTheme.of(context).style?.copyWith(foregroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(effectiveIconButtonColor)) ?? (ButtonStyle)IconButton.styleFrom(foregroundColor: effectiveIconButtonColor))));
         global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingStyle = default!;
@@ -190,7 +190,7 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
         global::Doroti.Framework.Painting.TextStyle titleStyle = ((this.titleTextStyle ?? tileTheme.titleTextStyle) ?? defaults.titleTextStyle!);
         var titleColor = effectiveColor;
         titleStyle = titleStyle.copyWith(color: titleColor, fontSize: (_isDenseLayout(theme, tileTheme) ? 13.0 : null));
-        global::Doroti.Framework.Widgets.Widget titleText = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: titleStyle, duration: ConstantsLibrary.kThemeChangeDuration, child: (this.title ?? new global::Doroti.Framework.Widgets.SizedBox())));
+        global::Doroti.Framework.Widgets.Widget titleText = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: titleStyle, duration: ConstantsLibrary.kThemeChangeDuration, child: (this.title ?? new global::Doroti.Framework.Widgets.SizedBox())));
         global::Doroti.Framework.Widgets.Widget? subtitleText = default!;
         global::Doroti.Framework.Painting.TextStyle? subtitleStyle = default!;
         if ((this.subtitle is not null))
@@ -206,11 +206,11 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
             trailingIcon = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: leadingAndTrailingStyle!, duration: ConstantsLibrary.kThemeChangeDuration, child: this.trailing!));
         }
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        global::Doroti.Framework.Painting.EdgeInsets resolvedContentPadding = ((((this.contentPadding?.resolve(textDirectionLocal) ?? (global::Doroti.Framework.Painting.EdgeInsets)tileTheme.contentPadding?.resolve(textDirectionLocal))) ?? (global::Doroti.Framework.Painting.EdgeInsets)defaults.contentPadding!.resolve(textDirectionLocal)));
-        var mouseStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection36732 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((!this.enabled || (((this.onTap is null) && (this.onLongPress is null))))) { __collection36732.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection36732; }))();
-        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(this.mouseCursor, mouseStates) ?? (global::Doroti.Framework.Services.MouseCursor)tileTheme.mouseCursor?.resolve(mouseStates))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(mouseStates)));
+        global::Doroti.Framework.Painting.EdgeInsets resolvedContentPadding = ((((this.contentPadding?.resolve(textDirectionLocal) ?? (global::Doroti.Framework.Painting.EdgeInsets?)tileTheme.contentPadding?.resolve(textDirectionLocal))) ?? (global::Doroti.Framework.Painting.EdgeInsets)defaults.contentPadding!.resolve(textDirectionLocal)));
+        var mouseStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection36732 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((!this.enabled || (((this.onTap is null) && (this.onLongPress is null))))) { __collection36732.Add(WidgetState.disabled); } return __collection36732; }))();
+        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(this.mouseCursor, mouseStates) ?? (global::Doroti.Framework.Services.MouseCursor?)tileTheme.mouseCursor?.resolve(mouseStates))) ?? (global::Doroti.Framework.Services.MouseCursor)WidgetStateMouseCursor.clickable.resolve(mouseStates)));
         ListTileTitleAlignment effectiveTitleAlignment = ((this.titleAlignment ?? tileTheme.titleAlignment) ?? (((ListTileTitleAlignment.threeLine))));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new InkWell(customBorder: (this.shape ?? tileTheme.shape), onTap: ((global::System.Action)(this.enabled ? this.onTap : null)), onLongPress: ((global::System.Action)(this.enabled ? this.onLongPress : null)), onFocusChange: this.onFocusChange, mouseCursor: effectiveMouseCursor, canRequestFocus: this.enabled, focusNode: this.focusNode, focusColor: this.focusColor, hoverColor: this.hoverColor, splashColor: this.splashColor, autofocus: this.autofocus, enableFeedback: ((this.enableFeedback ?? tileTheme.enableFeedback) ?? true), statesController: this.statesController, child: new global::Doroti.Framework.Widgets.Semantics(button: (this.internalAddSemanticForOnTap && (((this.onTap is not null) || (this.onLongPress is not null)))), selected: this.selected, enabled: this.enabled, child: new Ink(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: ((this.shape ?? tileTheme.shape) ?? new global::Doroti.Framework.Painting.Border()), color: effectiveTileColor), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, bottom: false, minimum: resolvedContentPadding, child: IconTheme.merge(data: iconThemeData, child: new IconButtonTheme(data: iconButtonThemeData, child: new _ListTile__list_tile(leading: leadingIcon, title: titleText, subtitle: subtitleText, trailing: trailingIcon, isDense: _isDenseLayout(theme, tileTheme), visualDensity: ((this.visualDensity ?? tileTheme.visualDensity) ?? theme.visualDensity), isThreeLine: (((this.isThreeLine ?? tileTheme.isThreeLine) ?? theme.listTileTheme.isThreeLine) ?? false), textDirection: textDirectionLocal, titleBaselineType: (((global::Doroti.Framework.Painting.TextStyle)titleStyle).textBaseline ?? DartRuntimePrimitives.RequireValue(defaults.titleTextStyle!.textBaseline)), subtitleBaselineType: (subtitleStyle?.textBaseline ?? DartRuntimePrimitives.RequireValue(defaults.subtitleTextStyle!.textBaseline)), horizontalTitleGap: ((this.horizontalTitleGap ?? tileTheme.horizontalTitleGap) ?? 16), minVerticalPadding: ((this.minVerticalPadding ?? tileTheme.minVerticalPadding) ?? DartRuntimePrimitives.RequireValue(defaults.minVerticalPadding)), minLeadingWidth: ((this.minLeadingWidth ?? tileTheme.minLeadingWidth) ?? DartRuntimePrimitives.RequireValue(defaults.minLeadingWidth)), minTileHeight: (this.minTileHeight ?? tileTheme.minTileHeight), titleAlignment: effectiveTitleAlignment))))))));
+        return ((global::Doroti.Framework.Widgets.Widget)new InkWell(customBorder: (this.shape ?? tileTheme.shape), onTap: ((global::System.Action?)(this.enabled ? this.onTap : null)), onLongPress: ((global::System.Action?)(this.enabled ? this.onLongPress : null)), onFocusChange: this.onFocusChange, mouseCursor: effectiveMouseCursor, canRequestFocus: this.enabled, focusNode: this.focusNode, focusColor: this.focusColor, hoverColor: this.hoverColor, splashColor: this.splashColor, autofocus: this.autofocus, enableFeedback: ((this.enableFeedback ?? tileTheme.enableFeedback) ?? true), statesController: this.statesController, child: new global::Doroti.Framework.Widgets.Semantics(button: (this.internalAddSemanticForOnTap && (((this.onTap is not null) || (this.onLongPress is not null)))), selected: this.selected, enabled: this.enabled, child: new Ink(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: ((this.shape ?? tileTheme.shape) ?? new global::Doroti.Framework.Painting.Border()), color: effectiveTileColor), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, bottom: false, minimum: resolvedContentPadding, child: IconTheme.merge(data: iconThemeData, child: new IconButtonTheme(data: iconButtonThemeData, child: new _ListTile__list_tile(leading: leadingIcon, title: titleText, subtitle: subtitleText, trailing: trailingIcon, isDense: _isDenseLayout(theme, tileTheme), visualDensity: ((this.visualDensity ?? tileTheme.visualDensity) ?? theme.visualDensity), isThreeLine: (((this.isThreeLine ?? tileTheme.isThreeLine) ?? theme.listTileTheme.isThreeLine) ?? false), textDirection: textDirectionLocal, titleBaselineType: (((global::Doroti.Framework.Painting.TextStyle)titleStyle).textBaseline ?? DartRuntimePrimitives.RequireValue(defaults.titleTextStyle!.textBaseline)), subtitleBaselineType: (subtitleStyle?.textBaseline ?? DartRuntimePrimitives.RequireValue(defaults.subtitleTextStyle!.textBaseline)), horizontalTitleGap: ((this.horizontalTitleGap ?? tileTheme.horizontalTitleGap) ?? 16), minVerticalPadding: ((this.minVerticalPadding ?? tileTheme.minVerticalPadding) ?? DartRuntimePrimitives.RequireValue(defaults.minVerticalPadding)), minLeadingWidth: ((this.minLeadingWidth ?? tileTheme.minLeadingWidth) ?? DartRuntimePrimitives.RequireValue(defaults.minLeadingWidth)), minTileHeight: (this.minTileHeight ?? tileTheme.minTileHeight), titleAlignment: effectiveTitleAlignment))))))));
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -250,7 +250,7 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Framework.Widgets.Widget? intermediateWidget = ((global::Doroti.Framework.Widgets.Widget?)(object?)_findIntermediateWidget(context));
+                global::Doroti.Framework.Widgets.Widget? intermediateWidget = ((global::Doroti.Framework.Widgets.Widget?)_findIntermediateWidget(context));
                 if ((intermediateWidget is not null))
                 {
                     FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("ListTile background color or ink splashes may be invisible."), new global::Doroti.Framework.Foundation.ErrorDescription($"The ListTile is wrapped in a {DartRuntimePrimitives.RuntimeType(intermediateWidget)} that has a background color. " + "Because ListTile paints its background and ink splashes on the nearest Material ancestor, " + $"this {DartRuntimePrimitives.RuntimeType(intermediateWidget)} will hide those effects."), new global::Doroti.Framework.Foundation.ErrorHint("To fix this, wrap the ListTile in its own Material widget, " + $"or remove the background color from the intermediate {DartRuntimePrimitives.RuntimeType(intermediateWidget)}.") }), informationCollector: ((InformationCollector)(() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<ListTile>("ListTile", this, expandableValue: true), new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.Widget>($"{DartRuntimePrimitives.RuntimeType(intermediateWidget)}", intermediateWidget, expandableValue: true) }))));
@@ -264,14 +264,14 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
     internal virtual global::Doroti.Framework.Widgets.Widget? _findIntermediateWidget(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Framework.Widgets.Widget? intermediateWidget = default!;
-        (((global::Doroti.Framework.Widgets.Element?)(object?)context)!).visitAncestorElements(((global::System.Func<global::Doroti.Framework.Widgets.Element, bool>)((ancestor) =>
+        (((global::Doroti.Framework.Widgets.Element?)context)!).visitAncestorElements(((global::System.Func<global::Doroti.Framework.Widgets.Element, bool>)((ancestor) =>
         {
             if ((((global::Doroti.Framework.Widgets.Element)ancestor).widget is Material))
             {
                 return false;
             }
             global::Doroti.Framework.Widgets.Widget widgetLocal = ((global::Doroti.Framework.Widgets.Element)ancestor).widget;
-            global::Doroti.Ui.Color? colorLocal = ((global::Doroti.Ui.Color?)(object?)(widgetLocal switch { global::Doroti.Framework.Widgets.ColoredBox { color: global::Doroti.Ui.Color colorAlternate } __object45267 => colorAlternate, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.BoxDecoration { color: global::Doroti.Ui.Color colorNested } __object45341 } __object45316 => colorNested, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.ShapeDecoration { color: global::Doroti.Ui.Color colorCurrent } __object45420 } __object45395 => colorCurrent, _ => DartRuntimePrimitives.ConvertValue<Color>(null) }));
+            global::Doroti.Ui.Color? colorLocal = ((global::Doroti.Ui.Color?)(widgetLocal switch { global::Doroti.Framework.Widgets.ColoredBox { color: global::Doroti.Ui.Color colorAlternate } __object45267 => colorAlternate, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.BoxDecoration { color: global::Doroti.Ui.Color colorNested } __object45341 } __object45316 => colorNested, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.ShapeDecoration { color: global::Doroti.Ui.Color colorCurrent } __object45420 } __object45395 => colorCurrent, _ => DartRuntimePrimitives.ConvertValue<Color>(null) }));
             if (((colorLocal is not null) && (colorLocal.a > 0L)))
             {
                 intermediateWidget = widgetLocal;
@@ -306,13 +306,13 @@ internal class _IndividualOverrides__list_tile : global::Doroti.Framework.Widget
         if ((this.explicitColor is global::Doroti.Framework.Widgets.WidgetStateColor))
         {
             global::Doroti.Framework.Widgets.WidgetStateColor explicitColor__as46046 = (global::Doroti.Framework.Widgets.WidgetStateColor)explicitColor;
-            return ((Color?)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(this.explicitColor, states));
+            return ((Color?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(this.explicitColor, states));
         }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        if (states.Contains(WidgetState.disabled))
         {
             return this.disabledColor;
         }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        if (states.Contains(WidgetState.selected))
         {
             return this.selectedColor;
         }
@@ -367,7 +367,7 @@ internal class _ListTile__list_tile : global::Doroti.Framework.Widgets.SlottedMu
         this.titleAlignment = titleAlignment;
     }
 
-    public override IEnumerable<_ListTileSlot__list_tile> slots => DartRuntimePrimitives.ConvertValue<IEnumerable<_ListTileSlot__list_tile>>(System.Enum.GetValues<_ListTileSlot__list_tile>().ToList());
+    public override IEnumerable<_ListTileSlot__list_tile> slots => DartRuntimePrimitives.ConvertValue<IEnumerable<_ListTileSlot__list_tile>>(Enum.GetValues<_ListTileSlot__list_tile>().ToList());
     public override global::Doroti.Framework.Widgets.Widget? childForSlot(_ListTileSlot__list_tile slot)
     {
         return (slot switch { _ListTileSlot__list_tile.leading => this.leading, _ListTileSlot__list_tile.title => this.title, _ListTileSlot__list_tile.subtitle => this.subtitle, _ListTileSlot__list_tile.trailing => this.trailing, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -376,13 +376,13 @@ internal class _ListTile__list_tile : global::Doroti.Framework.Widgets.SlottedMu
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderListTile__list_tile(isThreeLine: this.isThreeLine, isDense: this.isDense, visualDensity: this.visualDensity, textDirection: this.textDirection, titleBaselineType: this.titleBaselineType, subtitleBaselineType: this.subtitleBaselineType, horizontalTitleGap: this.horizontalTitleGap, minVerticalPadding: this.minVerticalPadding, minLeadingWidth: this.minLeadingWidth, minTileHeight: this.minTileHeight, titleAlignment: this.titleAlignment));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderListTile__list_tile(isThreeLine: this.isThreeLine, isDense: this.isDense, visualDensity: this.visualDensity, textDirection: this.textDirection, titleBaselineType: this.titleBaselineType, subtitleBaselineType: this.subtitleBaselineType, horizontalTitleGap: this.horizontalTitleGap, minVerticalPadding: this.minVerticalPadding, minLeadingWidth: this.minLeadingWidth, minTileHeight: this.minTileHeight, titleAlignment: this.titleAlignment));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderListTile__list_tile)(object)renderObject;
+        var __renderObject = (_RenderListTile__list_tile)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderListTile__list_tile>)(() =>
 {
     var __cascade = __renderObject;
@@ -441,8 +441,8 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
     {
         get
         {
-            global::Doroti.Framework.Rendering.RenderBox? titleLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ListTileSlot__list_tile.title));
-            return ((IEnumerable<global::Doroti.Framework.Rendering.RenderBox>)(object?)((Func<List<global::Doroti.Framework.Rendering.RenderBox>>)(() => { var __collection50404 = new List<global::Doroti.Framework.Rendering.RenderBox>(); var __collectionElement50416 = this.leading; if (__collectionElement50416 is { } __nonNullCollectionElement50416) { __collection50404.Add(__nonNullCollectionElement50416); } var __collectionElement50426 = titleLocal; if (__collectionElement50426 is { } __nonNullCollectionElement50426) { __collection50404.Add(__nonNullCollectionElement50426); } var __collectionElement50434 = this.subtitle; if (__collectionElement50434 is { } __nonNullCollectionElement50434) { __collection50404.Add(__nonNullCollectionElement50434); } var __collectionElement50445 = this.trailing; if (__collectionElement50445 is { } __nonNullCollectionElement50445) { __collection50404.Add(__nonNullCollectionElement50445); } return __collection50404; }))());
+            global::Doroti.Framework.Rendering.RenderBox? titleLocal = ((global::Doroti.Framework.Rendering.RenderBox?)childForSlot(_ListTileSlot__list_tile.title));
+            return ((IEnumerable<global::Doroti.Framework.Rendering.RenderBox>)((Func<List<global::Doroti.Framework.Rendering.RenderBox>>)(() => { var __collection50404 = new List<global::Doroti.Framework.Rendering.RenderBox>(); var __collectionElement50416 = this.leading; if (__collectionElement50416 is { } __nonNullCollectionElement50416) { __collection50404.Add(__nonNullCollectionElement50416); } var __collectionElement50426 = titleLocal; if (__collectionElement50426 is { } __nonNullCollectionElement50426) { __collection50404.Add(__nonNullCollectionElement50426); } var __collectionElement50434 = this.subtitle; if (__collectionElement50434 is { } __nonNullCollectionElement50434) { __collection50404.Add(__nonNullCollectionElement50434); } var __collectionElement50445 = this.trailing; if (__collectionElement50445 is { } __nonNullCollectionElement50445) { __collection50404.Add(__nonNullCollectionElement50445); } return __collection50404; }))());
         }
     }
     public virtual bool isDense
@@ -465,7 +465,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         set
         {
             var __value = value;
-            if ((object.Equals(this._visualDensity, __value)))
+            if ((Equals(this._visualDensity, __value)))
             {
                 return;
             }
@@ -493,7 +493,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         set
         {
             var __value = value;
-            if ((object.Equals(this._textDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._textDirection, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -507,7 +507,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         set
         {
             var __value = value;
-            if ((object.Equals(this._titleBaselineType, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._titleBaselineType, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -521,7 +521,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         set
         {
             var __value = value;
-            if ((object.Equals(this._subtitleBaselineType, __value)))
+            if ((Equals(this._subtitleBaselineType, __value)))
             {
                 return;
             }
@@ -592,7 +592,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         set
         {
             var __value = value;
-            if ((object.Equals(this._titleAlignment, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._titleAlignment, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -616,14 +616,14 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
     public override double computeMinIntrinsicWidth(double height)
     {
         double leadingWidth = ((this.leading is not null) ? (Math.Max(this.leading!.getMinIntrinsicWidth(height), this._minLeadingWidth) + this._effectiveHorizontalTitleGap) : 0.0);
-        return ((leadingWidth + Math.Max(_RenderListTile__list_tile._minWidth(this.title, height), _RenderListTile__list_tile._minWidth(this.subtitle, height))) + _RenderListTile__list_tile._maxWidth(this.trailing, height));
+        return ((leadingWidth + Math.Max(_minWidth(this.title, height), _minWidth(this.subtitle, height))) + _maxWidth(this.trailing, height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         double leadingWidth = ((this.leading is not null) ? (Math.Max(this.leading!.getMaxIntrinsicWidth(height), this._minLeadingWidth) + this._effectiveHorizontalTitleGap) : 0.0);
-        return ((leadingWidth + Math.Max(_RenderListTile__list_tile._maxWidth(this.title, height), _RenderListTile__list_tile._maxWidth(this.subtitle, height))) + _RenderListTile__list_tile._maxWidth(this.trailing, height));
+        return ((leadingWidth + Math.Max(_maxWidth(this.title, height), _maxWidth(this.subtitle, height))) + _maxWidth(this.trailing, height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -631,7 +631,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
     {
         get
         {
-            global::Doroti.Ui.Offset baseDensity = ((global::Doroti.Ui.Offset)(object?)this.visualDensity.baseSizeAdjustment);
+            global::Doroti.Ui.Offset baseDensity = ((global::Doroti.Ui.Offset)this.visualDensity.baseSizeAdjustment);
             return (baseDensity.dy + ((this.isThreeLine, (this.subtitle is not null)) switch { (true, _) => (this.isDense ? 76.0 : 88.0), (false, true) => (this.isDense ? 64.0 : 72.0), (false, false) => (this.isDense ? 48.0 : 56.0) }));
         }
     }
@@ -654,7 +654,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.title.parentData!)!;
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)this.title.parentData!)!;
         global::Doroti.Framework.Rendering.BaselineOffset offsetLocal = (new global::Doroti.Framework.Rendering.BaselineOffset(this.title.getDistanceToActualBaseline(baseline)).op_Add(((global::Doroti.Framework.Rendering.BoxParentData)parentDataLocal).offset.dy));
         return offsetLocal.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -663,19 +663,19 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
     public virtual global::Doroti.Framework.Rendering.BoxConstraints maxIconHeightConstraint => new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: (((this.isDense ? 48.0 : 56.0)) + this.visualDensity.baseSizeAdjustment.dy));
     internal static void _positionBox(global::Doroti.Framework.Rendering.RenderBox box, Offset offset)
     {
-        var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)box.parentData!)!;
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)box.parentData!)!;
         parentDataLocal.offset = offset;
     }
 
     internal virtual (global::Doroti.Framework.Rendering.BoxConstraints textConstraints, Size tileSize, double titleY) _computeSizes(global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?> getBaseline, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> getSize, global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Action<global::Doroti.Framework.Rendering.RenderBox, Offset>? positionChild = null)
     {
-        global::Doroti.Framework.Rendering.BoxConstraints looseConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
+        global::Doroti.Framework.Rendering.BoxConstraints looseConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.loosen());
         double tileWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)looseConstraints).maxWidth;
-        global::Doroti.Framework.Rendering.BoxConstraints iconConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)looseConstraints.enforce(this.maxIconHeightConstraint));
+        global::Doroti.Framework.Rendering.BoxConstraints iconConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)looseConstraints.enforce(this.maxIconHeightConstraint));
         global::Doroti.Framework.Rendering.RenderBox? leadingLocal = this.leading;
         global::Doroti.Framework.Rendering.RenderBox? trailingLocal = this.trailing;
-        global::Doroti.Ui.Size? leadingSize = ((global::Doroti.Ui.Size?)(object?)((leadingLocal is null) ? null : getSize(leadingLocal, iconConstraints)));
-        global::Doroti.Ui.Size? trailingSize = ((global::Doroti.Ui.Size?)(object?)((trailingLocal is null) ? null : getSize(trailingLocal, iconConstraints)));
+        global::Doroti.Ui.Size? leadingSize = ((global::Doroti.Ui.Size?)((leadingLocal is null) ? null : getSize(leadingLocal, iconConstraints)));
+        global::Doroti.Ui.Size? trailingSize = ((global::Doroti.Ui.Size?)((trailingLocal is null) ? null : getSize(trailingLocal, iconConstraints)));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((tileWidth == 0.0))
@@ -702,7 +702,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
             });
         double titleStart = ((leadingSize is null) ? 0.0 : (Math.Max(this._minLeadingWidth, DartRuntimePrimitives.RequireValue(leadingSize).width) + this._effectiveHorizontalTitleGap));
         double adjustedTrailingWidth = ((trailingSize is null) ? 0.0 : Math.Max((DartRuntimePrimitives.RequireValue(trailingSize).width + this._effectiveHorizontalTitleGap), 32.0));
-        global::Doroti.Framework.Rendering.BoxConstraints textConstraintsLocal = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)looseConstraints.tighten(width: ((tileWidth - titleStart) - adjustedTrailingWidth)));
+        global::Doroti.Framework.Rendering.BoxConstraints textConstraintsLocal = ((global::Doroti.Framework.Rendering.BoxConstraints)looseConstraints.tighten(width: ((tileWidth - titleStart) - adjustedTrailingWidth)));
         global::Doroti.Framework.Rendering.RenderBox? subtitleLocal = this.subtitle;
         double titleHeight = getSize(this.title, textConstraintsLocal).height;
         bool isLTR = (this.textDirection switch { TextDirection.ltr => true, TextDirection.rtl => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -748,7 +748,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        (global::Doroti.Framework.Rendering.BoxConstraints textConstraints, Size tileSize, double titleY) sizes = _computeSizes((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?>)global::Doroti.Framework.Rendering.ChildLayoutHelper.getDryBaseline, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.dryLayoutChild, constraints);
+        (global::Doroti.Framework.Rendering.BoxConstraints textConstraints, Size tileSize, double titleY) sizes = _computeSizes((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, constraints);
         global::Doroti.Framework.Rendering.BaselineOffset titleBaseline = (new global::Doroti.Framework.Rendering.BaselineOffset(this.title.getDryBaseline(sizes.textConstraints, baseline)).op_Add(sizes.titleY));
         return titleBaseline.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -756,13 +756,13 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
 
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return constraints.constrain(_computeSizes((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?>)global::Doroti.Framework.Rendering.ChildLayoutHelper.getDryBaseline, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.dryLayoutChild, constraints).tileSize);
+        return constraints.constrain(_computeSizes((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, constraints).tileSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        global::Doroti.Ui.Size tileSizeLocal = ((global::Doroti.Ui.Size)(object?)_computeSizes((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?>)global::Doroti.Framework.Rendering.ChildLayoutHelper.getBaseline, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.layoutChild, this.constraints, positionChild: (global::System.Action<global::Doroti.Framework.Rendering.RenderBox, Offset>)_positionBox).tileSize);
+        global::Doroti.Ui.Size tileSizeLocal = ((global::Doroti.Ui.Size)_computeSizes((global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getBaseline, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)ChildLayoutHelper.layoutChild, this.constraints, positionChild: (global::System.Action<global::Doroti.Framework.Rendering.RenderBox, Offset>)_positionBox).tileSize);
         size = this.constraints.constrain(tileSizeLocal);
         DartRuntimePrimitives.Assert(() => (this.size.width == this.constraints.constrainWidth(tileSizeLocal.width)));
         DartRuntimePrimitives.Assert(() => (this.size.height == this.constraints.constrainHeight(tileSizeLocal.height)));
@@ -774,7 +774,7 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         {
             if ((child is not null))
             {
-                var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)child.parentData!)!;
+                var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)child.parentData!)!;
                 context.paintChild(child, (((global::Doroti.Framework.Rendering.BoxParentData)parentDataLocal).offset + offset));
             }
         }
@@ -789,10 +789,10 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
     {
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)child.parentData!)!;
+            var parentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)child.parentData!)!;
             bool isHit = result.addWithPaintOffset(offset: ((global::Doroti.Framework.Rendering.BoxParentData)parentDataLocal).offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - ((global::Doroti.Framework.Rendering.BoxParentData)parentDataLocal).offset))));
+                DartRuntimePrimitives.Assert(() => (Equals(transformed, (position - ((global::Doroti.Framework.Rendering.BoxParentData)parentDataLocal).offset))));
                 return child.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
@@ -875,9 +875,9 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
 
     public virtual void _moveChild(global::Doroti.Framework.Rendering.RenderBox child, _ListTileSlot__list_tile slot, _ListTileSlot__list_tile oldSlot)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(slot, oldSlot)));
+        DartRuntimePrimitives.Assert(() => (!Equals(slot, oldSlot)));
         global::Doroti.Framework.Rendering.RenderBox? oldChild = this._slotToChild.GetValueOrDefault(oldSlot);
-        if ((object.Equals(oldChild, child)))
+        if ((Equals(oldChild, child)))
         {
             _setChild(null, oldSlot);
         }
@@ -932,7 +932,7 @@ internal class _LisTileDefaultsM3__list_tile : ListTileThemeData
         }
     }
 
-    internal _LisTileDefaultsM3__list_tile(global::Doroti.Framework.Widgets.BuildContext context) : base(contentPadding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 24.0), minLeadingWidth: 24, minVerticalPadding: 8, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder())
+    internal _LisTileDefaultsM3__list_tile(global::Doroti.Framework.Widgets.BuildContext context) : base(contentPadding: EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 24.0), minLeadingWidth: 24, minVerticalPadding: 8, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder())
     {
         this.context = context;
     }

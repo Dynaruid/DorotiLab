@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/input_border.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -8,32 +8,32 @@ namespace Doroti.Framework.Material;
 
 public abstract class InputBorder : global::Doroti.Framework.Painting.ShapeBorder
 {
-    public static InputBorder none = ((InputBorder)(object?)new _NoInputBorder__input_border());
+    public static InputBorder none = ((InputBorder)new _NoInputBorder__input_border());
     public virtual global::Doroti.Framework.Painting.BorderSide borderSide { get; private set; } = default!;
 
     protected InputBorder(global::Doroti.Framework.Painting.BorderSide borderSide = default!)
     {
-        global::Doroti.Framework.Painting.BorderSide __borderSide = borderSide ?? global::Doroti.Framework.Painting.BorderSide.none;
+        global::Doroti.Framework.Painting.BorderSide __borderSide = borderSide ?? BorderSide.none;
         this.borderSide = __borderSide;
     }
 
     public abstract InputBorder copyWith(global::Doroti.Framework.Painting.BorderSide? borderSide = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, double? gapPadding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null);
     public abstract bool isOutline { get; }
-    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null) =>
+    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null) =>
         paint(canvas, rect, textDirection: textDirection, gapStart: 0.0, gapExtent: 0.0, gapPercentage: 0.0, shape: shape, borderRadius: borderRadius);
 
-    public abstract void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null);
+    public abstract void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null);
 }
 
 internal class _NoInputBorder__input_border : InputBorder
 {
-    internal _NoInputBorder__input_border() : base(borderSide: global::Doroti.Framework.Painting.BorderSide.none)
+    internal _NoInputBorder__input_border() : base(borderSide: BorderSide.none)
     {
     }
 
     public override _NoInputBorder__input_border copyWith(global::Doroti.Framework.Painting.BorderSide? borderSide = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, double? gapPadding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null) => new _NoInputBorder__input_border();
     public override bool isOutline => false;
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry dimensions => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero);
+    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry dimensions => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsets.zero);
     public override _NoInputBorder__input_border scale(double t) => new _NoInputBorder__input_border();
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
@@ -63,7 +63,7 @@ internal class _NoInputBorder__input_border : InputBorder
     }
 
     public override bool preferPaintInterior => true;
-    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
+    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
     {
     }
 
@@ -75,7 +75,7 @@ public class UnderlineInputBorder : InputBorder
 
     public UnderlineInputBorder(global::Doroti.Framework.Painting.BorderSide borderSide = default!, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!) : base(borderSide: borderSide ?? new global::Doroti.Framework.Painting.BorderSide())
     {
-        global::Doroti.Framework.Painting.BorderRadius __borderRadius = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.BorderRadius>(borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.CreateOnly(topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0)));
+        global::Doroti.Framework.Painting.BorderRadius __borderRadius = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.BorderRadius>(borderRadius ?? BorderRadiusGeometry.CreateOnly(topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0)));
         this.borderRadius = __borderRadius;
     }
 
@@ -90,7 +90,7 @@ public class UnderlineInputBorder : InputBorder
     {
         get
         {
-            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width));
+            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.CreateOnly(bottom: ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width));
         }
     }
     public override UnderlineInputBorder scale(double t)
@@ -104,7 +104,7 @@ public class UnderlineInputBorder : InputBorder
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRect(global::Doroti.Ui.Rect.fromLTWH(rect.left, rect.top, rect.width, Math.Max(0.0, (rect.height - ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width))));
+    __cascade.addRect(Rect.fromLTWH(rect.left, rect.top, rect.width, Math.Max(0.0, (rect.height - ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width))));
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -132,9 +132,9 @@ public class UnderlineInputBorder : InputBorder
         if ((a is UnderlineInputBorder))
         {
             UnderlineInputBorder a__as7313 = (UnderlineInputBorder)a;
-            return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)new UnderlineInputBorder(borderSide: BorderSide.lerp(((UnderlineInputBorder)a__as7313).borderSide, this.borderSide, t), borderRadius: BorderRadius.lerp(((UnderlineInputBorder)((UnderlineInputBorder)a__as7313)).borderRadius, this.borderRadius, t)!));
+            return ((global::Doroti.Framework.Painting.ShapeBorder?)new UnderlineInputBorder(borderSide: BorderSide.lerp(((UnderlineInputBorder)a__as7313).borderSide, this.borderSide, t), borderRadius: BorderRadius.lerp(((UnderlineInputBorder)((UnderlineInputBorder)a__as7313)).borderRadius, this.borderRadius, t)!));
         }
-        return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)base.lerpFrom(a, t));
+        return ((global::Doroti.Framework.Painting.ShapeBorder?)base.lerpFrom(a, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -143,22 +143,22 @@ public class UnderlineInputBorder : InputBorder
         if ((b is UnderlineInputBorder))
         {
             UnderlineInputBorder b__as7641 = (UnderlineInputBorder)b;
-            return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)new UnderlineInputBorder(borderSide: BorderSide.lerp(this.borderSide, ((UnderlineInputBorder)b__as7641).borderSide, t), borderRadius: BorderRadius.lerp(this.borderRadius, ((UnderlineInputBorder)((UnderlineInputBorder)b__as7641)).borderRadius, t)!));
+            return ((global::Doroti.Framework.Painting.ShapeBorder?)new UnderlineInputBorder(borderSide: BorderSide.lerp(this.borderSide, ((UnderlineInputBorder)b__as7641).borderSide, t), borderRadius: BorderRadius.lerp(this.borderRadius, ((UnderlineInputBorder)((UnderlineInputBorder)b__as7641)).borderRadius, t)!));
         }
-        return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)base.lerpTo(b, t));
+        return ((global::Doroti.Framework.Painting.ShapeBorder?)base.lerpTo(b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
+    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
     {
-        if ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).style, global::Doroti.Framework.Painting.BorderStyle.none)))
+        if ((Equals(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).style, BorderStyle.none)))
         {
             return;
         }
-        if (((!object.Equals(((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft, Radius.zero)) || (!object.Equals(((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight, Radius.zero))))
+        if (((!Equals(((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft, Radius.zero)) || (!Equals(((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight, Radius.zero))))
         {
-            var updatedBorderRadius = new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft.clamp(maximum: global::Doroti.Ui.Radius.circular((rect.height / 2L))), bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight.clamp(maximum: global::Doroti.Ui.Radius.circular((rect.height / 2L))));
-            BoxBorder.paintNonUniformBorder(canvas, rect, textDirection: textDirection, borderRadius: updatedBorderRadius, bottom: this.borderSide.copyWith(strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignInside), color: ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).color);
+            var updatedBorderRadius = new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft.clamp(maximum: Radius.circular((rect.height / 2L))), bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight.clamp(maximum: Radius.circular((rect.height / 2L))));
+            BoxBorder.paintNonUniformBorder(canvas, rect, textDirection: textDirection, borderRadius: updatedBorderRadius, bottom: this.borderSide.copyWith(strokeAlign: BorderSide.strokeAlignInside), color: ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).color);
         }
         else
         {
@@ -175,11 +175,11 @@ public class UnderlineInputBorder : InputBorder
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is UnderlineInputBorder) && (object.Equals(((UnderlineInputBorder)__other).borderSide, this.borderSide))) && (object.Equals(((UnderlineInputBorder)((UnderlineInputBorder)__other)).borderRadius, this.borderRadius)));
+        return (((__other is UnderlineInputBorder) && (Equals(((UnderlineInputBorder)__other).borderSide, this.borderSide))) && (Equals(((UnderlineInputBorder)((UnderlineInputBorder)__other)).borderRadius, this.borderRadius)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.borderSide, this.borderRadius));
@@ -192,7 +192,7 @@ public class OutlineInputBorder : InputBorder
 
     public OutlineInputBorder(global::Doroti.Framework.Painting.BorderSide borderSide = default!, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!, double gapPadding = 4.0) : base(borderSide: borderSide ?? new global::Doroti.Framework.Painting.BorderSide())
     {
-        global::Doroti.Framework.Painting.BorderRadius __borderRadius = borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.CreateAll(Radius.circular(4.0));
+        global::Doroti.Framework.Painting.BorderRadius __borderRadius = borderRadius ?? BorderRadius.CreateAll(Radius.circular(4.0));
         this.borderRadius = __borderRadius;
         this.gapPadding = gapPadding;
         System.Diagnostics.Debug.Assert((gapPadding >= 0.0));
@@ -215,7 +215,7 @@ public class OutlineInputBorder : InputBorder
     {
         get
         {
-            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateAll(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).strokeInset));
+            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.CreateAll(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).strokeInset));
         }
     }
     public override OutlineInputBorder scale(double t)
@@ -230,9 +230,9 @@ public class OutlineInputBorder : InputBorder
         {
             OutlineInputBorder a__as13586 = (OutlineInputBorder)a;
             OutlineInputBorder outline = ((OutlineInputBorder)a__as13586);
-            return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)new OutlineInputBorder(borderRadius: BorderRadius.lerp(((OutlineInputBorder)outline).borderRadius, this.borderRadius, t)!, borderSide: BorderSide.lerp(outline.borderSide, this.borderSide, t), gapPadding: DartRuntimePrimitives.RequireValue(((OutlineInputBorder)outline).gapPadding)));
+            return ((global::Doroti.Framework.Painting.ShapeBorder?)new OutlineInputBorder(borderRadius: BorderRadius.lerp(((OutlineInputBorder)outline).borderRadius, this.borderRadius, t)!, borderSide: BorderSide.lerp(outline.borderSide, this.borderSide, t), gapPadding: DartRuntimePrimitives.RequireValue(((OutlineInputBorder)outline).gapPadding)));
         }
-        return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)base.lerpFrom(a, t));
+        return ((global::Doroti.Framework.Painting.ShapeBorder?)base.lerpFrom(a, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -242,9 +242,9 @@ public class OutlineInputBorder : InputBorder
         {
             OutlineInputBorder b__as14006 = (OutlineInputBorder)b;
             OutlineInputBorder outline = ((OutlineInputBorder)b__as14006);
-            return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)new OutlineInputBorder(borderRadius: BorderRadius.lerp(this.borderRadius, ((OutlineInputBorder)outline).borderRadius, t)!, borderSide: BorderSide.lerp(this.borderSide, outline.borderSide, t), gapPadding: DartRuntimePrimitives.RequireValue(((OutlineInputBorder)outline).gapPadding)));
+            return ((global::Doroti.Framework.Painting.ShapeBorder?)new OutlineInputBorder(borderRadius: BorderRadius.lerp(this.borderRadius, ((OutlineInputBorder)outline).borderRadius, t)!, borderSide: BorderSide.lerp(this.borderSide, outline.borderSide, t), gapPadding: DartRuntimePrimitives.RequireValue(((OutlineInputBorder)outline).gapPadding)));
         }
-        return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)base.lerpTo(b, t));
+        return ((global::Doroti.Framework.Painting.ShapeBorder?)base.lerpTo(b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -278,16 +278,16 @@ public class OutlineInputBorder : InputBorder
     public override bool preferPaintInterior => true;
     internal virtual global::Doroti.Ui.Path _gapBorderPath(Canvas canvas, RRect center, double outerWidth, double start, double extent)
     {
-        global::Doroti.Ui.RRect scaledRRect = ((global::Doroti.Ui.RRect)(object?)center.scaleRadii());
-        var tlCorner = global::Doroti.Ui.Rect.fromLTWH(scaledRRect.left, scaledRRect.top, (scaledRRect.tlRadiusX * 2.0), (scaledRRect.tlRadiusY * 2.0));
-        var trCorner = global::Doroti.Ui.Rect.fromLTWH((scaledRRect.right - (scaledRRect.trRadiusX * 2.0)), scaledRRect.top, (scaledRRect.trRadiusX * 2.0), (scaledRRect.trRadiusY * 2.0));
-        var brCorner = global::Doroti.Ui.Rect.fromLTWH((scaledRRect.right - (scaledRRect.brRadiusX * 2.0)), (scaledRRect.bottom - (scaledRRect.brRadiusY * 2.0)), (scaledRRect.brRadiusX * 2.0), (scaledRRect.brRadiusY * 2.0));
-        var blCorner = global::Doroti.Ui.Rect.fromLTWH(scaledRRect.left, (scaledRRect.bottom - (scaledRRect.blRadiusY * 2.0)), (scaledRRect.blRadiusX * 2.0), (scaledRRect.blRadiusY * 2.0));
+        global::Doroti.Ui.RRect scaledRRect = ((global::Doroti.Ui.RRect)center.scaleRadii());
+        var tlCorner = Rect.fromLTWH(scaledRRect.left, scaledRRect.top, (scaledRRect.tlRadiusX * 2.0), (scaledRRect.tlRadiusY * 2.0));
+        var trCorner = Rect.fromLTWH((scaledRRect.right - (scaledRRect.trRadiusX * 2.0)), scaledRRect.top, (scaledRRect.trRadiusX * 2.0), (scaledRRect.trRadiusY * 2.0));
+        var brCorner = Rect.fromLTWH((scaledRRect.right - (scaledRRect.brRadiusX * 2.0)), (scaledRRect.bottom - (scaledRRect.brRadiusY * 2.0)), (scaledRRect.brRadiusX * 2.0), (scaledRRect.brRadiusY * 2.0));
+        var blCorner = Rect.fromLTWH(scaledRRect.left, (scaledRRect.bottom - (scaledRRect.blRadiusY * 2.0)), (scaledRRect.blRadiusX * 2.0), (scaledRRect.blRadiusY * 2.0));
         double cornerArcSweep = (Dart_mathLibrary.pi / 2.0);
         var path = new global::Doroti.Ui.Path();
-        if ((!object.Equals(scaledRRect.tlRadius, Radius.zero)))
+        if ((!Equals(scaledRRect.tlRadius, Radius.zero)))
         {
-            double tlCornerArcSweep = global::Doroti.Runtime.Dart_mathLibrary.acos(Dart_uiLibrary.clampDouble((1L - (start / scaledRRect.tlRadiusX)), 0.0, 1.0));
+            double tlCornerArcSweep = Dart_mathLibrary.acos(Dart_uiLibrary.clampDouble((1L - (start / scaledRRect.tlRadiusX)), 0.0, 1.0));
             path.addArc(tlCorner, Dart_mathLibrary.pi, tlCornerArcSweep);
         }
         else
@@ -304,7 +304,7 @@ public class OutlineInputBorder : InputBorder
         {
             path.moveTo((start + extent), scaledRRect.top);
             path.lineTo((scaledRRect.right - scaledRRect.trRadiusX), scaledRRect.top);
-            if ((!object.Equals(scaledRRect.trRadius, Radius.zero)))
+            if ((!Equals(scaledRRect.trRadius, Radius.zero)))
             {
                 path.addArc(trCorner, trCornerArcStart, trCornerArcSweep);
             }
@@ -314,36 +314,36 @@ public class OutlineInputBorder : InputBorder
             if (((start + extent) < outerWidth))
             {
                 double dx = (outerWidth - ((start + extent)));
-                double sweep = global::Doroti.Runtime.Dart_mathLibrary.asin(Dart_uiLibrary.clampDouble((1L - (dx / scaledRRect.trRadiusX)), 0.0, 1.0));
+                double sweep = Dart_mathLibrary.asin(Dart_uiLibrary.clampDouble((1L - (dx / scaledRRect.trRadiusX)), 0.0, 1.0));
                 path.addArc(trCorner, (trCornerArcStart + sweep), (trCornerArcSweep - sweep));
             }
         }
-        if ((!object.Equals(scaledRRect.brRadius, Radius.zero)))
+        if ((!Equals(scaledRRect.brRadius, Radius.zero)))
         {
             path.moveTo(scaledRRect.right, (scaledRRect.top + scaledRRect.trRadiusY));
         }
         path.lineTo(scaledRRect.right, (scaledRRect.bottom - scaledRRect.brRadiusY));
-        if ((!object.Equals(scaledRRect.brRadius, Radius.zero)))
+        if ((!Equals(scaledRRect.brRadius, Radius.zero)))
         {
             path.addArc(brCorner, 0.0, cornerArcSweep);
         }
         path.lineTo((scaledRRect.left + scaledRRect.blRadiusX), scaledRRect.bottom);
-        if ((!object.Equals(scaledRRect.blRadius, Radius.zero)))
+        if ((!Equals(scaledRRect.blRadius, Radius.zero)))
         {
             path.addArc(blCorner, (Dart_mathLibrary.pi / 2.0), cornerArcSweep);
         }
         path.lineTo(scaledRRect.left, (scaledRRect.top + scaledRRect.tlRadiusY));
-        return ((global::Doroti.Ui.Path)(object?)path);
+        return ((global::Doroti.Ui.Path)path);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
+    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
     {
         DartRuntimePrimitives.Assert(() => ((gapPercentage >= 0.0) && (gapPercentage <= 1.0)));
-        DartRuntimePrimitives.Assert(() => OutlineInputBorder._cornersAreCircular(this.borderRadius));
-        global::Doroti.Ui.Paint paintLocal = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
-        global::Doroti.Ui.RRect outer = ((global::Doroti.Ui.RRect)(object?)this.borderRadius.toRRect(rect));
-        global::Doroti.Ui.RRect center = ((global::Doroti.Ui.RRect)(object?)outer.inflate((((global::Doroti.Framework.Painting.BorderSide)this.borderSide).strokeOffset / 2L)));
+        DartRuntimePrimitives.Assert(() => _cornersAreCircular(this.borderRadius));
+        global::Doroti.Ui.Paint paintLocal = ((global::Doroti.Ui.Paint)this.borderSide.toPaint());
+        global::Doroti.Ui.RRect outer = ((global::Doroti.Ui.RRect)this.borderRadius.toRRect(rect));
+        global::Doroti.Ui.RRect center = ((global::Doroti.Ui.RRect)outer.inflate((((global::Doroti.Framework.Painting.BorderSide)this.borderSide).strokeOffset / 2L)));
         if ((((gapStart is null) || (gapExtent <= 0.0)) || (gapPercentage == 0.0)))
         {
             canvas.drawRRect(center, paintLocal);
@@ -352,7 +352,7 @@ public class OutlineInputBorder : InputBorder
         {
             double extent = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, (gapExtent + (this.gapPadding * 2.0)), gapPercentage));
             double start = (DartRuntimePrimitives.RequireValue(textDirection) switch { TextDirection.rtl => ((DartRuntimePrimitives.RequireValue(gapStart) + this.gapPadding) - extent), TextDirection.ltr => (DartRuntimePrimitives.RequireValue(gapStart) - this.gapPadding), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            global::Doroti.Ui.Path path = ((global::Doroti.Ui.Path)(object?)_gapBorderPath(canvas, center, outer.width, Math.Max(0.0, start), extent));
+            global::Doroti.Ui.Path path = ((global::Doroti.Ui.Path)_gapBorderPath(canvas, center, outer.width, Math.Max(0.0, start), extent));
             canvas.drawPath(path, paintLocal);
         }
     }
@@ -365,11 +365,11 @@ public class OutlineInputBorder : InputBorder
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is OutlineInputBorder) && (object.Equals(((OutlineInputBorder)__other).borderSide, this.borderSide))) && (object.Equals(((OutlineInputBorder)((OutlineInputBorder)__other)).borderRadius, this.borderRadius))) && (((OutlineInputBorder)((OutlineInputBorder)__other)).gapPadding == this.gapPadding));
+        return ((((__other is OutlineInputBorder) && (Equals(((OutlineInputBorder)__other).borderSide, this.borderSide))) && (Equals(((OutlineInputBorder)((OutlineInputBorder)__other)).borderRadius, this.borderRadius))) && (((OutlineInputBorder)((OutlineInputBorder)__other)).gapPadding == this.gapPadding));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.borderSide, this.borderRadius, this.gapPadding));
@@ -398,7 +398,7 @@ public class ShapedInputBorder : InputBorder
     {
         get
         {
-            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateAll(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width));
+            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.CreateAll(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width));
         }
     }
     public override ShapedInputBorder scale(double t)
@@ -412,9 +412,9 @@ public class ShapedInputBorder : InputBorder
         if ((a is ShapedInputBorder))
         {
             ShapedInputBorder a__as23771 = (ShapedInputBorder)a;
-            return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)new ShapedInputBorder(borderSide: BorderSide.lerp(((ShapedInputBorder)a__as23771).borderSide, this.borderSide, t), shape: ShapeBorder.lerp(((ShapedInputBorder)((ShapedInputBorder)a__as23771)).shape, this.shape, t)!, gapPadding: DartRuntimePrimitives.RequireValue(((ShapedInputBorder)((ShapedInputBorder)a__as23771)).gapPadding)));
+            return ((global::Doroti.Framework.Painting.ShapeBorder?)new ShapedInputBorder(borderSide: BorderSide.lerp(((ShapedInputBorder)a__as23771).borderSide, this.borderSide, t), shape: lerp(((ShapedInputBorder)((ShapedInputBorder)a__as23771)).shape, this.shape, t)!, gapPadding: DartRuntimePrimitives.RequireValue(((ShapedInputBorder)((ShapedInputBorder)a__as23771)).gapPadding)));
         }
-        return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)base.lerpFrom(a, t));
+        return ((global::Doroti.Framework.Painting.ShapeBorder?)base.lerpFrom(a, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -423,21 +423,21 @@ public class ShapedInputBorder : InputBorder
         if ((b is ShapedInputBorder))
         {
             ShapedInputBorder b__as24105 = (ShapedInputBorder)b;
-            return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)new ShapedInputBorder(borderSide: BorderSide.lerp(this.borderSide, ((ShapedInputBorder)b__as24105).borderSide, t), shape: ShapeBorder.lerp(this.shape, ((ShapedInputBorder)((ShapedInputBorder)b__as24105)).shape, t)!, gapPadding: DartRuntimePrimitives.RequireValue(((ShapedInputBorder)((ShapedInputBorder)b__as24105)).gapPadding)));
+            return ((global::Doroti.Framework.Painting.ShapeBorder?)new ShapedInputBorder(borderSide: BorderSide.lerp(this.borderSide, ((ShapedInputBorder)b__as24105).borderSide, t), shape: lerp(this.shape, ((ShapedInputBorder)((ShapedInputBorder)b__as24105)).shape, t)!, gapPadding: DartRuntimePrimitives.RequireValue(((ShapedInputBorder)((ShapedInputBorder)b__as24105)).gapPadding)));
         }
-        return ((global::Doroti.Framework.Painting.ShapeBorder?)(object?)base.lerpTo(b, t));
+        return ((global::Doroti.Framework.Painting.ShapeBorder?)base.lerpTo(b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        return ((Path)(object?)this.shape.getInnerPath(rect.deflate(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), textDirection: textDirection));
+        return ((Path)this.shape.getInnerPath(rect.deflate(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), textDirection: textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
-        return ((Path)(object?)this.shape.getOuterPath(rect, textDirection: textDirection));
+        return ((Path)this.shape.getOuterPath(rect, textDirection: textDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -456,35 +456,35 @@ public class ShapedInputBorder : InputBorder
     public override bool preferPaintInterior => ((global::Doroti.Framework.Painting.ShapeBorder)this.shape).preferPaintInterior;
     internal virtual global::Doroti.Ui.Path _gapBorderPath(Rect rect, double start, double extent, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Path outerPath = ((global::Doroti.Ui.Path)(object?)this.shape.getOuterPath(rect, textDirection: textDirection));
+        global::Doroti.Ui.Path outerPath = ((global::Doroti.Ui.Path)this.shape.getOuterPath(rect, textDirection: textDirection));
         if (((start <= 0L) && (extent <= 0L)))
         {
-            return ((global::Doroti.Ui.Path)(object?)outerPath);
+            return ((global::Doroti.Ui.Path)outerPath);
         }
         var gapLeft = start;
         double gapRight = (start + extent);
         var gapRect = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRect(global::Doroti.Ui.Rect.fromLTRB(Dart_uiLibrary.clampDouble(gapLeft, rect.left, rect.right), (rect.top - 1.0), Dart_uiLibrary.clampDouble(gapRight, rect.left, rect.right), (rect.top + 1.0)));
+    __cascade.addRect(Rect.fromLTRB(Dart_uiLibrary.clampDouble(gapLeft, rect.left, rect.right), (rect.top - 1.0), Dart_uiLibrary.clampDouble(gapRight, rect.left, rect.right), (rect.top + 1.0)));
     return __cascade;
 }))();
-        return ((global::Doroti.Ui.Path)(object?)Dart_uiLibrary.Path.combine(PathOperation.difference, outerPath, gapRect));
+        return ((global::Doroti.Ui.Path)Dart_uiLibrary.Path.combine(PathOperation.difference, outerPath, gapRect));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
+    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null)
     {
         DartRuntimePrimitives.Assert(() => ((gapPercentage >= 0.0) && (gapPercentage <= 1.0)));
-        global::Doroti.Ui.Paint paintLocal = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
-        global::Doroti.Ui.Rect deflatedRect = ((global::Doroti.Ui.Rect)(object?)rect.deflate((((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)));
+        global::Doroti.Ui.Paint paintLocal = ((global::Doroti.Ui.Paint)this.borderSide.toPaint());
+        global::Doroti.Ui.Rect deflatedRect = ((global::Doroti.Ui.Rect)rect.deflate((((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)));
         if ((((gapStart is null) || (gapExtent <= 0.0)) || (gapPercentage == 0.0)))
         {
             if ((this.shape is global::Doroti.Framework.Painting.OutlinedBorder))
             {
                 global::Doroti.Framework.Painting.OutlinedBorder shape__as27236 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(shape);
-                var outlinedShape = ((global::Doroti.Framework.Painting.OutlinedBorder?)(object?)this.shape)!;
-                global::Doroti.Framework.Painting.OutlinedBorder shapedBorder = ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)outlinedShape.copyWith(side: this.borderSide));
+                var outlinedShape = ((global::Doroti.Framework.Painting.OutlinedBorder?)this.shape)!;
+                global::Doroti.Framework.Painting.OutlinedBorder shapedBorder = ((global::Doroti.Framework.Painting.OutlinedBorder)outlinedShape.copyWith(side: this.borderSide));
                 shapedBorder.paint(canvas, deflatedRect, textDirection: textDirection);
             }
             else
@@ -496,7 +496,7 @@ public class ShapedInputBorder : InputBorder
         {
             double extent = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0.0, (gapExtent + (this.gapPadding * 2.0)), gapPercentage));
             double start = (DartRuntimePrimitives.RequireValue(textDirection) switch { TextDirection.rtl => ((DartRuntimePrimitives.RequireValue(gapStart) + this.gapPadding) - extent), TextDirection.ltr => (DartRuntimePrimitives.RequireValue(gapStart) - this.gapPadding), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            global::Doroti.Ui.Path path = ((global::Doroti.Ui.Path)(object?)_gapBorderPath(deflatedRect, Math.Max(0.0, start), extent, textDirection: DartRuntimePrimitives.RequireValue(textDirection)));
+            global::Doroti.Ui.Path path = ((global::Doroti.Ui.Path)_gapBorderPath(deflatedRect, Math.Max(0.0, start), extent, textDirection: DartRuntimePrimitives.RequireValue(textDirection)));
             canvas.drawPath(path, paintLocal);
         }
     }
@@ -509,11 +509,11 @@ public class ShapedInputBorder : InputBorder
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is ShapedInputBorder) && (object.Equals(((ShapedInputBorder)__other).borderSide, this.borderSide))) && (object.Equals(((ShapedInputBorder)((ShapedInputBorder)__other)).shape, this.shape))) && (((ShapedInputBorder)((ShapedInputBorder)__other)).gapPadding == this.gapPadding));
+        return ((((__other is ShapedInputBorder) && (Equals(((ShapedInputBorder)__other).borderSide, this.borderSide))) && (Equals(((ShapedInputBorder)((ShapedInputBorder)__other)).shape, this.shape))) && (((ShapedInputBorder)((ShapedInputBorder)__other)).gapPadding == this.gapPadding));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.borderSide, this.shape, this.gapPadding));

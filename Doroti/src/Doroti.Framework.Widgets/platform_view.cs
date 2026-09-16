@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/platform_view.dart
-#pragma warning disable CS8600, CS8601, CS8603, CS8604, CS8620
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Framework.Widgets.PlatformViewDisposal;
@@ -18,7 +17,7 @@ public class AndroidView : StatefulWidget
     public virtual global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public AndroidView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, Clip clipBehavior = Clip.hardEdge) : base(key: key)
+    public AndroidView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, Clip clipBehavior = Clip.hardEdge) : base(key: key)
     {
         this.viewType = viewType;
         this.onPlatformViewCreated = onPlatformViewCreated;
@@ -44,7 +43,7 @@ public abstract class _DarwinView__platform_view : StatefulWidget
     public virtual global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec { get; private set; }
     public virtual HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers { get; private set; }
 
-    internal _DarwinView__platform_view(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key)
+    internal _DarwinView__platform_view(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key)
     {
         this.viewType = viewType;
         this.onPlatformViewCreated = onPlatformViewCreated;
@@ -62,7 +61,7 @@ public class UiKitView : _DarwinView__platform_view
 {
     public virtual global::Doroti.Framework.Services.UiKitViewGestureBlockingPolicy gestureBlockingPolicy { get; private set; } = default!;
 
-    public UiKitView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::Doroti.Framework.Services.UiKitViewGestureBlockingPolicy gestureBlockingPolicy = global::Doroti.Framework.Services.UiKitViewGestureBlockingPolicy.fallbackToPluginDefault, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: (object?)creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
+    public UiKitView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::Doroti.Framework.Services.UiKitViewGestureBlockingPolicy gestureBlockingPolicy = UiKitViewGestureBlockingPolicy.fallbackToPluginDefault, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: (object?)creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
     {
         this.gestureBlockingPolicy = gestureBlockingPolicy;
         System.Diagnostics.Debug.Assert(((creationParams is null) || (creationParamsCodec is not null)));
@@ -73,7 +72,7 @@ public class UiKitView : _DarwinView__platform_view
 
 public class AppKitView : _DarwinView__platform_view
 {
-    public AppKitView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: (object?)creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
+    public AppKitView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque, TextDirection? layoutDirection = null, object? creationParams = default!, global::Doroti.Framework.Services.MessageCodec<object>? creationParamsCodec = null, HashSet<global::Doroti.Framework.Foundation.Factory<global::Doroti.Framework.Gestures.OneSequenceGestureRecognizer>>? gestureRecognizers = null) : base(key: key, viewType: viewType, onPlatformViewCreated: onPlatformViewCreated, hitTestBehavior: hitTestBehavior, layoutDirection: DartRuntimePrimitives.RequireValue(layoutDirection), creationParams: (object?)creationParams, creationParamsCodec: creationParamsCodec, gestureRecognizers: gestureRecognizers)
     {
     }
 
@@ -89,7 +88,7 @@ public class HtmlElementView : StatelessWidget
     public virtual object? creationParams { get; private set; }
     public virtual global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior { get; private set; } = default!;
 
-    public HtmlElementView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, object? creationParams = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.opaque) : base(key: key)
+    public HtmlElementView(global::Doroti.Framework.Foundation.Key? key = null, string viewType = default!, global::System.Action<long>? onPlatformViewCreated = null, object? creationParams = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque) : base(key: key)
     {
         this.viewType = viewType;
         this.onPlatformViewCreated = onPlatformViewCreated;
@@ -97,7 +96,7 @@ public class HtmlElementView : StatelessWidget
         this.hitTestBehavior = hitTestBehavior;
     }
 
-    public static HtmlElementView CreateFromTagName(global::Doroti.Framework.Foundation.Key? key = null, string tagName = default!, bool isVisible = true, global::System.Action<object>? onElementCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.opaque) => throw new NotSupportedException("HtmlElementView is only available on Flutter Web");
+    public static HtmlElementView CreateFromTagName(global::Doroti.Framework.Foundation.Key? key = null, string tagName = default!, bool isVisible = true, global::System.Action<object>? onElementCreated = null, global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior hitTestBehavior = PlatformViewHitTestBehavior.opaque) => throw new NotSupportedException("HtmlElementView is only available on Flutter Web");
 
     public override Widget build(BuildContext context) => new RegisteredHtmlElementView(this);
 }
@@ -113,7 +112,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Focus(focusNode: this._focusNode, onFocusChange: this._onFocusChange, child: new _AndroidPlatformView__platform_view(controller: this._controller, hitTestBehavior: ((AndroidView)this.widget).hitTestBehavior, gestureRecognizers: (((AndroidView)this.widget).gestureRecognizers ?? _emptyRecognizersSet), clipBehavior: ((AndroidView)this.widget).clipBehavior)));
+        return ((Widget)new Focus(focusNode: this._focusNode, onFocusChange: this._onFocusChange, child: new _AndroidPlatformView__platform_view(controller: this._controller, hitTestBehavior: ((AndroidView)this.widget).hitTestBehavior, gestureRecognizers: (((AndroidView)this.widget).gestureRecognizers ?? _emptyRecognizersSet), clipBehavior: ((AndroidView)this.widget).clipBehavior)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -132,7 +131,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
     {
         base.didChangeDependencies();
         global::Doroti.Ui.TextDirection newLayoutDirection = _findLayoutDirection();
-        var didChangeLayoutDirection = (!object.Equals(this._layoutDirection, newLayoutDirection));
+        var didChangeLayoutDirection = (!Equals(this._layoutDirection, newLayoutDirection));
         _layoutDirection = newLayoutDirection;
         _initializeOnce();
         if (didChangeLayoutDirection)
@@ -145,7 +144,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
     {
         base.didUpdateWidget(oldWidget);
         global::Doroti.Ui.TextDirection newLayoutDirection = _findLayoutDirection();
-        var didChangeLayoutDirection = (!object.Equals(this._layoutDirection, newLayoutDirection));
+        var didChangeLayoutDirection = (!Equals(this._layoutDirection, newLayoutDirection));
         _layoutDirection = newLayoutDirection;
         if ((((AndroidView)this.widget).viewType != ((AndroidView)oldWidget).viewType))
         {
@@ -161,7 +160,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
 
     internal virtual global::Doroti.Ui.TextDirection _findLayoutDirection()
     {
-        DartRuntimePrimitives.Assert(() => ((((AndroidView)this.widget).layoutDirection is not null) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(this.context)));
+        DartRuntimePrimitives.Assert(() => ((((AndroidView)this.widget).layoutDirection is not null) || DebugLibrary.debugCheckHasDirectionality(this.context)));
         return ((((AndroidView)this.widget).layoutDirection ?? (TextDirection)Directionality.of(this.context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -176,7 +175,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
 
     internal virtual void _createNewAndroidView()
     {
-        _id = global::Doroti.Framework.Services.Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
+        _id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
         _controller = PlatformViewsService.initAndroidView(id: DartRuntimePrimitives.RequireValue(this._id), viewType: ((AndroidView)this.widget).viewType, layoutDirection: DartRuntimePrimitives.RequireValue(this._layoutDirection), creationParams: ((AndroidView)this.widget).creationParams, creationParamsCodec: ((AndroidView)this.widget).creationParamsCodec, onFocus: ((global::System.Action)(() =>
         {
             this._focusNode!.requestFocus();
@@ -195,7 +194,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
         }
         if (!isFocused)
         {
-            DartRuntimePrimitives.Ignore(this._controller.clearFocus().catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((e, stack) =>
+            DartRuntimePrimitives.Ignore(this._controller.clearFocus().catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((e, stack) =>
             {
                 if ((e is global::Doroti.Framework.Services.MissingPluginException))
                 {
@@ -208,7 +207,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
             }))));
             return;
         }
-        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((e, stack) =>
+        DartRuntimePrimitives.Ignore(SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object?> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((e, stack) =>
         {
             if ((e is global::Doroti.Framework.Services.MissingPluginException))
             {
@@ -236,9 +235,9 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
         ControllerT? controller = this._controller;
         if ((controller is null))
         {
-            return ((Widget)(object?)SizedBox.CreateExpand());
+            return ((Widget)SizedBox.CreateExpand());
         }
-        return ((Widget)(object?)new Focus(focusNode: this.focusNode, onFocusChange: ((isFocused) => { _onFocusChange(isFocused, controller); }), child: childPlatformView()));
+        return ((Widget)new Focus(focusNode: this.focusNode, onFocusChange: ((isFocused) => { _onFocusChange(isFocused, controller); }), child: childPlatformView()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -257,7 +256,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
     {
         base.didChangeDependencies();
         global::Doroti.Ui.TextDirection newLayoutDirection = _findLayoutDirection();
-        var didChangeLayoutDirection = (!object.Equals(this._layoutDirection, newLayoutDirection));
+        var didChangeLayoutDirection = (!Equals(this._layoutDirection, newLayoutDirection));
         _layoutDirection = newLayoutDirection;
         _initializeOnce();
         if (didChangeLayoutDirection)
@@ -270,9 +269,9 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
     {
         base.didUpdateWidget(oldWidget);
         global::Doroti.Ui.TextDirection newLayoutDirection = _findLayoutDirection();
-        var didChangeLayoutDirection = (!object.Equals(this._layoutDirection, newLayoutDirection));
+        var didChangeLayoutDirection = (!Equals(this._layoutDirection, newLayoutDirection));
         _layoutDirection = newLayoutDirection;
-        if ((this.widget.viewType != ((_DarwinView__platform_view)(object)oldWidget).viewType))
+        if ((this.widget.viewType != ((_DarwinView__platform_view)oldWidget).viewType))
         {
             DartRuntimePrimitives.Ignore(this._controller?.dispose());
             _controller = null;
@@ -289,7 +288,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
 
     internal virtual global::Doroti.Ui.TextDirection _findLayoutDirection()
     {
-        DartRuntimePrimitives.Assert(() => ((this.widget.layoutDirection is not null) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(this.context)));
+        DartRuntimePrimitives.Assert(() => ((this.widget.layoutDirection is not null) || DebugLibrary.debugCheckHasDirectionality(this.context)));
         return ((this.widget.layoutDirection ?? (TextDirection)Directionality.of(this.context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -307,7 +306,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
     {
         try
         {
-            long id = global::Doroti.Framework.Services.Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
+            long id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
             ControllerT controller = await createNewViewController(id);
             if (!this.mounted)
             {
@@ -335,7 +334,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
         {
             return;
         }
-        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = ((DarwinPlatformViewController)(object)controller).id }).then(((_) =>
+        DartRuntimePrimitives.Ignore(SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object?> { ["platformViewId"] = ((DarwinPlatformViewController)controller).id }).then(((_) =>
         {
         }), onError: ((error, stack) =>
         {
@@ -401,7 +400,7 @@ internal class _AndroidPlatformView__platform_view : LeafRenderObjectWidget
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderAndroidView(viewController: this.controller, hitTestBehavior: this.hitTestBehavior, gestureRecognizers: this.gestureRecognizers, clipBehavior: this.clipBehavior));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderAndroidView)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderAndroidView)renderObject;
         __renderObject.controller = this.controller;
         __renderObject.hitTestBehavior = this.hitTestBehavior;
         __renderObject.updateGestureRecognizers(this.gestureRecognizers);
@@ -425,7 +424,7 @@ internal abstract class _DarwinPlatformView__platform_view<TController, TRender>
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (TRender)(object)renderObject;
+        var __renderObject = (TRender)renderObject;
         DartRuntimePrimitives.Ignore(((Func<TRender>)(() =>
 {
     var __cascade = __renderObject;
@@ -446,7 +445,7 @@ internal class _UiKitPlatformView__platform_view : _DarwinPlatformView__platform
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderUiKitView(viewController: this.controller, hitTestBehavior: this.hitTestBehavior, gestureRecognizers: this.gestureRecognizers));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderUiKitView(viewController: this.controller, hitTestBehavior: this.hitTestBehavior, gestureRecognizers: this.gestureRecognizers));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -460,7 +459,7 @@ internal class _AppKitPlatformView__platform_view : _DarwinPlatformView__platfor
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderAppKitView(viewController: this.controller, hitTestBehavior: this.hitTestBehavior, gestureRecognizers: this.gestureRecognizers));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderAppKitView(viewController: this.controller, hitTestBehavior: this.hitTestBehavior, gestureRecognizers: this.gestureRecognizers));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -516,11 +515,11 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
         global::Doroti.Framework.Services.PlatformViewController? controller = this._controller;
         if ((controller is null))
         {
-            return ((Widget)(object?)SizedBox.CreateExpand());
+            return ((Widget)SizedBox.CreateExpand());
         }
         if (!this._platformViewCreated)
         {
-            return ((Widget)(object?)new _PlatformViewPlaceHolder__platform_view(onLayout: ((global::System.Action<Size, Offset>)((size, position) =>
+            return ((Widget)new _PlatformViewPlaceHolder__platform_view(onLayout: ((global::System.Action<Size, Offset>)((size, position) =>
             {
                 if ((((global::Doroti.Framework.Services.PlatformViewController)controller).awaitingCreation && !size.isEmpty))
                 {
@@ -529,7 +528,7 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
             }))));
         }
         _surface ??= this.widget._surfaceFactory(context, controller);
-        return ((Widget)(object?)new Focus(focusNode: this._focusNode, onFocusChange: this._handleFrameworkFocusChanged, child: this._surface!));
+        return ((Widget)new Focus(focusNode: this._focusNode, onFocusChange: this._handleFrameworkFocusChanged, child: this._surface!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -553,7 +552,7 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
 
     internal virtual void _initialize()
     {
-        _id = global::Doroti.Framework.Services.Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
+        _id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
         _controller = this.widget._onCreatePlatformView(new PlatformViewCreationParams(id: DartRuntimePrimitives.RequireValue(this._id), viewType: ((PlatformViewLink)this.widget).viewType, onPlatformViewCreated: (global::System.Action<long>)this._onPlatformViewCreated, onFocusChanged: (global::System.Action<bool>)this._handlePlatformFocusChanged));
     }
 
@@ -574,7 +573,7 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
         {
             DartRuntimePrimitives.Ignore(this._controller?.clearFocus());
         }
-        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((error, stack) =>
+        DartRuntimePrimitives.Ignore(SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object?> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((error, stack) =>
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while handling framework focus changed on platform view")));
         }))));
@@ -614,13 +613,13 @@ public class PlatformViewSurface : LeafRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.PlatformViewRenderBox(controller: this.controller, gestureRecognizers: this.gestureRecognizers, hitTestBehavior: this.hitTestBehavior));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.PlatformViewRenderBox(controller: this.controller, gestureRecognizers: this.gestureRecognizers, hitTestBehavior: this.hitTestBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.PlatformViewRenderBox)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.PlatformViewRenderBox)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.PlatformViewRenderBox>)(() =>
 {
     var __cascade = __renderObject;
@@ -648,7 +647,7 @@ public class AndroidViewSurface : StatefulWidget
 
     public override IState createState()
     {
-        return ((IState)(object?)new _AndroidViewSurfaceState__platform_view());
+        return ((IState)new _AndroidViewSurfaceState__platform_view());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -675,11 +674,11 @@ internal class _AndroidViewSurfaceState__platform_view : State<AndroidViewSurfac
     {
         if (((AndroidViewSurface)this.widget).controller.requiresViewComposition)
         {
-            return ((Widget)(object?)new _PlatformLayerBasedAndroidViewSurface__platform_view(controller: ((AndroidViewSurface)this.widget).controller, hitTestBehavior: ((AndroidViewSurface)this.widget).hitTestBehavior, gestureRecognizers: ((AndroidViewSurface)this.widget).gestureRecognizers));
+            return ((Widget)new _PlatformLayerBasedAndroidViewSurface__platform_view(controller: ((AndroidViewSurface)this.widget).controller, hitTestBehavior: ((AndroidViewSurface)this.widget).hitTestBehavior, gestureRecognizers: ((AndroidViewSurface)this.widget).gestureRecognizers));
         }
         else
         {
-            return ((Widget)(object?)new _TextureBasedAndroidViewSurface__platform_view(controller: ((AndroidViewSurface)this.widget).controller, hitTestBehavior: ((AndroidViewSurface)this.widget).hitTestBehavior, gestureRecognizers: ((AndroidViewSurface)this.widget).gestureRecognizers));
+            return ((Widget)new _TextureBasedAndroidViewSurface__platform_view(controller: ((AndroidViewSurface)this.widget).controller, hitTestBehavior: ((AndroidViewSurface)this.widget).hitTestBehavior, gestureRecognizers: ((AndroidViewSurface)this.widget).gestureRecognizers));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -701,10 +700,10 @@ internal class _TextureBasedAndroidViewSurface__platform_view : PlatformViewSurf
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var viewControllerLocal = ((global::Doroti.Framework.Services.AndroidViewController?)(object?)this.controller)!;
+        var viewControllerLocal = ((global::Doroti.Framework.Services.AndroidViewController?)this.controller)!;
         var renderBox = new global::Doroti.Framework.Rendering.RenderAndroidView(viewController: viewControllerLocal, gestureRecognizers: this.gestureRecognizers, hitTestBehavior: this.hitTestBehavior);
         viewControllerLocal.pointTransformer = (global::System.Func<Offset, Offset>)((position) => ((Offset)(renderBox).globalToLocal(position)));
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)renderBox);
+        return ((global::Doroti.Framework.Rendering.RenderObject)renderBox);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -718,10 +717,10 @@ internal class _PlatformLayerBasedAndroidViewSurface__platform_view : PlatformVi
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var viewController = ((global::Doroti.Framework.Services.AndroidViewController?)(object?)this.controller)!;
-        var renderBox = ((global::Doroti.Framework.Rendering.PlatformViewRenderBox?)(object?)base.createRenderObject(context))!;
+        var viewController = ((global::Doroti.Framework.Services.AndroidViewController?)this.controller)!;
+        var renderBox = ((global::Doroti.Framework.Rendering.PlatformViewRenderBox?)base.createRenderObject(context))!;
         viewController.pointTransformer = (global::System.Func<Offset, Offset>)((position) => ((Offset)(renderBox).globalToLocal(position)));
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)renderBox);
+        return ((global::Doroti.Framework.Rendering.RenderObject)renderBox);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -733,7 +732,7 @@ public class _PlatformViewPlaceholderBox__platform_view : global::Doroti.Framewo
 {
     public virtual global::System.Action<Size, Offset> onLayout { get; set; } = default!;
 
-    internal _PlatformViewPlaceholderBox__platform_view(global::System.Action<Size, Offset> onLayout) : base(additionalConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: double.PositiveInfinity, height: double.PositiveInfinity))
+    internal _PlatformViewPlaceholderBox__platform_view(global::System.Action<Size, Offset> onLayout) : base(additionalConstraints: BoxConstraints.CreateTightFor(width: double.PositiveInfinity, height: double.PositiveInfinity))
     {
         this.onLayout = onLayout;
     }
@@ -741,7 +740,7 @@ public class _PlatformViewPlaceholderBox__platform_view : global::Doroti.Framewo
     public override void performLayout()
     {
         base.performLayout();
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
         {
             if (!this.attached)
             {
@@ -764,13 +763,13 @@ internal class _PlatformViewPlaceHolder__platform_view : SingleChildRenderObject
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _PlatformViewPlaceholderBox__platform_view(onLayout: (global::System.Action<Size, Offset>)this.onLayout));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _PlatformViewPlaceholderBox__platform_view(onLayout: (global::System.Action<Size, Offset>)this.onLayout));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_PlatformViewPlaceholderBox__platform_view)(object)renderObject;
+        var __renderObject = (_PlatformViewPlaceholderBox__platform_view)renderObject;
         __renderObject.onLayout = (global::System.Action<Size, Offset>)this.onLayout;
     }
 
@@ -781,6 +780,6 @@ internal static class PlatformViewDisposal
 {
     internal static void _disposeControllerPostFrame(global::Doroti.Framework.Services.PlatformViewController controller)
     {
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(_ => DartRuntimePrimitives.Ignore(controller.dispose()), debugLabel: "PlatformViewController.dispose");
+        Scheduler.SchedulerBinding.instance.addPostFrameCallback(_ => DartRuntimePrimitives.Ignore(controller.dispose()), debugLabel: "PlatformViewController.dispose");
     }
 }

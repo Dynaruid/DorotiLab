@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/list_tile.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -18,37 +18,37 @@ public static partial class List_tileLibrary
 
 public static partial class List_tileLibrary
 {
-    internal static double _kMinHeight = (List_tileLibrary._kLeadingSize + (2L * 8.0));
+    internal static double _kMinHeight = (_kLeadingSize + (2L * 8.0));
 }
 
 public static partial class List_tileLibrary
 {
-    internal static double _kMinHeightWithSubtitle = (List_tileLibrary._kLeadingSize + (2L * 10.0));
+    internal static double _kMinHeightWithSubtitle = (_kLeadingSize + (2L * 10.0));
 }
 
 public static partial class List_tileLibrary
 {
-    internal static double _kNotchedMinHeight = (List_tileLibrary._kNotchedLeadingSize + (2L * 12.0));
+    internal static double _kNotchedMinHeight = (_kNotchedLeadingSize + (2L * 12.0));
 }
 
 public static partial class List_tileLibrary
 {
-    internal static double _kNotchedMinHeightWithoutLeading = (List_tileLibrary._kNotchedLeadingSize + (2L * 10.0));
+    internal static double _kNotchedMinHeightWithoutLeading = (_kNotchedLeadingSize + (2L * 10.0));
 }
 
 public static partial class List_tileLibrary
 {
-    internal static global::Doroti.Framework.Painting.EdgeInsetsDirectional _kPadding = global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 20.0, end: 14.0);
+    internal static global::Doroti.Framework.Painting.EdgeInsetsDirectional _kPadding = EdgeInsetsDirectional.CreateOnly(start: 20.0, end: 14.0);
 }
 
 public static partial class List_tileLibrary
 {
-    internal static global::Doroti.Framework.Painting.EdgeInsetsDirectional _kPaddingWithSubtitle = global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 20.0, end: 14.0);
+    internal static global::Doroti.Framework.Painting.EdgeInsetsDirectional _kPaddingWithSubtitle = EdgeInsetsDirectional.CreateOnly(start: 20.0, end: 14.0);
 }
 
 public static partial class List_tileLibrary
 {
-    internal static global::Doroti.Framework.Painting.EdgeInsets _kNotchedPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 14.0);
+    internal static global::Doroti.Framework.Painting.EdgeInsets _kNotchedPadding = EdgeInsets.CreateSymmetric(horizontal: 14.0);
 }
 
 public static partial class List_tileLibrary
@@ -160,22 +160,22 @@ internal class _CupertinoListTileState__list_tile : global::Doroti.Framework.Wid
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Framework.Painting.TextStyle textStyleLocal = CupertinoTheme.of(context).textTheme.textStyle;
-        global::Doroti.Framework.Painting.TextStyle coloredStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)textStyleLocal.copyWith(color: CupertinoColors.secondaryLabel.resolveFrom(context)));
+        global::Doroti.Framework.Painting.TextStyle coloredStyle = ((global::Doroti.Framework.Painting.TextStyle)textStyleLocal.copyWith(color: CupertinoColors.secondaryLabel.resolveFrom(context)));
         bool baseType = (((CupertinoListTile)this.widget)._type switch { _CupertinoListTileType__list_tile.@base => true, _CupertinoListTileType__list_tile.notched => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Widgets.Widget titleLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: ((baseType || (((CupertinoListTile)this.widget).subtitle is null)) ? textStyleLocal : textStyleLocal.copyWith(fontWeight: FontWeight.w600, fontSize: ((((CupertinoListTile)this.widget).leading is null) ? List_tileLibrary._kNotchedTitleWithSubtitleFontSize : null))), maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: ((CupertinoListTile)this.widget).title));
+        global::Doroti.Framework.Widgets.Widget titleLocal = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: ((baseType || (((CupertinoListTile)this.widget).subtitle is null)) ? textStyleLocal : textStyleLocal.copyWith(fontWeight: FontWeight.w600, fontSize: ((((CupertinoListTile)this.widget).leading is null) ? List_tileLibrary._kNotchedTitleWithSubtitleFontSize : null))), maxLines: 1L, overflow: TextOverflow.ellipsis, child: ((CupertinoListTile)this.widget).title));
         global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = (((CupertinoListTile)this.widget).padding ?? (((CupertinoListTile)this.widget)._type switch { _CupertinoListTileType__list_tile.@base when ((((CupertinoListTile)this.widget).subtitle is not null)) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(List_tileLibrary._kPaddingWithSubtitle), _CupertinoListTileType__list_tile.notched when ((((CupertinoListTile)this.widget).leading is not null)) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(List_tileLibrary._kNotchedPadding), _CupertinoListTileType__list_tile.@base => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(List_tileLibrary._kPadding), _CupertinoListTileType__list_tile.notched => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(List_tileLibrary._kNotchedPaddingWithoutLeading), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)(((CupertinoListTile)this.widget).backgroundColor ?? CupertinoColors.transparent));
+        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(((CupertinoListTile)this.widget).backgroundColor ?? CupertinoColors.transparent));
         if (this._tapped)
         {
             backgroundColorLocal = (((CupertinoListTile)this.widget).backgroundColorActivated ?? CupertinoColors.systemGrey4.resolveFrom(context));
         }
         double minHeightLocal = (((CupertinoListTile)this.widget)._type switch { _CupertinoListTileType__list_tile.@base when ((((CupertinoListTile)this.widget).subtitle is not null)) => List_tileLibrary._kMinHeightWithSubtitle, _CupertinoListTileType__list_tile.notched when ((((CupertinoListTile)this.widget).leading is not null)) => List_tileLibrary._kNotchedMinHeight, _CupertinoListTileType__list_tile.@base => List_tileLibrary._kMinHeight, _CupertinoListTileType__list_tile.notched => List_tileLibrary._kNotchedMinHeightWithoutLeading, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: double.PositiveInfinity, minHeight: minHeightLocal), child: new global::Doroti.Framework.Widgets.ColoredBox(color: backgroundColorLocal, child: new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection14447 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((CupertinoListTile)this.widget).leading is global::Doroti.Framework.Widgets.Widget leadingLocal) { __collection14447.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: ((CupertinoListTile)this.widget).leadingSize, child: new global::Doroti.Framework.Widgets.Center(child: leadingLocal))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((CupertinoListTile)this.widget).leadingToTitle)) }); } else { __collection14447.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: ((CupertinoListTile)this.widget).leadingSize))); } __collection14447.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection15027 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection15027.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(titleLocal)); if (((CupertinoListTile)this.widget).subtitle is global::Doroti.Framework.Widgets.Widget subtitleLocal) { __collection15027.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: List_tileLibrary._kNotchedTitleToSubtitle)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: coloredStyle.copyWith(fontSize: (baseType ? List_tileLibrary._kSubtitleFontSize : List_tileLibrary._kNotchedSubtitleFontSize)), maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: subtitleLocal)) }); } return __collection15027; }))())))); if (((CupertinoListTile)this.widget).additionalInfo is global::Doroti.Framework.Widgets.Widget additionalInfoLocal) { __collection14447.AddRange(((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection15750 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection15750.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: coloredStyle, maxLines: 1L, child: additionalInfoLocal))); if ((((CupertinoListTile)this.widget).trailing is not null)) { __collection15750.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: List_tileLibrary._kAdditionalInfoToTrailing))); } return __collection15750; }))()); } var __collectionElement15978 = ((CupertinoListTile)this.widget).trailing; if (__collectionElement15978 is { } __nonNullCollectionElement15978) { __collection14447.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement15978)); } return __collection14447; }))())))));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: double.PositiveInfinity, minHeight: minHeightLocal), child: new global::Doroti.Framework.Widgets.ColoredBox(color: backgroundColorLocal, child: new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection14447 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((CupertinoListTile)this.widget).leading is global::Doroti.Framework.Widgets.Widget leadingLocal) { __collection14447.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(SizedBox.CreateSquare(dimension: ((CupertinoListTile)this.widget).leadingSize, child: new global::Doroti.Framework.Widgets.Center(child: leadingLocal))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((CupertinoListTile)this.widget).leadingToTitle)) }); } else { __collection14447.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: ((CupertinoListTile)this.widget).leadingSize))); } __collection14447.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection15027 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection15027.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(titleLocal)); if (((CupertinoListTile)this.widget).subtitle is global::Doroti.Framework.Widgets.Widget subtitleLocal) { __collection15027.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: List_tileLibrary._kNotchedTitleToSubtitle)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: coloredStyle.copyWith(fontSize: (baseType ? List_tileLibrary._kSubtitleFontSize : List_tileLibrary._kNotchedSubtitleFontSize)), maxLines: 1L, overflow: TextOverflow.ellipsis, child: subtitleLocal)) }); } return __collection15027; }))())))); if (((CupertinoListTile)this.widget).additionalInfo is global::Doroti.Framework.Widgets.Widget additionalInfoLocal) { __collection14447.AddRange(((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection15750 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection15750.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: coloredStyle, maxLines: 1L, child: additionalInfoLocal))); if ((((CupertinoListTile)this.widget).trailing is not null)) { __collection15750.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: List_tileLibrary._kAdditionalInfoToTrailing))); } return __collection15750; }))()); } var __collectionElement15978 = ((CupertinoListTile)this.widget).trailing; if (__collectionElement15978 is { } __nonNullCollectionElement15978) { __collection14447.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement15978)); } return __collection14447; }))())))));
         if ((((CupertinoListTile)this.widget).onTap is null))
         {
             return childLocal;
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((_) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((_) =>
         {
             setState(((global::System.Action)(() =>
             {
@@ -197,7 +197,7 @@ internal class _CupertinoListTileState__list_tile : global::Doroti.Framework.Wid
                     _tapped = false;
                 })));
             }
-        })), behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, child: childLocal));
+        })), behavior: HitTestBehavior.opaque, child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -211,7 +211,7 @@ public class CupertinoListTileChevron : global::Doroti.Framework.Widgets.Statele
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Icon(CupertinoIcons.right_chevron, size: CupertinoTheme.of(context).textTheme.textStyle.fontSize, color: CupertinoColors.systemGrey2.resolveFrom(context)));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Icon(CupertinoIcons.right_chevron, size: CupertinoTheme.of(context).textTheme.textStyle.fontSize, color: CupertinoColors.systemGrey2.resolveFrom(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

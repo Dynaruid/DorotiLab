@@ -9,8 +9,8 @@ public class Color : IEquatable<Color>
     public Color(long value) : this(unchecked((uint)value)) { }
     public Color(double alpha, double red, double green, double blue, ColorSpace? colorSpace = null)
         : this((uint)((ClampChannel(alpha) << 24) | (ClampChannel(red) << 16) | (ClampChannel(green) << 8) | ClampChannel(blue))) => this.colorSpace = colorSpace ?? ColorSpace.sRGB;
-    public uint value { get; }
-    public ColorSpace colorSpace { get; } = ColorSpace.sRGB;
+    public virtual uint value { get; }
+    public virtual ColorSpace colorSpace { get; } = ColorSpace.sRGB;
     public static Color fromARGB(long alpha, long red, long green, long blue) => new(
         ((uint)Math.Clamp(alpha, 0, 255) << 24) |
         ((uint)Math.Clamp(red, 0, 255) << 16) |
@@ -45,7 +45,7 @@ public class Color : IEquatable<Color>
     public Color withGreen(long green) => fromARGB(alpha, red, green, blue);
     public Color withBlue(long blue) => fromARGB(alpha, red, green, blue);
     public Color withOpacity(double opacity) => withAlpha((long)Math.Round(Math.Clamp(opacity, 0, 1) * 255));
-    public Color withValues(double? alpha = null, double? red = null, double? green = null, double? blue = null, ColorSpace? colorSpace = null) =>
+    public virtual Color withValues(double? alpha = null, double? red = null, double? green = null, double? blue = null, ColorSpace? colorSpace = null) =>
         new(alpha ?? a, red ?? r, green ?? g, blue ?? b, colorSpace ?? this.colorSpace);
     public virtual Color resolveFrom<TContext>(TContext context) => this;
     public double computeLuminance()
@@ -57,7 +57,7 @@ public class Color : IEquatable<Color>
         }
         return (0.2126 * Linearize(red)) + (0.7152 * Linearize(green)) + (0.0722 * Linearize(blue));
     }
-    public bool Equals(Color? other) => other is not null && value == other.value;
+    public virtual bool Equals(Color? other) => other is not null && value == other.value;
     public override bool Equals(object? obj) => obj is Color other && Equals(other);
     public override int GetHashCode() => value.GetHashCode();
     public static bool operator ==(Color? left, Color? right) => Equals(left, right);
@@ -331,7 +331,7 @@ public sealed class Scene : IDisposable
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
 
     public Doroti.Runtime.Future<Image> toImage(long width, long height) =>
-        Doroti.Runtime.Future<Image>.value(toImageSync(width, height));
+        Future<Image>.value(toImageSync(width, height));
 
     public Image toImageSync(long width, long height)
     {

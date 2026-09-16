@@ -1,28 +1,27 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart
-#pragma warning disable CS0659, CS0693, CS8600, CS8602, CS8603, CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _controlSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.control });
+    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _controlSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.control });
 }
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _shiftSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.shift });
+    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _shiftSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.shift });
 }
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _altSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.alt });
+    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _altSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.alt });
 }
 
 public static partial class ShortcutsLibrary
 {
-    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _metaSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.meta });
+    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _metaSynonyms = LogicalKeyboardKey.expandSynonyms(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.meta });
 }
 
 public class KeySet<T> where T : global::Doroti.Framework.Services.KeyboardKey
@@ -36,7 +35,7 @@ public class KeySet<T> where T : global::Doroti.Framework.Services.KeyboardKey
         {
             if (!__late_hashCode_initialized)
             {
-                __late_hashCode = KeySet<T>._computeHashCode(this._keys);
+                __late_hashCode = _computeHashCode(this._keys);
                 __late_hashCode_initialized = true;
             }
             return __late_hashCode;
@@ -51,6 +50,9 @@ public class KeySet<T> where T : global::Doroti.Framework.Services.KeyboardKey
 {
     var __cascade = new HashSet<T>();
     __cascade.Add(key1);
+    if (key2 is not null) __cascade.Add(key2);
+    if (key3 is not null) __cascade.Add(key3);
+    if (key4 is not null) __cascade.Add(key4);
     return __cascade;
 }))();
     }
@@ -72,17 +74,19 @@ public class KeySet<T> where T : global::Doroti.Framework.Services.KeyboardKey
     {
         var __other = other as KeySet<T>;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((__other is KeySet<T>) && global::Doroti.Framework.Foundation.CollectionsLibrary.setEquals<T>(((KeySet<T>)((KeySet<T>)__other))._keys, this._keys));
+        return ((__other is KeySet<T>) && CollectionsLibrary.setEquals<T>(((KeySet<T>)((KeySet<T>)__other))._keys, this._keys));
     }
 
-    internal static long _computeHashCode<T>(HashSet<T> keys) where T : notnull
+    public override int GetHashCode() => hashCode.GetHashCode();
+
+    internal static long _computeHashCode<TKey>(HashSet<TKey> keys) where TKey : notnull
     {
         long length = checked((long)(keys.Count));
-        IEnumerator<T> iterator = keys.GetEnumerator();
+        IEnumerator<TKey> iterator = keys.GetEnumerator();
         iterator.MoveNext();
         var h1 = iterator.Current.GetHashCode();
         if ((length == 1L))
@@ -129,7 +133,7 @@ public abstract class ShortcutActivator
     public abstract bool accepts(global::Doroti.Framework.Services.KeyEvent @event, global::Doroti.Framework.Services.HardwareKeyboard state);
     public static bool isActivatedBy(ShortcutActivator activator, global::Doroti.Framework.Services.KeyEvent @event)
     {
-        return activator.accepts(@event, global::Doroti.Framework.Services.HardwareKeyboard.instance);
+        return activator.accepts(@event, HardwareKeyboard.instance);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -152,8 +156,8 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
             return __late__triggers;
         }
     }
-    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _modifiers = new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.alt, global::Doroti.Framework.Services.LogicalKeyboardKey.control, global::Doroti.Framework.Services.LogicalKeyboardKey.meta, global::Doroti.Framework.Services.LogicalKeyboardKey.shift };
-    internal static DartMap<global::Doroti.Framework.Services.LogicalKeyboardKey, List<global::Doroti.Framework.Services.LogicalKeyboardKey>> _unmapSynonyms = new DartMap<global::Doroti.Framework.Services.LogicalKeyboardKey, List<global::Doroti.Framework.Services.LogicalKeyboardKey>> { [global::Doroti.Framework.Services.LogicalKeyboardKey.control] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.controlLeft, global::Doroti.Framework.Services.LogicalKeyboardKey.controlRight }, [global::Doroti.Framework.Services.LogicalKeyboardKey.shift] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft, global::Doroti.Framework.Services.LogicalKeyboardKey.shiftRight }, [global::Doroti.Framework.Services.LogicalKeyboardKey.alt] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.altLeft, global::Doroti.Framework.Services.LogicalKeyboardKey.altRight }, [global::Doroti.Framework.Services.LogicalKeyboardKey.meta] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.metaLeft, global::Doroti.Framework.Services.LogicalKeyboardKey.metaRight } };
+    internal static HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> _modifiers = new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.alt, LogicalKeyboardKey.control, LogicalKeyboardKey.meta, LogicalKeyboardKey.shift };
+    internal static DartMap<global::Doroti.Framework.Services.LogicalKeyboardKey, List<global::Doroti.Framework.Services.LogicalKeyboardKey>> _unmapSynonyms = new DartMap<global::Doroti.Framework.Services.LogicalKeyboardKey, List<global::Doroti.Framework.Services.LogicalKeyboardKey>> { [LogicalKeyboardKey.control] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.controlLeft, LogicalKeyboardKey.controlRight }, [LogicalKeyboardKey.shift] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.shiftRight }, [LogicalKeyboardKey.alt] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.altLeft, LogicalKeyboardKey.altRight }, [LogicalKeyboardKey.meta] = new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.metaRight } };
 
     public LogicalKeySet(global::Doroti.Framework.Services.LogicalKeyboardKey key1, global::Doroti.Framework.Services.LogicalKeyboardKey? key2 = null, global::Doroti.Framework.Services.LogicalKeyboardKey? key3 = null, global::Doroti.Framework.Services.LogicalKeyboardKey? key4 = null) : base(key1, key2, key3, key4)
     {
@@ -171,15 +175,15 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
     public virtual IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey> triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>>(this._triggers);
     internal virtual bool _checkKeyRequirements(HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> pressed)
     {
-        HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> collapsedRequired = ((HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>)(object?)LogicalKeyboardKey.collapseSynonyms(this.keys));
-        HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> collapsedPressed = ((HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>)(object?)LogicalKeyboardKey.collapseSynonyms(pressed));
-        return ((checked((long)(collapsedRequired.Count)) == checked((long)(collapsedPressed.Count))) && !System.Linq.Enumerable.Any(collapsedRequired.difference<global::Doroti.Framework.Services.LogicalKeyboardKey>(collapsedPressed)));
+        HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> collapsedRequired = ((HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>)LogicalKeyboardKey.collapseSynonyms(this.keys));
+        HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> collapsedPressed = ((HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>)LogicalKeyboardKey.collapseSynonyms(pressed));
+        return ((checked((long)(collapsedRequired.Count)) == checked((long)(collapsedPressed.Count))) && !Enumerable.Any(collapsedRequired.difference<global::Doroti.Framework.Services.LogicalKeyboardKey>(collapsedPressed)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool accepts(global::Doroti.Framework.Services.KeyEvent @event, global::Doroti.Framework.Services.HardwareKeyboard state)
     {
-        if (((@event is not global::Doroti.Framework.Services.KeyDownEvent) && (@event is not global::Doroti.Framework.Services.KeyRepeatEvent)))
+        if (((@event is not KeyDownEvent) && (@event is not KeyRepeatEvent)))
         {
             return false;
         }
@@ -194,8 +198,8 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
     var __cascade = this.keys.ToList();
     __cascade.sort(((a, b) =>
     {
-        bool aIsModifier = (System.Linq.Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)a).synonyms) || _modifiers.Contains(a));
-        bool bIsModifier = (System.Linq.Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)b).synonyms) || _modifiers.Contains(b));
+        bool aIsModifier = (Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)a).synonyms) || _modifiers.Contains(a));
+        bool bIsModifier = (Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)b).synonyms) || _modifiers.Contains(b));
         if ((aIsModifier && !bIsModifier))
         {
             return -1L;
@@ -212,7 +216,7 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
     }));
     return __cascade;
 }))().ToList();
-        return string.Join(" + ", sortedKeys.map<global::Doroti.Framework.Services.LogicalKeyboardKey, string>(((key) => ((global::Doroti.Framework.Services.LogicalKeyboardKey)key).debugName.ToString())));
+        return string.Join(" + ", sortedKeys.map<global::Doroti.Framework.Services.LogicalKeyboardKey, string>(((key) => $"{key.debugName}")));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -221,8 +225,8 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey>>("keys", this._keys, description: debugDescribeKeys()));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -239,7 +243,7 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -247,11 +251,11 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
 
 public class ShortcutMapProperty : global::Doroti.Framework.Foundation.DiagnosticsProperty<DartMap<ShortcutActivator, Intent>>
 {
-    public ShortcutMapProperty(string name, DartMap<ShortcutActivator, Intent> value, bool showName = true, object defaultValue = default!, global::Doroti.Framework.Foundation.DiagnosticLevel level = global::Doroti.Framework.Foundation.DiagnosticLevel.info, string? description = null) : base(name, value, showName: showName, defaultValue: defaultValue ?? global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue, level: level, description: description)
+    public ShortcutMapProperty(string name, DartMap<ShortcutActivator, Intent> value, bool showName = true, object defaultValue = default!, global::Doroti.Framework.Foundation.DiagnosticLevel level = DiagnosticLevel.info, string? description = null) : base(name, value, showName: showName, defaultValue: defaultValue ?? DiagnosticsLibrary.kNoDefaultValue, level: level, description: description)
     {
     }
 
-    public new virtual DartMap<ShortcutActivator, Intent>? value => DartRuntimePrimitives.ConvertValue<DartMap<ShortcutActivator, Intent>>(base.value!);
+    public new virtual DartMap<ShortcutActivator, Intent> value => DartRuntimePrimitives.RequireReference(base.value);
     public virtual string valueToString(global::Doroti.Framework.Foundation.TextTreeConfiguration? parentConfiguration = null)
     {
         return $"{{{string.Join(", ", this.value.Keys.map<ShortcutActivator, string>(((keySet) => $"{{{keySet.debugDescribeKeys()}}}: {this.value.GetValueOrDefault(keySet)}")))}}}";
@@ -279,19 +283,19 @@ public class SingleActivator : ShortcutActivator, global::Doroti.Framework.Found
         this.meta = meta;
         this.numLock = numLock;
         this.includeRepeats = includeRepeats;
-        System.Diagnostics.Debug.Assert((((((((((((!DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.control) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.controlLeft)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.controlRight)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.shift)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.shiftRight)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.alt)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.altLeft)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.altRight)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.meta)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.metaLeft)) && !DartRuntimePrimitives.Identical(trigger, global::Doroti.Framework.Services.LogicalKeyboardKey.metaRight)));
+        System.Diagnostics.Debug.Assert((((((((((((!DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.control) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.controlLeft)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.controlRight)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shift)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shiftLeft)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.shiftRight)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.alt)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.altLeft)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.altRight)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.meta)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.metaLeft)) && !DartRuntimePrimitives.Identical(trigger, LogicalKeyboardKey.metaRight)));
     }
 
-    public override IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>? triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>>(new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { this.trigger });
+    public override IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey> triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>>(new List<global::Doroti.Framework.Services.LogicalKeyboardKey> { this.trigger });
     internal virtual bool _shouldAcceptModifiers(HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> pressed)
     {
-        return ((((this.control == System.Linq.Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms))) && (this.shift == System.Linq.Enumerable.Any(pressed.intersection(ShortcutsLibrary._shiftSynonyms)))) && (this.alt == System.Linq.Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))) && (this.meta == System.Linq.Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms))));
+        return ((((this.control == Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms))) && (this.shift == Enumerable.Any(pressed.intersection(ShortcutsLibrary._shiftSynonyms)))) && (this.alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))) && (this.meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _shouldAcceptNumLock(global::Doroti.Framework.Services.HardwareKeyboard state)
     {
-        return (this.numLock switch { LockState.ignored => true, LockState.locked => ((global::Doroti.Framework.Services.HardwareKeyboard)state).lockModesEnabled.Contains(global::Doroti.Framework.Services.KeyboardLockMode.numLock), LockState.unlocked => !((global::Doroti.Framework.Services.HardwareKeyboard)state).lockModesEnabled.Contains(global::Doroti.Framework.Services.KeyboardLockMode.numLock), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.numLock switch { LockState.ignored => true, LockState.locked => ((global::Doroti.Framework.Services.HardwareKeyboard)state).lockModesEnabled.Contains(KeyboardLockMode.numLock), LockState.unlocked => !((global::Doroti.Framework.Services.HardwareKeyboard)state).lockModesEnabled.Contains(KeyboardLockMode.numLock), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -327,8 +331,8 @@ public class SingleActivator : ShortcutActivator, global::Doroti.Framework.Found
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("includeRepeats", value: this.includeRepeats, ifFalse: "excluding repeats"));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -345,7 +349,7 @@ public class SingleActivator : ShortcutActivator, global::Doroti.Framework.Found
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -368,10 +372,10 @@ public class CharacterActivator : ShortcutActivator, global::Doroti.Framework.Fo
         this.includeRepeats = includeRepeats;
     }
 
-    public override IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>? triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>>(null);
+    public override IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>? triggers => null;
     internal virtual bool _shouldAcceptModifiers(HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> pressed)
     {
-        return (((this.control == System.Linq.Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms))) && (this.alt == System.Linq.Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))) && (this.meta == System.Linq.Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms))));
+        return (((this.control == Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms))) && (this.alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))) && (this.meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -407,8 +411,8 @@ public class CharacterActivator : ShortcutActivator, global::Doroti.Framework.Fo
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("includeRepeats", value: this.includeRepeats, ifFalse: "excluding repeats"));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -425,7 +429,7 @@ public class CharacterActivator : ShortcutActivator, global::Doroti.Framework.Fo
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -448,8 +452,8 @@ internal class _ActivatorIntentPair__shortcuts : global::Doroti.Framework.Founda
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Intent>("intent", this.intent));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -466,7 +470,7 @@ internal class _ActivatorIntentPair__shortcuts : global::Doroti.Framework.Founda
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -491,7 +495,7 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
         set
         {
             var __value = value;
-            if (!global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals<ShortcutActivator, Intent>(this._shortcuts, __value))
+            if (!CollectionsLibrary.mapEquals<ShortcutActivator, Intent>(this._shortcuts, __value))
             {
                 _shortcuts = __value;
                 _indexedShortcutsCache = null;
@@ -504,7 +508,7 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
         var result = new DartMap<global::Doroti.Framework.Services.LogicalKeyboardKey?, List<_ActivatorIntentPair__shortcuts>>();
         source.forEach(((global::System.Action<ShortcutActivator, Intent>)((activator, intent) =>
         {
-            IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>? nullableTriggers = ((IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>?)(object?)((ShortcutActivator)activator).triggers);
+            IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>? nullableTriggers = ((IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>?)((ShortcutActivator)activator).triggers);
             foreach (global::Doroti.Framework.Services.LogicalKeyboardKey? trigger in (nullableTriggers ?? new List<global::Doroti.Framework.Services.LogicalKeyboardKey?> { null }))
             {
                 result.putIfAbsent(trigger, (() => new List<_ActivatorIntentPair__shortcuts>())).Add(new _ActivatorIntentPair__shortcuts(activator, intent));
@@ -518,7 +522,7 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
     {
         get
         {
-            return _indexedShortcutsCache ??= ShortcutManager._indexShortcuts(this.shortcuts);
+            return _indexedShortcutsCache ??= _indexShortcuts(this.shortcuts);
         }
     }
     internal virtual IEnumerable<_ActivatorIntentPair__shortcuts> _getCandidates(global::Doroti.Framework.Services.LogicalKeyboardKey key)
@@ -540,14 +544,14 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
                 return ((_ActivatorIntentPair__shortcuts)activatorIntent).intent;
             }
         }
-        return ((Intent)(object)null);
+        return ((Intent?)null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual KeyEventResult handleKeypress(BuildContext context, global::Doroti.Framework.Services.KeyEvent @event)
     {
-        Intent? intentLocal = ((Intent?)(object?)_find(@event, global::Doroti.Framework.Services.HardwareKeyboard.instance));
-        BuildContext? contextLocal = global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context;
+        Intent? intentLocal = ((Intent?)_find(@event, HardwareKeyboard.instance));
+        BuildContext? contextLocal = Focus_managerLibrary.primaryFocus?.context;
         if (intentLocal is not null && contextLocal is not null)
         {
             // Action<SpecificIntent> is not Action<Intent> in C#. Use the
@@ -569,8 +573,8 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("modal", value: this.modal, ifTrue: "modal", defaultValue: false));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -587,7 +591,7 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -642,7 +646,7 @@ internal class _ShortcutsState__shortcuts : State<Shortcuts>
 {
     internal virtual ShortcutManager? _internalManager { get; set; } = default;
 
-    public virtual ShortcutManager manager => DartRuntimePrimitives.ConvertValue<ShortcutManager>((((Shortcuts)(object)this.widget).manager ?? this._internalManager!));
+    public virtual ShortcutManager manager => DartRuntimePrimitives.ConvertValue<ShortcutManager>((((Shortcuts)this.widget).manager ?? this._internalManager!));
     public override void dispose()
     {
         this._internalManager?.dispose();
@@ -652,19 +656,19 @@ internal class _ShortcutsState__shortcuts : State<Shortcuts>
     public override void initState()
     {
         base.initState();
-        if ((((Shortcuts)(object)this.widget).manager is null))
+        if ((((Shortcuts)this.widget).manager is null))
         {
             _internalManager = new ShortcutManager();
-            this._internalManager!.shortcuts = ((Shortcuts)(object)this.widget).shortcuts;
+            this._internalManager!.shortcuts = ((Shortcuts)this.widget).shortcuts;
         }
     }
 
     public override void didUpdateWidget(Shortcuts oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((Shortcuts)(object)this.widget).manager, ((Shortcuts)oldWidget).manager)))
+        if ((!Equals(((Shortcuts)this.widget).manager, ((Shortcuts)oldWidget).manager)))
         {
-            if ((((Shortcuts)(object)this.widget).manager is not null))
+            if ((((Shortcuts)this.widget).manager is not null))
             {
                 this._internalManager?.dispose();
                 _internalManager = null;
@@ -674,7 +678,7 @@ internal class _ShortcutsState__shortcuts : State<Shortcuts>
                 _internalManager ??= new ShortcutManager();
             }
         }
-        this._internalManager?.shortcuts = ((Shortcuts)(object)this.widget).shortcuts;
+        this._internalManager?.shortcuts = ((Shortcuts)this.widget).shortcuts;
     }
 
     internal virtual KeyEventResult _handleOnKeyEvent(FocusNode node, global::Doroti.Framework.Services.KeyEvent @event)
@@ -689,7 +693,7 @@ internal class _ShortcutsState__shortcuts : State<Shortcuts>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Focus(debugLabel: ((((Shortcuts)(object)this.widget).debugLabel is not null) ? $"{typeof(Shortcuts)}: {((Shortcuts)(object)this.widget).debugLabel}" : $"{typeof(Shortcuts)}"), canRequestFocus: false, onKeyEvent: (global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)this._handleOnKeyEvent, includeSemantics: ((Shortcuts)(object)this.widget).includeSemantics, child: ((Shortcuts)(object)this.widget).child));
+        return ((Widget)new Focus(debugLabel: ((((Shortcuts)this.widget).debugLabel is not null) ? $"{typeof(Shortcuts)}: {((Shortcuts)this.widget).debugLabel}" : $"{typeof(Shortcuts)}"), canRequestFocus: false, onKeyEvent: (global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)this._handleOnKeyEvent, includeSemantics: ((Shortcuts)this.widget).includeSemantics, child: ((Shortcuts)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -708,7 +712,7 @@ public class CallbackShortcuts : StatelessWidget
 
     internal virtual bool _applyKeyEventBinding(ShortcutActivator activator, global::Doroti.Framework.Services.KeyEvent @event)
     {
-        if (activator.accepts(@event, global::Doroti.Framework.Services.HardwareKeyboard.instance))
+        if (activator.accepts(@event, HardwareKeyboard.instance))
         {
             this.bindings.GetValueOrDefault(activator)!?.Invoke();
             return true;
@@ -719,7 +723,7 @@ public class CallbackShortcuts : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Focus(canRequestFocus: false, skipTraversal: true, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
+        return ((Widget)new Focus(canRequestFocus: false, skipTraversal: true, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
         {
             KeyEventResult result = KeyEventResult.ignored;
             foreach (ShortcutActivator activator in this.bindings.Keys)
@@ -775,14 +779,14 @@ public class ShortcutRegistry : ChangeNotifier
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
+            DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
             return new DartMap<ShortcutActivator, Intent>();
         }
     }
     public virtual ShortcutRegistryEntry addAll(DartMap<ShortcutActivator, Intent> value)
     {
-        DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(value), () => (object?)"Cannot register an empty map of shortcuts");
+        DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(value), () => (object?)"Cannot register an empty map of shortcuts");
         var entry = new ShortcutRegistryEntry(this);
         this._registeredShortcuts[entry] = value;
         DartRuntimePrimitives.Assert(() => _debugCheckForDuplicates());
@@ -795,7 +799,7 @@ public class ShortcutRegistry : ChangeNotifier
     {
         if (!this._notificationScheduled)
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
             {
                 _notificationScheduled = false;
                 if (!this._disposed)
@@ -809,12 +813,12 @@ public class ShortcutRegistry : ChangeNotifier
 
     public static ShortcutRegistry of(BuildContext context)
     {
-        _ShortcutRegistrarScope__shortcuts? inherited = ((_ShortcutRegistrarScope__shortcuts?)(object?)context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>());
+        _ShortcutRegistrarScope__shortcuts? inherited = ((_ShortcutRegistrarScope__shortcuts?)context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>());
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((inherited is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Unable to find a {typeof(ShortcutRegistrar)} widget in the context.\n" + $"{typeof(ShortcutRegistrar)}.of() was called with a context that does not contain a " + $"{typeof(ShortcutRegistrar)} widget.\n" + $"No {typeof(ShortcutRegistrar)} ancestor could be found starting from the context that was " + $"passed to {typeof(ShortcutRegistrar)}.of().\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Unable to find a {typeof(ShortcutRegistrar)} widget in the context.\n" + $"{typeof(ShortcutRegistrar)}.of() was called with a context that does not contain a " + $"{typeof(ShortcutRegistrar)} widget.\n" + $"No {typeof(ShortcutRegistrar)} ancestor could be found starting from the context that was " + $"passed to {typeof(ShortcutRegistrar)}.of().\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -825,14 +829,14 @@ public class ShortcutRegistry : ChangeNotifier
 
     public static ShortcutRegistry? maybeOf(BuildContext context)
     {
-        _ShortcutRegistrarScope__shortcuts? inherited = ((_ShortcutRegistrarScope__shortcuts?)(object?)context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>());
+        _ShortcutRegistrarScope__shortcuts? inherited = ((_ShortcutRegistrarScope__shortcuts?)context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>());
         return inherited?.registry;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _replaceAll(ShortcutRegistryEntry entry, DartMap<ShortcutActivator, Intent> value)
     {
-        DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
+        DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
         DartRuntimePrimitives.Assert(() => _debugCheckEntryIsValid(entry));
         this._registeredShortcuts[entry] = value;
         DartRuntimePrimitives.Assert(() => _debugCheckForDuplicates());
@@ -852,13 +856,13 @@ public class ShortcutRegistry : ChangeNotifier
     {
         if (!this._registeredShortcuts.ContainsKey(entry))
         {
-            if ((object.Equals(((ShortcutRegistryEntry)entry).registry, this)))
+            if ((Equals(((ShortcutRegistryEntry)entry).registry, this)))
             {
-                throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"entry {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(entry))} is invalid.\n" + "The entry has already been disposed of. Tokens are not valid after " + "dispose is called on them, and should no longer be used."));
+                throw DartRuntimePrimitives.AsException(FlutterError.Create($"entry {(DiagnosticsLibrary.describeIdentity(entry))} is invalid.\n" + "The entry has already been disposed of. Tokens are not valid after " + "dispose is called on them, and should no longer be used."));
             }
             else
             {
-                throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Foreign entry {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(entry))} used.\n" + "This entry was not created by this registry, it was created by " + $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(((ShortcutRegistryEntry)entry).registry))}, and should be used with that " + "registry instead."));
+                throw DartRuntimePrimitives.AsException(FlutterError.Create($"Foreign entry {(DiagnosticsLibrary.describeIdentity(entry))} used.\n" + "This entry was not created by this registry, it was created by " + $"{(DiagnosticsLibrary.describeIdentity(((ShortcutRegistryEntry)entry).registry))}, and should be used with that " + "registry instead."));
             }
         }
         return true;
@@ -874,7 +878,7 @@ public class ShortcutRegistry : ChangeNotifier
             {
                 if (previous.ContainsKey(shortcut))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{typeof(ShortcutRegistry)}: Received a duplicate registration for the " + $"shortcut {shortcut} in {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(tokenEntry.key))} and {previous.GetValueOrDefault(shortcut)}."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"{typeof(ShortcutRegistry)}: Received a duplicate registration for the " + $"shortcut {shortcut} in {(DiagnosticsLibrary.describeIdentity(tokenEntry.key))} and {previous.GetValueOrDefault(shortcut)}."));
                 }
                 previous[shortcut] = tokenEntry.key;
             }
@@ -923,7 +927,7 @@ internal class _ShortcutRegistrarState__shortcuts : State<ShortcutRegistrar>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _ShortcutRegistrarScope__shortcuts(registry: this.registry, child: Shortcuts.CreateManager(manager: this.manager, debugLabel: "<Shortcut Registrar>", child: ((ShortcutRegistrar)(object)this.widget).child)));
+        return ((Widget)new _ShortcutRegistrarScope__shortcuts(registry: this.registry, child: Shortcuts.CreateManager(manager: this.manager, debugLabel: "<Shortcut Registrar>", child: ((ShortcutRegistrar)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -940,8 +944,8 @@ internal class _ShortcutRegistrarScope__shortcuts : InheritedWidget
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __oldWidget = (_ShortcutRegistrarScope__shortcuts)(object)oldWidget;
-        return (!object.Equals(this.registry, ((_ShortcutRegistrarScope__shortcuts)__oldWidget).registry));
+        var __oldWidget = (_ShortcutRegistrarScope__shortcuts)oldWidget;
+        return (!Equals(this.registry, ((_ShortcutRegistrarScope__shortcuts)__oldWidget).registry));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

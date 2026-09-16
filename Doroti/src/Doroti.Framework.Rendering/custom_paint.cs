@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/custom_paint.dart
-#pragma warning disable CS8625
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -24,7 +23,7 @@ public abstract class CustomPainter : Listenable
     public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => shouldRepaint(oldDelegate);
     public abstract bool shouldRepaint(CustomPainter oldDelegate);
     public virtual bool? hitTest(Offset position) => null;
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({(this._repaint?.ToString() ?? "")})";
+    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}({(this._repaint?.ToString() ?? "")})";
 }
 
 public class CustomPainterSemantics
@@ -58,13 +57,13 @@ public class RenderCustomPaint : RenderProxyBox
     internal virtual List<global::Doroti.Framework.Semantics.SemanticsNode>? _backgroundSemanticsNodes { get; set; } = default;
     internal virtual List<global::Doroti.Framework.Semantics.SemanticsNode>? _foregroundSemanticsNodes { get; set; } = default;
 
-    public RenderCustomPaint(CustomPainter? painter = null, CustomPainter? foregroundPainter = null, Size preferredSize = default, bool isComplex = false, bool willChange = false, RenderBox? child = null) : base(child)
+    public RenderCustomPaint(CustomPainter? painter = null, CustomPainter? foregroundPainter = null, Size? preferredSize = null, bool isComplex = false, bool willChange = false, RenderBox? child = null) : base(child)
     {
         this.isComplex = isComplex;
         this.willChange = willChange;
         this._painter = painter;
         this._foregroundPainter = foregroundPainter;
-        this._preferredSize = preferredSize;
+        this._preferredSize = preferredSize ?? Size.zero;
     }
 
     public virtual CustomPainter? painter
@@ -73,7 +72,7 @@ public class RenderCustomPaint : RenderProxyBox
         set
         {
             var __value = value;
-            if ((object.Equals(this._painter, __value)))
+            if ((Equals(this._painter, __value)))
             {
                 return;
             }
@@ -88,7 +87,7 @@ public class RenderCustomPaint : RenderProxyBox
         set
         {
             var __value = value;
-            if ((object.Equals(this._foregroundPainter, __value)))
+            if ((Equals(this._foregroundPainter, __value)))
             {
                 return;
             }
@@ -106,7 +105,7 @@ public class RenderCustomPaint : RenderProxyBox
         }
         else
         {
-            if ((((oldPainter is null) || (!object.Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter)))) || newPainter.shouldRepaint(oldPainter)))
+            if ((((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter)))) || newPainter.shouldRepaint(oldPainter)))
             {
                 markNeedsPaint();
             }
@@ -126,7 +125,7 @@ public class RenderCustomPaint : RenderProxyBox
         }
         else
         {
-            if ((((oldPainter is null) || (!object.Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter)))) || newPainter.shouldRebuildSemantics(oldPainter)))
+            if ((((oldPainter is null) || (!Equals(DartRuntimePrimitives.RuntimeType(newPainter), DartRuntimePrimitives.RuntimeType(oldPainter)))) || newPainter.shouldRebuildSemantics(oldPainter)))
             {
                 markNeedsSemanticsUpdate();
             }
@@ -139,7 +138,7 @@ public class RenderCustomPaint : RenderProxyBox
         set
         {
             var __value = value;
-            if ((object.Equals(this.preferredSize, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this.preferredSize, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -238,7 +237,7 @@ public class RenderCustomPaint : RenderProxyBox
                 debugPreviousCanvasSaveCount = canvas.getSaveCount();
                 return true;
             });
-        if ((!object.Equals(offset, Offset.zero)))
+        if ((!Equals(offset, Offset.zero)))
         {
             canvas.translate(offset.dx, offset.dy);
         }
@@ -352,7 +351,7 @@ public class RenderCustomPaint : RenderProxyBox
         var oldChildrenTop = 0L;
         long newChildrenBottom = (checked((long)(newChildSemantics.Count)) - 1L);
         long oldChildrenBottom = (checked((long)(oldSemantics.Count)) - 1L);
-        var newChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode?>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Semantics.SemanticsNode?>(null, checked((int)checked((long)(newChildSemantics.Count)))));
+        var newChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode?>(Enumerable.Repeat<global::Doroti.Framework.Semantics.SemanticsNode?>(null, checked((int)checked((long)(newChildSemantics.Count)))));
         while ((((oldChildrenTop <= oldChildrenBottom)) && ((newChildrenTop <= newChildrenBottom))))
         {
             global::Doroti.Framework.Semantics.SemanticsNode oldChild = oldSemantics[(int)(oldChildrenTop)];
@@ -417,7 +416,7 @@ public class RenderCustomPaint : RenderProxyBox
             }
             DartRuntimePrimitives.Assert(() => ((oldChildNested is null) || _canUpdateSemanticsChild(oldChildNested, newSemanticsLocal)));
             global::Doroti.Framework.Semantics.SemanticsNode newChildAlternate = _updateSemanticsChild(oldChildNested, newSemanticsLocal);
-            DartRuntimePrimitives.Assert(() => ((object.Equals(oldChildNested, newChildAlternate)) || (oldChildNested is null)));
+            DartRuntimePrimitives.Assert(() => ((Equals(oldChildNested, newChildAlternate)) || (oldChildNested is null)));
             newChildren[(int)(newChildrenTop)] = newChildAlternate;
             newChildrenTop += 1L;
         }
@@ -432,7 +431,7 @@ public class RenderCustomPaint : RenderProxyBox
             CustomPainterSemantics newSemanticsAlternate = newChildSemantics[(int)(newChildrenTop)];
             DartRuntimePrimitives.Assert(() => _canUpdateSemanticsChild(oldChildCurrent, newSemanticsAlternate));
             global::Doroti.Framework.Semantics.SemanticsNode newChildNested = _updateSemanticsChild(oldChildCurrent, newSemanticsAlternate);
-            DartRuntimePrimitives.Assert(() => (object.Equals(oldChildCurrent, newChildNested)));
+            DartRuntimePrimitives.Assert(() => (Equals(oldChildCurrent, newChildNested)));
             newChildren[(int)(newChildrenTop)] = newChildNested;
             newChildrenTop += 1L;
             oldChildrenTop += 1L;
@@ -451,7 +450,7 @@ public class RenderCustomPaint : RenderProxyBox
 
     internal static bool _canUpdateSemanticsChild(global::Doroti.Framework.Semantics.SemanticsNode oldChild, CustomPainterSemantics newSemantics)
     {
-        return (object.Equals(((global::Doroti.Framework.Semantics.SemanticsNode)oldChild).key, ((CustomPainterSemantics)newSemantics).key));
+        return (Equals(((global::Doroti.Framework.Semantics.SemanticsNode)oldChild).key, ((CustomPainterSemantics)newSemantics).key));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -641,7 +640,7 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.textDirection = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).textDirection;
         }
-        if ((!object.Equals(((global::Doroti.Framework.Semantics.SemanticsConfiguration)configLocal).validationResult, ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).validationResult)))
+        if ((!Equals(((global::Doroti.Framework.Semantics.SemanticsConfiguration)configLocal).validationResult, ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).validationResult)))
         {
             configLocal.validationResult = ((global::Doroti.Framework.Semantics.SemanticsProperties)propertiesLocal).validationResult;
         }

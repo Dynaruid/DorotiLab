@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/dialog_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -64,18 +64,18 @@ public class DialogTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
     }
     public static DialogThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DialogTheme? dialogThemeLocal = ((DialogTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DialogTheme>());
+        DialogTheme? dialogThemeLocal = ((DialogTheme?)context.dependOnInheritedWidgetOfExactType<DialogTheme>());
         return (dialogThemeLocal?.data ?? Theme.of(context).dialogTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DialogTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new DialogTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DialogTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((DialogTheme)oldWidget).data)));
     public virtual DialogTheme copyWith(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null)
     {
         return new DialogTheme(backgroundColor: (backgroundColor ?? this.backgroundColor), elevation: (elevation ?? this.elevation), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shape: (shape ?? this.shape), alignment: (alignment ?? this.alignment), iconColor: (iconColor ?? this.iconColor), titleTextStyle: (titleTextStyle ?? this.titleTextStyle), contentTextStyle: (contentTextStyle ?? this.contentTextStyle), actionsPadding: (actionsPadding ?? this.actionsPadding), barrierColor: (barrierColor ?? this.barrierColor), insetPadding: (insetPadding ?? this.insetPadding), clipBehavior: (clipBehavior ?? this.clipBehavior));
@@ -109,7 +109,7 @@ public class DialogTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
     }
 
-    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
     public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -124,7 +124,7 @@ public class DialogTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
 
     public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -190,11 +190,11 @@ public class DialogThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((((((((__other is DialogThemeData) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).backgroundColor, this.backgroundColor))) && (((DialogThemeData)((DialogThemeData)__other)).elevation == this.elevation)) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).shape, this.shape))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).alignment, this.alignment))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).iconColor, this.iconColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).contentTextStyle, this.contentTextStyle))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).actionsPadding, this.actionsPadding))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).barrierColor, this.barrierColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).insetPadding, this.insetPadding))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).clipBehavior, this.clipBehavior))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).constraints, this.constraints)));
+        return (((((((((((((((__other is DialogThemeData) && (Equals(((DialogThemeData)((DialogThemeData)__other)).backgroundColor, this.backgroundColor))) && (((DialogThemeData)((DialogThemeData)__other)).elevation == this.elevation)) && (Equals(((DialogThemeData)((DialogThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).shape, this.shape))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).alignment, this.alignment))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).iconColor, this.iconColor))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).contentTextStyle, this.contentTextStyle))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).actionsPadding, this.actionsPadding))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).barrierColor, this.barrierColor))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).insetPadding, this.insetPadding))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).clipBehavior, this.clipBehavior))) && (Equals(((DialogThemeData)((DialogThemeData)__other)).constraints, this.constraints)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -215,8 +215,8 @@ public class DialogThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -232,7 +232,7 @@ public class DialogThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

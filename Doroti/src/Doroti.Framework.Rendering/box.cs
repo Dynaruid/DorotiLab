@@ -391,7 +391,7 @@ public class BoxConstraints : Constraints
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
@@ -538,7 +538,7 @@ public class BoxHitTestEntry : HitTestEntry<RenderBox>
         this.localPosition = localPosition;
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(target))}@{this.localPosition}";
+    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(target))}@{this.localPosition}";
 }
 
 public class BoxParentData : ParentData
@@ -585,7 +585,7 @@ public class BaselineOffset
 
     public virtual BaselineOffset minOf(BaselineOffset other)
     {
-        return (((this).offset, (other).offset) switch { (double lhs, double rhs) => ((lhs >= rhs) ? other : this), (double lhsLocal, null) => new BaselineOffset(lhsLocal), (null, var rhsLocal) => rhsLocal });
+        return ((offset, (other).offset) switch { (double lhs, double rhs) => ((lhs >= rhs) ? other : this), (double lhsLocal, null) => new BaselineOffset(lhsLocal), (null, var rhsLocal) => rhsLocal });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -745,11 +745,11 @@ public abstract class RenderBox : RenderObject
 
     internal virtual Output _computeIntrinsics<Input, Output>(_CachedLayoutCalculation__box<Input, Output> type, Input input, Func<Input, Output> computer)
     {
-        DartRuntimePrimitives.Assert(() => (RenderObject.debugCheckingIntrinsics || !debugDoingThisResize));
+        DartRuntimePrimitives.Assert(() => (debugCheckingIntrinsics || !debugDoingThisResize));
         var shouldCache = true;
         DartRuntimePrimitives.Assert(() =>
             {
-                shouldCache = !RenderObject.debugCheckingIntrinsics;
+                shouldCache = !debugCheckingIntrinsics;
                 return true;
             });
         return (shouldCache ? _computeWithTimeline(type, input, (Func<Input, Output>)computer) : computer(input));
@@ -761,23 +761,23 @@ public abstract class RenderBox : RenderObject
         DartMap<string, string>? debugTimelineArguments = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                DartMap<string, string> argumentsLocal = (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhanceLayoutTimelineArguments ? toDiagnosticsNode().toTimelineArguments()! : new DartMap<string, string>());
+                DartMap<string, string> argumentsLocal = (DebugLibrary.debugEnhanceLayoutTimelineArguments ? toDiagnosticsNode().toTimelineArguments()! : new DartMap<string, string>());
                 debugTimelineArguments = type.debugFillTimelineArguments(argumentsLocal, input);
                 return true;
             });
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled || (_debugIntrinsicsDepth == 0L)))
+            if ((DebugLibrary.debugProfileLayoutsEnabled || (_debugIntrinsicsDepth == 0L)))
             {
                 FlutterTimeline.startSync(type.eventLabel(this), arguments: debugTimelineArguments);
             }
             _debugIntrinsicsDepth += 1L;
         }
         Output result = type.memoize(this._layoutCacheStorage, input, (Func<Input, Output>)computer);
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             _debugIntrinsicsDepth -= 1L;
-            if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled || (_debugIntrinsicsDepth == 0L)))
+            if ((DebugLibrary.debugProfileLayoutsEnabled || (_debugIntrinsicsDepth == 0L)))
             {
                 FlutterTimeline.finishSync();
             }
@@ -893,7 +893,7 @@ public abstract class RenderBox : RenderObject
 
     public virtual global::Doroti.Ui.Size computeDryLayout(BoxConstraints constraints)
     {
-        DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(error: new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class does not implement \"computeDryLayout\"."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") })));
+        DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(error: new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class does not implement \"computeDryLayout\"."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") })));
         return Size.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -901,7 +901,7 @@ public abstract class RenderBox : RenderObject
     public virtual double? getDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         double? baselineOffset = _computeIntrinsics(_CachedLayoutCalculation__box<object, object>.baseline, (constraints, baseline), (Func<(BoxConstraints, TextBaseline), BaselineOffset>)this._computeDryBaseline).offset;
-        DartRuntimePrimitives.Assert(() => (RenderObject.debugCheckingIntrinsics || (baselineOffset == computeDryBaseline(constraints, baseline))));
+        DartRuntimePrimitives.Assert(() => (debugCheckingIntrinsics || (baselineOffset == computeDryBaseline(constraints, baseline))));
         return baselineOffset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -927,7 +927,7 @@ public abstract class RenderBox : RenderObject
 
     public virtual double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(error: new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class does not implement \"computeDryBaseline\"."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") })));
+        DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(error: new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class does not implement \"computeDryBaseline\"."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") })));
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -937,12 +937,12 @@ public abstract class RenderBox : RenderObject
         DartRuntimePrimitives.Assert(() => (((reason is null)) != ((error is null))));
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!RenderObject.debugCheckingIntrinsics)
+                if (!debugCheckingIntrinsics)
                 {
                     if ((reason is not null))
                     {
                         DartRuntimePrimitives.Assert(() => (error is null));
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class does not support dry layout.") });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class does not support dry layout.") });
                     }
                     DartRuntimePrimitives.Assert(() => (error is not null));
                     throw error!;
@@ -966,20 +966,20 @@ public abstract class RenderBox : RenderObject
                     if ((size is _DebugSize__box))
                     {
                         _DebugSize__box size__93552__as93576 = (_DebugSize__box)size;
-                        DartRuntimePrimitives.Assert(() => (object.Equals(((_DebugSize__box)size__93552__as93576)._owner, this)));
+                        DartRuntimePrimitives.Assert(() => (Equals(((_DebugSize__box)size__93552__as93576)._owner, this)));
                         RenderObject? parentLocal = this.parent;
-                        bool doingRegularLayout = !((RenderObject.debugActiveLayout?.debugDoingThisLayoutWithCallback ?? true));
-                        bool sizeAccessAllowed = ((((!doingRegularLayout || debugDoingThisResize) || debugDoingThisLayout) || _debugDoingBaseline) || ((object.Equals(RenderObject.debugActiveLayout, parentLocal)) && ((_DebugSize__box)size__93552__as93576)._canBeUsedByParent));
+                        bool doingRegularLayout = !((debugActiveLayout?.debugDoingThisLayoutWithCallback ?? true));
+                        bool sizeAccessAllowed = ((((!doingRegularLayout || debugDoingThisResize) || debugDoingThisLayout) || _debugDoingBaseline) || ((Equals(debugActiveLayout, parentLocal)) && ((_DebugSize__box)size__93552__as93576)._canBeUsedByParent));
                         DartRuntimePrimitives.Assert(() => sizeAccessAllowed);
                         RenderBox? renderBoxDoingDryLayout = (this._computingThisDryLayout ? this : ((((parentLocal is RenderBox) && ((RenderBox)((RenderBox)parentLocal))._computingThisDryLayout) ? ((RenderBox)parentLocal) : null)));
                         DartRuntimePrimitives.Assert(() => (renderBoxDoingDryLayout is null));
                         RenderBox? renderBoxDoingDryBaseline = (this._computingThisDryBaseline ? this : ((((parentLocal is RenderBox) && ((RenderBox)((RenderBox)parentLocal))._computingThisDryBaseline) ? ((RenderBox)parentLocal) : null)));
                         DartRuntimePrimitives.Assert(() => (renderBoxDoingDryBaseline is null));
-                        DartRuntimePrimitives.Assert(() => (object.Equals(size__93552__as93576, this._size)));
+                        DartRuntimePrimitives.Assert(() => (Equals(size__93552__as93576, this._size)));
                     }
                     return true;
                 });
-            return (this._size ?? throw new InvalidOperationException($"RenderBox was not laid out: {this.GetType()}#{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.shortHash(this))}"));
+            return (this._size ?? throw new InvalidOperationException($"RenderBox was not laid out: {this.GetType()}#{(DiagnosticsLibrary.shortHash(this))}"));
         }
         set
         {
@@ -1038,9 +1038,9 @@ public abstract class RenderBox : RenderObject
                 if ((value is _DebugSize__box))
                 {
                     _DebugSize__box value__as99138 = (_DebugSize__box)value;
-                    if ((!object.Equals(((_DebugSize__box)value__as99138)._owner, this)))
+                    if ((!Equals(((_DebugSize__box)value__as99138)._owner, this)))
                     {
-                        if ((!object.Equals(((_DebugSize__box)value__as99138)._owner.parent, this)))
+                        if ((!Equals(((_DebugSize__box)value__as99138)._owner.parent, this)))
                         {
                             throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("The size property was assigned a size inappropriately."), describeForError("The following render object"), ((_DebugSize__box)value__as99138)._owner.describeForError("...was assigned a size obtained from"), new ErrorDescription("However, this second render object is not, or is no longer, a " + "child of the first, and it is therefore a violation of the " + "RenderBox layout protocol to use that size in the layout of the " + "first render object."), new ErrorHint("If the size was obtained at a time where it was valid to read " + "the size (because the second render object above was a child " + "of the first at the time), then it should be adopted using " + "debugAdoptSize at that time."), new ErrorHint("If the size comes from a grandchild or a render object from an " + "entirely different part of the render tree, then there is no " + "way to be notified when the size changes and therefore attempts " + "to read that size are almost certainly a source of bugs. A different " + "approach should be used.") });
                         }
@@ -1073,8 +1073,8 @@ public abstract class RenderBox : RenderObject
     public virtual double? getDistanceToBaseline(TextBaseline baseline, bool onlyReal = false)
     {
         DartRuntimePrimitives.Assert(() => !_debugDoingBaseline);
-        DartRuntimePrimitives.Assert(() => (!debugNeedsLayout || RenderObject.debugCheckingIntrinsics));
-        DartRuntimePrimitives.Assert(() => (RenderObject.debugCheckingIntrinsics || (owner! switch { PipelineOwner { debugDoingLayout: true } __object103560 => ((object.Equals(RenderObject.debugActiveLayout, parent)) && parent!.debugDoingThisLayout), PipelineOwner { debugDoingPaint: true } __object103701 => (((object.Equals(RenderObject.debugActivePaint, parent)) && parent!.debugDoingThisPaint) || (((object.Equals(RenderObject.debugActivePaint, this)) && debugDoingThisPaint))), PipelineOwner __object103923 => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+        DartRuntimePrimitives.Assert(() => (!debugNeedsLayout || debugCheckingIntrinsics));
+        DartRuntimePrimitives.Assert(() => (debugCheckingIntrinsics || (owner! switch { PipelineOwner { debugDoingLayout: true } __object103560 => ((Equals(debugActiveLayout, parent)) && parent!.debugDoingThisLayout), PipelineOwner { debugDoingPaint: true } __object103701 => (((Equals(debugActivePaint, parent)) && parent!.debugDoingThisPaint) || (((Equals(debugActivePaint, this)) && debugDoingThisPaint))), PipelineOwner __object103923 => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
         DartRuntimePrimitives.Assert(() => _debugSetDoingBaseline(true));
         double? result = default!;
         try
@@ -1152,10 +1152,10 @@ public abstract class RenderBox : RenderObject
                 {
                     throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this.GetType()} does not meet its constraints."), new DiagnosticsProperty<BoxConstraints>("Constraints", this.constraints, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<global::Doroti.Ui.Size>("Size", this._size, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not " + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") });
                 }
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugCheckIntrinsicSizes)
+                if (DebugLibrary.debugCheckIntrinsicSizes)
                 {
-                    DartRuntimePrimitives.Assert(() => !RenderObject.debugCheckingIntrinsics);
-                    RenderObject.debugCheckingIntrinsics = true;
+                    DartRuntimePrimitives.Assert(() => !debugCheckingIntrinsics);
+                    debugCheckingIntrinsics = true;
                     var failures = new List<DiagnosticsNode>();
                     double testIntrinsic(Func<double, double> function, string name, double constraint)
                     {
@@ -1195,14 +1195,14 @@ public abstract class RenderBox : RenderObject
                     }
                     finally
                     {
-                        RenderObject.debugCheckingIntrinsics = false;
+                        debugCheckingIntrinsics = false;
                     }
                     if ((checked((long)(failures.Count)) != 0))
                     {
                         throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The intrinsic dimension methods of the {this.GetType()} class returned values that violate the intrinsic protocol contract."), new ErrorDescription($"The following {((checked((long)(failures.Count)) > 1L) ? "failures" : "failure")} was detected:"), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") });
                     }
                     _debugDryLayoutCalculationValid = true;
-                    RenderObject.debugCheckingIntrinsics = true;
+                    debugCheckingIntrinsics = true;
                     global::Doroti.Ui.Size dryLayoutSize = default!;
                     try
                     {
@@ -1210,11 +1210,11 @@ public abstract class RenderBox : RenderObject
                     }
                     finally
                     {
-                        RenderObject.debugCheckingIntrinsics = false;
+                        debugCheckingIntrinsics = false;
                     }
-                    if ((_debugDryLayoutCalculationValid && (!object.Equals(dryLayoutSize, this._size))))
+                    if ((_debugDryLayoutCalculationValid && (!Equals(dryLayoutSize, this._size))))
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The size given to the {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class differs from the size computed by computeDryLayout."), new ErrorDescription($"The size computed in {(sizedByParent ? "performResize" : "performLayout")} " + $"is {this.size}, which is different from {dryLayoutSize}, which was computed by computeDryLayout."), new ErrorDescription($"The constraints used were {this.constraints}."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The size given to the {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class differs from the size computed by computeDryLayout."), new ErrorDescription($"The size computed in {(sizedByParent ? "performResize" : "performLayout")} " + $"is {this.size}, which is different from {dryLayoutSize}, which was computed by computeDryLayout."), new ErrorDescription($"The constraints used were {this.constraints}."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") });
                     }
                 }
                 return true;
@@ -1226,10 +1226,10 @@ public abstract class RenderBox : RenderObject
         DartRuntimePrimitives.Assert(() =>
             {
                 var messages = new List<DiagnosticsNode> { new ErrorDescription($"The constraints used were {this.constraints}."), new ErrorHint("If you are not writing your own RenderBox subclass, then this is not\n" + "your fault. Contact support: https://github.com/flutter/flutter/issues/new?template=02_bug.yml") };
-                foreach (global::Doroti.Ui.TextBaseline baseline in System.Enum.GetValues<TextBaseline>().ToList())
+                foreach (global::Doroti.Ui.TextBaseline baseline in Enum.GetValues<TextBaseline>().ToList())
                 {
-                    DartRuntimePrimitives.Assert(() => !RenderObject.debugCheckingIntrinsics);
-                    RenderObject.debugCheckingIntrinsics = true;
+                    DartRuntimePrimitives.Assert(() => !debugCheckingIntrinsics);
+                    debugCheckingIntrinsics = true;
                     _debugDryLayoutCalculationValid = true;
                     double? dryBaseline = default!;
                     double? realBaseline = default!;
@@ -1240,9 +1240,9 @@ public abstract class RenderBox : RenderObject
                     }
                     finally
                     {
-                        RenderObject.debugCheckingIntrinsics = false;
+                        debugCheckingIntrinsics = false;
                     }
-                    DartRuntimePrimitives.Assert(() => !RenderObject.debugCheckingIntrinsics);
+                    DartRuntimePrimitives.Assert(() => !debugCheckingIntrinsics);
                     if ((!_debugDryLayoutCalculationValid || (dryBaseline == realBaseline)))
                     {
                         continue;
@@ -1250,11 +1250,11 @@ public abstract class RenderBox : RenderObject
                     if ((((dryBaseline is null)) != ((realBaseline is null))))
                     {
                         var (methodReturnedNull, methodReturnedNonNull) = ((dryBaseline is null) ? (((string, string))("computeDryBaseline", "computeDistanceToActualBaseline")) : (((string, string))("computeDistanceToActualBaseline", "computeDryBaseline")));
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {baseline} location returned by {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))}.computeDistanceToActualBaseline " + "differs from the baseline location computed by computeDryBaseline."), new ErrorDescription($"The {methodReturnedNull} method returned null while the {methodReturnedNonNull} returned a non-null {baseline} of {(dryBaseline ?? realBaseline)}. " + $"Did you forget to implement {methodReturnedNull} for {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))}?") });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {baseline} location returned by {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))}.computeDistanceToActualBaseline " + "differs from the baseline location computed by computeDryBaseline."), new ErrorDescription($"The {methodReturnedNull} method returned null while the {methodReturnedNonNull} returned a non-null {baseline} of {(dryBaseline ?? realBaseline)}. " + $"Did you forget to implement {methodReturnedNull} for {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))}?") });
                     }
                     else
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {baseline} location returned by {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))}.computeDistanceToActualBaseline " + "differs from the baseline location computed by computeDryBaseline."), new DiagnosticsProperty<RenderObject>("The RenderBox was", this), new ErrorDescription($"The computeDryBaseline method returned {dryBaseline},\n" + $"while the computeDistanceToActualBaseline method returned {realBaseline}.\n" + $"Consider checking the implementations of the following methods on the {(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class and make sure they are consistent:\n" + " * computeDistanceToActualBaseline\n" + " * computeDryBaseline\n" + " * performLayout\n") });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"The {baseline} location returned by {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))}.computeDistanceToActualBaseline " + "differs from the baseline location computed by computeDryBaseline."), new DiagnosticsProperty<RenderObject>("The RenderBox was", this), new ErrorDescription($"The computeDryBaseline method returned {dryBaseline},\n" + $"while the computeDistanceToActualBaseline method returned {realBaseline}.\n" + $"Consider checking the implementations of the following methods on the {(objectRuntimeTypeFunctions.objectRuntimeType(this, "RenderBox"))} class and make sure they are consistent:\n" + " * computeDistanceToActualBaseline\n" + " * computeDryBaseline\n" + " * performLayout\n") });
                     }
                 }
                 return true;
@@ -1319,7 +1319,7 @@ public abstract class RenderBox : RenderObject
     public virtual bool hitTestChildren(BoxHitTestResult result, Offset position) => false;
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderObject)child).parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((((RenderObject)child).parentData is not BoxParentData))
@@ -1369,7 +1369,7 @@ public abstract class RenderBox : RenderObject
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintPointersEnabled)
+                if (DebugLibrary.debugPaintPointersEnabled)
                 {
                     if ((@event is global::Doroti.Framework.Gestures.PointerDownEvent))
                     {
@@ -1395,19 +1395,19 @@ public abstract class RenderBox : RenderObject
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugCheckIntrinsicSizes)
+                if (DebugLibrary.debugCheckIntrinsicSizes)
                 {
                     _debugVerifyDryBaselines();
                 }
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)
+                if (DebugLibrary.debugPaintSizeEnabled)
                 {
                     debugPaintSize(context, offset);
                 }
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled)
+                if (DebugLibrary.debugPaintBaselinesEnabled)
                 {
                     debugPaintBaselines(context, offset);
                 }
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintPointersEnabled)
+                if (DebugLibrary.debugPaintPointersEnabled)
                 {
                     debugPaintPointers(context, offset);
                 }

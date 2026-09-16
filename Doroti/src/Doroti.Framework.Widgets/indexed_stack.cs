@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/indexed_stack.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8629
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -15,9 +14,9 @@ public class IndexedStack : StatelessWidget
     public virtual long? index { get; private set; }
     public virtual List<Widget> children { get; private set; } = default!;
 
-    public IndexedStack(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.StackFit sizing = global::Doroti.Framework.Rendering.StackFit.loose, long? index = 0, List<Widget> children = default!) : base(key: key)
+    public IndexedStack(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.StackFit sizing = StackFit.loose, long? index = 0, List<Widget> children = default!) : base(key: key)
     {
-        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.topStart;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? AlignmentDirectional.topStart;
         List<Widget> __children = children ?? new List<Widget>();
         this.alignment = __alignment;
         this.textDirection = textDirection;
@@ -29,13 +28,13 @@ public class IndexedStack : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        var wrappedChildren = new List<Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((i) =>
+        var wrappedChildren = new List<Widget>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((i) =>
         {
             var isSelected = (i == this.index);
             return new _VisibilityScope__indexed_stack(isVisible: isSelected, child: new ExcludeFocus(excluding: !isSelected, child: this.children[(int)(i)]));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return ((Widget)(object?)new _RawIndexedStack__indexed_stack(alignment: this.alignment, textDirection: this.textDirection, clipBehavior: this.clipBehavior, sizing: this.sizing, index: this.index, children: wrappedChildren));
+        return ((Widget)new _RawIndexedStack__indexed_stack(alignment: this.alignment, textDirection: this.textDirection, clipBehavior: this.clipBehavior, sizing: this.sizing, index: this.index, children: wrappedChildren));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -45,10 +44,10 @@ public class _RawIndexedStack__indexed_stack : Stack
 {
     public virtual long? index { get; private set; }
 
-    internal _RawIndexedStack__indexed_stack(global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.StackFit sizing = global::Doroti.Framework.Rendering.StackFit.loose, long? index = 0, List<Widget> children = default!) : base(alignment: alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.topStart, textDirection: textDirection, clipBehavior: clipBehavior, children: children ?? new List<Widget>(), fit: sizing)
+    internal _RawIndexedStack__indexed_stack(global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.StackFit sizing = StackFit.loose, long? index = 0, List<Widget> children = default!) : base(alignment: alignment ?? AlignmentDirectional.topStart, textDirection: textDirection, clipBehavior: clipBehavior, children: children ?? new List<Widget>(), fit: sizing)
     {
         this.index = index;
-        System.Diagnostics.Debug.Assert((((index is null) || (((DartRuntimePrimitives.RequireValue(index) == 0L) && (checked((long)(children.Count)) == 0L)))) || (((index >= 0L) && (DartRuntimePrimitives.RequireValue(index) < checked((long)(children.Count)))))));
+        System.Diagnostics.Debug.Assert((((index is null) || (((DartRuntimePrimitives.RequireValue(index) == 0L) && (checked((long)(this.children.Count)) == 0L)))) || (((index >= 0L) && (DartRuntimePrimitives.RequireValue(index) < checked((long)(this.children.Count)))))));
     }
 
     // Dart library-private member: distinct from the same name in the base library.
@@ -57,7 +56,7 @@ public class _RawIndexedStack__indexed_stack : Stack
         if (((this.alignment is global::Doroti.Framework.Painting.AlignmentDirectional) && (this.textDirection is null)))
         {
             global::Doroti.Framework.Painting.AlignmentDirectional alignment__as4557 = (global::Doroti.Framework.Painting.AlignmentDirectional)alignment;
-            DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context, why: "to resolve the 'alignment' argument", hint: ((object.Equals(this.alignment, global::Doroti.Framework.Painting.AlignmentDirectional.topStart)) ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction." : null), alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as4557', or an explicit 'textDirection', to the {this.GetType()}."));
+            DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context, why: "to resolve the 'alignment' argument", hint: ((Equals(this.alignment, AlignmentDirectional.topStart)) ? "The default value for 'alignment' is AlignmentDirectional.topStart, which requires a text direction." : null), alternative: $"Instead of providing a Directionality widget, another solution would be passing a non-directional 'alignment__as4557', or an explicit 'textDirection', to the {this.GetType()}."));
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -66,13 +65,13 @@ public class _RawIndexedStack__indexed_stack : Stack
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckHasDirectionality(context));
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderIndexedStack(index: this.index, fit: this.fit, clipBehavior: this.clipBehavior, alignment: this.alignment, textDirection: ((this.textDirection ?? (TextDirection)Directionality.maybeOf(context)))));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderIndexedStack(index: this.index, fit: this.fit, clipBehavior: this.clipBehavior, alignment: this.alignment, textDirection: ((this.textDirection ?? Directionality.maybeOf(context)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderIndexedStack)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderIndexedStack)renderObject;
         DartRuntimePrimitives.Assert(() => _debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderIndexedStack>)(() =>
 {
@@ -81,14 +80,14 @@ public class _RawIndexedStack__indexed_stack : Stack
     __cascade.fit = this.fit;
     __cascade.clipBehavior = this.clipBehavior;
     __cascade.alignment = this.alignment;
-    __cascade.textDirection = ((this.textDirection ?? (TextDirection)Directionality.maybeOf(context)));
+    __cascade.textDirection = ((this.textDirection ?? Directionality.maybeOf(context)));
     return __cascade;
 }))());
     }
 
     public override MultiChildRenderObjectElement createElement()
     {
-        return ((MultiChildRenderObjectElement)(object?)new _IndexedStackElement__indexed_stack(this));
+        return ((MultiChildRenderObjectElement)new _IndexedStackElement__indexed_stack(this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -100,11 +99,11 @@ internal class _IndexedStackElement__indexed_stack : MultiChildRenderObjectEleme
     {
     }
 
-    public override _RawIndexedStack__indexed_stack widget => ((_RawIndexedStack__indexed_stack?)(object?)base.widget)!;
+    public override _RawIndexedStack__indexed_stack widget => ((_RawIndexedStack__indexed_stack?)base.widget)!;
     public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
     {
         long? indexLocal = ((_RawIndexedStack__indexed_stack)this.widget).index;
-        if (((indexLocal is not null) && System.Linq.Enumerable.Any(this.children)))
+        if (((indexLocal is not null) && Enumerable.Any(this.children)))
         {
             long index__6279__value6418 = DartRuntimePrimitives.RequireValue(indexLocal);
             visitor(this.children.elementAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index__6279__value6418))));
@@ -163,10 +162,10 @@ public class Visibility : StatelessWidget
     {
         var isVisibleLocal = true;
         var ancestorContext = context;
-        InheritedElement? ancestor = ((InheritedElement?)(object?)ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>());
+        InheritedElement? ancestor = ((InheritedElement?)ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>());
         while ((isVisibleLocal && (ancestor is not null)))
         {
-            var scope = ((_VisibilityScope__indexed_stack?)(object?)context.dependOnInheritedElement(ancestor))!;
+            var scope = ((_VisibilityScope__indexed_stack?)context.dependOnInheritedElement(ancestor))!;
             isVisibleLocal = ((_VisibilityScope__indexed_stack)scope).isVisible;
             ancestor.visitAncestorElements(((global::System.Func<Element, bool>)((parent) =>
             {
@@ -182,7 +181,7 @@ public class Visibility : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget result = ((Widget)(object?)new ExcludeFocus(excluding: (!this.visible && !this.maintainFocusability), child: this.child));
+        Widget result = ((Widget)new ExcludeFocus(excluding: (!this.visible && !this.maintainFocusability), child: this.child));
         if (this.maintainSize)
         {
             result = DartRuntimePrimitives.ConvertValue<Widget>(new _Visibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, child: new IgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), child: result)));
@@ -207,7 +206,7 @@ public class Visibility : StatelessWidget
                 result = (this.visible ? this.child : this.replacement);
             }
         }
-        return ((Widget)(object?)new _VisibilityScope__indexed_stack(isVisible: this.visible, child: result));
+        return ((Widget)new _VisibilityScope__indexed_stack(isVisible: this.visible, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -235,7 +234,7 @@ internal class _VisibilityScope__indexed_stack : InheritedWidget
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __old = (_VisibilityScope__indexed_stack)(object)oldWidget;
+        var __old = (_VisibilityScope__indexed_stack)oldWidget;
         return (this.isVisible != ((_VisibilityScope__indexed_stack)__old).isVisible);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -291,7 +290,7 @@ public class SliverVisibility : StatelessWidget
         {
             Widget result = this.sliver;
             result = DartRuntimePrimitives.ConvertValue<Widget>(new SliverIgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), sliver: result));
-            return ((Widget)(object?)new _SliverVisibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, sliver: result));
+            return ((Widget)new _SliverVisibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, sliver: result));
         }
         DartRuntimePrimitives.Assert(() => !this.maintainInteractivity);
         DartRuntimePrimitives.Assert(() => !this.maintainSemantics);
@@ -303,7 +302,7 @@ public class SliverVisibility : StatelessWidget
             {
                 resultLocal = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: this.visible, child: this.sliver));
             }
-            return ((Widget)(object?)new SliverOffstage(sliver: resultLocal, offstage: !this.visible));
+            return ((Widget)new SliverOffstage(sliver: resultLocal, offstage: !this.visible));
         }
         DartRuntimePrimitives.Assert(() => !this.maintainAnimation);
         DartRuntimePrimitives.Assert(() => !this.maintainState);
@@ -337,13 +336,13 @@ internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderVisibility__indexed_stack(this.visible, this.maintainSemantics));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderVisibility__indexed_stack(this.visible, this.maintainSemantics));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderVisibility__indexed_stack)(object)renderObject;
+        var __renderObject = (_RenderVisibility__indexed_stack)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderVisibility__indexed_stack>)(() =>
 {
     var __cascade = __renderObject;
@@ -426,13 +425,13 @@ internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverVisibility__indexed_stack(this.visible, this.maintainSemantics));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSliverVisibility__indexed_stack(this.visible, this.maintainSemantics));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderSliverVisibility__indexed_stack)(object)renderObject;
+        var __renderObject = (_RenderSliverVisibility__indexed_stack)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverVisibility__indexed_stack>)(() =>
 {
     var __cascade = __renderObject;

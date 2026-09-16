@@ -53,7 +53,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
     }
 
     public override string keyLabel => charactersIgnoringModifiers;
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kMacOsToPhysicalKey.GetValueOrDefault(keyCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + keyCode)));
+    public override PhysicalKeyboardKey physicalKey => (Keyboard_maps_gLibrary.kMacOsToPhysicalKey.GetValueOrDefault(keyCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + keyCode)));
     public override LogicalKeyboardKey logicalKey
     {
         get
@@ -63,12 +63,12 @@ public class RawKeyEventDataMacOs : RawKeyEventData
                 long key = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3625);
                 return (LogicalKeyboardKey.findKeyByKeyId(key) ?? new LogicalKeyboardKey(key));
             }
-            LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kMacOsNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey = Keyboard_maps_gLibrary.kMacOsNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
             {
                 return numPadKey;
             }
-            LogicalKeyboardKey? knownKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kMacOsToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? knownKey = Keyboard_maps_gLibrary.kMacOsToLogicalKey.GetValueOrDefault(keyCode);
             if ((knownKey is not null))
             {
                 return knownKey;
@@ -100,7 +100,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         {
             return true;
         }
-        return (side switch { var __case6264 when object.Equals(__case6264, KeyboardSide.any) => true, var __case6296 when object.Equals(__case6296, KeyboardSide.all) => (((modifiers & leftMask) != 0L) && ((modifiers & rightMask) != 0L)), var __case6379 when object.Equals(__case6379, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case6433 when object.Equals(__case6433, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (side switch { var __case6264 when Equals(__case6264, KeyboardSide.any) => true, var __case6296 when Equals(__case6296, KeyboardSide.all) => (((modifiers & leftMask) != 0L) && ((modifiers & rightMask) != 0L)), var __case6379 when Equals(__case6379, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case6433 when Equals(__case6433, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -110,35 +110,35 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         bool result = default!;
         switch (key)
         {
-            case var __case6715 when object.Equals(__case6715, ModifierKey.controlModifier):
+            case var __case6715 when Equals(__case6715, ModifierKey.controlModifier):
                 {
                     result = _isLeftRightModifierPressed(side, (independentModifier & modifierControl), modifierLeftControl, modifierRightControl);
                     break;
                 }
-            case var __case6940 when object.Equals(__case6940, ModifierKey.shiftModifier):
+            case var __case6940 when Equals(__case6940, ModifierKey.shiftModifier):
                 {
                     result = _isLeftRightModifierPressed(side, (independentModifier & modifierShift), modifierLeftShift, modifierRightShift);
                     break;
                 }
-            case var __case7157 when object.Equals(__case7157, ModifierKey.altModifier):
+            case var __case7157 when Equals(__case7157, ModifierKey.altModifier):
                 {
                     result = _isLeftRightModifierPressed(side, (independentModifier & modifierOption), modifierLeftOption, modifierRightOption);
                     break;
                 }
-            case var __case7375 when object.Equals(__case7375, ModifierKey.metaModifier):
+            case var __case7375 when Equals(__case7375, ModifierKey.metaModifier):
                 {
                     result = _isLeftRightModifierPressed(side, (independentModifier & modifierCommand), modifierLeftCommand, modifierRightCommand);
                     break;
                 }
-            case var __case7597 when object.Equals(__case7597, ModifierKey.capsLockModifier):
+            case var __case7597 when Equals(__case7597, ModifierKey.capsLockModifier):
                 {
                     result = ((independentModifier & modifierCapsLock) != 0L);
                     break;
                 }
-            case var __case7960 when object.Equals(__case7960, ModifierKey.functionModifier):
-            case var __case8001 when object.Equals(__case8001, ModifierKey.numLockModifier):
-            case var __case8041 when object.Equals(__case8041, ModifierKey.symbolModifier):
-            case var __case8080 when object.Equals(__case8080, ModifierKey.scrollLockModifier):
+            case var __case7960 when Equals(__case7960, ModifierKey.functionModifier):
+            case var __case8001 when Equals(__case8001, ModifierKey.numLockModifier):
+            case var __case8041 when Equals(__case8041, ModifierKey.symbolModifier):
+            case var __case8080 when Equals(__case8080, ModifierKey.scrollLockModifier):
                 {
                     result = false;
                     break;
@@ -178,27 +178,27 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         }
         switch (key)
         {
-            case var __case9241 when object.Equals(__case9241, ModifierKey.controlModifier):
+            case var __case9241 when Equals(__case9241, ModifierKey.controlModifier):
                 {
                     return findSide(modifierControl, modifierLeftControl, modifierRightControl);
                 }
-            case var __case9366 when object.Equals(__case9366, ModifierKey.shiftModifier):
+            case var __case9366 when Equals(__case9366, ModifierKey.shiftModifier):
                 {
                     return findSide(modifierShift, modifierLeftShift, modifierRightShift);
                 }
-            case var __case9483 when object.Equals(__case9483, ModifierKey.altModifier):
+            case var __case9483 when Equals(__case9483, ModifierKey.altModifier):
                 {
                     return findSide(modifierOption, modifierLeftOption, modifierRightOption);
                 }
-            case var __case9601 when object.Equals(__case9601, ModifierKey.metaModifier):
+            case var __case9601 when Equals(__case9601, ModifierKey.metaModifier):
                 {
                     return findSide(modifierCommand, modifierLeftCommand, modifierRightCommand);
                 }
-            case var __case9723 when object.Equals(__case9723, ModifierKey.capsLockModifier):
-            case var __case9764 when object.Equals(__case9764, ModifierKey.numLockModifier):
-            case var __case9804 when object.Equals(__case9804, ModifierKey.scrollLockModifier):
-            case var __case9847 when object.Equals(__case9847, ModifierKey.functionModifier):
-            case var __case9888 when object.Equals(__case9888, ModifierKey.symbolModifier):
+            case var __case9723 when Equals(__case9723, ModifierKey.capsLockModifier):
+            case var __case9764 when Equals(__case9764, ModifierKey.numLockModifier):
+            case var __case9804 when Equals(__case9804, ModifierKey.scrollLockModifier):
+            case var __case9847 when Equals(__case9847, ModifierKey.functionModifier):
+            case var __case9888 when Equals(__case9888, ModifierKey.symbolModifier):
                 {
                     return KeyboardSide.all;
                 }
@@ -208,7 +208,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
 
     public override bool shouldDispatchEvent()
     {
-        return (!object.Equals(logicalKey, LogicalKeyboardKey.fn));
+        return (!Equals(logicalKey, LogicalKeyboardKey.fn));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -230,7 +230,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }

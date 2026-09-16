@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/tab_indicator.dart
-#pragma warning disable CS8600, CS8603, CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -15,7 +15,7 @@ public class UnderlineTabIndicator : global::Doroti.Framework.Painting.Decoratio
     public UnderlineTabIndicator(global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.BorderSide borderSide = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry insets = default!)
     {
         global::Doroti.Framework.Painting.BorderSide __borderSide = borderSide ?? new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.white);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __insets = insets ?? global::Doroti.Framework.Painting.EdgeInsets.zero;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry __insets = insets ?? EdgeInsets.zero;
         this.borderRadius = borderRadius;
         this.borderSide = __borderSide;
         this.insets = __insets;
@@ -26,9 +26,9 @@ public class UnderlineTabIndicator : global::Doroti.Framework.Painting.Decoratio
         if ((a is UnderlineTabIndicator))
         {
             UnderlineTabIndicator a__as1729 = (UnderlineTabIndicator)a;
-            return ((global::Doroti.Framework.Painting.Decoration?)(object?)new UnderlineTabIndicator(borderSide: BorderSide.lerp(((UnderlineTabIndicator)((UnderlineTabIndicator)a__as1729)).borderSide, this.borderSide, t), insets: EdgeInsetsGeometry.lerp(((UnderlineTabIndicator)((UnderlineTabIndicator)a__as1729)).insets, this.insets, t)!));
+            return ((global::Doroti.Framework.Painting.Decoration?)new UnderlineTabIndicator(borderSide: BorderSide.lerp(((UnderlineTabIndicator)((UnderlineTabIndicator)a__as1729)).borderSide, this.borderSide, t), insets: EdgeInsetsGeometry.lerp(((UnderlineTabIndicator)((UnderlineTabIndicator)a__as1729)).insets, this.insets, t)!));
         }
-        return ((global::Doroti.Framework.Painting.Decoration?)(object?)base.lerpFrom(a, t));
+        return ((global::Doroti.Framework.Painting.Decoration?)base.lerpFrom(a, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -37,22 +37,22 @@ public class UnderlineTabIndicator : global::Doroti.Framework.Painting.Decoratio
         if ((b is UnderlineTabIndicator))
         {
             UnderlineTabIndicator b__as2045 = (UnderlineTabIndicator)b;
-            return ((global::Doroti.Framework.Painting.Decoration?)(object?)new UnderlineTabIndicator(borderSide: BorderSide.lerp(this.borderSide, ((UnderlineTabIndicator)((UnderlineTabIndicator)b__as2045)).borderSide, t), insets: EdgeInsetsGeometry.lerp(this.insets, ((UnderlineTabIndicator)((UnderlineTabIndicator)b__as2045)).insets, t)!));
+            return ((global::Doroti.Framework.Painting.Decoration?)new UnderlineTabIndicator(borderSide: BorderSide.lerp(this.borderSide, ((UnderlineTabIndicator)((UnderlineTabIndicator)b__as2045)).borderSide, t), insets: EdgeInsetsGeometry.lerp(this.insets, ((UnderlineTabIndicator)((UnderlineTabIndicator)b__as2045)).insets, t)!));
         }
-        return ((global::Doroti.Framework.Painting.Decoration?)(object?)base.lerpTo(b, t));
+        return ((global::Doroti.Framework.Painting.Decoration?)base.lerpTo(b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Painting.BoxPainter createBoxPainter(global::System.Action onChanged = default!)
     {
-        return ((global::Doroti.Framework.Painting.BoxPainter)(object?)new _UnderlinePainter__tab_indicator(this, this.borderRadius, () => onChanged()));
+        return ((global::Doroti.Framework.Painting.BoxPainter)new _UnderlinePainter__tab_indicator(this, this.borderRadius, () => onChanged()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Rect _indicatorRectFor(Rect rect, TextDirection textDirection)
     {
-        global::Doroti.Ui.Rect indicator = ((global::Doroti.Ui.Rect)(object?)this.insets.resolve(textDirection).deflateRect(rect));
-        return global::Doroti.Ui.Rect.fromLTWH(indicator.left, (indicator.bottom - ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), indicator.width, ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width);
+        global::Doroti.Ui.Rect indicator = ((global::Doroti.Ui.Rect)this.insets.resolve(textDirection).deflateRect(rect));
+        return Rect.fromLTWH(indicator.left, (indicator.bottom - ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), indicator.width, ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -92,7 +92,7 @@ internal class _UnderlinePainter__tab_indicator : global::Doroti.Framework.Paint
     public override void paint(Canvas canvas, Offset offset, global::Doroti.Framework.Painting.ImageConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Painting.ImageConfiguration)configuration).size is not null));
-        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)(offset & DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.ImageConfiguration)configuration).size)));
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(offset & DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.ImageConfiguration)configuration).size)));
         global::Doroti.Ui.TextDirection textDirectionLocal = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.ImageConfiguration)configuration).textDirection);
         global::Doroti.Ui.Paint paintLocal = default!;
         if ((this.borderRadius is not null))
@@ -103,8 +103,8 @@ internal class _UnderlinePainter__tab_indicator : global::Doroti.Framework.Paint
     __cascade.color = ((UnderlineTabIndicator)this.decoration).borderSide.color;
     return __cascade;
 }))();
-            global::Doroti.Ui.Rect indicator = ((global::Doroti.Ui.Rect)(object?)this.decoration._indicatorRectFor(rect, textDirectionLocal));
-            var rrect = global::Doroti.Ui.RRect.fromRectAndCorners(indicator, topLeft: this.borderRadius!.topLeft, topRight: this.borderRadius!.topRight, bottomRight: this.borderRadius!.bottomRight, bottomLeft: this.borderRadius!.bottomLeft);
+            global::Doroti.Ui.Rect indicator = ((global::Doroti.Ui.Rect)this.decoration._indicatorRectFor(rect, textDirectionLocal));
+            var rrect = RRect.fromRectAndCorners(indicator, topLeft: this.borderRadius!.topLeft, topRight: this.borderRadius!.topRight, bottomRight: this.borderRadius!.bottomRight, bottomLeft: this.borderRadius!.bottomLeft);
             canvas.drawRRect(rrect, paintLocal);
         }
         else
@@ -115,7 +115,7 @@ internal class _UnderlinePainter__tab_indicator : global::Doroti.Framework.Paint
     __cascade.strokeCap = StrokeCap.square;
     return __cascade;
 }))();
-            global::Doroti.Ui.Rect indicatorLocal = ((global::Doroti.Ui.Rect)(object?)this.decoration._indicatorRectFor(rect, textDirectionLocal).deflate((((UnderlineTabIndicator)this.decoration).borderSide.width / 2.0)));
+            global::Doroti.Ui.Rect indicatorLocal = ((global::Doroti.Ui.Rect)this.decoration._indicatorRectFor(rect, textDirectionLocal).deflate((((UnderlineTabIndicator)this.decoration).borderSide.width / 2.0)));
             canvas.drawLine(indicatorLocal.bottomLeft, indicatorLocal.bottomRight, paintLocal);
         }
     }

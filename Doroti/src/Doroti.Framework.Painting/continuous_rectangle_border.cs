@@ -123,17 +123,17 @@ public class ContinuousRectangleBorder : OutlinedBorder
     {
         var __other = other as ContinuousRectangleBorder;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((__other is ContinuousRectangleBorder) && (object.Equals(((ContinuousRectangleBorder)__other).side, side))) && (object.Equals(((ContinuousRectangleBorder)((ContinuousRectangleBorder)__other)).borderRadius, this.borderRadius)));
+        return (((__other is ContinuousRectangleBorder) && (Equals(((ContinuousRectangleBorder)__other).side, side))) && (Equals(((ContinuousRectangleBorder)((ContinuousRectangleBorder)__other)).borderRadius, this.borderRadius)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius);
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ContinuousRectangleBorder"))}({side}, {this.borderRadius})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ContinuousRectangleBorder"))}({side}, {this.borderRadius})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

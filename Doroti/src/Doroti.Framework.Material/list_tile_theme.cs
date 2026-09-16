@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/list_tile_theme.dart
-#pragma warning disable CS8600, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -82,11 +82,11 @@ public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnostica
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((((((((((((((((__other is ListTileThemeData) && (((ListTileThemeData)((ListTileThemeData)__other)).dense == this.dense)) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).shape, this.shape))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).style, this.style))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).selectedColor, this.selectedColor))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).iconColor, this.iconColor))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).subtitleTextStyle, this.subtitleTextStyle))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).leadingAndTrailingTextStyle, this.leadingAndTrailingTextStyle))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).textColor, this.textColor))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).contentPadding, this.contentPadding))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).tileColor, this.tileColor))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).selectedTileColor, this.selectedTileColor))) && (((ListTileThemeData)((ListTileThemeData)__other)).horizontalTitleGap == this.horizontalTitleGap)) && (((ListTileThemeData)((ListTileThemeData)__other)).minVerticalPadding == this.minVerticalPadding)) && (((ListTileThemeData)((ListTileThemeData)__other)).minLeadingWidth == this.minLeadingWidth)) && (((ListTileThemeData)((ListTileThemeData)__other)).minTileHeight == this.minTileHeight)) && (((ListTileThemeData)((ListTileThemeData)__other)).enableFeedback == this.enableFeedback)) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).mouseCursor, this.mouseCursor))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).visualDensity, this.visualDensity))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).titleAlignment, this.titleAlignment))) && (object.Equals(((ListTileThemeData)((ListTileThemeData)__other)).controlAffinity, this.controlAffinity))) && (((ListTileThemeData)((ListTileThemeData)__other)).isThreeLine == this.isThreeLine));
+        return (((((((((((((((((((((((__other is ListTileThemeData) && (((ListTileThemeData)((ListTileThemeData)__other)).dense == this.dense)) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).shape, this.shape))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).style, this.style))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).selectedColor, this.selectedColor))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).iconColor, this.iconColor))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).subtitleTextStyle, this.subtitleTextStyle))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).leadingAndTrailingTextStyle, this.leadingAndTrailingTextStyle))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).textColor, this.textColor))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).contentPadding, this.contentPadding))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).tileColor, this.tileColor))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).selectedTileColor, this.selectedTileColor))) && (((ListTileThemeData)((ListTileThemeData)__other)).horizontalTitleGap == this.horizontalTitleGap)) && (((ListTileThemeData)((ListTileThemeData)__other)).minVerticalPadding == this.minVerticalPadding)) && (((ListTileThemeData)((ListTileThemeData)__other)).minLeadingWidth == this.minLeadingWidth)) && (((ListTileThemeData)((ListTileThemeData)__other)).minTileHeight == this.minTileHeight)) && (((ListTileThemeData)((ListTileThemeData)__other)).enableFeedback == this.enableFeedback)) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).mouseCursor, this.mouseCursor))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).visualDensity, this.visualDensity))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).titleAlignment, this.titleAlignment))) && (Equals(((ListTileThemeData)((ListTileThemeData)__other)).controlAffinity, this.controlAffinity))) && (((ListTileThemeData)((ListTileThemeData)__other)).isThreeLine == this.isThreeLine));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -115,8 +115,8 @@ public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnostica
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("isThreeLine", this.isThreeLine, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -132,7 +132,7 @@ public class ListTileThemeData : global::Doroti.Framework.Foundation.Diagnostica
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -201,17 +201,17 @@ public class ListTileTheme : global::Doroti.Framework.Widgets.InheritedTheme
     public virtual ListTileControlAffinity? controlAffinity => ((this._data is not null) ? ((ListTileThemeData)this._data).controlAffinity : this._controlAffinity);
     public static ListTileThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ListTileTheme? result = ((ListTileTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ListTileTheme>());
+        ListTileTheme? result = ((ListTileTheme?)context.dependOnInheritedWidgetOfExactType<ListTileTheme>());
         return (result?.data ?? Theme.of(context).listTileTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Framework.Widgets.Widget merge(global::Doroti.Framework.Foundation.Key? key = null, bool? dense = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, ListTileStyle? style = null, Color? selectedColor = null, Color? iconColor = null, Color? textColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? subtitleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? contentPadding = null, Color? tileColor = null, Color? selectedTileColor = null, bool? enableFeedback = null, double? horizontalTitleGap = null, double? minVerticalPadding = null, double? minLeadingWidth = null, double? minTileHeight = null, ListTileTitleAlignment? titleAlignment = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, VisualDensity? visualDensity = null, ListTileControlAffinity? controlAffinity = null, bool? isThreeLine = null, global::Doroti.Framework.Widgets.Widget child = default!)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
-            ListTileThemeData parent = ((ListTileThemeData)(object?)ListTileTheme.of(context));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new ListTileTheme(key: key, data: new ListTileThemeData(dense: (dense ?? ((ListTileThemeData)parent).dense), shape: (shape ?? ((ListTileThemeData)parent).shape), style: (style ?? ((ListTileThemeData)parent).style), selectedColor: (selectedColor ?? ((ListTileThemeData)parent).selectedColor), iconColor: (iconColor ?? ((ListTileThemeData)parent).iconColor), textColor: (textColor ?? ((ListTileThemeData)parent).textColor), titleTextStyle: (titleTextStyle ?? ((ListTileThemeData)parent).titleTextStyle), subtitleTextStyle: (subtitleTextStyle ?? ((ListTileThemeData)parent).subtitleTextStyle), leadingAndTrailingTextStyle: (leadingAndTrailingTextStyle ?? ((ListTileThemeData)parent).leadingAndTrailingTextStyle), contentPadding: (contentPadding ?? ((ListTileThemeData)parent).contentPadding), tileColor: (tileColor ?? ((ListTileThemeData)parent).tileColor), selectedTileColor: (selectedTileColor ?? ((ListTileThemeData)parent).selectedTileColor), enableFeedback: (enableFeedback ?? ((ListTileThemeData)parent).enableFeedback), horizontalTitleGap: (horizontalTitleGap ?? ((ListTileThemeData)parent).horizontalTitleGap), minVerticalPadding: (minVerticalPadding ?? ((ListTileThemeData)parent).minVerticalPadding), minLeadingWidth: (minLeadingWidth ?? ((ListTileThemeData)parent).minLeadingWidth), minTileHeight: (minTileHeight ?? ((ListTileThemeData)parent).minTileHeight), titleAlignment: (titleAlignment ?? ((ListTileThemeData)parent).titleAlignment), mouseCursor: (mouseCursor ?? ((ListTileThemeData)parent).mouseCursor), visualDensity: (visualDensity ?? ((ListTileThemeData)parent).visualDensity), controlAffinity: (controlAffinity ?? ((ListTileThemeData)parent).controlAffinity), isThreeLine: (isThreeLine ?? ((ListTileThemeData)parent).isThreeLine)), child: child));
+            ListTileThemeData parent = ((ListTileThemeData)of(context));
+            return ((global::Doroti.Framework.Widgets.Widget)new ListTileTheme(key: key, data: new ListTileThemeData(dense: (dense ?? ((ListTileThemeData)parent).dense), shape: (shape ?? ((ListTileThemeData)parent).shape), style: (style ?? ((ListTileThemeData)parent).style), selectedColor: (selectedColor ?? ((ListTileThemeData)parent).selectedColor), iconColor: (iconColor ?? ((ListTileThemeData)parent).iconColor), textColor: (textColor ?? ((ListTileThemeData)parent).textColor), titleTextStyle: (titleTextStyle ?? ((ListTileThemeData)parent).titleTextStyle), subtitleTextStyle: (subtitleTextStyle ?? ((ListTileThemeData)parent).subtitleTextStyle), leadingAndTrailingTextStyle: (leadingAndTrailingTextStyle ?? ((ListTileThemeData)parent).leadingAndTrailingTextStyle), contentPadding: (contentPadding ?? ((ListTileThemeData)parent).contentPadding), tileColor: (tileColor ?? ((ListTileThemeData)parent).tileColor), selectedTileColor: (selectedTileColor ?? ((ListTileThemeData)parent).selectedTileColor), enableFeedback: (enableFeedback ?? ((ListTileThemeData)parent).enableFeedback), horizontalTitleGap: (horizontalTitleGap ?? ((ListTileThemeData)parent).horizontalTitleGap), minVerticalPadding: (minVerticalPadding ?? ((ListTileThemeData)parent).minVerticalPadding), minLeadingWidth: (minLeadingWidth ?? ((ListTileThemeData)parent).minLeadingWidth), minTileHeight: (minTileHeight ?? ((ListTileThemeData)parent).minTileHeight), titleAlignment: (titleAlignment ?? ((ListTileThemeData)parent).titleAlignment), mouseCursor: (mouseCursor ?? ((ListTileThemeData)parent).mouseCursor), visualDensity: (visualDensity ?? ((ListTileThemeData)parent).visualDensity), controlAffinity: (controlAffinity ?? ((ListTileThemeData)parent).controlAffinity), isThreeLine: (isThreeLine ?? ((ListTileThemeData)parent).isThreeLine)), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -219,9 +219,9 @@ public class ListTileTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ListTileTheme(data: new ListTileThemeData(dense: this.dense, shape: this.shape, style: this.style, selectedColor: this.selectedColor, iconColor: this.iconColor, textColor: this.textColor, contentPadding: this.contentPadding, tileColor: this.tileColor, selectedTileColor: this.selectedTileColor, enableFeedback: this.enableFeedback, horizontalTitleGap: this.horizontalTitleGap, minVerticalPadding: this.minVerticalPadding, minLeadingWidth: this.minLeadingWidth, isThreeLine: this._data?.isThreeLine), child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new ListTileTheme(data: new ListTileThemeData(dense: this.dense, shape: this.shape, style: this.style, selectedColor: this.selectedColor, iconColor: this.iconColor, textColor: this.textColor, contentPadding: this.contentPadding, tileColor: this.tileColor, selectedTileColor: this.selectedTileColor, enableFeedback: this.enableFeedback, horizontalTitleGap: this.horizontalTitleGap, minVerticalPadding: this.minVerticalPadding, minLeadingWidth: this.minLeadingWidth, isThreeLine: this._data?.isThreeLine), child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ListTileTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ListTileTheme)oldWidget).data)));
 }

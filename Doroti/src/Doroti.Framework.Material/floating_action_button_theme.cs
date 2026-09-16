@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/floating_action_button_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -80,11 +80,11 @@ public class FloatingActionButtonThemeData : global::Doroti.Framework.Foundation
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((((((((__other is FloatingActionButtonThemeData) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).foregroundColor, this.foregroundColor))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).focusColor, this.focusColor))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).hoverColor, this.hoverColor))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).splashColor, this.splashColor))) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).elevation == this.elevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).focusElevation == this.focusElevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).hoverElevation == this.hoverElevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).disabledElevation == this.disabledElevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).highlightElevation == this.highlightElevation)) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).shape, this.shape))) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).enableFeedback == this.enableFeedback)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).iconSize == this.iconSize)) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).sizeConstraints, this.sizeConstraints))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).smallSizeConstraints, this.smallSizeConstraints))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).largeSizeConstraints, this.largeSizeConstraints))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedSizeConstraints, this.extendedSizeConstraints))) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedIconLabelSpacing == this.extendedIconLabelSpacing)) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedPadding, this.extendedPadding))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedTextStyle, this.extendedTextStyle))) && (object.Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).mouseCursor, this.mouseCursor)));
+        return ((((((((((((((((((((((__other is FloatingActionButtonThemeData) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).foregroundColor, this.foregroundColor))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).focusColor, this.focusColor))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).hoverColor, this.hoverColor))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).splashColor, this.splashColor))) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).elevation == this.elevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).focusElevation == this.focusElevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).hoverElevation == this.hoverElevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).disabledElevation == this.disabledElevation)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).highlightElevation == this.highlightElevation)) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).shape, this.shape))) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).enableFeedback == this.enableFeedback)) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).iconSize == this.iconSize)) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).sizeConstraints, this.sizeConstraints))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).smallSizeConstraints, this.smallSizeConstraints))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).largeSizeConstraints, this.largeSizeConstraints))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedSizeConstraints, this.extendedSizeConstraints))) && (((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedIconLabelSpacing == this.extendedIconLabelSpacing)) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedPadding, this.extendedPadding))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).extendedTextStyle, this.extendedTextStyle))) && (Equals(((FloatingActionButtonThemeData)((FloatingActionButtonThemeData)__other)).mouseCursor, this.mouseCursor)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -112,8 +112,8 @@ public class FloatingActionButtonThemeData : global::Doroti.Framework.Foundation
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -129,7 +129,7 @@ public class FloatingActionButtonThemeData : global::Doroti.Framework.Foundation
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -146,16 +146,16 @@ public class FloatingActionButtonTheme : global::Doroti.Framework.Widgets.Inheri
 
     public static FloatingActionButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        FloatingActionButtonTheme? fabTheme = ((FloatingActionButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<FloatingActionButtonTheme>());
+        FloatingActionButtonTheme? fabTheme = ((FloatingActionButtonTheme?)context.dependOnInheritedWidgetOfExactType<FloatingActionButtonTheme>());
         return (fabTheme?.data ?? Theme.of(context).floatingActionButtonTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new FloatingActionButtonTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new FloatingActionButtonTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((FloatingActionButtonTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((FloatingActionButtonTheme)oldWidget).data)));
 }

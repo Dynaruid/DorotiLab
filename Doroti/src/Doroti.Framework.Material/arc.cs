@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/arc.dart
-#pragma warning disable CS8605
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -27,16 +27,16 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
     {
 
 
-        global::Doroti.Ui.Offset beginLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.begin));
-        global::Doroti.Ui.Offset endLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.end));
-        global::Doroti.Ui.Offset delta = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(endLocal) - DartRuntimePrimitives.RequireValue(beginLocal)));
+        global::Doroti.Ui.Offset beginLocal = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(this.begin));
+        global::Doroti.Ui.Offset endLocal = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.RequireValue(this.end));
+        global::Doroti.Ui.Offset delta = ((global::Doroti.Ui.Offset)(DartRuntimePrimitives.RequireValue(endLocal) - DartRuntimePrimitives.RequireValue(beginLocal)));
         double deltaX = delta.dx.abs();
         double deltaY = delta.dy.abs();
         double distanceFromAtoB = delta.distance;
         var c = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(endLocal).dx, DartRuntimePrimitives.RequireValue(beginLocal).dy);
         double sweepAngle()
         {
-            return (2.0 * global::Doroti.Runtime.Dart_mathLibrary.asin((distanceFromAtoB / ((2.0 * DartRuntimePrimitives.RequireValue(this._radius))))));
+            return (2.0 * Dart_mathLibrary.asin((distanceFromAtoB / ((2.0 * DartRuntimePrimitives.RequireValue(this._radius))))));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         if (((deltaX > ArcLibrary._kOnAxisDelta) && (deltaY > ArcLibrary._kOnAxisDelta)))
@@ -131,7 +131,7 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this.begin)))
+            if ((!Equals(__value, this.begin)))
             {
                 base.begin = __value;
                 _dirty = true;
@@ -143,7 +143,7 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this.end)))
+            if ((!Equals(__value, this.end)))
             {
                 base.end = __value;
                 _dirty = true;
@@ -169,15 +169,15 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
             return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this.begin, this.end, t));
         }
         double angle = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this._beginAngle, this._endAngle, t));
-        double x = (global::Doroti.Runtime.Dart_mathLibrary.cos(angle) * DartRuntimePrimitives.RequireValue(this._radius));
-        double y = (global::Doroti.Runtime.Dart_mathLibrary.sin(angle) * DartRuntimePrimitives.RequireValue(this._radius));
+        double x = (Dart_mathLibrary.cos(angle) * DartRuntimePrimitives.RequireValue(this._radius));
+        double y = (Dart_mathLibrary.sin(angle) * DartRuntimePrimitives.RequireValue(this._radius));
         return (DartRuntimePrimitives.RequireValue(this._center) + new global::Doroti.Ui.Offset(x, y));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialPointArcTween"))}({this.begin} → {this.end}; center={this.center}, radius={this.radius}, beginAngle={this.beginAngle}, endAngle={this.endAngle})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialPointArcTween"))}({this.begin} → {this.end}; center={this.center}, radius={this.radius}, beginAngle={this.beginAngle}, endAngle={this.endAngle})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -245,7 +245,7 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
     {
 
 
-        global::Doroti.Ui.Offset centersVector = ((global::Doroti.Ui.Offset)(object?)(((Offset)(DartRuntimePrimitives.RequireValue(this.end)).center) - ((Offset)(DartRuntimePrimitives.RequireValue(this.begin)).center)));
+        global::Doroti.Ui.Offset centersVector = ((global::Doroti.Ui.Offset)(((Offset)(DartRuntimePrimitives.RequireValue(this.end)).center) - ((Offset)(DartRuntimePrimitives.RequireValue(this.begin)).center)));
         _Diagonal__arc diagonal = ArcLibrary._maxBy<_Diagonal__arc>(ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(), ((d) => _diagonalSupport(centersVector, d)));
         _beginArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).beginId), end: _cornerFor(DartRuntimePrimitives.RequireValue(this.end), ((_Diagonal__arc)diagonal).beginId));
         _endArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).endId), end: _cornerFor(DartRuntimePrimitives.RequireValue(this.end), ((_Diagonal__arc)diagonal).endId));
@@ -254,7 +254,7 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
 
     internal virtual double _diagonalSupport(Offset centersVector, _Diagonal__arc diagonal)
     {
-        global::Doroti.Ui.Offset delta = ((global::Doroti.Ui.Offset)(object?)(_cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).endId) - _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).beginId)));
+        global::Doroti.Ui.Offset delta = ((global::Doroti.Ui.Offset)(_cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).endId) - _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).beginId)));
         double length = delta.distance;
         return (((centersVector.dx * delta.dx) / length) + ((centersVector.dy * delta.dy) / length));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -301,7 +301,7 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this.begin)))
+            if ((!Equals(__value, this.begin)))
             {
                 base.begin = __value;
                 _dirty = true;
@@ -313,7 +313,7 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this.end)))
+            if ((!Equals(__value, this.end)))
             {
                 base.end = __value;
                 _dirty = true;
@@ -334,13 +334,13 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
         {
             return DartRuntimePrimitives.RequireValue(this.end);
         }
-        return global::Doroti.Ui.Rect.fromPoints(this._beginArc.lerp(t), this._endArc.lerp(t));
+        return Rect.fromPoints(this._beginArc.lerp(t), this._endArc.lerp(t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectArcTween"))}({this.begin} → {this.end}; beginArc={this.beginArc}, endArc={this.endArc})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectArcTween"))}({this.begin} → {this.end}; beginArc={this.beginArc}, endArc={this.endArc})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -379,7 +379,7 @@ public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.Rec
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this.begin)))
+            if ((!Equals(__value, this.begin)))
             {
                 base.begin = __value;
                 _dirty = true;
@@ -391,7 +391,7 @@ public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.Rec
         set
         {
             var __value = value;
-            if ((!object.Equals(__value, this.end)))
+            if ((!Equals(__value, this.end)))
             {
                 base.end = __value;
                 _dirty = true;
@@ -412,16 +412,16 @@ public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.Rec
         {
             return DartRuntimePrimitives.RequireValue(this.end);
         }
-        global::Doroti.Ui.Offset center = ((global::Doroti.Ui.Offset)(object?)this._centerArc.lerp(t));
+        global::Doroti.Ui.Offset center = ((global::Doroti.Ui.Offset)this._centerArc.lerp(t));
         double widthLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this.begin).width, DartRuntimePrimitives.RequireValue(this.end).width, t));
         double heightLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this.begin).height, DartRuntimePrimitives.RequireValue(this.end).height, t));
-        return global::Doroti.Ui.Rect.fromLTWH((center.dx - (widthLocal / 2.0)), (center.dy - (heightLocal / 2.0)), widthLocal, heightLocal);
+        return Rect.fromLTWH((center.dx - (widthLocal / 2.0)), (center.dy - (heightLocal / 2.0)), widthLocal, heightLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectCenterArcTween"))}({this.begin} → {this.end}; centerArc={this.centerArc})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectCenterArcTween"))}({this.begin} → {this.end}; centerArc={this.centerArc})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

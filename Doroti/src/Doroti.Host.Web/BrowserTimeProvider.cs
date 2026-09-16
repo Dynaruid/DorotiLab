@@ -85,7 +85,7 @@ public sealed partial class BrowserTimeProvider : TimeProvider, IDisposable
         created = Interlocked.Read(ref _created),
         fired = Interlocked.Read(ref _fired),
         crossThreadOperations = Interlocked.Read(ref _crossThreadOperations),
-        systemTimerCount = global::System.Threading.Timer.ActiveCount,
+        systemTimerCount = Timer.ActiveCount,
     });
 
     [JSImport("scheduleBrowserTimer", "doroti.web")]

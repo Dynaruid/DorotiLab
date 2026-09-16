@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/page.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -19,12 +19,12 @@ internal static class MaterialPageTransitionResolver
         }
         return platform switch
         {
-            global::Doroti.Framework.Foundation.TargetPlatform.iOS or
-            global::Doroti.Framework.Foundation.TargetPlatform.macOS => new CupertinoPageTransitionsBuilder(),
-            global::Doroti.Framework.Foundation.TargetPlatform.android or
-            global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or
-            global::Doroti.Framework.Foundation.TargetPlatform.windows or
-            global::Doroti.Framework.Foundation.TargetPlatform.linux => new ZoomPageTransitionsBuilder(),
+            TargetPlatform.iOS or
+            TargetPlatform.macOS => new CupertinoPageTransitionsBuilder(),
+            TargetPlatform.android or
+            TargetPlatform.fuchsia or
+            TargetPlatform.windows or
+            TargetPlatform.linux => new ZoomPageTransitionsBuilder(),
             _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
         };
     }
@@ -53,7 +53,7 @@ public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T
     public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
         this.controller?.duration = this.transitionDuration;
-        return ((global::Doroti.Framework.Scheduler.TickerFuture)(object?)base.didPush());
+        return ((global::Doroti.Framework.Scheduler.TickerFuture)base.didPush());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -69,7 +69,7 @@ public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T
     public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => MaterialRouteTransitionMixin<T>._delegatedTransition;
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
+        bool nextRouteIsNotFullscreen = (((nextRoute is not IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
         bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null));
         return (nextRouteIsNotFullscreen && ((((nextRoute is IMaterialRouteTransition)) || nextRouteHasDelegatedTransition)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -83,15 +83,15 @@ public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T
 
     public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)buildContent(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: result));
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)buildContent(context));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
     {
         PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)theme.buildTransitions<T>(this, context, animation, secondaryAnimation, child));
+        return ((global::Doroti.Framework.Widgets.Widget)theme.buildTransitions<T>(this, context, animation, secondaryAnimation, child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -130,7 +130,7 @@ public class MaterialPage<T> : global::Doroti.Framework.Widgets.Page<T>
     public virtual bool fullscreenDialog { get; private set; } = default!;
     public virtual bool allowSnapshotting { get; private set; } = default!;
 
-    public MaterialPage(global::Doroti.Framework.Widgets.Widget child, bool maintainState = true, bool fullscreenDialog = false, bool allowSnapshotting = true, global::Doroti.Framework.Foundation.LocalKey? key = null, bool canPop = true, global::System.Action<bool, T?> onPopInvoked = default!, string? name = null, object? arguments = null, string? restorationId = null) : base(key: key, canPop: canPop, onPopInvoked: onPopInvoked ?? ((didPop, result) => Page<T>._defaultPopInvokedHandler(didPop, result)), name: name, arguments: arguments, restorationId: restorationId)
+    public MaterialPage(global::Doroti.Framework.Widgets.Widget child, bool maintainState = true, bool fullscreenDialog = false, bool allowSnapshotting = true, global::Doroti.Framework.Foundation.LocalKey? key = null, bool canPop = true, global::System.Action<bool, T?> onPopInvoked = default!, string? name = null, object? arguments = null, string? restorationId = null) : base(key: key, canPop: canPop, onPopInvoked: onPopInvoked ?? ((didPop, result) => _defaultPopInvokedHandler(didPop, result)), name: name, arguments: arguments, restorationId: restorationId)
     {
         this.child = child;
         this.maintainState = maintainState;
@@ -140,7 +140,7 @@ public class MaterialPage<T> : global::Doroti.Framework.Widgets.Page<T>
 
     public override global::Doroti.Framework.Widgets.Route<T> createRoute(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Route<T>)(object?)new _PageBasedMaterialPageRoute__page<T>(page: this, allowSnapshotting: this.allowSnapshotting));
+        return ((global::Doroti.Framework.Widgets.Route<T>)new _PageBasedMaterialPageRoute__page<T>(page: this, allowSnapshotting: this.allowSnapshotting));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -154,7 +154,7 @@ internal class _PageBasedMaterialPageRoute__page<T> : global::Doroti.Framework.W
         DartRuntimePrimitives.Assert(() => this.opaque);
     }
 
-    internal virtual MaterialPage<T> _page => ((MaterialPage<T>?)(object?)this.settings)!;
+    internal virtual MaterialPage<T> _page => ((MaterialPage<T>?)this.settings)!;
     public virtual global::Doroti.Framework.Widgets.Widget buildContent(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return ((MaterialPage<T>)this._page).child;
@@ -172,7 +172,7 @@ internal class _PageBasedMaterialPageRoute__page<T> : global::Doroti.Framework.W
     public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
         this.controller?.duration = this.transitionDuration;
-        return ((global::Doroti.Framework.Scheduler.TickerFuture)(object?)base.didPush());
+        return ((global::Doroti.Framework.Scheduler.TickerFuture)base.didPush());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -188,7 +188,7 @@ internal class _PageBasedMaterialPageRoute__page<T> : global::Doroti.Framework.W
     public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => MaterialRouteTransitionMixin<T>._delegatedTransition;
     public override bool canTransitionTo(dynamic nextRoute)
     {
-        bool nextRouteIsNotFullscreen = (((nextRoute is not global::Doroti.Framework.Widgets.IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
+        bool nextRouteIsNotFullscreen = (((nextRoute is not IPageRoute)) || !((global::Doroti.Framework.Widgets.IPageRoute)(object)nextRoute).fullscreenDialog);
         bool nextRouteHasDelegatedTransition = ((nextRoute is global::Doroti.Framework.Widgets.IModalRoute) && (((global::Doroti.Framework.Widgets.IModalRoute)(object)nextRoute).delegatedTransition is not null));
         return (nextRouteIsNotFullscreen && ((((nextRoute is IMaterialRouteTransition)) || nextRouteHasDelegatedTransition)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -202,15 +202,15 @@ internal class _PageBasedMaterialPageRoute__page<T> : global::Doroti.Framework.W
 
     public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)buildContent(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: result));
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)buildContent(context));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget buildTransitions(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
     {
         PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)theme.buildTransitions<T>(this, context, animation, secondaryAnimation, child));
+        return ((global::Doroti.Framework.Widgets.Widget)theme.buildTransitions<T>(this, context, animation, secondaryAnimation, child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

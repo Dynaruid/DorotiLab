@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/scroll_controller.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -27,12 +26,12 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
 
     public virtual double initialScrollOffset => this._initialScrollOffset;
     public virtual IEnumerable<ScrollPosition> positions => DartRuntimePrimitives.ConvertValue<IEnumerable<ScrollPosition>>(this._positions);
-    public virtual bool hasClients => System.Linq.Enumerable.Any(this._positions);
+    public virtual bool hasClients => Enumerable.Any(this._positions);
     public virtual ScrollPosition position
     {
         get
         {
-            DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
+            DartRuntimePrimitives.Assert(() => Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
             DartRuntimePrimitives.Assert(() => (checked((long)(this._positions.Count)) == 1L), () => (object?)"ScrollController attached to multiple scroll views.");
             return this._positions.Single();
         }
@@ -40,7 +39,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
     public virtual double offset => ((ScrollPosition)this.position).pixels;
     public async virtual Future animateTo(double offset, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
         // Snapshot before starting an animation. A position may detach while a
         // sibling is animating, but Flutter's controller waits for every
         // position that was attached at invocation time.
@@ -49,12 +48,12 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
         {
             futures.Add(position.animateTo(offset, duration: duration, curve: curve));
         }
-        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(futures);
+        await DartAsyncRuntime.wait<object?>(futures);
     }
 
     public virtual void jumpTo(double value)
     {
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
         foreach (var position in new List<ScrollPosition>(DartRuntimePrimitives.ConvertEnumerable<ScrollPosition>(this._positions)))
         {
             position.jumpTo(value);
@@ -88,7 +87,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
 
     public virtual ScrollPosition createScrollPosition(ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition)
     {
-        return ((ScrollPosition)(object?)new ScrollPositionWithSingleContext(physics: physics, context: context, initialPixels: this.initialScrollOffset, keepScrollOffset: this.keepScrollOffset, oldPosition: oldPosition, debugLabel: this.debugLabel));
+        return ((ScrollPosition)new ScrollPositionWithSingleContext(physics: physics, context: context, initialPixels: this.initialScrollOffset, keepScrollOffset: this.keepScrollOffset, oldPosition: oldPosition, debugLabel: this.debugLabel));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -96,7 +95,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
     {
         var description = new List<string>();
         debugFillDescription(description);
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
+        return $"{(DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -110,7 +109,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
         {
             description.Add($"initialScrollOffset: {this.initialScrollOffset.toStringAsFixed(1L)}, ");
         }
-        if (!System.Linq.Enumerable.Any(this._positions))
+        if (!Enumerable.Any(this._positions))
         {
             description.Add("no clients");
         }
@@ -159,11 +158,11 @@ public class TrackingScrollController : ScrollController
         DartRuntimePrimitives.Assert(() => this._positionToListener.ContainsKey(position));
         position.removeListener(this._positionToListener.GetValueOrDefault(position)!);
         this._positionToListener.remove(position);
-        if ((object.Equals(this._lastUpdated, position)))
+        if ((Equals(this._lastUpdated, position)))
         {
             _lastUpdated = null;
         }
-        if (!System.Linq.Enumerable.Any(this._positionToListener))
+        if (!Enumerable.Any(this._positionToListener))
         {
             _lastUpdatedOffset = null;
         }

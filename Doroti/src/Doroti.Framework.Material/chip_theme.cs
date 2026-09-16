@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/chip_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -17,18 +17,18 @@ public class ChipTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static ChipThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ChipTheme? inheritedTheme = ((ChipTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ChipTheme>());
+        ChipTheme? inheritedTheme = ((ChipTheme?)context.dependOnInheritedWidgetOfExactType<ChipTheme>());
         return (inheritedTheme?.data ?? Theme.of(context).chipTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ChipTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new ChipTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ChipTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ChipTheme)oldWidget).data)));
 }
 
 public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
@@ -97,14 +97,14 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         var disabledAlpha = 12L;
         var selectAlpha = 61L;
         var textLabelAlpha = 222L;
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0));
-        primaryColor = (primaryColor ?? (((object.Equals(brightness, Brightness.light)) ? Colors.black : Colors.white)));
-        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(backgroundAlpha));
-        global::Doroti.Ui.Color deleteIconColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(deleteIconAlpha));
-        global::Doroti.Ui.Color disabledColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(disabledAlpha));
-        global::Doroti.Ui.Color selectedColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(selectAlpha));
-        global::Doroti.Ui.Color secondarySelectedColorLocal = ((global::Doroti.Ui.Color)(object?)secondaryColor.withAlpha(selectAlpha));
-        global::Doroti.Framework.Painting.TextStyle secondaryLabelStyleLocal = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle.copyWith(color: secondaryColor.withAlpha(textLabelAlpha)));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsets.CreateAll(4.0));
+        primaryColor = (primaryColor ?? (((Equals(brightness, Brightness.light)) ? Colors.black : Colors.white)));
+        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)primaryColor.withAlpha(backgroundAlpha));
+        global::Doroti.Ui.Color deleteIconColorLocal = ((global::Doroti.Ui.Color)primaryColor.withAlpha(deleteIconAlpha));
+        global::Doroti.Ui.Color disabledColorLocal = ((global::Doroti.Ui.Color)primaryColor.withAlpha(disabledAlpha));
+        global::Doroti.Ui.Color selectedColorLocal = ((global::Doroti.Ui.Color)primaryColor.withAlpha(selectAlpha));
+        global::Doroti.Ui.Color secondarySelectedColorLocal = ((global::Doroti.Ui.Color)secondaryColor.withAlpha(selectAlpha));
+        global::Doroti.Framework.Painting.TextStyle secondaryLabelStyleLocal = ((global::Doroti.Framework.Painting.TextStyle)labelStyle.copyWith(color: secondaryColor.withAlpha(textLabelAlpha)));
         labelStyle = labelStyle.copyWith(color: primaryColor.withAlpha(textLabelAlpha));
         return new ChipThemeData(backgroundColor: backgroundColorLocal, deleteIconColor: deleteIconColorLocal, disabledColor: disabledColorLocal, selectedColor: selectedColorLocal, secondarySelectedColor: secondarySelectedColorLocal, shadowColor: Colors.black, selectedShadowColor: Colors.black, showCheckmark: true, padding: paddingLocal, labelStyle: labelStyle, secondaryLabelStyle: secondaryLabelStyleLocal, brightness: brightness, elevation: 0.0, pressElevation: 8.0, iconTheme: new global::Doroti.Framework.Widgets.IconThemeData(size: 18.0));
     }
@@ -121,7 +121,7 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return a;
         }
-        return new ChipThemeData(color: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.color, b?.color, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), deleteIconColor: Dart_uiLibrary.Color.lerp(a?.deleteIconColor, b?.deleteIconColor, t), disabledColor: Dart_uiLibrary.Color.lerp(a?.disabledColor, b?.disabledColor, t), selectedColor: Dart_uiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t), secondarySelectedColor: Dart_uiLibrary.Color.lerp(a?.secondarySelectedColor, b?.secondarySelectedColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), selectedShadowColor: Dart_uiLibrary.Color.lerp(a?.selectedShadowColor, b?.selectedShadowColor, t), showCheckmark: ((t < 0.5) ? (a?.showCheckmark ?? true) : (b?.showCheckmark ?? true)), checkmarkColor: Dart_uiLibrary.Color.lerp(a?.checkmarkColor, b?.checkmarkColor, t), labelPadding: EdgeInsetsGeometry.lerp(a?.labelPadding, b?.labelPadding, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t), side: ChipThemeData._lerpSides(a?.side, b?.side, t), shape: OutlinedBorder.lerp(a?.shape, b?.shape, t), labelStyle: TextStyle.lerp(a?.labelStyle, b?.labelStyle, t), secondaryLabelStyle: TextStyle.lerp(a?.secondaryLabelStyle, b?.secondaryLabelStyle, t), brightness: ((t < 0.5) ? (a?.brightness ?? Brightness.light) : (b?.brightness ?? Brightness.light)), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), pressElevation: Dart_uiLibrary.lerpDouble(a?.pressElevation, b?.pressElevation, t), iconTheme: (((a?.iconTheme is not null) || (b?.iconTheme is not null)) ? IconThemeData.lerp(a?.iconTheme, b?.iconTheme, t) : null), avatarBoxConstraints: BoxConstraints.lerp(a?.avatarBoxConstraints, b?.avatarBoxConstraints, t), deleteIconBoxConstraints: BoxConstraints.lerp(a?.deleteIconBoxConstraints, b?.deleteIconBoxConstraints, t));
+        return new ChipThemeData(color: WidgetStateProperty.lerp<global::Doroti.Ui.Color?>(a?.color, b?.color, t, (global::System.Func<Color?, Color?, double, Color?>)Color.lerp), backgroundColor: Dart_uiLibrary.Color.lerp(a?.backgroundColor, b?.backgroundColor, t), deleteIconColor: Dart_uiLibrary.Color.lerp(a?.deleteIconColor, b?.deleteIconColor, t), disabledColor: Dart_uiLibrary.Color.lerp(a?.disabledColor, b?.disabledColor, t), selectedColor: Dart_uiLibrary.Color.lerp(a?.selectedColor, b?.selectedColor, t), secondarySelectedColor: Dart_uiLibrary.Color.lerp(a?.secondarySelectedColor, b?.secondarySelectedColor, t), shadowColor: Dart_uiLibrary.Color.lerp(a?.shadowColor, b?.shadowColor, t), surfaceTintColor: Dart_uiLibrary.Color.lerp(a?.surfaceTintColor, b?.surfaceTintColor, t), selectedShadowColor: Dart_uiLibrary.Color.lerp(a?.selectedShadowColor, b?.selectedShadowColor, t), showCheckmark: ((t < 0.5) ? (a?.showCheckmark ?? true) : (b?.showCheckmark ?? true)), checkmarkColor: Dart_uiLibrary.Color.lerp(a?.checkmarkColor, b?.checkmarkColor, t), labelPadding: EdgeInsetsGeometry.lerp(a?.labelPadding, b?.labelPadding, t), padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t), side: _lerpSides(a?.side, b?.side, t), shape: OutlinedBorder.lerp(a?.shape, b?.shape, t), labelStyle: TextStyle.lerp(a?.labelStyle, b?.labelStyle, t), secondaryLabelStyle: TextStyle.lerp(a?.secondaryLabelStyle, b?.secondaryLabelStyle, t), brightness: ((t < 0.5) ? (a?.brightness ?? Brightness.light) : (b?.brightness ?? Brightness.light)), elevation: Dart_uiLibrary.lerpDouble(a?.elevation, b?.elevation, t), pressElevation: Dart_uiLibrary.lerpDouble(a?.pressElevation, b?.pressElevation, t), iconTheme: (((a?.iconTheme is not null) || (b?.iconTheme is not null)) ? IconThemeData.lerp(a?.iconTheme, b?.iconTheme, t) : null), avatarBoxConstraints: BoxConstraints.lerp(a?.avatarBoxConstraints, b?.avatarBoxConstraints, t), deleteIconBoxConstraints: BoxConstraints.lerp(a?.deleteIconBoxConstraints, b?.deleteIconBoxConstraints, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -141,7 +141,7 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         }
         a ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)a).color.withAlpha(0L));
-        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(a, b, t));
+        return ((global::Doroti.Framework.Painting.BorderSide?)BorderSide.lerp(a, b, t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -154,11 +154,11 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((((((((((__other is ChipThemeData) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).color, this.color))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).deleteIconColor, this.deleteIconColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).disabledColor, this.disabledColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).selectedColor, this.selectedColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).secondarySelectedColor, this.secondarySelectedColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).selectedShadowColor, this.selectedShadowColor))) && (((ChipThemeData)((ChipThemeData)__other)).showCheckmark == this.showCheckmark)) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).checkmarkColor, this.checkmarkColor))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).labelPadding, this.labelPadding))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).padding, this.padding))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).side, this.side))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).shape, this.shape))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).labelStyle, this.labelStyle))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).secondaryLabelStyle, this.secondaryLabelStyle))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).brightness, this.brightness))) && (((ChipThemeData)((ChipThemeData)__other)).elevation == this.elevation)) && (((ChipThemeData)((ChipThemeData)__other)).pressElevation == this.pressElevation)) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).iconTheme, this.iconTheme))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).avatarBoxConstraints, this.avatarBoxConstraints))) && (object.Equals(((ChipThemeData)((ChipThemeData)__other)).deleteIconBoxConstraints, this.deleteIconBoxConstraints)));
+        return ((((((((((((((((((((((((__other is ChipThemeData) && (Equals(((ChipThemeData)((ChipThemeData)__other)).color, this.color))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).deleteIconColor, this.deleteIconColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).disabledColor, this.disabledColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).selectedColor, this.selectedColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).secondarySelectedColor, this.secondarySelectedColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).selectedShadowColor, this.selectedShadowColor))) && (((ChipThemeData)((ChipThemeData)__other)).showCheckmark == this.showCheckmark)) && (Equals(((ChipThemeData)((ChipThemeData)__other)).checkmarkColor, this.checkmarkColor))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).labelPadding, this.labelPadding))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).padding, this.padding))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).side, this.side))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).shape, this.shape))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).labelStyle, this.labelStyle))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).secondaryLabelStyle, this.secondaryLabelStyle))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).brightness, this.brightness))) && (((ChipThemeData)((ChipThemeData)__other)).elevation == this.elevation)) && (((ChipThemeData)((ChipThemeData)__other)).pressElevation == this.pressElevation)) && (Equals(((ChipThemeData)((ChipThemeData)__other)).iconTheme, this.iconTheme))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).avatarBoxConstraints, this.avatarBoxConstraints))) && (Equals(((ChipThemeData)((ChipThemeData)__other)).deleteIconBoxConstraints, this.deleteIconBoxConstraints)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -188,8 +188,8 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("deleteIconBoxConstraints", this.deleteIconBoxConstraints, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -205,7 +205,7 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

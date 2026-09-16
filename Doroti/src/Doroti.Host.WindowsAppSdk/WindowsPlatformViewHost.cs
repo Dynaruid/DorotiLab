@@ -715,8 +715,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 rasterAndReadbackP95Ms = Percentile(rasterTimings, .95), uiCommitP95Ms = Percentile(_uiMilliseconds.ToArray(), .95) },
         };
         var json = System.Text.Json.JsonSerializer.Serialize(payload);
-        System.IO.File.WriteAllText(path + ".tmp", json);
-        System.IO.File.Move(path + ".tmp", path, true);
+        File.WriteAllText(path + ".tmp", json);
+        File.Move(path + ".tmp", path, true);
     }
     private static double[] Coordinates(Rect rect) => [rect.left, rect.top, rect.right, rect.bottom];
     private static void AddTiming(Queue<double> values, double value)

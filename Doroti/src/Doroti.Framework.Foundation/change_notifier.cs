@@ -24,7 +24,7 @@ public interface ValueListenable<T> : Listenable
 public class ChangeNotifier : Listenable, IDisposable
 {
     private int _count = 0;
-    private static readonly List<Action?> _emptyListeners = new List<Action?>(System.Linq.Enumerable.Repeat<Action?>(null, 0));
+    private static readonly List<Action?> _emptyListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, 0));
 
     // Ensure _emptyListeners exists before any instance field initializer reads
     // it on eager AOT runtimes. An explicit initializer prevents beforefieldinit.
@@ -68,7 +68,7 @@ public class ChangeNotifier : Listenable, IDisposable
 
     public virtual void addListener(Action listener)
     {
-        DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
+        DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
         if (MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
         {
             maybeDispatchObjectCreation(this);
@@ -77,11 +77,11 @@ public class ChangeNotifier : Listenable, IDisposable
         {
             if ((_count == 0))
             {
-                _listeners = new List<Action?>(System.Linq.Enumerable.Repeat<Action?>(null, 1));
+                _listeners = new List<Action?>(Enumerable.Repeat<Action?>(null, 1));
             }
             else
             {
-                var newListeners = new List<Action?>(System.Linq.Enumerable.Repeat<Action?>(null, (_listeners.Count * 2)));
+                var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, (_listeners.Count * 2)));
                 for (var i = 0; (i < _count); i++)
                 {
                     newListeners[i] = _listeners[i];
@@ -99,7 +99,7 @@ public class ChangeNotifier : Listenable, IDisposable
         _count -= 1;
         if (((_count * 2) <= _listeners.Count))
         {
-            var newListeners = new List<Action?>(System.Linq.Enumerable.Repeat<Action?>(null, _count));
+            var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, _count));
             for (var i = 0; (i < index); i++)
             {
                 newListeners[i] = _listeners[i];
@@ -145,7 +145,7 @@ public class ChangeNotifier : Listenable, IDisposable
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
+        DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
         DartRuntimePrimitives.Assert(() => (_notificationCallStackDepth == 0));
         DartRuntimePrimitives.Assert(() =>
             {
@@ -168,7 +168,7 @@ public class ChangeNotifier : Listenable, IDisposable
 
     public void notifyListeners()
     {
-        DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
+        DartRuntimePrimitives.Assert(() => debugAssertNotDisposed(this));
         if ((_count == 0))
         {
             return;
@@ -193,7 +193,7 @@ public class ChangeNotifier : Listenable, IDisposable
             int newLength = (_count - _reentrantlyRemovedListeners);
             if (((newLength * 2) <= _listeners.Count))
             {
-                var newListeners = new List<Action?>(System.Linq.Enumerable.Repeat<Action?>(null, newLength));
+                var newListeners = new List<Action?>(Enumerable.Repeat<Action?>(null, newLength));
                 var newIndex = 0;
                 for (var i = 0; (i < _count); i++)
                 {

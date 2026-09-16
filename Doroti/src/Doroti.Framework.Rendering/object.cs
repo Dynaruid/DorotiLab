@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/object.dart
-#pragma warning disable CS8602, CS8619
 using Doroti.Runtime;
 using Doroti.Ui;
 using Match = Doroti.Runtime.DartMatch;
@@ -56,7 +55,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                 child.debugRegisterRepaintBoundaryPaint(includedParent: debugAlsoPaintedParent, includedChild: true);
                 return true;
             });
-        var childLayer = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer)!;
+        var childLayer = ((OffsetLayer?)((RenderObject)child)._layerHandle.layer)!;
         if ((childLayer is null))
         {
             DartRuntimePrimitives.Assert(() => debugAlsoPaintedParent);
@@ -76,7 +75,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             childLayer.removeAllChildren();
             OffsetLayer updatedLayer = child.updateCompositedLayer(oldLayer: childLayer);
             DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(updatedLayer, childLayer));
-            DartRuntimePrimitives.Assert(() => (object.Equals(debugOldOffset, ((OffsetLayer)updatedLayer).offset)));
+            DartRuntimePrimitives.Assert(() => (Equals(debugOldOffset, ((OffsetLayer)updatedLayer).offset)));
         }
         child._needsCompositedLayerUpdate = false;
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childLayer, ((RenderObject)child)._layerHandle.layer));
@@ -97,7 +96,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
         DartRuntimePrimitives.Assert(() => (((RenderObject)child).isRepaintBoundary && ((RenderObject)child)._wasRepaintBoundary));
         DartRuntimePrimitives.Assert(() => !((RenderObject)child)._needsPaint);
         DartRuntimePrimitives.Assert(() => (((RenderObject)child)._layerHandle.layer is not null));
-        var childLayer = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer!)!;
+        var childLayer = ((OffsetLayer?)((RenderObject)child)._layerHandle.layer!)!;
         global::Doroti.Ui.Offset? debugOldOffset = default!;
         DartRuntimePrimitives.Assert(() =>
             {
@@ -106,7 +105,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             });
         OffsetLayer updatedLayer = child.updateCompositedLayer(oldLayer: childLayer);
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(updatedLayer, childLayer));
-        DartRuntimePrimitives.Assert(() => (object.Equals(debugOldOffset, ((OffsetLayer)updatedLayer).offset)));
+        DartRuntimePrimitives.Assert(() => (Equals(debugOldOffset, ((OffsetLayer)updatedLayer).offset)));
         child._needsCompositedLayerUpdate = false;
     }
 
@@ -123,7 +122,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Framework.Rendering.DebugLibrary.debugOnProfilePaint?.Invoke(child);
+                DebugLibrary.debugOnProfilePaint?.Invoke(child);
                 return true;
             });
         if (((RenderObject)child).isRepaintBoundary)
@@ -169,7 +168,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                 });
         }
         DartRuntimePrimitives.Assert(() => (((RenderObject)child)._layerHandle.layer is OffsetLayer));
-        var childOffsetLayer = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer!)!;
+        var childOffsetLayer = ((OffsetLayer?)((RenderObject)child)._layerHandle.layer!)!;
         childOffsetLayer.offset = offset;
         appendLayer(childOffsetLayer);
     }
@@ -252,19 +251,19 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled)
+                if (DebugLibrary.debugRepaintRainbowEnabled)
                 {
                     var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = 6.0;
-    __cascade.color = global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.toColor();
+    __cascade.color = DebugLibrary.debugCurrentRepaintColor.toColor();
     return __cascade;
 }))();
                     this.canvas.drawRect(this.estimatedBounds.deflate(3.0), paint);
                 }
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintLayerBordersEnabled)
+                if (DebugLibrary.debugPaintLayerBordersEnabled)
                 {
                     var paintLocal = ((Func<Paint>)(() =>
 {
@@ -330,7 +329,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 
     public virtual ClipRectLayer? pushClipRect(bool needsCompositing, Offset offset, Rect clipRect, Action<PaintingContext, Offset> painter, Clip clipBehavior = Clip.hardEdge, ClipRectLayer? oldLayer = null)
     {
-        if ((object.Equals(clipBehavior, Clip.none)))
+        if ((Equals(clipBehavior, Clip.none)))
         {
             painter(this, offset);
             return null;
@@ -359,7 +358,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 
     public virtual ClipRRectLayer? pushClipRRect(bool needsCompositing, Offset offset, Rect bounds, RRect clipRRect, Action<PaintingContext, Offset> painter, Clip clipBehavior = Clip.antiAlias, ClipRRectLayer? oldLayer = null)
     {
-        if ((object.Equals(clipBehavior, Clip.none)))
+        if ((Equals(clipBehavior, Clip.none)))
         {
             painter(this, offset);
             return null;
@@ -389,7 +388,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 
     public virtual ClipRSuperellipseLayer? pushClipRSuperellipse(bool needsCompositing, Offset offset, Rect bounds, RSuperellipse clipRSuperellipse, Action<PaintingContext, Offset> painter, Clip clipBehavior = Clip.antiAlias, ClipRSuperellipseLayer? oldLayer = null)
     {
-        if ((object.Equals(clipBehavior, Clip.none)))
+        if ((Equals(clipBehavior, Clip.none)))
         {
             painter(this, offset);
             return null;
@@ -419,7 +418,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 
     public virtual ClipPathLayer? pushClipPath(bool needsCompositing, Offset offset, Rect bounds, Path clipPath, Action<PaintingContext, Offset> painter, Clip clipBehavior = Clip.antiAlias, ClipPathLayer? oldLayer = null)
     {
-        if ((object.Equals(clipBehavior, Clip.none)))
+        if ((Equals(clipBehavior, Clip.none)))
         {
             painter(this, offset);
             return null;
@@ -503,7 +502,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "PaintingContext"))}#{GetHashCode()}(layer: {this._containerLayer}, canvas bounds: {this.estimatedBounds})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "PaintingContext"))}#{GetHashCode()}(layer: {this._containerLayer}, canvas bounds: {this.estimatedBounds})";
 }
 
 public abstract class Constraints
@@ -540,7 +539,7 @@ internal class _LocalSemanticsHandle__object : global::Doroti.Framework.Semantic
 
     public override void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         if ((this.listener is not null))
         {
             ((PipelineOwner)this._owner).semanticsOwner!.removeListener(this.listener!);
@@ -602,7 +601,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
         set
         {
             var __value = value;
-            if ((object.Equals(this._rootNode, __value)))
+            if ((Equals(this._rootNode, __value)))
             {
                 return;
             }
@@ -615,12 +614,12 @@ public class PipelineOwner : DiagnosticableTreeMixin
     public virtual bool debugDoingLayout => this._debugDoingLayout;
     public virtual void flushLayout()
     {
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhanceLayoutTimelineArguments)
+                    if (DebugLibrary.debugEnhanceLayoutTimelineArguments)
                     {
                         debugTimelineArguments = new DartMap<string, string> { ["dirty count"] = $"{checked((long)(this._nodesNeedingLayout.Count))}", ["dirty list"] = $"{this._nodesNeedingLayout}" };
                     }
@@ -655,7 +654,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                         }
                     }
                     RenderObject node = dirtyNodes[(int)(i)];
-                    if ((((RenderObject)node)._needsLayout && (object.Equals(((RenderObject)node).owner, this))))
+                    if ((((RenderObject)node)._needsLayout && (Equals(((RenderObject)node).owner, this))))
                     {
                         node._layoutWithoutResize();
                     }
@@ -683,7 +682,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     _debugDoingChildLayout = false;
                     return true;
                 });
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -717,14 +716,14 @@ public class PipelineOwner : DiagnosticableTreeMixin
 
     public virtual void flushCompositingBits()
     {
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync($"UPDATING COMPOSITING BITS{this._debugRootSuffixForTimelineEventNames}");
         }
         this._nodesNeedingCompositingBitsUpdate.sort(((a, b) => (((RenderObject)a).depth - ((RenderObject)b).depth)));
         foreach (RenderObject node in this._nodesNeedingCompositingBitsUpdate)
         {
-            if ((((RenderObject)node)._needsCompositingBitsUpdate && (object.Equals(((RenderObject)node).owner, this))))
+            if ((((RenderObject)node)._needsCompositingBitsUpdate && (Equals(((RenderObject)node).owner, this))))
             {
                 node._updateCompositingBits();
             }
@@ -735,7 +734,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
             child.flushCompositingBits();
         }
         DartRuntimePrimitives.Assert(() => (checked((long)(this._nodesNeedingCompositingBitsUpdate.Count)) == 0));
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.finishSync();
         }
@@ -745,12 +744,12 @@ public class PipelineOwner : DiagnosticableTreeMixin
     public virtual bool debugDoingPaint => this._debugDoingPaint;
     public virtual void flushPaint()
     {
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhancePaintTimelineArguments)
+                    if (DebugLibrary.debugEnhancePaintTimelineArguments)
                     {
                         debugTimelineArguments = new DartMap<string, string> { ["dirty count"] = $"{checked((long)(this._nodesNeedingPaint.Count))}", ["dirty list"] = $"{this._nodesNeedingPaint}" };
                     }
@@ -777,7 +776,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
 }))())
             {
                 DartRuntimePrimitives.Assert(() => (((RenderObject)node)._layerHandle.layer is not null));
-                if ((((((RenderObject)node)._needsPaint || ((RenderObject)node)._needsCompositedLayerUpdate)) && (object.Equals(((RenderObject)node).owner, this))))
+                if ((((((RenderObject)node)._needsPaint || ((RenderObject)node)._needsCompositedLayerUpdate)) && (Equals(((RenderObject)node).owner, this))))
                 {
                     if (((RenderObject)node)._layerHandle.layer!.attached)
                     {
@@ -811,7 +810,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     _debugDoingPaint = false;
                     return true;
                 });
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -864,7 +863,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
         {
             return;
         }
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync($"SEMANTICS{this._debugRootSuffixForTimelineEventNames}");
         }
@@ -878,12 +877,12 @@ public class PipelineOwner : DiagnosticableTreeMixin
         {
             List<RenderObject> nodesToProcess = ((Func<List<RenderObject>>)(() =>
 {
-    var __cascade = this._nodesNeedingSemanticsUpdate.where(((@object) => (!((RenderObject)@object)._needsLayout && (object.Equals(((RenderObject)@object).owner, this))))).ToList();
+    var __cascade = this._nodesNeedingSemanticsUpdate.where(((@object) => (!((RenderObject)@object)._needsLayout && (Equals(((RenderObject)@object).owner, this))))).ToList();
     __cascade.sort(((a, b) => (((RenderObject)a).depth - ((RenderObject)b).depth)));
     return __cascade;
 }))();
             this._nodesNeedingSemanticsUpdate.Clear();
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.startSync("Semantics.updateChildren");
             }
@@ -896,7 +895,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                 }
                 ((RenderObject)node)._semantics.updateChildren();
             }
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -909,11 +908,11 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     }
                     return true;
                 });
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.startSync("Semantics.ensureGeometry");
             }
-            List<RenderObject> nodesToProcessGeometry = this._nodesNeedingSemanticsGeometryUpdate.where(((@object) => ((!((RenderObject)@object)._needsLayout && (object.Equals(((RenderObject)@object).owner, this))) && !((RenderObject)@object)._semantics.parentDataDirty))).ToList();
+            List<RenderObject> nodesToProcessGeometry = this._nodesNeedingSemanticsGeometryUpdate.where(((@object) => ((!((RenderObject)@object)._needsLayout && (Equals(((RenderObject)@object).owner, this))) && !((RenderObject)@object)._semantics.parentDataDirty))).ToList();
             this._nodesNeedingSemanticsGeometryUpdate.Clear();
             foreach (var nodeLocal in nodesToProcessGeometry)
             {
@@ -969,15 +968,15 @@ public class PipelineOwner : DiagnosticableTreeMixin
             {
                 nodeNested.ensureGeometry();
             }
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.startSync("Semantics.ensureSemanticsNode");
             }
-            foreach (RenderObject nodeCurrent in System.Linq.Enumerable.Reverse(nodesToProcess))
+            foreach (RenderObject nodeCurrent in Enumerable.Reverse(nodesToProcess))
             {
                 ((RenderObject)nodeCurrent)._semantics.computeAncestorInfo(treeShapeToken);
                 var targets = new List<_RenderObjectSemantics__object>();
@@ -1028,7 +1027,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     }
                     return true;
                 });
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -1047,7 +1046,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     _debugDoingSemantics = false;
                     return true;
                 });
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -1114,7 +1113,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
         DartRuntimePrimitives.Assert(() => !this._children.Contains(child));
         DartRuntimePrimitives.Assert(() => this._debugAllowChildListModifications);
         this._children.Add(child);
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             _debugSetParent(child, this);
         }
@@ -1126,11 +1125,11 @@ public class PipelineOwner : DiagnosticableTreeMixin
 
     public virtual void dropChild(PipelineOwner child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((PipelineOwner)child)._debugParent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((PipelineOwner)child)._debugParent, this)));
         DartRuntimePrimitives.Assert(() => this._children.Contains(child));
         DartRuntimePrimitives.Assert(() => this._debugAllowChildListModifications);
         this._children.Remove(child);
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             _debugSetParent(child, null);
         }
@@ -1151,7 +1150,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
         DartRuntimePrimitives.Assert(() => (this.rootNode is null));
         DartRuntimePrimitives.Assert(() => (this._manifold is null));
         DartRuntimePrimitives.Assert(() => (this._debugParent is null));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._semanticsOwner?.dispose();
         _semanticsOwner = null;
         this._nodesNeedingLayout.Clear();
@@ -1247,7 +1246,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => !this._debugDisposed);
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._layerHandle.layer = null;
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1268,7 +1267,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public virtual long depth => this._depth;
     public virtual void redepthChild(RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderObject)child).owner, this.owner)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).owner, this.owner)));
         if ((((RenderObject)child)._depth <= this._depth))
         {
             child._depth = (this._depth + 1L);
@@ -1291,7 +1290,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 {
                     node = ((RenderObject)node).parent!;
                 }
-                DartRuntimePrimitives.Assert(() => (!object.Equals(node, child)));
+                DartRuntimePrimitives.Assert(() => (!Equals(node, child)));
                 return true;
             });
         setupParentData(child);
@@ -1308,7 +1307,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public virtual void dropChild(RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderObject)child)._parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child)._parent, this)));
         DartRuntimePrimitives.Assert(() => (((RenderObject)child).attached == this.attached));
         DartRuntimePrimitives.Assert(() => (((RenderObject)child).parentData is not null));
         if (!((((RenderObject)child)._isRelayoutBoundary ?? true)))
@@ -1384,24 +1383,26 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                         return true;
                     }
                     RenderObject? activeLayoutRoot = default!;
-                    (activeLayoutRoot, isMutationAllowed) = (this._debugClosestMutationRoot ?? (null, false));
+                    var mutationRoot = this._debugClosestMutationRoot;
+                    activeLayoutRoot = mutationRoot?.Item1;
+                    isMutationAllowed = mutationRoot?.Item2 ?? false;
                     if (isMutationAllowed)
                     {
                         return true;
                     }
-                    RenderObject debugActiveLayoutLocal = RenderObject.debugActiveLayout!;
+                    RenderObject debugActiveLayoutLocal = debugActiveLayout!;
                     var culpritMethodName = (((RenderObject)debugActiveLayoutLocal).debugDoingThisLayout ? "performLayout" : "performResize");
                     var culpritFullMethodName = $"{DartRuntimePrimitives.RuntimeType(debugActiveLayoutLocal)}.{culpritMethodName}";
                     if ((activeLayoutRoot is null))
                     {
                         throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} was mutated in {culpritFullMethodName}."), new ErrorDescription("The RenderObject was mutated when none of its ancestors is actively performing layout."), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<RenderObject>($"The RenderObject that was mutating the said {this.GetType()} was", debugActiveLayoutLocal, style: DiagnosticsTreeStyle.errorProperty) });
                     }
-                    if ((object.Equals(activeLayoutRoot, this)))
+                    if ((Equals(activeLayoutRoot, this)))
                     {
                         throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} was mutated in its own {culpritMethodName} implementation."), new ErrorDescription("A RenderObject must not re-dirty itself while still being laid out."), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("Consider using the LayoutBuilder widget to dynamically change a subtree during layout.") });
                     }
                     var summary = new ErrorSummary($"A {this.GetType()} was mutated in {culpritFullMethodName}.");
-                    var isMutatedByAncestor = (object.Equals(activeLayoutRoot, debugActiveLayoutLocal));
+                    var isMutatedByAncestor = (Equals(activeLayoutRoot, debugActiveLayoutLocal));
                     var description = (isMutatedByAncestor ? $"A RenderObject must not mutate its descendants in its {culpritMethodName} method." : "A RenderObject must not mutate another RenderObject from a different render subtree " + $"in its {culpritMethodName} method.");
                     throw new FlutterError(new List<DiagnosticsNode> { summary, new ErrorDescription(description), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<RenderObject>($"The {(isMutatedByAncestor ? "ancestor " : "")}RenderObject that was mutating the said {this.GetType()} was", debugActiveLayoutLocal, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("Mutating the layout of another RenderObject may cause some RenderObjects in its subtree to be laid out more than once. " + "Consider using the LayoutBuilder widget to dynamically mutate a subtree during layout.") });
                 });
@@ -1460,7 +1461,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode)
+            if (!Foundation.ConstantsLibrary.kDebugMode)
             {
                 return false;
             }
@@ -1515,9 +1516,9 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             FrameworkWorkCounters.Add(FrameworkWork.LayoutBoundary);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintMarkNeedsLayoutStacks)
+                    if (DebugLibrary.debugPrintMarkNeedsLayoutStacks)
                     {
-                        global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"markNeedsLayout() called for {this}");
+                        AssertionsLibrary.debugPrintStack(label: $"markNeedsLayout() called for {this}");
                     }
                     return true;
                 });
@@ -1548,7 +1549,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             DartRuntimePrimitives.Assert(() => ((RenderObject)parentLocal)._debugDoingThisLayout);
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(parentLocal, this.parent)));
+        DartRuntimePrimitives.Assert(() => (Equals(parentLocal, this.parent)));
     }
 
     public virtual void markNeedsLayoutForSizedByParentChange()
@@ -1589,9 +1590,9 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 _debugDoingThisLayout = true;
                 debugPreviousActiveLayout = _debugActiveLayout;
                 _debugActiveLayout = this;
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintLayouts)
+                if (DebugLibrary.debugPrintLayouts)
                 {
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Laying out (without resize) {this}");
+                    PrintLibrary.debugPrint($"Laying out (without resize) {this}");
                 }
                 return true;
             });
@@ -1629,12 +1630,12 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 box?.minWidth ?? 0, box?.maxWidth ?? 0, box?.minHeight ?? 0, box?.maxHeight ?? 0);
         }
         DartRuntimePrimitives.Assert(() => !this._debugDisposed);
-        if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled))
+        if ((!Foundation.ConstantsLibrary.kReleaseMode && DebugLibrary.debugProfileLayoutsEnabled))
         {
             DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhanceLayoutTimelineArguments)
+                    if (DebugLibrary.debugEnhanceLayoutTimelineArguments)
                     {
                         debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
                     }
@@ -1680,7 +1681,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 return true;
             });
         _isRelayoutBoundary = (((!parentUsesSize || this.sizedByParent) || ((Constraints)constraints).isTight) || (this.parent is null));
-        if ((!this._needsLayout && (object.Equals(constraints, this._constraints))))
+        if ((!this._needsLayout && (Equals(constraints, this._constraints))))
         {
             FrameworkWorkCounters.Add(FrameworkWork.LayoutFastPath);
             if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.LayoutFastReturn, this);
@@ -1696,13 +1697,13 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     _debugDoingThisResize = false;
                     return true;
                 });
-            if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled))
+            if ((!Foundation.ConstantsLibrary.kReleaseMode && DebugLibrary.debugProfileLayoutsEnabled))
             {
                 FlutterTimeline.finishSync();
             }
             return;
         }
-        if (FrameworkWorkCounters.Enabled && _needsLayout && object.Equals(constraints, _constraints))
+        if (FrameworkWorkCounters.Enabled && _needsLayout && Equals(constraints, _constraints))
             FrameworkWorkCounters.Add(FrameworkWork.LayoutDirtySameConstraints);
         _constraints = constraints;
         FrameworkWorkCounters.Add(FrameworkWork.LayoutWork);
@@ -1711,9 +1712,9 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugMutationsLocked = true;
-                if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintLayouts)
+                if (DebugLibrary.debugPrintLayouts)
                 {
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Laying out ({(this.sizedByParent ? "with separate resize" : "with resize allowed")}) {this}");
+                    PrintLibrary.debugPrint($"Laying out ({(this.sizedByParent ? "with separate resize" : "with resize allowed")}) {this}");
                 }
                 return true;
             });
@@ -1778,7 +1779,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             });
         _needsLayout = false;
         markNeedsPaint();
-        if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled))
+        if ((!Foundation.ConstantsLibrary.kReleaseMode && DebugLibrary.debugProfileLayoutsEnabled))
         {
             FlutterTimeline.finishSync();
         }
@@ -1801,7 +1802,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             this.owner!._enableMutationsToDirtySubtrees(((Action)(() =>
             {
-                callback(((T?)(object?)this.constraints)!);
+                callback(((T?)this.constraints)!);
             })));
         }
         finally
@@ -1952,7 +1953,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode)
+            if (!Foundation.ConstantsLibrary.kDebugMode)
             {
                 return false;
             }
@@ -1963,7 +1964,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode)
+            if (!Foundation.ConstantsLibrary.kDebugMode)
             {
                 return false;
             }
@@ -1986,9 +1987,9 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             FrameworkWorkCounters.Add(FrameworkWork.PaintBoundary);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintMarkNeedsPaintStacks)
+                    if (DebugLibrary.debugPrintMarkNeedsPaintStacks)
                     {
-                        global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"markNeedsPaint() called for {this}");
+                        AssertionsLibrary.debugPrintStack(label: $"markNeedsPaint() called for {this}");
                     }
                     return true;
                 });
@@ -2010,9 +2011,9 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintMarkNeedsPaintStacks)
+                        if (DebugLibrary.debugPrintMarkNeedsPaintStacks)
                         {
-                            global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"markNeedsPaint() called for {this} (root of render tree)");
+                            AssertionsLibrary.debugPrintStack(label: $"markNeedsPaint() called for {this} (root of render tree)");
                         }
                         return true;
                     });
@@ -2114,12 +2115,12 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             return;
         }
-        if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled))
+        if ((!Foundation.ConstantsLibrary.kReleaseMode && DebugLibrary.debugProfilePaintsEnabled))
         {
             DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhancePaintTimelineArguments)
+                    if (DebugLibrary.debugEnhancePaintTimelineArguments)
                     {
                         debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
                     }
@@ -2137,7 +2138,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                         var visitedByParent = false;
                         parentLocal.visitChildren(((Action<RenderObject>)((child) =>
                         {
-                            if ((object.Equals(child, this)))
+                            if ((Equals(child, this)))
                             {
                                 visitedByParent = true;
                             }
@@ -2181,7 +2182,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 _debugDoingThisPaint = false;
                 return true;
             });
-        if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled))
+        if ((!Foundation.ConstantsLibrary.kReleaseMode && DebugLibrary.debugProfilePaintsEnabled))
         {
             FlutterTimeline.finishSync();
         }
@@ -2198,12 +2199,12 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public virtual void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderObject)child).parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
     }
 
     public virtual bool paintsChild(RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderObject)child).parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2311,7 +2312,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (Foundation.ConstantsLibrary.kReleaseMode)
             {
                 return false;
             }
@@ -2322,7 +2323,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && ((_RenderObjectSemantics__object)this._semantics).built))
+            if ((!Foundation.ConstantsLibrary.kReleaseMode && ((_RenderObjectSemantics__object)this._semantics).built))
             {
                 return ((_RenderObjectSemantics__object)this._semantics).cachedSemanticsNode;
             }
@@ -2356,7 +2357,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public virtual void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
-        node.updateWith(config: config, childrenInInversePaintOrder: ((List<global::Doroti.Framework.Semantics.SemanticsNode>?)(object?)children)!);
+        node.updateWith(config: config, childrenInInversePaintOrder: ((List<global::Doroti.Framework.Semantics.SemanticsNode>?)children)!);
     }
 
     public virtual void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
@@ -2365,8 +2366,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public override string toStringShort()
     {
-        string header = global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        string header = DiagnosticsLibrary.describeIdentity(this);
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             if (this._debugDisposed)
             {
@@ -2408,7 +2409,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info) => toStringShort();
     public override string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = "", DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = 65)
@@ -2641,7 +2642,7 @@ public class _SemanticsParentData__object
     {
         var __other = other as _SemanticsParentData__object;
         if (__other is null) return false;
-        return (((((((__other is _SemanticsParentData__object) && (((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).mergeIntoParent == this.mergeIntoParent)) && (((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).blocksUserActions == this.blocksUserActions)) && (((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).explicitChildNodes == this.explicitChildNodes)) && (object.Equals(((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).localeForChildren, this.localeForChildren))) && (object.Equals(((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).accessibilityFocusBlockType, this.accessibilityFocusBlockType))) && global::Doroti.Framework.Foundation.CollectionsLibrary.setEquals<global::Doroti.Framework.Semantics.SemanticsTag>(((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).tagsForChildren, this.tagsForChildren));
+        return (((((((__other is _SemanticsParentData__object) && (((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).mergeIntoParent == this.mergeIntoParent)) && (((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).blocksUserActions == this.blocksUserActions)) && (((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).explicitChildNodes == this.explicitChildNodes)) && (Equals(((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).localeForChildren, this.localeForChildren))) && (Equals(((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).accessibilityFocusBlockType, this.accessibilityFocusBlockType))) && CollectionsLibrary.setEquals<global::Doroti.Framework.Semantics.SemanticsTag>(((_SemanticsParentData__object)((_SemanticsParentData__object)__other)).tagsForChildren, this.tagsForChildren));
     }
 
     public override int GetHashCode()
@@ -2799,7 +2800,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     }
     public virtual void computeAncestorInfo(object treeShapeToken)
     {
-        if ((object.Equals(treeShapeToken, this._currentTreeShapeToken)))
+        if ((Equals(treeShapeToken, this._currentTreeShapeToken)))
         {
             return;
         }
@@ -2955,9 +2956,9 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         bool explicitChildNodesForChildren = ((this.isRoot || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.explicitChildNodes) || ((!this.contributesToSemanticsTree && ((this.parentData?.explicitChildNodes ?? true)))));
         bool blocksUserAction = (((this.parentData?.blocksUserActions ?? false)) || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isBlockingUserActions);
         global::Doroti.Framework.Semantics.AccessibilityFocusBlockType accessibilityFocusBlockTypeLocal = default!;
-        if ((object.Equals(this.parentData?.accessibilityFocusBlockType, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.blockSubtree)))
+        if ((Equals(this.parentData?.accessibilityFocusBlockType, AccessibilityFocusBlockType.blockSubtree)))
         {
-            accessibilityFocusBlockTypeLocal = global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.blockSubtree;
+            accessibilityFocusBlockTypeLocal = AccessibilityFocusBlockType.blockSubtree;
         }
         else
         {
@@ -3013,7 +3014,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         oldChildren.removeAll(this._children);
         foreach (var removedChild in oldChildren)
         {
-            if ((object.Equals(((_RenderObjectSemantics__object)removedChild).parentInSemanticsTree, this)))
+            if ((Equals(((_RenderObjectSemantics__object)removedChild).parentInSemanticsTree, this)))
             {
                 removedChild.parentInSemanticsTree = null;
             }
@@ -3027,7 +3028,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 tags.forEach(((global::Doroti.Framework.Semantics.SemanticsConfiguration)config).addTagForChildren);
             })));
         }
-        if ((!object.Equals(accessibilityFocusBlockTypeLocal, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.accessibilityFocusBlockType)))
+        if ((!Equals(accessibilityFocusBlockTypeLocal, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.accessibilityFocusBlockType)))
         {
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
@@ -3041,14 +3042,14 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 config.isBlockingUserActions = blocksUserAction;
             })));
         }
-        if ((!object.Equals(localeForChildrenLocal, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.locale)))
+        if ((!Equals(localeForChildrenLocal, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.locale)))
         {
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
                 config.locale = localeForChildrenLocal;
             })));
         }
-        if ((!object.Equals(accessibilityFocusBlockTypeLocal, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.none)))
+        if ((!Equals(accessibilityFocusBlockTypeLocal, AccessibilityFocusBlockType.none)))
         {
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
@@ -3139,7 +3140,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         }
         _containsIncompleteFragment = false;
         DartRuntimePrimitives.Assert(() => ((childConfigurationsDelegateLocal is not null) || (checked((long)(configToFragment.Count)) == 0)));
-        if (hasChildConfigurationsDelegate)
+        if (childConfigurationsDelegateLocal is not null)
         {
             global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult result = childConfigurationsDelegateLocal(childConfigurations);
             mergeUpLocal.AddRange(((global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult)result).mergeUp.map<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>(((config) =>
@@ -3187,7 +3188,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual void _didUpdateParentData(_SemanticsParentData__object newParentData)
     {
-        if ((object.Equals(this.parentData, newParentData)))
+        if ((Equals(this.parentData, newParentData)))
         {
             return;
         }
@@ -3206,7 +3207,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         DartRuntimePrimitives.Assert(() => !this.geometryDirty);
         if (this.isRoot)
         {
-            if ((!object.Equals(this.geometry?.rect, ((RenderObject)this.renderObject).semanticBounds)))
+            if ((!Equals(this.geometry?.rect, ((RenderObject)this.renderObject).semanticBounds)))
             {
                 markNeedsBuild();
             }
@@ -3254,7 +3255,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         if ((currentGeometry is not null))
         {
             bool isSemanticsHidden = (((_SemanticsConfigurationProvider__object)this.configProvider).original.isHidden || ((!((this.parentData?.mergeIntoParent ?? false)) && ((_SemanticsGeometry__object)newGeometry).hidden)));
-            var sizeChanged = (!object.Equals(((_SemanticsGeometry__object)currentGeometry).rect.size, ((_SemanticsGeometry__object)newGeometry).rect.size));
+            var sizeChanged = (!Equals(((_SemanticsGeometry__object)currentGeometry).rect.size, ((_SemanticsGeometry__object)newGeometry).rect.size));
             var visibilityChanged = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.isHidden != isSemanticsHidden);
             if ((!sizeChanged && !visibilityChanged))
             {
@@ -3286,7 +3287,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         {
             foreach (global::Doroti.Framework.Semantics.SemanticsNode node in this.semanticsNodes)
             {
-                if ((!object.Equals(node, this.cachedSemanticsNode)))
+                if ((!Equals(node, this.cachedSemanticsNode)))
                 {
                     node.tags = null;
                 }
@@ -3300,7 +3301,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         global::Doroti.Framework.Semantics.SemanticsNode producedNode = this.cachedSemanticsNode!;
         foreach (global::Doroti.Framework.Semantics.SemanticsNode nodeLocal in this.semanticsNodes)
         {
-            if ((!object.Equals(nodeLocal, producedNode)))
+            if ((!Equals(nodeLocal, producedNode)))
             {
                 if ((this.parentData?.tagsForChildren is not null))
                 {
@@ -3405,7 +3406,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         if (this.isRoot)
         {
-            return global::Doroti.Framework.Semantics.SemanticsNode.CreateRoot(showOnScreen: () => ((_RenderObjectSemantics__object)this.owner).renderObject.showOnScreen(), owner: ((_RenderObjectSemantics__object)this.owner).renderObject.owner!.semanticsOwner!);
+            return SemanticsNode.CreateRoot(showOnScreen: () => ((_RenderObjectSemantics__object)this.owner).renderObject.showOnScreen(), owner: ((_RenderObjectSemantics__object)this.owner).renderObject.owner!.semanticsOwner!);
         }
         return new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => ((_RenderObjectSemantics__object)this.owner).renderObject.showOnScreen());
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3550,7 +3551,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         RenderObject node = this.renderObject;
         while (((((RenderObject)node).parent is not null) && ((mayProduceSiblingNodes || !isEffectiveSemanticsBoundary))))
         {
-            if ((((!object.Equals(node, this.renderObject)) && ((RenderObject)node)._semantics.parentDataDirty) && !mayProduceSiblingNodes))
+            if ((((!Equals(node, this.renderObject)) && ((RenderObject)node)._semantics.parentDataDirty) && !mayProduceSiblingNodes))
             {
                 break;
             }
@@ -3564,7 +3565,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             node = ((RenderObject)node).parent!;
             isEffectiveSemanticsBoundary = (((RenderObject)node)._semantics.configProvider.effective.isSemanticBoundary && ((RenderObject)node)._semantics.built);
         }
-        if ((((!object.Equals(node, this.renderObject)) && (producedSemanticsNode is not null)) && ((RenderObject)node)._semantics.parentDataDirty))
+        if ((((!Equals(node, this.renderObject)) && (producedSemanticsNode is not null)) && ((RenderObject)node)._semantics.parentDataDirty))
         {
             ((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsUpdate.Remove(this.renderObject);
         }
@@ -3637,7 +3638,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new StringProperty("owner", global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.renderObject)));
+        properties.add(new StringProperty("owner", DiagnosticsLibrary.describeIdentity(this.renderObject)));
         properties.add(new FlagProperty("noParentData", value: this.parentDataDirty, ifTrue: "NO PARENT DATA"));
         properties.add(new FlagProperty("geometry", value: this.geometryDirty, ifTrue: "NO GEOMETRY"));
         properties.add(new FlagProperty("semanticsBlock", value: ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isBlockingSemanticsOfPreviouslyPaintedNodes, ifTrue: "BLOCK PREVIOUS"));
@@ -3679,10 +3680,10 @@ public static partial class ObjectLibrary
     {
         if ((RendererBinding.instance.renderViews.Count() == 0))
         {
-            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("No render tree root was added to the binding.");
+            PrintLibrary.debugPrint("No render tree root was added to the binding.");
             return;
         }
-        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(string.Join("\n\n", new List<string>()));
+        PrintLibrary.debugPrint(string.Join("\n\n", new List<string>()));
     }
 }
 
@@ -3738,8 +3739,8 @@ public class _SemanticsGeometry__object
         {
             RenderObject nodeParent = childToCommonAncestor[(int)(i)];
             RenderObject node = childToCommonAncestor[(int)((i - 1L))];
-            global::Doroti.Ui.Rect? localPaintClipInParent = _transformRect(nodeParent.describeApproximatePaintClip(node), transformLocal, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect);
-            global::Doroti.Ui.Rect? localSemanticsClipInParent = _transformRect(nodeParent.describeSemanticsClip(node), transformLocal, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect);
+            global::Doroti.Ui.Rect? localPaintClipInParent = _transformRect(nodeParent.describeApproximatePaintClip(node), transformLocal, (Func<Matrix4, Rect, Rect>)MatrixUtils.transformRect);
+            global::Doroti.Ui.Rect? localSemanticsClipInParent = _transformRect(nodeParent.describeSemanticsClip(node), transformLocal, (Func<Matrix4, Rect, Rect>)MatrixUtils.transformRect);
             paintClipRectLocal = _intersectRects(paintClipRectLocal, localPaintClipInParent);
             semanticsClipRectLocal = (localSemanticsClipInParent ?? semanticsClipRectLocal?.intersect((localPaintClipInParent ?? DartRuntimePrimitives.RequireValue(semanticsClipRectLocal))));
             nodeParent.applyPaintTransform(node, transformLocal);
@@ -3750,8 +3751,8 @@ public class _SemanticsGeometry__object
         {
             Matrix4 inverted = transformLocal.clone();
             var hasInverse = (inverted.invert() != 0.0);
-            semanticsClipRectLocal = (hasInverse ? _transformRect(semanticsClipRectLocal, inverted, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect) : null);
-            paintClipRectLocal = (hasInverse ? _transformRect(paintClipRectLocal, inverted, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect) : null);
+            semanticsClipRectLocal = (hasInverse ? _transformRect(semanticsClipRectLocal, inverted, (Func<Matrix4, Rect, Rect>)MatrixUtils.transformRect) : null);
+            paintClipRectLocal = (hasInverse ? _transformRect(paintClipRectLocal, inverted, (Func<Matrix4, Rect, Rect>)MatrixUtils.transformRect) : null);
         }
         if ((parentTransform is not null))
         {

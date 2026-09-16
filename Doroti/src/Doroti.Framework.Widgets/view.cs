@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/view.dart
-#pragma warning disable CS8600, CS8601, CS8603, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -20,18 +19,18 @@ public class View : StatefulWidget
         this._deprecatedPipelineOwner = deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner;
         this._deprecatedRenderView = deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView;
         System.Diagnostics.Debug.Assert((((deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner is null)) == ((deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView is null))));
-        System.Diagnostics.Debug.Assert(((deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView is null) || (object.Equals(((global::Doroti.Framework.Rendering.RenderView)deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView).flutterView, view))));
+        System.Diagnostics.Debug.Assert(((deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView is null) || (Equals(((global::Doroti.Framework.Rendering.RenderView)deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView).flutterView, view))));
     }
 
     public static global::Doroti.Ui.DorotiView? maybeOf(BuildContext context)
     {
-        return ((global::Doroti.Ui.DorotiView?)(object?)LookupBoundary.dependOnInheritedWidgetOfExactType<_ViewScope__view>(context)?.view);
+        return ((global::Doroti.Ui.DorotiView?)LookupBoundary.dependOnInheritedWidgetOfExactType<_ViewScope__view>(context)?.view);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.DorotiView of(BuildContext context)
     {
-        global::Doroti.Ui.DorotiView? result = ((global::Doroti.Ui.DorotiView?)(object?)View.maybeOf(context));
+        global::Doroti.Ui.DorotiView? result = ((global::Doroti.Ui.DorotiView?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((result is null))
@@ -43,13 +42,13 @@ public class View : StatefulWidget
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((global::Doroti.Ui.DorotiView)(object?)result!);
+        return ((global::Doroti.Ui.DorotiView)result!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Framework.Rendering.PipelineOwner pipelineOwnerOf(BuildContext context)
     {
-        return (context.dependOnInheritedWidgetOfExactType<_PipelineOwnerScope__view>()?.pipelineOwner ?? global::Doroti.Framework.Rendering.RendererBinding.instance.rootPipelineOwner);
+        return (context.dependOnInheritedWidgetOfExactType<_PipelineOwnerScope__view>()?.pipelineOwner ?? RendererBinding.instance.rootPipelineOwner);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -58,8 +57,8 @@ public class View : StatefulWidget
 
 internal class _ViewState__view : State<View>, WidgetsBindingObserver
 {
-    internal virtual FocusScopeNode _scopeNode { get; private set; } = new FocusScopeNode(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "View Scope"));
-    internal virtual FocusTraversalPolicy _policy { get; private set; } = ((FocusTraversalPolicy)(object?)new ReadingOrderTraversalPolicy());
+    internal virtual FocusScopeNode _scopeNode { get; private set; } = new FocusScopeNode(debugLabel: (Foundation.ConstantsLibrary.kReleaseMode ? null : "View Scope"));
+    internal virtual FocusTraversalPolicy _policy { get; private set; } = ((FocusTraversalPolicy)new ReadingOrderTraversalPolicy());
     internal virtual bool _viewHasFocus { get; set; } = false;
 
     public override void initState()
@@ -83,34 +82,34 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
         {
             return;
         }
-        WidgetsBinding.instance.platformDispatcher.requestViewFocusChange(direction: global::Doroti.Ui.ViewFocusDirection.forward, state: global::Doroti.Ui.ViewFocusState.focused, viewId: checked((long)((View)(object)this.widget).view.viewId));
+        WidgetsBinding.instance.platformDispatcher.requestViewFocusChange(direction: ViewFocusDirection.forward, state: ViewFocusState.focused, viewId: checked((long)((View)this.widget).view.viewId));
     }
 
     public virtual void didChangeViewFocus(ViewFocusEvent @event)
     {
-        _viewHasFocus = (@event.state switch { var __constant10380 when (object.Equals(__constant10380, global::Doroti.Ui.ViewFocusState.focused)) => (checked((long)@event.viewId) == checked((long)((View)(object)this.widget).view.viewId)), var __constant10448 when (object.Equals(__constant10448, global::Doroti.Ui.ViewFocusState.unfocused)) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        if ((checked((long)@event.viewId) != checked((long)((View)(object)this.widget).view.viewId)))
+        _viewHasFocus = (@event.state switch { var __constant10380 when (Equals(__constant10380, ViewFocusState.focused)) => (checked((long)@event.viewId) == checked((long)((View)this.widget).view.viewId)), var __constant10448 when (Equals(__constant10448, ViewFocusState.unfocused)) => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        if ((checked((long)@event.viewId) != checked((long)((View)this.widget).view.viewId)))
         {
             return;
         }
         FocusNode nextFocus = default!;
         switch (@event.state)
         {
-            case var __constant10619 when (object.Equals(__constant10619, global::Doroti.Ui.ViewFocusState.focused)):
+            case var __constant10619 when (Equals(__constant10619, ViewFocusState.focused)):
                 {
                     switch (@event.direction)
                     {
-                        case var __constant10693 when (object.Equals(__constant10693, global::Doroti.Ui.ViewFocusDirection.forward)):
+                        case var __constant10693 when (Equals(__constant10693, ViewFocusDirection.forward)):
                             {
                                 nextFocus = (this._policy.findFirstFocus(this._scopeNode, ignoreCurrentFocus: true) ?? this._scopeNode);
                                 break;
                             }
-                        case var __constant10836 when (object.Equals(__constant10836, global::Doroti.Ui.ViewFocusDirection.backward)):
+                        case var __constant10836 when (Equals(__constant10836, ViewFocusDirection.backward)):
                             {
                                 nextFocus = this._policy.findLastFocus(this._scopeNode, ignoreCurrentFocus: true);
                                 break;
                             }
-                        case var __constant10965 when (object.Equals(__constant10965, global::Doroti.Ui.ViewFocusDirection.undefined)):
+                        case var __constant10965 when (Equals(__constant10965, ViewFocusDirection.undefined)):
                             {
                                 nextFocus = DartRuntimePrimitives.ConvertValue<FocusNode>(this._scopeNode);
                                 break;
@@ -119,7 +118,7 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
                     nextFocus.requestFocus();
                     break;
                 }
-            case var __constant11086 when (object.Equals(__constant11086, global::Doroti.Ui.ViewFocusState.unfocused)):
+            case var __constant11086 when (Equals(__constant11086, ViewFocusState.unfocused)):
                 {
                     FocusManager.instance.rootScope.requestScopeFocus();
                     break;
@@ -129,7 +128,7 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new RawView(view: ((View)(object)this.widget).view, deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner: ((View)(object)this.widget)._deprecatedPipelineOwner, deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView: ((View)(object)this.widget)._deprecatedRenderView, child: MediaQuery.fromView(view: ((View)(object)this.widget).view, child: new FocusTraversalGroup(policy: this._policy, parentNode: FocusManager.instance.rootScope, child: FocusScope.CreateWithExternalFocusNode(includeSemantics: false, focusScopeNode: this._scopeNode, child: ((View)(object)this.widget).child)))));
+        return ((Widget)new RawView(view: ((View)this.widget).view, deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner: ((View)this.widget)._deprecatedPipelineOwner, deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView: ((View)this.widget)._deprecatedRenderView, child: MediaQuery.fromView(view: ((View)this.widget).view, child: new FocusTraversalGroup(policy: this._policy, parentNode: FocusManager.instance.rootScope, child: FocusScope.CreateWithExternalFocusNode(includeSemantics: false, focusScopeNode: this._scopeNode, child: ((View)this.widget).child)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -149,14 +148,14 @@ public class RawView : StatelessWidget
         this._deprecatedPipelineOwner = deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner;
         this._deprecatedRenderView = deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView;
         System.Diagnostics.Debug.Assert((((deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner is null)) == ((deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView is null))));
-        System.Diagnostics.Debug.Assert(((deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView is null) || (object.Equals(((global::Doroti.Framework.Rendering.RenderView)deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView).flutterView, view))));
+        System.Diagnostics.Debug.Assert(((deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView is null) || (Equals(((global::Doroti.Framework.Rendering.RenderView)deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView).flutterView, view))));
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _RawViewInternal__view(view: this.view, deprecatedPipelineOwner: this._deprecatedPipelineOwner, deprecatedRenderView: this._deprecatedRenderView, builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.PipelineOwner, Widget>)((context, owner) =>
+        return ((Widget)new _RawViewInternal__view(view: this.view, deprecatedPipelineOwner: this._deprecatedPipelineOwner, deprecatedRenderView: this._deprecatedRenderView, builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.PipelineOwner, Widget>)((context, owner) =>
         {
-            return ((Widget)(object?)new _ViewScope__view(view: this.view, child: new _PipelineOwnerScope__view(pipelineOwner: owner, child: this.child)));
+            return ((Widget)new _ViewScope__view(view: this.view, child: new _PipelineOwnerScope__view(pipelineOwner: owner, child: this.child)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -179,13 +178,13 @@ public class _RawViewInternal__view : RenderObjectWidget
         this.builder = builder;
         this._deprecatedPipelineOwner = deprecatedPipelineOwner;
         this._deprecatedRenderView = deprecatedRenderView;
-        System.Diagnostics.Debug.Assert(((deprecatedRenderView is null) || (object.Equals(((global::Doroti.Framework.Rendering.RenderView)deprecatedRenderView).flutterView, view))));
+        System.Diagnostics.Debug.Assert(((deprecatedRenderView is null) || (Equals(((global::Doroti.Framework.Rendering.RenderView)deprecatedRenderView).flutterView, view))));
     }
 
     public override RenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<RenderObjectElement>(new _RawViewElement__view(this));
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)(this._deprecatedRenderView ?? new global::Doroti.Framework.Rendering.RenderView(view: this.view)));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(this._deprecatedRenderView ?? new global::Doroti.Framework.Rendering.RenderView(view: this.view)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -214,20 +213,20 @@ internal class _RawViewElement__view : RenderTreeRootElement
     {
     }
 
-    internal virtual global::Doroti.Framework.Rendering.PipelineOwner _effectivePipelineOwner => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.PipelineOwner>(((((_RawViewInternal__view?)(object?)this.widget)!)._deprecatedPipelineOwner ?? this._pipelineOwner));
+    internal virtual global::Doroti.Framework.Rendering.PipelineOwner _effectivePipelineOwner => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.PipelineOwner>(((((_RawViewInternal__view?)this.widget)!)._deprecatedPipelineOwner ?? this._pipelineOwner));
     internal virtual void _handleSemanticsOwnerCreated()
     {
-        (((global::Doroti.Framework.Rendering.RenderView?)(object?)((global::Doroti.Framework.Rendering.PipelineOwner)this._effectivePipelineOwner).rootNode)!)?.scheduleInitialSemantics();
+        (((global::Doroti.Framework.Rendering.RenderView?)((global::Doroti.Framework.Rendering.PipelineOwner)this._effectivePipelineOwner).rootNode)!)?.scheduleInitialSemantics();
     }
 
     internal virtual void _handleSemanticsOwnerDisposed()
     {
-        (((global::Doroti.Framework.Rendering.RenderView?)(object?)((global::Doroti.Framework.Rendering.PipelineOwner)this._effectivePipelineOwner).rootNode)!)?.clearSemantics();
+        (((global::Doroti.Framework.Rendering.RenderView?)((global::Doroti.Framework.Rendering.PipelineOwner)this._effectivePipelineOwner).rootNode)!)?.clearSemantics();
     }
 
     internal virtual void _handleSemanticsUpdate(SemanticsUpdate update)
     {
-        (((_RawViewInternal__view?)(object?)this.widget)!).view.updateSemantics(update);
+        (((_RawViewInternal__view?)this.widget)!).view.updateSemantics(update);
     }
 
     public override global::Doroti.Framework.Rendering.RenderView renderObject => (global::Doroti.Framework.Rendering.RenderView)base.renderObject;
@@ -235,16 +234,16 @@ internal class _RawViewElement__view : RenderTreeRootElement
     {
         try
         {
-            Widget child = (((_RawViewInternal__view?)(object?)this.widget)!).builder(this, this._effectivePipelineOwner);
+            Widget child = (((_RawViewInternal__view?)this.widget)!).builder(this, this._effectivePipelineOwner);
             _child = updateChild(this._child, child, null);
         }
         catch (Exception e)
         {
             var stackLocal = new System.Diagnostics.StackTrace();
-            var details = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"building {this}"), informationCollector: ((InformationCollector)(!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? null : (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Rendering.DiagnosticsDebugCreator(new DebugCreator(this)) }))));
+            var details = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"building {this}"), informationCollector: ((InformationCollector?)(!Foundation.ConstantsLibrary.kDebugMode ? null : (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Rendering.DiagnosticsDebugCreator(new DebugCreator(this)) }))));
             FlutterError.reportError(details);
             Widget error = ErrorWidget.builder(details);
-            _child = updateChild(((Element)(object)null), error, this.slot);
+            _child = updateChild(((Element?)null), error, this.slot);
         }
     }
 
@@ -267,7 +266,7 @@ internal class _RawViewElement__view : RenderTreeRootElement
         DartRuntimePrimitives.Assert(() => (this._parentPipelineOwner is null));
         parentPipelineOwner ??= View.pipelineOwnerOf(this);
         parentPipelineOwner.adoptChild(this._effectivePipelineOwner);
-        global::Doroti.Framework.Rendering.RendererBinding.instance.addRenderView(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderView>(this.renderObject));
+        RendererBinding.instance.addRenderView(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderView>(this.renderObject));
         _parentPipelineOwner = parentPipelineOwner;
     }
 
@@ -276,7 +275,7 @@ internal class _RawViewElement__view : RenderTreeRootElement
         global::Doroti.Framework.Rendering.PipelineOwner? parentPipelineOwner = this._parentPipelineOwner;
         if ((parentPipelineOwner is not null))
         {
-            global::Doroti.Framework.Rendering.RendererBinding.instance.removeRenderView(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderView>(this.renderObject));
+            RendererBinding.instance.removeRenderView(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderView>(this.renderObject));
             parentPipelineOwner.dropChild(this._effectivePipelineOwner);
             _parentPipelineOwner = null;
         }
@@ -289,8 +288,8 @@ internal class _RawViewElement__view : RenderTreeRootElement
         {
             return;
         }
-        global::Doroti.Framework.Rendering.PipelineOwner newParentPipelineOwner = ((global::Doroti.Framework.Rendering.PipelineOwner)(object?)View.pipelineOwnerOf(this));
-        if ((!object.Equals(newParentPipelineOwner, this._parentPipelineOwner)))
+        global::Doroti.Framework.Rendering.PipelineOwner newParentPipelineOwner = ((global::Doroti.Framework.Rendering.PipelineOwner)View.pipelineOwnerOf(this));
+        if ((!Equals(newParentPipelineOwner, this._parentPipelineOwner)))
         {
             _detachView();
             _attachView(newParentPipelineOwner);
@@ -314,14 +313,14 @@ internal class _RawViewElement__view : RenderTreeRootElement
     public override void deactivate()
     {
         _detachView();
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.PipelineOwner)this._effectivePipelineOwner).rootNode, this.renderObject)));
+        DartRuntimePrimitives.Assert(() => (Equals(((global::Doroti.Framework.Rendering.PipelineOwner)this._effectivePipelineOwner).rootNode, this.renderObject)));
         this._effectivePipelineOwner.rootNode = null;
         base.deactivate();
     }
 
     public override void update(Widget newWidget)
     {
-        var __newWidget = (_RawViewInternal__view)(object)newWidget;
+        var __newWidget = (_RawViewInternal__view)newWidget;
         base.update(__newWidget);
         _updateChild();
     }
@@ -336,14 +335,14 @@ internal class _RawViewElement__view : RenderTreeRootElement
 
     public override void forgetChild(Element child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child, this._child)));
+        DartRuntimePrimitives.Assert(() => (Equals(child, this._child)));
         _child = null;
         base.forgetChild(child);
     }
 
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)child;
         DartRuntimePrimitives.Assert(() => (slot is null));
         DartRuntimePrimitives.Assert(() => ((bool)this.renderObject.debugValidateChild(__child)));
         this.renderObject.child = __child;
@@ -357,13 +356,13 @@ internal class _RawViewElement__view : RenderTreeRootElement
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => (slot is null));
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderBox?)this.renderObject.child), child)));
+        DartRuntimePrimitives.Assert(() => (Equals(((global::Doroti.Framework.Rendering.RenderBox?)this.renderObject.child), child)));
         this.renderObject.child = null;
     }
 
     public override void unmount()
     {
-        if ((!object.Equals(this._effectivePipelineOwner, (((_RawViewInternal__view?)(object?)this.widget)!)._deprecatedPipelineOwner)))
+        if ((!Equals(this._effectivePipelineOwner, (((_RawViewInternal__view?)this.widget)!)._deprecatedPipelineOwner)))
         {
             this._effectivePipelineOwner.dispose();
         }
@@ -381,7 +380,7 @@ internal class _ViewScope__view : InheritedWidget
         this.view = view;
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.view, ((_ViewScope__view)oldWidget).view)));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.view, ((_ViewScope__view)oldWidget).view)));
 }
 
 internal class _PipelineOwnerScope__view : InheritedWidget
@@ -393,7 +392,7 @@ internal class _PipelineOwnerScope__view : InheritedWidget
         this.pipelineOwner = pipelineOwner;
     }
 
-    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.pipelineOwner, ((_PipelineOwnerScope__view)oldWidget).pipelineOwner)));
+    public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.pipelineOwner, ((_PipelineOwnerScope__view)oldWidget).pipelineOwner)));
 }
 
 public class _MultiChildComponentWidget__view : Widget
@@ -433,7 +432,7 @@ public class ViewAnchor : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _MultiChildComponentWidget__view(views: new List<Widget>(), child: this.child));
+        return ((Widget)new _MultiChildComponentWidget__view(views: new List<Widget>(), child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -452,10 +451,10 @@ internal class _MultiChildComponentElement__view : Element
 
     internal virtual bool _debugAssertChildren()
     {
-        var typedWidget = ((_MultiChildComponentWidget__view?)(object?)this.widget)!;
+        var typedWidget = ((_MultiChildComponentWidget__view?)this.widget)!;
         DartRuntimePrimitives.Assert(() => (checked((long)(this._viewElements.Count)) == checked((long)(((_MultiChildComponentWidget__view)typedWidget)._views.Count))));
         DartRuntimePrimitives.Assert(() => (((this._childElement is null)) == ((((_MultiChildComponentWidget__view)typedWidget)._child is null))));
-        DartRuntimePrimitives.Assert(() => !this._viewElements.Contains(this._childElement));
+        DartRuntimePrimitives.Assert(() => this._childElement is null || !this._viewElements.Contains(this._childElement));
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -470,7 +469,7 @@ internal class _MultiChildComponentElement__view : Element
     {
         base.mount(parent, newSlot);
         DartRuntimePrimitives.Assert(() => _debugCheckMustAttachRenderObject(newSlot));
-        DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this._viewElements));
+        DartRuntimePrimitives.Assert(() => !Enumerable.Any(this._viewElements));
         DartRuntimePrimitives.Assert(() => (this._childElement is null));
         rebuild();
         DartRuntimePrimitives.Assert(() => _debugAssertChildren());
@@ -484,7 +483,7 @@ internal class _MultiChildComponentElement__view : Element
 
     internal virtual bool _debugCheckMustAttachRenderObject(object? slot)
     {
-        if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode || ((((_MultiChildComponentWidget__view?)(object?)this.widget)!)._child is not null)))
+        if ((!Foundation.ConstantsLibrary.kDebugMode || ((((_MultiChildComponentWidget__view?)this.widget)!)._child is not null)))
         {
             return true;
         }
@@ -515,20 +514,20 @@ internal class _MultiChildComponentElement__view : Element
 
     public override void update(Widget newWidget)
     {
-        var __newWidget = (_MultiChildComponentWidget__view)(object)newWidget;
-        DartRuntimePrimitives.Assert(() => (((((_MultiChildComponentWidget__view)__newWidget)._child is null)) == (((((_MultiChildComponentWidget__view?)(object?)this.widget)!)._child is null))));
+        var __newWidget = (_MultiChildComponentWidget__view)newWidget;
+        DartRuntimePrimitives.Assert(() => (((((_MultiChildComponentWidget__view)__newWidget)._child is null)) == (((((_MultiChildComponentWidget__view?)this.widget)!)._child is null))));
         base.update(__newWidget);
         rebuild(force: true);
         DartRuntimePrimitives.Assert(() => _debugAssertChildren());
     }
 
-    public override bool debugExpectsRenderObjectForSlot(object? slot) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(slot, _viewSlot)));
+    public override bool debugExpectsRenderObjectForSlot(object? slot) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(slot, _viewSlot)));
     public override void performRebuild()
     {
-        var typedWidget = ((_MultiChildComponentWidget__view?)(object?)this.widget)!;
+        var typedWidget = ((_MultiChildComponentWidget__view?)this.widget)!;
         _childElement = updateChild(this._childElement, ((_MultiChildComponentWidget__view)typedWidget)._child, this.slot);
         List<Widget> views = ((_MultiChildComponentWidget__view)typedWidget)._views.ToList();
-        _viewElements = updateChildren(this._viewElements, views, forgottenChildren: this._forgottenViewElements, slots: new List<object>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(views.Count)))), ((_) => _viewSlot))));
+        _viewElements = updateChildren(this._viewElements, views, forgottenChildren: this._forgottenViewElements, slots: new List<object>(Enumerable.Select(Enumerable.Range(0, checked((int)checked((long)(views.Count)))), ((_) => _viewSlot))));
         this._forgottenViewElements.Clear();
         base.performRebuild();
         DartRuntimePrimitives.Assert(() => _debugAssertChildren());
@@ -536,7 +535,7 @@ internal class _MultiChildComponentElement__view : Element
 
     public override void forgetChild(Element child)
     {
-        if ((object.Equals(child, this._childElement)))
+        if ((Equals(child, this._childElement)))
         {
             _childElement = null;
         }
@@ -591,7 +590,7 @@ internal class _DeprecatedRawViewKey__view<T> : GlobalKey<T> where T : IState
     {
         var __other = other as _DeprecatedRawViewKey__view<T>;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
@@ -599,6 +598,6 @@ internal class _DeprecatedRawViewKey__view<T> : GlobalKey<T> where T : IState
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.view, this.owner, this.renderView));
-    public override string ToString() => $"[_DeprecatedRawViewKey {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.view))}]";
+    public override string ToString() => $"[_DeprecatedRawViewKey {(DiagnosticsLibrary.describeIdentity(this.view))}]";
 }
 

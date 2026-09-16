@@ -206,7 +206,7 @@ public class Alignment : AlignmentGeometry
     {
         double halfWidthDelta = (((rect.width - size.width)) / 2.0);
         double halfHeightDelta = (((rect.height - size.height)) / 2.0);
-        return global::Doroti.Ui.Rect.fromLTWH(((rect.left + halfWidthDelta) + (this.x * halfWidthDelta)), ((rect.top + halfHeightDelta) + (this.y * halfHeightDelta)), size.width, size.height);
+        return Rect.fromLTWH(((rect.left + halfWidthDelta) + (this.x * halfWidthDelta)), ((rect.top + halfHeightDelta) + (this.y * halfHeightDelta)), size.width, size.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -334,7 +334,7 @@ public class AlignmentDirectional : AlignmentGeometry
 
     public override Alignment resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(AlignmentDirectional)}"));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(AlignmentDirectional)}"));
         return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new Alignment(-this.start, this.y), TextDirection.ltr => new Alignment(this.start, this.y), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -396,7 +396,7 @@ internal class _MixedAlignment__alignment : AlignmentGeometry
 
     public override Alignment resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedAlignment__alignment)}"));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedAlignment__alignment)}"));
         return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new Alignment((this._x - this._start), this._y), TextDirection.ltr => new Alignment((this._x + this._start), this._y), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -418,7 +418,7 @@ public class TextAlignVertical
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextAlignVertical"))}(y: {this.y})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TextAlignVertical"))}(y: {this.y})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

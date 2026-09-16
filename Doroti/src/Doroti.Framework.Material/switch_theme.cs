@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/switch_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -58,11 +58,11 @@ public class SwitchThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((((__other is SwitchThemeData) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).thumbColor, this.thumbColor))) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).trackColor, this.trackColor))) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).trackOutlineColor, this.trackOutlineColor))) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).trackOutlineWidth, this.trackOutlineWidth))) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).mouseCursor, this.mouseCursor))) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).overlayColor, this.overlayColor))) && (((SwitchThemeData)((SwitchThemeData)__other)).splashRadius == this.splashRadius)) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).thumbIcon, this.thumbIcon))) && (object.Equals(((SwitchThemeData)((SwitchThemeData)__other)).padding, this.padding)));
+        return (((((((((((__other is SwitchThemeData) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).thumbColor, this.thumbColor))) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).trackColor, this.trackColor))) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).trackOutlineColor, this.trackOutlineColor))) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).trackOutlineWidth, this.trackOutlineWidth))) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).materialTapTargetSize, this.materialTapTargetSize))) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).mouseCursor, this.mouseCursor))) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).overlayColor, this.overlayColor))) && (((SwitchThemeData)((SwitchThemeData)__other)).splashRadius == this.splashRadius)) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).thumbIcon, this.thumbIcon))) && (Equals(((SwitchThemeData)((SwitchThemeData)__other)).padding, this.padding)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -79,8 +79,8 @@ public class SwitchThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -96,7 +96,7 @@ public class SwitchThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -113,10 +113,10 @@ public class SwitchTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static SwitchThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SwitchTheme? switchThemeLocal = ((SwitchTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SwitchTheme>());
+        SwitchTheme? switchThemeLocal = ((SwitchTheme?)context.dependOnInheritedWidgetOfExactType<SwitchTheme>());
         return (switchThemeLocal?.data ?? Theme.of(context).switchTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((SwitchTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((SwitchTheme)oldWidget).data)));
 }

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/keyboard_listener.dart
-#pragma warning disable CS8600, CS8603
 namespace Doroti.Framework.Widgets;
 
 public class KeyboardListener : StatelessWidget
@@ -22,7 +21,7 @@ public class KeyboardListener : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Focus(focusNode: this.focusNode, autofocus: this.autofocus, includeSemantics: this.includeSemantics, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
+        return ((Widget)new Focus(focusNode: this.focusNode, autofocus: this.autofocus, includeSemantics: this.includeSemantics, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
         {
             this.onKeyEvent?.Invoke(@event);
             return KeyEventResult.ignored;

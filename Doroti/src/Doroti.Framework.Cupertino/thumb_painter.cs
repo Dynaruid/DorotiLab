@@ -41,7 +41,7 @@ public class CupertinoThumbPainter
 
     public virtual void paint(Canvas canvas, Rect rect)
     {
-        var thumbShape = global::Doroti.Ui.RRect.fromRectAndRadius(rect, global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0)));
+        var thumbShape = RRect.fromRectAndRadius(rect, Radius.circular((rect.shortestSide / 2.0)));
         foreach (global::Doroti.Framework.Painting.BoxShadow shadow in this.shadows)
         {
             canvas.drawRRect(thumbShape.shift(shadow.offset), shadow.toPaint());

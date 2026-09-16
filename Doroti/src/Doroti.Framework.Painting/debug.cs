@@ -50,11 +50,11 @@ public class ImageSizeInfo
     {
         var __other = other as ImageSizeInfo;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is ImageSizeInfo) && (((ImageSizeInfo)((ImageSizeInfo)__other)).source == this.source)) && (object.Equals(((ImageSizeInfo)((ImageSizeInfo)__other)).imageSize, this.imageSize))) && (object.Equals(((ImageSizeInfo)((ImageSizeInfo)__other)).displaySize, this.displaySize)));
+        return ((((__other is ImageSizeInfo) && (((ImageSizeInfo)((ImageSizeInfo)__other)).source == this.source)) && (Equals(((ImageSizeInfo)((ImageSizeInfo)__other)).imageSize, this.imageSize))) && (Equals(((ImageSizeInfo)((ImageSizeInfo)__other)).displaySize, this.displaySize)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.source, this.displaySize, this.imageSize);
@@ -78,7 +78,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    public static long debugImageOverheadAllowance = DebugLibrary._imageOverheadAllowanceDefault;
+    public static long debugImageOverheadAllowance = _imageOverheadAllowanceDefault;
 }
 
 public static partial class DebugLibrary
@@ -87,7 +87,7 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((((DebugLibrary.debugDisableShadows != debugDisableShadowsOverride) || (DebugLibrary.debugNetworkImageHttpClientProvider is not null)) || (DebugLibrary.debugOnPaintImage is not null)) || DebugLibrary.debugInvertOversizedImages) || (DebugLibrary.debugImageOverheadAllowance != DebugLibrary._imageOverheadAllowanceDefault)))
+                if ((((((debugDisableShadows != debugDisableShadowsOverride) || (debugNetworkImageHttpClientProvider is not null)) || (debugOnPaintImage is not null)) || debugInvertOversizedImages) || (debugImageOverheadAllowance != _imageOverheadAllowanceDefault)))
                 {
                     throw new FlutterError(reason);
                 }
@@ -104,7 +104,7 @@ public delegate bool ShaderWarmUpImageCallback(Image image);
 
 public static partial class DebugLibrary
 {
-    public static Func<Picture, bool> debugCaptureShaderWarmUpPicture = DebugLibrary._defaultPictureCapture;
+    public static Func<Picture, bool> debugCaptureShaderWarmUpPicture = _defaultPictureCapture;
 }
 
 public static partial class DebugLibrary
@@ -114,7 +114,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    public static Func<Image, bool> debugCaptureShaderWarmUpImage = DebugLibrary._defaultImageCapture;
+    public static Func<Image, bool> debugCaptureShaderWarmUpImage = _defaultImageCapture;
 }
 
 public static partial class DebugLibrary

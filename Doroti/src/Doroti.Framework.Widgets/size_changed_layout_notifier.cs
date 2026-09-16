@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/size_changed_layout_notifier.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
@@ -21,7 +20,7 @@ public class SizeChangedLayoutNotifier : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: ((global::System.Action)(() =>
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: ((global::System.Action)(() =>
         {
             new SizeChangedLayoutNotification().dispatch(context);
         }))));
@@ -43,7 +42,7 @@ internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : gl
     public override void performLayout()
     {
         base.performLayout();
-        if (((this._oldSize is not null) && (!object.Equals(this.size, this._oldSize))))
+        if (((this._oldSize is not null) && (!Equals(this.size, this._oldSize))))
         {
             this.onLayoutChangedCallback();
         }

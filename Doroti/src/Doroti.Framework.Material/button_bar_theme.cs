@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/button_bar_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -58,11 +58,11 @@ public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((__other is ButtonBarThemeData) && (object.Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).alignment, this.alignment))) && (object.Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).mainAxisSize, this.mainAxisSize))) && (object.Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonTextTheme, this.buttonTextTheme))) && (((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonMinWidth == this.buttonMinWidth)) && (((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonHeight == this.buttonHeight)) && (object.Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonPadding, this.buttonPadding))) && (((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonAlignedDropdown == this.buttonAlignedDropdown)) && (object.Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).layoutBehavior, this.layoutBehavior))) && (object.Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).overflowDirection, this.overflowDirection)));
+        return ((((((((((__other is ButtonBarThemeData) && (Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).alignment, this.alignment))) && (Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).mainAxisSize, this.mainAxisSize))) && (Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonTextTheme, this.buttonTextTheme))) && (((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonMinWidth == this.buttonMinWidth)) && (((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonHeight == this.buttonHeight)) && (Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonPadding, this.buttonPadding))) && (((ButtonBarThemeData)((ButtonBarThemeData)__other)).buttonAlignedDropdown == this.buttonAlignedDropdown)) && (Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).layoutBehavior, this.layoutBehavior))) && (Equals(((ButtonBarThemeData)((ButtonBarThemeData)__other)).overflowDirection, this.overflowDirection)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -78,8 +78,8 @@ public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.VerticalDirection>("overflowDirection", this.overflowDirection, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -95,7 +95,7 @@ public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -112,10 +112,10 @@ public class ButtonBarTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static ButtonBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ButtonBarTheme? buttonBarThemeLocal = ((ButtonBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ButtonBarTheme>());
+        ButtonBarTheme? buttonBarThemeLocal = ((ButtonBarTheme?)context.dependOnInheritedWidgetOfExactType<ButtonBarTheme>());
         return (buttonBarThemeLocal?.data ?? Theme.of(context).buttonBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ButtonBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ButtonBarTheme)oldWidget).data)));
 }

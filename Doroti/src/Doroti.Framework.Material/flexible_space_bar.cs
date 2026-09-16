@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/flexible_space_bar.dart
-#pragma warning disable CS8600, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -45,7 +45,7 @@ public class FlexibleSpaceBar : global::Doroti.Framework.Widgets.StatefulWidget
 
     public static global::Doroti.Framework.Widgets.Widget createSettings(double? toolbarOpacity = null, double? minExtent = null, double? maxExtent = null, bool? isScrolledUnder = null, bool? hasLeading = null, double currentExtent = default!, global::Doroti.Framework.Widgets.Widget child = default!)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new FlexibleSpaceBarSettings(toolbarOpacity: (toolbarOpacity ?? 1.0), minExtent: (minExtent ?? currentExtent), maxExtent: (maxExtent ?? currentExtent), isScrolledUnder: isScrolledUnder, hasLeading: hasLeading, currentExtent: currentExtent, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new FlexibleSpaceBarSettings(toolbarOpacity: (toolbarOpacity ?? 1.0), minExtent: (minExtent ?? currentExtent), maxExtent: (maxExtent ?? currentExtent), isScrolledUnder: isScrolledUnder, hasLeading: hasLeading, currentExtent: currentExtent, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -56,7 +56,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
 {
     internal virtual bool _getEffectiveCenterTitle(ThemeData theme)
     {
-        return (((FlexibleSpaceBar)this.widget).centerTitle ?? (theme.platform switch { global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.linux => false, global::Doroti.Framework.Foundation.TargetPlatform.windows => false, global::Doroti.Framework.Foundation.TargetPlatform.iOS => true, global::Doroti.Framework.Foundation.TargetPlatform.macOS => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return (((FlexibleSpaceBar)this.widget).centerTitle ?? (theme.platform switch { TargetPlatform.android or TargetPlatform.fuchsia or TargetPlatform.linux => false, TargetPlatform.windows => false, TargetPlatform.iOS => true, TargetPlatform.macOS => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,9 +64,9 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
     {
         if (effectiveCenterTitle)
         {
-            return global::Doroti.Framework.Painting.Alignment.bottomCenter;
+            return Alignment.bottomCenter;
         }
-        return (Directionality.of(this.context) switch { TextDirection.rtl => global::Doroti.Framework.Painting.Alignment.bottomRight, TextDirection.ltr => global::Doroti.Framework.Painting.Alignment.bottomLeft, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (Directionality.of(this.context) switch { TextDirection.rtl => Alignment.bottomRight, TextDirection.ltr => Alignment.bottomLeft, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -95,7 +95,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
         {
             FlexibleSpaceBarSettings settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!;
             var childrenLocal = new List<global::Doroti.Framework.Widgets.Widget>();
@@ -117,7 +117,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
                 if ((((FlexibleSpaceBar)this.widget).stretchModes.Contains(StretchMode.blurBackground) && (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight > ((FlexibleSpaceBarSettings)settings).maxExtent)))
                 {
                     double blurAmount = (((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight - ((FlexibleSpaceBarSettings)settings).maxExtent)) / 10L);
-                    childrenLocal.Add(global::Doroti.Framework.Widgets.Positioned.CreateFill(child: new global::Doroti.Framework.Widgets.BackdropFilter(filter: new global::Doroti.Ui.ImageFilter(sigmaX: blurAmount, sigmaY: blurAmount), child: new global::Doroti.Framework.Widgets.ColoredBox(color: Colors.transparent))));
+                    childrenLocal.Add(Positioned.CreateFill(child: new global::Doroti.Framework.Widgets.BackdropFilter(filter: new global::Doroti.Ui.ImageFilter(sigmaX: blurAmount, sigmaY: blurAmount), child: new global::Doroti.Framework.Widgets.ColoredBox(color: Colors.transparent))));
                 }
             }
             if ((((FlexibleSpaceBar)this.widget).title is not null))
@@ -126,16 +126,16 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
                 global::Doroti.Framework.Widgets.Widget? titleLocal = default!;
                 switch (theme.platform)
                 {
-                    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                    case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                    case TargetPlatform.iOS:
+                    case TargetPlatform.macOS:
                         {
                             titleLocal = ((FlexibleSpaceBar)this.widget).title;
                             break;
                         }
-                    case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                    case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                    case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                    case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                    case TargetPlatform.android:
+                    case TargetPlatform.fuchsia:
+                    case TargetPlatform.linux:
+                    case TargetPlatform.windows:
                         {
                             titleLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(namesRoute: true, child: ((FlexibleSpaceBar)this.widget).title));
                             break;
@@ -153,7 +153,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
                     titleStyle = titleStyle.copyWith(color: ((global::Doroti.Framework.Painting.TextStyle)titleStyle).color!.withOpacity(opacityAlternate));
                     bool effectiveCenterTitle = _getEffectiveCenterTitle(theme);
                     var leadingPadding = (((((FlexibleSpaceBarSettings)settings).hasLeading ?? true)) ? 72.0 : 0.0);
-                    global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = (((FlexibleSpaceBar)this.widget).titlePadding ?? global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: (effectiveCenterTitle ? 0.0 : leadingPadding), bottom: 16.0));
+                    global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = (((FlexibleSpaceBar)this.widget).titlePadding ?? EdgeInsetsDirectional.CreateOnly(start: (effectiveCenterTitle ? 0.0 : leadingPadding), bottom: 16.0));
                     double scaleValue = new global::Doroti.Framework.Animation.Tween<double>(begin: ((FlexibleSpaceBar)this.widget).expandedTitleScale, end: 1.0).transform(t);
                     var scaleTransform = ((Func<Matrix4>)(() =>
             {
@@ -161,15 +161,15 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
                 __cascade.scaleByDouble(scaleValue, scaleValue, 1.0, 1);
                 return __cascade;
             }))();
-                    global::Doroti.Framework.Painting.Alignment titleAlignment = ((global::Doroti.Framework.Painting.Alignment)(object?)_getTitleAlignment(effectiveCenterTitle));
+                    global::Doroti.Framework.Painting.Alignment titleAlignment = ((global::Doroti.Framework.Painting.Alignment)_getTitleAlignment(effectiveCenterTitle));
                     childrenLocal.Add(new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Transform(alignment: titleAlignment, transform: scaleTransform, child: new global::Doroti.Framework.Widgets.Align(alignment: titleAlignment, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: titleStyle, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
                     {
-                        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth / scaleValue), child: new global::Doroti.Framework.Widgets.Align(alignment: titleAlignment, child: titleLocal)));
+                        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.SizedBox(width: (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth / scaleValue), child: new global::Doroti.Framework.Widgets.Align(alignment: titleAlignment, child: titleLocal)));
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     }))))))));
                 }
             }
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ClipRect(child: new global::Doroti.Framework.Widgets.Stack(children: childrenLocal)));
+            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ClipRect(child: new global::Doroti.Framework.Widgets.Stack(children: childrenLocal)));
         }))));
     }
 
@@ -203,7 +203,7 @@ public class FlexibleSpaceBarSettings : global::Doroti.Framework.Widgets.Inherit
 
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
-        var __oldWidget = (FlexibleSpaceBarSettings)(object)oldWidget;
+        var __oldWidget = (FlexibleSpaceBarSettings)oldWidget;
         return ((((((this.toolbarOpacity != ((FlexibleSpaceBarSettings)__oldWidget).toolbarOpacity) || (this.minExtent != ((FlexibleSpaceBarSettings)__oldWidget).minExtent)) || (this.maxExtent != ((FlexibleSpaceBarSettings)__oldWidget).maxExtent)) || (this.currentExtent != ((FlexibleSpaceBarSettings)__oldWidget).currentExtent)) || (this.isScrolledUnder != ((FlexibleSpaceBarSettings)__oldWidget).isScrolledUnder)) || (this.hasLeading != ((FlexibleSpaceBarSettings)__oldWidget).hasLeading));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -223,13 +223,13 @@ internal class _FlexibleSpaceHeaderOpacity__flexible_space_bar : global::Doroti.
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderFlexibleSpaceHeaderOpacity__flexible_space_bar(opacity: this.opacity, alwaysIncludeSemantics: this.alwaysIncludeSemantics));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderFlexibleSpaceHeaderOpacity__flexible_space_bar(opacity: this.opacity, alwaysIncludeSemantics: this.alwaysIncludeSemantics));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderFlexibleSpaceHeaderOpacity__flexible_space_bar)(object)renderObject;
+        var __renderObject = (_RenderFlexibleSpaceHeaderOpacity__flexible_space_bar)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderFlexibleSpaceHeaderOpacity__flexible_space_bar>)(() =>
 {
     var __cascade = __renderObject;
@@ -260,7 +260,7 @@ public class _RenderFlexibleSpaceHeaderOpacity__flexible_space_bar : global::Dor
             return;
         }
         DartRuntimePrimitives.Assert(() => this.needsCompositing);
-        layer = context.pushOpacity(offset, ((this.opacity * 255L)).round(), (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Framework.Rendering.OpacityLayer?)(object?)this.layer)!);
+        layer = context.pushOpacity(offset, ((this.opacity * 255L)).round(), (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Framework.Rendering.OpacityLayer?)this.layer)!);
         DartRuntimePrimitives.Assert(() =>
             {
                 this.layer!.debugCreator = this.debugCreator;

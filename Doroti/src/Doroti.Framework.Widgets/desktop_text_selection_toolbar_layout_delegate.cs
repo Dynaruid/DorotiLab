@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/desktop_text_selection_toolbar_layout_delegate.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Ui;
 
 namespace Doroti.Framework.Widgets;
@@ -16,7 +15,7 @@ public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Framewor
 
     public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
+        return ((global::Doroti.Framework.Rendering.BoxConstraints)constraints.loosen());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -29,8 +28,8 @@ public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Framewor
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
     {
-        var __oldDelegate = (DesktopTextSelectionToolbarLayoutDelegate)(object)oldDelegate;
-        return (!object.Equals(this.anchor, ((DesktopTextSelectionToolbarLayoutDelegate)__oldDelegate).anchor));
+        var __oldDelegate = (DesktopTextSelectionToolbarLayoutDelegate)oldDelegate;
+        return (!Equals(this.anchor, ((DesktopTextSelectionToolbarLayoutDelegate)__oldDelegate).anchor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

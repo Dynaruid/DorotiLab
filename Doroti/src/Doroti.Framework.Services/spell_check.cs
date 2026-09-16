@@ -24,7 +24,7 @@ public class SuggestionSpan
         {
             return true;
         }
-        return ((((__other is SuggestionSpan) && (((SuggestionSpan)__other).range.start == range.start)) && (((SuggestionSpan)__other).range.end == range.end)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<string>(((SuggestionSpan)__other).suggestions, suggestions));
+        return ((((__other is SuggestionSpan) && (((SuggestionSpan)__other).range.start == range.start)) && (((SuggestionSpan)__other).range.end == range.end)) && CollectionsLibrary.listEquals<string>(((SuggestionSpan)__other).suggestions, suggestions));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(range.start, range.end, FoundationRuntimePorts.ObjectHashAll(suggestions));
@@ -55,7 +55,7 @@ public class SpellCheckResults
         {
             return true;
         }
-        return (((__other is SpellCheckResults) && (((SpellCheckResults)__other).spellCheckedText == spellCheckedText)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<SuggestionSpan>(((SpellCheckResults)__other).suggestionSpans, suggestionSpans));
+        return (((__other is SpellCheckResults) && (((SpellCheckResults)__other).spellCheckedText == spellCheckedText)) && CollectionsLibrary.listEquals<SuggestionSpan>(((SpellCheckResults)__other).suggestionSpans, suggestionSpans));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(spellCheckedText, FoundationRuntimePorts.ObjectHashAll(suggestionSpans));
@@ -134,7 +134,7 @@ public class DefaultSpellCheckService : SpellCheckService
         if ((lastSavedResults is not null))
         {
             var textHasNotChanged = (lastSavedResults!.spellCheckedText == text);
-            bool spansHaveChanged = global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(lastSavedResults!.suggestionSpans, suggestionSpans);
+            bool spansHaveChanged = CollectionsLibrary.listEquals(lastSavedResults!.suggestionSpans, suggestionSpans);
             if ((textHasNotChanged && spansHaveChanged))
             {
                 suggestionSpans = mergeResults(lastSavedResults!.suggestionSpans, suggestionSpans);

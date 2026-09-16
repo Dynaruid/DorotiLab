@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/debug.dart
-#pragma warning disable CS8600
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -73,7 +72,7 @@ public static partial class DebugLibrary
                 return ((Widget)widget).key;
             }
         }
-        return ((global::Doroti.Framework.Foundation.Key)(object)null);
+        return ((global::Doroti.Framework.Foundation.Key?)null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -84,10 +83,10 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Framework.Foundation.Key? nonUniqueKey = DebugLibrary._firstNonUniqueKey(children.Cast<Widget>());
+                global::Doroti.Framework.Foundation.Key? nonUniqueKey = _firstNonUniqueKey(children.Cast<Widget>());
                 if ((nonUniqueKey is not null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{(message ?? "Duplicate keys found.\n" + "If multiple keyed widgets exist as children of another widget, they must have unique keys.")}" + $"\n{parent} has multiple children with key {nonUniqueKey}."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"{(message ?? "Duplicate keys found.\n" + "If multiple keyed widgets exist as children of another widget, they must have unique keys.")}" + $"\n{parent} has multiple children with key {nonUniqueKey}."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -103,10 +102,10 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Framework.Foundation.Key? nonUniqueKey = DebugLibrary._firstNonUniqueKey(items.Cast<Widget>());
+                global::Doroti.Framework.Foundation.Key? nonUniqueKey = _firstNonUniqueKey(items.Cast<Widget>());
                 if ((nonUniqueKey is not null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Duplicate key found: {nonUniqueKey}."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Duplicate key found: {nonUniqueKey}."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -179,11 +178,11 @@ public static partial class DebugLibrary
             {
                 if ((built is null))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A build function returned null."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("The offending widget is", widget, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorDescription("Build functions must never return null."), new global::Doroti.Framework.Foundation.ErrorHint("To return an empty space that causes the building widget to fill available room, return \"Container()\". " + "To return an empty space that takes as little room as possible, return \"Container(width: 0.0, height: 0.0)\".") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A build function returned null."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("The offending widget is", widget, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorDescription("Build functions must never return null."), new global::Doroti.Framework.Foundation.ErrorHint("To return an empty space that causes the building widget to fill available room, return \"Container()\". " + "To return an empty space that takes as little room as possible, return \"Container(width: 0.0, height: 0.0)\".") }));
                 }
-                if ((object.Equals(widget, built)))
+                if ((Equals(widget, built)))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A build function returned context.widget."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("The offending widget is", widget, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorDescription("Build functions must never return their BuildContext parameter's widget or a child that contains \"context.widget\". " + "Doing so introduces a loop in the widget tree that can cause the app to crash.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A build function returned context.widget."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("The offending widget is", widget, style: DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorDescription("Build functions must never return their BuildContext parameter's widget or a child that contains \"context.widget\". " + "Doing so introduces a loop in the widget tree that can cause the app to crash.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -234,9 +233,9 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((((((DebugLibrary.debugPrintRebuildDirtyWidgets || DebugLibrary.debugPrintBuildScope) || DebugLibrary.debugPrintScheduleBuildForStacks) || DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle) || DebugLibrary.debugProfileBuildsEnabled) || DebugLibrary.debugHighlightDeprecatedWidgets) || DebugLibrary.debugProfileBuildsEnabledUserWidgets) || DebugLibrary.debugPaintFocusBoxes))
+                if ((((((((debugPrintRebuildDirtyWidgets || debugPrintBuildScope) || debugPrintScheduleBuildForStacks) || debugPrintGlobalKeyedWidgetLifecycle) || debugProfileBuildsEnabled) || debugHighlightDeprecatedWidgets) || debugProfileBuildsEnabledUserWidgets) || debugPaintFocusBoxes))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create(reason));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create(reason));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");

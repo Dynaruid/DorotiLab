@@ -133,7 +133,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                 {
                     SectionBuildCount++;
                     _visitedSections.Add(sectionId);
-                    Doroti.Ui.FrameworkComponentProfile.VisitSection(sectionId);
+                    FrameworkComponentProfile.VisitSection(sectionId);
                     if (!built) { built = true; SectionFirstBuildCount++; }
                     var content = builder(ctx, fn => { if (ctx.mounted) change(() => { fn(); InvalidateSection(sectionId); }); }, sectionIndex);
                     return _sectionFocus?.Wrap(sectionId, content) ?? content;
@@ -225,7 +225,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         // Keep the continuous group card while retaining an independent layout,
         // state and paint boundary for each component section.
         var radius = new Radius(12, 12);
-        var shape = new RoundedRectangleBorder(borderRadius: BorderRadius.CreateOnly(
+        var shape = new RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.CreateOnly(
             topLeft: entry.First ? radius : default, topRight: entry.First ? radius : default,
             bottomLeft: entry.Last ? radius : default, bottomRight: entry.Last ? radius : default));
         return new Padding(padding: EdgeInsets.CreateOnly(bottom: entry.Last ? 10 : 0), child:
@@ -307,7 +307,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         Widget Sheet(BuildContext sheetContext) => new SizedBox(height: 150, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 32),
             child: new ListView(shrinkWrap: true, scrollDirection: Axis.horizontal, children:
                 new[] { M.Icons.share_outlined, M.Icons.add, M.Icons.delete_outline, M.Icons.archive_outlined, M.Icons.settings_outlined, M.Icons.favorite_border }
-                    .Select((icon, i) => (Widget)new Padding(padding: EdgeInsets.CreateFromLTRB(20, 30, 20, 20), child: new Column(children:
+                    .Select((icon, i) => (Widget)new Padding(padding: EdgeInsetsGeometry.CreateFromLTRB(20, 30, 20, 20), child: new Column(children:
                         [new M.IconButton(icon: new Icon(icon), onPressed: DisplayAction), new Text(new[] { "Share", "Add to", "Trash", "Archive", "Settings", "Favorite" }[i])]))).ToList())));
         return sectionIndex switch
         {
@@ -332,7 +332,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     }
     private Widget Card(BuildContext context, int style)
     {
-        var child = new Padding(padding: EdgeInsets.CreateFromLTRB(10, 5, 5, 10), child: new Column(children:
+        var child = new Padding(padding: EdgeInsetsGeometry.CreateFromLTRB(10, 5, 5, 10), child: new Column(children:
             [new Align(alignment: Alignment.topRight, child: new M.IconButton(icon: new Icon(M.Icons.more_vert), onPressed: DisplayAction)),
              new SizedBox(height: 20), new Align(alignment: Alignment.bottomLeft, child: new Text(new[] { "Elevated", "Filled", "Outlined" }[style]))]));
         return new SizedBox(width: 115, child: style switch {

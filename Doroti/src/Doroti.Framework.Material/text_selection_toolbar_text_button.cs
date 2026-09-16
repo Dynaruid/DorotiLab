@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/text_selection_toolbar_text_button.dart
-#pragma warning disable CS8600, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -37,14 +37,14 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
     public static global::Doroti.Framework.Painting.EdgeInsetsGeometry getPadding(long index, long total)
     {
         DartRuntimePrimitives.Assert(() => (((total > 0L) && (index >= 0L)) && (index < total)));
-        _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button position = TextSelectionToolbarTextButton._getPosition(index, total);
-        return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: TextSelectionToolbarTextButton._getStartPadding(position), end: TextSelectionToolbarTextButton._getEndPadding(position)));
+        _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button position = _getPosition(index, total);
+        return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)EdgeInsetsDirectional.CreateOnly(start: _getStartPadding(position), end: _getEndPadding(position)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static double _getStartPadding(_TextSelectionToolbarItemPosition__text_selection_toolbar_text_button position)
     {
-        if (((object.Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.first)) || (object.Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.only))))
+        if (((Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.first)) || (Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.only))))
         {
             return _kEndPadding;
         }
@@ -54,7 +54,7 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
 
     internal static double _getEndPadding(_TextSelectionToolbarItemPosition__text_selection_toolbar_text_button position)
     {
-        if (((object.Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.last)) || (object.Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.only))))
+        if (((Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.last)) || (Equals(position, _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.only))))
         {
             return _kEndPadding;
         }
@@ -78,7 +78,7 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
 
     public virtual TextSelectionToolbarTextButton copyWith(global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onPressed = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null)
     {
-        return new TextSelectionToolbarTextButton(onPressed: ((onPressed ?? (global::System.Action)this.onPressed)), padding: (padding ?? this.padding), alignment: (alignment ?? this.alignment), child: (child ?? ((global::Doroti.Framework.Widgets.Widget)(this).child)));
+        return new TextSelectionToolbarTextButton(onPressed: ((onPressed ?? (global::System.Action?)this.onPressed)), padding: (padding ?? this.padding), alignment: (alignment ?? this.alignment), child: (child ?? ((global::Doroti.Framework.Widgets.Widget)(this).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -87,16 +87,16 @@ public class TextSelectionToolbarTextButton : global::Doroti.Framework.Widgets.S
         bool isDefaultOnSurface = (colorScheme.brightness switch { Brightness.light => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.onSurface, colorScheme.onSurface), Brightness.dark => DartRuntimePrimitives.Identical(ThemeData.Create().colorScheme.onSurface, colorScheme.onSurface), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if (!isDefaultOnSurface)
         {
-            return ((global::Doroti.Ui.Color)(object?)colorScheme.onSurface);
+            return ((global::Doroti.Ui.Color)colorScheme.onSurface);
         }
-        return ((global::Doroti.Ui.Color)(object?)(colorScheme.brightness switch { Brightness.light => _defaultForegroundColorLight, Brightness.dark => _defaultForegroundColorDark, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return ((global::Doroti.Ui.Color)(colorScheme.brightness switch { Brightness.light => _defaultForegroundColorLight, Brightness.dark => _defaultForegroundColorDark, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ColorScheme colorSchemeLocal = Theme.of(context).colorScheme;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextButton(style: TextButton.styleFrom(backgroundColor: _defaultBackgroundColorTransparent, foregroundColor: TextSelectionToolbarTextButton._getForegroundColor(colorSchemeLocal), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension), padding: this.padding, alignment: this.alignment, textStyle: new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.w400)), onPressed: () => this.onPressed(), child: this.child));
+        return ((global::Doroti.Framework.Widgets.Widget)new TextButton(style: TextButton.styleFrom(backgroundColor: _defaultBackgroundColorTransparent, foregroundColor: _getForegroundColor(colorSchemeLocal), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(Widgets.ConstantsLibrary.kMinInteractiveDimension, Widgets.ConstantsLibrary.kMinInteractiveDimension), padding: this.padding, alignment: this.alignment, textStyle: new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.w400)), onPressed: this.onPressed, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

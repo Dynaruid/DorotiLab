@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/text_selection.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -47,22 +46,22 @@ public abstract class TextSelectionControls
 
     public virtual void handleCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
     {
-        @delegate.cutSelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar);
+        @delegate.cutSelection(SelectionChangedCause.toolbar);
     }
 
     public virtual void handleCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
     {
-        @delegate.copySelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar);
+        @delegate.copySelection(SelectionChangedCause.toolbar);
     }
 
     public async virtual Future handlePaste(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
     {
-        await @delegate.pasteText(global::Doroti.Framework.Services.SelectionChangedCause.toolbar);
+        await @delegate.pasteText(SelectionChangedCause.toolbar);
     }
 
     public virtual void handleSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
     {
-        @delegate.selectAll(global::Doroti.Framework.Services.SelectionChangedCause.toolbar);
+        @delegate.selectAll(SelectionChangedCause.toolbar);
     }
 
 }
@@ -73,7 +72,7 @@ public class EmptyTextSelectionControls : TextSelectionControls
     public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
     public override Widget buildHandle(BuildContext context, global::Doroti.Framework.Rendering.TextSelectionHandleType type, double textLineHeight, global::System.Action? onTap = null)
     {
-        return ((Widget)(object?)SizedBox.CreateShrink());
+        return ((Widget)SizedBox.CreateShrink());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -87,7 +86,7 @@ public class EmptyTextSelectionControls : TextSelectionControls
 
 public static partial class Text_selectionLibrary
 {
-    public static TextSelectionControls emptyTextSelectionControls = ((TextSelectionControls)(object?)new EmptyTextSelectionControls());
+    public static TextSelectionControls emptyTextSelectionControls = ((TextSelectionControls)new EmptyTextSelectionControls());
 }
 
 public class TextSelectionOverlay
@@ -109,7 +108,7 @@ public class TextSelectionOverlay
     internal virtual double _startHandleDragPosition { get; set; } = default!;
     internal virtual double _startHandleDragTarget { get; set; } = default!;
 
-    public TextSelectionOverlay(global::Doroti.Framework.Services.TextEditingValue value, BuildContext context, Widget? debugRequiredFor = null, global::Doroti.Framework.Rendering.LayerLink toolbarLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink startHandleLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink endHandleLayerLink = default!, global::Doroti.Framework.Rendering.RenderEditable renderObject = default!, TextSelectionControls? selectionControls = null, bool handlesVisible = false, global::Doroti.Framework.Services.TextSelectionDelegate selectionDelegate = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::System.Action? onSelectionHandleTapped = null, ClipboardStatusNotifier? clipboardStatus = null, global::System.Func<BuildContext, Widget>? contextMenuBuilder = null, TextMagnifierConfiguration magnifierConfiguration = default!)
+    public TextSelectionOverlay(global::Doroti.Framework.Services.TextEditingValue value, BuildContext context, Widget? debugRequiredFor = null, global::Doroti.Framework.Rendering.LayerLink toolbarLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink startHandleLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink endHandleLayerLink = default!, global::Doroti.Framework.Rendering.RenderEditable renderObject = default!, TextSelectionControls? selectionControls = null, bool handlesVisible = false, global::Doroti.Framework.Services.TextSelectionDelegate selectionDelegate = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, global::System.Action? onSelectionHandleTapped = null, ClipboardStatusNotifier? clipboardStatus = null, global::System.Func<BuildContext, Widget>? contextMenuBuilder = null, TextMagnifierConfiguration magnifierConfiguration = default!)
     {
         this.context = context;
         this.renderObject = renderObject;
@@ -123,10 +122,10 @@ public class TextSelectionOverlay
         this._updateTextSelectionOverlayVisibilities();
         this._selectionOverlay = new SelectionOverlay(
             magnifierConfiguration: magnifierConfiguration, context: context, debugRequiredFor: debugRequiredFor,
-            startHandleType: global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed,
+            startHandleType: TextSelectionHandleType.collapsed,
             startHandlesVisible: this._effectiveStartHandleVisibility, lineHeightAtStart: 0.0,
             onStartHandleDragStart: this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: this._handleSelectionStartHandleDragUpdate,
-            onStartHandleDragEnd: this._handleAnyDragEnd, endHandleType: global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed,
+            onStartHandleDragEnd: this._handleAnyDragEnd, endHandleType: TextSelectionHandleType.collapsed,
             endHandlesVisible: this._effectiveEndHandleVisibility, lineHeightAtEnd: 0.0,
             onEndHandleDragStart: this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: this._handleSelectionEndHandleDragUpdate,
             onEndHandleDragEnd: this._handleAnyDragEnd, toolbarVisible: this._effectiveToolbarVisibility,
@@ -168,7 +167,7 @@ public class TextSelectionOverlay
     public virtual void hideHandles() => this._selectionOverlay.hideHandles();
     public virtual void showToolbar()
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)), () => (object?)"showToolbar must not be called during the build or layout phase.");
+        DartRuntimePrimitives.Assert(() => (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)), () => (object?)"showToolbar must not be called during the build or layout phase.");
         _updateSelectionOverlay();
         if (((this.selectionControls is not null) && (this.selectionControls is not TextSelectionHandleControls)))
         {
@@ -194,14 +193,14 @@ public class TextSelectionOverlay
 
     public virtual void showMagnifier(Offset positionToShow)
     {
-        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(positionToShow))));
+        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(positionToShow))));
         _updateSelectionOverlay();
         this._selectionOverlay.showMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: positionToShow, renderEditable: this.renderObject));
     }
 
     public virtual void updateMagnifier(Offset positionToShow)
     {
-        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(positionToShow))));
+        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(positionToShow))));
         _updateSelectionOverlay();
         this._selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: positionToShow, renderEditable: this.renderObject));
     }
@@ -213,7 +212,7 @@ public class TextSelectionOverlay
 
     public virtual void update(global::Doroti.Framework.Services.TextEditingValue newValue)
     {
-        if ((object.Equals(this._value, newValue)))
+        if ((Equals(this._value, newValue)))
         {
             return;
         }
@@ -224,19 +223,19 @@ public class TextSelectionOverlay
 
     internal virtual void _updateSelectionOverlay()
     {
-        List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints = ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(object?)DartRuntimePrimitives.ConvertValue<List<global::Doroti.Framework.Rendering.TextSelectionPoint>>(((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(this.renderObject).getEndpointsForSelection(this._selection))));
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(endpoints));
+        List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints = ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)DartRuntimePrimitives.ConvertValue<List<global::Doroti.Framework.Rendering.TextSelectionPoint>>(((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)(this.renderObject).getEndpointsForSelection(this._selection))));
+        DartRuntimePrimitives.Assert(() => Enumerable.Any(endpoints));
         global::Doroti.Framework.Rendering.TextSelectionHandleType startHandleTypeLocal = default!;
         global::Doroti.Framework.Rendering.TextSelectionHandleType endHandleTypeLocal = default!;
         if (this._selection.isCollapsed)
         {
-            startHandleTypeLocal = global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed;
-            endHandleTypeLocal = global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed;
+            startHandleTypeLocal = TextSelectionHandleType.collapsed;
+            endHandleTypeLocal = TextSelectionHandleType.collapsed;
         }
         else
         {
             global::Doroti.Ui.TextDirection textDirectionLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextDirection>(((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).textDirection);
-            var preferRenderObjectDirectionForSelectionHandles = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS));
+            var preferRenderObjectDirectionForSelectionHandles = (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS));
             global::Doroti.Ui.TextDirection startHandleDirection = default!;
             global::Doroti.Ui.TextDirection endHandleDirection = default!;
             if ((preferRenderObjectDirectionForSelectionHandles || (checked((long)(endpoints.Count)) < 2L)))
@@ -249,8 +248,8 @@ public class TextSelectionOverlay
                 startHandleDirection = (endpoints.First().direction ?? textDirectionLocal);
                 endHandleDirection = (endpoints.Last().direction ?? textDirectionLocal);
             }
-            startHandleTypeLocal = (startHandleDirection switch { TextDirection.ltr => global::Doroti.Framework.Rendering.TextSelectionHandleType.left, TextDirection.rtl => global::Doroti.Framework.Rendering.TextSelectionHandleType.right, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            endHandleTypeLocal = (endHandleDirection switch { TextDirection.ltr => global::Doroti.Framework.Rendering.TextSelectionHandleType.right, TextDirection.rtl => global::Doroti.Framework.Rendering.TextSelectionHandleType.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            startHandleTypeLocal = (startHandleDirection switch { TextDirection.ltr => TextSelectionHandleType.left, TextDirection.rtl => TextSelectionHandleType.right, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            endHandleTypeLocal = (endHandleDirection switch { TextDirection.ltr => TextSelectionHandleType.right, TextDirection.rtl => TextSelectionHandleType.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
         DartRuntimePrimitives.Ignore(((Func<SelectionOverlay>)(() =>
 {
@@ -285,7 +284,7 @@ public class TextSelectionOverlay
     public virtual void hideToolbar() => this._selectionOverlay.hideToolbar();
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._selectionOverlay.dispose();
         ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).selectionStartInViewport.removeListener(this._updateTextSelectionOverlayVisibilities);
         ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).selectionEndInViewport.removeListener(this._updateTextSelectionOverlayVisibilities);
@@ -327,16 +326,16 @@ public class TextSelectionOverlay
 
     internal virtual MagnifierInfo _buildMagnifier(global::Doroti.Framework.Rendering.RenderEditable renderEditable, Offset globalGesturePosition, TextPosition currentTextPosition)
     {
-        global::Doroti.Framework.Services.TextSelection lineAtOffset = ((global::Doroti.Framework.Services.TextSelection)(object?)renderEditable.getLineAtOffset(currentTextPosition));
+        global::Doroti.Framework.Services.TextSelection lineAtOffset = ((global::Doroti.Framework.Services.TextSelection)renderEditable.getLineAtOffset(currentTextPosition));
         var positionAtEndOfLine = new global::Doroti.Ui.TextPosition(offset: ((global::Doroti.Framework.Services.TextSelection)lineAtOffset).extentOffset, affinity: TextAffinity.upstream);
         var positionAtBeginningOfLine = new global::Doroti.Ui.TextPosition(offset: ((global::Doroti.Framework.Services.TextSelection)lineAtOffset).baseOffset);
-        var localLineBoundaries = global::Doroti.Ui.Rect.fromPoints(renderEditable.getLocalRectForCaret(positionAtBeginningOfLine).topCenter, renderEditable.getLocalRectForCaret(positionAtEndOfLine).bottomCenter);
-        var overlay = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)Overlay.of(this.context, rootOverlay: true).context.findRenderObject())!;
-        Matrix4 transformToOverlay = ((Matrix4)(object?)renderEditable.getTransformTo(overlay));
-        global::Doroti.Ui.Rect overlayLineBoundaries = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transformToOverlay, localLineBoundaries));
-        global::Doroti.Ui.Rect localCaretRect = ((global::Doroti.Ui.Rect)(object?)renderEditable.getLocalRectForCaret(currentTextPosition));
-        global::Doroti.Ui.Rect overlayCaretRect = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transformToOverlay, localCaretRect));
-        global::Doroti.Ui.Offset overlayGesturePosition = ((global::Doroti.Ui.Offset)(object?)(((Offset?)(overlay)?.globalToLocal(globalGesturePosition)) ?? globalGesturePosition));
+        var localLineBoundaries = Rect.fromPoints(renderEditable.getLocalRectForCaret(positionAtBeginningOfLine).topCenter, renderEditable.getLocalRectForCaret(positionAtEndOfLine).bottomCenter);
+        var overlay = ((global::Doroti.Framework.Rendering.RenderBox?)Overlay.of(this.context, rootOverlay: true).context.findRenderObject())!;
+        Matrix4 transformToOverlay = ((Matrix4)renderEditable.getTransformTo(overlay));
+        global::Doroti.Ui.Rect overlayLineBoundaries = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transformToOverlay, localLineBoundaries));
+        global::Doroti.Ui.Rect localCaretRect = ((global::Doroti.Ui.Rect)renderEditable.getLocalRectForCaret(currentTextPosition));
+        global::Doroti.Ui.Rect overlayCaretRect = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transformToOverlay, localCaretRect));
+        global::Doroti.Ui.Offset overlayGesturePosition = ((global::Doroti.Ui.Offset)(((Offset?)(overlay)?.globalToLocal(globalGesturePosition)) ?? globalGesturePosition));
         return new MagnifierInfo(fieldBounds: MatrixUtils.transformRect(transformToOverlay, renderEditable.paintBounds), globalGesturePosition: overlayGesturePosition, caretRect: overlayCaretRect, currentLineBoundaries: overlayLineBoundaries);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -351,8 +350,8 @@ public class TextSelectionOverlay
         double centerOfLineLocal = DartRuntimePrimitives.ConvertValue<double>((((SelectionOverlay)this._selectionOverlay).selectionEndpoints.Last().point.dy - (((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).preferredLineHeight / 2L)));
         double centerOfLineGlobal = DartRuntimePrimitives.ConvertValue<double>(((Offset)(this.renderObject).localToGlobal(new global::Doroti.Ui.Offset(0.0, centerOfLineLocal))).dy);
         _endHandleDragTarget = (centerOfLineGlobal - ((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition.dy);
-        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(new global::Doroti.Ui.Offset(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition.dx, centerOfLineGlobal)))));
-        if (((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) || (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.macOS))))
+        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(new global::Doroti.Ui.Offset(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition.dx, centerOfLineGlobal)))));
+        if (((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) || (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))))
         {
             _dragStartSelection ??= this._selection;
         }
@@ -380,7 +379,7 @@ public class TextSelectionOverlay
         {
             return;
         }
-        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)(this.renderObject).globalToLocal(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition))));
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)(this.renderObject).globalToLocal(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition))));
         double? nextEndHandleDragPositionLocal = DartRuntimePrimitives.ConvertValue<double>(_getHandleDy(localPosition.dy, ((Offset)(this.renderObject).globalToLocal(new global::Doroti.Ui.Offset(0.0, this._endHandleDragPosition))).dy));
         if ((nextEndHandleDragPositionLocal is null))
         {
@@ -388,18 +387,18 @@ public class TextSelectionOverlay
         }
         _endHandleDragPosition = ((Offset)(this.renderObject).localToGlobal(new global::Doroti.Ui.Offset(0.0, DartRuntimePrimitives.RequireValue(nextEndHandleDragPositionLocal)))).dy;
         var handleTargetGlobal = new global::Doroti.Ui.Offset(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition.dx, (this._endHandleDragPosition + this._endHandleDragTarget));
-        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(handleTargetGlobal))));
+        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(handleTargetGlobal))));
         global::Doroti.Framework.Services.TextSelection newSelection = default!;
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     DartRuntimePrimitives.Assert(() => (this._dragStartSelection is not null));
                     if (this._dragStartSelection!.isCollapsed)
                     {
                         this._selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, renderEditable: this.renderObject));
-                        var currentSelection = global::Doroti.Framework.Services.TextSelection.CreateFromPosition(position);
+                        var currentSelection = TextSelection.CreateFromPosition(position);
                         _handleSelectionHandleChanged(currentSelection);
                         return;
                     }
@@ -407,15 +406,15 @@ public class TextSelectionOverlay
                     newSelection = new global::Doroti.Framework.Services.TextSelection(baseOffset: (dragStartSelectionNormalized ? this._dragStartSelection!.baseOffset : this._dragStartSelection!.extentOffset), extentOffset: position.offset);
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     if (this._selection.isCollapsed)
                     {
                         this._selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, renderEditable: this.renderObject));
-                        var currentSelectionLocal = global::Doroti.Framework.Services.TextSelection.CreateFromPosition(position);
+                        var currentSelectionLocal = TextSelection.CreateFromPosition(position);
                         _handleSelectionHandleChanged(currentSelectionLocal);
                         return;
                     }
@@ -441,8 +440,8 @@ public class TextSelectionOverlay
         double centerOfLineLocal = DartRuntimePrimitives.ConvertValue<double>((((SelectionOverlay)this._selectionOverlay).selectionEndpoints.First().point.dy - (((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).preferredLineHeight / 2L)));
         double centerOfLineGlobal = DartRuntimePrimitives.ConvertValue<double>(((Offset)(this.renderObject).localToGlobal(new global::Doroti.Ui.Offset(0.0, centerOfLineLocal))).dy);
         _startHandleDragTarget = (centerOfLineGlobal - ((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition.dy);
-        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(new global::Doroti.Ui.Offset(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition.dx, centerOfLineGlobal)))));
-        if (((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) || (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.macOS))))
+        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(new global::Doroti.Ui.Offset(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition.dx, centerOfLineGlobal)))));
+        if (((Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) || (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))))
         {
             _dragStartSelection ??= this._selection;
         }
@@ -455,7 +454,7 @@ public class TextSelectionOverlay
         {
             return;
         }
-        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)(this.renderObject).globalToLocal(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition))));
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)(this.renderObject).globalToLocal(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition))));
         double? nextStartHandleDragPositionLocal = DartRuntimePrimitives.ConvertValue<double>(_getHandleDy(localPosition.dy, ((Offset)(this.renderObject).globalToLocal(new global::Doroti.Ui.Offset(0.0, this._startHandleDragPosition))).dy));
         if ((nextStartHandleDragPositionLocal is null))
         {
@@ -463,18 +462,18 @@ public class TextSelectionOverlay
         }
         _startHandleDragPosition = ((Offset)(this.renderObject).localToGlobal(new global::Doroti.Ui.Offset(0.0, DartRuntimePrimitives.RequireValue(nextStartHandleDragPositionLocal)))).dy;
         var handleTargetGlobal = new global::Doroti.Ui.Offset(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition.dx, (this._startHandleDragPosition + this._startHandleDragTarget));
-        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(handleTargetGlobal))));
+        global::Doroti.Ui.TextPosition position = ((global::Doroti.Ui.TextPosition)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.TextPosition>(((TextPosition)(this.renderObject).getPositionForPoint(handleTargetGlobal))));
         global::Doroti.Framework.Services.TextSelection newSelection = default!;
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     DartRuntimePrimitives.Assert(() => (this._dragStartSelection is not null));
                     if (this._dragStartSelection!.isCollapsed)
                     {
                         this._selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, renderEditable: this.renderObject));
-                        var currentSelection = global::Doroti.Framework.Services.TextSelection.CreateFromPosition(position);
+                        var currentSelection = TextSelection.CreateFromPosition(position);
                         _handleSelectionHandleChanged(currentSelection);
                         return;
                     }
@@ -482,15 +481,15 @@ public class TextSelectionOverlay
                     newSelection = new global::Doroti.Framework.Services.TextSelection(baseOffset: (dragStartSelectionNormalized ? this._dragStartSelection!.extentOffset : this._dragStartSelection!.baseOffset), extentOffset: position.offset);
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     if (this._selection.isCollapsed)
                     {
                         this._selectionOverlay.updateMagnifier(_buildMagnifier(currentTextPosition: position, globalGesturePosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, renderEditable: this.renderObject));
-                        var currentSelectionLocal = global::Doroti.Framework.Services.TextSelection.CreateFromPosition(position);
+                        var currentSelectionLocal = TextSelection.CreateFromPosition(position);
                         _handleSelectionHandleChanged(currentSelectionLocal);
                         return;
                     }
@@ -538,7 +537,7 @@ public class TextSelectionOverlay
 
     internal virtual void _handleSelectionHandleChanged(global::Doroti.Framework.Services.TextSelection newSelection)
     {
-        this.selectionDelegate.userUpdateTextEditingValue(this._value.copyWith(selection: newSelection), global::Doroti.Framework.Services.SelectionChangedCause.drag);
+        this.selectionDelegate.userUpdateTextEditingValue(this._value.copyWith(selection: newSelection), SelectionChangedCause.drag);
     }
 
 }
@@ -584,7 +583,7 @@ public class SelectionOverlay
     internal virtual ContextMenuController _spellCheckToolbarController { get; private set; } = new ContextMenuController();
     internal virtual bool _buildScheduled { get; set; } = false;
 
-    public SelectionOverlay(BuildContext context, Widget? debugRequiredFor = null, global::Doroti.Framework.Rendering.TextSelectionHandleType startHandleType = default!, double lineHeightAtStart = default!, global::Doroti.Framework.Foundation.ValueListenable<bool>? startHandlesVisible = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onStartHandleDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onStartHandleDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onStartHandleDragEnd = null, global::Doroti.Framework.Rendering.TextSelectionHandleType endHandleType = default!, double lineHeightAtEnd = default!, global::Doroti.Framework.Foundation.ValueListenable<bool>? endHandlesVisible = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onEndHandleDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onEndHandleDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onEndHandleDragEnd = null, global::Doroti.Framework.Foundation.ValueListenable<bool>? toolbarVisible = null, List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints = default!, TextSelectionControls? selectionControls = default!, global::Doroti.Framework.Services.TextSelectionDelegate? selectionDelegate = default!, ClipboardStatusNotifier? clipboardStatus = default!, global::Doroti.Framework.Rendering.LayerLink startHandleLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink endHandleLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink toolbarLayerLink = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, global::System.Action? onSelectionHandleTapped = null, Offset? toolbarLocation = null, TextMagnifierConfiguration magnifierConfiguration = default!)
+    public SelectionOverlay(BuildContext context, Widget? debugRequiredFor = null, global::Doroti.Framework.Rendering.TextSelectionHandleType startHandleType = default!, double lineHeightAtStart = default!, global::Doroti.Framework.Foundation.ValueListenable<bool>? startHandlesVisible = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onStartHandleDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onStartHandleDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onStartHandleDragEnd = null, global::Doroti.Framework.Rendering.TextSelectionHandleType endHandleType = default!, double lineHeightAtEnd = default!, global::Doroti.Framework.Foundation.ValueListenable<bool>? endHandlesVisible = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onEndHandleDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onEndHandleDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onEndHandleDragEnd = null, global::Doroti.Framework.Foundation.ValueListenable<bool>? toolbarVisible = null, List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints = default!, TextSelectionControls? selectionControls = default!, global::Doroti.Framework.Services.TextSelectionDelegate? selectionDelegate = default!, ClipboardStatusNotifier? clipboardStatus = default!, global::Doroti.Framework.Rendering.LayerLink startHandleLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink endHandleLayerLink = default!, global::Doroti.Framework.Rendering.LayerLink toolbarLayerLink = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start, global::System.Action? onSelectionHandleTapped = null, Offset? toolbarLocation = null, TextMagnifierConfiguration magnifierConfiguration = default!)
     {
         TextMagnifierConfiguration __magnifierConfiguration = magnifierConfiguration ?? TextMagnifierConfiguration.disabled;
         this.context = context;
@@ -613,7 +612,7 @@ public class SelectionOverlay
         this._lineHeightAtEnd = lineHeightAtEnd;
         this._selectionEndpoints = selectionEndpoints;
         this._toolbarLocation = toolbarLocation;
-        System.Diagnostics.Debug.Assert(global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasOverlay(context));
+        System.Diagnostics.Debug.Assert(DebugLibrary.debugCheckHasOverlay(context));
     }
 
     public virtual bool toolbarIsVisible
@@ -659,7 +658,7 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if ((object.Equals(this._startHandleType, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._startHandleType, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -682,7 +681,7 @@ public class SelectionOverlay
         }
     }
     public virtual bool isDraggingStartHandle => DartRuntimePrimitives.ConvertValue<bool>((this._isDraggingStartHandle || this._startHandleDragInProgress));
-    internal virtual bool _canDragStartHandle => DartRuntimePrimitives.ConvertValue<bool>((!this._isDraggingEndHandle || ((((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) && (!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.macOS))) && !global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))));
+    internal virtual bool _canDragStartHandle => DartRuntimePrimitives.ConvertValue<bool>((!this._isDraggingEndHandle || ((((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))) && !Foundation.ConstantsLibrary.kIsWeb))));
     internal virtual void _handleStartHandleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
         DartRuntimePrimitives.Assert(() => !this._isDraggingStartHandle);
@@ -696,7 +695,7 @@ public class SelectionOverlay
         {
             return;
         }
-        _isDraggingStartHandle = (object.Equals(((global::Doroti.Framework.Gestures.DragStartDetails)details).kind, PointerDeviceKind.touch));
+        _isDraggingStartHandle = (Equals(((global::Doroti.Framework.Gestures.DragStartDetails)details).kind, PointerDeviceKind.touch));
         this.onStartHandleDragStart?.Invoke(details);
     }
 
@@ -713,7 +712,7 @@ public class SelectionOverlay
         }
         if (!this._isDraggingStartHandle)
         {
-            _isDraggingStartHandle = (object.Equals(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).kind, PointerDeviceKind.touch));
+            _isDraggingStartHandle = (Equals(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).kind, PointerDeviceKind.touch));
             var startDetails = new global::Doroti.Framework.Gestures.DragStartDetails(globalPosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, localPosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).localPosition, sourceTimeStamp: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp, kind: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).kind);
             this.onStartHandleDragStart?.Invoke(startDetails);
         }
@@ -741,7 +740,7 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if ((object.Equals(this._endHandleType, DartRuntimePrimitives.RequireValue(__value))))
+            if ((Equals(this._endHandleType, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -764,7 +763,7 @@ public class SelectionOverlay
         }
     }
     public virtual bool isDraggingEndHandle => DartRuntimePrimitives.ConvertValue<bool>((this._isDraggingEndHandle || this._endHandleDragInProgress));
-    internal virtual bool _canDragEndHandle => DartRuntimePrimitives.ConvertValue<bool>((!this._isDraggingStartHandle || ((((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) && (!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.macOS))) && !global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))));
+    internal virtual bool _canDragEndHandle => DartRuntimePrimitives.ConvertValue<bool>((!this._isDraggingStartHandle || ((((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))) && !Foundation.ConstantsLibrary.kIsWeb))));
     internal virtual void _handleEndHandleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
         DartRuntimePrimitives.Assert(() => !this._isDraggingEndHandle);
@@ -778,7 +777,7 @@ public class SelectionOverlay
         {
             return;
         }
-        _isDraggingEndHandle = (object.Equals(((global::Doroti.Framework.Gestures.DragStartDetails)details).kind, PointerDeviceKind.touch));
+        _isDraggingEndHandle = (Equals(((global::Doroti.Framework.Gestures.DragStartDetails)details).kind, PointerDeviceKind.touch));
         this.onEndHandleDragStart?.Invoke(details);
     }
 
@@ -795,7 +794,7 @@ public class SelectionOverlay
         }
         if (!this._isDraggingEndHandle)
         {
-            _isDraggingEndHandle = (object.Equals(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).kind, PointerDeviceKind.touch));
+            _isDraggingEndHandle = (Equals(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).kind, PointerDeviceKind.touch));
             var startDetails = new global::Doroti.Framework.Gestures.DragStartDetails(globalPosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition, localPosition: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).localPosition, sourceTimeStamp: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp, kind: ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).kind);
             this.onEndHandleDragStart?.Invoke(startDetails);
         }
@@ -823,23 +822,23 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if (!global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(this._selectionEndpoints, __value))
+            if (!CollectionsLibrary.listEquals(this._selectionEndpoints, __value))
             {
                 markNeedsBuild();
                 if ((this._isDraggingEndHandle || this._isDraggingStartHandle))
                 {
-                    switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+                    switch (PlatformLibrary.defaultTargetPlatform)
                     {
-                        case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                        case TargetPlatform.android:
                             {
                                 DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
                                 break;
                             }
-                        case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                        case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                        case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                        case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-                        case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                        case TargetPlatform.fuchsia:
+                        case TargetPlatform.iOS:
+                        case TargetPlatform.linux:
+                        case TargetPlatform.macOS:
+                        case TargetPlatform.windows:
                             {
                                 break;
                             }
@@ -855,7 +854,7 @@ public class SelectionOverlay
         set
         {
             var __value = value;
-            if ((object.Equals(this._toolbarLocation, __value)))
+            if ((Equals(this._toolbarLocation, __value)))
             {
                 return;
             }
@@ -869,15 +868,15 @@ public class SelectionOverlay
         {
             return;
         }
-        OverlayState overlay = ((OverlayState)(object?)Overlay.of(this.context, rootOverlay: true, debugRequiredFor: this.debugRequiredFor));
-        CapturedThemes capturedThemes = ((CapturedThemes)(object?)InheritedTheme.capture(from: this.context, to: overlay.context));
+        OverlayState overlay = ((OverlayState)Overlay.of(this.context, rootOverlay: true, debugRequiredFor: this.debugRequiredFor));
+        CapturedThemes capturedThemes = ((CapturedThemes)InheritedTheme.capture(from: this.context, to: overlay.context));
         _handles = (end: new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            return ((Widget)(object?)capturedThemes.wrap(_buildEndHandle(context)));
+            return ((Widget)capturedThemes.wrap(_buildEndHandle(context)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))), start: new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            return ((Widget)(object?)capturedThemes.wrap(_buildStartHandle(context)));
+            return ((Widget)capturedThemes.wrap(_buildStartHandle(context)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         overlay.insertAll(new List<OverlayEntry> { DartRuntimePrimitives.RequireValue(this._handles).start, DartRuntimePrimitives.RequireValue(this._handles).end }.Cast<OverlayEntry>());
@@ -911,10 +910,10 @@ public class SelectionOverlay
         {
             return;
         }
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
+        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
         this._contextMenuController.show(context: context, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -((Offset)(renderBox).localToGlobal(Offset.zero)), child: contextMenuBuilder(context)));
+            return ((Widget)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -((Offset)(renderBox).localToGlobal(Offset.zero)), child: contextMenuBuilder(context)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
     }
@@ -925,10 +924,10 @@ public class SelectionOverlay
         {
             return;
         }
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
+        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)context.findRenderObject()!)!;
         this._spellCheckToolbarController.show(context: context, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(layerLink: this.toolbarLayerLink, offset: -((Offset)(renderBox).localToGlobal(Offset.zero)), child: builder(context)));
+            return ((Widget)new _SelectionToolbarWrapper__text_selection(layerLink: this.toolbarLayerLink, offset: -((Offset)(renderBox).localToGlobal(Offset.zero)), child: builder(context)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
     }
@@ -939,14 +938,14 @@ public class SelectionOverlay
         {
             return;
         }
-        if ((object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             if (this._buildScheduled)
             {
                 return;
             }
             _buildScheduled = true;
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
             {
                 _buildScheduled = false;
                 this._handles?.start.markNeedsBuild();
@@ -1012,7 +1011,7 @@ public class SelectionOverlay
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         hide();
         this._magnifierInfo.dispose();
     }
@@ -1021,7 +1020,7 @@ public class SelectionOverlay
     {
         Widget handle = default!;
         TextSelectionControls? selectionControlsLocal = this.selectionControls;
-        if (((selectionControlsLocal is null) || (((object.Equals(this._startHandleType, global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed)) && this._isDraggingEndHandle))))
+        if (((selectionControlsLocal is null) || (((Equals(this._startHandleType, TextSelectionHandleType.collapsed)) && this._isDraggingEndHandle))))
         {
             handle = DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
         }
@@ -1029,7 +1028,7 @@ public class SelectionOverlay
         {
             handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: this._startHandleType, handleLayerLink: this.startHandleLayerLink, onSelectionHandleTapped: this.onSelectionHandleTapped, onSelectionHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleStartHandleDragStart, onSelectionHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleStartHandleDragUpdate, onSelectionHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleStartHandleDragEnd, selectionControls: selectionControlsLocal, visibility: this.startHandlesVisible, preferredLineHeight: this._lineHeightAtStart, dragStartBehavior: this.dragStartBehavior));
         }
-        return ((Widget)(object?)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))));
+        return ((Widget)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1037,7 +1036,7 @@ public class SelectionOverlay
     {
         Widget handle = default!;
         TextSelectionControls? selectionControlsLocal = this.selectionControls;
-        if ((((selectionControlsLocal is null) || (((object.Equals(this._endHandleType, global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed)) && this._isDraggingStartHandle))) || ((((object.Equals(this._endHandleType, global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed)) && !this._isDraggingStartHandle) && !this._isDraggingEndHandle))))
+        if ((((selectionControlsLocal is null) || (((Equals(this._endHandleType, TextSelectionHandleType.collapsed)) && this._isDraggingStartHandle))) || ((((Equals(this._endHandleType, TextSelectionHandleType.collapsed)) && !this._isDraggingStartHandle) && !this._isDraggingEndHandle))))
         {
             handle = DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
         }
@@ -1045,7 +1044,7 @@ public class SelectionOverlay
         {
             handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: this._endHandleType, handleLayerLink: this.endHandleLayerLink, onSelectionHandleTapped: this.onSelectionHandleTapped, onSelectionHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleEndHandleDragStart, onSelectionHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleEndHandleDragUpdate, onSelectionHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleEndHandleDragEnd, selectionControls: selectionControlsLocal, visibility: this.endHandlesVisible, preferredLineHeight: this._lineHeightAtEnd, dragStartBehavior: this.dragStartBehavior));
         }
-        return ((Widget)(object?)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))));
+        return ((Widget)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1053,17 +1052,17 @@ public class SelectionOverlay
     {
         if ((this.selectionControls is null))
         {
-            return ((Widget)(object?)SizedBox.CreateShrink());
+            return ((Widget)SizedBox.CreateShrink());
         }
         DartRuntimePrimitives.Assert(() => (this.selectionDelegate is not null), () => (object?)"If not using contextMenuBuilder, must pass selectionDelegate.");
-        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        var editingRegion = global::Doroti.Ui.Rect.fromPoints(((Offset)(renderBox).localToGlobal(Offset.zero)), ((Offset)(renderBox).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBox).size.bottomRight(Offset.zero))));
+        var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)this.context.findRenderObject()!)!;
+        var editingRegion = Rect.fromPoints(((Offset)(renderBox).localToGlobal(Offset.zero)), ((Offset)(renderBox).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBox).size.bottomRight(Offset.zero))));
         bool isMultiline = ((this.selectionEndpoints.Last().point.dy - this.selectionEndpoints.First().point.dy) > (this.lineHeightAtEnd / 2L));
         double midX = (isMultiline ? (editingRegion.width / 2L) : (((this.selectionEndpoints.First().point.dx + this.selectionEndpoints.Last().point.dx)) / 2L));
         var midpoint = new global::Doroti.Ui.Offset(midX, (this.selectionEndpoints.First().point.dy - this.lineHeightAtStart));
-        return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -editingRegion.topLeft, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        return ((Widget)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -editingRegion.topLeft, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            return ((Widget)(object?)this.selectionControls!.buildToolbar(context, editingRegion, this.lineHeightAtStart, midpoint, this.selectionEndpoints, this.selectionDelegate!, this.clipboardStatus, this.toolbarLocation));
+            return ((Widget)this.selectionControls!.buildToolbar(context, editingRegion, this.lineHeightAtStart, midpoint, this.selectionEndpoints, this.selectionDelegate!, this.clipboardStatus, this.toolbarLocation));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1116,7 +1115,7 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
     public override void didUpdateWidget(_SelectionToolbarWrapper__text_selection oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((object.Equals(((_SelectionToolbarWrapper__text_selection)oldWidget).visibility, ((_SelectionToolbarWrapper__text_selection)this.widget).visibility)))
+        if ((Equals(((_SelectionToolbarWrapper__text_selection)oldWidget).visibility, ((_SelectionToolbarWrapper__text_selection)this.widget).visibility)))
         {
             return;
         }
@@ -1157,7 +1156,7 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new Directionality(textDirection: Directionality.of(this.context), child: new FadeTransition(opacity: this._opacity, child: new CompositedTransformFollower(link: ((_SelectionToolbarWrapper__text_selection)this.widget).layerLink, showWhenUnlinked: false, offset: ((_SelectionToolbarWrapper__text_selection)this.widget).offset, child: ((_SelectionToolbarWrapper__text_selection)this.widget).child))))));
+        return ((Widget)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new Directionality(textDirection: Directionality.of(this.context), child: new FadeTransition(opacity: this._opacity, child: new CompositedTransformFollower(link: ((_SelectionToolbarWrapper__text_selection)this.widget).layerLink, showWhenUnlinked: false, offset: ((_SelectionToolbarWrapper__text_selection)this.widget).offset, child: ((_SelectionToolbarWrapper__text_selection)this.widget).child))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1172,7 +1171,7 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -1198,8 +1197,8 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -1230,7 +1229,7 @@ public class _SelectionHandleOverlay__text_selection : StatefulWidget
     public virtual global::Doroti.Framework.Rendering.TextSelectionHandleType type { get; private set; } = default!;
     public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
 
-    internal _SelectionHandleOverlay__text_selection(global::Doroti.Framework.Rendering.TextSelectionHandleType type, global::Doroti.Framework.Rendering.LayerLink handleLayerLink, global::System.Action? onSelectionHandleTapped = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onSelectionHandleDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onSelectionHandleDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onSelectionHandleDragEnd = null, TextSelectionControls selectionControls = default!, global::Doroti.Framework.Foundation.ValueListenable<bool>? visibility = null, double preferredLineHeight = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start)
+    internal _SelectionHandleOverlay__text_selection(global::Doroti.Framework.Rendering.TextSelectionHandleType type, global::Doroti.Framework.Rendering.LayerLink handleLayerLink, global::System.Action? onSelectionHandleTapped = null, global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>? onSelectionHandleDragStart = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onSelectionHandleDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>? onSelectionHandleDragEnd = null, TextSelectionControls selectionControls = default!, global::Doroti.Framework.Foundation.ValueListenable<bool>? visibility = null, double preferredLineHeight = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = DragStartBehavior.start)
     {
         this.type = type;
         this.handleLayerLink = handleLayerLink;
@@ -1276,8 +1275,8 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
 
     internal virtual global::Doroti.Ui.Rect _getHandleRect(global::Doroti.Framework.Rendering.TextSelectionHandleType type, double preferredLineHeight)
     {
-        global::Doroti.Ui.Size handleSize = ((global::Doroti.Ui.Size)(object?)((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.getHandleSize(preferredLineHeight));
-        return global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, handleSize.width, handleSize.height);
+        global::Doroti.Ui.Size handleSize = ((global::Doroti.Ui.Size)((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.getHandleSize(preferredLineHeight));
+        return Rect.fromLTWH(0.0, 0.0, handleSize.width, handleSize.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1309,12 +1308,12 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
 
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Ui.Rect handleRect = ((global::Doroti.Ui.Rect)(object?)_getHandleRect(((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight));
-        global::Doroti.Ui.Rect interactiveRect = ((global::Doroti.Ui.Rect)(object?)(handleRect.isEmpty ? handleRect : handleRect.expandToInclude(global::Doroti.Ui.Rect.fromCircle(center: ((Offset)(handleRect).center), radius: (global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension / 2L)))));
-        global::Doroti.Framework.Rendering.RelativeRect paddingLocal = (interactiveRect.isEmpty ? global::Doroti.Framework.Rendering.RelativeRect.fill : new global::Doroti.Framework.Rendering.RelativeRect(Math.Max((((interactiveRect.width - handleRect.width)) / 2L), 0), Math.Max((((interactiveRect.height - handleRect.height)) / 2L), 0), Math.Max((((interactiveRect.width - handleRect.width)) / 2L), 0), Math.Max((((interactiveRect.height - handleRect.height)) / 2L), 0)));
-        global::Doroti.Ui.Offset handleAnchor = ((global::Doroti.Ui.Offset)(object?)((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.getHandleAnchor(((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight));
-        bool eagerlyAcceptDragWhenCollapsed = ((object.Equals(((_SelectionHandleOverlay__text_selection)this.widget).type, global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed)) && (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)));
-        return ((Widget)(object?)new CompositedTransformFollower(link: ((_SelectionHandleOverlay__text_selection)this.widget).handleLayerLink, offset: (-handleAnchor - new global::Doroti.Ui.Offset(((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).left, ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).top)), showWhenUnlinked: false, child: new FadeTransition(opacity: this._opacity, child: new SizedBox(width: interactiveRect.width, height: interactiveRect.height, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new RawGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, gestures: new DartMap<Type, dynamic>
+        global::Doroti.Ui.Rect handleRect = ((global::Doroti.Ui.Rect)_getHandleRect(((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight));
+        global::Doroti.Ui.Rect interactiveRect = ((global::Doroti.Ui.Rect)(handleRect.isEmpty ? handleRect : handleRect.expandToInclude(Rect.fromCircle(center: ((Offset)(handleRect).center), radius: (ConstantsLibrary.kMinInteractiveDimension / 2L)))));
+        global::Doroti.Framework.Rendering.RelativeRect paddingLocal = (interactiveRect.isEmpty ? RelativeRect.fill : new global::Doroti.Framework.Rendering.RelativeRect(Math.Max((((interactiveRect.width - handleRect.width)) / 2L), 0), Math.Max((((interactiveRect.height - handleRect.height)) / 2L), 0), Math.Max((((interactiveRect.width - handleRect.width)) / 2L), 0), Math.Max((((interactiveRect.height - handleRect.height)) / 2L), 0)));
+        global::Doroti.Ui.Offset handleAnchor = ((global::Doroti.Ui.Offset)((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.getHandleAnchor(((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight));
+        bool eagerlyAcceptDragWhenCollapsed = ((Equals(((_SelectionHandleOverlay__text_selection)this.widget).type, TextSelectionHandleType.collapsed)) && (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)));
+        return ((Widget)new CompositedTransformFollower(link: ((_SelectionHandleOverlay__text_selection)this.widget).handleLayerLink, offset: (-handleAnchor - new global::Doroti.Ui.Offset(((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).left, ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).top)), showWhenUnlinked: false, child: new FadeTransition(opacity: this._opacity, child: new SizedBox(width: interactiveRect.width, height: interactiveRect.height, child: new Align(alignment: Alignment.topLeft, child: new RawGestureDetector(behavior: HitTestBehavior.translucent, gestures: new DartMap<Type, dynamic>
         {
             [typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown }))), ((global::System.Action<global::Doroti.Framework.Gestures.PanGestureRecognizer>)((instance) =>
             {
@@ -1329,7 +1328,7 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
                     return __cascade;
                 }))());
             })))
-        }, child: new Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).left, top: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).bottom), child: ((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.buildHandle(context, ((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight, () => ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleTapped()))))))));
+        }, child: new Padding(padding: EdgeInsets.CreateOnly(left: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).left, top: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)paddingLocal).bottom), child: ((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.buildHandle(context, ((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight, () => ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleTapped?.Invoke()))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1344,7 +1343,7 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -1370,8 +1369,8 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -1414,18 +1413,18 @@ public class TextSelectionGestureDetectorBuilder
 
     internal virtual void _showMagnifierIfSupportedByPlatform(Offset positionToShow)
     {
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.android:
+            case TargetPlatform.iOS:
                 {
                     this.editableText.showMagnifier(positionToShow);
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 break;
         }
     }
@@ -1436,18 +1435,18 @@ public class TextSelectionGestureDetectorBuilder
         {
             return;
         }
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.android:
+            case TargetPlatform.iOS:
                 {
                     this.editableText.hideMagnifier();
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 break;
         }
     }
@@ -1461,7 +1460,7 @@ public class TextSelectionGestureDetectorBuilder
             {
                 return false;
             }
-            global::Doroti.Ui.TextPosition textPosition = ((global::Doroti.Ui.TextPosition)(object?)((TextPosition)(this.renderEditable).getPositionForPoint(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).lastSecondaryTapDownPosition))));
+            global::Doroti.Ui.TextPosition textPosition = ((global::Doroti.Ui.TextPosition)((TextPosition)(this.renderEditable).getPositionForPoint(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).lastSecondaryTapDownPosition))));
             return ((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.start <= textPosition.offset) && (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.end >= textPosition.offset));
         }
     }
@@ -1490,19 +1489,19 @@ public class TextSelectionGestureDetectorBuilder
     internal virtual void _expandSelection(Offset offset, global::Doroti.Framework.Services.SelectionChangedCause cause, global::Doroti.Framework.Services.TextSelection? fromSelection = null)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection?.baseOffset is not null));
-        global::Doroti.Ui.TextPosition tappedPosition = ((global::Doroti.Ui.TextPosition)(object?)((TextPosition)(this.renderEditable).getPositionForPoint(offset)));
+        global::Doroti.Ui.TextPosition tappedPosition = ((global::Doroti.Ui.TextPosition)((TextPosition)(this.renderEditable).getPositionForPoint(offset)));
         global::Doroti.Framework.Services.TextSelection selectionLocal = (fromSelection ?? ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!);
         bool baseIsCloser = (((tappedPosition.offset - ((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset)).abs() < ((tappedPosition.offset - ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset)).abs());
-        global::Doroti.Framework.Services.TextSelection nextSelection = ((global::Doroti.Framework.Services.TextSelection)(object?)selectionLocal.copyWith(baseOffset: (baseIsCloser ? ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset : ((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset), extentOffset: tappedPosition.offset));
+        global::Doroti.Framework.Services.TextSelection nextSelection = ((global::Doroti.Framework.Services.TextSelection)selectionLocal.copyWith(baseOffset: (baseIsCloser ? ((global::Doroti.Framework.Services.TextSelection)selectionLocal).extentOffset : ((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset), extentOffset: tappedPosition.offset));
         this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: nextSelection), DartRuntimePrimitives.RequireValue(cause));
     }
 
     internal virtual void _extendSelection(Offset offset, global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection?.baseOffset is not null));
-        global::Doroti.Ui.TextPosition tappedPosition = ((global::Doroti.Ui.TextPosition)(object?)((TextPosition)(this.renderEditable).getPositionForPoint(offset)));
+        global::Doroti.Ui.TextPosition tappedPosition = ((global::Doroti.Ui.TextPosition)((TextPosition)(this.renderEditable).getPositionForPoint(offset)));
         global::Doroti.Framework.Services.TextSelection selectionLocal = ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!;
-        global::Doroti.Framework.Services.TextSelection nextSelection = ((global::Doroti.Framework.Services.TextSelection)(object?)selectionLocal.copyWith(extentOffset: tappedPosition.offset));
+        global::Doroti.Framework.Services.TextSelection nextSelection = ((global::Doroti.Framework.Services.TextSelection)selectionLocal.copyWith(extentOffset: tappedPosition.offset));
         this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: nextSelection), DartRuntimePrimitives.RequireValue(cause));
     }
 
@@ -1529,7 +1528,7 @@ public class TextSelectionGestureDetectorBuilder
     }
     public virtual void onTapTrackStart()
     {
-        _isShiftPressed = System.Linq.Enumerable.Any(global::Doroti.Framework.Services.HardwareKeyboard.instance.logicalKeysPressed.intersection(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { global::Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft, global::Doroti.Framework.Services.LogicalKeyboardKey.shiftRight }));
+        _isShiftPressed = Enumerable.Any(HardwareKeyboard.instance.logicalKeysPressed.intersection(new HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> { LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.shiftRight }));
     }
 
     public virtual void onTapTrackReset()
@@ -1545,12 +1544,12 @@ public class TextSelectionGestureDetectorBuilder
         }
         this.renderEditable.handleTapDown(new global::Doroti.Framework.Gestures.TapDownDetails(globalPosition: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition));
         global::Doroti.Ui.PointerDeviceKind? kindLocal = ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).kind;
-        _shouldShowSelectionToolbar = (((kindLocal is null) || (object.Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch))) || (object.Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus)));
+        _shouldShowSelectionToolbar = (((kindLocal is null) || (Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch))) || (Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus)));
         _shouldShowSelectionHandles = this._shouldShowSelectionToolbar;
         bool isShiftPressedValid = (this._isShiftPressed && (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection?.baseOffset is not null));
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case TargetPlatform.android:
                 {
                     if (this.editableText.widget.stylusHandwritingEnabled)
                     {
@@ -1561,7 +1560,7 @@ public class TextSelectionGestureDetectorBuilder
                             {
                                 if (isAvailable)
                                 {
-                                    this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.stylusHandwriting);
+                                    this.renderEditable.selectPosition(cause: SelectionChangedCause.stylusHandwriting);
                                     DartRuntimePrimitives.Ignore(Scribe.startStylusHandwriting());
                                 }
                             })));
@@ -1569,33 +1568,33 @@ public class TextSelectionGestureDetectorBuilder
                     }
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.iOS:
                 {
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.macOS:
                 {
                     this.editableText.hideToolbar();
                     if (isShiftPressedValid)
                     {
-                        global::Doroti.Framework.Services.TextSelection? fromSelection = (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus ? null : global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: 0L));
-                        _expandSelection(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.tap, fromSelection);
+                        global::Doroti.Framework.Services.TextSelection? fromSelection = (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus ? null : TextSelection.CreateCollapsed(offset: 0L));
+                        _expandSelection(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, SelectionChangedCause.tap, fromSelection);
                         return;
                     }
-                    this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                    this.renderEditable.selectPosition(cause: SelectionChangedCause.tap);
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     this.editableText.hideToolbar();
                     if (isShiftPressedValid)
                     {
-                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, SelectionChangedCause.tap);
                         return;
                     }
-                    this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                    this.renderEditable.selectPosition(cause: SelectionChangedCause.tap);
                     break;
                 }
         }
@@ -1609,14 +1608,14 @@ public class TextSelectionGestureDetectorBuilder
         {
             return;
         }
-        this.renderEditable.selectWordsInRange(from: ((global::Doroti.Framework.Gestures.ForcePressDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.forcePress);
+        this.renderEditable.selectWordsInRange(from: ((global::Doroti.Framework.Gestures.ForcePressDetails)details).globalPosition, cause: SelectionChangedCause.forcePress);
         this.editableText.showToolbar();
     }
 
     public virtual void onForcePressEnd(global::Doroti.Framework.Gestures.ForcePressDetails details)
     {
         DartRuntimePrimitives.Assert(() => ((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).forcePressEnabled);
-        this.renderEditable.selectWordsInRange(from: ((global::Doroti.Framework.Gestures.ForcePressDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.forcePress);
+        this.renderEditable.selectWordsInRange(from: ((global::Doroti.Framework.Gestures.ForcePressDetails)details).globalPosition, cause: SelectionChangedCause.forcePress);
         if (this.shouldShowSelectionToolbar)
         {
             this.editableText.showToolbar();
@@ -1636,43 +1635,43 @@ public class TextSelectionGestureDetectorBuilder
             return;
         }
         bool isShiftPressedValid = (this._isShiftPressed && (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection?.baseOffset is not null));
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.linux:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 {
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case TargetPlatform.android:
                 {
                     this.editableText.hideToolbar(false);
                     if (isShiftPressedValid)
                     {
-                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition, SelectionChangedCause.tap);
                         return;
                     }
-                    this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                    this.renderEditable.selectPosition(cause: SelectionChangedCause.tap);
                     this.editableText.showSpellCheckSuggestionsToolbar();
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case TargetPlatform.fuchsia:
                 {
                     this.editableText.hideToolbar(false);
                     if (isShiftPressedValid)
                     {
-                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition, SelectionChangedCause.tap);
                         return;
                     }
-                    this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                    this.renderEditable.selectPosition(cause: SelectionChangedCause.tap);
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.iOS:
                 {
                     if (isShiftPressedValid)
                     {
-                        global::Doroti.Framework.Services.TextSelection? fromSelection = (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus ? null : global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: 0L));
-                        _expandSelection(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.tap, fromSelection);
+                        global::Doroti.Framework.Services.TextSelection? fromSelection = (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus ? null : TextSelection.CreateCollapsed(offset: 0L));
+                        _expandSelection(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition, SelectionChangedCause.tap, fromSelection);
                         return;
                     }
                     switch (((global::Doroti.Framework.Gestures.TapDragUpDetails)details).kind)
@@ -1682,7 +1681,7 @@ public class TextSelectionGestureDetectorBuilder
                         case PointerDeviceKind.stylus:
                         case PointerDeviceKind.invertedStylus:
                             {
-                                this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                                this.renderEditable.selectPosition(cause: SelectionChangedCause.tap);
                                 this.editableText.hideToolbar();
                                 break;
                             }
@@ -1690,13 +1689,13 @@ public class TextSelectionGestureDetectorBuilder
                         case PointerDeviceKind.unknown:
                             {
                                 global::Doroti.Framework.Services.TextSelection previousSelection = (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection ?? ((EditableTextState)this.editableText).textEditingValue.selection);
-                                global::Doroti.Ui.TextPosition textPosition = ((global::Doroti.Ui.TextPosition)(object?)((TextPosition)(this.renderEditable).getPositionForPoint(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition)));
-                                var isAffinityTheSame = (object.Equals(textPosition.affinity, ((global::Doroti.Framework.Services.TextSelection)previousSelection).affinity));
+                                global::Doroti.Ui.TextPosition textPosition = ((global::Doroti.Ui.TextPosition)((TextPosition)(this.renderEditable).getPositionForPoint(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition)));
+                                var isAffinityTheSame = (Equals(textPosition.affinity, ((global::Doroti.Framework.Services.TextSelection)previousSelection).affinity));
                                 var wordAtCursorIndexIsMisspelled = (this.editableText.findSuggestionSpanAtCursorIndex(textPosition.offset) is not null);
                                 if (wordAtCursorIndexIsMisspelled)
                                 {
-                                    this.renderEditable.selectWord(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
-                                    if ((!object.Equals(previousSelection, ((EditableTextState)this.editableText).textEditingValue.selection)))
+                                    this.renderEditable.selectWord(cause: SelectionChangedCause.tap);
+                                    if ((!Equals(previousSelection, ((EditableTextState)this.editableText).textEditingValue.selection)))
                                     {
                                         this.editableText.showSpellCheckSuggestionsToolbar();
                                     }
@@ -1713,8 +1712,8 @@ public class TextSelectionGestureDetectorBuilder
                                     }
                                     else
                                     {
-                                        this.renderEditable.selectWordEdge(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
-                                        if ((((object.Equals(previousSelection, ((EditableTextState)this.editableText).textEditingValue.selection)) && ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus) && !((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).readOnly))
+                                        this.renderEditable.selectWordEdge(cause: SelectionChangedCause.tap);
+                                        if ((((Equals(previousSelection, ((EditableTextState)this.editableText).textEditingValue.selection)) && ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus) && !((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).readOnly))
                                         {
                                             this.editableText.toggleToolbar(false);
                                         }
@@ -1743,21 +1742,21 @@ public class TextSelectionGestureDetectorBuilder
         {
             return;
         }
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     if (!((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus)
                     {
                         _longPressStartedWithoutFocus = true;
-                        this.renderEditable.selectWord(cause: global::Doroti.Framework.Services.SelectionChangedCause.longPress);
+                        this.renderEditable.selectWord(cause: SelectionChangedCause.longPress);
                     }
                     else
                     {
                         if (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).readOnly)
                         {
-                            this.renderEditable.selectWord(cause: global::Doroti.Framework.Services.SelectionChangedCause.longPress);
+                            this.renderEditable.selectWord(cause: SelectionChangedCause.longPress);
                             if (this.editableText.context.mounted)
                             {
                                 DartRuntimePrimitives.Ignore(Feedback.forLongPress(this.editableText.context));
@@ -1765,19 +1764,19 @@ public class TextSelectionGestureDetectorBuilder
                         }
                         else
                         {
-                            this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.LongPressStartDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.longPress);
-                            var cursorPoint = new global::Doroti.Framework.Services.RawFloatingCursorPoint(state: global::Doroti.Framework.Services.FloatingCursorDragState.Start, startLocation: (((Offset)(this.renderEditable).globalToLocal(((global::Doroti.Framework.Gestures.LongPressStartDetails)details).globalPosition)), new global::Doroti.Ui.TextPosition(offset: ((EditableTextState)this.editableText).textEditingValue.selection.baseOffset, affinity: ((EditableTextState)this.editableText).textEditingValue.selection.affinity)), offset: Offset.zero);
+                            this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.LongPressStartDetails)details).globalPosition, cause: SelectionChangedCause.longPress);
+                            var cursorPoint = new global::Doroti.Framework.Services.RawFloatingCursorPoint(state: FloatingCursorDragState.Start, startLocation: (((Offset)(this.renderEditable).globalToLocal(((global::Doroti.Framework.Gestures.LongPressStartDetails)details).globalPosition)), new global::Doroti.Ui.TextPosition(offset: ((EditableTextState)this.editableText).textEditingValue.selection.baseOffset, affinity: ((EditableTextState)this.editableText).textEditingValue.selection.affinity)), offset: Offset.zero);
                             this.editableText.updateFloatingCursor(cursorPoint);
                         }
                     }
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
-                    this.renderEditable.selectWord(cause: global::Doroti.Framework.Services.SelectionChangedCause.longPress);
+                    this.renderEditable.selectWord(cause: SelectionChangedCause.longPress);
                     if (this.editableText.context.mounted)
                     {
                         DartRuntimePrimitives.Ignore(Feedback.forLongPress(this.editableText.context));
@@ -1797,30 +1796,30 @@ public class TextSelectionGestureDetectorBuilder
             return;
         }
         var editableOffset = ((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).maxLines == 1L) ? new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).offset.pixels - this._dragStartViewportOffset), 0.0) : new global::Doroti.Ui.Offset(0.0, (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).offset.pixels - this._dragStartViewportOffset)));
-        global::Doroti.Ui.Offset scrollableOffset = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis((this._scrollDirection ?? global::Doroti.Framework.Painting.AxisDirection.left)) switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset((this._scrollPosition - this._dragStartScrollOffset), 0.0), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, (this._scrollPosition - this._dragStartScrollOffset)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        global::Doroti.Ui.Offset scrollableOffset = ((global::Doroti.Ui.Offset)(Basic_typesLibrary.axisDirectionToAxis((this._scrollDirection ?? AxisDirection.left)) switch { Axis.horizontal => new global::Doroti.Ui.Offset((this._scrollPosition - this._dragStartScrollOffset), 0.0), Axis.vertical => new global::Doroti.Ui.Offset(0.0, (this._scrollPosition - this._dragStartScrollOffset)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     if ((this._longPressStartedWithoutFocus || ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).readOnly))
                     {
-                        this.renderEditable.selectWordsInRange(from: (((((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition - ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).offsetFromOrigin) - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.longPress);
+                        this.renderEditable.selectWordsInRange(from: (((((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition - ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).offsetFromOrigin) - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition, cause: SelectionChangedCause.longPress);
                     }
                     else
                     {
-                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.longPress);
-                        var cursorPoint = new global::Doroti.Framework.Services.RawFloatingCursorPoint(state: global::Doroti.Framework.Services.FloatingCursorDragState.Update, offset: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).offsetFromOrigin);
+                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition, cause: SelectionChangedCause.longPress);
+                        var cursorPoint = new global::Doroti.Framework.Services.RawFloatingCursorPoint(state: FloatingCursorDragState.Update, offset: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).offsetFromOrigin);
                         this.editableText.updateFloatingCursor(cursorPoint);
                     }
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
-                    this.renderEditable.selectWordsInRange(from: (((((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition - ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).offsetFromOrigin) - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.longPress);
+                    this.renderEditable.selectWordsInRange(from: (((((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition - ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).offsetFromOrigin) - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails)details).globalPosition, cause: SelectionChangedCause.longPress);
                     break;
                 }
         }
@@ -1847,14 +1846,14 @@ public class TextSelectionGestureDetectorBuilder
         {
             return;
         }
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     if ((!this._lastSecondaryTapWasOnSelection || !((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus))
                     {
-                        this.renderEditable.selectWord(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                        this.renderEditable.selectWord(cause: SelectionChangedCause.tap);
                     }
                     if (this.shouldShowSelectionToolbar)
                     {
@@ -1863,14 +1862,14 @@ public class TextSelectionGestureDetectorBuilder
                     }
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     if (!((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus)
                     {
-                        this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                        this.renderEditable.selectPosition(cause: SelectionChangedCause.tap);
                     }
                     this.editableText.toggleToolbar();
                     break;
@@ -1882,14 +1881,14 @@ public class TextSelectionGestureDetectorBuilder
     {
         this.renderEditable.handleSecondaryTapDown(new global::Doroti.Framework.Gestures.TapDownDetails(globalPosition: ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition));
         _shouldShowSelectionToolbar = true;
-        _shouldShowSelectionHandles = (((((global::Doroti.Framework.Gestures.TapDownDetails)details).kind is null) || (object.Equals(((global::Doroti.Framework.Gestures.TapDownDetails)details).kind, PointerDeviceKind.touch))) || (object.Equals(((global::Doroti.Framework.Gestures.TapDownDetails)details).kind, PointerDeviceKind.stylus)));
+        _shouldShowSelectionHandles = (((((global::Doroti.Framework.Gestures.TapDownDetails)details).kind is null) || (Equals(((global::Doroti.Framework.Gestures.TapDownDetails)details).kind, PointerDeviceKind.touch))) || (Equals(((global::Doroti.Framework.Gestures.TapDownDetails)details).kind, PointerDeviceKind.stylus)));
     }
 
     public virtual void onDoubleTapDown(global::Doroti.Framework.Gestures.TapDragDownDetails details)
     {
         if (((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).selectionEnabled)
         {
-            this.renderEditable.selectWord(cause: global::Doroti.Framework.Services.SelectionChangedCause.doubleTap);
+            this.renderEditable.selectWord(cause: SelectionChangedCause.doubleTap);
             if (this.shouldShowSelectionToolbar)
             {
                 this.editableText.showToolbar();
@@ -1903,22 +1902,22 @@ public class TextSelectionGestureDetectorBuilder
         _longPressStartedWithoutFocus = false;
         _dragStartViewportOffset = 0.0;
         _dragStartScrollOffset = 0.0;
-        if ((((this._isEditableTextMounted && (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS))) && ((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).selectionEnabled) && ((EditableTextState)this.editableText).textEditingValue.selection.isCollapsed))
+        if ((((this._isEditableTextMounted && (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS))) && ((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).selectionEnabled) && ((EditableTextState)this.editableText).textEditingValue.selection.isCollapsed))
         {
-            var cursorPoint = new global::Doroti.Framework.Services.RawFloatingCursorPoint(state: global::Doroti.Framework.Services.FloatingCursorDragState.End);
+            var cursorPoint = new global::Doroti.Framework.Services.RawFloatingCursorPoint(state: FloatingCursorDragState.End);
             this.editableText.updateFloatingCursor(cursorPoint);
         }
     }
 
     internal virtual void _selectParagraphsInRange(Offset from, Offset? to = null, global::Doroti.Framework.Services.SelectionChangedCause? cause = null)
     {
-        global::Doroti.Framework.Services.TextBoundary paragraphBoundary = ((global::Doroti.Framework.Services.TextBoundary)(object?)new global::Doroti.Framework.Services.ParagraphBoundary(((EditableTextState)this.editableText).textEditingValue.text));
+        global::Doroti.Framework.Services.TextBoundary paragraphBoundary = ((global::Doroti.Framework.Services.TextBoundary)new global::Doroti.Framework.Services.ParagraphBoundary(((EditableTextState)this.editableText).textEditingValue.text));
         _selectTextBoundariesInRange(boundary: paragraphBoundary, from: from, to: to, cause: cause);
     }
 
     internal virtual void _selectLinesInRange(Offset from, Offset? to = null, global::Doroti.Framework.Services.SelectionChangedCause? cause = null)
     {
-        global::Doroti.Framework.Services.TextBoundary lineBoundary = ((global::Doroti.Framework.Services.TextBoundary)(object?)new global::Doroti.Framework.Services.LineBoundary(this.renderEditable));
+        global::Doroti.Framework.Services.TextBoundary lineBoundary = ((global::Doroti.Framework.Services.TextBoundary)new global::Doroti.Framework.Services.LineBoundary(this.renderEditable));
         _selectTextBoundariesInRange(boundary: lineBoundary, from: from, to: to, cause: cause);
     }
 
@@ -1927,16 +1926,16 @@ public class TextSelectionGestureDetectorBuilder
         DartRuntimePrimitives.Assert(() => (extent.offset >= 0L));
         long startLocal = (textBoundary.getLeadingTextBoundaryAt(((extent.offset == ((EditableTextState)this.editableText).textEditingValue.text.Length) ? (extent.offset - 1L) : extent.offset)) ?? 0L);
         long endLocal = (textBoundary.getTrailingTextBoundaryAt(extent.offset) ?? ((EditableTextState)this.editableText).textEditingValue.text.Length);
-        return ((global::Doroti.Ui.TextRange)(object?)new global::Doroti.Ui.TextRange(start: startLocal, end: endLocal));
+        return ((global::Doroti.Ui.TextRange)new global::Doroti.Ui.TextRange(start: startLocal, end: endLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _selectTextBoundariesInRange(global::Doroti.Framework.Services.TextBoundary boundary, Offset from, Offset? to = null, global::Doroti.Framework.Services.SelectionChangedCause? cause = null)
     {
-        global::Doroti.Ui.TextPosition fromPosition = ((global::Doroti.Ui.TextPosition)(object?)((TextPosition)(this.renderEditable).getPositionForPoint(from)));
-        global::Doroti.Ui.TextRange fromRange = ((global::Doroti.Ui.TextRange)(object?)_moveToTextBoundary(fromPosition, boundary));
-        global::Doroti.Ui.TextPosition toPosition = ((global::Doroti.Ui.TextPosition)(object?)((to is null) ? fromPosition : ((TextPosition)(this.renderEditable).getPositionForPoint(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))))));
-        global::Doroti.Ui.TextRange toRange = ((global::Doroti.Ui.TextRange)(object?)((object.Equals(toPosition, fromPosition)) ? fromRange : _moveToTextBoundary(toPosition, boundary)));
+        global::Doroti.Ui.TextPosition fromPosition = ((global::Doroti.Ui.TextPosition)((TextPosition)(this.renderEditable).getPositionForPoint(from)));
+        global::Doroti.Ui.TextRange fromRange = ((global::Doroti.Ui.TextRange)_moveToTextBoundary(fromPosition, boundary));
+        global::Doroti.Ui.TextPosition toPosition = ((global::Doroti.Ui.TextPosition)((to is null) ? fromPosition : ((TextPosition)(this.renderEditable).getPositionForPoint(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(to))))));
+        global::Doroti.Ui.TextRange toRange = ((global::Doroti.Ui.TextRange)((Equals(toPosition, fromPosition)) ? fromRange : _moveToTextBoundary(toPosition, boundary)));
         bool isFromBoundaryBeforeToBoundary = (fromRange.start < toRange.end);
         var newSelection = (isFromBoundaryBeforeToBoundary ? new global::Doroti.Framework.Services.TextSelection(baseOffset: fromRange.start, extentOffset: toRange.end) : new global::Doroti.Framework.Services.TextSelection(baseOffset: fromRange.end, extentOffset: toRange.start));
         this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: newSelection), DartRuntimePrimitives.RequireValue(cause));
@@ -1950,24 +1949,24 @@ public class TextSelectionGestureDetectorBuilder
         }
         if ((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).maxLines == 1L))
         {
-            this.editableText.selectAll(global::Doroti.Framework.Services.SelectionChangedCause.tap);
+            this.editableText.selectAll(SelectionChangedCause.tap);
         }
         else
         {
-            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (PlatformLibrary.defaultTargetPlatform)
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case TargetPlatform.android:
+                case TargetPlatform.fuchsia:
+                case TargetPlatform.iOS:
+                case TargetPlatform.macOS:
+                case TargetPlatform.windows:
                     {
-                        _selectParagraphsInRange(from: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                        _selectParagraphsInRange(from: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, cause: SelectionChangedCause.tap);
                         break;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                case TargetPlatform.linux:
                     {
-                        _selectLinesInRange(from: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.tap);
+                        _selectLinesInRange(from: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition, cause: SelectionChangedCause.tap);
                         break;
                     }
             }
@@ -1985,7 +1984,7 @@ public class TextSelectionGestureDetectorBuilder
             return;
         }
         global::Doroti.Ui.PointerDeviceKind? kindLocal = ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).kind;
-        _shouldShowSelectionToolbar = (((kindLocal is null) || (object.Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch))) || (object.Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus)));
+        _shouldShowSelectionToolbar = (((kindLocal is null) || (Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.touch))) || (Equals(DartRuntimePrimitives.RequireValue(kindLocal), PointerDeviceKind.stylus)));
         _shouldShowSelectionHandles = this._shouldShowSelectionToolbar;
         _dragStartSelection = ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection;
         _dragStartScrollOffset = this._scrollPosition;
@@ -1996,36 +1995,36 @@ public class TextSelectionGestureDetectorBuilder
         }
         if (((this._isShiftPressed && (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection is not null)) && ((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).selection!.isValid))
         {
-            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (PlatformLibrary.defaultTargetPlatform)
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                case TargetPlatform.iOS:
+                case TargetPlatform.macOS:
                     {
-                        _expandSelection(((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                        _expandSelection(((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, SelectionChangedCause.drag);
                         break;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case TargetPlatform.android:
+                case TargetPlatform.fuchsia:
+                case TargetPlatform.linux:
+                case TargetPlatform.windows:
                     {
-                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                        _extendSelection(((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, SelectionChangedCause.drag);
                         break;
                     }
             }
         }
         else
         {
-            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (PlatformLibrary.defaultTargetPlatform)
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                case TargetPlatform.iOS:
                     {
                         switch (((global::Doroti.Framework.Gestures.TapDragStartDetails)details).kind)
                         {
                             case PointerDeviceKind.mouse:
                             case PointerDeviceKind.trackpad:
                                 {
-                                    this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                                    this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                                     break;
                                 }
                             case PointerDeviceKind.stylus:
@@ -2037,15 +2036,15 @@ public class TextSelectionGestureDetectorBuilder
                         }
                         break;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                case TargetPlatform.android:
+                case TargetPlatform.fuchsia:
                     {
                         switch (((global::Doroti.Framework.Gestures.TapDragStartDetails)details).kind)
                         {
                             case PointerDeviceKind.mouse:
                             case PointerDeviceKind.trackpad:
                                 {
-                                    this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                                    this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                                     break;
                                 }
                             case PointerDeviceKind.stylus:
@@ -2055,7 +2054,7 @@ public class TextSelectionGestureDetectorBuilder
                                 {
                                     if (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus)
                                     {
-                                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                                         _showMagnifierIfSupportedByPlatform(((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition);
                                     }
                                     break;
@@ -2065,11 +2064,11 @@ public class TextSelectionGestureDetectorBuilder
                         }
                         break;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case TargetPlatform.linux:
+                case TargetPlatform.macOS:
+                case TargetPlatform.windows:
                     {
-                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragStartDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                         break;
                     }
             }
@@ -2085,11 +2084,11 @@ public class TextSelectionGestureDetectorBuilder
         if (!this._isShiftPressed)
         {
             var editableOffset = ((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).maxLines == 1L) ? new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).offset.pixels - this._dragStartViewportOffset), 0.0) : new global::Doroti.Ui.Offset(0.0, (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).offset.pixels - this._dragStartViewportOffset)));
-            global::Doroti.Ui.Offset scrollableOffset = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis((this._scrollDirection ?? global::Doroti.Framework.Painting.AxisDirection.left)) switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset((this._scrollPosition - this._dragStartScrollOffset), 0.0), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, (this._scrollPosition - this._dragStartScrollOffset)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-            global::Doroti.Ui.Offset dragStartGlobalPosition = ((global::Doroti.Ui.Offset)(object?)(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition - ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).offsetFromOrigin));
+            global::Doroti.Ui.Offset scrollableOffset = ((global::Doroti.Ui.Offset)(Basic_typesLibrary.axisDirectionToAxis((this._scrollDirection ?? AxisDirection.left)) switch { Axis.horizontal => new global::Doroti.Ui.Offset((this._scrollPosition - this._dragStartScrollOffset), 0.0), Axis.vertical => new global::Doroti.Ui.Offset(0.0, (this._scrollPosition - this._dragStartScrollOffset)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            global::Doroti.Ui.Offset dragStartGlobalPosition = ((global::Doroti.Ui.Offset)(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition - ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).offsetFromOrigin));
             if ((_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).consecutiveTapCount) == 2L))
             {
-                this.renderEditable.selectWordsInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                this.renderEditable.selectWordsInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                 switch (((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind)
                 {
                     case PointerDeviceKind.stylus:
@@ -2112,18 +2111,18 @@ public class TextSelectionGestureDetectorBuilder
             }
             if ((_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).consecutiveTapCount) == 3L))
             {
-                switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+                switch (PlatformLibrary.defaultTargetPlatform)
                 {
-                    case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                    case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                    case TargetPlatform.android:
+                    case TargetPlatform.fuchsia:
+                    case TargetPlatform.iOS:
                         {
                             switch (((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind)
                             {
                                 case PointerDeviceKind.mouse:
                                 case PointerDeviceKind.trackpad:
                                     {
-                                        _selectParagraphsInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                                        _selectParagraphsInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                                         return;
                                     }
                                 case PointerDeviceKind.stylus:
@@ -2139,31 +2138,31 @@ public class TextSelectionGestureDetectorBuilder
                             }
                             return;
                         }
-                    case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                    case TargetPlatform.linux:
                         {
-                            _selectLinesInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                            _selectLinesInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                             return;
                         }
-                    case global::Doroti.Framework.Foundation.TargetPlatform.windows:
-                    case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                    case TargetPlatform.windows:
+                    case TargetPlatform.macOS:
                         {
-                            _selectParagraphsInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                            _selectParagraphsInRange(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                             return;
                         }
                     default:
                         throw new InvalidOperationException("Non-exhaustive Dart switch value.");
                 }
             }
-            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (PlatformLibrary.defaultTargetPlatform)
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                case TargetPlatform.iOS:
                     {
                         switch (((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind)
                         {
                             case PointerDeviceKind.mouse:
                             case PointerDeviceKind.trackpad:
                                 {
-                                    this.renderEditable.selectPositionAt(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                                    this.renderEditable.selectPositionAt(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                                     return;
                                 }
                             case PointerDeviceKind.stylus:
@@ -2179,8 +2178,8 @@ public class TextSelectionGestureDetectorBuilder
                         }
                         return;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                case TargetPlatform.android:
+                case TargetPlatform.fuchsia:
                     {
                         switch (((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).kind)
                         {
@@ -2189,7 +2188,7 @@ public class TextSelectionGestureDetectorBuilder
                             case PointerDeviceKind.stylus:
                             case PointerDeviceKind.invertedStylus:
                                 {
-                                    this.renderEditable.selectPositionAt(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                                    this.renderEditable.selectPositionAt(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                                     return;
                                 }
                             case PointerDeviceKind.touch:
@@ -2197,7 +2196,7 @@ public class TextSelectionGestureDetectorBuilder
                                 {
                                     if (((global::Doroti.Framework.Rendering.RenderEditable)this.renderEditable).hasFocus)
                                     {
-                                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                                        this.renderEditable.selectPositionAt(from: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                                         _showMagnifierIfSupportedByPlatform(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition);
                                         return;
                                     }
@@ -2210,39 +2209,39 @@ public class TextSelectionGestureDetectorBuilder
                         }
                         return;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case TargetPlatform.macOS:
+                case TargetPlatform.linux:
+                case TargetPlatform.windows:
                     {
-                        this.renderEditable.selectPositionAt(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                        this.renderEditable.selectPositionAt(from: ((dragStartGlobalPosition - editableOffset) - scrollableOffset), to: ((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, cause: SelectionChangedCause.drag);
                         return;
                     }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
         }
-        if ((this._dragStartSelection!.isCollapsed || (((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) && (!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.macOS))))))
+        if ((this._dragStartSelection!.isCollapsed || (((!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS)) && (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))))))
         {
-            _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.drag);
+            _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, SelectionChangedCause.drag);
             return;
         }
         global::Doroti.Framework.Services.TextSelection selectionLocal = ((EditableTextState)this.editableText).textEditingValue.selection;
-        global::Doroti.Ui.TextPosition nextExtent = ((global::Doroti.Ui.TextPosition)(object?)((TextPosition)(this.renderEditable).getPositionForPoint(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition)));
+        global::Doroti.Ui.TextPosition nextExtent = ((global::Doroti.Ui.TextPosition)((TextPosition)(this.renderEditable).getPositionForPoint(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition)));
         bool isShiftTapDragSelectionForward = (this._dragStartSelection!.baseOffset < this._dragStartSelection!.extentOffset);
         bool isInverted = (isShiftTapDragSelectionForward ? (nextExtent.offset < this._dragStartSelection!.baseOffset) : (nextExtent.offset > this._dragStartSelection!.baseOffset));
         if ((isInverted && (((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset == this._dragStartSelection!.baseOffset)))
         {
-            this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: this._dragStartSelection!.extentOffset, extentOffset: nextExtent.offset)), global::Doroti.Framework.Services.SelectionChangedCause.drag);
+            this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: this._dragStartSelection!.extentOffset, extentOffset: nextExtent.offset)), SelectionChangedCause.drag);
         }
         else
         {
             if (((!isInverted && (nextExtent.offset != this._dragStartSelection!.baseOffset)) && (((global::Doroti.Framework.Services.TextSelection)selectionLocal).baseOffset != this._dragStartSelection!.baseOffset)))
             {
-                this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: this._dragStartSelection!.baseOffset, extentOffset: nextExtent.offset)), global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: this._dragStartSelection!.baseOffset, extentOffset: nextExtent.offset)), SelectionChangedCause.drag);
             }
             else
             {
-                _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, global::Doroti.Framework.Services.SelectionChangedCause.drag);
+                _extendSelection(((global::Doroti.Framework.Gestures.TapDragUpdateDetails)details).globalPosition, SelectionChangedCause.drag);
             }
         }
     }
@@ -2262,7 +2261,7 @@ public class TextSelectionGestureDetectorBuilder
 
     public virtual Widget buildGestureDetector(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.HitTestBehavior? behavior = null, Widget child = default!)
     {
-        return ((Widget)(object?)new TextSelectionGestureDetector(key: key, onTapTrackStart: () => this.onTapTrackStart(), onTapTrackReset: () => this.onTapTrackReset(), onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDragDownDetails>)this.onTapDown, onForcePressStart: ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)(((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).forcePressEnabled ? this.onForcePressStart : null)), onForcePressEnd: ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)(((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).forcePressEnabled ? this.onForcePressEnd : null)), onSecondaryTap: () => this.onSecondaryTap(), onSecondaryTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)this.onSecondaryTapDown, onSingleTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapDragUpDetails>)this.onSingleTapUp, onSingleTapCancel: () => this.onSingleTapCancel(), onUserTap: () => this.onUserTap(), onSingleLongTapStart: (global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>)this.onSingleLongTapStart, onSingleLongTapMoveUpdate: (global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>)this.onSingleLongTapMoveUpdate, onSingleLongTapEnd: (global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>)this.onSingleLongTapEnd, onSingleLongTapCancel: () => this.onSingleLongTapCancel(), onDoubleTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDragDownDetails>)this.onDoubleTapDown, onTripleTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDragDownDetails>)this.onTripleTapDown, onDragSelectionStart: (global::System.Action<global::Doroti.Framework.Gestures.TapDragStartDetails>)this.onDragSelectionStart, onDragSelectionUpdate: (global::System.Action<global::Doroti.Framework.Gestures.TapDragUpdateDetails>)this.onDragSelectionUpdate, onDragSelectionEnd: (global::System.Action<global::Doroti.Framework.Gestures.TapDragEndDetails>)this.onDragSelectionEnd, onUserTapAlwaysCalled: this.onUserTapAlwaysCalled, behavior: behavior, child: child));
+        return ((Widget)new TextSelectionGestureDetector(key: key, onTapTrackStart: () => this.onTapTrackStart(), onTapTrackReset: () => this.onTapTrackReset(), onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDragDownDetails>)this.onTapDown, onForcePressStart: ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>?)(((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).forcePressEnabled ? this.onForcePressStart : null)), onForcePressEnd: ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>?)(((TextSelectionGestureDetectorBuilderDelegate)this.@delegate).forcePressEnabled ? this.onForcePressEnd : null)), onSecondaryTap: () => this.onSecondaryTap(), onSecondaryTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)this.onSecondaryTapDown, onSingleTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapDragUpDetails>)this.onSingleTapUp, onSingleTapCancel: () => this.onSingleTapCancel(), onUserTap: () => this.onUserTap(), onSingleLongTapStart: (global::System.Action<global::Doroti.Framework.Gestures.LongPressStartDetails>)this.onSingleLongTapStart, onSingleLongTapMoveUpdate: (global::System.Action<global::Doroti.Framework.Gestures.LongPressMoveUpdateDetails>)this.onSingleLongTapMoveUpdate, onSingleLongTapEnd: (global::System.Action<global::Doroti.Framework.Gestures.LongPressEndDetails>)this.onSingleLongTapEnd, onSingleLongTapCancel: () => this.onSingleLongTapCancel(), onDoubleTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDragDownDetails>)this.onDoubleTapDown, onTripleTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDragDownDetails>)this.onTripleTapDown, onDragSelectionStart: (global::System.Action<global::Doroti.Framework.Gestures.TapDragStartDetails>)this.onDragSelectionStart, onDragSelectionUpdate: (global::System.Action<global::Doroti.Framework.Gestures.TapDragUpdateDetails>)this.onDragSelectionUpdate, onDragSelectionEnd: (global::System.Action<global::Doroti.Framework.Gestures.TapDragEndDetails>)this.onDragSelectionEnd, onUserTapAlwaysCalled: this.onUserTapAlwaysCalled, behavior: behavior, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2326,20 +2325,20 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
 {
     internal static long _getEffectiveConsecutiveTapCount(long rawCount)
     {
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
                 {
                     return ((rawCount <= 3L) ? rawCount : ((((rawCount % 3L) == 0L) ? 3L : (rawCount % 3L))));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     return Math.Min(rawCount, 3L);
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.windows:
                 {
                     return ((rawCount < 2L) ? rawCount : (2L + (rawCount % 2L)));
                 }
@@ -2362,12 +2361,12 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
     internal virtual void _handleTapDown(global::Doroti.Framework.Gestures.TapDragDownDetails details)
     {
         ((TextSelectionGestureDetector)this.widget).onTapDown?.Invoke(details);
-        if ((_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).consecutiveTapCount) == 2L))
+        if ((_getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).consecutiveTapCount) == 2L))
         {
             ((TextSelectionGestureDetector)this.widget).onDoubleTapDown?.Invoke(details);
             return;
         }
-        if ((_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).consecutiveTapCount) == 3L))
+        if ((_getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragDownDetails)details).consecutiveTapCount) == 3L))
         {
             ((TextSelectionGestureDetector)this.widget).onTripleTapDown?.Invoke(details);
             return;
@@ -2376,7 +2375,7 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
 
     internal virtual void _handleTapUp(global::Doroti.Framework.Gestures.TapDragUpDetails details)
     {
-        if ((_TextSelectionGestureDetectorState__text_selection._getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).consecutiveTapCount) == 1L))
+        if ((_getEffectiveConsecutiveTapCount(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).consecutiveTapCount) == 1L))
         {
             ((TextSelectionGestureDetector)this.widget).onSingleTapUp?.Invoke(details);
             ((TextSelectionGestureDetector)this.widget).onUserTap?.Invoke();
@@ -2470,19 +2469,19 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
         }
         if ((((((TextSelectionGestureDetector)this.widget).onDragSelectionStart is not null) || (((TextSelectionGestureDetector)this.widget).onDragSelectionUpdate is not null)) || (((TextSelectionGestureDetector)this.widget).onDragSelectionEnd is not null)))
         {
-            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (PlatformLibrary.defaultTargetPlatform)
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                case TargetPlatform.android:
+                case TargetPlatform.fuchsia:
+                case TargetPlatform.iOS:
                     {
                         gesturesLocal[typeof(global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)((instance) =>
                         {
                             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() =>
                             {
                                 var __cascade = instance;
-                                __cascade.dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.down;
-                                __cascade.eagerVictoryOnDrag = (!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS));
+                                __cascade.dragStartBehavior = DragStartBehavior.down;
+                                __cascade.eagerVictoryOnDrag = (!Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.iOS));
                                 __cascade.onTapTrackStart = this._handleTapTrackStart;
                                 __cascade.onTapTrackReset = this._handleTapTrackReset;
                                 __cascade.onTapDown = this._handleTapDown;
@@ -2496,16 +2495,16 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
                         })));
                         break;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case TargetPlatform.linux:
+                case TargetPlatform.macOS:
+                case TargetPlatform.windows:
                     {
                         gesturesLocal[typeof(global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)((instance) =>
                         {
                             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() =>
                             {
                                 var __cascade = instance;
-                                __cascade.dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.down;
+                                __cascade.dragStartBehavior = DragStartBehavior.down;
                                 __cascade.onTapTrackStart = this._handleTapTrackStart;
                                 __cascade.onTapTrackReset = this._handleTapTrackReset;
                                 __cascade.onTapDown = this._handleTapDown;
@@ -2528,13 +2527,13 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
                 DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() =>
                 {
                     var __cascade = instance;
-                    __cascade.onStart = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)((((TextSelectionGestureDetector)this.widget).onForcePressStart is not null) ? this._forcePressStarted : null));
-                    __cascade.onEnd = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)((((TextSelectionGestureDetector)this.widget).onForcePressEnd is not null) ? this._forcePressEnded : null));
+                    __cascade.onStart = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>?)((((TextSelectionGestureDetector)this.widget).onForcePressStart is not null) ? this._forcePressStarted : null));
+                    __cascade.onEnd = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>?)((((TextSelectionGestureDetector)this.widget).onForcePressEnd is not null) ? this._forcePressEnded : null));
                     return __cascade;
                 }))());
             })));
         }
-        return ((Widget)(object?)new RawGestureDetector(gestures: gesturesLocal, excludeFromSemantics: true, behavior: ((TextSelectionGestureDetector)this.widget).behavior, child: ((TextSelectionGestureDetector)this.widget).child));
+        return ((Widget)new RawGestureDetector(gestures: gesturesLocal, excludeFromSemantics: true, behavior: ((TextSelectionGestureDetector)this.widget).behavior, child: ((TextSelectionGestureDetector)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2584,7 +2583,7 @@ public class ClipboardStatusNotifier : global::Doroti.Framework.Foundation.Value
         {
             WidgetsBinding.instance.addObserver(this);
         }
-        if ((object.Equals(this.value, ClipboardStatus.unknown)))
+        if ((Equals(this.value, ClipboardStatus.unknown)))
         {
             DartRuntimePrimitives.Ignore(update());
         }
@@ -2604,15 +2603,15 @@ public class ClipboardStatusNotifier : global::Doroti.Framework.Foundation.Value
     {
         switch (state)
         {
-            case var __constant148294 when (object.Equals(__constant148294, AppLifecycleState.resumed)):
+            case var __constant148294 when (Equals(__constant148294, AppLifecycleState.resumed)):
                 {
                     DartRuntimePrimitives.Ignore(update());
                     break;
                 }
-            case var __constant148350 when (object.Equals(__constant148350, AppLifecycleState.detached)):
-            case var __constant148389 when (object.Equals(__constant148389, AppLifecycleState.inactive)):
-            case var __constant148428 when (object.Equals(__constant148428, AppLifecycleState.hidden)):
-            case var __constant148465 when (object.Equals(__constant148465, AppLifecycleState.paused)):
+            case var __constant148350 when (Equals(__constant148350, AppLifecycleState.detached)):
+            case var __constant148389 when (Equals(__constant148389, AppLifecycleState.inactive)):
+            case var __constant148428 when (Equals(__constant148428, AppLifecycleState.hidden)):
+            case var __constant148465 when (Equals(__constant148465, AppLifecycleState.paused)):
                 {
                     break;
                 }
@@ -2658,7 +2657,7 @@ public class LiveTextInputStatusNotifier : global::Doroti.Framework.Foundation.V
         {
             var stackLocal = new System.Diagnostics.StackTrace();
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while checking the availability of Live Text input")));
-            if ((this._disposed || (object.Equals(this.value, LiveTextInputStatus.unknown))))
+            if ((this._disposed || (Equals(this.value, LiveTextInputStatus.unknown))))
             {
                 return;
             }
@@ -2666,7 +2665,7 @@ public class LiveTextInputStatusNotifier : global::Doroti.Framework.Foundation.V
             return;
         }
         LiveTextInputStatus nextStatus = (isLiveTextInputEnabled ? LiveTextInputStatus.enabled : LiveTextInputStatus.disabled);
-        if ((this._disposed || (object.Equals(nextStatus, this.value))))
+        if ((this._disposed || (Equals(nextStatus, this.value))))
         {
             return;
         }
@@ -2679,7 +2678,7 @@ public class LiveTextInputStatusNotifier : global::Doroti.Framework.Foundation.V
         {
             WidgetsBinding.instance.addObserver(this);
         }
-        if ((object.Equals(this.value, LiveTextInputStatus.unknown)))
+        if ((Equals(this.value, LiveTextInputStatus.unknown)))
         {
             DartRuntimePrimitives.Ignore(update());
         }
@@ -2699,15 +2698,15 @@ public class LiveTextInputStatusNotifier : global::Doroti.Framework.Foundation.V
     {
         switch (state)
         {
-            case var __constant151548 when (object.Equals(__constant151548, AppLifecycleState.resumed)):
+            case var __constant151548 when (Equals(__constant151548, AppLifecycleState.resumed)):
                 {
                     DartRuntimePrimitives.Ignore(update());
                     break;
                 }
-            case var __constant151604 when (object.Equals(__constant151604, AppLifecycleState.detached)):
-            case var __constant151643 when (object.Equals(__constant151643, AppLifecycleState.inactive)):
-            case var __constant151682 when (object.Equals(__constant151682, AppLifecycleState.paused)):
-            case var __constant151719 when (object.Equals(__constant151719, AppLifecycleState.hidden)):
+            case var __constant151604 when (Equals(__constant151604, AppLifecycleState.detached)):
+            case var __constant151643 when (Equals(__constant151643, AppLifecycleState.inactive)):
+            case var __constant151682 when (Equals(__constant151682, AppLifecycleState.paused)):
+            case var __constant151719 when (Equals(__constant151719, AppLifecycleState.hidden)):
                 break;
         }
     }

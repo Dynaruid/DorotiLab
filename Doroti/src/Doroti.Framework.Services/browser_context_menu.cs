@@ -17,7 +17,7 @@ public class BrowserContextMenu
     public static bool enabled => _instance._enabled;
     public static Future disableContextMenu()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb);
+        DartRuntimePrimitives.Assert(() => ConstantsLibrary.kIsWeb);
         return _instance._channel.invokeMethod<object?>("disableContextMenu").then(((_) =>
         {
             _instance._enabled = false;
@@ -27,7 +27,7 @@ public class BrowserContextMenu
 
     public static Future enableContextMenu()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb);
+        DartRuntimePrimitives.Assert(() => ConstantsLibrary.kIsWeb);
         return _instance._channel.invokeMethod<object?>("enableContextMenu").then(((_) =>
         {
             _instance._enabled = true;

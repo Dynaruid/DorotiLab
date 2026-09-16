@@ -47,7 +47,7 @@ public abstract class SemanticsEvent
         {
             pairs.Add($"{key}: {dataMap.GetValueOrDefault(key)}");
         }
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent"))}({string.Join(", ", pairs)})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent"))}({string.Join(", ", pairs)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

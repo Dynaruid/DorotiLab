@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/badge_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -54,11 +54,11 @@ public class BadgeThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((__other is BadgeThemeData) && (object.Equals(((BadgeThemeData)((BadgeThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((BadgeThemeData)((BadgeThemeData)__other)).textColor, this.textColor))) && (((BadgeThemeData)((BadgeThemeData)__other)).smallSize == this.smallSize)) && (((BadgeThemeData)((BadgeThemeData)__other)).largeSize == this.largeSize)) && (object.Equals(((BadgeThemeData)((BadgeThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((BadgeThemeData)((BadgeThemeData)__other)).padding, this.padding))) && (object.Equals(((BadgeThemeData)((BadgeThemeData)__other)).alignment, this.alignment))) && (object.Equals(((BadgeThemeData)((BadgeThemeData)__other)).offset, this.offset)));
+        return (((((((((__other is BadgeThemeData) && (Equals(((BadgeThemeData)((BadgeThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((BadgeThemeData)((BadgeThemeData)__other)).textColor, this.textColor))) && (((BadgeThemeData)((BadgeThemeData)__other)).smallSize == this.smallSize)) && (((BadgeThemeData)((BadgeThemeData)__other)).largeSize == this.largeSize)) && (Equals(((BadgeThemeData)((BadgeThemeData)__other)).textStyle, this.textStyle))) && (Equals(((BadgeThemeData)((BadgeThemeData)__other)).padding, this.padding))) && (Equals(((BadgeThemeData)((BadgeThemeData)__other)).alignment, this.alignment))) && (Equals(((BadgeThemeData)((BadgeThemeData)__other)).offset, this.offset)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -73,8 +73,8 @@ public class BadgeThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -90,7 +90,7 @@ public class BadgeThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -107,16 +107,16 @@ public class BadgeTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static BadgeThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        BadgeTheme? badgeThemeLocal = ((BadgeTheme?)(object?)context.dependOnInheritedWidgetOfExactType<BadgeTheme>());
+        BadgeTheme? badgeThemeLocal = ((BadgeTheme?)context.dependOnInheritedWidgetOfExactType<BadgeTheme>());
         return (badgeThemeLocal?.data ?? Theme.of(context).badgeTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new BadgeTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new BadgeTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((BadgeTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((BadgeTheme)oldWidget).data)));
 }

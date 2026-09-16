@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/action_buttons.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -20,7 +20,7 @@ public abstract class _ActionButton__action_buttons : IconButton
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new IconButton(key: this.standardComponent is { } component ? StandardComponentTypeMembers.key(component) : null, icon: this.icon, style: this.style, color: this.color, tooltip: _getTooltip(context), onPressed: (() =>
+        return ((global::Doroti.Framework.Widgets.Widget)new IconButton(key: this.standardComponent is { } component ? StandardComponentTypeMembers.key(component) : null, icon: this.icon, style: this.style, color: this.color, tooltip: _getTooltip(context), onPressed: (() =>
         {
             if ((this.onPressed is not null))
             {
@@ -65,24 +65,24 @@ internal class _ActionIcon__action_buttons : global::Doroti.Framework.Widgets.St
         }
         global::Doroti.Framework.Widgets.IconData data = this.getIcon(context);
         string? semanticsLabel = default!;
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case TargetPlatform.android:
                 {
                     semanticsLabel = this.getAndroidSemanticsLabel(MaterialLocalizations.of(context));
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     semanticsLabel = null;
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Icon(data, semanticLabel: semanticsLabel));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Icon(data, semanticLabel: semanticsLabel));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -96,27 +96,27 @@ public class BackButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
         {
-            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.backButtonIconBuilder);
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)actionIconTheme?.backButtonIconBuilder);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) =>
         {
-            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            if (Foundation.ConstantsLibrary.kIsWeb)
             {
                 return Icons.arrow_back;
             }
             switch (Theme.of(context).platform)
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case TargetPlatform.android:
+                case TargetPlatform.fuchsia:
+                case TargetPlatform.linux:
+                case TargetPlatform.windows:
                     {
                         return Icons.arrow_back;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                case TargetPlatform.iOS:
+                case TargetPlatform.macOS:
                     {
                         return Icons.arrow_back_ios_new_rounded;
                     }
@@ -136,7 +136,7 @@ public class BackButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
 public class BackButton : _ActionButton__action_buttons
 {
-    public BackButton(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, ButtonStyle? style = null, global::System.Action? onPressed = null) : base(key: key, color: color, style: style, onPressed: onPressed, icon: new BackButtonIcon(), standardComponent: global::Doroti.Framework.Widgets.StandardComponentType.backButton)
+    public BackButton(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, ButtonStyle? style = null, global::System.Action? onPressed = null) : base(key: key, color: color, style: style, onPressed: onPressed, icon: new BackButtonIcon(), standardComponent: StandardComponentType.backButton)
     {
     }
 
@@ -157,9 +157,9 @@ public class CloseButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
         {
-            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.closeButtonIconBuilder);
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)actionIconTheme?.closeButtonIconBuilder);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.close)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) =>
         {
@@ -173,7 +173,7 @@ public class CloseButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
 public class CloseButton : _ActionButton__action_buttons
 {
-    public CloseButton(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, global::System.Action? onPressed = null, ButtonStyle? style = null) : base(key: key, color: color, onPressed: onPressed, style: style, icon: new CloseButtonIcon(), standardComponent: global::Doroti.Framework.Widgets.StandardComponentType.closeButton)
+    public CloseButton(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, global::System.Action? onPressed = null, ButtonStyle? style = null) : base(key: key, color: color, onPressed: onPressed, style: style, icon: new CloseButtonIcon(), standardComponent: StandardComponentType.closeButton)
     {
     }
 
@@ -194,9 +194,9 @@ public class DrawerButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
         {
-            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.drawerButtonIconBuilder);
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)actionIconTheme?.drawerButtonIconBuilder);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.menu)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) =>
         {
@@ -210,7 +210,7 @@ public class DrawerButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
 public class DrawerButton : _ActionButton__action_buttons
 {
-    public DrawerButton(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, ButtonStyle? style = null, global::System.Action? onPressed = null) : base(key: key, color: color, style: style, onPressed: onPressed, icon: new DrawerButtonIcon(), standardComponent: global::Doroti.Framework.Widgets.StandardComponentType.drawerButton)
+    public DrawerButton(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, ButtonStyle? style = null, global::System.Action? onPressed = null) : base(key: key, color: color, style: style, onPressed: onPressed, icon: new DrawerButtonIcon(), standardComponent: StandardComponentType.drawerButton)
     {
     }
 
@@ -231,9 +231,9 @@ public class EndDrawerButtonIcon : global::Doroti.Framework.Widgets.StatelessWid
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
         {
-            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.endDrawerButtonIconBuilder);
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)actionIconTheme?.endDrawerButtonIconBuilder);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.menu)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) =>
         {

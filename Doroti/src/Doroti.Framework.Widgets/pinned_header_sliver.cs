@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/pinned_header_sliver.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -26,7 +25,7 @@ internal class _PinnedHeaderSliver__pinned_header_sliver : SingleChildRenderObje
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderPinnedHeaderSliver__pinned_header_sliver());
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderPinnedHeaderSliver__pinned_header_sliver());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -47,7 +46,7 @@ internal class _RenderPinnedHeaderSliver__pinned_header_sliver : global::Doroti.
                 return 0.0;
             }
             DartRuntimePrimitives.Assert(() => this.child!.hasSize);
-            return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => this.child!.size.height, global::Doroti.Framework.Painting.Axis.horizontal => this.child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { Axis.vertical => this.child!.size.height, Axis.horizontal => this.child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
     }
     public override double childMainAxisPosition(global::Doroti.Framework.Rendering.RenderObject child) => 0;
@@ -65,7 +64,7 @@ internal class _RenderPinnedHeaderSliver__pinned_header_sliver : global::Doroti.
         base.describeSemanticsConfiguration(config);
         if (((this.geometry is not null) && (this.geometry!.layoutExtent < this.childExtent)))
         {
-            config.addTagForChildren(global::Doroti.Framework.Rendering.RenderViewport.excludeFromScrolling);
+            config.addTagForChildren(RenderViewport.excludeFromScrolling);
         }
     }
 

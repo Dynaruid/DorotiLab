@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/picker.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -33,7 +33,7 @@ public static partial class PickerLibrary
 
 public static partial class PickerLibrary
 {
-    internal static global::Doroti.Framework.Animation.Curve _kCupertinoPickerTapToScrollCurve = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.easeInOut);
+    internal static global::Doroti.Framework.Animation.Curve _kCupertinoPickerTapToScrollCurve = ((global::Doroti.Framework.Animation.Curve)Curves.easeInOut);
 }
 
 public class CupertinoPicker : global::Doroti.Framework.Widgets.StatefulWidget
@@ -51,7 +51,7 @@ public class CupertinoPicker : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual global::Doroti.Framework.Widgets.ListWheelChildDelegate childDelegate { get; private set; } = default!;
     public virtual global::Doroti.Framework.Widgets.Widget? selectionOverlay { get; private set; }
 
-    public CupertinoPicker(global::Doroti.Framework.Foundation.Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, global::Doroti.Framework.Widgets.FixedExtentScrollController? scrollController = null, double? squeeze = null, global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = global::Doroti.Framework.Widgets.ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, global::System.Action<long>? onSelectedItemChanged = default!, List<global::Doroti.Framework.Widgets.Widget> children = default!, global::Doroti.Framework.Widgets.Widget? selectionOverlay = default!, bool looping = false) : base(key: key)
+    public CupertinoPicker(global::Doroti.Framework.Foundation.Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, global::Doroti.Framework.Widgets.FixedExtentScrollController? scrollController = null, double? squeeze = null, global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, global::System.Action<long>? onSelectedItemChanged = default!, List<global::Doroti.Framework.Widgets.Widget> children = default!, global::Doroti.Framework.Widgets.Widget? selectionOverlay = default!, bool looping = false) : base(key: key)
     {
         double __diameterRatio = diameterRatio ?? PickerLibrary._kDefaultDiameterRatio;
         double __squeeze = squeeze ?? PickerLibrary._kSqueeze;
@@ -74,7 +74,7 @@ public class CupertinoPicker : global::Doroti.Framework.Widgets.StatefulWidget
         System.Diagnostics.Debug.Assert((__squeeze > 0L));
     }
 
-    public static CupertinoPicker CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, global::Doroti.Framework.Widgets.FixedExtentScrollController? scrollController = null, double? squeeze = null, global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = global::Doroti.Framework.Widgets.ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, global::System.Action<long>? onSelectedItemChanged = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?> itemBuilder = default!, long? childCount = null, global::Doroti.Framework.Widgets.Widget? selectionOverlay = default!)
+    public static CupertinoPicker CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, double? diameterRatio = null, Color? backgroundColor = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, global::Doroti.Framework.Widgets.FixedExtentScrollController? scrollController = null, double? squeeze = null, global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, double itemExtent = default!, global::System.Action<long>? onSelectedItemChanged = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?> itemBuilder = default!, long? childCount = null, global::Doroti.Framework.Widgets.Widget? selectionOverlay = default!)
     {
         var __instance = new CupertinoPicker(key: key, diameterRatio: diameterRatio, backgroundColor: backgroundColor, offAxisFraction: offAxisFraction, useMagnifier: useMagnifier, magnification: magnification, scrollController: scrollController, squeeze: squeeze, changeReportingBehavior: changeReportingBehavior, itemExtent: itemExtent, onSelectedItemChanged: onSelectedItemChanged, children: default!, selectionOverlay: selectionOverlay);
         double __diameterRatio = diameterRatio ?? PickerLibrary._kDefaultDiameterRatio;
@@ -167,23 +167,23 @@ internal class _CupertinoPickerState__picker : global::Doroti.Framework.Widgets.
         {
             return;
         }
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.iOS:
                 {
                     if ((index != this._lastHapticIndex))
                     {
                         _lastHapticIndex = index;
                         DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
-                        DartRuntimePrimitives.Ignore(SystemSound.play(global::Doroti.Framework.Services.SystemSoundType.tick));
+                        DartRuntimePrimitives.Ignore(SystemSound.play(SystemSoundType.tick));
                     }
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.macOS:
+            case TargetPlatform.windows:
                 {
                     return;
                 }
@@ -214,17 +214,17 @@ internal class _CupertinoPickerState__picker : global::Doroti.Framework.Widgets.
     internal virtual global::Doroti.Framework.Widgets.Widget _buildSelectionOverlay(global::Doroti.Framework.Widgets.Widget selectionOverlay)
     {
         double heightLocal = (((CupertinoPicker)this.widget).itemExtent * ((CupertinoPicker)this.widget).magnification);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IgnorePointer(child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand(height: heightLocal), child: selectionOverlay))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.IgnorePointer(child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: BoxConstraints.CreateExpand(height: heightLocal), child: selectionOverlay))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Framework.Painting.TextStyle textStyle = CupertinoTheme.of(context).textTheme.pickerTextStyle;
-        global::Doroti.Ui.Color? resolvedBackgroundColor = ((global::Doroti.Ui.Color?)(object?)CupertinoDynamicColor.maybeResolve(((CupertinoPicker)this.widget).backgroundColor, context));
-        DartRuntimePrimitives.Assert(() => (global::Doroti.Framework.Rendering.RenderListWheelViewport.defaultPerspective == PickerLibrary._kDefaultPerspective));
-        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)textStyle).color, context)), child: new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection13325 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection13325.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Positioned.CreateFill(child: new _CupertinoPickerSemantics__picker(scrollController: this._effectiveController, child: global::Doroti.Framework.Widgets.ListWheelScrollView.CreateUseDelegate(controller: this._effectiveController, physics: new global::Doroti.Framework.Widgets.FixedExtentScrollPhysics(), diameterRatio: ((CupertinoPicker)this.widget).diameterRatio, offAxisFraction: ((CupertinoPicker)this.widget).offAxisFraction, useMagnifier: ((CupertinoPicker)this.widget).useMagnifier, magnification: ((CupertinoPicker)this.widget).magnification, overAndUnderCenterOpacity: PickerLibrary._kOverAndUnderCenterOpacity, itemExtent: ((CupertinoPicker)this.widget).itemExtent, squeeze: ((CupertinoPicker)this.widget).squeeze, onSelectedItemChanged: (global::System.Action<long>?)((CupertinoPicker)this.widget).onSelectedItemChanged, dragStartBehavior: global::Doroti.Framework.Gestures.DragStartBehavior.down, changeReportingBehavior: ((CupertinoPicker)this.widget).changeReportingBehavior, childDelegate: new _CupertinoPickerListWheelChildDelegateWrapper__picker(((CupertinoPicker)this.widget).childDelegate, onTappedChild: (__arg0) => { _ = this._handleChildTap(__arg0); })))))); if ((((CupertinoPicker)this.widget).selectionOverlay is not null)) { __collection13325.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSelectionOverlay(((CupertinoPicker)this.widget).selectionOverlay!))); } return __collection13325; }))())));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: resolvedBackgroundColor), child: result));
+        global::Doroti.Ui.Color? resolvedBackgroundColor = ((global::Doroti.Ui.Color?)CupertinoDynamicColor.maybeResolve(((CupertinoPicker)this.widget).backgroundColor, context));
+        DartRuntimePrimitives.Assert(() => (RenderListWheelViewport.defaultPerspective == PickerLibrary._kDefaultPerspective));
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)textStyle).color, context)), child: new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection13325 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection13325.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Positioned.CreateFill(child: new _CupertinoPickerSemantics__picker(scrollController: this._effectiveController, child: ListWheelScrollView.CreateUseDelegate(controller: this._effectiveController, physics: new global::Doroti.Framework.Widgets.FixedExtentScrollPhysics(), diameterRatio: ((CupertinoPicker)this.widget).diameterRatio, offAxisFraction: ((CupertinoPicker)this.widget).offAxisFraction, useMagnifier: ((CupertinoPicker)this.widget).useMagnifier, magnification: ((CupertinoPicker)this.widget).magnification, overAndUnderCenterOpacity: PickerLibrary._kOverAndUnderCenterOpacity, itemExtent: ((CupertinoPicker)this.widget).itemExtent, squeeze: ((CupertinoPicker)this.widget).squeeze, onSelectedItemChanged: (global::System.Action<long>?)((CupertinoPicker)this.widget).onSelectedItemChanged, dragStartBehavior: Gestures.DragStartBehavior.down, changeReportingBehavior: ((CupertinoPicker)this.widget).changeReportingBehavior, childDelegate: new _CupertinoPickerListWheelChildDelegateWrapper__picker(((CupertinoPicker)this.widget).childDelegate, onTappedChild: (__arg0) => { _ = this._handleChildTap(__arg0); })))))); if ((((CupertinoPicker)this.widget).selectionOverlay is not null)) { __collection13325.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSelectionOverlay(((CupertinoPicker)this.widget).selectionOverlay!))); } return __collection13325; }))())));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: resolvedBackgroundColor), child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -248,8 +248,8 @@ public class CupertinoPickerDefaultSelectionOverlay : global::Doroti.Framework.W
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var radius = global::Doroti.Ui.Radius.circular(_defaultSelectionOverlayRadius);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(margin: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: (this.capStartEdge ? _defaultSelectionOverlayHorizontalMargin : 0), end: (this.capEndEdge ? _defaultSelectionOverlayHorizontalMargin : 0)), decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadiusDirectional.CreateHorizontal(start: (this.capStartEdge ? radius : Radius.zero), end: (this.capEndEdge ? radius : Radius.zero))), color: CupertinoDynamicColor.resolve(this.background, context))));
+        var radius = Radius.circular(_defaultSelectionOverlayRadius);
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Container(margin: EdgeInsetsDirectional.CreateOnly(start: (this.capStartEdge ? _defaultSelectionOverlayHorizontalMargin : 0), end: (this.capEndEdge ? _defaultSelectionOverlayHorizontalMargin : 0)), decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: BorderRadiusDirectional.CreateHorizontal(start: (this.capStartEdge ? radius : Radius.zero), end: (this.capEndEdge ? radius : Radius.zero))), color: CupertinoDynamicColor.resolve(this.background, context))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -266,15 +266,15 @@ internal class _CupertinoPickerSemantics__picker : global::Doroti.Framework.Widg
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderCupertinoPickerSemantics__picker(this.scrollController, Directionality.of(context)));
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderCupertinoPickerSemantics__picker(this.scrollController, Directionality.of(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderCupertinoPickerSemantics__picker)(object)renderObject;
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        var __renderObject = (_RenderCupertinoPickerSemantics__picker)renderObject;
+        DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Ignore(((Func<_RenderCupertinoPickerSemantics__picker>)(() =>
 {
     var __cascade = __renderObject;
@@ -309,7 +309,7 @@ public class _RenderCupertinoPickerSemantics__picker : global::Doroti.Framework.
     }
     internal virtual void _updateController(global::Doroti.Framework.Widgets.FixedExtentScrollController? oldValue, global::Doroti.Framework.Widgets.FixedExtentScrollController value)
     {
-        if ((object.Equals(value, oldValue)))
+        if ((Equals(value, oldValue)))
         {
             return;
         }
@@ -331,7 +331,7 @@ public class _RenderCupertinoPickerSemantics__picker : global::Doroti.Framework.
         set
         {
             var __value = value;
-            if ((object.Equals(this.textDirection, __value)))
+            if ((Equals(this.textDirection, __value)))
             {
                 return;
             }
@@ -368,7 +368,7 @@ public class _RenderCupertinoPickerSemantics__picker : global::Doroti.Framework.
 
     public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
-        if (!System.Linq.Enumerable.Any(children))
+        if (!Enumerable.Any(children))
         {
             base.assembleSemanticsNode(node, config, children.Cast<global::Doroti.Framework.Semantics.SemanticsNode>());
             return;
@@ -430,12 +430,12 @@ internal class _CupertinoPickerListWheelChildDelegateWrapper__picker : global::D
 
     public override global::Doroti.Framework.Widgets.Widget? build(global::Doroti.Framework.Widgets.BuildContext context, long index)
     {
-        global::Doroti.Framework.Widgets.Widget? childLocal = ((global::Doroti.Framework.Widgets.Widget?)(object?)this._wrapped.build(context, index));
+        global::Doroti.Framework.Widgets.Widget? childLocal = ((global::Doroti.Framework.Widgets.Widget?)this._wrapped.build(context, index));
         if ((childLocal is null))
         {
             return childLocal;
         }
-        return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, excludeFromSemantics: true, onTap: ((global::System.Action)(() => { this.onTappedChild(index); })), child: childLocal));
+        return ((global::Doroti.Framework.Widgets.Widget?)new global::Doroti.Framework.Widgets.GestureDetector(behavior: HitTestBehavior.translucent, excludeFromSemantics: true, onTap: ((global::System.Action)(() => { this.onTappedChild(index); })), child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

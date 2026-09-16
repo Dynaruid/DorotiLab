@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/text_selection.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -13,7 +13,7 @@ public static partial class Text_selectionLibrary
 
 public static partial class Text_selectionLibrary
 {
-    internal static double _kToolbarContentDistanceBelow = (Text_selectionLibrary._kHandleSize - 2.0);
+    internal static double _kToolbarContentDistanceBelow = (_kHandleSize - 2.0);
 }
 
 public static partial class Text_selectionLibrary
@@ -56,22 +56,22 @@ public class MaterialTextSelectionControls : global::Doroti.Framework.Widgets.Te
     public override Size getHandleSize(double textLineHeight) => new global::Doroti.Ui.Size(Text_selectionLibrary._kHandleSize, Text_selectionLibrary._kHandleSize);
     public override global::Doroti.Framework.Widgets.Widget buildToolbar(global::Doroti.Framework.Widgets.BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<global::Doroti.Framework.Widgets.ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _TextSelectionControlsToolbar__text_selection(globalEditableRegion: globalEditableRegion, textLineHeight: textLineHeight, selectionMidpoint: selectionMidpoint, endpoints: endpoints, @delegate: @delegate, clipboardStatus: clipboardStatus, handleCut: ((global::System.Action)(canCut(@delegate) ? (() => { handleCut(@delegate); }) : null)), handleCopy: ((global::System.Action)(canCopy(@delegate) ? (() => { handleCopy(@delegate); }) : null)), handlePaste: ((global::System.Action)(canPaste(@delegate) ? (() => { _ = handlePaste(@delegate); }) : null)), handleSelectAll: ((global::System.Action)(canSelectAll(@delegate) ? (() => { handleSelectAll(@delegate); }) : null))));
+        return ((global::Doroti.Framework.Widgets.Widget)new _TextSelectionControlsToolbar__text_selection(globalEditableRegion: globalEditableRegion, textLineHeight: textLineHeight, selectionMidpoint: selectionMidpoint, endpoints: endpoints, @delegate: @delegate, clipboardStatus: clipboardStatus, handleCut: ((global::System.Action?)(canCut(@delegate) ? (() => { handleCut(@delegate); }) : null)), handleCopy: ((global::System.Action?)(canCopy(@delegate) ? (() => { handleCopy(@delegate); }) : null)), handlePaste: ((global::System.Action?)(canPaste(@delegate) ? (() => { _ = handlePaste(@delegate); }) : null)), handleSelectAll: ((global::System.Action?)(canSelectAll(@delegate) ? (() => { handleSelectAll(@delegate); }) : null))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget buildHandle(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.TextSelectionHandleType type, double textLineHeight, global::System.Action? onTap = null)
     {
         ThemeData theme = Theme.of(context);
-        global::Doroti.Ui.Color handleColor = ((global::Doroti.Ui.Color)(object?)(TextSelectionTheme.of(context).selectionHandleColor ?? theme.colorScheme.primary));
-        global::Doroti.Framework.Widgets.Widget handle = ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: Text_selectionLibrary._kHandleSize, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _TextSelectionHandlePainter__text_selection(color: handleColor), child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: onTap, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent))));
-        return (type switch { global::Doroti.Framework.Rendering.TextSelectionHandleType.left => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Transform.CreateRotate(angle: (Dart_mathLibrary.pi / 2.0), child: handle)), global::Doroti.Framework.Rendering.TextSelectionHandleType.right => handle, global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Transform.CreateRotate(angle: (Dart_mathLibrary.pi / 4.0), child: handle)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Color handleColor = ((global::Doroti.Ui.Color)(TextSelectionTheme.of(context).selectionHandleColor ?? theme.colorScheme.primary));
+        global::Doroti.Framework.Widgets.Widget handle = ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateSquare(dimension: Text_selectionLibrary._kHandleSize, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _TextSelectionHandlePainter__text_selection(color: handleColor), child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: onTap, behavior: HitTestBehavior.translucent))));
+        return (type switch { TextSelectionHandleType.left => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Transform.CreateRotate(angle: (Dart_mathLibrary.pi / 2.0), child: handle)), TextSelectionHandleType.right => handle, TextSelectionHandleType.collapsed => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Transform.CreateRotate(angle: (Dart_mathLibrary.pi / 4.0), child: handle)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Offset getHandleAnchor(global::Doroti.Framework.Rendering.TextSelectionHandleType type, double textLineHeight)
     {
-        return (type switch { global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed => new global::Doroti.Ui.Offset((Text_selectionLibrary._kHandleSize / 2L), -4), global::Doroti.Framework.Rendering.TextSelectionHandleType.left => new global::Doroti.Ui.Offset(Text_selectionLibrary._kHandleSize, 0), global::Doroti.Framework.Rendering.TextSelectionHandleType.right => Offset.zero, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (type switch { TextSelectionHandleType.collapsed => new global::Doroti.Ui.Offset((Text_selectionLibrary._kHandleSize / 2L), -4), TextSelectionHandleType.left => new global::Doroti.Ui.Offset(Text_selectionLibrary._kHandleSize, 0), TextSelectionHandleType.right => Offset.zero, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -148,7 +148,7 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
     public override void didUpdateWidget(_TextSelectionControlsToolbar__text_selection oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus, ((_TextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus)))
+        if ((!Equals(((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus, ((_TextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus)))
         {
             ((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
             ((_TextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
@@ -181,11 +181,11 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
     {
         if (((((((_TextSelectionControlsToolbar__text_selection)this.widget).handleCut is null) && (((_TextSelectionControlsToolbar__text_selection)this.widget).handleCopy is null)) && (((_TextSelectionControlsToolbar__text_selection)this.widget).handlePaste is null)) && (((_TextSelectionControlsToolbar__text_selection)this.widget).handleSelectAll is null)))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
         }
-        if (((((_TextSelectionControlsToolbar__text_selection)this.widget).handlePaste is not null) && (object.Equals(((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.value, global::Doroti.Framework.Widgets.ClipboardStatus.unknown))))
+        if (((((_TextSelectionControlsToolbar__text_selection)this.widget).handlePaste is not null) && (Equals(((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.value, ClipboardStatus.unknown))))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
         }
         global::Doroti.Framework.Rendering.TextSelectionPoint startTextSelectionPoint = ((_TextSelectionControlsToolbar__text_selection)this.widget).endpoints[(int)(0L)];
         global::Doroti.Framework.Rendering.TextSelectionPoint endTextSelectionPoint = ((checked((long)(((_TextSelectionControlsToolbar__text_selection)this.widget).endpoints.Count)) > 1L) ? ((_TextSelectionControlsToolbar__text_selection)this.widget).endpoints[(int)(1L)] : ((_TextSelectionControlsToolbar__text_selection)this.widget).endpoints[(int)(0L)]);
@@ -195,14 +195,14 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
         var anchorBelowLocal = new global::Doroti.Ui.Offset((((_TextSelectionControlsToolbar__text_selection)this.widget).globalEditableRegion.left + ((_TextSelectionControlsToolbar__text_selection)this.widget).selectionMidpoint.dx), ((((_TextSelectionControlsToolbar__text_selection)this.widget).globalEditableRegion.top + ((global::Doroti.Framework.Rendering.TextSelectionPoint)endTextSelectionPoint).point.dy) + Text_selectionLibrary._kToolbarContentDistanceBelow));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
-        var itemDatas = ((Func<List<_TextSelectionToolbarItemData__text_selection>>)(() => { var __collection8792 = new List<_TextSelectionToolbarItemData__text_selection>(); if ((((_TextSelectionControlsToolbar__text_selection)this.widget).handleCut is not null)) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.cutButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handleCut!)); } if ((((_TextSelectionControlsToolbar__text_selection)this.widget).handleCopy is not null)) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.copyButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handleCopy!)); } if (((((_TextSelectionControlsToolbar__text_selection)this.widget).handlePaste is not null) && (object.Equals(((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.value, global::Doroti.Framework.Widgets.ClipboardStatus.pasteable)))) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.pasteButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handlePaste!)); } if ((((_TextSelectionControlsToolbar__text_selection)this.widget).handleSelectAll is not null)) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.selectAllButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handleSelectAll!)); } return __collection8792; }))();
-        if (!System.Linq.Enumerable.Any(itemDatas))
+        var itemDatas = ((Func<List<_TextSelectionToolbarItemData__text_selection>>)(() => { var __collection8792 = new List<_TextSelectionToolbarItemData__text_selection>(); if ((((_TextSelectionControlsToolbar__text_selection)this.widget).handleCut is not null)) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.cutButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handleCut!)); } if ((((_TextSelectionControlsToolbar__text_selection)this.widget).handleCopy is not null)) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.copyButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handleCopy!)); } if (((((_TextSelectionControlsToolbar__text_selection)this.widget).handlePaste is not null) && (Equals(((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.value, ClipboardStatus.pasteable)))) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.pasteButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handlePaste!)); } if ((((_TextSelectionControlsToolbar__text_selection)this.widget).handleSelectAll is not null)) { __collection8792.Add(new _TextSelectionToolbarItemData__text_selection(label: localizations.selectAllButtonLabel, onPressed: ((_TextSelectionControlsToolbar__text_selection)this.widget).handleSelectAll!)); } return __collection8792; }))();
+        if (!Enumerable.Any(itemDatas))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextSelectionToolbar(anchorAbove: anchorAboveLocal, anchorBelow: anchorBelowLocal, children: itemDatas.asMap().entries.map<MapEntry<long, _TextSelectionToolbarItemData__text_selection>, TextSelectionToolbarTextButton>(((entry) =>
+        return ((global::Doroti.Framework.Widgets.Widget)new TextSelectionToolbar(anchorAbove: anchorAboveLocal, anchorBelow: anchorBelowLocal, children: itemDatas.asMap().entries.map<MapEntry<long, _TextSelectionToolbarItemData__text_selection>, TextSelectionToolbarTextButton>(((entry) =>
         {
-            return new TextSelectionToolbarTextButton(padding: TextSelectionToolbarTextButton.getPadding(entry.key, checked((long)(itemDatas.Count))), alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, onPressed: () => entry.value.onPressed(), child: new global::Doroti.Framework.Widgets.Text(entry.value.label));
+            return new TextSelectionToolbarTextButton(padding: TextSelectionToolbarTextButton.getPadding(entry.key, checked((long)(itemDatas.Count))), alignment: AlignmentDirectional.centerStart, onPressed: () => entry.value.onPressed(), child: new global::Doroti.Framework.Widgets.Text(entry.value.label));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })).ToList().Cast<global::Doroti.Framework.Widgets.Widget>().ToList()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -219,13 +219,13 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -259,8 +259,8 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -295,8 +295,8 @@ internal class _TextSelectionHandlePainter__text_selection : global::Doroti.Fram
     return __cascade;
 }))();
         double radiusLocal = (size.width / 2.0);
-        var circle = global::Doroti.Ui.Rect.fromCircle(center: new global::Doroti.Ui.Offset(radiusLocal, radiusLocal), radius: radiusLocal);
-        var point = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, radiusLocal, radiusLocal);
+        var circle = Rect.fromCircle(center: new global::Doroti.Ui.Offset(radiusLocal, radiusLocal), radius: radiusLocal);
+        var point = Rect.fromLTWH(0.0, 0.0, radiusLocal, radiusLocal);
         var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
@@ -309,8 +309,8 @@ internal class _TextSelectionHandlePainter__text_selection : global::Doroti.Fram
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
-        var __oldPainter = (_TextSelectionHandlePainter__text_selection)(object)oldDelegate;
-        return (!object.Equals(this.color, ((_TextSelectionHandlePainter__text_selection)__oldPainter).color));
+        var __oldPainter = (_TextSelectionHandlePainter__text_selection)oldDelegate;
+        return (!Equals(this.color, ((_TextSelectionHandlePainter__text_selection)__oldPainter).color));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -318,10 +318,10 @@ internal class _TextSelectionHandlePainter__text_selection : global::Doroti.Fram
 
 public static partial class Text_selectionLibrary
 {
-    public static global::Doroti.Framework.Widgets.TextSelectionControls materialTextSelectionHandleControls = ((global::Doroti.Framework.Widgets.TextSelectionControls)(object?)new MaterialTextSelectionHandleControls());
+    public static global::Doroti.Framework.Widgets.TextSelectionControls materialTextSelectionHandleControls = ((global::Doroti.Framework.Widgets.TextSelectionControls)new MaterialTextSelectionHandleControls());
 }
 
 public static partial class Text_selectionLibrary
 {
-    public static global::Doroti.Framework.Widgets.TextSelectionControls materialTextSelectionControls = ((global::Doroti.Framework.Widgets.TextSelectionControls)(object?)new MaterialTextSelectionControls());
+    public static global::Doroti.Framework.Widgets.TextSelectionControls materialTextSelectionControls = ((global::Doroti.Framework.Widgets.TextSelectionControls)new MaterialTextSelectionControls());
 }

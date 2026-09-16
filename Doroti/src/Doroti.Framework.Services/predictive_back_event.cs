@@ -25,13 +25,13 @@ public class PredictiveBackEvent
         System.Diagnostics.Debug.Assert(((progress >= 0.0) && (progress <= 1.0)));
     }
 
-    public static PredictiveBackEvent CreateFromMap(DartMap<string?, object?> map)
+    public static PredictiveBackEvent CreateFromMap(DartMap<string, object?> map)
     {
         var touchOffset = ((List<object?>?)map.GetValueOrDefault("touchOffset"))!;
-        return new PredictiveBackEvent(touchOffset: ((touchOffset is null) ? null : new global::Doroti.Ui.Offset((((double)touchOffset[(int)(0L)]!)).toDouble(), (((double)touchOffset[(int)(1L)]!)).toDouble())), progress: (((double)map.GetValueOrDefault("progress")!)).toDouble(), swipeEdge: System.Enum.GetValues<SwipeEdge>().ToList()[(int)(((long)map.GetValueOrDefault("swipeEdge")!))]);
+        return new PredictiveBackEvent(touchOffset: ((touchOffset is null) ? null : new global::Doroti.Ui.Offset((((double)touchOffset[(int)(0L)]!)).toDouble(), (((double)touchOffset[(int)(1L)]!)).toDouble())), progress: (((double)map.GetValueOrDefault("progress")!)).toDouble(), swipeEdge: Enum.GetValues<SwipeEdge>().ToList()[(int)(((long)map.GetValueOrDefault("swipeEdge")!))]);
     }
 
-    public virtual bool isButtonEvent => ((touchOffset is null) || (((progress == 0.0) && (object.Equals(touchOffset, Offset.zero)))));
+    public virtual bool isButtonEvent => ((touchOffset is null) || (((progress == 0.0) && (Equals(touchOffset, Offset.zero)))));
     public override bool Equals(object? other)
     {
         var __other = other as PredictiveBackEvent;
@@ -40,11 +40,11 @@ public class PredictiveBackEvent
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }
-        return ((((__other is PredictiveBackEvent) && (object.Equals(touchOffset, ((PredictiveBackEvent)__other).touchOffset))) && (progress == ((PredictiveBackEvent)__other).progress)) && (object.Equals(swipeEdge, ((PredictiveBackEvent)__other).swipeEdge)));
+        return ((((__other is PredictiveBackEvent) && (Equals(touchOffset, ((PredictiveBackEvent)__other).touchOffset))) && (progress == ((PredictiveBackEvent)__other).progress)) && (Equals(swipeEdge, ((PredictiveBackEvent)__other).swipeEdge)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(touchOffset, progress, swipeEdge);

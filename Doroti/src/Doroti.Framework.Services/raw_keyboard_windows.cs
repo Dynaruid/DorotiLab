@@ -39,12 +39,12 @@ public class RawKeyEventDataWindows : RawKeyEventData
     }
 
     public override string keyLabel => ((characterCodePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)characterCodePoint)));
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + scanCode)));
+    public override PhysicalKeyboardKey physicalKey => (Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + scanCode)));
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
-            LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWindowsNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey = Keyboard_maps_gLibrary.kWindowsNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
             {
                 return numPadKey;
@@ -54,7 +54,7 @@ public class RawKeyEventDataWindows : RawKeyEventData
                 long keyId = (LogicalKeyboardKey.unicodePlane | ((characterCodePoint & LogicalKeyboardKey.valueMask)));
                 return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
             if ((newKey is not null))
             {
                 return newKey;
@@ -72,7 +72,7 @@ public class RawKeyEventDataWindows : RawKeyEventData
         {
             return true;
         }
-        return (side switch { var __case4703 when object.Equals(__case4703, KeyboardSide.any) => true, var __case4735 when object.Equals(__case4735, KeyboardSide.all) => (((modifiers & leftMask) != 0L) && ((modifiers & rightMask) != 0L)), var __case4818 when object.Equals(__case4818, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case4872 when object.Equals(__case4872, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (side switch { var __case4703 when Equals(__case4703, KeyboardSide.any) => true, var __case4735 when Equals(__case4735, KeyboardSide.all) => (((modifiers & leftMask) != 0L) && ((modifiers & rightMask) != 0L)), var __case4818 when Equals(__case4818, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case4872 when Equals(__case4872, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -81,43 +81,43 @@ public class RawKeyEventDataWindows : RawKeyEventData
         bool result = default!;
         switch (key)
         {
-            case var __case5083 when object.Equals(__case5083, ModifierKey.controlModifier):
+            case var __case5083 when Equals(__case5083, ModifierKey.controlModifier):
                 {
                     result = _isLeftRightModifierPressed(side, modifierControl, modifierLeftControl, modifierRightControl);
                     break;
                 }
-            case var __case5286 when object.Equals(__case5286, ModifierKey.shiftModifier):
+            case var __case5286 when Equals(__case5286, ModifierKey.shiftModifier):
                 {
                     result = _isLeftRightModifierPressed(side, modifierShift, modifierLeftShift, modifierRightShift);
                     break;
                 }
-            case var __case5481 when object.Equals(__case5481, ModifierKey.altModifier):
+            case var __case5481 when Equals(__case5481, ModifierKey.altModifier):
                 {
                     result = _isLeftRightModifierPressed(side, modifierAlt, modifierLeftAlt, modifierRightAlt);
                     break;
                 }
-            case var __case5617 when object.Equals(__case5617, ModifierKey.metaModifier):
+            case var __case5617 when Equals(__case5617, ModifierKey.metaModifier):
                 {
                     result = _isLeftRightModifierPressed(side, (modifierLeftMeta | modifierRightMeta), modifierLeftMeta, modifierRightMeta);
                     break;
                 }
-            case var __case5900 when object.Equals(__case5900, ModifierKey.capsLockModifier):
+            case var __case5900 when Equals(__case5900, ModifierKey.capsLockModifier):
                 {
                     result = ((modifiers & modifierCaps) != 0L);
                     break;
                 }
-            case var __case5989 when object.Equals(__case5989, ModifierKey.scrollLockModifier):
+            case var __case5989 when Equals(__case5989, ModifierKey.scrollLockModifier):
                 {
                     result = ((modifiers & modifierScrollLock) != 0L);
                     break;
                 }
-            case var __case6086 when object.Equals(__case6086, ModifierKey.numLockModifier):
+            case var __case6086 when Equals(__case6086, ModifierKey.numLockModifier):
                 {
                     result = ((modifiers & modifierNumLock) != 0L);
                     break;
                 }
-            case var __case6271 when object.Equals(__case6271, ModifierKey.functionModifier):
-            case var __case6312 when object.Equals(__case6312, ModifierKey.symbolModifier):
+            case var __case6271 when Equals(__case6271, ModifierKey.functionModifier):
+            case var __case6312 when Equals(__case6312, ModifierKey.symbolModifier):
                 {
                     result = false;
                     break;
@@ -157,27 +157,27 @@ public class RawKeyEventDataWindows : RawKeyEventData
         }
         switch (key)
         {
-            case var __case7385 when object.Equals(__case7385, ModifierKey.controlModifier):
+            case var __case7385 when Equals(__case7385, ModifierKey.controlModifier):
                 {
                     return findSide(modifierLeftControl, modifierRightControl, modifierControl);
                 }
-            case var __case7510 when object.Equals(__case7510, ModifierKey.shiftModifier):
+            case var __case7510 when Equals(__case7510, ModifierKey.shiftModifier):
                 {
                     return findSide(modifierLeftShift, modifierRightShift, modifierShift);
                 }
-            case var __case7627 when object.Equals(__case7627, ModifierKey.altModifier):
+            case var __case7627 when Equals(__case7627, ModifierKey.altModifier):
                 {
                     return findSide(modifierLeftAlt, modifierRightAlt, modifierAlt);
                 }
-            case var __case7736 when object.Equals(__case7736, ModifierKey.metaModifier):
+            case var __case7736 when Equals(__case7736, ModifierKey.metaModifier):
                 {
                     return findSide(modifierLeftMeta, modifierRightMeta, 0L);
                 }
-            case var __case7838 when object.Equals(__case7838, ModifierKey.capsLockModifier):
-            case var __case7879 when object.Equals(__case7879, ModifierKey.numLockModifier):
-            case var __case7919 when object.Equals(__case7919, ModifierKey.scrollLockModifier):
-            case var __case7962 when object.Equals(__case7962, ModifierKey.functionModifier):
-            case var __case8003 when object.Equals(__case8003, ModifierKey.symbolModifier):
+            case var __case7838 when Equals(__case7838, ModifierKey.capsLockModifier):
+            case var __case7879 when Equals(__case7879, ModifierKey.numLockModifier):
+            case var __case7919 when Equals(__case7919, ModifierKey.scrollLockModifier):
+            case var __case7962 when Equals(__case7962, ModifierKey.functionModifier):
+            case var __case8003 when Equals(__case8003, ModifierKey.symbolModifier):
                 {
                     return KeyboardSide.all;
                 }
@@ -208,7 +208,7 @@ public class RawKeyEventDataWindows : RawKeyEventData
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }

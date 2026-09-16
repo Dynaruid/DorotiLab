@@ -158,7 +158,7 @@ public abstract class EdgeInsetsGeometry
 
 public class EdgeInsets : EdgeInsetsGeometry
 {
-    public new static EdgeInsets zero = EdgeInsets.CreateOnly();
+    public new static EdgeInsets zero = CreateOnly();
     public virtual double left { get; private set; } = default!;
     public virtual double top { get; private set; } = default!;
     public virtual double right { get; private set; } = default!;
@@ -213,7 +213,7 @@ public class EdgeInsets : EdgeInsetsGeometry
     }
 
     public static EdgeInsets CreateFromWindowPadding(ViewPadding padding, double devicePixelRatio)
-        => EdgeInsets.CreateFromViewPadding(padding, devicePixelRatio);
+        => CreateFromViewPadding(padding, devicePixelRatio);
 
     internal override double _left => this.left;
     internal override double _top => this.top;
@@ -228,25 +228,25 @@ public class EdgeInsets : EdgeInsetsGeometry
     public override EdgeInsets flipped => new EdgeInsets(this.right, this.bottom, this.left, this.top);
     public virtual global::Doroti.Ui.Rect inflateRect(Rect rect)
     {
-        return global::Doroti.Ui.Rect.fromLTRB((rect.left - this.left), (rect.top - this.top), (rect.right + this.right), (rect.bottom + this.bottom));
+        return Rect.fromLTRB((rect.left - this.left), (rect.top - this.top), (rect.right + this.right), (rect.bottom + this.bottom));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Rect deflateRect(Rect rect)
     {
-        return global::Doroti.Ui.Rect.fromLTRB((rect.left + this.left), (rect.top + this.top), (rect.right - this.right), (rect.bottom - this.bottom));
+        return Rect.fromLTRB((rect.left + this.left), (rect.top + this.top), (rect.right - this.right), (rect.bottom - this.bottom));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.RRect inflateRRect(RRect rect)
     {
-        return global::Doroti.Ui.RRect.fromLTRBAndCorners((rect.left - this.left), (rect.top - this.top), (rect.right + this.right), (rect.bottom + this.bottom), topLeft: ((rect.tlRadius + global::Doroti.Ui.Radius.elliptical(this.left, this.top))).clamp(minimum: Radius.zero), topRight: ((rect.trRadius + global::Doroti.Ui.Radius.elliptical(this.right, this.top))).clamp(minimum: Radius.zero), bottomRight: ((rect.brRadius + global::Doroti.Ui.Radius.elliptical(this.right, this.bottom))).clamp(minimum: Radius.zero), bottomLeft: ((rect.blRadius + global::Doroti.Ui.Radius.elliptical(this.left, this.bottom))).clamp(minimum: Radius.zero));
+        return RRect.fromLTRBAndCorners((rect.left - this.left), (rect.top - this.top), (rect.right + this.right), (rect.bottom + this.bottom), topLeft: ((rect.tlRadius + Radius.elliptical(this.left, this.top))).clamp(minimum: Radius.zero), topRight: ((rect.trRadius + Radius.elliptical(this.right, this.top))).clamp(minimum: Radius.zero), bottomRight: ((rect.brRadius + Radius.elliptical(this.right, this.bottom))).clamp(minimum: Radius.zero), bottomLeft: ((rect.blRadius + Radius.elliptical(this.left, this.bottom))).clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.RRect deflateRRect(RRect rect)
     {
-        return global::Doroti.Ui.RRect.fromLTRBAndCorners((rect.left + this.left), (rect.top + this.top), (rect.right - this.right), (rect.bottom - this.bottom), topLeft: ((rect.tlRadius - global::Doroti.Ui.Radius.elliptical(this.left, this.top))).clamp(minimum: Radius.zero), topRight: ((rect.trRadius - global::Doroti.Ui.Radius.elliptical(this.right, this.top))).clamp(minimum: Radius.zero), bottomRight: ((rect.brRadius - global::Doroti.Ui.Radius.elliptical(this.right, this.bottom))).clamp(minimum: Radius.zero), bottomLeft: ((rect.blRadius - global::Doroti.Ui.Radius.elliptical(this.left, this.bottom))).clamp(minimum: Radius.zero));
+        return RRect.fromLTRBAndCorners((rect.left + this.left), (rect.top + this.top), (rect.right - this.right), (rect.bottom - this.bottom), topLeft: ((rect.tlRadius - Radius.elliptical(this.left, this.top))).clamp(minimum: Radius.zero), topRight: ((rect.trRadius - Radius.elliptical(this.right, this.top))).clamp(minimum: Radius.zero), bottomRight: ((rect.brRadius - Radius.elliptical(this.right, this.bottom))).clamp(minimum: Radius.zero), bottomLeft: ((rect.blRadius - Radius.elliptical(this.left, this.bottom))).clamp(minimum: Radius.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -341,7 +341,7 @@ public class EdgeInsets : EdgeInsetsGeometry
     public override EdgeInsets resolve(TextDirection? direction) => this;
     public virtual EdgeInsets copyWith(double? left = null, double? top = null, double? right = null, double? bottom = null)
     {
-        return EdgeInsets.CreateOnly(left: (left ?? this.left), top: (top ?? this.top), right: (right ?? this.right), bottom: (bottom ?? this.bottom));
+        return CreateOnly(left: (left ?? this.left), top: (top ?? this.top), right: (right ?? this.right), bottom: (bottom ?? this.bottom));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -349,7 +349,7 @@ public class EdgeInsets : EdgeInsetsGeometry
 
 public class EdgeInsetsDirectional : EdgeInsetsGeometry
 {
-    public new static EdgeInsetsDirectional zero = EdgeInsetsDirectional.CreateOnly();
+    public new static EdgeInsetsDirectional zero = CreateOnly();
     public virtual double start { get; private set; } = default!;
     public virtual double top { get; private set; } = default!;
     public virtual double end { get; private set; } = default!;
@@ -485,14 +485,14 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
 
     public override EdgeInsets resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(EdgeInsetsDirectional)}"));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(EdgeInsetsDirectional)}"));
         return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets(this.end, this.top, this.start, this.bottom), TextDirection.ltr => new EdgeInsets(this.start, this.top, this.end, this.bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual EdgeInsetsDirectional copyWith(double? start = null, double? top = null, double? end = null, double? bottom = null)
     {
-        return EdgeInsetsDirectional.CreateOnly(start: (start ?? this.start), top: (top ?? this.top), end: (end ?? this.end), bottom: (bottom ?? this.bottom));
+        return CreateOnly(start: (start ?? this.start), top: (top ?? this.top), end: (end ?? this.end), bottom: (bottom ?? this.bottom));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -562,7 +562,7 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
 
     public override EdgeInsets resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedEdgeInsets__edge_insets)}"));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedEdgeInsets__edge_insets)}"));
         return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets((this._end + this._left), this._top, (this._start + this._right), this._bottom), TextDirection.ltr => new EdgeInsets((this._start + this._left), this._top, (this._end + this._right), this._bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

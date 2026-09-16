@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/floating_action_button_location.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -28,32 +28,32 @@ public static partial class Floating_action_button_locationLibrary
 
 public abstract class FloatingActionButtonLocation
 {
-    public static FloatingActionButtonLocation startTop = ((FloatingActionButtonLocation)(object?)new _StartTopFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniStartTop = ((FloatingActionButtonLocation)(object?)new _MiniStartTopFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation centerTop = ((FloatingActionButtonLocation)(object?)new _CenterTopFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniCenterTop = ((FloatingActionButtonLocation)(object?)new _MiniCenterTopFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation endTop = ((FloatingActionButtonLocation)(object?)new _EndTopFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniEndTop = ((FloatingActionButtonLocation)(object?)new _MiniEndTopFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation startFloat = ((FloatingActionButtonLocation)(object?)new _StartFloatFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniStartFloat = ((FloatingActionButtonLocation)(object?)new _MiniStartFloatFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation centerFloat = ((FloatingActionButtonLocation)(object?)new _CenterFloatFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniCenterFloat = ((FloatingActionButtonLocation)(object?)new _MiniCenterFloatFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation endFloat = ((FloatingActionButtonLocation)(object?)new _EndFloatFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniEndFloat = ((FloatingActionButtonLocation)(object?)new _MiniEndFloatFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation startDocked = ((FloatingActionButtonLocation)(object?)new _StartDockedFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniStartDocked = ((FloatingActionButtonLocation)(object?)new _MiniStartDockedFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation centerDocked = ((FloatingActionButtonLocation)(object?)new _CenterDockedFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniCenterDocked = ((FloatingActionButtonLocation)(object?)new _MiniCenterDockedFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation endDocked = ((FloatingActionButtonLocation)(object?)new _EndDockedFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation miniEndDocked = ((FloatingActionButtonLocation)(object?)new _MiniEndDockedFabLocation__floating_action_button_location());
-    public static FloatingActionButtonLocation endContained = ((FloatingActionButtonLocation)(object?)new _EndContainedFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation startTop = ((FloatingActionButtonLocation)new _StartTopFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniStartTop = ((FloatingActionButtonLocation)new _MiniStartTopFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation centerTop = ((FloatingActionButtonLocation)new _CenterTopFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniCenterTop = ((FloatingActionButtonLocation)new _MiniCenterTopFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation endTop = ((FloatingActionButtonLocation)new _EndTopFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniEndTop = ((FloatingActionButtonLocation)new _MiniEndTopFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation startFloat = ((FloatingActionButtonLocation)new _StartFloatFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniStartFloat = ((FloatingActionButtonLocation)new _MiniStartFloatFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation centerFloat = ((FloatingActionButtonLocation)new _CenterFloatFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniCenterFloat = ((FloatingActionButtonLocation)new _MiniCenterFloatFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation endFloat = ((FloatingActionButtonLocation)new _EndFloatFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniEndFloat = ((FloatingActionButtonLocation)new _MiniEndFloatFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation startDocked = ((FloatingActionButtonLocation)new _StartDockedFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniStartDocked = ((FloatingActionButtonLocation)new _MiniStartDockedFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation centerDocked = ((FloatingActionButtonLocation)new _CenterDockedFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniCenterDocked = ((FloatingActionButtonLocation)new _MiniCenterDockedFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation endDocked = ((FloatingActionButtonLocation)new _EndDockedFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation miniEndDocked = ((FloatingActionButtonLocation)new _MiniEndDockedFabLocation__floating_action_button_location());
+    public static FloatingActionButtonLocation endContained = ((FloatingActionButtonLocation)new _EndContainedFabLocation__floating_action_button_location());
 
     protected FloatingActionButtonLocation()
     {
     }
 
     public abstract global::Doroti.Ui.Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry);
-    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonLocation");
+    public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonLocation");
 }
 
 public abstract class StandardFabLocation : FloatingActionButtonLocation
@@ -136,7 +136,7 @@ internal class _StartTopFabLocation__floating_action_button_location : StandardF
     public override string ToString() => "FloatingActionButtonLocation.startTop";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -164,7 +164,7 @@ internal class _MiniStartTopFabLocation__floating_action_button_location : Stand
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -246,7 +246,7 @@ internal class _EndTopFabLocation__floating_action_button_location : StandardFab
     public override string ToString() => "FloatingActionButtonLocation.endTop";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -274,7 +274,7 @@ internal class _MiniEndTopFabLocation__floating_action_button_location : Standar
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -301,7 +301,7 @@ internal class _StartFloatFabLocation__floating_action_button_location : Standar
     public override string ToString() => "FloatingActionButtonLocation.startFloat";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -339,7 +339,7 @@ internal class _MiniStartFloatFabLocation__floating_action_button_location : Sta
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -451,7 +451,7 @@ internal class _EndFloatFabLocation__floating_action_button_location : StandardF
     public override string ToString() => "FloatingActionButtonLocation.endFloat";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -489,7 +489,7 @@ internal class _MiniEndFloatFabLocation__floating_action_button_location : Stand
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -526,7 +526,7 @@ internal class _StartDockedFabLocation__floating_action_button_location : Standa
     public override string ToString() => "FloatingActionButtonLocation.startDocked";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -582,7 +582,7 @@ internal class _MiniStartDockedFabLocation__floating_action_button_location : St
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -748,7 +748,7 @@ internal class _EndDockedFabLocation__floating_action_button_location : Standard
     public override string ToString() => "FloatingActionButtonLocation.endDocked";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -804,7 +804,7 @@ internal class _MiniEndDockedFabLocation__floating_action_button_location : Stan
     public override bool isMini() => true;
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -859,7 +859,7 @@ internal class _EndContainedFabLocation__floating_action_button_location : Stand
     public override string ToString() => "FloatingActionButtonLocation.endContained";
     public override double getOffsetX(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => StandardFabLocation._leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => StandardFabLocation._rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((TextDirection)(scaffoldGeometry).textDirection) switch { TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment), TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -889,8 +889,8 @@ internal class _EndContainedFabLocation__floating_action_button_location : Stand
 
 public abstract class FloatingActionButtonAnimator
 {
-    public static FloatingActionButtonAnimator scaling = ((FloatingActionButtonAnimator)(object?)new _ScalingFabMotionAnimator__floating_action_button_location());
-    public static FloatingActionButtonAnimator noAnimation = ((FloatingActionButtonAnimator)(object?)new _NoAnimationFabMotionAnimator__floating_action_button_location());
+    public static FloatingActionButtonAnimator scaling = ((FloatingActionButtonAnimator)new _ScalingFabMotionAnimator__floating_action_button_location());
+    public static FloatingActionButtonAnimator noAnimation = ((FloatingActionButtonAnimator)new _NoAnimationFabMotionAnimator__floating_action_button_location());
 
     protected FloatingActionButtonAnimator()
     {
@@ -900,13 +900,13 @@ public abstract class FloatingActionButtonAnimator
     public abstract global::Doroti.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Framework.Animation.Animation<double> parent);
     public abstract global::Doroti.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Framework.Animation.Animation<double> parent);
     public virtual double getAnimationRestart(double previousValue) => 0.0;
-    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonAnimator");
+    public override string ToString() => objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonAnimator");
 }
 
 internal class _ScalingFabMotionAnimator__floating_action_button_location : FloatingActionButtonAnimator
 {
-    internal static global::Doroti.Framework.Animation.Animatable<double> _rotationTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: (1.0 - (Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval * 2.0)), end: 1.0));
-    internal static global::Doroti.Framework.Animation.Animatable<double> _thresholdCenterTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Threshold(0.5)));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _rotationTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.Tween<double>(begin: (1.0 - (Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval * 2.0)), end: 1.0));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _thresholdCenterTween = ((global::Doroti.Framework.Animation.Animatable<double>)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Threshold(0.5)));
 
     internal _ScalingFabMotionAnimator__floating_action_button_location()
     {
@@ -927,14 +927,14 @@ internal class _ScalingFabMotionAnimator__floating_action_button_location : Floa
 
     public override global::Doroti.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        global::Doroti.Framework.Animation.Curve curveLocal = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval(0.5, 1.0, curve: global::Doroti.Framework.Animation.Curves.ease));
-        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: ((global::Doroti.Framework.Animation.Curve)curveLocal).flipped))), parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curveLocal)), parent, 0.5));
+        global::Doroti.Framework.Animation.Curve curveLocal = ((global::Doroti.Framework.Animation.Curve)new global::Doroti.Framework.Animation.Interval(0.5, 1.0, curve: Curves.ease));
+        return ((global::Doroti.Framework.Animation.Animation<double>)new _AnimationSwap__floating_action_button_location<double>(new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: ((global::Doroti.Framework.Animation.Curve)curveLocal).flipped))), parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curveLocal)), parent, 0.5));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(parent.drive(_rotationTween), new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(_thresholdCenterTween)), parent, 0.5));
+        return ((global::Doroti.Framework.Animation.Animation<double>)new _AnimationSwap__floating_action_button_location<double>(parent.drive(_rotationTween), new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(_thresholdCenterTween)), parent, 0.5));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -955,13 +955,13 @@ internal class _NoAnimationFabMotionAnimator__floating_action_button_location : 
 
     public override global::Doroti.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
+        return ((global::Doroti.Framework.Animation.Animation<double>)new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
+        return ((global::Doroti.Framework.Animation.Animation<double>)new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -6,7 +6,7 @@ namespace Doroti.Framework.Gestures;
 
 public class EagerGestureRecognizer : OneSequenceGestureRecognizer
 {
-    public EagerGestureRecognizer(HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? GestureRecognizer._defaultButtonAcceptBehavior)
+    public EagerGestureRecognizer(HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!) : base(supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
     }
 

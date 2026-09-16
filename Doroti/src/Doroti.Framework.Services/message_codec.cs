@@ -6,29 +6,29 @@ namespace Doroti.Framework.Services;
 
 public interface MessageCodec<T>
 {
-    public ByteData? encodeMessage(T message);
+    public ByteData? encodeMessage(T? message);
     public T? decodeMessage(ByteData? message);
 }
 
 public class MethodCall
 {
     public virtual string method { get; private set; } = default!;
-    public virtual object arguments { get; private set; } = default!;
+    public virtual object? arguments { get; private set; } = default!;
 
-    public MethodCall(string method, object arguments = default!)
+    public MethodCall(string method, object? arguments = null)
     {
         this.method = method;
         this.arguments = arguments;
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MethodCall"))}({method}, {arguments})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "MethodCall"))}({method}, {arguments})";
 }
 
 public interface MethodCodec
 {
     public ByteData encodeMethodCall(MethodCall methodCall);
     public MethodCall decodeMethodCall(ByteData? methodCall);
-    public object decodeEnvelope(ByteData envelope);
+    public object? decodeEnvelope(ByteData envelope);
     public ByteData encodeSuccessEnvelope(object? result);
     public ByteData encodeErrorEnvelope(string code, string? message = null, object? details = null);
 }
@@ -37,10 +37,10 @@ public class PlatformException : Exception
 {
     public virtual string code { get; private set; } = default!;
     public virtual string? message { get; private set; }
-    public virtual object details { get; private set; } = default!;
+    public virtual object? details { get; private set; } = default!;
     public virtual string? stacktrace { get; private set; }
 
-    public PlatformException(string code, string? message = null, object details = default!, string? stacktrace = null)
+    public PlatformException(string code, string? message = null, object? details = null, string? stacktrace = null)
     {
         this.code = code;
         this.message = message;

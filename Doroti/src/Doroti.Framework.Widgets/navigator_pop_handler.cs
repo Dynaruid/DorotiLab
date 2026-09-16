@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/navigator_pop_handler.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -30,14 +29,14 @@ internal class _NavigatorPopHandlerState__navigator_pop_handler<T> : State<Navig
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new PopScope<T>(canPop: (!((NavigatorPopHandler<T>)(object)this.widget).enabled || this._canPop), onPopInvokedWithResult: ((global::System.Action<bool, T?>)((didPop, result) =>
+        return ((Widget)new PopScope<T>(canPop: (!((NavigatorPopHandler<T>)this.widget).enabled || this._canPop), onPopInvokedWithResult: ((global::System.Action<bool, T?>)((didPop, result) =>
         {
             if (didPop)
             {
                 return;
             }
-            ((NavigatorPopHandler<T>)(object)this.widget).onPop?.Invoke();
-            ((NavigatorPopHandler<T>)(object)this.widget).onPopWithResult?.Invoke(result);
+            ((NavigatorPopHandler<T>)this.widget).onPop?.Invoke();
+            ((NavigatorPopHandler<T>)this.widget).onPopWithResult?.Invoke(result);
         })), child: new NotificationListener<NavigationNotification>(onNotification: ((global::System.Func<NavigationNotification, bool>?)((notification) =>
         {
             bool nextCanPop = !((NavigationNotification)notification).canHandlePop;
@@ -50,7 +49,7 @@ internal class _NavigatorPopHandlerState__navigator_pop_handler<T> : State<Navig
             }
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: ((NavigatorPopHandler<T>)(object)this.widget).child)));
+        })), child: ((NavigatorPopHandler<T>)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

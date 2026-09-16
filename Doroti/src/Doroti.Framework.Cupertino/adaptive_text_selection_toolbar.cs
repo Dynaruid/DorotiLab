@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/adaptive_text_selection_toolbar.dart
-#pragma warning disable CS8600, CS8603, CS8604
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Cupertino;
@@ -56,11 +56,11 @@ public class CupertinoAdaptiveTextSelectionToolbar : global::Doroti.Framework.Wi
 
     public static IEnumerable<global::Doroti.Framework.Widgets.Widget> getAdaptiveButtons(global::Doroti.Framework.Widgets.BuildContext context, List<global::Doroti.Framework.Widgets.ContextMenuButtonItem> buttonItems)
     {
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.iOS:
                 {
                     return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
                     {
@@ -68,9 +68,9 @@ public class CupertinoAdaptiveTextSelectionToolbar : global::Doroti.Framework.Wi
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     }));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
+            case TargetPlatform.macOS:
                 {
                     return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
                     {
@@ -86,24 +86,24 @@ public class CupertinoAdaptiveTextSelectionToolbar : global::Doroti.Framework.Wi
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if (this.children is null ? !this.buttonItems.Any() : !this.children.Any())
+        if (this.children is null ? this.buttonItems is null || !this.buttonItems.Any() : !this.children.Any())
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
         }
-        List<global::Doroti.Framework.Widgets.Widget> resultChildren = (this.children ?? CupertinoAdaptiveTextSelectionToolbar.getAdaptiveButtons(context, this.buttonItems!).ToList()).ToList();
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        List<global::Doroti.Framework.Widgets.Widget> resultChildren = (this.children ?? getAdaptiveButtons(context, this.buttonItems!).ToList()).ToList();
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case TargetPlatform.android:
+            case TargetPlatform.iOS:
+            case TargetPlatform.fuchsia:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoTextSelectionToolbar(anchorAbove: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, anchorBelow: (((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor ?? ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor), children: resultChildren));
+                    return ((global::Doroti.Framework.Widgets.Widget)new CupertinoTextSelectionToolbar(anchorAbove: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, anchorBelow: (((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor ?? ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor), children: resultChildren));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
+            case TargetPlatform.macOS:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoDesktopTextSelectionToolbar(anchor: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, children: resultChildren));
+                    return ((global::Doroti.Framework.Widgets.Widget)new CupertinoDesktopTextSelectionToolbar(anchor: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, children: resultChildren));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

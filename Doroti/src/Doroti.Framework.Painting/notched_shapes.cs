@@ -31,18 +31,18 @@ public class CircularNotchedRectangle : NotchedShape
 }))();
         }
         double r = (DartRuntimePrimitives.RequireValue(guest).width / 2.0);
-        var notchRadius = global::Doroti.Ui.Radius.circular(r);
+        var notchRadius = Radius.circular(r);
         var invertMultiplier = (this.inverted ? -1.0 : 1.0);
         var s1 = 15.0;
         var s2 = 1.0;
         double a = (-r - s2);
         double b = (((this.inverted ? host.bottom : host.top)) - DartRuntimePrimitives.RequireValue(guest).center.dy);
-        double n2 = global::Doroti.Runtime.Dart_mathLibrary.sqrt(((((b * b) * r) * r) * ((((a * a) + (b * b)) - (r * r)))));
+        double n2 = Dart_mathLibrary.sqrt(((((b * b) * r) * r) * ((((a * a) + (b * b)) - (r * r)))));
         double p2xA = ((((((a * r) * r)) - n2)) / (((a * a) + (b * b))));
         double p2xB = ((((((a * r) * r)) + n2)) / (((a * a) + (b * b))));
-        double p2yA = (global::Doroti.Runtime.Dart_mathLibrary.sqrt(((r * r) - (p2xA * p2xA))) * invertMultiplier);
-        double p2yB = (global::Doroti.Runtime.Dart_mathLibrary.sqrt(((r * r) - (p2xB * p2xB))) * invertMultiplier);
-        var p = new List<global::Doroti.Ui.Offset>(System.Linq.Enumerable.Repeat<global::Doroti.Ui.Offset>(Offset.zero, checked((int)6L)));
+        double p2yA = (Dart_mathLibrary.sqrt(((r * r) - (p2xA * p2xA))) * invertMultiplier);
+        double p2yB = (Dart_mathLibrary.sqrt(((r * r) - (p2xB * p2xB))) * invertMultiplier);
+        var p = new List<global::Doroti.Ui.Offset>(Enumerable.Repeat<global::Doroti.Ui.Offset>(Offset.zero, checked((int)6L)));
         p[(int)(0L)] = new global::Doroti.Ui.Offset((a - s1), b);
         p[(int)(1L)] = new global::Doroti.Ui.Offset(a, b);
         var cmp = ((b < 0L) ? -1.0 : 1.0);

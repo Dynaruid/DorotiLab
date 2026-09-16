@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/autofill.dart
-#pragma warning disable CS8601
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Services;
@@ -100,9 +99,9 @@ public class AutofillConfiguration
         this.currentEditingValue = currentEditingValue;
     }
 
-    public virtual DartMap<string, object>? toJson()
+    public virtual DartMap<string, object?>? toJson()
     {
-        return (enabled ? new DartMap<string, object> { ["uniqueIdentifier"] = uniqueIdentifier, ["hints"] = autofillHints, ["editingValue"] = currentEditingValue.toJSON(), ["hintText"] = hintText } : null);
+        return (enabled ? new DartMap<string, object?> { ["uniqueIdentifier"] = uniqueIdentifier, ["hints"] = autofillHints, ["editingValue"] = currentEditingValue.toJSON(), ["hintText"] = hintText } : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -114,11 +113,11 @@ public class AutofillConfiguration
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }
-        return ((((((__other is AutofillConfiguration) && (((AutofillConfiguration)__other).enabled == enabled)) && (((AutofillConfiguration)__other).uniqueIdentifier == uniqueIdentifier)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((AutofillConfiguration)__other).autofillHints, autofillHints)) && (object.Equals(((AutofillConfiguration)__other).currentEditingValue, currentEditingValue))) && (((AutofillConfiguration)__other).hintText == hintText));
+        return ((((((__other is AutofillConfiguration) && (((AutofillConfiguration)__other).enabled == enabled)) && (((AutofillConfiguration)__other).uniqueIdentifier == uniqueIdentifier)) && CollectionsLibrary.listEquals(((AutofillConfiguration)__other).autofillHints, autofillHints)) && (Equals(((AutofillConfiguration)__other).currentEditingValue, currentEditingValue))) && (((AutofillConfiguration)__other).hintText == hintText));
     }
 
     public override int GetHashCode()
@@ -157,9 +156,9 @@ internal class _AutofillScopeTextInputConfiguration__autofill : TextInputConfigu
         this.allConfigurations = allConfigurations;
     }
 
-    public override DartMap<string, object> toJson()
+    public override DartMap<string, object?> toJson()
     {
-        DartMap<string, object> result = base.toJson();
+        DartMap<string, object?> result = base.toJson();
         result["fields"] = allConfigurations.map(((configuration) => configuration.toJson())).ToList();
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");

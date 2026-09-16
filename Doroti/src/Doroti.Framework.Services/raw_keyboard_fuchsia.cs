@@ -39,9 +39,9 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
             if ((codePoint != 0L))
             {
                 long flutterId = (LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask));
-                return (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId) ?? new LogicalKeyboardKey((LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask))));
+                return (Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId) ?? new LogicalKeyboardKey((LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask))));
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
+            LogicalKeyboardKey? newKey = Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
             if ((newKey is not null))
             {
                 return newKey;
@@ -49,14 +49,14 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
             return new LogicalKeyboardKey((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
         }
     }
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToPhysicalKey.GetValueOrDefault(hidUsage) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.fuchsiaPlane + hidUsage)));
+    public override PhysicalKeyboardKey physicalKey => (Keyboard_maps_gLibrary.kFuchsiaToPhysicalKey.GetValueOrDefault(hidUsage) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.fuchsiaPlane + hidUsage)));
     internal virtual bool _isLeftRightModifierPressed(KeyboardSide side, long anyMask, long leftMask, long rightMask)
     {
         if (((modifiers & anyMask) == 0L))
         {
             return false;
         }
-        return (side switch { var __case4021 when object.Equals(__case4021, KeyboardSide.any) => true, var __case4053 when object.Equals(__case4053, KeyboardSide.all) => ((((modifiers & leftMask) != 0L)) && (((modifiers & rightMask) != 0L))), var __case4140 when object.Equals(__case4140, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case4194 when object.Equals(__case4194, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (side switch { var __case4021 when Equals(__case4021, KeyboardSide.any) => true, var __case4053 when Equals(__case4053, KeyboardSide.all) => ((((modifiers & leftMask) != 0L)) && (((modifiers & rightMask) != 0L))), var __case4140 when Equals(__case4140, KeyboardSide.left) => ((modifiers & leftMask) != 0L), var __case4194 when Equals(__case4194, KeyboardSide.right) => ((modifiers & rightMask) != 0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,30 +64,30 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
     {
         switch (key)
         {
-            case var __case4382 when object.Equals(__case4382, ModifierKey.controlModifier):
+            case var __case4382 when Equals(__case4382, ModifierKey.controlModifier):
                 {
                     return _isLeftRightModifierPressed(side, modifierControl, modifierLeftControl, modifierRightControl);
                 }
-            case var __case4583 when object.Equals(__case4583, ModifierKey.shiftModifier):
+            case var __case4583 when Equals(__case4583, ModifierKey.shiftModifier):
                 {
                     return _isLeftRightModifierPressed(side, modifierShift, modifierLeftShift, modifierRightShift);
                 }
-            case var __case4776 when object.Equals(__case4776, ModifierKey.altModifier):
+            case var __case4776 when Equals(__case4776, ModifierKey.altModifier):
                 {
                     return _isLeftRightModifierPressed(side, modifierAlt, modifierLeftAlt, modifierRightAlt);
                 }
-            case var __case4910 when object.Equals(__case4910, ModifierKey.metaModifier):
+            case var __case4910 when Equals(__case4910, ModifierKey.metaModifier):
                 {
                     return _isLeftRightModifierPressed(side, modifierMeta, modifierLeftMeta, modifierRightMeta);
                 }
-            case var __case5048 when object.Equals(__case5048, ModifierKey.capsLockModifier):
+            case var __case5048 when Equals(__case5048, ModifierKey.capsLockModifier):
                 {
                     return ((modifiers & modifierCapsLock) != 0L);
                 }
-            case var __case5139 when object.Equals(__case5139, ModifierKey.numLockModifier):
-            case var __case5179 when object.Equals(__case5179, ModifierKey.scrollLockModifier):
-            case var __case5222 when object.Equals(__case5222, ModifierKey.functionModifier):
-            case var __case5263 when object.Equals(__case5263, ModifierKey.symbolModifier):
+            case var __case5139 when Equals(__case5139, ModifierKey.numLockModifier):
+            case var __case5179 when Equals(__case5179, ModifierKey.scrollLockModifier):
+            case var __case5222 when Equals(__case5222, ModifierKey.functionModifier):
+            case var __case5263 when Equals(__case5263, ModifierKey.symbolModifier):
                 {
                     return false;
                 }
@@ -123,30 +123,30 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
         }
         switch (key)
         {
-            case var __case5848 when object.Equals(__case5848, ModifierKey.controlModifier):
+            case var __case5848 when Equals(__case5848, ModifierKey.controlModifier):
                 {
                     return findSide(modifierControl, modifierLeftControl, modifierRightControl);
                 }
-            case var __case5973 when object.Equals(__case5973, ModifierKey.shiftModifier):
+            case var __case5973 when Equals(__case5973, ModifierKey.shiftModifier):
                 {
                     return findSide(modifierShift, modifierLeftShift, modifierRightShift);
                 }
-            case var __case6090 when object.Equals(__case6090, ModifierKey.altModifier):
+            case var __case6090 when Equals(__case6090, ModifierKey.altModifier):
                 {
                     return findSide(modifierAlt, modifierLeftAlt, modifierRightAlt);
                 }
-            case var __case6199 when object.Equals(__case6199, ModifierKey.metaModifier):
+            case var __case6199 when Equals(__case6199, ModifierKey.metaModifier):
                 {
                     return findSide(modifierMeta, modifierLeftMeta, modifierRightMeta);
                 }
-            case var __case6312 when object.Equals(__case6312, ModifierKey.capsLockModifier):
+            case var __case6312 when Equals(__case6312, ModifierKey.capsLockModifier):
                 {
                     return ((((modifiers & modifierCapsLock) == 0L)) ? null : KeyboardSide.all);
                 }
-            case var __case6431 when object.Equals(__case6431, ModifierKey.numLockModifier):
-            case var __case6471 when object.Equals(__case6471, ModifierKey.scrollLockModifier):
-            case var __case6514 when object.Equals(__case6514, ModifierKey.functionModifier):
-            case var __case6555 when object.Equals(__case6555, ModifierKey.symbolModifier):
+            case var __case6431 when Equals(__case6431, ModifierKey.numLockModifier):
+            case var __case6471 when Equals(__case6471, ModifierKey.scrollLockModifier):
+            case var __case6514 when Equals(__case6514, ModifierKey.functionModifier):
+            case var __case6555 when Equals(__case6555, ModifierKey.symbolModifier):
                 {
                     return null;
                 }
@@ -170,7 +170,7 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }

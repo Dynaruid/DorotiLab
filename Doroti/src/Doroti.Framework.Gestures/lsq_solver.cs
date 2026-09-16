@@ -49,7 +49,7 @@ public class _Vector__lsq_solver
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double norm() => global::Doroti.Runtime.Dart_mathLibrary.sqrt((this.op_Multiply(this)));
+    public virtual double norm() => Dart_mathLibrary.sqrt((this.op_Multiply(this)));
 }
 
 internal class _Matrix__lsq_solver
@@ -85,7 +85,7 @@ public class PolynomialFit
     public override string ToString()
     {
         var coefficientString = this.coefficients.map<double, string>(((c) => c.toStringAsPrecision(3L))).ToList().ToString();
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit"))}({coefficientString}, confidence: {this.confidence.toStringAsFixed(3L)})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit"))}({coefficientString}, confidence: {this.confidence.toStringAsFixed(3L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -141,7 +141,7 @@ public class LeastSquaresSolver
                 }
             }
             double normLocal = q.getRow(j).norm();
-            if ((normLocal < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            if ((normLocal < Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
                 return null;
             }
@@ -190,7 +190,7 @@ public class LeastSquaresSolver
             double v = (this.y[(int)(hCandidate)] - yMean);
             sumSquaredTotal += (((this.w[(int)(hCandidate)] * this.w[(int)(hCandidate)]) * v) * v);
         }
-        result.confidence = ((sumSquaredTotal <= global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - ((sumSquaredError / sumSquaredTotal))));
+        result.confidence = ((sumSquaredTotal <= Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - ((sumSquaredError / sumSquaredTotal))));
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

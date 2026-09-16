@@ -10,16 +10,16 @@ public static partial class BindingLibrary
 {
     public static double timeDilation
     {
-        get => BindingLibrary._timeDilation;
+        get => _timeDilation;
         set
         {
             DartRuntimePrimitives.Assert(() => (value > 0.0));
-            if ((BindingLibrary._timeDilation == value))
+            if ((_timeDilation == value))
             {
                 return;
             }
             SchedulerBinding._instance?.resetEpoch();
-            BindingLibrary._timeDilation = value;
+            _timeDilation = value;
         }
     }
 }
@@ -54,7 +54,7 @@ internal class _TaskEntry<T>
 
     public virtual void run()
     {
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!ConstantsLibrary.kReleaseMode)
         {
             Timeline.timeSync((debugLabel ?? "Scheduled Task"), (() =>
             {
@@ -105,7 +105,7 @@ public class PerformanceModeRequestHandle
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => (_cleanup is not null));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         _cleanup!();
         _cleanup = null;
     }
@@ -137,7 +137,7 @@ public abstract class SchedulerBinding : BindingBase
     internal virtual long _debugFrameNumber { get; set; } = 0L;
     internal virtual string? _debugBanner { get; set; } = default;
     internal virtual bool _rescheduleAfterWarmUpFrame { get; set; } = false;
-    internal virtual TimelineTask? _frameTimelineTask { get; private set; } = (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : new TimelineTask());
+    internal virtual TimelineTask? _frameTimelineTask { get; private set; } = (ConstantsLibrary.kReleaseMode ? null : new TimelineTask());
     internal virtual DartPerformanceMode? _performanceMode { get; set; } = default;
     internal virtual long _numPerformanceModeRequests { get; set; } = 0L;
     protected SchedulerBinding(PlatformDispatcher? platformDispatcher = null)
@@ -149,7 +149,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         base.initInstances();
         _instance = this;
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!ConstantsLibrary.kReleaseMode)
         {
             addTimingsCallback(((timings) =>
             {
@@ -158,7 +158,7 @@ public abstract class SchedulerBinding : BindingBase
         }
     }
 
-    public static SchedulerBinding instance => BindingBase.checkInstance(_instance);
+    public static SchedulerBinding instance => checkInstance(_instance);
     public virtual void addTimingsCallback(Action<List<FrameTiming>> callback)
     {
         _timingsCallbacks.Add(callback);
@@ -167,7 +167,7 @@ public abstract class SchedulerBinding : BindingBase
             DartRuntimePrimitives.Assert(() => (platformDispatcher.onReportTimings is null));
             platformDispatcher.onReportTimings = _executeTimingsCallbacks;
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals((Action<List<FrameTiming>>?)platformDispatcher.onReportTimings, (Action<List<FrameTiming>>)_executeTimingsCallbacks)));
+        DartRuntimePrimitives.Assert(() => (Equals((Action<List<FrameTiming>>?)platformDispatcher.onReportTimings, (Action<List<FrameTiming>>)_executeTimingsCallbacks)));
     }
 
     public virtual void removeTimingsCallback(Action<List<FrameTiming>> callback)
@@ -209,7 +209,7 @@ public abstract class SchedulerBinding : BindingBase
     protected override void initServiceExtensions()
     {
         base.initServiceExtensions();
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!ConstantsLibrary.kReleaseMode)
         {
             registerNumericServiceExtension(name: SchedulerServiceExtensions.timeDilation.ToString(), getter: (() => BindingLibrary.timeDilation), setter: ((value) =>
             {
@@ -227,22 +227,22 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void handleAppLifecycleStateChanged(AppLifecycleState state)
     {
-        if ((object.Equals(lifecycleState, state)))
+        if ((Equals(lifecycleState, state)))
         {
             return;
         }
         _lifecycleState = state;
         switch (state)
         {
-            case var __case15339 when object.Equals(__case15339, AppLifecycleState.resumed):
-            case var __case15377 when object.Equals(__case15377, AppLifecycleState.inactive):
+            case var __case15339 when Equals(__case15339, AppLifecycleState.resumed):
+            case var __case15377 when Equals(__case15377, AppLifecycleState.inactive):
                 {
                     _setFramesEnabledState(true);
                     break;
                 }
-            case var __case15454 when object.Equals(__case15454, AppLifecycleState.hidden):
-            case var __case15491 when object.Equals(__case15491, AppLifecycleState.paused):
-            case var __case15528 when object.Equals(__case15528, AppLifecycleState.detached):
+            case var __case15454 when Equals(__case15454, AppLifecycleState.hidden):
+            case var __case15491 when Equals(__case15491, AppLifecycleState.paused):
+            case var __case15528 when Equals(__case15528, AppLifecycleState.detached):
                 {
                     _setFramesEnabledState(false);
                     break;
@@ -290,7 +290,7 @@ public abstract class SchedulerBinding : BindingBase
             return;
         }
         _hasRequestedAnEventLoopCallback = true;
-        global::Doroti.Runtime.Timer.run(_runTasks);
+        Runtime.Timer.run(_runTasks);
     }
 
     internal virtual void _runTasks()
@@ -406,12 +406,12 @@ public abstract class SchedulerBinding : BindingBase
             {
                 if ((_FrameCallbackEntry.debugCurrentCallbackStack is not null))
                 {
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("When the current transient callback was registered, this was the stack:");
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(string.Join("\n", FlutterError.defaultStackFilter(FlutterError.demangleStackTrace(_FrameCallbackEntry.debugCurrentCallbackStack!).ToString().trimRight().split("\n"))));
+                    PrintLibrary.debugPrint("When the current transient callback was registered, this was the stack:");
+                    PrintLibrary.debugPrint(string.Join("\n", FlutterError.defaultStackFilter(FlutterError.demangleStackTrace(_FrameCallbackEntry.debugCurrentCallbackStack!).ToString().trimRight().split("\n"))));
                 }
                 else
                 {
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("No transient callback is currently executing.");
+                    PrintLibrary.debugPrint("No transient callback is currently executing.");
                 }
                 return true;
             });
@@ -426,7 +426,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Scheduler.DebugLibrary.debugTracePostFrameCallbacks)
+                if (DebugLibrary.debugTracePostFrameCallbacks)
                 {
                     var originalCallback = callback;
                     callback = ((timeStamp) =>
@@ -453,7 +453,7 @@ public abstract class SchedulerBinding : BindingBase
         {
             if ((_nextFrameCompleter is null))
             {
-                if ((object.Equals(schedulerPhase, SchedulerPhase.idle)))
+                if ((Equals(schedulerPhase, SchedulerPhase.idle)))
                 {
                     scheduleFrame();
                 }
@@ -495,15 +495,15 @@ public abstract class SchedulerBinding : BindingBase
     {
         switch (schedulerPhase)
         {
-            case var __case33516 when object.Equals(__case33516, SchedulerPhase.idle):
-            case var __case33548 when object.Equals(__case33548, SchedulerPhase.postFrameCallbacks):
+            case var __case33516 when Equals(__case33516, SchedulerPhase.idle):
+            case var __case33548 when Equals(__case33548, SchedulerPhase.postFrameCallbacks):
                 {
                     scheduleFrame();
                     return;
                 }
-            case var __case33635 when object.Equals(__case33635, SchedulerPhase.transientCallbacks):
-            case var __case33681 when object.Equals(__case33681, SchedulerPhase.midFrameMicrotasks):
-            case var __case33727 when object.Equals(__case33727, SchedulerPhase.persistentCallbacks):
+            case var __case33635 when Equals(__case33635, SchedulerPhase.transientCallbacks):
+            case var __case33681 when Equals(__case33681, SchedulerPhase.midFrameMicrotasks):
+            case var __case33727 when Equals(__case33727, SchedulerPhase.persistentCallbacks):
                 {
                     return;
                 }
@@ -518,9 +518,9 @@ public abstract class SchedulerBinding : BindingBase
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintScheduleFrameStacks)
+                if (DebugLibrary.debugPrintScheduleFrameStacks)
                 {
-                    global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleFrame() called. Current phase is {schedulerPhase}.");
+                    AssertionsLibrary.debugPrintStack(label: $"scheduleFrame() called. Current phase is {schedulerPhase}.");
                 }
                 return true;
             });
@@ -547,9 +547,9 @@ public abstract class SchedulerBinding : BindingBase
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintScheduleFrameStacks)
+                if (DebugLibrary.debugPrintScheduleFrameStacks)
                 {
-                    global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleForcedFrame() called. Current phase is {schedulerPhase}.");
+                    AssertionsLibrary.debugPrintStack(label: $"scheduleForcedFrame() called. Current phase is {schedulerPhase}.");
                 }
                 return true;
             });
@@ -562,13 +562,13 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void scheduleWarmUpFrame()
     {
-        if ((_warmUpFrame || (!object.Equals(schedulerPhase, SchedulerPhase.idle))))
+        if ((_warmUpFrame || (!Equals(schedulerPhase, SchedulerPhase.idle))))
         {
             return;
         }
         _warmUpFrame = true;
         TimelineTask? debugTimelineTask = default!;
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!ConstantsLibrary.kReleaseMode)
         {
             debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
@@ -596,7 +596,7 @@ public abstract class SchedulerBinding : BindingBase
         _ = lockEvents((async () =>
         {
             await endOfFrame;
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask!.finish();
             }
@@ -675,7 +675,7 @@ public abstract class SchedulerBinding : BindingBase
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugFrameNumber += 1L;
-                if ((global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner || global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintEndFrameBanner))
+                if ((DebugLibrary.debugPrintBeginFrameBanner || DebugLibrary.debugPrintEndFrameBanner))
                 {
                     var frameTimeStampDescription = new StringBuffer();
                     if (rawTimeStamp is Duration rawTimeStamp__value47605)
@@ -687,14 +687,14 @@ public abstract class SchedulerBinding : BindingBase
                         frameTimeStampDescription.write("(warm-up frame)");
                     }
                     _debugBanner = $"▄▄▄▄▄▄▄▄ Frame {_debugFrameNumber.ToString().padRight(7L)}   {frameTimeStampDescription.ToString().padLeft(18L)} ▄▄▄▄▄▄▄▄";
-                    if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner)
+                    if (DebugLibrary.debugPrintBeginFrameBanner)
                     {
-                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(_debugBanner);
+                        PrintLibrary.debugPrint(_debugBanner);
                     }
                 }
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => (object.Equals(schedulerPhase, SchedulerPhase.idle)));
+        DartRuntimePrimitives.Assert(() => (Equals(schedulerPhase, SchedulerPhase.idle)));
         _hasScheduledFrame = false;
         try
         {
@@ -724,11 +724,11 @@ public abstract class SchedulerBinding : BindingBase
     {
         // Managed hosts without a Dart VM decline this optional hint explicitly.
         if (!PlatformDispatcher.instance.supportsDartPerformanceMode) return null;
-        if (((_performanceMode is not null) && (!object.Equals(_performanceMode, mode))))
+        if (((_performanceMode is not null) && (!Equals(_performanceMode, mode))))
         {
             return null;
         }
-        if ((object.Equals(_performanceMode, mode)))
+        if ((Equals(_performanceMode, mode)))
         {
             DartRuntimePrimitives.Assert(() => (_numPerformanceModeRequests > 0L));
             _numPerformanceModeRequests++;
@@ -758,7 +758,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual DartPerformanceMode? debugGetRequestedPerformanceMode()
     {
-        if (!((global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode || global::Doroti.Framework.Foundation.ConstantsLibrary.kProfileMode)))
+        if (!((ConstantsLibrary.kDebugMode || ConstantsLibrary.kProfileMode)))
         {
             return null;
         }
@@ -771,7 +771,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual void handleDrawFrame()
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(_schedulerPhase, SchedulerPhase.midFrameMicrotasks)));
+        DartRuntimePrimitives.Assert(() => (Equals(_schedulerPhase, SchedulerPhase.midFrameMicrotasks)));
         _frameTimelineTask?.finish();
         try
         {
@@ -785,7 +785,7 @@ public abstract class SchedulerBinding : BindingBase
             frameTrace.Record(DorotiFramePhase.postFrameCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
             var localPostFrameCallbacks = new List<Action<Duration>>(_postFrameCallbacks);
             _postFrameCallbacks.Clear();
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.startSync("POST_FRAME");
             }
@@ -798,7 +798,7 @@ public abstract class SchedulerBinding : BindingBase
             }
             finally
             {
-                if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+                if (!ConstantsLibrary.kReleaseMode)
                 {
                     FlutterTimeline.finishSync();
                 }
@@ -811,9 +811,9 @@ public abstract class SchedulerBinding : BindingBase
             _frameTimelineTask?.finish();
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintEndFrameBanner)
+                    if (DebugLibrary.debugPrintEndFrameBanner)
                     {
-                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(DartCoreExtensions.repeat("▀", _debugBanner!.Length));
+                        PrintLibrary.debugPrint(DartCoreExtensions.repeat("▀", _debugBanner!.Length));
                     }
                     _debugBanner = null;
                     return true;

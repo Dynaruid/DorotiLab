@@ -67,6 +67,6 @@ internal static class WorkspaceFingerprint
         }
 
         var bytes = Encoding.UTF8.GetBytes(string.Join('\n', inputs) + "\n");
-        return System.Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
+        return Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
     }
 }

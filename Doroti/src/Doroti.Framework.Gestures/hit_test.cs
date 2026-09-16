@@ -36,7 +36,7 @@ public class HitTestEntry<T> where T : HitTestTarget
         this.identity = this;
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this.target})";
+    public override string ToString() => $"{(DiagnosticsLibrary.describeIdentity(this))}({this.target})";
     public virtual Matrix4? transform => this._transform;
 }
 

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/image_cache.dart
-#pragma warning disable CS8601, CS8604
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Painting;
@@ -36,12 +35,12 @@ public class ImageCache
                 return;
             }
             TimelineTask? debugTimelineTask = default!;
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
     var __cascade = new TimelineTask();
-    __cascade.start("ImageCache.setMaximumSize", arguments: new DartMap<string, object> { ["value"] = __value });
+    __cascade.start("ImageCache.setMaximumSize", arguments: new DartMap<string, object?> { ["value"] = __value });
     return __cascade;
 }))();
             }
@@ -54,7 +53,7 @@ public class ImageCache
             {
                 _checkCacheSize(debugTimelineTask);
             }
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask!.finish();
             }
@@ -73,12 +72,12 @@ public class ImageCache
                 return;
             }
             TimelineTask? debugTimelineTask = default!;
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
     var __cascade = new TimelineTask();
-    __cascade.start("ImageCache.setMaximumSizeBytes", arguments: new DartMap<string, object> { ["value"] = __value });
+    __cascade.start("ImageCache.setMaximumSizeBytes", arguments: new DartMap<string, object?> { ["value"] = __value });
     return __cascade;
 }))();
             }
@@ -91,7 +90,7 @@ public class ImageCache
             {
                 _checkCacheSize(debugTimelineTask);
             }
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask!.finish();
             }
@@ -100,9 +99,9 @@ public class ImageCache
     public virtual long currentSizeBytes => this._currentSizeBytes;
     public virtual void clear()
     {
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            Timeline.instantSync("ImageCache.clear", arguments: new DartMap<string, object> { ["pendingImages"] = checked((long)(this._pendingImages.Count)), ["keepAliveImages"] = checked((long)(this._cache.Count)), ["liveImages"] = checked((long)(this._liveImages.Count)), ["currentSizeInBytes"] = this._currentSizeBytes });
+            Timeline.instantSync("ImageCache.clear", arguments: new DartMap<string, object?> { ["pendingImages"] = checked((long)(this._pendingImages.Count)), ["keepAliveImages"] = checked((long)(this._cache.Count)), ["liveImages"] = checked((long)(this._liveImages.Count)), ["currentSizeInBytes"] = this._currentSizeBytes });
         }
         foreach (_CachedImage__image_cache image in this._cache.Values)
         {
@@ -127,9 +126,9 @@ public class ImageCache
         _PendingImage__image_cache? pendingImage = this._pendingImages.remove(key);
         if ((pendingImage is not null))
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "pending" });
+                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object?> { ["type"] = "pending" });
             }
             pendingImage.removeListener();
             return true;
@@ -137,17 +136,17 @@ public class ImageCache
         _CachedImage__image_cache? imageLocal = this._cache.remove(key);
         if ((imageLocal is not null))
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "keepAlive", ["sizeInBytes"] = imageLocal.sizeBytes });
+                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object?> { ["type"] = "keepAlive", ["sizeInBytes"] = imageLocal.sizeBytes });
             }
             _currentSizeBytes -= DartRuntimePrimitives.RequireValue(imageLocal.sizeBytes);
             imageLocal.dispose();
             return true;
         }
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
-            Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "miss" });
+            Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object?> { ["type"] = "miss" });
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -181,30 +180,30 @@ public class ImageCache
     public virtual ImageStreamCompleter? putIfAbsent(object key, Func<ImageStreamCompleter> loader, Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
     {
         TimelineTask? debugTimelineTask = default!;
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
     var __cascade = new TimelineTask();
-    __cascade.start("ImageCache.putIfAbsent", arguments: new DartMap<string, object> { ["key"] = key.ToString() });
+    __cascade.start("ImageCache.putIfAbsent", arguments: new DartMap<string, object?> { ["key"] = key.ToString() });
     return __cascade;
 }))();
         }
         ImageStreamCompleter? result = this._pendingImages.GetValueOrDefault(key)?.completer;
         if ((result is not null))
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "pending" });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "pending" });
             }
             return result;
         }
         _CachedImage__image_cache? imageLocal = this._cache.remove(key);
         if ((imageLocal is not null))
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "keepAlive" });
             }
             _trackLiveImage(key, imageLocal.completer, imageLocal.sizeBytes);
             this._cache[key] = imageLocal;
@@ -214,9 +213,9 @@ public class ImageCache
         if ((liveImage is not null))
         {
             _touch(key, new _CachedImage__image_cache(liveImage.completer, sizeBytes: liveImage.sizeBytes), debugTimelineTask);
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "keepAlive" });
             }
             return liveImage.completer;
         }
@@ -228,9 +227,9 @@ public class ImageCache
         catch (Exception error)
         {
             var stackTrace = new System.Diagnostics.StackTrace();
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "error", ["error"] = error.ToString(), ["stackTrace"] = stackTrace.ToString() });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object?> { ["result"] = "error", ["error"] = error.ToString(), ["stackTrace"] = stackTrace.ToString() });
             }
             if ((onError is not null))
             {
@@ -242,7 +241,7 @@ public class ImageCache
                 throw;
             }
         }
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             debugTimelineTask!.start("listener");
         }
@@ -272,13 +271,13 @@ public class ImageCache
             {
                 pendingImage.removeListener();
             }
-            if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && !listenedOnce))
+            if ((!Foundation.ConstantsLibrary.kReleaseMode && !listenedOnce))
             {
                 ((Func<TimelineTask>)(() =>
 {
     var __cascade = debugTimelineTask!;
-    __cascade.finish(arguments: new DartMap<string, object> { ["syncCall"] = syncCall, ["sizeInBytes"] = sizeBytesLocal });
-    __cascade.finish(arguments: new DartMap<string, object> { ["currentSizeBytes"] = this.currentSizeBytes, ["currentSize"] = this.currentSize });
+    __cascade.finish(arguments: new DartMap<string, object?> { ["syncCall"] = syncCall, ["sizeInBytes"] = sizeBytesLocal });
+    __cascade.finish(arguments: new DartMap<string, object?> { ["currentSizeBytes"] = this.currentSizeBytes, ["currentSize"] = this.currentSize });
     return __cascade;
 }))();
             }
@@ -320,11 +319,11 @@ public class ImageCache
 
     internal virtual void _checkCacheSize(TimelineTask? timelineTask)
     {
-        var finishArgs = new DartMap<string, object>();
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        var finishArgs = new DartMap<string, object?>();
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             timelineTask!.start("checkCacheSize");
-            finishArgs["evictedKeys"] = new List<string>();
+            finishArgs["evictedKeys"] = new List<string?>();
             finishArgs["currentSize"] = this.currentSize;
             finishArgs["currentSizeBytes"] = this.currentSizeBytes;
         }
@@ -335,12 +334,12 @@ public class ImageCache
             _currentSizeBytes -= DartRuntimePrimitives.RequireValue(image.sizeBytes);
             image.dispose();
             this._cache.remove(key);
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
-                (((List<string>?)(object?)finishArgs.GetValueOrDefault("evictedKeys"))!).Add(key.ToString());
+                (((List<string?>?)finishArgs.GetValueOrDefault("evictedKeys"))!).Add(key.ToString());
             }
         }
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             finishArgs["endSize"] = this.currentSize;
             finishArgs["endSizeBytes"] = this.currentSizeBytes;
@@ -373,7 +372,7 @@ public class ImageCacheStatus
     {
         var __other = other as ImageCacheStatus;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
@@ -381,7 +380,7 @@ public class ImageCacheStatus
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.pending, this.keepAlive, this.live);
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageCacheStatus"))}(pending: {this.pending}, live: {this.live}, keepAlive: {this.keepAlive})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageCacheStatus"))}(pending: {this.pending}, live: {this.live}, keepAlive: {this.keepAlive})";
 }
 
 internal abstract class _CachedImageBase__image_cache
@@ -400,7 +399,7 @@ internal abstract class _CachedImageBase__image_cache
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => (this.handle is not null));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         SchedulerBinding.instance.addPostFrameCallback(((timeStamp) =>
         {
             DartRuntimePrimitives.Assert(() => (this.handle is not null));
@@ -433,7 +432,7 @@ internal class _LiveImage__image_cache : _CachedImageBase__image_cache
         base.dispose();
     }
 
-    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
 internal class _PendingImage__image_cache

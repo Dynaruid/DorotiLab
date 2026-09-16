@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/sliver_fill.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -24,7 +23,7 @@ public class SliverFillViewport : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _SliverFractionalPadding__sliver_fill(viewportFraction: (this.padEnds ? (Dart_uiLibrary.clampDouble((1L - this.viewportFraction), 0, 1) / 2L) : 0), sliver: new _SliverFillViewportRenderObjectWidget__sliver_fill(viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling, @delegate: this.@delegate)));
+        return ((Widget)new _SliverFractionalPadding__sliver_fill(viewportFraction: (this.padEnds ? (Dart_uiLibrary.clampDouble((1L - this.viewportFraction), 0, 1) / 2L) : 0), sliver: new _SliverFillViewportRenderObjectWidget__sliver_fill(viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling, @delegate: this.@delegate)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -44,14 +43,14 @@ internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiB
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element = ((SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverFillViewport(childManager: element, viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling));
+        var element = ((SliverMultiBoxAdaptorElement?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)new global::Doroti.Framework.Rendering.RenderSliverFillViewport(childManager: element, viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverFillViewport)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverFillViewport)renderObject;
         __renderObject.viewportFraction = this.viewportFraction;
         __renderObject.allowImplicitScrolling = this.allowImplicitScrolling;
     }
@@ -72,7 +71,7 @@ internal class _SliverFractionalPadding__sliver_fill : SingleChildRenderObjectWi
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _RenderSliverFractionalPadding__sliver_fill(viewportFraction: this.viewportFraction));
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderSliverFractionalPadding__sliver_fill)(object)renderObject;
+        var __renderObject = (_RenderSliverFractionalPadding__sliver_fill)renderObject;
         __renderObject.viewportFraction = this.viewportFraction;
     }
 
@@ -114,13 +113,13 @@ public class _RenderSliverFractionalPadding__sliver_fill : global::Doroti.Framew
 
     internal virtual void _resolve()
     {
-        if (((this._resolvedPadding is not null) && (object.Equals(this._lastResolvedConstraints, this.constraints))))
+        if (((this._resolvedPadding is not null) && (Equals(this._lastResolvedConstraints, this.constraints))))
         {
             return;
         }
         double paddingValue = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent * this.viewportFraction);
         _lastResolvedConstraints = this.constraints;
-        _resolvedPadding = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingValue), global::Doroti.Framework.Painting.Axis.vertical => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: paddingValue), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        _resolvedPadding = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { Axis.horizontal => EdgeInsets.CreateSymmetric(horizontal: paddingValue), Axis.vertical => EdgeInsets.CreateSymmetric(vertical: paddingValue), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         return;
     }
 
@@ -149,13 +148,13 @@ public class SliverFillRemaining : StatelessWidget
     {
         if (this.hasScrollBody)
         {
-            return ((Widget)(object?)new _SliverFillRemainingWithScrollable__sliver_fill(child: this.child));
+            return ((Widget)new _SliverFillRemainingWithScrollable__sliver_fill(child: this.child));
         }
         if (!this.fillOverscroll)
         {
-            return ((Widget)(object?)new _SliverFillRemainingWithoutScrollable__sliver_fill(child: this.child));
+            return ((Widget)new _SliverFillRemainingWithoutScrollable__sliver_fill(child: this.child));
         }
-        return ((Widget)(object?)new _SliverFillRemainingAndOverscroll__sliver_fill(child: this.child));
+        return ((Widget)new _SliverFillRemainingAndOverscroll__sliver_fill(child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -164,7 +163,7 @@ public class SliverFillRemaining : StatelessWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("child", this.child));
         var flags = new List<string>();
-        if (!System.Linq.Enumerable.Any(flags))
+        if (!Enumerable.Any(flags))
         {
             flags.Add("nonscrollable");
         }

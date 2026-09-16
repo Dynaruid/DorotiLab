@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/theme.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604, CS8629
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -24,28 +24,28 @@ public class CupertinoTheme : global::Doroti.Framework.Widgets.StatelessWidget
 
     public static CupertinoThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        return ((CupertinoThemeData)(object?)((inheritedTheme?.theme.data ?? new CupertinoThemeData())).resolveFrom(context));
+        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        return ((CupertinoThemeData)((inheritedTheme?.theme.data ?? new CupertinoThemeData())).resolveFrom(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness brightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
         return ((inheritedTheme?.theme.data.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness? maybeBrightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        return ((inheritedTheme?.theme.data.brightness ?? (Brightness)MediaQuery.maybePlatformBrightnessOf(context)));
+        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        return ((inheritedTheme?.theme.data.brightness ?? MediaQuery.maybePlatformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new InheritedCupertinoTheme(theme: this, child: new global::Doroti.Framework.Widgets.IconTheme(data: new CupertinoIconThemeData(color: ((CupertinoThemeData)this.data).primaryColor), child: this.child)));
+        return ((global::Doroti.Framework.Widgets.Widget)new InheritedCupertinoTheme(theme: this, child: new global::Doroti.Framework.Widgets.IconTheme(data: new CupertinoIconThemeData(color: ((CupertinoThemeData)this.data).primaryColor), child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -68,11 +68,11 @@ public class InheritedCupertinoTheme : global::Doroti.Framework.Widgets.Inherite
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoTheme(data: ((CupertinoTheme)this.theme).data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new CupertinoTheme(data: ((CupertinoTheme)this.theme).data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(((CupertinoTheme)this.theme).data, ((InheritedCupertinoTheme)oldWidget).theme.data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(((CupertinoTheme)this.theme).data, ((InheritedCupertinoTheme)oldWidget).theme.data)));
 }
 
 public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Framework.Foundation.Diagnosticable
@@ -93,18 +93,18 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Fr
         this._defaults = _defaults;
     }
 
-    public override Color? primaryColor => DartRuntimePrimitives.ConvertValue<Color>((base.primaryColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).primaryColor));
-    public override Color? primaryContrastingColor => DartRuntimePrimitives.ConvertValue<Color>((base.primaryContrastingColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).primaryContrastingColor));
-    public override CupertinoTextThemeData? textTheme
+    public override Color primaryColor => DartRuntimePrimitives.ConvertValue<Color>((base.primaryColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).primaryColor));
+    public override Color primaryContrastingColor => DartRuntimePrimitives.ConvertValue<Color>((base.primaryContrastingColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).primaryContrastingColor));
+    public override CupertinoTextThemeData textTheme
     {
         get
         {
             return ((base.textTheme ?? (CupertinoTextThemeData)((_CupertinoThemeDefaults__theme)this._defaults).textThemeDefaults.createDefaults(primaryColor: this.primaryColor)));
         }
     }
-    public override Color? barBackgroundColor => DartRuntimePrimitives.ConvertValue<Color>((base.barBackgroundColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).barBackgroundColor));
-    public override Color? scaffoldBackgroundColor => DartRuntimePrimitives.ConvertValue<Color>((base.scaffoldBackgroundColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).scaffoldBackgroundColor));
-    public override Color? selectionHandleColor => DartRuntimePrimitives.ConvertValue<Color>((base.selectionHandleColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).selectionHandleColor));
+    public override Color barBackgroundColor => DartRuntimePrimitives.ConvertValue<Color>((base.barBackgroundColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).barBackgroundColor));
+    public override Color scaffoldBackgroundColor => DartRuntimePrimitives.ConvertValue<Color>((base.scaffoldBackgroundColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).scaffoldBackgroundColor));
+    public override Color selectionHandleColor => DartRuntimePrimitives.ConvertValue<Color>((base.selectionHandleColor ?? ((_CupertinoThemeDefaults__theme)this._defaults).selectionHandleColor));
     public override bool? applyThemeToAll => DartRuntimePrimitives.ConvertValue<bool>((base.applyThemeToAll ?? ((_CupertinoThemeDefaults__theme)this._defaults).applyThemeToAll));
     public override NoDefaultCupertinoThemeData noDefault()
     {
@@ -150,16 +150,16 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Fr
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((__other is CupertinoThemeData) && (object.Equals(((CupertinoThemeData)__other).brightness, this.brightness))) && (object.Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).primaryColor, this.primaryColor))) && (object.Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).primaryContrastingColor, this.primaryContrastingColor))) && (object.Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).textTheme, this.textTheme))) && (object.Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).barBackgroundColor, this.barBackgroundColor))) && (object.Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).scaffoldBackgroundColor, this.scaffoldBackgroundColor))) && (object.Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).selectionHandleColor, this.selectionHandleColor))) && (((CupertinoThemeData)((CupertinoThemeData)__other)).applyThemeToAll == this.applyThemeToAll));
+        return (((((((((__other is CupertinoThemeData) && (Equals(((CupertinoThemeData)__other).brightness, this.brightness))) && (Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).primaryColor, this.primaryColor))) && (Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).primaryContrastingColor, this.primaryContrastingColor))) && (Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).textTheme, this.textTheme))) && (Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).barBackgroundColor, this.barBackgroundColor))) && (Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).scaffoldBackgroundColor, this.scaffoldBackgroundColor))) && (Equals(((CupertinoThemeData)((CupertinoThemeData)__other)).selectionHandleColor, this.selectionHandleColor))) && (((CupertinoThemeData)((CupertinoThemeData)__other)).applyThemeToAll == this.applyThemeToAll));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.brightness, this.primaryColor, this.primaryContrastingColor, this.textTheme, this.barBackgroundColor, this.scaffoldBackgroundColor, this.selectionHandleColor, this.applyThemeToAll));
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -175,7 +175,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Fr
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -230,11 +230,11 @@ public class NoDefaultCupertinoThemeData
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((__other is NoDefaultCupertinoThemeData) && (object.Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).brightness, this.brightness))) && (object.Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).primaryColor, this.primaryColor))) && (object.Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).primaryContrastingColor, this.primaryContrastingColor))) && (object.Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).textTheme, this.textTheme))) && (object.Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).barBackgroundColor, this.barBackgroundColor))) && (object.Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).scaffoldBackgroundColor, this.scaffoldBackgroundColor))) && (((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).applyThemeToAll == this.applyThemeToAll));
+        return ((((((((__other is NoDefaultCupertinoThemeData) && (Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).brightness, this.brightness))) && (Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).primaryColor, this.primaryColor))) && (Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).primaryContrastingColor, this.primaryContrastingColor))) && (Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).textTheme, this.textTheme))) && (Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).barBackgroundColor, this.barBackgroundColor))) && (Equals(((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).scaffoldBackgroundColor, this.scaffoldBackgroundColor))) && (((NoDefaultCupertinoThemeData)((NoDefaultCupertinoThemeData)__other)).applyThemeToAll == this.applyThemeToAll));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.brightness, this.primaryColor, this.primaryContrastingColor, this.textTheme, this.barBackgroundColor, this.scaffoldBackgroundColor, this.applyThemeToAll));
@@ -295,7 +295,7 @@ public class _CupertinoTextThemeDefaults__theme
 
     public virtual CupertinoTextThemeData createDefaults(Color primaryColor)
     {
-        return ((CupertinoTextThemeData)(object?)new _DefaultCupertinoTextThemeData__theme(primaryColor: primaryColor, labelColor: this.labelColor, inactiveGray: this.inactiveGray));
+        return ((CupertinoTextThemeData)new _DefaultCupertinoTextThemeData__theme(primaryColor: primaryColor, labelColor: this.labelColor, inactiveGray: this.inactiveGray));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/_window.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -22,7 +21,7 @@ public abstract class BaseWindowControllerIo : global::Doroti.Framework.Foundati
         get => this._view;
         set
         {
-            var view = (DorotiView)(object)value;
+            var view = (DorotiView)value;
             _view = view;
         }
     }
@@ -33,7 +32,7 @@ public class WindowControllerDelegateIo
 {
     public virtual void onWindowCloseRequested(WindowControllerIo controller)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -42,7 +41,7 @@ public class WindowControllerDelegateIo
 
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -54,7 +53,7 @@ public abstract class WindowControllerIo : BaseWindowControllerIo
 {
     public static WindowControllerIo Create(Size size, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, WindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -63,18 +62,18 @@ public abstract class WindowControllerIo : BaseWindowControllerIo
             DartRuntimePrimitives.Assert(() => constraints.isSatisfiedBy(size));
         }
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        return ((WindowControllerIo)(object?)owner.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), size: size, constraints: constraints, title: title, resizable: true));
+        return ((WindowControllerIo)owner.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), size: size, constraints: constraints, title: title, resizable: true));
     }
 
     public static WindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, WindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        return ((WindowControllerIo)(object?)owner.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title));
+        return ((WindowControllerIo)owner.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title));
     }
 
     protected WindowControllerIo()
@@ -99,7 +98,7 @@ public class DialogWindowControllerDelegateIo
 {
     public virtual void onWindowCloseRequested(DialogWindowControllerIo controller)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -108,7 +107,7 @@ public class DialogWindowControllerDelegateIo
 
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -120,7 +119,7 @@ public abstract class DialogWindowControllerIo : BaseWindowControllerIo
 {
     public static DialogWindowControllerIo Create(Size size, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, DialogWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -130,18 +129,18 @@ public abstract class DialogWindowControllerIo : BaseWindowControllerIo
             DartRuntimePrimitives.Assert(() => constraints.isSatisfiedBy(size));
         }
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        return ((DialogWindowControllerIo)(object?)owner.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), size: size, constraints: constraints, title: title, parent: parent, resizable: true));
+        return ((DialogWindowControllerIo)owner.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), size: size, constraints: constraints, title: title, parent: parent, resizable: true));
     }
 
     public static DialogWindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, DialogWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        return ((DialogWindowControllerIo)(object?)owner.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title, parent: parent));
+        return ((DialogWindowControllerIo)owner.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title, parent: parent));
     }
 
     protected DialogWindowControllerIo()
@@ -163,7 +162,7 @@ public class TooltipWindowControllerDelegateIo
 {
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -176,13 +175,13 @@ public abstract class TooltipWindowControllerIo : BaseWindowControllerIo
     public static TooltipWindowControllerIo Create(BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner, global::Doroti.Framework.Rendering.BoxConstraints constraints = default!, TooltipWindowControllerDelegateIo? @delegate = null)
     {
         global::Doroti.Framework.Rendering.BoxConstraints __constraints = constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints();
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        TooltipWindowControllerIo controller = ((TooltipWindowControllerIo)(object?)owner.createTooltipWindowController(parent: parent, constraints: __constraints, @delegate: (@delegate ?? new TooltipWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
+        TooltipWindowControllerIo controller = ((TooltipWindowControllerIo)owner.createTooltipWindowController(parent: parent, constraints: __constraints, @delegate: (@delegate ?? new TooltipWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
         return controller;
     }
 
@@ -199,7 +198,7 @@ public class PopupWindowControllerDelegateIo
 {
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -211,13 +210,13 @@ public abstract class PopupWindowControllerIo : BaseWindowControllerIo
 {
     public static PopupWindowControllerIo Create(BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, PopupWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        return ((PopupWindowControllerIo)(object?)owner.createPopupWindowController(parent: parent, constraints: (constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints()), @delegate: (@delegate ?? new PopupWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
+        return ((PopupWindowControllerIo)owner.createPopupWindowController(parent: parent, constraints: (constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints()), @delegate: (@delegate ?? new PopupWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
     }
 
     protected PopupWindowControllerIo()
@@ -304,7 +303,7 @@ public class SatelliteWindowControllerDelegateIo
 {
     public virtual void onWindowCloseRequested(SatelliteWindowControllerIo controller)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -313,7 +312,7 @@ public class SatelliteWindowControllerDelegateIo
 
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -325,7 +324,7 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
 {
     public static SatelliteWindowControllerIo Create(BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, SatelliteWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -335,18 +334,18 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
             DartRuntimePrimitives.Assert(() => constraints.isSatisfiedBy(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(size__value41904))));
         }
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        return ((SatelliteWindowControllerIo)(object?)owner.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, size: size, constraints: constraints, title: title, resizable: true));
+        return ((SatelliteWindowControllerIo)owner.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, size: size, constraints: constraints, title: title, resizable: true));
     }
 
     public static SatelliteWindowControllerIo CreateShrinkWrap(BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, SatelliteWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
         WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
-        return ((SatelliteWindowControllerIo)(object?)owner.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, constraints: constraints, resizable: resizable, title: title));
+        return ((SatelliteWindowControllerIo)owner.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, constraints: constraints, resizable: resizable, title: title));
     }
 
     protected SatelliteWindowControllerIo()
@@ -376,16 +375,16 @@ public static partial class _windowLibrary
 {
     public static WindowingOwnerIo createDefaultWindowingOwner()
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
-            return ((WindowingOwnerIo)(object?)new _WindowingOwnerUnsupported___window(errorMessage: _windowLibrary._kWindowingDisabledErrorMessage));
+            return ((WindowingOwnerIo)new _WindowingOwnerUnsupported___window(errorMessage: _kWindowingDisabledErrorMessage));
         }
         WindowingOwnerIo? owner = _window_ioLibrary.createDefaultOwner();
         if ((owner is not null))
         {
             return owner;
         }
-        return ((WindowingOwnerIo)(object?)new _WindowingOwnerUnsupported___window(errorMessage: "Windowing is unsupported on this platform."));
+        return ((WindowingOwnerIo)new _WindowingOwnerUnsupported___window(errorMessage: "Windowing is unsupported on this platform."));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -444,7 +443,7 @@ public class WindowIo : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
+        return ((Widget)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -463,7 +462,7 @@ public class DialogWindowIo : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
+        return ((Widget)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -482,7 +481,7 @@ public class TooltipWindowIo : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
+        return ((Widget)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -501,7 +500,7 @@ public class PopupWindowIo : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
+        return ((Widget)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -520,7 +519,7 @@ public class SatelliteWindowIo : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
+        return ((Widget)new ListenableBuilder(listenable: this.controller, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, widget) => new WindowScopeIo(controller: this.controller, child: new View(view: this.controller.rootView, child: this.child))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -553,121 +552,121 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
         this.controller = controller;
         this._isDestroyed = ((BaseWindowControllerIo)controller).isDestroyed;
         this._contentSize = (((BaseWindowControllerIo)controller).isDestroyed ? Size.zero : ((BaseWindowControllerIo)controller).contentSize);
-        this._title = (((BaseWindowControllerIo)controller).isDestroyed ? "" : WindowScopeIo._titleValue(controller));
-        this._isActivated = (!((BaseWindowControllerIo)controller).isDestroyed && WindowScopeIo._isActivatedValue(controller));
-        this._isMaximized = (!((BaseWindowControllerIo)controller).isDestroyed && WindowScopeIo._isMaximizedValue(controller));
-        this._isMinimized = (!((BaseWindowControllerIo)controller).isDestroyed && WindowScopeIo._isMinimizedValue(controller));
-        this._isFullscreen = (!((BaseWindowControllerIo)controller).isDestroyed && WindowScopeIo._isFullscreenValue(controller));
+        this._title = (((BaseWindowControllerIo)controller).isDestroyed ? "" : _titleValue(controller));
+        this._isActivated = (!((BaseWindowControllerIo)controller).isDestroyed && _isActivatedValue(controller));
+        this._isMaximized = (!((BaseWindowControllerIo)controller).isDestroyed && _isMaximizedValue(controller));
+        this._isMinimized = (!((BaseWindowControllerIo)controller).isDestroyed && _isMinimizedValue(controller));
+        this._isFullscreen = (!((BaseWindowControllerIo)controller).isDestroyed && _isFullscreenValue(controller));
     }
 
     public static BaseWindowControllerIo of(BuildContext context)
     {
-        return ((BaseWindowControllerIo)(object?)WindowScopeIo._of(context));
+        return ((BaseWindowControllerIo)_of(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static BaseWindowControllerIo? maybeOf(BuildContext context)
     {
-        return ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context));
+        return ((BaseWindowControllerIo?)_maybeOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Size contentSizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(WindowScopeIo._of(context, _WindowControllerAspect___window.contentSize).contentSize);
-    public static global::Doroti.Ui.Size? maybeContentSizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.contentSize)?.contentSize);
+    public static global::Doroti.Ui.Size contentSizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(_of(context, _WindowControllerAspect___window.contentSize).contentSize);
+    public static global::Doroti.Ui.Size? maybeContentSizeOf(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(_maybeOf(context, _WindowControllerAspect___window.contentSize)?.contentSize);
     public static string titleOf(BuildContext context)
     {
-        return ((string)(object?)WindowScopeIo._titleValue(WindowScopeIo._of(context, _WindowControllerAspect___window.title)));
+        return ((string)_titleValue(_of(context, _WindowControllerAspect___window.title)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static string? maybeTitleOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.title));
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)_maybeOf(context, _WindowControllerAspect___window.title));
         if ((controller is null))
         {
-            return ((string)(object)null);
+            return ((string?)null);
         }
-        return ((string?)(object?)WindowScopeIo._titleValue(controller));
+        return ((string?)_titleValue(controller));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isActivatedOf(BuildContext context)
     {
-        return WindowScopeIo._isActivatedValue(WindowScopeIo._of(context, _WindowControllerAspect___window.activated));
+        return _isActivatedValue(_of(context, _WindowControllerAspect___window.activated));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool? maybeIsActivatedOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.activated));
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)_maybeOf(context, _WindowControllerAspect___window.activated));
         if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isActivatedValue(controller);
+        return _isActivatedValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isMinimizedOf(BuildContext context)
     {
-        return WindowScopeIo._isMinimizedValue(WindowScopeIo._of(context, _WindowControllerAspect___window.minimized));
+        return _isMinimizedValue(_of(context, _WindowControllerAspect___window.minimized));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool? maybeIsMinimizedOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.minimized));
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)_maybeOf(context, _WindowControllerAspect___window.minimized));
         if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isMinimizedValue(controller);
+        return _isMinimizedValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isMaximizedOf(BuildContext context)
     {
-        return WindowScopeIo._isMaximizedValue(WindowScopeIo._of(context, _WindowControllerAspect___window.maximized));
+        return _isMaximizedValue(_of(context, _WindowControllerAspect___window.maximized));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool? maybeIsMaximizedOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.maximized));
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)_maybeOf(context, _WindowControllerAspect___window.maximized));
         if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isMaximizedValue(controller);
+        return _isMaximizedValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isFullscreenOf(BuildContext context)
     {
-        return WindowScopeIo._isFullscreenValue(WindowScopeIo._of(context, _WindowControllerAspect___window.fullscreen));
+        return _isFullscreenValue(_of(context, _WindowControllerAspect___window.fullscreen));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool? maybeIsFullscreenOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.fullscreen));
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)_maybeOf(context, _WindowControllerAspect___window.fullscreen));
         if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isFullscreenValue(controller);
+        return _isFullscreenValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool isDestroyedOf(BuildContext context)
     {
-        return WindowScopeIo._of(context, _WindowControllerAspect___window.destroyed).isDestroyed;
+        return _of(context, _WindowControllerAspect___window.destroyed).isDestroyed;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool? maybeIsDestroyedOf(BuildContext context)
     {
-        return WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.destroyed)?.isDestroyed;
+        return _maybeOf(context, _WindowControllerAspect___window.destroyed)?.isDestroyed;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -678,18 +677,18 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
     internal static bool _isFullscreenValue(BaseWindowControllerIo controller) => (controller switch { WindowControllerIo __object79323 => ((WindowControllerIo)((WindowControllerIo)__object79323)).isFullscreen, DialogWindowControllerIo __object79374 => false, TooltipWindowControllerIo __object79413 => false, PopupWindowControllerIo __object79453 => false, SatelliteWindowControllerIo __object79491 => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     internal static BaseWindowControllerIo _of(BuildContext context, _WindowControllerAspect___window? aspect = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
-        DartRuntimePrimitives.Assert(() => WindowScopeIo._debugCheckHasWindowController(context));
+        DartRuntimePrimitives.Assert(() => _debugCheckHasWindowController(context));
         return InheritedModel<object>.inheritFrom<WindowScopeIo>(context, aspect: aspect)!.controller;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static BaseWindowControllerIo? _maybeOf(BuildContext context, _WindowControllerAspect___window? aspect = null)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -714,16 +713,16 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __oldWidget = (WindowScopeIo)(object)oldWidget;
-        return ((((((((!object.Equals(this.controller, ((WindowScopeIo)__oldWidget).controller)) || (!object.Equals(this._contentSize, ((WindowScopeIo)__oldWidget)._contentSize))) || (this._title != ((WindowScopeIo)__oldWidget)._title)) || (this._isActivated != ((WindowScopeIo)__oldWidget)._isActivated)) || (this._isMaximized != ((WindowScopeIo)__oldWidget)._isMaximized)) || (this._isMinimized != ((WindowScopeIo)__oldWidget)._isMinimized)) || (this._isFullscreen != ((WindowScopeIo)__oldWidget)._isFullscreen)) || (this._isDestroyed != ((WindowScopeIo)__oldWidget)._isDestroyed));
+        var __oldWidget = (WindowScopeIo)oldWidget;
+        return ((((((((!Equals(this.controller, ((WindowScopeIo)__oldWidget).controller)) || (!Equals(this._contentSize, ((WindowScopeIo)__oldWidget)._contentSize))) || (this._title != ((WindowScopeIo)__oldWidget)._title)) || (this._isActivated != ((WindowScopeIo)__oldWidget)._isActivated)) || (this._isMaximized != ((WindowScopeIo)__oldWidget)._isMaximized)) || (this._isMinimized != ((WindowScopeIo)__oldWidget)._isMinimized)) || (this._isFullscreen != ((WindowScopeIo)__oldWidget)._isFullscreen)) || (this._isDestroyed != ((WindowScopeIo)__oldWidget)._isDestroyed));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool updateShouldNotifyDependent(InheritedModel<_WindowControllerAspect___window> oldWidget, HashSet<_WindowControllerAspect___window> dependencies)
     {
-        var __oldWidget = (WindowScopeIo)(object)oldWidget;
+        var __oldWidget = (WindowScopeIo)oldWidget;
         var __dependencies = new HashSet<object>(dependencies.Cast<object>());
-        return __dependencies.any(((dependency) => ((dependency is _WindowControllerAspect___window) && (((_WindowControllerAspect___window)dependency) switch { _WindowControllerAspect___window.contentSize => (!object.Equals(this._contentSize, ((WindowScopeIo)__oldWidget)._contentSize)), _WindowControllerAspect___window.title => (this._title != ((WindowScopeIo)__oldWidget)._title), _WindowControllerAspect___window.activated => (this._isActivated != ((WindowScopeIo)__oldWidget)._isActivated), _WindowControllerAspect___window.maximized => (this._isMaximized != ((WindowScopeIo)__oldWidget)._isMaximized), _WindowControllerAspect___window.minimized => (this._isMinimized != ((WindowScopeIo)__oldWidget)._isMinimized), _WindowControllerAspect___window.fullscreen => (this._isFullscreen != ((WindowScopeIo)__oldWidget)._isFullscreen), _WindowControllerAspect___window.destroyed => (this._isDestroyed != ((WindowScopeIo)__oldWidget)._isDestroyed), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))));
+        return __dependencies.any(((dependency) => ((dependency is _WindowControllerAspect___window) && (((_WindowControllerAspect___window)dependency) switch { _WindowControllerAspect___window.contentSize => (!Equals(this._contentSize, ((WindowScopeIo)__oldWidget)._contentSize)), _WindowControllerAspect___window.title => (this._title != ((WindowScopeIo)__oldWidget)._title), _WindowControllerAspect___window.activated => (this._isActivated != ((WindowScopeIo)__oldWidget)._isActivated), _WindowControllerAspect___window.maximized => (this._isMaximized != ((WindowScopeIo)__oldWidget)._isMaximized), _WindowControllerAspect___window.minimized => (this._isMinimized != ((WindowScopeIo)__oldWidget)._isMinimized), _WindowControllerAspect___window.fullscreen => (this._isFullscreen != ((WindowScopeIo)__oldWidget)._isFullscreen), _WindowControllerAspect___window.destroyed => (this._isDestroyed != ((WindowScopeIo)__oldWidget)._isDestroyed), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -740,7 +739,7 @@ public class WindowRegistryIo : global::Doroti.Framework.Foundation.ChangeNotifi
     public virtual List<WindowEntryIo> windows => new List<WindowEntryIo>(DartRuntimePrimitives.ConvertEnumerable<WindowEntryIo>(this._windows));
     public virtual void register(WindowEntryIo entry)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -750,7 +749,7 @@ public class WindowRegistryIo : global::Doroti.Framework.Foundation.ChangeNotifi
 
     public virtual void unregister(WindowEntryIo entry)
     {
-        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!_featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -766,7 +765,7 @@ public class WindowRegistryIo : global::Doroti.Framework.Foundation.ChangeNotifi
 
     public static WindowRegistryIo of(BuildContext context)
     {
-        WindowRegistryIo? registry = ((WindowRegistryIo?)(object?)WindowRegistryIo.maybeOf(context));
+        WindowRegistryIo? registry = ((WindowRegistryIo?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((registry is null))
@@ -793,8 +792,8 @@ internal class _WindowRegistryScope___window : InheritedWidget
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __oldWidget = (_WindowRegistryScope___window)(object)oldWidget;
-        return (!object.Equals(this._registry, ((_WindowRegistryScope___window)__oldWidget)._registry));
+        var __oldWidget = (_WindowRegistryScope___window)oldWidget;
+        return (!Equals(this._registry, ((_WindowRegistryScope___window)__oldWidget)._registry));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -837,14 +836,14 @@ internal class _WindowManagerState___window : State<WindowManagerIo>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _WindowRegistryScope___window(registry: this._registry, child: new ListenableBuilder(listenable: this._registry, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        return ((Widget)new _WindowRegistryScope___window(registry: this._registry, child: new ListenableBuilder(listenable: this._registry, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
         {
             List<Widget> subViews = ((WindowRegistryIo)this._registry).windows.map<WindowEntryIo, StatelessWidget>(((entry) =>
             {
                 return (((WindowEntryIo)entry).controller switch { DialogWindowControllerIo dialog => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new DialogWindowIo(controller: dialog, child: entry.builder(context))), WindowControllerIo regular => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new WindowIo(controller: regular, child: entry.builder(context))), TooltipWindowControllerIo tooltip => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new TooltipWindowIo(controller: tooltip, child: entry.builder(context))), PopupWindowControllerIo popup => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new PopupWindowIo(controller: popup, child: entry.builder(context))), SatelliteWindowControllerIo satellite => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new SatelliteWindowIo(controller: satellite, child: entry.builder(context))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })).ToList().Cast<Widget>().ToList();
-            return ((Widget)(object?)new ViewCollection(views: subViews));
+            return ((Widget)new ViewCollection(views: subViews));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");

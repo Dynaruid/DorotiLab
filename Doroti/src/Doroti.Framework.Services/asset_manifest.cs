@@ -18,7 +18,7 @@ public interface AssetManifest
 {
     public static Future<AssetManifest> loadFromAssetBundle(AssetBundle bundle)
     {
-        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (ConstantsLibrary.kIsWeb)
         {
             return bundle.loadStructuredData<AssetManifest>(Asset_manifestLibrary._kAssetManifestWebFilename, ((jsonData) =>
             {
@@ -44,8 +44,10 @@ internal class _AssetManifestBin : AssetManifest
 
     internal static _AssetManifestBin CreateFromStandardMessageCodecMessage(ByteData message)
     {
-        object data = new StandardMessageCodec().decodeMessage(message);
-        return new _AssetManifestBin(DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)data));
+        var data = new StandardMessageCodec().decodeMessage(message);
+        if (data is not System.Collections.IDictionary entries)
+            throw new FormatException("The asset manifest must decode to a map.");
+        return new _AssetManifestBin(DartRuntimePrimitives.ConvertMap<object?, object?>(entries));
     }
 
     public virtual List<AssetMetadata>? getAssetVariants(string key)
@@ -91,4 +93,3 @@ public class AssetMetadata
     }
 
 }
-

@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/services/text_input.dart
-#pragma warning disable CS8600, CS8601, CS8604, CS8605
 using System.Diagnostics;
 using Doroti.Runtime;
 using Doroti.Ui;
@@ -27,7 +26,7 @@ public class TextInputType : IDartEnumIndex
     public virtual bool? @decimal { get; private set; }
     public static TextInputType text = new TextInputType(0L);
     public static TextInputType multiline = new TextInputType(1L);
-    public static TextInputType number = TextInputType.CreateNumberWithOptions();
+    public static TextInputType number = CreateNumberWithOptions();
     public static TextInputType phone = new TextInputType(3L);
     public static TextInputType datetime = new TextInputType(4L);
     public static TextInputType emailAddress = new TextInputType(5L);
@@ -56,15 +55,15 @@ public class TextInputType : IDartEnumIndex
     }
 
     internal virtual string _name => $"TextInputType.{_names[(int)(index)]}";
-    public virtual DartMap<string, object> toJson()
+    public virtual DartMap<string, object?> toJson()
     {
-        return new DartMap<string, object> { ["name"] = _name, ["signed"] = signed, ["decimal"] = @decimal };
+        return new DartMap<string, object?> { ["name"] = _name, ["signed"] = signed, ["decimal"] = @decimal };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextInputType"))}(" + $"name: {_name}, " + $"signed: {signed}, " + $"decimal: {@decimal})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TextInputType"))}(" + $"name: {_name}, " + $"signed: {signed}, " + $"decimal: {@decimal})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -154,10 +153,10 @@ public class TextInputConfiguration
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object> toJson()
+    public virtual DartMap<string, object?> toJson()
     {
-        DartMap<string, object>? autofill = autofillConfiguration.toJson();
-        return new DartMap<string, object> { ["viewId"] = viewId, ["inputType"] = inputType.toJson(), ["readOnly"] = readOnly, ["obscureText"] = obscureText, ["autocorrect"] = autocorrect, ["smartDashesType"] = FoundationRuntimePorts.EnumIndex(smartDashesType).ToString(), ["smartQuotesType"] = FoundationRuntimePorts.EnumIndex(smartQuotesType).ToString(), ["enableSuggestions"] = enableSuggestions, ["enableInteractiveSelection"] = enableInteractiveSelection, ["actionLabel"] = actionLabel, ["inputAction"] = inputAction.ToString(), ["textCapitalization"] = textCapitalization.ToString(), ["keyboardAppearance"] = keyboardAppearance.ToString(), ["enableIMEPersonalizedLearning"] = enableIMEPersonalizedLearning, ["contentCommitMimeTypes"] = allowedMimeTypes, ["autofill"] = autofill, ["enableDeltaModel"] = enableDeltaModel, ["hintLocales"] = hintLocales.map(((locale) => locale.toLanguageTag())).ToList(), ["enableInlinePrediction"] = enableInlinePrediction };
+        DartMap<string, object?>? autofill = autofillConfiguration.toJson();
+        return new DartMap<string, object?> { ["viewId"] = viewId, ["inputType"] = inputType.toJson(), ["readOnly"] = readOnly, ["obscureText"] = obscureText, ["autocorrect"] = autocorrect, ["smartDashesType"] = FoundationRuntimePorts.EnumIndex(smartDashesType).ToString(), ["smartQuotesType"] = FoundationRuntimePorts.EnumIndex(smartQuotesType).ToString(), ["enableSuggestions"] = enableSuggestions, ["enableInteractiveSelection"] = enableInteractiveSelection, ["actionLabel"] = actionLabel, ["inputAction"] = inputAction.ToString(), ["textCapitalization"] = textCapitalization.ToString(), ["keyboardAppearance"] = keyboardAppearance.ToString(), ["enableIMEPersonalizedLearning"] = enableIMEPersonalizedLearning, ["contentCommitMimeTypes"] = allowedMimeTypes, ["autofill"] = autofill, ["enableDeltaModel"] = enableDeltaModel, ["hintLocales"] = hintLocales?.Select(locale => locale.toLanguageTag()).ToList(), ["enableInlinePrediction"] = enableInlinePrediction };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -169,11 +168,11 @@ public class TextInputConfiguration
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((((((__other is TextInputConfiguration) && (((TextInputConfiguration)__other).viewId == viewId)) && (object.Equals(((TextInputConfiguration)__other).inputType, inputType))) && (((TextInputConfiguration)__other).readOnly == readOnly)) && (((TextInputConfiguration)__other).obscureText == obscureText)) && (((TextInputConfiguration)__other).autocorrect == autocorrect)) && (object.Equals(((TextInputConfiguration)__other).smartDashesType, smartDashesType))) && (object.Equals(((TextInputConfiguration)__other).smartQuotesType, smartQuotesType))) && (((TextInputConfiguration)__other).enableSuggestions == enableSuggestions)) && (((TextInputConfiguration)__other).enableInteractiveSelection == enableInteractiveSelection)) && (((TextInputConfiguration)__other).actionLabel == actionLabel)) && (object.Equals(((TextInputConfiguration)__other).inputAction, inputAction))) && (object.Equals(((TextInputConfiguration)__other).keyboardAppearance, keyboardAppearance))) && (object.Equals(((TextInputConfiguration)__other).textCapitalization, textCapitalization))) && (object.Equals(((TextInputConfiguration)__other).autofillConfiguration, autofillConfiguration))) && (((TextInputConfiguration)__other).enableIMEPersonalizedLearning == enableIMEPersonalizedLearning)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((TextInputConfiguration)__other).allowedMimeTypes, allowedMimeTypes)) && (((TextInputConfiguration)__other).enableDeltaModel == enableDeltaModel)) && (object.Equals(((TextInputConfiguration)__other).hintLocales, hintLocales))) && (((TextInputConfiguration)__other).enableInlinePrediction == enableInlinePrediction));
+        return ((((((((((((((((((((__other is TextInputConfiguration) && (((TextInputConfiguration)__other).viewId == viewId)) && (Equals(((TextInputConfiguration)__other).inputType, inputType))) && (((TextInputConfiguration)__other).readOnly == readOnly)) && (((TextInputConfiguration)__other).obscureText == obscureText)) && (((TextInputConfiguration)__other).autocorrect == autocorrect)) && (Equals(((TextInputConfiguration)__other).smartDashesType, smartDashesType))) && (Equals(((TextInputConfiguration)__other).smartQuotesType, smartQuotesType))) && (((TextInputConfiguration)__other).enableSuggestions == enableSuggestions)) && (((TextInputConfiguration)__other).enableInteractiveSelection == enableInteractiveSelection)) && (((TextInputConfiguration)__other).actionLabel == actionLabel)) && (Equals(((TextInputConfiguration)__other).inputAction, inputAction))) && (Equals(((TextInputConfiguration)__other).keyboardAppearance, keyboardAppearance))) && (Equals(((TextInputConfiguration)__other).textCapitalization, textCapitalization))) && (Equals(((TextInputConfiguration)__other).autofillConfiguration, autofillConfiguration))) && (((TextInputConfiguration)__other).enableIMEPersonalizedLearning == enableIMEPersonalizedLearning)) && CollectionsLibrary.listEquals(((TextInputConfiguration)__other).allowedMimeTypes, allowedMimeTypes)) && (((TextInputConfiguration)__other).enableDeltaModel == enableDeltaModel)) && (Equals(((TextInputConfiguration)__other).hintLocales, hintLocales))) && (((TextInputConfiguration)__other).enableInlinePrediction == enableInlinePrediction));
     }
 
     public override int GetHashCode()
@@ -193,7 +192,7 @@ public static partial class Text_inputLibrary
 {
     internal static TextAffinity? _toTextAffinity(string? affinity)
     {
-        return (affinity switch { var __case35229 when object.Equals(__case35229, "TextAffinity.downstream") => TextAffinity.downstream, var __case35287 when object.Equals(__case35287, "TextAffinity.upstream") => TextAffinity.upstream, _ => null });
+        return (affinity switch { var __case35229 when Equals(__case35229, "TextAffinity.downstream") => TextAffinity.downstream, var __case35287 when Equals(__case35287, "TextAffinity.upstream") => TextAffinity.upstream, _ => null });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -216,7 +215,7 @@ public class RawFloatingCursorPoint
         this.offset = offset;
         this.startLocation = startLocation;
         this.state = state;
-        System.Diagnostics.Debug.Assert(((!object.Equals(state, FloatingCursorDragState.Update)) || (offset is not null)));
+        Debug.Assert(((!Equals(state, FloatingCursorDragState.Update)) || (offset is not null)));
     }
 
 }
@@ -235,7 +234,7 @@ public class TextEditingValue
         this.composing = composing ?? TextRange.empty;
     }
 
-    public static TextEditingValue CreateFromJSON(DartMap<string, object> encoded)
+    public static TextEditingValue CreateFromJSON(DartMap<string, object?> encoded)
     {
         var text = ((string?)encoded.GetValueOrDefault("text"))!;
         var selection = new TextSelection(baseOffset: (((long?)encoded.GetValueOrDefault("selectionBase")) ?? -1L), extentOffset: (((long?)encoded.GetValueOrDefault("selectionExtent")) ?? -1L), affinity: (Text_inputLibrary._toTextAffinity(((string?)encoded.GetValueOrDefault("selectionAffinity"))!) ?? TextAffinity.downstream), isDirectional: (((bool?)encoded.GetValueOrDefault("selectionIsDirectional")) ?? false));
@@ -278,15 +277,15 @@ public class TextEditingValue
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object> toJSON()
+    public virtual DartMap<string, object?> toJSON()
     {
         DartRuntimePrimitives.Assert(() => _textRangeIsValid(selection, text));
         DartRuntimePrimitives.Assert(() => _textRangeIsValid(composing, text));
-        return new DartMap<string, object> { ["text"] = text, ["selectionBase"] = selection.baseOffset, ["selectionExtent"] = selection.extentOffset, ["selectionAffinity"] = selection.affinity.ToString(), ["selectionIsDirectional"] = selection.isDirectional, ["composingBase"] = composing.start, ["composingExtent"] = composing.end };
+        return new DartMap<string, object?> { ["text"] = text, ["selectionBase"] = selection.baseOffset, ["selectionExtent"] = selection.extentOffset, ["selectionAffinity"] = selection.affinity.ToString(), ["selectionIsDirectional"] = selection.isDirectional, ["composingBase"] = composing.start, ["composingExtent"] = composing.end };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextEditingValue"))}(text: ┤{text}├, selection: {selection}, composing: {composing})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "TextEditingValue"))}(text: ┤{text}├, selection: {selection}, composing: {composing})";
     public override bool Equals(object? other)
     {
         var __other = other as TextEditingValue;
@@ -295,7 +294,7 @@ public class TextEditingValue
         {
             return true;
         }
-        return ((((__other is TextEditingValue) && (((TextEditingValue)__other).text == text)) && (object.Equals(((TextEditingValue)__other).selection, selection))) && (object.Equals(((TextEditingValue)__other).composing, composing)));
+        return ((((__other is TextEditingValue) && (((TextEditingValue)__other).text == text)) && (Equals(((TextEditingValue)__other).selection, selection))) && (Equals(((TextEditingValue)__other).composing, composing)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(text.GetHashCode(), selection.GetHashCode(), composing.GetHashCode());
@@ -355,7 +354,7 @@ public interface TextInputClient
     {
     }
 
-    public void performPrivateCommand(string action, DartMap<string, object> data);
+    public void performPrivateCommand(string action, DartMap<string, object?> data);
     public void updateFloatingCursor(RawFloatingCursorPoint point);
     public void showAutocorrectionPromptRect(long start, long end);
     public bool onFocusReceived() => false;
@@ -411,11 +410,11 @@ public class SelectionRect
         {
             return true;
         }
-        if ((!object.Equals(this.GetType(), __other.GetType())))
+        if ((!Equals(this.GetType(), __other.GetType())))
         {
             return false;
         }
-        return ((((__other is SelectionRect) && (((SelectionRect)__other).position == position)) && (object.Equals(((SelectionRect)__other).bounds, bounds))) && (object.Equals(((SelectionRect)__other).direction, direction)));
+        return ((((__other is SelectionRect) && (((SelectionRect)__other).position == position)) && (Equals(((SelectionRect)__other).bounds, bounds))) && (Equals(((SelectionRect)__other).direction, direction)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(position, bounds);
@@ -458,20 +457,20 @@ public class TextInputStyle : Diagnosticable
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }
-        return (((((((((__other is TextInputStyle) && (((TextInputStyle)__other).fontFamily == fontFamily)) && (((TextInputStyle)__other).fontSize == fontSize)) && (object.Equals(((TextInputStyle)__other).fontWeight, fontWeight))) && (object.Equals(((TextInputStyle)__other).textDirection, textDirection))) && (object.Equals(((TextInputStyle)__other).textAlign, textAlign))) && (((TextInputStyle)__other).letterSpacing == letterSpacing)) && (((TextInputStyle)__other).wordSpacing == wordSpacing)) && (((TextInputStyle)__other).lineHeight == lineHeight));
+        return (((((((((__other is TextInputStyle) && (((TextInputStyle)__other).fontFamily == fontFamily)) && (((TextInputStyle)__other).fontSize == fontSize)) && (Equals(((TextInputStyle)__other).fontWeight, fontWeight))) && (Equals(((TextInputStyle)__other).textDirection, textDirection))) && (Equals(((TextInputStyle)__other).textAlign, textAlign))) && (((TextInputStyle)__other).letterSpacing == letterSpacing)) && (((TextInputStyle)__other).wordSpacing == wordSpacing)) && (((TextInputStyle)__other).lineHeight == lineHeight));
     }
 
     public override int GetHashCode()
     {
         return FoundationRuntimePorts.ObjectHash(fontFamily, fontSize, fontWeight, textDirection, textAlign, letterSpacing, wordSpacing, lineHeight);
     }
-    public virtual DartMap<string, object> toJson()
+    public virtual DartMap<string, object?> toJson()
     {
-        return new DartMap<string, object> { ["fontFamily"] = fontFamily, ["fontSize"] = fontSize, ["fontWeightIndex"] = FoundationRuntimePorts.EnumIndex(fontWeight), ["textAlignIndex"] = FoundationRuntimePorts.EnumIndex(textAlign), ["textDirectionIndex"] = FoundationRuntimePorts.EnumIndex(textDirection), ["letterSpacing"] = letterSpacing, ["wordSpacing"] = wordSpacing, ["lineHeight"] = lineHeight };
+        return new DartMap<string, object?> { ["fontFamily"] = fontFamily, ["fontSize"] = fontSize, ["fontWeightIndex"] = FoundationRuntimePorts.EnumIndex(fontWeight), ["textAlignIndex"] = FoundationRuntimePorts.EnumIndex(textAlign), ["textDirectionIndex"] = FoundationRuntimePorts.EnumIndex(textDirection), ["letterSpacing"] = letterSpacing, ["wordSpacing"] = wordSpacing, ["lineHeight"] = lineHeight };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -516,7 +515,7 @@ public class TextInputConnection
             });
     }
 
-    public virtual bool attached => (object.Equals(TextInput._instance._currentConnection, this));
+    public virtual bool attached => (Equals(TextInput._instance._currentConnection, this));
     public virtual bool scribbleInProgress => TextInput._instance.scribbleInProgress;
     public virtual void show()
     {
@@ -544,7 +543,7 @@ public class TextInputConnection
 
     public virtual void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform)
     {
-        if (((!object.Equals(editableBoxSize, _cachedSize)) || (!object.Equals(transform, _cachedTransform))))
+        if (((!Equals(editableBoxSize, _cachedSize)) || (!Equals(transform, _cachedTransform))))
         {
             _cachedSize = editableBoxSize;
             _cachedTransform = transform;
@@ -554,7 +553,7 @@ public class TextInputConnection
 
     public virtual void setComposingRect(Rect rect)
     {
-        if ((object.Equals(rect, _cachedRect)))
+        if ((Equals(rect, _cachedRect)))
         {
             return;
         }
@@ -565,7 +564,7 @@ public class TextInputConnection
 
     public virtual void setCaretRect(Rect rect)
     {
-        if ((object.Equals(rect, _cachedCaretRect)))
+        if ((Equals(rect, _cachedCaretRect)))
         {
             return;
         }
@@ -576,7 +575,7 @@ public class TextInputConnection
 
     public virtual void setSelectionRects(List<SelectionRect> selectionRects)
     {
-        if (!global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(_cachedSelectionRects, selectionRects))
+        if (!CollectionsLibrary.listEquals(_cachedSelectionRects, selectionRects))
         {
             _cachedSelectionRects = selectionRects;
             TextInput._instance._setSelectionRects(selectionRects);
@@ -615,7 +614,7 @@ public static partial class Text_inputLibrary
 {
     internal static TextInputAction _toTextInputAction(string action)
     {
-        return (action switch { var __case70013 when object.Equals(__case70013, "TextInputAction.none") => TextInputAction.none, var __case70065 when object.Equals(__case70065, "TextInputAction.unspecified") => TextInputAction.unspecified, var __case70131 when object.Equals(__case70131, "TextInputAction.go") => TextInputAction.go, var __case70179 when object.Equals(__case70179, "TextInputAction.search") => TextInputAction.search, var __case70235 when object.Equals(__case70235, "TextInputAction.send") => TextInputAction.send, var __case70287 when object.Equals(__case70287, "TextInputAction.next") => TextInputAction.next, var __case70339 when object.Equals(__case70339, "TextInputAction.previous") => TextInputAction.previous, var __case70399 when object.Equals(__case70399, "TextInputAction.continueAction") => TextInputAction.continueAction, var __case70471 when object.Equals(__case70471, "TextInputAction.join") => TextInputAction.join, var __case70523 when object.Equals(__case70523, "TextInputAction.route") => TextInputAction.route, var __case70577 when object.Equals(__case70577, "TextInputAction.emergencyCall") => TextInputAction.emergencyCall, var __case70647 when object.Equals(__case70647, "TextInputAction.done") => TextInputAction.done, var __case70699 when object.Equals(__case70699, "TextInputAction.newline") => TextInputAction.newline, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown text input action: {action}") }) });
+        return (action switch { var __case70013 when Equals(__case70013, "TextInputAction.none") => TextInputAction.none, var __case70065 when Equals(__case70065, "TextInputAction.unspecified") => TextInputAction.unspecified, var __case70131 when Equals(__case70131, "TextInputAction.go") => TextInputAction.go, var __case70179 when Equals(__case70179, "TextInputAction.search") => TextInputAction.search, var __case70235 when Equals(__case70235, "TextInputAction.send") => TextInputAction.send, var __case70287 when Equals(__case70287, "TextInputAction.next") => TextInputAction.next, var __case70339 when Equals(__case70339, "TextInputAction.previous") => TextInputAction.previous, var __case70399 when Equals(__case70399, "TextInputAction.continueAction") => TextInputAction.continueAction, var __case70471 when Equals(__case70471, "TextInputAction.join") => TextInputAction.join, var __case70523 when Equals(__case70523, "TextInputAction.route") => TextInputAction.route, var __case70577 when Equals(__case70577, "TextInputAction.emergencyCall") => TextInputAction.emergencyCall, var __case70647 when Equals(__case70647, "TextInputAction.done") => TextInputAction.done, var __case70699 when Equals(__case70699, "TextInputAction.newline") => TextInputAction.newline, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown text input action: {action}") }) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -624,18 +623,25 @@ public static partial class Text_inputLibrary
 {
     internal static FloatingCursorDragState _toTextCursorAction(string state)
     {
-        return (state switch { var __case70974 when object.Equals(__case70974, "FloatingCursorDragState.start") => FloatingCursorDragState.Start, var __case71044 when object.Equals(__case71044, "FloatingCursorDragState.update") => FloatingCursorDragState.Update, var __case71116 when object.Equals(__case71116, "FloatingCursorDragState.end") => FloatingCursorDragState.End, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown text cursor action: {state}") }) });
+        return (state switch { var __case70974 when Equals(__case70974, "FloatingCursorDragState.start") => FloatingCursorDragState.Start, var __case71044 when Equals(__case71044, "FloatingCursorDragState.update") => FloatingCursorDragState.Update, var __case71116 when Equals(__case71116, "FloatingCursorDragState.end") => FloatingCursorDragState.End, _ => throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Unknown text cursor action: {state}") }) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Text_inputLibrary
 {
-    internal static RawFloatingCursorPoint _toTextPoint(FloatingCursorDragState state, DartMap<string, object> encoded)
+    internal static RawFloatingCursorPoint _toTextPoint(FloatingCursorDragState state, DartMap<string, object?> encoded)
     {
+        double ReadCoordinate(string key) => encoded.GetValueOrDefault(key) switch
+        {
+            double value => value,
+            long value => value,
+            int value => value,
+            _ => throw new FormatException($"Floating cursor {key} must be a number."),
+        };
         DartRuntimePrimitives.Assert(() => (encoded.GetValueOrDefault("X") is not null));
         DartRuntimePrimitives.Assert(() => (encoded.GetValueOrDefault("Y") is not null));
-        global::Doroti.Ui.Offset offset = ((object.Equals(state, FloatingCursorDragState.Update)) ? new global::Doroti.Ui.Offset((((double)encoded.GetValueOrDefault("X"))).toDouble(), (((double)encoded.GetValueOrDefault("Y"))).toDouble()) : Offset.zero);
+        global::Doroti.Ui.Offset offset = ((Equals(state, FloatingCursorDragState.Update)) ? new global::Doroti.Ui.Offset(ReadCoordinate("X"), ReadCoordinate("Y")) : Offset.zero);
         return new RawFloatingCursorPoint(offset: offset, state: state);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -695,7 +701,7 @@ public class TextInput
 
     internal static void _addInputControl(TextInputControl control)
     {
-        if ((!object.Equals(control, _HostTextInputControl.instance)))
+        if ((!Equals(control, _HostTextInputControl.instance)))
         {
             _instance._inputControls.Add(control);
         }
@@ -703,7 +709,7 @@ public class TextInput
 
     internal static void _removeInputControl(TextInputControl control)
     {
-        if ((!object.Equals(control, _HostTextInputControl.instance)))
+        if ((!Equals(control, _HostTextInputControl.instance)))
         {
             _instance._inputControls.Remove(control);
         }
@@ -712,7 +718,7 @@ public class TextInput
     public static void setInputControl(TextInputControl? newControl)
     {
         TextInputControl? oldControl = _instance._currentControl;
-        if ((object.Equals(newControl, oldControl)))
+        if ((Equals(newControl, oldControl)))
         {
             return;
         }
@@ -760,7 +766,7 @@ public class TextInput
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+                if (ConstantsLibrary.kIsWeb)
                 {
                     return true;
                 }
@@ -781,7 +787,7 @@ public class TextInput
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static DartMap<string, ScribbleClient> scribbleClients => TextInput._instance._scribbleClients;
+    public static DartMap<string, ScribbleClient> scribbleClients => _instance._scribbleClients;
     public virtual bool scribbleInProgress => _scribbleInProgress;
     internal async virtual Future<object> _loudlyHandleTextInputInvocation(MethodCall call)
     {
@@ -803,13 +809,13 @@ public class TextInput
         string method = methodCall.method;
         switch (method)
         {
-            case var __case81975 when object.Equals(__case81975, "TextInputClient.focusElement"):
+            case var __case81975 when Equals(__case81975, "TextInputClient.focusElement"):
                 {
                     var argsLocal = ((List<object>?)methodCall.arguments)!;
                     _scribbleClients.GetValueOrDefault(argsLocal[(int)(0L)])?.onScribbleFocus(new global::Doroti.Ui.Offset((((double)argsLocal[(int)(1L)])).toDouble(), (((double)argsLocal[(int)(2L)])).toDouble()));
                     return default!;
                 }
-            case var __case82233 when object.Equals(__case82233, "TextInputClient.requestElementsInRect"):
+            case var __case82233 when Equals(__case82233, "TextInputClient.requestElementsInRect"):
                 {
                     List<double> argsAlternate = (((List<object>?)methodCall.arguments)!).cast<double>().map(((value) => value.toDouble())).ToList();
                     return _scribbleClients.Keys.where(((elementIdentifier) =>
@@ -820,24 +826,24 @@ public class TextInput
                             return false;
                         }
                         global::Doroti.Ui.Rect boundsLocal = (_scribbleClients.GetValueOrDefault(elementIdentifier)?.bounds ?? Rect.zero);
-                        return !((((object.Equals(boundsLocal, Rect.zero)) || boundsLocal.hasNaN) || boundsLocal.isInfinite));
+                        return !((((Equals(boundsLocal, Rect.zero)) || boundsLocal.hasNaN) || boundsLocal.isInfinite));
                     })).map(((elementIdentifier) =>
                     {
                         global::Doroti.Ui.Rect boundsLocal = _scribbleClients.GetValueOrDefault(elementIdentifier)!.bounds;
                         return new List<object> { elementIdentifier };
                     })).ToList();
                 }
-            case var __case83288 when object.Equals(__case83288, "TextInputClient.scribbleInteractionBegan"):
+            case var __case83288 when Equals(__case83288, "TextInputClient.scribbleInteractionBegan"):
                 {
                     _scribbleInProgress = true;
                     return default!;
                 }
-            case var __case83395 when object.Equals(__case83395, "TextInputClient.scribbleInteractionFinished"):
+            case var __case83395 when Equals(__case83395, "TextInputClient.scribbleInteractionFinished"):
                 {
                     _scribbleInProgress = false;
                     return default!;
                 }
-            case var __case83506 when object.Equals(__case83506, "TextInputClient.onFocusReceived"):
+            case var __case83506 when Equals(__case83506, "TextInputClient.onFocusReceived"):
                 {
                     var argsNested = ((List<object>?)methodCall.arguments)!;
                     var clientId = ((long)argsNested[(int)(0L)]);
@@ -867,10 +873,10 @@ public class TextInput
         {
             TextInputClient clientLocal = _currentConnection!._client;
             AutofillScope? scope = clientLocal.currentAutofillScope;
-            var editingValueLocal = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
+            var editingValueLocal = DartRuntimePrimitives.ConvertMap<string, object?>((System.Collections.IDictionary)args[(int)(1L)]);
             foreach (string tag in editingValueLocal.Keys)
             {
-                var textEditingValue = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)editingValueLocal.GetValueOrDefault(tag)));
+                var textEditingValue = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object?>(editingValueLocal.GetValueOrDefault(tag) as System.Collections.IDictionary ?? throw new FormatException("Autofill editing values require a map.")));
                 AutofillClient? clientAlternate = scope?.getAutofillClient(tag);
                 if (((clientAlternate is not null) && clientAlternate.textInputConfiguration.autofillConfiguration.enabled))
                 {
@@ -898,25 +904,25 @@ public class TextInput
         }
         switch (method)
         {
-            case var __case85861 when object.Equals(__case85861, "TextInputClient.updateEditingState"):
+            case var __case85861 when Equals(__case85861, "TextInputClient.updateEditingState"):
                 {
-                    var valueLocal = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]));
-                    TextInput._instance._updateEditingValue(valueLocal, exclude: _PlatformTextInputControl.instance);
+                    var valueLocal = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object?>((System.Collections.IDictionary)args[(int)(1L)]));
+                    _instance._updateEditingValue(valueLocal, exclude: _PlatformTextInputControl.instance);
                     break;
                 }
-            case var __case86093 when object.Equals(__case86093, "TextInputClient.updateEditingStateWithDeltas"):
+            case var __case86093 when Equals(__case86093, "TextInputClient.updateEditingStateWithDeltas"):
                 {
                     DartRuntimePrimitives.Assert(() => (_currentConnection!._client is DeltaTextInputClient));
-                    var encoded = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
+                    var encoded = DartRuntimePrimitives.ConvertMap<string, object?>((System.Collections.IDictionary)args[(int)(1L)]);
                     var deltas = new List<TextEditingDelta>();
                     (((DeltaTextInputClient?)_currentConnection!._client)!).updateEditingValueWithDeltas(deltas);
                     break;
                 }
-            case var __case86724 when object.Equals(__case86724, "TextInputClient.performAction"):
+            case var __case86724 when Equals(__case86724, "TextInputClient.performAction"):
                 {
                     if ((((string?)args[(int)(1L)])! == "TextInputAction.commitContent"))
                     {
-                        var content = KeyboardInsertedContent.CreateFromJson(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(2L)]));
+                        var content = KeyboardInsertedContent.CreateFromJson(DartRuntimePrimitives.ConvertMap<string, object?>((System.Collections.IDictionary)args[(int)(2L)]));
                         _currentConnection!._client.insertContent(content);
                     }
                     else
@@ -925,44 +931,44 @@ public class TextInput
                     }
                     break;
                 }
-            case var __case87110 when object.Equals(__case87110, "TextInputClient.performSelectors"):
+            case var __case87110 when Equals(__case87110, "TextInputClient.performSelectors"):
                 {
                     List<string> selectors = (((List<object>?)args[(int)(1L)])!).cast<string>().ToList();
                     selectors.forEach(_currentConnection!._client.performSelector);
                     break;
                 }
-            case var __case87311 when object.Equals(__case87311, "TextInputClient.performPrivateCommand"):
+            case var __case87311 when Equals(__case87311, "TextInputClient.performPrivateCommand"):
                 {
-                    var firstArg = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
-                    _currentConnection!._client.performPrivateCommand(((string?)firstArg.GetValueOrDefault("action"))!, ((firstArg.GetValueOrDefault("data") is null) ? new DartMap<string, object>() : DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)firstArg.GetValueOrDefault("data"))));
+                    var firstArg = DartRuntimePrimitives.ConvertMap<string, object?>((System.Collections.IDictionary)args[(int)(1L)]);
+                    _currentConnection!._client.performPrivateCommand(((string?)firstArg.GetValueOrDefault("action"))!, (firstArg.GetValueOrDefault("data") is { } privateData ? DartRuntimePrimitives.ConvertMap<string, object?>((System.Collections.IDictionary)privateData) : new DartMap<string, object?>()));
                     break;
                 }
-            case var __case87632 when object.Equals(__case87632, "TextInputClient.updateFloatingCursor"):
+            case var __case87632 when Equals(__case87632, "TextInputClient.updateFloatingCursor"):
                 {
-                    _currentConnection!._client.updateFloatingCursor(Text_inputLibrary._toTextPoint(Text_inputLibrary._toTextCursorAction(((string?)args[(int)(1L)])!), DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(2L)])));
+                    _currentConnection!._client.updateFloatingCursor(Text_inputLibrary._toTextPoint(Text_inputLibrary._toTextCursorAction(((string?)args[(int)(1L)])!), DartRuntimePrimitives.ConvertMap<string, object?>((System.Collections.IDictionary)args[(int)(2L)])));
                     break;
                 }
-            case var __case87849 when object.Equals(__case87849, "TextInputClient.onConnectionClosed"):
+            case var __case87849 when Equals(__case87849, "TextInputClient.onConnectionClosed"):
                 {
                     _currentConnection!._client.connectionClosed();
                     break;
                 }
-            case var __case87954 when object.Equals(__case87954, "TextInputClient.showAutocorrectionPromptRect"):
+            case var __case87954 when Equals(__case87954, "TextInputClient.showAutocorrectionPromptRect"):
                 {
                     _currentConnection!._client.showAutocorrectionPromptRect(((long)args[(int)(1L)]), ((long)args[(int)(2L)]));
                     break;
                 }
-            case var __case88111 when object.Equals(__case88111, "TextInputClient.showToolbar"):
+            case var __case88111 when Equals(__case88111, "TextInputClient.showToolbar"):
                 {
                     _currentConnection!._client.showToolbar();
                     break;
                 }
-            case var __case88204 when object.Equals(__case88204, "TextInputClient.insertTextPlaceholder"):
+            case var __case88204 when Equals(__case88204, "TextInputClient.insertTextPlaceholder"):
                 {
                     _currentConnection!._client.insertTextPlaceholder(new global::Doroti.Ui.Size((((double)args[(int)(1L)])).toDouble(), (((double)args[(int)(2L)])).toDouble()));
                     break;
                 }
-            case var __case88400 when object.Equals(__case88400, "TextInputClient.removeTextPlaceholder"):
+            case var __case88400 when Equals(__case88400, "TextInputClient.removeTextPlaceholder"):
                 {
                     _currentConnection!._client.removeTextPlaceholder();
                     break;
@@ -1099,7 +1105,7 @@ public class TextInput
         }
         foreach (TextInputControl control in _instance._inputControls)
         {
-            if ((!object.Equals(control, exclude)))
+            if ((!Equals(control, exclude)))
             {
                 control.setEditingState(value);
             }
@@ -1114,7 +1120,7 @@ public class TextInput
 
     public static void finishAutofillContext(bool shouldSave = true)
     {
-        foreach (TextInputControl control in TextInput._instance._inputControls)
+        foreach (TextInputControl control in _instance._inputControls)
         {
             control.finishAutofillContext(shouldSave: shouldSave);
         }
@@ -1122,12 +1128,12 @@ public class TextInput
 
     public static void registerScribbleElement(string elementIdentifier, ScribbleClient scribbleClient)
     {
-        TextInput._instance._scribbleClients[elementIdentifier] = scribbleClient;
+        _instance._scribbleClients[elementIdentifier] = scribbleClient;
     }
 
     public static void unregisterScribbleElement(string elementIdentifier)
     {
-        TextInput._instance._scribbleClients.remove(elementIdentifier);
+        _instance._scribbleClients.remove(elementIdentifier);
     }
 
 }
@@ -1422,15 +1428,15 @@ internal class _PlatformTextInputControl : TextInputControl
     }
 
     internal virtual MethodChannel _channel => TextInput._instance._channel;
-    internal virtual DartMap<string, object> _configurationToJson(TextInputConfiguration configuration)
+    internal virtual DartMap<string, object?> _configurationToJson(TextInputConfiguration configuration)
     {
-        DartMap<string, object> json = configuration.toJson();
-        if ((!object.Equals(TextInput._instance._currentControl, _PlatformTextInputControl.instance)))
+        DartMap<string, object?> json = configuration.toJson();
+        if ((!Equals(TextInput._instance._currentControl, instance)))
         {
-            DartMap<string, object> noneLocal = TextInputType.none.toJson();
-            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            DartMap<string, object?> noneLocal = TextInputType.none.toJson();
+            if (ConstantsLibrary.kIsWeb)
             {
-                noneLocal["isMultiline"] = (object.Equals(configuration.inputType, TextInputType.multiline));
+                noneLocal["isMultiline"] = (Equals(configuration.inputType, TextInputType.multiline));
             }
             json["inputType"] = noneLocal;
         }
@@ -1482,21 +1488,21 @@ internal class _PlatformTextInputControl : TextInputControl
 
     public override void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform)
     {
-        _ = _channel.invokeMethod<object?>("TextInput.setEditableSizeAndTransform", new DartMap<string, object> { ["width"] = editableBoxSize.width, ["height"] = editableBoxSize.height, ["transform"] = transform.storage }).then(((_) =>
+        _ = _channel.invokeMethod<object?>("TextInput.setEditableSizeAndTransform", new DartMap<string, object?> { ["width"] = editableBoxSize.width, ["height"] = editableBoxSize.height, ["transform"] = transform.storage }).then(((_) =>
         {
         }), onError: ((error, stack) => Text_inputLibrary._reportError(error, stack, "while setting text input size and transform")));
     }
 
     public override void setComposingRect(Rect rect)
     {
-        _ = _channel.invokeMethod<object?>("TextInput.setMarkedTextRect", new DartMap<string, object> { ["width"] = rect.width, ["height"] = rect.height, ["x"] = rect.left, ["y"] = rect.top }).then(((_) =>
+        _ = _channel.invokeMethod<object?>("TextInput.setMarkedTextRect", new DartMap<string, object?> { ["width"] = rect.width, ["height"] = rect.height, ["x"] = rect.left, ["y"] = rect.top }).then(((_) =>
         {
         }), onError: ((error, stack) => Text_inputLibrary._reportError(error, stack, "while setting text input composing rect")));
     }
 
     public override void setCaretRect(Rect rect)
     {
-        _ = _channel.invokeMethod<object?>("TextInput.setCaretRect", new DartMap<string, object> { ["width"] = rect.width, ["height"] = rect.height, ["x"] = rect.left, ["y"] = rect.top }).then(((_) =>
+        _ = _channel.invokeMethod<object?>("TextInput.setCaretRect", new DartMap<string, object?> { ["width"] = rect.width, ["height"] = rect.height, ["x"] = rect.left, ["y"] = rect.top }).then(((_) =>
         {
         }), onError: ((error, stack) => Text_inputLibrary._reportError(error, stack, "while setting text input caret rect")));
     }
@@ -1555,7 +1561,7 @@ public class SystemContextMenuController : SystemContextMenuClient, Diagnosticab
         this.onSystemHide = onSystemHide;
     }
 
-    public virtual bool isVisible => ((object.Equals(this, _lastShown)) && !_hiddenBySystem);
+    public virtual bool isVisible => ((Equals(this, _lastShown)) && !_hiddenBySystem);
     public override void handleSystemHide()
     {
         DartRuntimePrimitives.Assert(() => !_isDisposed);
@@ -1564,7 +1570,7 @@ public class SystemContextMenuController : SystemContextMenuClient, Diagnosticab
         {
             return;
         }
-        if ((object.Equals(_lastShown, this)))
+        if ((Equals(_lastShown, this)))
         {
             _lastShown = null;
         }
@@ -1584,16 +1590,16 @@ public class SystemContextMenuController : SystemContextMenuClient, Diagnosticab
     {
         DartRuntimePrimitives.Assert(() => !_isDisposed);
         DartRuntimePrimitives.Assert(() => (TextInput._instance._currentConnection is not null));
-        if ((((_lastShown is not null) && _lastShown!.isVisible) && (object.Equals(_lastShown!._lastTargetRect, targetRect))))
+        if ((((_lastShown is not null) && _lastShown!.isVisible) && (Equals(_lastShown!._lastTargetRect, targetRect))))
         {
             return Future.value();
         }
-        DartRuntimePrimitives.Assert(() => (((_lastShown is null) || (object.Equals(_lastShown, this))) || !_lastShown!.isVisible));
+        DartRuntimePrimitives.Assert(() => (((_lastShown is null) || (Equals(_lastShown, this))) || !_lastShown!.isVisible));
         ServicesBinding.systemContextMenuClient = this;
         _lastTargetRect = targetRect;
         _lastShown = this;
         _hiddenBySystem = false;
-        return _channel.invokeMethod<object?>("ContextMenu.showSystemContextMenu", new DartMap<string, object> { ["targetRect"] = new DartMap<string, double> { ["x"] = targetRect.left, ["y"] = targetRect.top, ["width"] = targetRect.width, ["height"] = targetRect.height } });
+        return _channel.invokeMethod<object?>("ContextMenu.showSystemContextMenu", new DartMap<string, object?> { ["targetRect"] = new DartMap<string, double> { ["x"] = targetRect.left, ["y"] = targetRect.top, ["width"] = targetRect.width, ["height"] = targetRect.height } });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1602,34 +1608,34 @@ public class SystemContextMenuController : SystemContextMenuClient, Diagnosticab
         DartRuntimePrimitives.Assert(() => !_isDisposed);
         DartRuntimePrimitives.Assert(() => (items.Count != 0));
         DartRuntimePrimitives.Assert(() => (TextInput._instance._currentConnection is not null));
-        if (((((_lastShown is not null) && _lastShown!.isVisible) && (object.Equals(_lastShown!._lastTargetRect, targetRect))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(_lastShown!._lastItems, items)))
+        if (((((_lastShown is not null) && _lastShown!.isVisible) && (Equals(_lastShown!._lastTargetRect, targetRect))) && CollectionsLibrary.listEquals(_lastShown!._lastItems, items)))
         {
             return Future.value();
         }
-        DartRuntimePrimitives.Assert(() => (((_lastShown is null) || (object.Equals(_lastShown, this))) || !_lastShown!.isVisible));
+        DartRuntimePrimitives.Assert(() => (((_lastShown is null) || (Equals(_lastShown, this))) || !_lastShown!.isVisible));
         ServicesBinding.systemContextMenuClient = this;
         _customActionCallbacks.Clear();
         foreach (var item in items)
         {
             if (item is IOSSystemContextMenuItemDataCustom item__as114122)
             {
-                DartRuntimePrimitives.Assert(() => (!_customActionCallbacks.ContainsKey(item__as114122.callbackId) || (object.Equals((Action?)_customActionCallbacks.GetValueOrDefault(item__as114122.callbackId), (Action)item__as114122.onPressed))));
+                DartRuntimePrimitives.Assert(() => (!_customActionCallbacks.ContainsKey(item__as114122.callbackId) || (Equals((Action?)_customActionCallbacks.GetValueOrDefault(item__as114122.callbackId), (Action)item__as114122.onPressed))));
                 _customActionCallbacks[item__as114122.callbackId] = item__as114122.onPressed;
             }
         }
-        List<DartMap<string, object>> itemsJson = items.map(((item) => item._json)).ToList();
+        List<DartMap<string, object?>> itemsJson = items.map(((item) => item._json)).ToList();
         _lastTargetRect = targetRect;
         _lastItems = items;
         _lastShown = this;
         _hiddenBySystem = false;
-        return _channel.invokeMethod<object?>("ContextMenu.showSystemContextMenu", new DartMap<string, object> { ["targetRect"] = new DartMap<string, double> { ["x"] = targetRect.left, ["y"] = targetRect.top, ["width"] = targetRect.width, ["height"] = targetRect.height }, ["items"] = itemsJson });
+        return _channel.invokeMethod<object?>("ContextMenu.showSystemContextMenu", new DartMap<string, object?> { ["targetRect"] = new DartMap<string, double> { ["x"] = targetRect.left, ["y"] = targetRect.top, ["width"] = targetRect.width, ["height"] = targetRect.height }, ["items"] = itemsJson });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public async virtual Future hide()
     {
         DartRuntimePrimitives.Assert(() => !_isDisposed);
-        if ((!object.Equals(this, _lastShown)))
+        if ((!Equals(this, _lastShown)))
         {
             return;
         }
@@ -1666,11 +1672,11 @@ public abstract class IOSSystemContextMenuItemData
 
     public virtual string? title => null;
     internal abstract string _jsonType { get; }
-    internal virtual DartMap<string, object> _json
+    internal virtual DartMap<string, object?> _json
     {
         get
         {
-            return new DartMap<string, object> { ["callbackId"] = GetHashCode(), ["title"] = title, ["type"] = _jsonType };
+            return new DartMap<string, object?> { ["callbackId"] = GetHashCode(), ["title"] = title, ["type"] = _jsonType };
         }
     }
     public override int GetHashCode() => HashCode.Combine(GetType(), title);
@@ -1682,7 +1688,7 @@ public abstract class IOSSystemContextMenuItemData
         {
             return true;
         }
-        if ((!object.Equals(__other.GetType(), this.GetType())))
+        if ((!Equals(__other.GetType(), this.GetType())))
         {
             return false;
         }
@@ -1803,11 +1809,11 @@ public class IOSSystemContextMenuItemDataCustom : IOSSystemContextMenuItemData, 
 
     public virtual string callbackId => GetHashCode().ToString();
     internal override string _jsonType => "custom";
-    internal override DartMap<string, object> _json
+    internal override DartMap<string, object?> _json
     {
         get
         {
-            return new DartMap<string, object> { ["id"] = callbackId, ["title"] = title, ["type"] = _jsonType };
+            return new DartMap<string, object?> { ["id"] = callbackId, ["title"] = title, ["type"] = _jsonType };
         }
     }
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1827,7 +1833,7 @@ public class IOSSystemContextMenuItemDataCustom : IOSSystemContextMenuItemData, 
         {
             return true;
         }
-        return (((__other is IOSSystemContextMenuItemDataCustom) && (((IOSSystemContextMenuItemDataCustom)__other).title == title)) && (object.Equals((Action)((IOSSystemContextMenuItemDataCustom)__other).onPressed, (Action)onPressed)));
+        return (((__other is IOSSystemContextMenuItemDataCustom) && (((IOSSystemContextMenuItemDataCustom)__other).title == title)) && (Equals((Action)((IOSSystemContextMenuItemDataCustom)__other).onPressed, (Action)onPressed)));
     }
 
 }

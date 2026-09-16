@@ -133,7 +133,7 @@ public unsafe partial class ID3D12GraphicsCommandList
     public void ResourceBarrierTransition(ID3D12Resource resource, D12.ResourceStates before, D12.ResourceStates after)
     {
         using var lifetime = new ComScope(this, resource);
-        ResourceBarrier([global::Doroti.Graphics.DirectX.ResourceBarrier.BarrierTransition(resource, before, after)]);
+        ResourceBarrier([Graphics.DirectX.ResourceBarrier.BarrierTransition(resource, before, after)]);
     }
 
     public void CopyTextureRegion(TextureCopyLocation destination, uint x, uint y, uint z, TextureCopyLocation source, D12.Box? sourceBox)

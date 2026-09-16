@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/painting/shape_decoration.dart
-#pragma warning disable CS8600, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -69,13 +68,13 @@ public class ShapeDecoration : Decoration
     public override bool isComplex => (this.shadows is not null);
     public override ShapeDecoration? lerpFrom(Decoration? a, double t)
     {
-        return (a switch { BoxDecoration __object6540 => ShapeDecoration.lerp(ShapeDecoration.CreateFromBoxDecoration(((BoxDecoration)__object6540)), this, t), ShapeDecoration __typed6634 => ShapeDecoration.lerp(((ShapeDecoration?)__typed6634), this, t), _ => ((ShapeDecoration?)(object?)base.lerpFrom(a, t))! });
+        return (a switch { BoxDecoration __object6540 => lerp(CreateFromBoxDecoration(((BoxDecoration)__object6540)), this, t), ShapeDecoration __typed6634 => lerp(((ShapeDecoration?)__typed6634), this, t), _ => ((ShapeDecoration?)base.lerpFrom(a, t))! });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ShapeDecoration? lerpTo(Decoration? b, double t)
     {
-        return (b switch { BoxDecoration __object6850 => ShapeDecoration.lerp(this, ShapeDecoration.CreateFromBoxDecoration(((BoxDecoration)__object6850)), t), ShapeDecoration __typed6944 => ShapeDecoration.lerp(this, ((ShapeDecoration?)__typed6944), t), _ => ((ShapeDecoration?)(object?)base.lerpTo(b, t))! });
+        return (b switch { BoxDecoration __object6850 => lerp(this, CreateFromBoxDecoration(((BoxDecoration)__object6850)), t), ShapeDecoration __typed6944 => lerp(this, ((ShapeDecoration?)__typed6944), t), _ => ((ShapeDecoration?)base.lerpTo(b, t))! });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -122,11 +121,11 @@ public class ShapeDecoration : Decoration
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((__other is ShapeDecoration) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).color, this.color))) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).gradient, this.gradient))) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).image, this.image))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<BoxShadow>(((ShapeDecoration)((ShapeDecoration)__other)).shadows, this.shadows)) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).shape, this.shape)));
+        return ((((((__other is ShapeDecoration) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).color, this.color))) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).gradient, this.gradient))) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).image, this.image))) && CollectionsLibrary.listEquals<BoxShadow>(((ShapeDecoration)((ShapeDecoration)__other)).shadows, this.shadows)) && (Equals(((ShapeDecoration)((ShapeDecoration)__other)).shape, this.shape)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.color, this.gradient, this.image, this.shape, ((this.shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.shadows!)));
@@ -175,10 +174,10 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         this._decoration = _decoration;
     }
 
-    public override Action? onChanged => base.onChanged!;
+    public override Action onChanged => DartRuntimePrimitives.RequireReference(base.onChanged);
     internal virtual void _precache(Rect rect, TextDirection? textDirection)
     {
-        if (((object.Equals(rect, this._lastRect)) && (object.Equals(textDirection, this._lastTextDirection))))
+        if (((Equals(rect, this._lastRect)) && (Equals(textDirection, this._lastTextDirection))))
         {
             return;
         }
@@ -234,7 +233,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     {
         bool debugHandleDisabledShadowStart(Canvas canvas, BoxShadow boxShadow, Path path)
         {
-            if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
+            if ((DebugLibrary.debugDisableShadows && (Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
             {
                 canvas.save();
                 var clipPathLocal = new global::Doroti.Ui.Path();
@@ -248,7 +247,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         }
         bool debugHandleDisabledShadowEnd(Canvas canvas, BoxShadow boxShadow)
         {
-            if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
+            if ((DebugLibrary.debugDisableShadows && (Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
             {
                 canvas.restore();
             }
@@ -298,8 +297,8 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     {
         if (((((ShapeDecoration)this._decoration).shape is OutlinedBorder) && (((ShapeDecoration)this._decoration).color is not null)))
         {
-            BorderSide sideLocal = (((OutlinedBorder?)(object?)((ShapeDecoration)this._decoration).shape)!).side;
-            if (((((BorderSide)sideLocal).color.alpha == 255L) && (object.Equals(((BorderSide)sideLocal).style, BorderStyle.solid))))
+            BorderSide sideLocal = (((OutlinedBorder?)((ShapeDecoration)this._decoration).shape)!).side;
+            if (((((BorderSide)sideLocal).color.alpha == 255L) && (Equals(((BorderSide)sideLocal).style, BorderStyle.solid))))
             {
                 return rect.deflate((((BorderSide)sideLocal).strokeInset / 2L));
             }
@@ -314,7 +313,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         {
             return;
         }
-        _imagePainter ??= ((ShapeDecoration)this._decoration).image!.createPainter((Action)this.onChanged);
+        _imagePainter ??= ((ShapeDecoration)this._decoration).image!.createPainter(this.onChanged);
         this._imagePainter!.paint(canvas, DartRuntimePrimitives.RequireValue(this._lastRect), this._innerPath, configuration);
     }
 

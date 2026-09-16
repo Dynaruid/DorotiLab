@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/icon_data.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8609, CS8619
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Widgets;
@@ -26,32 +25,32 @@ public class IconData
     {
         var __other = other as IconData;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((__other is IconData) && (((IconData)((IconData)__other)).codePoint == this.codePoint)) && (((IconData)((IconData)__other)).fontFamily == this.fontFamily)) && (((IconData)((IconData)__other)).fontPackage == this.fontPackage)) && (((IconData)((IconData)__other)).matchTextDirection == this.matchTextDirection)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((IconData)((IconData)__other)).fontFamilyFallback, this.fontFamilyFallback));
+        return ((((((__other is IconData) && (((IconData)((IconData)__other)).codePoint == this.codePoint)) && (((IconData)((IconData)__other)).fontFamily == this.fontFamily)) && (((IconData)((IconData)__other)).fontPackage == this.fontPackage)) && (((IconData)((IconData)__other)).matchTextDirection == this.matchTextDirection)) && CollectionsLibrary.listEquals(((IconData)((IconData)__other)).fontFamilyFallback, this.fontFamilyFallback));
     }
 
     public override int GetHashCode()
     {
-        return FoundationRuntimePorts.ObjectHash(this.codePoint, this.fontFamily, this.fontPackage, this.matchTextDirection, FoundationRuntimePorts.ObjectHashAll((this.fontFamilyFallback ?? new List<string?>())));
+        return FoundationRuntimePorts.ObjectHash(this.codePoint, this.fontFamily, this.fontPackage, this.matchTextDirection, FoundationRuntimePorts.ObjectHashAll((this.fontFamilyFallback ?? new List<string>())));
     }
     public override string ToString() => $"IconData(U+{this.codePoint.toRadixString(16L).toUpperCase().padLeft(5L, "0")})";
 }
 
 public class IconDataProperty : global::Doroti.Framework.Foundation.DiagnosticsProperty<IconData>
 {
-    public IconDataProperty(string name, IconData? value, string? ifNull = null, bool showName = true, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.singleLine, global::Doroti.Framework.Foundation.DiagnosticLevel level = global::Doroti.Framework.Foundation.DiagnosticLevel.info) : base(name, value, ifNull: ifNull, showName: showName, style: style, level: level)
+    public IconDataProperty(string name, IconData? value, string? ifNull = null, bool showName = true, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, global::Doroti.Framework.Foundation.DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, ifNull: ifNull, showName: showName, style: style, level: level)
     {
     }
 
-    public override DartMap<string, object> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate? @delegate = null)
+    public override DartMap<string, object?> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate? @delegate = null)
     {
-        DartMap<string, object?> json = ((DartMap<string, object?>)(object?)base.toJsonMap(@delegate));
+        DartMap<string, object?> json = ((DartMap<string, object?>)base.toJsonMap(@delegate));
         if ((this.value is not null))
         {
-            json["valueProperties"] = new DartMap<string, object> { ["codePoint"] = this.value!.codePoint };
+            json["valueProperties"] = new DartMap<string, object?> { ["codePoint"] = this.value!.codePoint };
         }
         return json;
         throw new InvalidOperationException("Dart control flow completed without a value.");

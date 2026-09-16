@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/floating_action_button.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -202,11 +202,11 @@ public class FloatingActionButton : global::Doroti.Framework.Widgets.StatelessWi
         ThemeData theme = Theme.of(context);
         FloatingActionButtonThemeData floatingActionButtonTheme = FloatingActionButtonTheme.of(context);
         FloatingActionButtonThemeData defaults = ((new _FABDefaultsM3__floating_action_button(context, this._floatingActionButtonType, (this.child is not null))));
-        global::Doroti.Ui.Color foregroundColorLocal = ((global::Doroti.Ui.Color)(object?)((this.foregroundColor ?? floatingActionButtonTheme.foregroundColor) ?? defaults.foregroundColor!));
-        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)((this.backgroundColor ?? floatingActionButtonTheme.backgroundColor) ?? defaults.backgroundColor!));
-        global::Doroti.Ui.Color focusColorLocal = ((global::Doroti.Ui.Color)(object?)((this.focusColor ?? floatingActionButtonTheme.focusColor) ?? defaults.focusColor!));
-        global::Doroti.Ui.Color hoverColorLocal = ((global::Doroti.Ui.Color)(object?)((this.hoverColor ?? floatingActionButtonTheme.hoverColor) ?? defaults.hoverColor!));
-        global::Doroti.Ui.Color splashColorLocal = ((global::Doroti.Ui.Color)(object?)((this.splashColor ?? floatingActionButtonTheme.splashColor) ?? defaults.splashColor!));
+        global::Doroti.Ui.Color foregroundColorLocal = ((global::Doroti.Ui.Color)((this.foregroundColor ?? floatingActionButtonTheme.foregroundColor) ?? defaults.foregroundColor!));
+        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)((this.backgroundColor ?? floatingActionButtonTheme.backgroundColor) ?? defaults.backgroundColor!));
+        global::Doroti.Ui.Color focusColorLocal = ((global::Doroti.Ui.Color)((this.focusColor ?? floatingActionButtonTheme.focusColor) ?? defaults.focusColor!));
+        global::Doroti.Ui.Color hoverColorLocal = ((global::Doroti.Ui.Color)((this.hoverColor ?? floatingActionButtonTheme.hoverColor) ?? defaults.hoverColor!));
+        global::Doroti.Ui.Color splashColorLocal = ((global::Doroti.Ui.Color)((this.splashColor ?? floatingActionButtonTheme.splashColor) ?? defaults.splashColor!));
         double elevationLocal = ((this.elevation ?? floatingActionButtonTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation));
         double focusElevationLocal = ((this.focusElevation ?? floatingActionButtonTheme.focusElevation) ?? DartRuntimePrimitives.RequireValue(defaults.focusElevation));
         double hoverElevationLocal = ((this.hoverElevation ?? floatingActionButtonTheme.hoverElevation) ?? DartRuntimePrimitives.RequireValue(defaults.hoverElevation));
@@ -215,7 +215,7 @@ public class FloatingActionButton : global::Doroti.Framework.Widgets.StatelessWi
         MaterialTapTargetSize materialTapTargetSizeLocal = (this.materialTapTargetSize ?? theme.materialTapTargetSize);
         bool enableFeedbackLocal = ((this.enableFeedback ?? floatingActionButtonTheme.enableFeedback) ?? DartRuntimePrimitives.RequireValue(defaults.enableFeedback));
         double iconSizeLocal = (floatingActionButtonTheme.iconSize ?? DartRuntimePrimitives.RequireValue(defaults.iconSize));
-        global::Doroti.Framework.Painting.TextStyle extendedTextStyleLocal = ((global::Doroti.Framework.Painting.TextStyle)(object?)(((this.extendedTextStyle ?? floatingActionButtonTheme.extendedTextStyle) ?? defaults.extendedTextStyle!)).copyWith(color: foregroundColorLocal));
+        global::Doroti.Framework.Painting.TextStyle extendedTextStyleLocal = ((global::Doroti.Framework.Painting.TextStyle)(((this.extendedTextStyle ?? floatingActionButtonTheme.extendedTextStyle) ?? defaults.extendedTextStyle!)).copyWith(color: foregroundColorLocal));
         global::Doroti.Framework.Painting.ShapeBorder shapeLocal = ((this.shape ?? floatingActionButtonTheme.shape) ?? defaults.shape!);
         global::Doroti.Framework.Rendering.BoxConstraints sizeConstraintsLocal = default!;
         global::Doroti.Framework.Widgets.Widget? resolvedChild = ((this.child is not null) ? IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(size: iconSizeLocal), child: this.child!) : this.child);
@@ -241,11 +241,11 @@ public class FloatingActionButton : global::Doroti.Framework.Widgets.StatelessWi
                     sizeConstraintsLocal = (floatingActionButtonTheme.extendedSizeConstraints ?? defaults.extendedSizeConstraints!);
                     double iconLabelSpacing = ((this.extendedIconLabelSpacing ?? floatingActionButtonTheme.extendedIconLabelSpacing) ?? 8.0);
                     global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((this.extendedPadding ?? floatingActionButtonTheme.extendedPadding) ?? defaults.extendedPadding!);
-                    resolvedChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _ChildOverflowBox__floating_action_button(child: new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection22381 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement22407 = this.child; if (__collectionElement22407 is { } __nonNullCollectionElement22407) { __collection22381.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement22407)); } if (((this.child is not null) && this.isExtended)) { __collection22381.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: iconLabelSpacing))); } if (this.isExtended) { __collection22381.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this._extendedLabel!)); } return __collection22381; }))()))));
+                    resolvedChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _ChildOverflowBox__floating_action_button(child: new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: MainAxisSize.min, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection22381 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement22407 = this.child; if (__collectionElement22407 is { } __nonNullCollectionElement22407) { __collection22381.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement22407)); } if (((this.child is not null) && this.isExtended)) { __collection22381.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: iconLabelSpacing))); } if (this.isExtended) { __collection22381.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this._extendedLabel!)); } return __collection22381; }))()))));
                     break;
                 }
         }
-        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new RawMaterialButton(onPressed: () => this.onPressed(), mouseCursor: new _EffectiveMouseCursor__floating_action_button(this.mouseCursor, floatingActionButtonTheme.mouseCursor), elevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(elevationLocal)), focusElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(focusElevationLocal)), hoverElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(hoverElevationLocal)), highlightElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(highlightElevationLocal)), disabledElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(disabledElevationLocal)), constraints: sizeConstraintsLocal, materialTapTargetSize: materialTapTargetSizeLocal, fillColor: backgroundColorLocal, focusColor: focusColorLocal, hoverColor: hoverColorLocal, splashColor: splashColorLocal, textStyle: extendedTextStyleLocal, shape: shapeLocal, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, enableFeedback: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(enableFeedbackLocal)), child: resolvedChild));
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)new RawMaterialButton(onPressed: this.onPressed, mouseCursor: new _EffectiveMouseCursor__floating_action_button(this.mouseCursor, floatingActionButtonTheme.mouseCursor), elevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(elevationLocal)), focusElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(focusElevationLocal)), hoverElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(hoverElevationLocal)), highlightElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(highlightElevationLocal)), disabledElevation: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(disabledElevationLocal)), constraints: sizeConstraintsLocal, materialTapTargetSize: materialTapTargetSizeLocal, fillColor: backgroundColorLocal, focusColor: focusColorLocal, hoverColor: hoverColorLocal, splashColor: splashColorLocal, textStyle: extendedTextStyleLocal, shape: shapeLocal, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, enableFeedback: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(enableFeedbackLocal)), child: resolvedChild));
         if ((this.tooltip is not null))
         {
             result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Tooltip(message: this.tooltip, child: result));
@@ -254,13 +254,13 @@ public class FloatingActionButton : global::Doroti.Framework.Widgets.StatelessWi
         {
             result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Hero(tag: this.heroTag!, child: result));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MergeSemantics(child: result));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.MergeSemantics(child: result));
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<global::System.Action>("onPressed", () => this.onPressed(), ifNull: "disabled"));
+        properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<global::System.Action>("onPressed", this.onPressed, ifNull: "disabled"));
         properties.add(new global::Doroti.Framework.Foundation.StringProperty("tooltip", this.tooltip, defaultValue: null));
         properties.add(new global::Doroti.Framework.Painting.ColorProperty("foregroundColor", this.foregroundColor, defaultValue: null));
         properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
@@ -294,7 +294,7 @@ internal class _EffectiveMouseCursor__floating_action_button : global::Doroti.Fr
 
     public override global::Doroti.Framework.Services.MouseCursor resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states)
     {
-        return ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(this.widgetCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)this.themeCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states)));
+        return ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(this.widgetCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor?)this.themeCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)adaptiveClickable.resolve(states)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -309,13 +309,13 @@ internal class _ChildOverflowBox__floating_action_button : global::Doroti.Framew
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderChildOverflowBox__floating_action_button(textDirection: Directionality.of(context)));
+        return ((global::Doroti.Framework.Rendering.RenderObject)new _RenderChildOverflowBox__floating_action_button(textDirection: Directionality.of(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (_RenderChildOverflowBox__floating_action_button)(object)renderObject;
+        var __renderObject = (_RenderChildOverflowBox__floating_action_button)renderObject;
         (__renderObject).textDirection = Directionality.of(context);
     }
 
@@ -323,7 +323,7 @@ internal class _ChildOverflowBox__floating_action_button : global::Doroti.Framew
 
 public class _RenderChildOverflowBox__floating_action_button : global::Doroti.Framework.Rendering.RenderAligningShiftedBox
 {
-    internal _RenderChildOverflowBox__floating_action_button(TextDirection? textDirection = null) : base(textDirection: textDirection, alignment: global::Doroti.Framework.Painting.Alignment.center)
+    internal _RenderChildOverflowBox__floating_action_button(TextDirection? textDirection = null) : base(textDirection: textDirection, alignment: Alignment.center)
     {
     }
 
@@ -333,7 +333,7 @@ public class _RenderChildOverflowBox__floating_action_button : global::Doroti.Fr
     {
         if ((this.child is not null))
         {
-            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)this.child!.getDryLayout(new global::Doroti.Framework.Rendering.BoxConstraints()));
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)this.child!.getDryLayout(new global::Doroti.Framework.Rendering.BoxConstraints()));
             return new global::Doroti.Ui.Size(Math.Max(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth, Math.Min(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, childSize.width)), Math.Max(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight, Math.Min(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight, childSize.height)));
         }
         else
@@ -394,21 +394,21 @@ internal class _FABDefaultsM3__floating_action_button : FloatingActionButtonThem
         }
     }
 
-    internal _FABDefaultsM3__floating_action_button(global::Doroti.Framework.Widgets.BuildContext context, _FloatingActionButtonType__floating_action_button type, bool hasChild) : base(elevation: 6.0, focusElevation: 6.0, hoverElevation: 8.0, highlightElevation: 6.0, enableFeedback: true, sizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: 56.0, height: 56.0), smallSizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: 40.0, height: 40.0), largeSizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: 96.0, height: 96.0), extendedSizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(height: 56.0), extendedIconLabelSpacing: 8.0)
+    internal _FABDefaultsM3__floating_action_button(global::Doroti.Framework.Widgets.BuildContext context, _FloatingActionButtonType__floating_action_button type, bool hasChild) : base(elevation: 6.0, focusElevation: 6.0, hoverElevation: 8.0, highlightElevation: 6.0, enableFeedback: true, sizeConstraints: BoxConstraints.CreateTightFor(width: 56.0, height: 56.0), smallSizeConstraints: BoxConstraints.CreateTightFor(width: 40.0, height: 40.0), largeSizeConstraints: BoxConstraints.CreateTightFor(width: 96.0, height: 96.0), extendedSizeConstraints: BoxConstraints.CreateTightFor(height: 56.0), extendedIconLabelSpacing: 8.0)
     {
         this.context = context;
         this.type = type;
         this.hasChild = hasChild;
     }
 
-    internal virtual bool _isExtended => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(this.type, _FloatingActionButtonType__floating_action_button.extended)));
+    internal virtual bool _isExtended => DartRuntimePrimitives.ConvertValue<bool>((Equals(this.type, _FloatingActionButtonType__floating_action_button.extended)));
     public override global::Doroti.Ui.Color? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onPrimaryContainer);
     public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primaryContainer);
     public override global::Doroti.Ui.Color? splashColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onPrimaryContainer.withOpacity(0.1));
     public override global::Doroti.Ui.Color? focusColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onPrimaryContainer.withOpacity(0.1));
     public override global::Doroti.Ui.Color? hoverColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onPrimaryContainer.withOpacity(0.08));
-    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>((this.type switch { _FloatingActionButtonType__floating_action_button.regular => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(16.0))), _FloatingActionButtonType__floating_action_button.small => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12.0))), _FloatingActionButtonType__floating_action_button.large => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(28.0))), _FloatingActionButtonType__floating_action_button.extended => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(16.0))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>((this.type switch { _FloatingActionButtonType__floating_action_button.regular => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(16.0))), _FloatingActionButtonType__floating_action_button.small => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(12.0))), _FloatingActionButtonType__floating_action_button.large => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(28.0))), _FloatingActionButtonType__floating_action_button.extended => new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadius.CreateAll(Radius.circular(16.0))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
     public override double? iconSize => (this.type switch { _FloatingActionButtonType__floating_action_button.regular => 24.0, _FloatingActionButtonType__floating_action_button.small => 24.0, _FloatingActionButtonType__floating_action_button.large => 36.0, _FloatingActionButtonType__floating_action_button.extended => 24.0, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? extendedPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.hasChild && this._isExtended) ? 16.0 : 20.0), end: 20.0));
+    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? extendedPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsetsDirectional.CreateOnly(start: ((this.hasChild && this._isExtended) ? 16.0 : 20.0), end: 20.0));
     public override global::Doroti.Framework.Painting.TextStyle? extendedTextStyle => this._textTheme.labelLarge;
 }

@@ -12,7 +12,7 @@ public abstract class Decoration : Diagnosticable
     {
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Decoration");
+    public virtual string toStringShort() => objectRuntimeTypeFunctions.objectRuntimeType(this, "Decoration");
     public virtual bool debugAssertIsValid() => true;
     public virtual EdgeInsetsGeometry padding => EdgeInsets.zero;
     public virtual bool isComplex => false;
@@ -48,7 +48,7 @@ public abstract class Decoration : Diagnosticable
     public abstract BoxPainter createBoxPainter(Action onChanged = default!);
     public virtual global::Doroti.Ui.Path getClipPath(Rect rect, TextDirection textDirection)
     {
-        throw new NotSupportedException($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "This Decoration subclass"))} does not expect to be used for clipping.");
+        throw new NotSupportedException($"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "This Decoration subclass"))} does not expect to be used for clipping.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

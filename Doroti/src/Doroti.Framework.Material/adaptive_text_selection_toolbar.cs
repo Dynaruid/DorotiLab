@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/adaptive_text_selection_toolbar.dart
-#pragma warning disable CS8600, CS8602, CS8603
+
 using Doroti.Runtime;
 
 namespace Doroti.Framework.Material;
@@ -71,19 +71,19 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
         }
         switch (Theme.of(context).platform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
-                    return ((string)(object?)CupertinoTextSelectionToolbarButton.getButtonLabel(context, buttonItem));
+                    return ((string)CupertinoTextSelectionToolbarButton.getButtonLabel(context, buttonItem));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-                    MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-                    return (((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).type switch { global::Doroti.Framework.Widgets.ContextMenuButtonType.cut => ((MaterialLocalizations)localizations).cutButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.copy => ((MaterialLocalizations)localizations).copyButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.paste => ((MaterialLocalizations)localizations).pasteButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.selectAll => ((MaterialLocalizations)localizations).selectAllButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.delete => ((MaterialLocalizations)localizations).deleteButtonTooltip.toUpperCase(), global::Doroti.Framework.Widgets.ContextMenuButtonType.lookUp => ((MaterialLocalizations)localizations).lookUpButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.searchWeb => ((MaterialLocalizations)localizations).searchWebButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.share => ((MaterialLocalizations)localizations).shareButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.liveTextInput => ((MaterialLocalizations)localizations).scanTextButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.custom => "", _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
+                    return (((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).type switch { ContextMenuButtonType.cut => ((MaterialLocalizations)localizations).cutButtonLabel, ContextMenuButtonType.copy => ((MaterialLocalizations)localizations).copyButtonLabel, ContextMenuButtonType.paste => ((MaterialLocalizations)localizations).pasteButtonLabel, ContextMenuButtonType.selectAll => ((MaterialLocalizations)localizations).selectAllButtonLabel, ContextMenuButtonType.delete => ((MaterialLocalizations)localizations).deleteButtonTooltip.toUpperCase(), ContextMenuButtonType.lookUp => ((MaterialLocalizations)localizations).lookUpButtonLabel, ContextMenuButtonType.searchWeb => ((MaterialLocalizations)localizations).searchWebButtonLabel, ContextMenuButtonType.share => ((MaterialLocalizations)localizations).shareButtonLabel, ContextMenuButtonType.liveTextInput => ((MaterialLocalizations)localizations).scanTextButtonLabel, ContextMenuButtonType.custom => "", _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -95,7 +95,7 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
     {
         switch (Theme.of(context).platform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.iOS:
                 {
                     return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
                     {
@@ -103,31 +103,31 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     }));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.android:
                 {
                     var buttons = new List<global::Doroti.Framework.Widgets.Widget>();
                     for (var i = 0L; (i < buttonItems.Count); i++)
                     {
                         global::Doroti.Framework.Widgets.ContextMenuButtonItem buttonItemLocal = buttonItems[(int)(i)];
-                        buttons.Add(new TextSelectionToolbarTextButton(padding: TextSelectionToolbarTextButton.getPadding(i, buttonItems.Count), onPressed: ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItemLocal).onPressed, alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.Text(AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItemLocal))));
+                        buttons.Add(new TextSelectionToolbarTextButton(padding: TextSelectionToolbarTextButton.getPadding(i, buttonItems.Count), onPressed: ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItemLocal).onPressed, alignment: AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.Text(getButtonLabel(context, buttonItemLocal))));
                     }
-                    return ((IEnumerable<global::Doroti.Framework.Widgets.Widget>)(object?)buttons);
+                    return ((IEnumerable<global::Doroti.Framework.Widgets.Widget>)buttons);
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
                     {
-                        return DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: buttonItem.onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
+                        return DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: buttonItem.onPressed, text: getButtonLabel(context, buttonItem));
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     }));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.macOS:
                 {
                     return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
                     {
-                        return CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
+                        return CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: getButtonLabel(context, buttonItem));
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     }));
                 }
@@ -141,28 +141,28 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
     {
         if ((this.children is null || !this.children.Any()) && (this.buttonItems is null || !this.buttonItems.Any()))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+            return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
         }
-        List<global::Doroti.Framework.Widgets.Widget> resultChildren = ((this.children is not null) ? this.children! : AdaptiveTextSelectionToolbar.getAdaptiveButtons(context, this.buttonItems!).ToList()).ToList();
+        List<global::Doroti.Framework.Widgets.Widget> resultChildren = ((this.children is not null) ? this.children! : getAdaptiveButtons(context, this.buttonItems!).ToList()).ToList();
         switch (Theme.of(context).platform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case TargetPlatform.iOS:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoTextSelectionToolbar(anchorAbove: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, anchorBelow: ((((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor is null) ? ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor : DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor)), children: resultChildren));
+                    return ((global::Doroti.Framework.Widgets.Widget)new CupertinoTextSelectionToolbar(anchorAbove: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, anchorBelow: ((((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor is null) ? ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor : DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor)), children: resultChildren));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case TargetPlatform.android:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextSelectionToolbar(anchorAbove: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, anchorBelow: ((((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor is null) ? ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor : DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor)), children: resultChildren));
+                    return ((global::Doroti.Framework.Widgets.Widget)new TextSelectionToolbar(anchorAbove: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, anchorBelow: ((((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor is null) ? ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor : DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).secondaryAnchor)), children: resultChildren));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new DesktopTextSelectionToolbar(anchor: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, children: resultChildren));
+                    return ((global::Doroti.Framework.Widgets.Widget)new DesktopTextSelectionToolbar(anchor: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, children: resultChildren));
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.macOS:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoDesktopTextSelectionToolbar(anchor: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, children: resultChildren));
+                    return ((global::Doroti.Framework.Widgets.Widget)new CupertinoDesktopTextSelectionToolbar(anchor: ((global::Doroti.Framework.Widgets.TextSelectionToolbarAnchors)this.anchors).primaryAnchor, children: resultChildren));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

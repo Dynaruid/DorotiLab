@@ -147,7 +147,7 @@ public class Tween<T> : Animatable<T>, IDartTween
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Animatable"))}({this.begin} → {this.end})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "Animatable"))}({this.begin} → {this.end})";
 
     object? IDartTween.begin { get => begin; set => begin = value is null ? default : DartRuntimePrimitives.ConvertValue<T>(value); }
     object? IDartTween.end { get => end; set => end = value is null ? default : DartRuntimePrimitives.ConvertValue<T>(value); }
@@ -219,7 +219,7 @@ public class ConstantTween<T> : Tween<T>
     }
 
     public override T lerp(double t) => ((T?)(object?)begin)!;
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ConstantTween"))}(value: {begin})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "ConstantTween"))}(value: {begin})";
 }
 
 public class CurveTween : Animatable<double>
@@ -242,5 +242,5 @@ public class CurveTween : Animatable<double>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "CurveTween"))}(curve: {this.curve})";
+    public override string ToString() => $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "CurveTween"))}(curve: {this.curve})";
 }

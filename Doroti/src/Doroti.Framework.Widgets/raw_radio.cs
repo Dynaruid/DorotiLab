@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart
-#pragma warning disable CS8600, CS8602, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -67,21 +66,21 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     public virtual bool _hovering { get; set; } = false;
     public virtual RadioGroupRegistry<T>? _registry { get; set; } = default;
 
-    public virtual FocusNode focusNode => ((RawRadio<T>)(object)this.widget).focusNode;
+    public virtual FocusNode focusNode => ((RawRadio<T>)this.widget).focusNode;
     public virtual bool enabled => this.isInteractive;
-    public virtual T radioValue => ((RawRadio<T>)(object)this.widget).value;
+    public virtual T radioValue => ((RawRadio<T>)this.widget).value;
     public override void initState()
     {
-        registry = ((RawRadio<T>)(object)this.widget).groupRegistry;
+        registry = ((RawRadio<T>)this.widget).groupRegistry;
         base.initState();
-        _positionController = new global::Doroti.Framework.Animation.AnimationController(duration: global::Doroti.Framework.Widgets.ToggleableLibrary._kToggleDuration, value: ((this.value == false) ? 0.0 : 1.0), vsync: this);
-        _position = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._positionController, curve: global::Doroti.Framework.Animation.Curves.easeIn, reverseCurve: global::Doroti.Framework.Animation.Curves.easeOut);
+        _positionController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kToggleDuration, value: ((this.value == false) ? 0.0 : 1.0), vsync: this);
+        _position = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._positionController, curve: Curves.easeIn, reverseCurve: Curves.easeOut);
         _reactionController = new global::Doroti.Framework.Animation.AnimationController(duration: this._reactionAnimationDuration, vsync: this);
-        _reaction = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-        _reactionHoverFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: global::Doroti.Framework.Widgets.ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
-        _reactionHoverFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionHoverFadeController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-        _reactionFocusFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: global::Doroti.Framework.Widgets.ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
-        _reactionFocusFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionFocusFadeController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
+        _reaction = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionController, curve: Curves.fastOutSlowIn);
+        _reactionHoverFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
+        _reactionHoverFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionHoverFadeController, curve: Curves.fastOutSlowIn);
+        _reactionFocusFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
+        _reactionFocusFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionFocusFadeController, curve: Curves.fastOutSlowIn);
     }
 
     internal virtual void _handleChanged(bool? selected)
@@ -93,7 +92,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         }
         if ((selected ?? false))
         {
-            this.registry!.onChanged(((RawRadio<T>)(object)this.widget).value);
+            this.registry!.onChanged(((RawRadio<T>)this.widget).value);
         }
         else
         {
@@ -104,7 +103,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     public override void didUpdateWidget(RawRadio<T> oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        registry = ((RawRadio<T>)(object)this.widget).groupRegistry;
+        registry = ((RawRadio<T>)this.widget).groupRegistry;
         animateToValue();
     }
 
@@ -122,38 +121,38 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         registry = null;
     }
 
-    public virtual global::System.Action<bool?>? onChanged => ((global::System.Action<bool?>)((this.registry is not null) ? this._handleChanged : null));
-    public virtual bool tristate => ((RawRadio<T>)(object)this.widget).toggleable;
-    public virtual bool? value => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(((RawRadio<T>)(object)this.widget).value, DartRuntimePrimitives.NullAware(this.registry, __target => __target.groupValue)));
-    public virtual bool isInteractive => ((RawRadio<T>)(object)this.widget).enabled;
+    public virtual global::System.Action<bool?>? onChanged => ((global::System.Action<bool?>?)((this.registry is not null) ? this._handleChanged : null));
+    public virtual bool tristate => ((RawRadio<T>)this.widget).toggleable;
+    public virtual bool? value => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(((RawRadio<T>)this.widget).value, DartRuntimePrimitives.NullAware(this.registry, __target => __target.groupValue)));
+    public virtual bool isInteractive => ((RawRadio<T>)this.widget).enabled;
     public override Widget build(BuildContext context)
     {
         bool? accessibilitySelected = default!;
         string? semanticsHint = default!;
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+            case TargetPlatform.android:
+            case TargetPlatform.fuchsia:
+            case TargetPlatform.linux:
+            case TargetPlatform.windows:
                 {
                     accessibilitySelected = null;
                     semanticsHint = null;
                     break;
                 }
-            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case TargetPlatform.iOS:
+            case TargetPlatform.macOS:
                 {
                     accessibilitySelected = this.value;
                     if (!((this.value ?? false)))
                     {
-                        WidgetsLocalizations localizations = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(context));
+                        WidgetsLocalizations localizations = ((WidgetsLocalizations)WidgetsLocalizations.of(context));
                         semanticsHint = ((WidgetsLocalizations)localizations).radioButtonUnselectedLabel;
                     }
                     break;
                 }
         }
-        return ((Widget)(object?)new Semantics(inMutuallyExclusiveGroup: true, @checked: this.value, selected: accessibilitySelected, hint: semanticsHint, child: buildToggleableWithChild(focusNode: this.focusNode, autofocus: ((RawRadio<T>)(object)this.widget).autofocus, mouseCursor: ((RawRadio<T>)(object)this.widget).mouseCursor, child: this.widget.builder(context, this))));
+        return ((Widget)new Semantics(inMutuallyExclusiveGroup: true, @checked: this.value, selected: accessibilitySelected, hint: semanticsHint, child: buildToggleableWithChild(focusNode: this.focusNode, autofocus: ((RawRadio<T>)this.widget).autofocus, mouseCursor: ((RawRadio<T>)this.widget).mouseCursor, child: this.widget.builder(context, this))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -168,13 +167,13 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         TickerModeData values = this._tickerModeNotifier!.value;
         var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
-    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
     __cascade.muted = !((TickerModeData)values).enabled;
     __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
         this._tickers!.Add(result);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -208,8 +207,8 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -354,7 +353,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     public virtual HashSet<WidgetState> states => new HashSet<WidgetState>();
     public virtual Widget buildToggleable(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Size size = default!, global::Doroti.Framework.Rendering.CustomPainter painter = default!)
     {
-        return ((Widget)(object?)buildToggleableWithChild(focusNode: focusNode, onFocusChange: (global::System.Action<bool>?)onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter)));
+        return ((Widget)buildToggleableWithChild(focusNode: focusNode, onFocusChange: (global::System.Action<bool>?)onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -365,7 +364,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
 
     public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Widget child = default!)
     {
-        return ((Widget)(object?)new FocusableActionDetector(actions: this._actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: (global::System.Action<bool>?)onFocusChange, enabled: this.isInteractive, onShowFocusHighlight: (global::System.Action<bool>)this._handleFocusHighlightChanged, onShowHoverHighlight: (global::System.Action<bool>)this._handleHoverChanged, mouseCursor: (mouseCursor?.resolve(this.states) ?? global::Doroti.Framework.Services.SystemMouseCursors.basic), child: new GestureDetector(excludeFromSemantics: !this.isInteractive, onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(this.isInteractive ? this._handleTapDown : null)), onTap: () => ((global::System.Action<Intent?>)(this.isInteractive ? this._handleTap : null))(default), onTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails?>)(this.isInteractive ? this._handleTapEnd : null)), onTapCancel: () => ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails?>)(this.isInteractive ? this._handleTapEnd : null))(default), child: new Semantics(enabled: this.isInteractive, child: child))));
+        return ((Widget)new FocusableActionDetector(actions: this._actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: (global::System.Action<bool>?)onFocusChange, enabled: this.isInteractive, onShowFocusHighlight: (global::System.Action<bool>)this._handleFocusHighlightChanged, onShowHoverHighlight: (global::System.Action<bool>)this._handleHoverChanged, mouseCursor: (mouseCursor?.resolve(this.states) ?? SystemMouseCursors.basic), child: new GestureDetector(excludeFromSemantics: !this.isInteractive, onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>?)(this.isInteractive ? this._handleTapDown : null)), onTap: this.isInteractive ? () => this._handleTap(null) : null, onTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails?>?)(this.isInteractive ? this._handleTapEnd : null)), onTapCancel: this.isInteractive ? () => this._handleTapEnd(null) : null, child: new Semantics(enabled: this.isInteractive, child: child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -375,7 +374,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         set
         {
             var newRegistry = value;
-            if ((!object.Equals(this._registry, newRegistry)))
+            if ((!Equals(this._registry, newRegistry)))
             {
                 this._registry?.unregisterClient(this);
             }

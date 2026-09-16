@@ -35,7 +35,7 @@ public class ViewConfiguration
 
     public virtual bool shouldUpdateMatrix(ViewConfiguration oldConfiguration)
     {
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(oldConfiguration), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(oldConfiguration), this.GetType())))
         {
             return true;
         }
@@ -53,15 +53,15 @@ public class ViewConfiguration
     {
         var __other = other as ViewConfiguration;
         if (__other is null) return false;
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((__other is ViewConfiguration) && (object.Equals(((ViewConfiguration)((ViewConfiguration)__other)).logicalConstraints, this.logicalConstraints))) && (object.Equals(((ViewConfiguration)((ViewConfiguration)__other)).physicalConstraints, this.physicalConstraints))) && (((ViewConfiguration)((ViewConfiguration)__other)).devicePixelRatio == this.devicePixelRatio));
+        return ((((__other is ViewConfiguration) && (Equals(((ViewConfiguration)((ViewConfiguration)__other)).logicalConstraints, this.logicalConstraints))) && (Equals(((ViewConfiguration)((ViewConfiguration)__other)).physicalConstraints, this.physicalConstraints))) && (((ViewConfiguration)((ViewConfiguration)__other)).devicePixelRatio == this.devicePixelRatio));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.logicalConstraints, this.physicalConstraints, this.devicePixelRatio);
-    public override string ToString() => $"{this.logicalConstraints} at {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.devicePixelRatio))}x";
+    public override string ToString() => $"{this.logicalConstraints} at {(Foundation.DebugLibrary.debugFormatDouble(this.devicePixelRatio))}x";
 }
 
 public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
@@ -86,7 +86,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         set
         {
             var __value = value;
-            if ((object.Equals(this._configuration, __value)))
+            if ((Equals(this._configuration, __value)))
             {
                 return;
             }
@@ -197,7 +197,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
 
     public virtual void compositeFrame()
     {
-        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync("COMPOSITING");
         }
@@ -219,16 +219,16 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             scene.dispose();
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled || global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled))
+                    if ((DebugLibrary.debugRepaintRainbowEnabled || DebugLibrary.debugRepaintTextRainbowEnabled))
                     {
-                        global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor = global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.withHue((((((global::Doroti.Framework.Painting.HSVColor)global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor).hue + 2.0)) % 360.0));
+                        DebugLibrary.debugCurrentRepaintColor = DebugLibrary.debugCurrentRepaintColor.withHue((((((global::Doroti.Framework.Painting.HSVColor)DebugLibrary.debugCurrentRepaintColor).hue + 2.0)) % 360.0));
                     }
                     return true;
                 });
         }
         finally
         {
-            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -247,18 +247,18 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         var bottomLocal = new global::Doroti.Ui.Offset(bounds.center.dx, ((bounds.bottom - 1.0) - (this._view.padding.bottom / 2.0)));
         SystemUiOverlayStyle? upperOverlayStyle = layer!.find<SystemUiOverlayStyle>(topLocal);
         SystemUiOverlayStyle? lowerOverlayStyle = default!;
-        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (PlatformLibrary.defaultTargetPlatform)
         {
-            case var __constant17241 when object.Equals(__constant17241, TargetPlatform.android):
+            case var __constant17241 when Equals(__constant17241, TargetPlatform.android):
                 {
                     lowerOverlayStyle = layer!.find<SystemUiOverlayStyle>(bottomLocal);
                     break;
                 }
-            case var __constant17347 when object.Equals(__constant17347, TargetPlatform.fuchsia):
-            case var __constant17382 when object.Equals(__constant17382, TargetPlatform.iOS):
-            case var __constant17413 when object.Equals(__constant17413, TargetPlatform.linux):
-            case var __constant17446 when object.Equals(__constant17446, TargetPlatform.macOS):
-            case var __constant17479 when object.Equals(__constant17479, TargetPlatform.windows):
+            case var __constant17347 when Equals(__constant17347, TargetPlatform.fuchsia):
+            case var __constant17382 when Equals(__constant17382, TargetPlatform.iOS):
+            case var __constant17413 when Equals(__constant17413, TargetPlatform.linux):
+            case var __constant17446 when Equals(__constant17446, TargetPlatform.macOS):
+            case var __constant17479 when Equals(__constant17479, TargetPlatform.windows):
                 {
                     break;
                 }
@@ -273,7 +273,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             SystemChrome.setSystemUIOverlayStyle(overlayStyle);
             return;
         }
-        var isAndroid = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
+        var isAndroid = (Equals(PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
         SystemUiOverlayStyle definedOverlayStyle = ((upperOverlayStyle ?? lowerOverlayStyle))!;
         var overlayStyleLocal = new SystemUiOverlayStyle(statusBarBrightness: definedOverlayStyle.statusBarBrightness, statusBarIconBrightness: definedOverlayStyle.statusBarIconBrightness, statusBarColor: definedOverlayStyle.statusBarColor, systemStatusBarContrastEnforced: definedOverlayStyle.systemStatusBarContrastEnforced, systemNavigationBarColor: (isAndroid ? definedOverlayStyle.systemNavigationBarColor : null), systemNavigationBarDividerColor: (isAndroid ? definedOverlayStyle.systemNavigationBarDividerColor : null), systemNavigationBarIconBrightness: (isAndroid ? definedOverlayStyle.systemNavigationBarIconBrightness : null), systemNavigationBarContrastEnforced: (isAndroid ? definedOverlayStyle.systemNavigationBarContrastEnforced : null));
         SystemChrome.setSystemUIOverlayStyle(overlayStyleLocal);
@@ -292,7 +292,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                properties.add(new DiagnosticsNode($"debug mode enabled - {((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? "Web" : Platform.operatingSystem))}"));
+                properties.add(new DiagnosticsNode($"debug mode enabled - {((Foundation.ConstantsLibrary.kIsWeb ? "Web" : Platform.operatingSystem))}"));
                 return true;
             });
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("view size", this._view.physicalSize, tooltip: "in physical pixels"));

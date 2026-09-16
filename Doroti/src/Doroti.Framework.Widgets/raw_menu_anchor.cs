@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8605
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -13,7 +12,7 @@ public static partial class Raw_menu_anchorLibrary
 
 public static partial class Raw_menu_anchorLibrary
 {
-    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.gameButtonA)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((Intent)(object?)new DismissIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.right)) };
+    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.gameButtonA)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.escape)] = ((Intent)new DismissIntent()), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.right)) };
 }
 
 public class RawMenuOverlayInfo
@@ -39,11 +38,11 @@ public class RawMenuOverlayInfo
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((__other is RawMenuOverlayInfo) && (object.Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).anchorRect, this.anchorRect))) && (object.Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).overlaySize, this.overlaySize))) && (object.Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).position, this.position))) && (object.Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).tapRegionGroupId, this.tapRegionGroupId)));
+        return (((((__other is RawMenuOverlayInfo) && (Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).anchorRect, this.anchorRect))) && (Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).overlaySize, this.overlaySize))) && (Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).position, this.position))) && (Equals(((RawMenuOverlayInfo)((RawMenuOverlayInfo)__other)).tapRegionGroupId, this.tapRegionGroupId)));
     }
 
     public override int GetHashCode()
@@ -73,7 +72,7 @@ internal class _MenuControllerScope__raw_menu_anchor : InheritedWidget
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
-        var __oldWidget = (_MenuControllerScope__raw_menu_anchor)(object)oldWidget;
+        var __oldWidget = (_MenuControllerScope__raw_menu_anchor)oldWidget;
         return (this.isOpen != ((_MenuControllerScope__raw_menu_anchor)__oldWidget).isOpen);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -125,7 +124,7 @@ public class RawMenuAnchor : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<FocusNode>.CreateHas("focusNode", this.childFocusNode));
+        properties.add(ObjectFlagProperty<FocusNode>.CreateHas("focusNode", this.childFocusNode));
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("useRootOverlay", value: this.useRootOverlay, ifFalse: "use nearest overlay", ifTrue: "use root overlay"));
     }
 
@@ -163,8 +162,8 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor : IState
 
 internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _RawMenuAnchorBaseMixin__raw_menu_anchor
 {
-    internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor"));
-    internal virtual OverlayPortalController _overlayController { get; private set; } = new OverlayPortalController(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller"));
+    internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor"));
+    internal virtual OverlayPortalController _overlayController { get; private set; } = new OverlayPortalController(debugLabel: (Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller"));
     internal virtual Offset? _menuPosition { get; set; } = default;
     public virtual List<_RawMenuAnchorBaseMixin__raw_menu_anchor> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor>();
     public virtual _RawMenuAnchorBaseMixin__raw_menu_anchor? _parent { get; set; } = default!;
@@ -181,18 +180,18 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
                 return useRoot;
             }
             DartRuntimePrimitives.Assert(() => this._isRootOverlayAnchor);
-            return ((RawMenuAnchor)(object)this.widget).useRootOverlay;
+            return ((RawMenuAnchor)this.widget).useRootOverlay;
         }
     }
     public virtual bool isOpen => ((OverlayPortalController)this._overlayController).isShowing;
-    public virtual MenuController menuController => ((RawMenuAnchor)(object)this.widget).controller;
+    public virtual MenuController menuController => ((RawMenuAnchor)this.widget).controller;
     public override void didUpdateWidget(RawMenuAnchor oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((RawMenuAnchor)oldWidget).controller, ((RawMenuAnchor)(object)this.widget).controller)))
+        if ((!Equals(((RawMenuAnchor)oldWidget).controller, ((RawMenuAnchor)this.widget).controller)))
         {
             ((RawMenuAnchor)oldWidget).controller._detach(this);
-            ((RawMenuAnchor)(object)this.widget).controller._attach(this);
+            ((RawMenuAnchor)this.widget).controller._attach(this);
         }
     }
 
@@ -214,9 +213,9 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         this._overlayController.show();
         if (this._isRootOverlayAnchor)
         {
-            ((RawMenuAnchor)(object)this.widget).childFocusNode?.requestFocus();
+            ((RawMenuAnchor)this.widget).childFocusNode?.requestFocus();
         }
-        ((RawMenuAnchor)(object)this.widget).onOpen?.Invoke();
+        ((RawMenuAnchor)this.widget).onOpen?.Invoke();
         setState(((global::System.Action)(() =>
         {
         })));
@@ -230,7 +229,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             return;
         }
         closeChildren(inDispose: inDispose);
-        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             this._overlayController.hide();
         }
@@ -238,7 +237,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         {
             if (!inDispose)
             {
-                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
                 {
                     this._overlayController.hide();
                 })), debugLabel: "MenuAnchor.hide");
@@ -247,8 +246,8 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         if (!inDispose)
         {
             (this._parent)?._childChangedOpenState();
-            ((RawMenuAnchor)(object)this.widget).onClose?.Invoke();
-            if ((this.mounted && (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks))))
+            ((RawMenuAnchor)this.widget).onClose?.Invoke();
+            if ((this.mounted && (!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks))))
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -267,13 +266,13 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public virtual void handleCloseRequest()
     {
-        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             this.widget.onCloseRequested(() => this.close(default));
         }
         else
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
             {
                 if (this.mounted)
                 {
@@ -287,8 +286,8 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     internal virtual Widget _buildOverlay(BuildContext context, OverlayChildLayoutInfo layoutInfo)
     {
         Matrix4 transform = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform;
-        global::Doroti.Ui.Size anchorSize = ((global::Doroti.Ui.Size)(object?)((OverlayChildLayoutInfo)layoutInfo).childSize);
-        global::Doroti.Ui.Rect anchorRectLocal = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, (Offset.zero & anchorSize)));
+        global::Doroti.Ui.Size anchorSize = ((global::Doroti.Ui.Size)((OverlayChildLayoutInfo)layoutInfo).childSize);
+        global::Doroti.Ui.Rect anchorRectLocal = ((global::Doroti.Ui.Rect)MatrixUtils.transformRect(transform, (Offset.zero & anchorSize)));
         var info = new RawMenuOverlayInfo(anchorRect: anchorRectLocal, overlaySize: ((OverlayChildLayoutInfo)layoutInfo).overlaySize, position: this._menuPosition, tapRegionGroupId: ((MenuController)(this.root).menuController));
         return this.widget.overlayBuilder(context, info);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -296,18 +295,18 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        Widget childLocal = ((Widget)(object?)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)(this.root).menuController), consumeOutsideTaps: (((bool)(this.root).isOpen) && ((RawMenuAnchor)(object)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        Widget childLocal = ((Widget)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)(this.root).menuController), consumeOutsideTaps: (((bool)(this.root).isOpen) && ((RawMenuAnchor)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            return (((((RawMenuAnchor)(object)this.widget).builder is null ? ((RawMenuAnchor)(object)this.widget).child : ((RawMenuAnchor)(object)this.widget).builder.Invoke(context, this.menuController, ((RawMenuAnchor)(object)this.widget).child))) ?? new SizedBox());
+            return (((((RawMenuAnchor)this.widget).builder is null ? ((RawMenuAnchor)this.widget).child : ((RawMenuAnchor)this.widget).builder.Invoke(context, this.menuController, ((RawMenuAnchor)this.widget).child))) ?? new SizedBox());
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))))));
-        return ((Widget)(object?)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._overlayController, overlayChildBuilder: this._buildOverlay, overlayLocation: (this.useRootOverlay ? OverlayChildLocation.rootOverlay : OverlayChildLocation.nearestOverlay), child: childLocal));
+        return ((Widget)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._overlayController, overlayChildBuilder: this._buildOverlay, overlayLocation: (this.useRootOverlay ? OverlayChildLocation.rootOverlay : OverlayChildLocation.nearestOverlay), child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!)
     {
-        return global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+        return DiagnosticsLibrary.describeIdentity(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -333,10 +332,10 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = ((_RawMenuAnchorBaseMixin__raw_menu_anchor?)(object?)MenuController.maybeOf(this.context)?._anchor);
-        if ((!object.Equals(newParent, this._parent)))
+        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = ((_RawMenuAnchorBaseMixin__raw_menu_anchor?)MenuController.maybeOf(this.context)?._anchor);
+        if ((!Equals(newParent, this._parent)))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(newParent, this)), () => (object?)"A MenuController should only be attached to one anchor at a time.");
+            DartRuntimePrimitives.Assert(() => (!Equals(newParent, this)), () => (object?)"A MenuController should only be attached to one anchor at a time.");
             (this._parent)?._removeChild(this);
             this._parent = newParent;
             (this._parent)?._addChild(this);
@@ -346,8 +345,8 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = Scrollable.maybeOf(this.context)?.position;
             this._scrollPosition?.isScrollingNotifier.addListener(this._handleScroll);
-            global::Doroti.Ui.Size newSize = ((global::Doroti.Ui.Size)(object?)MediaQuery.sizeOf(this.context));
-            if ((((this._viewSize is not null) && (!object.Equals(newSize, this._viewSize))) && this.isOpen))
+            global::Doroti.Ui.Size newSize = ((global::Doroti.Ui.Size)MediaQuery.sizeOf(this.context));
+            if ((((this._viewSize is not null) && (!Equals(newSize, this._viewSize))) && this.isOpen))
             {
                 handleCloseRequest();
             }
@@ -403,7 +402,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
     public virtual void _childChangedOpenState()
     {
         (this._parent)?._childChangedOpenState();
-        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             setState(((global::System.Action)(() =>
             {
@@ -411,7 +410,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         }
         else
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -451,7 +450,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _MenuControllerScope__raw_menu_anchor(isOpen: this.isOpen, controller: this.menuController, child: new Actions(actions: this.isOpen ? new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new DismissMenuAction(this.menuController) } : new DartMap<Type, dynamic>(), child: new Builder(builder: (global::System.Func<BuildContext, Widget>)this.buildAnchor))));
+        return ((Widget)new _MenuControllerScope__raw_menu_anchor(isOpen: this.isOpen, controller: this.menuController, child: new Actions(actions: this.isOpen ? new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new DismissMenuAction(this.menuController) } : new DartMap<Type, dynamic>(), child: new Builder(builder: (global::System.Func<BuildContext, Widget>)this.buildAnchor))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -471,7 +470,7 @@ public class RawMenuAnchorGroup : StatefulWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<MenuController>.CreateHas("controller", this.controller));
+        properties.add(ObjectFlagProperty<MenuController>.CreateHas("controller", this.controller));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorGroupState__raw_menu_anchor());
@@ -485,14 +484,14 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
     public virtual Size? _viewSize { get; set; } = default;
 
     public virtual bool isOpen => this._anchorChildren.any(((child) => ((bool)(child).isOpen)));
-    public virtual MenuController menuController => ((RawMenuAnchorGroup)(object)this.widget).controller;
+    public virtual MenuController menuController => ((RawMenuAnchorGroup)this.widget).controller;
     public override void didUpdateWidget(RawMenuAnchorGroup oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals(((RawMenuAnchorGroup)oldWidget).controller, ((RawMenuAnchorGroup)(object)this.widget).controller)))
+        if ((!Equals(((RawMenuAnchorGroup)oldWidget).controller, ((RawMenuAnchorGroup)this.widget).controller)))
         {
             ((RawMenuAnchorGroup)oldWidget).controller._detach(this);
-            ((RawMenuAnchorGroup)(object)this.widget).controller._attach(this);
+            ((RawMenuAnchorGroup)this.widget).controller._attach(this);
         }
     }
 
@@ -505,7 +504,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         closeChildren(inDispose: inDispose);
         if (!inDispose)
         {
-            if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+            if ((!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -513,7 +512,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
             }
             else
             {
-                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+                Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
                 {
                     if (this.mounted)
                     {
@@ -528,7 +527,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual void open(Offset? position = null)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((MenuController)this.menuController)._anchor, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((MenuController)this.menuController)._anchor, this)));
         return;
     }
 
@@ -546,7 +545,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        return ((Widget)(object?)new TapRegion(groupId: ((MenuController)(this.root).menuController), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: ((RawMenuAnchorGroup)(object)this.widget).child));
+        return ((Widget)new TapRegion(groupId: ((MenuController)(this.root).menuController), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: ((RawMenuAnchorGroup)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -572,10 +571,10 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = ((_RawMenuAnchorBaseMixin__raw_menu_anchor?)(object?)MenuController.maybeOf(this.context)?._anchor);
-        if ((!object.Equals(newParent, this._parent)))
+        _RawMenuAnchorBaseMixin__raw_menu_anchor? newParent = ((_RawMenuAnchorBaseMixin__raw_menu_anchor?)MenuController.maybeOf(this.context)?._anchor);
+        if ((!Equals(newParent, this._parent)))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(newParent, this)), () => (object?)"A MenuController should only be attached to one anchor at a time.");
+            DartRuntimePrimitives.Assert(() => (!Equals(newParent, this)), () => (object?)"A MenuController should only be attached to one anchor at a time.");
             (this._parent)?._removeChild(this);
             this._parent = newParent;
             (this._parent)?._addChild(this);
@@ -585,8 +584,8 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
             this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = Scrollable.maybeOf(this.context)?.position;
             this._scrollPosition?.isScrollingNotifier.addListener(this._handleScroll);
-            global::Doroti.Ui.Size newSize = ((global::Doroti.Ui.Size)(object?)MediaQuery.sizeOf(this.context));
-            if ((((this._viewSize is not null) && (!object.Equals(newSize, this._viewSize))) && this.isOpen))
+            global::Doroti.Ui.Size newSize = ((global::Doroti.Ui.Size)MediaQuery.sizeOf(this.context));
+            if ((((this._viewSize is not null) && (!Equals(newSize, this._viewSize))) && this.isOpen))
             {
                 handleCloseRequest();
             }
@@ -642,7 +641,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
     public virtual void _childChangedOpenState()
     {
         (this._parent)?._childChangedOpenState();
-        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!Equals(Scheduler.SchedulerBinding.instance.schedulerPhase, Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             setState(((global::System.Action)(() =>
             {
@@ -650,7 +649,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         }
         else
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+            Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -690,11 +689,11 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _MenuControllerScope__raw_menu_anchor(isOpen: this.isOpen, controller: this.menuController, child: new Actions(actions: this.isOpen ? new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new DismissMenuAction(this.menuController) } : new DartMap<Type, dynamic>(), child: new Builder(builder: (global::System.Func<BuildContext, Widget>)this.buildAnchor))));
+        return ((Widget)new _MenuControllerScope__raw_menu_anchor(isOpen: this.isOpen, controller: this.menuController, child: new Actions(actions: this.isOpen ? new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new DismissMenuAction(this.menuController) } : new DartMap<Type, dynamic>(), child: new Builder(builder: (global::System.Func<BuildContext, Widget>)this.buildAnchor))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!) => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!) => DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class MenuController
@@ -726,7 +725,7 @@ public class MenuController
 
     internal virtual void _detach(_RawMenuAnchorBaseMixin__raw_menu_anchor anchor)
     {
-        if ((object.Equals(this._anchor, anchor)))
+        if ((Equals(this._anchor, anchor)))
         {
             _anchor = null;
         }
@@ -744,7 +743,7 @@ public class MenuController
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class DismissMenuAction : DismissAction
@@ -776,14 +775,14 @@ public static partial class Raw_menu_anchorLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (Raw_menu_anchorLibrary._kDebugMenus)
+                if (_kDebugMenus)
                 {
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"MENU: {message}");
-                    if (((details is not null) && System.Linq.Enumerable.Any(details)))
+                    PrintLibrary.debugPrint($"MENU: {message}");
+                    if (((details is not null) && Enumerable.Any(details)))
                     {
                         foreach (string detail in details)
                         {
-                            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"    {detail}");
+                            PrintLibrary.debugPrint($"    {detail}");
                         }
                     }
                 }

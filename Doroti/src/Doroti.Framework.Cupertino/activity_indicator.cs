@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/activity_indicator.dart
-#pragma warning disable CS8600, CS8601, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -13,7 +13,7 @@ public static partial class Activity_indicatorLibrary
 
 public static partial class Activity_indicatorLibrary
 {
-    internal static Color _kActiveTickColor = ((Color)(object?)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4282137668L), darkColor: new global::Doroti.Ui.Color(4293651445L)));
+    internal static Color _kActiveTickColor = ((Color)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4282137668L), darkColor: new global::Doroti.Ui.Color(4293651445L)));
 }
 
 public class CupertinoActivityIndicator : global::Doroti.Framework.Widgets.StatefulWidget
@@ -97,7 +97,7 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: (((CupertinoActivityIndicator)this.widget).radius * 2L), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _CupertinoActivityIndicatorPainter__activity_indicator(position: this._controller, activeColor: (((CupertinoActivityIndicator)this.widget).color ?? CupertinoDynamicColor.resolve(Activity_indicatorLibrary._kActiveTickColor, context)), radius: ((CupertinoActivityIndicator)this.widget).radius, progress: ((CupertinoActivityIndicator)this.widget).progress))));
+        return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateSquare(dimension: (((CupertinoActivityIndicator)this.widget).radius * 2L), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _CupertinoActivityIndicatorPainter__activity_indicator(position: this._controller, activeColor: (((CupertinoActivityIndicator)this.widget).color ?? CupertinoDynamicColor.resolve(Activity_indicatorLibrary._kActiveTickColor, context)), radius: ((CupertinoActivityIndicator)this.widget).radius, progress: ((CupertinoActivityIndicator)this.widget).progress))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -111,7 +111,7 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -137,8 +137,8 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -185,7 +185,7 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::
         this.activeColor = activeColor;
         this.radius = radius;
         this.progress = progress;
-        this.tickFundamentalShape = global::Doroti.Ui.RRect.fromLTRBXY((-radius / Activity_indicatorLibrary._kDefaultIndicatorRadius), (-radius / 3.0), (radius / Activity_indicatorLibrary._kDefaultIndicatorRadius), -radius, (radius / Activity_indicatorLibrary._kDefaultIndicatorRadius), (radius / Activity_indicatorLibrary._kDefaultIndicatorRadius));
+        this.tickFundamentalShape = RRect.fromLTRBXY((-radius / Activity_indicatorLibrary._kDefaultIndicatorRadius), (-radius / 3.0), (radius / Activity_indicatorLibrary._kDefaultIndicatorRadius), -radius, (radius / Activity_indicatorLibrary._kDefaultIndicatorRadius), (radius / Activity_indicatorLibrary._kDefaultIndicatorRadius));
     }
 
     public override void paint(Canvas canvas, Size size)
@@ -207,8 +207,8 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
-        var __oldPainter = (_CupertinoActivityIndicatorPainter__activity_indicator)(object)oldDelegate;
-        return (((!object.Equals(((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).position, this.position)) || (!object.Equals(((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).activeColor, this.activeColor))) || (((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).progress != this.progress));
+        var __oldPainter = (_CupertinoActivityIndicatorPainter__activity_indicator)oldDelegate;
+        return (((!Equals(((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).position, this.position)) || (!Equals(((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).activeColor, this.activeColor))) || (((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).progress != this.progress));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -231,7 +231,7 @@ public class CupertinoLinearActivityIndicator : global::Doroti.Framework.Widgets
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: this.height, minWidth: double.PositiveInfinity), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _CupertinoLinearActivityIndicator__activity_indicator(progress: this.progress, color: this.color))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: this.height, minWidth: double.PositiveInfinity), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _CupertinoLinearActivityIndicator__activity_indicator(progress: this.progress, color: this.color))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -266,12 +266,12 @@ internal class _CupertinoLinearActivityIndicator__activity_indicator : global::D
 
     public override void paint(Canvas canvas, Size size)
     {
-        canvas.drawRRect(global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((size.height / 2L))).toRRect((Offset.zero & size)), this._backgroundPaint);
+        canvas.drawRRect(BorderRadius.CreateAll(Radius.circular((size.height / 2L))).toRRect((Offset.zero & size)), this._backgroundPaint);
         if ((this.progress > 0L))
         {
-            canvas.drawRRect(global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((size.height / 2L))).toRRect((Offset.zero & new global::Doroti.Ui.Size((Dart_uiLibrary.clampDouble(this.progress, 0.0, 1.0) * size.width), size.height))), this._progressPaint);
+            canvas.drawRRect(BorderRadius.CreateAll(Radius.circular((size.height / 2L))).toRRect((Offset.zero & new global::Doroti.Ui.Size((Dart_uiLibrary.clampDouble(this.progress, 0.0, 1.0) * size.width), size.height))), this._progressPaint);
         }
     }
 
-    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => ((((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).progress != this.progress) || (!object.Equals(((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).color, this.color)));
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => ((((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).progress != this.progress) || (!Equals(((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).color, this.color)));
 }

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/tooltip_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -69,11 +69,11 @@ public class TooltipThemeData : global::Doroti.Framework.Foundation.Diagnosticab
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((((__other is TooltipThemeData) && (((TooltipThemeData)((TooltipThemeData)__other)).height == this.height)) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).constraints, this.constraints))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).padding, this.padding))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).margin, this.margin))) && (((TooltipThemeData)((TooltipThemeData)__other)).verticalOffset == this.verticalOffset)) && (((TooltipThemeData)((TooltipThemeData)__other)).preferBelow == this.preferBelow)) && (((TooltipThemeData)((TooltipThemeData)__other)).excludeFromSemantics == this.excludeFromSemantics)) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).decoration, this.decoration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).textAlign, this.textAlign))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).waitDuration, this.waitDuration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).showDuration, this.showDuration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).exitDuration, this.exitDuration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).triggerMode, this.triggerMode))) && (((TooltipThemeData)((TooltipThemeData)__other)).enableFeedback == this.enableFeedback));
+        return ((((((((((((((((__other is TooltipThemeData) && (((TooltipThemeData)((TooltipThemeData)__other)).height == this.height)) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).constraints, this.constraints))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).padding, this.padding))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).margin, this.margin))) && (((TooltipThemeData)((TooltipThemeData)__other)).verticalOffset == this.verticalOffset)) && (((TooltipThemeData)((TooltipThemeData)__other)).preferBelow == this.preferBelow)) && (((TooltipThemeData)((TooltipThemeData)__other)).excludeFromSemantics == this.excludeFromSemantics)) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).decoration, this.decoration))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).textStyle, this.textStyle))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).textAlign, this.textAlign))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).waitDuration, this.waitDuration))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).showDuration, this.showDuration))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).exitDuration, this.exitDuration))) && (Equals(((TooltipThemeData)((TooltipThemeData)__other)).triggerMode, this.triggerMode))) && (((TooltipThemeData)((TooltipThemeData)__other)).enableFeedback == this.enableFeedback));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -95,8 +95,8 @@ public class TooltipThemeData : global::Doroti.Framework.Foundation.Diagnosticab
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enableFeedback", value: this.enableFeedback, ifTrue: "true", showName: true));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -112,7 +112,7 @@ public class TooltipThemeData : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -129,16 +129,16 @@ public class TooltipTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static TooltipThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TooltipTheme? tooltipThemeLocal = ((TooltipTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TooltipTheme>());
+        TooltipTheme? tooltipThemeLocal = ((TooltipTheme?)context.dependOnInheritedWidgetOfExactType<TooltipTheme>());
         return (tooltipThemeLocal?.data ?? Theme.of(context).tooltipTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TooltipTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new TooltipTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TooltipTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((TooltipTheme)oldWidget).data)));
 }

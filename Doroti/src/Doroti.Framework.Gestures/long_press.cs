@@ -148,16 +148,16 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
     public virtual Action<LongPressEndDetails>? onTertiaryLongPressEnd { get; set; } = default;
     internal virtual VelocityTracker? _velocityTracker { get; set; } = default;
 
-    public LongPressGestureRecognizer(Duration? duration = null, double? postAcceptSlopTolerance = null, HashSet<PointerDeviceKind>? supportedDevices = null, object? debugOwner = null, Func<long, bool>? allowedButtonsFilter = null) : base(postAcceptSlopTolerance: postAcceptSlopTolerance, supportedDevices: supportedDevices, debugOwner: debugOwner, deadline: (duration ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kLongPressTimeout), allowedButtonsFilter: (allowedButtonsFilter ?? _defaultButtonAcceptBehavior))
+    public LongPressGestureRecognizer(Duration? duration = null, double? postAcceptSlopTolerance = null, HashSet<PointerDeviceKind>? supportedDevices = null, object? debugOwner = null, Func<long, bool>? allowedButtonsFilter = null) : base(postAcceptSlopTolerance: postAcceptSlopTolerance, supportedDevices: supportedDevices, debugOwner: debugOwner, deadline: (duration ?? ConstantsLibrary.kLongPressTimeout), allowedButtonsFilter: (allowedButtonsFilter ?? _defaultButtonAcceptBehavior))
     {
     }
 
-    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (((buttons == global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton) || (buttons == global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton)) || (buttons == global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton));
+    internal new static bool _defaultButtonAcceptBehavior(long buttons) => (((buttons == EventsLibrary.kPrimaryButton) || (buttons == EventsLibrary.kSecondaryButton)) || (buttons == EventsLibrary.kTertiaryButton));
     public override bool isPointerAllowed(PointerDownEvent @event)
     {
         switch (@event.buttons)
         {
-            case var __constant25085 when object.Equals(__constant25085, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant25085 when Equals(__constant25085, EventsLibrary.kPrimaryButton):
                 {
                     if ((((((((this.onLongPressDown is null) && (this.onLongPressCancel is null)) && (this.onLongPressStart is null)) && (this.onLongPress is null)) && (this.onLongPressMoveUpdate is null)) && (this.onLongPressEnd is null)) && (this.onLongPressUp is null)))
                     {
@@ -165,7 +165,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant25421 when object.Equals(__constant25421, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant25421 when Equals(__constant25421, EventsLibrary.kSecondaryButton):
                 {
                     if ((((((((this.onSecondaryLongPressDown is null) && (this.onSecondaryLongPressCancel is null)) && (this.onSecondaryLongPressStart is null)) && (this.onSecondaryLongPress is null)) && (this.onSecondaryLongPressMoveUpdate is null)) && (this.onSecondaryLongPressEnd is null)) && (this.onSecondaryLongPressUp is null)))
                     {
@@ -173,7 +173,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant25822 when object.Equals(__constant25822, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant25822 when Equals(__constant25822, EventsLibrary.kTertiaryButton):
                 {
                     if ((((((((this.onTertiaryLongPressDown is null) && (this.onTertiaryLongPressCancel is null)) && (this.onTertiaryLongPressStart is null)) && (this.onTertiaryLongPress is null)) && (this.onTertiaryLongPressMoveUpdate is null)) && (this.onTertiaryLongPressEnd is null)) && (this.onTertiaryLongPressUp is null)))
                     {
@@ -274,7 +274,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
         var details = new LongPressDownDetails(globalPosition: this._longPressOrigin!.global, localPosition: this._longPressOrigin!.local, kind: getKindForPointer(@event.pointer));
         switch (this._initialButtons)
         {
-            case var __constant28164 when object.Equals(__constant28164, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant28164 when Equals(__constant28164, EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onLongPressDown is not null))
                     {
@@ -282,7 +282,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant28324 when object.Equals(__constant28324, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant28324 when Equals(__constant28324, EventsLibrary.kSecondaryButton):
                 {
                     if ((this.onSecondaryLongPressDown is not null))
                     {
@@ -290,7 +290,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant28550 when object.Equals(__constant28550, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant28550 when Equals(__constant28550, EventsLibrary.kTertiaryButton):
                 {
                     if ((this.onTertiaryLongPressDown is not null))
                     {
@@ -308,11 +308,11 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     internal virtual void _checkLongPressCancel()
     {
-        if ((object.Equals(state, GestureRecognizerState.possible)))
+        if ((Equals(state, GestureRecognizerState.possible)))
         {
             switch (this._initialButtons)
             {
-                case var __constant28941 when object.Equals(__constant28941, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+                case var __constant28941 when Equals(__constant28941, EventsLibrary.kPrimaryButton):
                     {
                         if ((this.onLongPressCancel is not null))
                         {
@@ -320,7 +320,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                         }
                         break;
                     }
-                case var __constant29100 when object.Equals(__constant29100, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+                case var __constant29100 when Equals(__constant29100, EventsLibrary.kSecondaryButton):
                     {
                         if ((this.onSecondaryLongPressCancel is not null))
                         {
@@ -328,7 +328,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                         }
                         break;
                     }
-                case var __constant29288 when object.Equals(__constant29288, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+                case var __constant29288 when Equals(__constant29288, EventsLibrary.kTertiaryButton):
                     {
                         if ((this.onTertiaryLongPressCancel is not null))
                         {
@@ -349,7 +349,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
     {
         switch (this._initialButtons)
         {
-            case var __constant29631 when object.Equals(__constant29631, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant29631 when Equals(__constant29631, EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onLongPressStart is not null))
                     {
@@ -362,7 +362,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant30068 when object.Equals(__constant30068, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant30068 when Equals(__constant30068, EventsLibrary.kSecondaryButton):
                 {
                     if ((this.onSecondaryLongPressStart is not null))
                     {
@@ -375,7 +375,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant30598 when object.Equals(__constant30598, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant30598 when Equals(__constant30598, EventsLibrary.kTertiaryButton):
                 {
                     if ((this.onTertiaryLongPressStart is not null))
                     {
@@ -401,7 +401,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
         var details = new LongPressMoveUpdateDetails(globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition, offsetFromOrigin: (((PointerEvent)@event).position - this._longPressOrigin!.global), localOffsetFromOrigin: (((PointerEvent)@event).localPosition - this._longPressOrigin!.local));
         switch (this._initialButtons)
         {
-            case var __constant31571 when object.Equals(__constant31571, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant31571 when Equals(__constant31571, EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onLongPressMoveUpdate is not null))
                     {
@@ -409,7 +409,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant31749 when object.Equals(__constant31749, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant31749 when Equals(__constant31749, EventsLibrary.kSecondaryButton):
                 {
                     if ((this.onSecondaryLongPressMoveUpdate is not null))
                     {
@@ -417,7 +417,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant31993 when object.Equals(__constant31993, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant31993 when Equals(__constant31993, EventsLibrary.kTertiaryButton):
                 {
                     if ((this.onTertiaryLongPressMoveUpdate is not null))
                     {
@@ -441,7 +441,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
         _velocityTracker = null;
         switch (this._initialButtons)
         {
-            case var __constant32796 when object.Equals(__constant32796, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
+            case var __constant32796 when Equals(__constant32796, EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onLongPressEnd is not null))
                     {
@@ -453,7 +453,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant33065 when object.Equals(__constant33065, global::Doroti.Framework.Gestures.EventsLibrary.kSecondaryButton):
+            case var __constant33065 when Equals(__constant33065, EventsLibrary.kSecondaryButton):
                 {
                     if ((this.onSecondaryLongPressEnd is not null))
                     {
@@ -465,7 +465,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                     }
                     break;
                 }
-            case var __constant33390 when object.Equals(__constant33390, global::Doroti.Framework.Gestures.EventsLibrary.kTertiaryButton):
+            case var __constant33390 when Equals(__constant33390, EventsLibrary.kTertiaryButton):
                 {
                     if ((this.onTertiaryLongPressEnd is not null))
                     {
@@ -495,7 +495,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
 
     public override void resolve(GestureDisposition disposition)
     {
-        if ((object.Equals(disposition, GestureDisposition.rejected)))
+        if ((Equals(disposition, GestureDisposition.rejected)))
         {
             if (this._longPressAccepted)
             {

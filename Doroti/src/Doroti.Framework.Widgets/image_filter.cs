@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/image_filter.dart
-#pragma warning disable CS8600, CS8603
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -22,7 +21,7 @@ public class ImageFiltered : SingleChildRenderObjectWidget
     {
         DartRuntimePrimitives.Ignore(((Func<_ImageFilterRenderObject__image_filter>)(() =>
 {
-    var __cascade = (((_ImageFilterRenderObject__image_filter?)(object?)renderObject)!);
+    var __cascade = (((_ImageFilterRenderObject__image_filter?)renderObject)!);
     __cascade.enabled = this.enabled;
     __cascade.imageFilter = this.imageFilter;
     return __cascade;
@@ -72,8 +71,8 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
         get => this._imageFilter;
         set
         {
-            var __value = (ImageFilter)(object)value;
-            if ((!object.Equals(__value, this._imageFilter)))
+            var __value = (ImageFilter)value;
+            if ((!Equals(__value, this._imageFilter)))
             {
                 _imageFilter = __value;
                 markNeedsCompositedLayerUpdate();
@@ -84,11 +83,11 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
     public override bool isRepaintBoundary => this.alwaysNeedsCompositing;
     public override global::Doroti.Framework.Rendering.OffsetLayer updateCompositedLayer(global::Doroti.Framework.Rendering.OffsetLayer? oldLayer)
     {
-        var __oldLayer = oldLayer is null ? null : (global::Doroti.Framework.Rendering.ImageFilterLayer)(object)oldLayer;
+        var __oldLayer = oldLayer is null ? null : (global::Doroti.Framework.Rendering.ImageFilterLayer)oldLayer;
         global::Doroti.Framework.Rendering.ImageFilterLayer layer = (__oldLayer ?? new global::Doroti.Framework.Rendering.ImageFilterLayer());
         layer.imageFilter = this.imageFilter;
         layer.bounds = this.paintBounds;
-        return ((global::Doroti.Framework.Rendering.OffsetLayer)(object?)layer);
+        return ((global::Doroti.Framework.Rendering.OffsetLayer)layer);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

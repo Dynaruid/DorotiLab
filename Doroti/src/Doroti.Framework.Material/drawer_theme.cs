@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/drawer_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -56,11 +56,11 @@ public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((__other is DrawerThemeData) && (object.Equals(((DrawerThemeData)((DrawerThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((DrawerThemeData)((DrawerThemeData)__other)).scrimColor, this.scrimColor))) && (((DrawerThemeData)((DrawerThemeData)__other)).elevation == this.elevation)) && (object.Equals(((DrawerThemeData)((DrawerThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((DrawerThemeData)((DrawerThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((DrawerThemeData)((DrawerThemeData)__other)).shape, this.shape))) && (object.Equals(((DrawerThemeData)((DrawerThemeData)__other)).endShape, this.endShape))) && (((DrawerThemeData)((DrawerThemeData)__other)).width == this.width)) && (object.Equals(((DrawerThemeData)((DrawerThemeData)__other)).clipBehavior, this.clipBehavior)));
+        return ((((((((((__other is DrawerThemeData) && (Equals(((DrawerThemeData)((DrawerThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((DrawerThemeData)((DrawerThemeData)__other)).scrimColor, this.scrimColor))) && (((DrawerThemeData)((DrawerThemeData)__other)).elevation == this.elevation)) && (Equals(((DrawerThemeData)((DrawerThemeData)__other)).shadowColor, this.shadowColor))) && (Equals(((DrawerThemeData)((DrawerThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (Equals(((DrawerThemeData)((DrawerThemeData)__other)).shape, this.shape))) && (Equals(((DrawerThemeData)((DrawerThemeData)__other)).endShape, this.endShape))) && (((DrawerThemeData)((DrawerThemeData)__other)).width == this.width)) && (Equals(((DrawerThemeData)((DrawerThemeData)__other)).clipBehavior, this.clipBehavior)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -76,8 +76,8 @@ public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -93,7 +93,7 @@ public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -110,16 +110,16 @@ public class DrawerTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static DrawerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DrawerTheme? drawerThemeLocal = ((DrawerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DrawerTheme>());
+        DrawerTheme? drawerThemeLocal = ((DrawerTheme?)context.dependOnInheritedWidgetOfExactType<DrawerTheme>());
         return (drawerThemeLocal?.data ?? Theme.of(context).drawerTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DrawerTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new DrawerTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DrawerTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((DrawerTheme)oldWidget).data)));
 }

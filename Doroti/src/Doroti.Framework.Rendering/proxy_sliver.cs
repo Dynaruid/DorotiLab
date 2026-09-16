@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/rendering/proxy_sliver.dart
-#pragma warning disable CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -56,15 +55,15 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
 
     public override double childMainAxisPosition(RenderObject child)
     {
-        var __child = (RenderSliver)(object)child;
-        DartRuntimePrimitives.Assert(() => (object.Equals(__child, this.child)));
+        var __child = (RenderSliver)child;
+        DartRuntimePrimitives.Assert(() => (Equals(__child, this.child)));
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
-        var childParentData = ((SliverPhysicalParentData?)(object?)((RenderObject)child).parentData!)!;
+        var childParentData = ((SliverPhysicalParentData?)((RenderObject)child).parentData!)!;
         childParentData.applyPaintTransform(transform);
     }
 
@@ -200,7 +199,7 @@ public class RenderSliverOpacity : RenderProxySliver
                 return;
             }
             DartRuntimePrimitives.Assert(() => needsCompositing);
-            layer = context.pushOpacity(offset, this._alpha, (Action<PaintingContext, Offset>)base.paint, oldLayer: ((OpacityLayer?)(object?)layer)!);
+            layer = context.pushOpacity(offset, this._alpha, (Action<PaintingContext, Offset>)base.paint, oldLayer: ((OpacityLayer?)layer)!);
             DartRuntimePrimitives.Assert(() =>
                 {
                     layer!.debugCreator = debugCreator;
@@ -293,7 +292,7 @@ public class RenderSliverIgnorePointer : RenderProxySliver
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<bool>("ignoring", this.ignoring));
-        properties.add(new DiagnosticsProperty<bool>("ignoringSemantics", this.ignoringSemantics, description: ((this.ignoringSemantics is null) ? null : $"implicitly {this.ignoringSemantics}")));
+        properties.add(new DiagnosticsProperty<bool?>("ignoringSemantics", this.ignoringSemantics, description: ((this.ignoringSemantics is null) ? null : $"implicitly {this.ignoringSemantics}")));
     }
 
 }
@@ -400,7 +399,7 @@ public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpac
     public override bool isRepaintBoundary => ((child is not null) && DartRuntimePrimitives.RequireValue(this._currentlyIsRepaintBoundary));
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
-        var __oldLayer = oldLayer is null ? null : (OpacityLayer)(object)oldLayer;
+        var __oldLayer = oldLayer is null ? null : (OpacityLayer)oldLayer;
         OpacityLayer updatedLayer = (__oldLayer ?? new OpacityLayer());
         updatedLayer.alpha = this._alpha;
         return updatedLayer;
@@ -413,7 +412,7 @@ public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpac
         set
         {
             var __value = value;
-            if ((object.Equals(this._opacity, __value)))
+            if ((Equals(this._opacity, __value)))
             {
                 return;
             }
@@ -478,7 +477,7 @@ public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpac
 
     public override bool paintsChild(RenderObject child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderObject)child).parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
         return (this.opacity.value > 0L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -581,7 +580,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         set
         {
             var __value = value;
-            if ((object.Equals(this._properties, __value)))
+            if ((Equals(this._properties, __value)))
             {
                 return;
             }
@@ -652,7 +651,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         set
         {
             var __value = value;
-            if ((object.Equals(this._localeForSubtree, __value)))
+            if ((Equals(this._localeForSubtree, __value)))
             {
                 return;
             }
@@ -705,7 +704,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         set
         {
             var __value = value;
-            if ((object.Equals(this.textDirection, __value)))
+            if ((Equals(this.textDirection, __value)))
             {
                 return;
             }
@@ -910,7 +909,7 @@ public class RenderSliverSemanticsAnnotations : RenderProxySliver, SemanticsAnno
         {
             config.controlsNodes = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).controlsNodes;
         }
-        if ((!object.Equals(((global::Doroti.Framework.Semantics.SemanticsConfiguration)config).validationResult, ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).validationResult)))
+        if ((!Equals(((global::Doroti.Framework.Semantics.SemanticsConfiguration)config).validationResult, ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).validationResult)))
         {
             config.validationResult = ((global::Doroti.Framework.Semantics.SemanticsProperties)this._properties).validationResult;
         }

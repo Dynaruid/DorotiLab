@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/drawer.dart
-#pragma warning disable CS8600, CS8602, CS8603, CS8604
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -62,11 +62,11 @@ public class Drawer : global::Doroti.Framework.Widgets.StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         DrawerThemeData drawerTheme = DrawerTheme.of(context);
-        string? labelLocal = (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => this.semanticLabel, global::Doroti.Framework.Foundation.TargetPlatform.macOS => this.semanticLabel, global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.linux => (this.semanticLabel ?? MaterialLocalizations.of(context).drawerLabel), global::Doroti.Framework.Foundation.TargetPlatform.windows => (this.semanticLabel ?? MaterialLocalizations.of(context).drawerLabel), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        var isDrawerStart = (!object.Equals(DrawerController.maybeOf(context)?.alignment, DrawerAlignment.end));
+        string? labelLocal = (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.iOS => this.semanticLabel, TargetPlatform.macOS => this.semanticLabel, TargetPlatform.android or TargetPlatform.fuchsia or TargetPlatform.linux => (this.semanticLabel ?? MaterialLocalizations.of(context).drawerLabel), TargetPlatform.windows => (this.semanticLabel ?? MaterialLocalizations.of(context).drawerLabel), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var isDrawerStart = (!Equals(DrawerController.maybeOf(context)?.alignment, DrawerAlignment.end));
         DrawerThemeData defaults = ((new _DrawerDefaultsM3__drawer(context)));
         global::Doroti.Framework.Painting.ShapeBorder? effectiveShape = (this.shape ?? ((isDrawerStart ? ((drawerTheme.shape ?? defaults.shape)) : ((drawerTheme.endShape ?? defaults.endShape)))));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: labelLocal, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand(width: ((this.width ?? drawerTheme.width) ?? DrawerLibrary._kWidth)), child: new Material(color: ((this.backgroundColor ?? drawerTheme.backgroundColor) ?? defaults.backgroundColor), elevation: ((this.elevation ?? drawerTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shadowColor: ((this.shadowColor ?? drawerTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? drawerTheme.surfaceTintColor) ?? defaults.surfaceTintColor), shape: effectiveShape, clipBehavior: ((effectiveShape is not null) ? (((this.clipBehavior ?? drawerTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior))) : Clip.none), child: this.child))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: labelLocal, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: BoxConstraints.CreateExpand(width: ((this.width ?? drawerTheme.width) ?? DrawerLibrary._kWidth)), child: new Material(color: ((this.backgroundColor ?? drawerTheme.backgroundColor) ?? defaults.backgroundColor), elevation: ((this.elevation ?? drawerTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shadowColor: ((this.shadowColor ?? drawerTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? drawerTheme.surfaceTintColor) ?? defaults.surfaceTintColor), shape: effectiveShape, clipBehavior: ((effectiveShape is not null) ? (((this.clipBehavior ?? drawerTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior))) : Clip.none), child: this.child))));
     }
 
 }
@@ -84,8 +84,8 @@ internal class _DrawerControllerScope__drawer : global::Doroti.Framework.Widgets
 
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget)
     {
-        var __old = (_DrawerControllerScope__drawer)(object)oldWidget;
-        return (!object.Equals(this.controller, ((_DrawerControllerScope__drawer)__old).controller));
+        var __old = (_DrawerControllerScope__drawer)oldWidget;
+        return (!Equals(this.controller, ((_DrawerControllerScope__drawer)__old).controller));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -103,7 +103,7 @@ public class DrawerController : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual double? edgeDragWidth { get; private set; }
     public virtual bool isDrawerOpen { get; private set; } = default!;
 
-    public DrawerController(global::Doroti.Framework.Widgets.GlobalKeyBase? key = null, global::Doroti.Framework.Widgets.Widget child = default!, DrawerAlignment alignment = default!, bool isDrawerOpen = false, global::System.Action<bool>? drawerCallback = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, Color? scrimColor = null, double? edgeDragWidth = null, bool enableOpenDragGesture = true, bool drawerBarrierDismissible = true) : base(key: key)
+    public DrawerController(global::Doroti.Framework.Widgets.GlobalKeyBase? key = null, global::Doroti.Framework.Widgets.Widget child = default!, DrawerAlignment alignment = default!, bool isDrawerOpen = false, global::System.Action<bool>? drawerCallback = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = Gestures.DragStartBehavior.start, Color? scrimColor = null, double? edgeDragWidth = null, bool enableOpenDragGesture = true, bool drawerBarrierDismissible = true) : base(key: key)
     {
         this.child = child;
         this.alignment = alignment;
@@ -124,12 +124,12 @@ public class DrawerController : global::Doroti.Framework.Widgets.StatefulWidget
 
     public static DrawerController of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DrawerController? controller = ((DrawerController?)(object?)DrawerController.maybeOf(context));
+        DrawerController? controller = ((DrawerController?)maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((controller is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("DrawerController.of() was called with a context that does not " + "contain a DrawerController widget.\n" + "No DrawerController widget ancestor could be found starting from " + "the context that was passed to DrawerController.of(). This can " + "happen because you are using a widget that looks for a DrawerController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("DrawerController.of() was called with a context that does not " + "contain a DrawerController widget.\n" + "No DrawerController widget ancestor could be found starting from " + "the context that was passed to DrawerController.of(). This can " + "happen because you are using a widget that looks for a DrawerController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
             });
@@ -145,9 +145,9 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
     internal virtual global::Doroti.Framework.Widgets.LocalHistoryEntry? _historyEntry { get; set; } = default;
     internal virtual global::Doroti.Framework.Widgets.FocusScopeNode _focusScopeNode { get; private set; } = new global::Doroti.Framework.Widgets.FocusScopeNode();
     internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; set; } = default!;
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _drawerKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _drawerKey { get; private set; } = GlobalKey<IState>.Create();
     internal virtual bool _previouslyOpened { get; set; } = false;
-    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _gestureDetectorKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _gestureDetectorKey { get; private set; } = GlobalKey<IState>.Create();
     public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
@@ -185,7 +185,7 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
     public override void didUpdateWidget(DrawerController oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isAnimating(((global::Doroti.Framework.Animation.AnimationController)this._controller).status))
+        if (AnimationStatusMembers.isAnimating(((global::Doroti.Framework.Animation.AnimationController)this._controller).status))
         {
             return;
         }
@@ -206,7 +206,7 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
     {
         if ((this._historyEntry is null))
         {
-            global::Doroti.Framework.Widgets.IModalRoute? route = global::Doroti.Framework.Widgets.ModalRoute<object>.untypedOf(this.context);
+            global::Doroti.Framework.Widgets.IModalRoute? route = ModalRoute<object>.untypedOf(this.context);
             if ((route is not null))
             {
                 _historyEntry = new global::Doroti.Framework.Widgets.LocalHistoryEntry(onRemove: () => this._handleHistoryEntryRemoved(), impliesAppBarDismissal: false);
@@ -220,19 +220,19 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
     {
         switch (status)
         {
-            case global::Doroti.Framework.Animation.AnimationStatus.forward:
+            case AnimationStatus.forward:
                 {
                     _ensureHistoryEntry();
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+            case AnimationStatus.reverse:
                 {
                     this._historyEntry?.remove();
                     _historyEntry = null;
                     break;
                 }
-            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
-            case global::Doroti.Framework.Animation.AnimationStatus.completed:
+            case AnimationStatus.dismissed:
+            case AnimationStatus.completed:
                 {
                     break;
                 }
@@ -271,7 +271,7 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
     {
         get
         {
-            var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._drawerKey).currentContext?.findRenderObject())!;
+            var box = ((global::Doroti.Framework.Rendering.RenderBox?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._drawerKey).currentContext?.findRenderObject())!;
             return (box?.size.width ?? DrawerLibrary._kWidth);
         }
     }
@@ -331,35 +331,35 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
         ((DrawerController)this.widget).drawerCallback?.Invoke(false);
     }
 
-    internal virtual global::Doroti.Framework.Painting.AlignmentDirectional _drawerOuterAlignment => (((DrawerController)this.widget).alignment switch { DrawerAlignment.start => global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, DrawerAlignment.end => global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-    internal virtual global::Doroti.Framework.Painting.AlignmentDirectional _drawerInnerAlignment => (((DrawerController)this.widget).alignment switch { DrawerAlignment.start => global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd, DrawerAlignment.end => global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual global::Doroti.Framework.Painting.AlignmentDirectional _drawerOuterAlignment => (((DrawerController)this.widget).alignment switch { DrawerAlignment.start => AlignmentDirectional.centerStart, DrawerAlignment.end => AlignmentDirectional.centerEnd, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual global::Doroti.Framework.Painting.AlignmentDirectional _drawerInnerAlignment => (((DrawerController)this.widget).alignment switch { DrawerAlignment.start => AlignmentDirectional.centerEnd, DrawerAlignment.end => AlignmentDirectional.centerStart, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     internal virtual global::Doroti.Framework.Widgets.Widget _buildDrawer(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        bool isDesktop = (Theme.of(context).platform switch { global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.iOS => false, global::Doroti.Framework.Foundation.TargetPlatform.fuchsia => false, global::Doroti.Framework.Foundation.TargetPlatform.macOS or global::Doroti.Framework.Foundation.TargetPlatform.linux => true, global::Doroti.Framework.Foundation.TargetPlatform.windows => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool isDesktop = (Theme.of(context).platform switch { TargetPlatform.android or TargetPlatform.iOS => false, TargetPlatform.fuchsia => false, TargetPlatform.macOS or TargetPlatform.linux => true, TargetPlatform.windows => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double dragAreaWidth = (((DrawerController)this.widget).edgeDragWidth ?? (DrawerLibrary._kEdgeDragWidth + ((((DrawerController)this.widget).alignment, Directionality.of(context)) switch { (DrawerAlignment.start, TextDirection.ltr) => MediaQuery.paddingOf(context).left, (DrawerAlignment.start, TextDirection.rtl) => MediaQuery.paddingOf(context).right, (DrawerAlignment.end, TextDirection.rtl) => MediaQuery.paddingOf(context).left, (DrawerAlignment.end, TextDirection.ltr) => MediaQuery.paddingOf(context).right, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
         if (this._controller.isDismissed)
         {
             if ((((DrawerController)this.widget).enableOpenDragGesture && !isDesktop))
             {
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Align(alignment: this._drawerOuterAlignment, child: new global::Doroti.Framework.Widgets.GestureDetector(key: this._gestureDetectorKey, onHorizontalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._move, onHorizontalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._settle, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, excludeFromSemantics: true, dragStartBehavior: ((DrawerController)this.widget).dragStartBehavior, child: new global::Doroti.Framework.Widgets.LimitedBox(maxHeight: 0.0, child: new global::Doroti.Framework.Widgets.SizedBox(width: dragAreaWidth, height: double.PositiveInfinity)))));
+                return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Align(alignment: this._drawerOuterAlignment, child: new global::Doroti.Framework.Widgets.GestureDetector(key: this._gestureDetectorKey, onHorizontalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._move, onHorizontalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._settle, behavior: HitTestBehavior.translucent, excludeFromSemantics: true, dragStartBehavior: ((DrawerController)this.widget).dragStartBehavior, child: new global::Doroti.Framework.Widgets.LimitedBox(maxHeight: 0.0, child: new global::Doroti.Framework.Widgets.SizedBox(width: dragAreaWidth, height: double.PositiveInfinity)))));
             }
             else
             {
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+                return ((global::Doroti.Framework.Widgets.Widget)SizedBox.CreateShrink());
             }
         }
         else
         {
-            bool platformHasBackButton = (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.android => true, global::Doroti.Framework.Foundation.TargetPlatform.iOS or global::Doroti.Framework.Foundation.TargetPlatform.macOS or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.linux => false, global::Doroti.Framework.Foundation.TargetPlatform.windows => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            global::Doroti.Ui.Color scrimColorLocal = ((global::Doroti.Ui.Color)(object?)((((DrawerController)this.widget).scrimColor ?? DrawerTheme.of(context).scrimColor) ?? Colors.black54));
-            global::Doroti.Ui.Color effectiveScrimColor = ((global::Doroti.Ui.Color)(object?)scrimColorLocal.withValues(alpha: (scrimColorLocal.a * ((global::Doroti.Framework.Animation.AnimationController)this._controller).value)));
-            global::Doroti.Framework.Widgets.Widget drawerScrim = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ColoredBox(color: effectiveScrimColor, child: new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand())));
-            global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new _DrawerControllerScope__drawer(controller: this.widget, child: new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.BlockSemantics(child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: platformHasBackButton, child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: ((global::System.Action)(((DrawerController)this.widget).drawerBarrierDismissible ? this.close : null)), child: new global::Doroti.Framework.Widgets.Semantics(label: MaterialLocalizations.of(context).modalBarrierDismissLabel, child: drawerScrim))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: this._drawerOuterAlignment, child: new global::Doroti.Framework.Widgets.Align(alignment: this._drawerInnerAlignment, widthFactor: ((global::Doroti.Framework.Animation.AnimationController)this._controller).value, child: new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.FocusScope(key: this._drawerKey, node: this._focusScopeNode, child: ((DrawerController)this.widget).child))))) }))));
+            bool platformHasBackButton = (PlatformLibrary.defaultTargetPlatform switch { TargetPlatform.android => true, TargetPlatform.iOS or TargetPlatform.macOS or TargetPlatform.fuchsia or TargetPlatform.linux => false, TargetPlatform.windows => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            global::Doroti.Ui.Color scrimColorLocal = ((global::Doroti.Ui.Color)((((DrawerController)this.widget).scrimColor ?? DrawerTheme.of(context).scrimColor) ?? Colors.black54));
+            global::Doroti.Ui.Color effectiveScrimColor = ((global::Doroti.Ui.Color)scrimColorLocal.withValues(alpha: (scrimColorLocal.a * ((global::Doroti.Framework.Animation.AnimationController)this._controller).value)));
+            global::Doroti.Framework.Widgets.Widget drawerScrim = ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.ColoredBox(color: effectiveScrimColor, child: new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: SizedBox.CreateExpand())));
+            global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)new _DrawerControllerScope__drawer(controller: this.widget, child: new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.BlockSemantics(child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: platformHasBackButton, child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: ((global::System.Action?)(((DrawerController)this.widget).drawerBarrierDismissible ? this.close : null)), child: new global::Doroti.Framework.Widgets.Semantics(label: MaterialLocalizations.of(context).modalBarrierDismissLabel, child: drawerScrim))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: this._drawerOuterAlignment, child: new global::Doroti.Framework.Widgets.Align(alignment: this._drawerInnerAlignment, widthFactor: ((global::Doroti.Framework.Animation.AnimationController)this._controller).value, child: new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.FocusScope(key: this._drawerKey, node: this._focusScopeNode, child: ((DrawerController)this.widget).child))))) }))));
             if (isDesktop)
             {
                 return childLocal;
             }
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GestureDetector(key: this._gestureDetectorKey, onHorizontalDragDown: (global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>)this._handleDragDown, onHorizontalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._move, onHorizontalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._settle, onHorizontalDragCancel: () => this._handleDragCancel(), excludeFromSemantics: true, dragStartBehavior: ((DrawerController)this.widget).dragStartBehavior, child: childLocal));
+            return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.GestureDetector(key: this._gestureDetectorKey, onHorizontalDragDown: (global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>)this._handleDragDown, onHorizontalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._move, onHorizontalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._settle, onHorizontalDragCancel: () => this._handleDragCancel(), excludeFromSemantics: true, dragStartBehavior: ((DrawerController)this.widget).dragStartBehavior, child: childLocal));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -381,7 +381,7 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -407,8 +407,8 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
@@ -452,6 +452,6 @@ internal class _DrawerDefaultsM3__drawer : DrawerThemeData
     public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).colorScheme.surfaceContainerLow);
     public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadiusDirectional.CreateHorizontal(end: global::Doroti.Ui.Radius.circular(16.0)).resolve(this.direction)));
-    public override global::Doroti.Framework.Painting.ShapeBorder? endShape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadiusDirectional.CreateHorizontal(start: global::Doroti.Ui.Radius.circular(16.0)).resolve(this.direction)));
+    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadiusDirectional.CreateHorizontal(end: Radius.circular(16.0)).resolve(this.direction)));
+    public override global::Doroti.Framework.Painting.ShapeBorder? endShape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: BorderRadiusDirectional.CreateHorizontal(start: Radius.circular(16.0)).resolve(this.direction)));
 }

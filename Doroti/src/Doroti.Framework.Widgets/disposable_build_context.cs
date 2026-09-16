@@ -36,7 +36,7 @@ public class DisposableBuildContext<T> : IDisposableBuildContext where T : IStat
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         _state = default(T);
     }
 

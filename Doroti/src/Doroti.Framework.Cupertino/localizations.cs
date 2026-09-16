@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart
-#pragma warning disable CS8600, CS8601, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -97,7 +97,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     internal static List<string> _shortWeekdays = new List<string> { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
     internal static List<string> _shortMonths = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
     internal static List<string> _months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations> @delegate = ((global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations>)(object?)new _CupertinoLocalizationsDelegate__localizations());
+    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations> @delegate = ((global::Doroti.Framework.Widgets.LocalizationsDelegate<CupertinoLocalizations>)new _CupertinoLocalizationsDelegate__localizations());
 
     public DefaultCupertinoLocalizations()
     {
@@ -181,7 +181,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     public override string collapsedHint => "Expanded";
     public static Future<CupertinoLocalizations> load(Locale locale)
     {
-        return ((Future<CupertinoLocalizations>)(object?)new global::Doroti.Framework.Foundation.SynchronousFuture<CupertinoLocalizations>(new DefaultCupertinoLocalizations()));
+        return ((Future<CupertinoLocalizations>)new global::Doroti.Framework.Foundation.SynchronousFuture<CupertinoLocalizations>(new DefaultCupertinoLocalizations()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -12,7 +12,7 @@ public static partial class ScaleLibrary
 
 public static partial class ScaleLibrary
 {
-    public static Offset kDefaultTrackpadScrollToScaleFactor = new global::Doroti.Ui.Offset(0, (-1L / ScaleLibrary.kDefaultMouseScrollToScaleFactor));
+    public static Offset kDefaultTrackpadScrollToScaleFactor = new global::Doroti.Ui.Offset(0, (-1L / kDefaultMouseScrollToScaleFactor));
 }
 
 internal enum _ScaleState__scale
@@ -65,7 +65,7 @@ internal class _PointerPanZoomData__scale
         {
             if (((ScaleGestureRecognizer)this.parent).trackpadScrollCausesScale)
             {
-                return (this._scale * global::Doroti.Runtime.Dart_mathLibrary.exp((((this._pan.dx * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dx)) + ((this._pan.dy * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dy)))));
+                return (this._scale * Dart_mathLibrary.exp((((this._pan.dx * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dx)) + ((this._pan.dy * ((ScaleGestureRecognizer)this.parent).trackpadScrollToScaleFactor.dy)))));
             }
             return this._scale;
         }
@@ -181,7 +181,7 @@ public static partial class ScaleLibrary
     internal static bool _isFlingGesture(Velocity velocity)
     {
         double speedSquared = ((Velocity)velocity).pixelsPerSecond.distanceSquared;
-        return (speedSquared > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity));
+        return (speedSquared > (ConstantsLibrary.kMinFlingVelocity * ConstantsLibrary.kMinFlingVelocity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -235,7 +235,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     internal virtual double _initialPanZoomRotationFactor { get; set; } = 0;
     internal virtual Duration? _initialEventTimestamp { get; set; } = default;
 
-    public ScaleGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.down, bool trackpadScrollCausesScale = false, Offset? trackpadScrollToScaleFactor = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? GestureRecognizer._defaultButtonAcceptBehavior)
+    public ScaleGestureRecognizer(object? debugOwner = null, HashSet<PointerDeviceKind>? supportedDevices = null, Func<long, bool> allowedButtonsFilter = default!, DragStartBehavior dragStartBehavior = DragStartBehavior.down, bool trackpadScrollCausesScale = false, Offset? trackpadScrollToScaleFactor = null) : base(debugOwner: debugOwner, supportedDevices: supportedDevices, allowedButtonsFilter: allowedButtonsFilter ?? _defaultButtonAcceptBehavior)
     {
         Offset __trackpadScrollToScaleFactor = trackpadScrollToScaleFactor ?? ScaleLibrary.kDefaultTrackpadScrollToScaleFactor;
         this.dragStartBehavior = dragStartBehavior;
@@ -302,8 +302,8 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             double nfy = this._currentLine!.pointerStartLocation.dy;
             double nsx = this._currentLine!.pointerEndLocation.dx;
             double nsy = this._currentLine!.pointerEndLocation.dy;
-            double angle1 = global::Doroti.Runtime.Dart_mathLibrary.atan2((fy - sy), (fx - sx));
-            double angle2 = global::Doroti.Runtime.Dart_mathLibrary.atan2((nfy - nsy), (nfx - nsx));
+            double angle1 = Dart_mathLibrary.atan2((fy - sy), (fx - sx));
+            double angle2 = Dart_mathLibrary.atan2((nfy - nsy), (nfx - nsx));
             factor = (angle2 - angle1);
         }
         foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
@@ -320,7 +320,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         base.addAllowedPointer(@event);
         this._velocityTrackers[@event.pointer] = new VelocityTracker(@event.kind);
         _initialEventTimestamp = @event.timeStamp;
-        if ((object.Equals(this._state, _ScaleState__scale.ready)))
+        if ((Equals(this._state, _ScaleState__scale.ready)))
         {
             _state = _ScaleState__scale.possible;
             _initialSpan = 0.0;
@@ -339,7 +339,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         startTrackingPointer(@event.pointer, @event.transform);
         this._velocityTrackers[@event.pointer] = new VelocityTracker(@event.kind);
         _initialEventTimestamp = @event.timeStamp;
-        if ((object.Equals(this._state, _ScaleState__scale.ready)))
+        if ((Equals(this._state, _ScaleState__scale.ready)))
         {
             _state = _ScaleState__scale.possible;
             _initialPanZoomScaleFactor = 1.0;
@@ -349,7 +349,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void handleEvent(PointerEvent @event)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(this._state, _ScaleState__scale.ready)));
+        DartRuntimePrimitives.Assert(() => (!Equals(this._state, _ScaleState__scale.ready)));
         var didChangeConfiguration = false;
         var shouldStartIfAccepted = false;
         if ((@event is PointerMoveEvent))
@@ -515,7 +515,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             _initialPanZoomScaleFactor = (this._scaleFactor / this._pointerScaleFactor);
             _initialPanZoomRotationFactor = this._pointerPanZooms.Values.map<_PointerPanZoomData__scale, double>(((x) => ((_PointerPanZoomData__scale)x).rotation)).reduce(((a, b) => (a + b)));
         }
-        if ((object.Equals(this._state, _ScaleState__scale.started)))
+        if ((Equals(this._state, _ScaleState__scale.started)))
         {
             if ((this.onEnd is not null))
             {
@@ -524,9 +524,9 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 if (ScaleLibrary._isFlingGesture(velocityLocal))
                 {
                     global::Doroti.Ui.Offset pixelsPerSecondLocal = ((Velocity)velocityLocal).pixelsPerSecond;
-                    if ((pixelsPerSecondLocal.distanceSquared > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity)))
+                    if ((pixelsPerSecondLocal.distanceSquared > (ConstantsLibrary.kMaxFlingVelocity * ConstantsLibrary.kMaxFlingVelocity)))
                     {
-                        velocityLocal = new Velocity(pixelsPerSecond: (((pixelsPerSecondLocal / pixelsPerSecondLocal.distance)) * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
+                        velocityLocal = new Velocity(pixelsPerSecond: (((pixelsPerSecondLocal / pixelsPerSecondLocal.distance)) * ConstantsLibrary.kMaxFlingVelocity));
                     }
                     invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(new ScaleEndDetails(velocity: velocityLocal, scaleVelocity: (this._scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1), pointerCount: this.pointerCount)))))(); return null; });
                 }
@@ -546,15 +546,15 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _advanceStateMachine(bool shouldStartIfAccepted, PointerEvent @event)
     {
-        if ((object.Equals(this._state, _ScaleState__scale.ready)))
+        if ((Equals(this._state, _ScaleState__scale.ready)))
         {
             _state = _ScaleState__scale.possible;
         }
-        if ((object.Equals(this._state, _ScaleState__scale.possible)))
+        if ((Equals(this._state, _ScaleState__scale.possible)))
         {
             double spanDelta = ((this._currentSpan - this._initialSpan)).abs();
             double focalPointDeltaLocal = ((DartRuntimePrimitives.RequireValue(this._currentFocalPoint) - this._initialFocalPoint)).distance;
-            if ((((spanDelta > global::Doroti.Framework.Gestures.EventsLibrary.computeScaleSlop(((PointerEvent)@event).kind)) || (focalPointDeltaLocal > global::Doroti.Framework.Gestures.EventsLibrary.computePanSlop(((PointerEvent)@event).kind, gestureSettings))) || (Math.Max((this._scaleFactor / this._pointerScaleFactor), (this._pointerScaleFactor / this._scaleFactor)) > 1.05)))
+            if ((((spanDelta > EventsLibrary.computeScaleSlop(((PointerEvent)@event).kind)) || (focalPointDeltaLocal > EventsLibrary.computePanSlop(((PointerEvent)@event).kind, gestureSettings))) || (Math.Max((this._scaleFactor / this._pointerScaleFactor), (this._pointerScaleFactor / this._scaleFactor)) > 1.05)))
             {
                 resolve(GestureDisposition.accepted);
             }
@@ -566,13 +566,13 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 resolve(GestureDisposition.accepted);
             }
         }
-        if (((object.Equals(this._state, _ScaleState__scale.accepted)) && shouldStartIfAccepted))
+        if (((Equals(this._state, _ScaleState__scale.accepted)) && shouldStartIfAccepted))
         {
             _initialEventTimestamp = ((PointerEvent)@event).timeStamp;
             _state = _ScaleState__scale.started;
             _dispatchOnStartCallbackIfNeeded();
         }
-        if ((object.Equals(this._state, _ScaleState__scale.started)))
+        if ((Equals(this._state, _ScaleState__scale.started)))
         {
             this._scaleVelocityTracker?.addPosition(((PointerEvent)@event).timeStamp, new global::Doroti.Ui.Offset(this._scaleFactor, 0));
             if ((this.onUpdate is not null))
@@ -590,7 +590,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual void _dispatchOnStartCallbackIfNeeded()
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(this._state, _ScaleState__scale.started)));
+        DartRuntimePrimitives.Assert(() => (Equals(this._state, _ScaleState__scale.started)));
         if ((this.onStart is not null))
         {
             invokeCallback<object?>("onStart", () =>
@@ -606,11 +606,11 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void acceptGesture(long pointer)
     {
-        if ((object.Equals(this._state, _ScaleState__scale.possible)))
+        if ((Equals(this._state, _ScaleState__scale.possible)))
         {
             _state = _ScaleState__scale.started;
             _dispatchOnStartCallbackIfNeeded();
-            if ((object.Equals(this.dragStartBehavior, DragStartBehavior.start)))
+            if ((Equals(this.dragStartBehavior, DragStartBehavior.start)))
             {
                 _initialFocalPoint = DartRuntimePrimitives.RequireValue(this._currentFocalPoint);
                 _initialSpan = this._currentSpan;

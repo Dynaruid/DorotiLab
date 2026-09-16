@@ -80,7 +80,7 @@ internal sealed unsafe class WindowsManagedProductHost :
         cancellationToken.ThrowIfCancellationRequested();
         try
         {
-            using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(absoluteUrl) { UseShellExecute = true });
+            using var process = Process.Start(new System.Diagnostics.ProcessStartInfo(absoluteUrl) { UseShellExecute = true });
             return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.opened));
         }
         catch (Exception error) { return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.failed, error.Message)); }
@@ -399,9 +399,9 @@ internal sealed unsafe class WindowsManagedProductHost :
     {
         ArgumentNullException.ThrowIfNull(text);
         cancellationToken.ThrowIfCancellationRequested();
-        var count = System.Text.Encoding.UTF8.GetByteCount(text);
+        var count = Encoding.UTF8.GetByteCount(text);
         Span<byte> bytes = count <= 1024 ? stackalloc byte[count] : new byte[count];
-        System.Text.Encoding.UTF8.GetBytes(text, bytes);
+        Encoding.UTF8.GetBytes(text, bytes);
         fixed (byte* data = bytes)
         {
             var value = new WindowsNativeV1.Utf8

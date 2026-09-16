@@ -13,10 +13,19 @@ if (!args.Contains("--before"))
     var report = new DartCompiler().Compile(Path.Combine(fixture, "selection.json"), output, Path.Combine(repo, ".doroti/compiler-dispatch-cache"));
     Require(report.Success, string.Join(Environment.NewLine, report.Diagnostics.Select(d => d.Message)));
 }
-var trees = Directory.GetFiles(output, "*.g.cs", SearchOption.AllDirectories).Select(p => CSharpSyntaxTree.ParseText(File.ReadAllText(p), path: p)).Append(CSharpSyntaxTree.ParseText("namespace CompilerDispatchFixture.Framework; public class ExternalBase { public virtual long calculate(long amount = 1) => amount; } public class ExternalGeneric { public virtual T? choose<T>(T? value) => value; } public class ExternalPainter { public virtual long paint(long area) => area; } public class PrivateBase { internal virtual long _value { get; set; } = 11; public long readBase() => _value; }")).ToArray();
+var trees = Directory.GetFiles(output, "*.g.cs", SearchOption.AllDirectories).Select(p =>
+{
+    var source = File.ReadAllText(p);
+    if (source.Contains("class WarningFactoryBase", StringComparison.Ordinal))
+        source = System.Text.RegularExpressions.Regex.Replace(source, @"^#pragma warning disable[^\r\n]*", "", System.Text.RegularExpressions.RegexOptions.Multiline);
+    return CSharpSyntaxTree.ParseText(source, path: p);
+}).Append(CSharpSyntaxTree.ParseText("namespace CompilerDispatchFixture.Framework; public class ExternalBase { public virtual long calculate(long amount = 1) => amount; } public class ExternalGeneric { public virtual T? choose<T>(T? value) => value; } public class ExternalPainter { public virtual long paint(long area) => area; } public class PrivateBase { internal virtual long _value { get; set; } = 11; public long readBase() => _value; }")).ToArray();
 var paths = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!).Split(Path.PathSeparator)
     .Concat(new[] { typeof(Doroti.Runtime.DartRuntimePrimitives).Assembly.Location, typeof(Doroti.Ui.Color).Assembly.Location }).Distinct();
-var compilation = CSharpCompilation.Create("DispatchFixture", trees, paths.Select(p => MetadataReference.CreateFromFile(p)), new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+var compilation = CSharpCompilation.Create("DispatchFixture", trees, paths.Select(p => MetadataReference.CreateFromFile(p)), new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+    .WithWarningLevel(9999)
+    .WithSpecificDiagnosticOptions(new[] { "CS0693", "CS8600", "CS8601", "CS8603", "CS8604", "CS8981" }
+        .Select(code => new KeyValuePair<string, ReportDiagnostic>(code, ReportDiagnostic.Error))));
 using var stream = new MemoryStream();
 var emit = compilation.Emit(stream);
 Require(emit.Success, string.Join(Environment.NewLine, emit.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error)));
@@ -45,6 +54,9 @@ Require(Equals(Type("RenamedBase").GetMethod("size")!.Invoke(Create("RenamedDeri
 Require(Equals(Type("ExternalBase").GetMethod("calculate")!.Invoke(Create("ExternalDerived"), [2L]), 9L), "frozen external CLR slot forwards optional additions");
 Require(ReferenceEquals(generic.GetMethod("transform")!.Invoke(Activator.CreateInstance(Type("LeafGeneric`1").MakeGenericType(typeof(long))), [values]), values), "open generic substitution across intermediate base");
 Require(((Doroti.Ui.Color)Create("RuntimeColor")).resolveFrom("context").value == 77, "Ui generic color entry point forwards to typed context");
+var warningFactory = Type("WarningFactoryBase").GetMethod("CreateDerived")!.Invoke(null, null)!;
+Require(warningFactory.GetType() == Type("WarningFactoryDerived") && Equals(Type("WarningFactoryBase").GetProperty("value")!.GetValue(warningFactory), 73L), "unsuppressed non-null factory forwarding retains subtype dispatch");
+Require(assembly.GetTypes().Any(t => t.Name == "developer" && t.GetNestedType("CreationLocation") is not null), "escaped inspector adapter preserves its metadata name");
 var privateDerived = Create("PrivateDerived");
 Require(Equals(Type("PrivateBase").GetMethod("readBase")!.Invoke(privateDerived, null), 11L) &&
     Equals(Type("PrivateDerived").GetMethod("readDerived")!.Invoke(privateDerived, null), 22L), "Dart library-private state stays independent");

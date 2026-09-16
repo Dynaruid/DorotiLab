@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/orientation_builder.dart
-#pragma warning disable CS8600, CS8603
 namespace Doroti.Framework.Widgets;
 
 public delegate Widget OrientationWidgetBuilder(BuildContext context, Orientation orientation);
@@ -23,7 +22,7 @@ public class OrientationBuilder : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new LayoutBuilder(builder: (global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)this._buildWithConstraints));
+        return ((Widget)new LayoutBuilder(builder: (global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)this._buildWithConstraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

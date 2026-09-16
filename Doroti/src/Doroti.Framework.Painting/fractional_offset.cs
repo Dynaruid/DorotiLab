@@ -28,7 +28,7 @@ public class FractionalOffset : Alignment
 
     public static FractionalOffset CreateFromOffsetAndRect(Offset offset, Rect rect)
     {
-        return FractionalOffset.CreateFromOffsetAndSize((offset - rect.topLeft), rect.size);
+        return CreateFromOffsetAndSize((offset - rect.topLeft), rect.size);
     }
 
     public virtual double dx => (((x + 1.0)) / 2.0);

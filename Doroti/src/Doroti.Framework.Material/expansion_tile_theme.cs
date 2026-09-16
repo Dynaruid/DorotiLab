@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/expansion_tile_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -67,11 +67,11 @@ public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagno
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return ((((((((((((((__other is ExpansionTileThemeData) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedBackgroundColor, this.collapsedBackgroundColor))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).tilePadding, this.tilePadding))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).expandedAlignment, this.expandedAlignment))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).childrenPadding, this.childrenPadding))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).iconColor, this.iconColor))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedIconColor, this.collapsedIconColor))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).textColor, this.textColor))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedTextColor, this.collapsedTextColor))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).shape, this.shape))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedShape, this.collapsedShape))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).clipBehavior, this.clipBehavior))) && (object.Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).expansionAnimationStyle, this.expansionAnimationStyle)));
+        return ((((((((((((((__other is ExpansionTileThemeData) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).backgroundColor, this.backgroundColor))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedBackgroundColor, this.collapsedBackgroundColor))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).tilePadding, this.tilePadding))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).expandedAlignment, this.expandedAlignment))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).childrenPadding, this.childrenPadding))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).iconColor, this.iconColor))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedIconColor, this.collapsedIconColor))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).textColor, this.textColor))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedTextColor, this.collapsedTextColor))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).shape, this.shape))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).collapsedShape, this.collapsedShape))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).clipBehavior, this.clipBehavior))) && (Equals(((ExpansionTileThemeData)((ExpansionTileThemeData)__other)).expansionAnimationStyle, this.expansionAnimationStyle)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -91,8 +91,8 @@ public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagno
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.AnimationStyle>("expansionAnimationStyle", this.expansionAnimationStyle, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -108,7 +108,7 @@ public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagno
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -125,16 +125,16 @@ public class ExpansionTileTheme : global::Doroti.Framework.Widgets.InheritedThem
 
     public static ExpansionTileThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ExpansionTileTheme? inheritedTheme = ((ExpansionTileTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ExpansionTileTheme>());
+        ExpansionTileTheme? inheritedTheme = ((ExpansionTileTheme?)context.dependOnInheritedWidgetOfExactType<ExpansionTileTheme>());
         return (inheritedTheme?.data ?? Theme.of(context).expansionTileTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ExpansionTileTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)new ExpansionTileTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ExpansionTileTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((ExpansionTileTheme)oldWidget).data)));
 }

@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/bottom_navigation_bar_theme.dart
-#pragma warning disable CS8600, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -66,11 +66,11 @@ public class BottomNavigationBarThemeData : global::Doroti.Framework.Foundation.
         {
             return true;
         }
-        if ((!object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
+        if ((!Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())))
         {
             return false;
         }
-        return (((((((((((((((__other is BottomNavigationBarThemeData) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).elevation == this.elevation)) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedIconTheme, this.selectedIconTheme))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedIconTheme, this.unselectedIconTheme))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedItemColor, this.selectedItemColor))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedItemColor, this.unselectedItemColor))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedLabelStyle, this.selectedLabelStyle))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedLabelStyle, this.unselectedLabelStyle))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).showSelectedLabels == this.showSelectedLabels)) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).showUnselectedLabels == this.showUnselectedLabels)) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).type, this.type))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).enableFeedback == this.enableFeedback)) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).landscapeLayout, this.landscapeLayout))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).mouseCursor, this.mouseCursor)));
+        return (((((((((((((((__other is BottomNavigationBarThemeData) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).elevation == this.elevation)) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedIconTheme, this.selectedIconTheme))) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedIconTheme, this.unselectedIconTheme))) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedItemColor, this.selectedItemColor))) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedItemColor, this.unselectedItemColor))) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedLabelStyle, this.selectedLabelStyle))) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedLabelStyle, this.unselectedLabelStyle))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).showSelectedLabels == this.showSelectedLabels)) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).showUnselectedLabels == this.showUnselectedLabels)) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).type, this.type))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).enableFeedback == this.enableFeedback)) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).landscapeLayout, this.landscapeLayout))) && (Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).mouseCursor, this.mouseCursor)));
     }
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -91,8 +91,8 @@ public class BottomNavigationBarThemeData : global::Doroti.Framework.Foundation.
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+    public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
@@ -108,7 +108,7 @@ public class BottomNavigationBarThemeData : global::Doroti.Framework.Foundation.
 
     public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
-        return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
+        return ((DiagnosticsNode)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -125,10 +125,10 @@ public class BottomNavigationBarTheme : global::Doroti.Framework.Widgets.Inherit
 
     public static BottomNavigationBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        BottomNavigationBarTheme? bottomNavTheme = ((BottomNavigationBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<BottomNavigationBarTheme>());
+        BottomNavigationBarTheme? bottomNavTheme = ((BottomNavigationBarTheme?)context.dependOnInheritedWidgetOfExactType<BottomNavigationBarTheme>());
         return (bottomNavTheme?.data ?? Theme.of(context).bottomNavigationBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((BottomNavigationBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!Equals(this.data, ((BottomNavigationBarTheme)oldWidget).data)));
 }

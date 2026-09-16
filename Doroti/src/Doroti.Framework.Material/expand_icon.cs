@@ -1,6 +1,6 @@
 // <doroti-reviewed-product-source milestone="G6-3" />
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/expand_icon.dart
-#pragma warning disable CS8600, CS8602, CS8603
+
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -20,7 +20,7 @@ public class ExpandIcon : global::Doroti.Framework.Widgets.StatefulWidget
 
     public ExpandIcon(global::Doroti.Framework.Foundation.Key? key = null, bool isExpanded = false, double size = 24.0, global::System.Action<bool>? onPressed = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, Color? color = null, Color? disabledColor = null, Color? expandedColor = null, Color? splashColor = null, Color? highlightColor = null) : base(key: key)
     {
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8.0);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? EdgeInsets.CreateAll(8.0);
         this.isExpanded = isExpanded;
         this.size = size;
         this.onPressed = onPressed;
@@ -39,7 +39,7 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Framework.Widgets.
 {
     internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.Animation<double> _iconTurns { get; set; } = default!;
-    internal static global::Doroti.Framework.Animation.Animatable<double> _iconTurnTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.5).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _iconTurnTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.5).chain(new global::Doroti.Framework.Animation.CurveTween(curve: Curves.fastOutSlowIn));
     public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
@@ -110,9 +110,9 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Framework.Widgets.
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        MaterialLocalizations localizations = ((MaterialLocalizations)MaterialLocalizations.of(context));
         string onTapHintLocal = (((ExpandIcon)this.widget).isExpanded ? ((MaterialLocalizations)localizations).expandedIconTapHint : ((MaterialLocalizations)localizations).collapsedIconTapHint);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(onTapHint: ((((ExpandIcon)this.widget).onPressed is null) ? null : onTapHintLocal), child: new IconButton(padding: ((ExpandIcon)this.widget).padding, iconSize: ((ExpandIcon)this.widget).size, highlightColor: ((ExpandIcon)this.widget).highlightColor, splashColor: ((ExpandIcon)this.widget).splashColor, color: this._iconColor, disabledColor: ((ExpandIcon)this.widget).disabledColor, onPressed: ((global::System.Action)((((ExpandIcon)this.widget).onPressed is null) ? null : this._handlePressed)), icon: new global::Doroti.Framework.Widgets.RotationTransition(turns: this._iconTurns, child: new global::Doroti.Framework.Widgets.Icon(Icons.expand_more)))));
+        return ((global::Doroti.Framework.Widgets.Widget)new global::Doroti.Framework.Widgets.Semantics(onTapHint: ((((ExpandIcon)this.widget).onPressed is null) ? null : onTapHintLocal), child: new IconButton(padding: ((ExpandIcon)this.widget).padding, iconSize: ((ExpandIcon)this.widget).size, highlightColor: ((ExpandIcon)this.widget).highlightColor, splashColor: ((ExpandIcon)this.widget).splashColor, color: this._iconColor, disabledColor: ((ExpandIcon)this.widget).disabledColor, onPressed: ((global::System.Action?)((((ExpandIcon)this.widget).onPressed is null) ? null : this._handlePressed)), icon: new global::Doroti.Framework.Widgets.RotationTransition(turns: this._iconTurns, child: new global::Doroti.Framework.Widgets.Icon(Icons.expand_more)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -126,7 +126,7 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Framework.Widgets.
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (Foundation.ConstantsLibrary.kDebugMode ? $"created by {(DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -152,8 +152,8 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Framework.Widgets.
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)TickerMode.getValuesNotifier(this.context));
+        if ((Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }

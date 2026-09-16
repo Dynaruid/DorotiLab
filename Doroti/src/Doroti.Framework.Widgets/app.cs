@@ -1,6 +1,5 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: ../../../reference/flutter-master/packages/flutter/lib/src/widgets/app.dart
-#pragma warning disable CS8600, CS8601, CS8603, CS8604
 using Doroti.Runtime;
 using Doroti.Ui;
 
@@ -14,7 +13,7 @@ public static partial class AppLibrary
 {
     public static Locale basicLocaleListResolution(List<Locale>? preferredLocales, IEnumerable<Locale> supportedLocales)
     {
-        if (((preferredLocales is null) || !System.Linq.Enumerable.Any(preferredLocales)))
+        if (((preferredLocales is null) || !Enumerable.Any(preferredLocales)))
         {
             return supportedLocales.First();
         }
@@ -98,7 +97,7 @@ public delegate List<dynamic> InitialRouteListFactory(string initialRoute);
 public class WidgetsApp : StatefulWidget
 {
     public virtual GlobalKey<NavigatorState>? navigatorKey { get; private set; }
-    public virtual global::System.Func<RouteSettings, dynamic>? onGenerateRoute { get; private set; }
+    public virtual global::System.Func<RouteSettings, dynamic?>? onGenerateRoute { get; private set; }
     public virtual global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes { get; private set; }
     public virtual PageRouteFactory? pageRouteBuilder { get; private set; }
     public virtual object? routeInformationParser { get; private set; } = default!;
@@ -108,7 +107,7 @@ public class WidgetsApp : StatefulWidget
     public virtual IRouterConfig? routerConfig { get; private set; }
     public virtual Widget? home { get; private set; }
     public virtual DartMap<string, global::System.Func<BuildContext, Widget>>? routes { get; private set; }
-    public virtual global::System.Func<RouteSettings, dynamic>? onUnknownRoute { get; private set; }
+    public virtual global::System.Func<RouteSettings, dynamic?>? onUnknownRoute { get; private set; }
     public virtual global::System.Func<NavigationNotification, bool>? onNavigationNotification { get; private set; }
     public virtual string? initialRoute { get; private set; }
     public virtual List<NavigatorObserver>? navigatorObservers { get; private set; }
@@ -135,9 +134,9 @@ public class WidgetsApp : StatefulWidget
     public virtual bool useInheritedMediaQuery { get; private set; } = default!;
     public static bool showPerformanceOverlayOverride = false;
     public static bool debugAllowBannerOverride = true;
-    internal static DartMap<ShortcutActivator, Intent> _defaultShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.enter)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.numpadEnter)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.space)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.gameButtonA)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.select)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((Intent)(object?)new DismissIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab)] = ((Intent)(object?)new NextFocusIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab, shift: true)] = ((Intent)(object?)new PreviousFocusIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.right)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp, control: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.up)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown, control: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.down)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft, control: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.left)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight, control: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.right)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageUp)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageDown)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.down, type: ScrollIncrementType.page)) };
-    internal static DartMap<ShortcutActivator, Intent> _defaultWebShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.space)] = ((Intent)(object?)new PrioritizedIntents(orderedIntents: new List<Intent> { new ActivateIntent(), new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.down, type: ScrollIncrementType.page) })), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.enter)] = ((Intent)(object?)new ButtonActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.numpadEnter)] = ((Intent)(object?)new ButtonActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((Intent)(object?)new DismissIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab)] = ((Intent)(object?)new NextFocusIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab, shift: true)] = ((Intent)(object?)new PreviousFocusIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.up)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.down)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.left)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.right)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageUp)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageDown)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.down, type: ScrollIncrementType.page)) };
-    internal static DartMap<ShortcutActivator, Intent> _defaultAppleOsShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.enter)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.numpadEnter)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.space)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((Intent)(object?)new DismissIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab)] = ((Intent)(object?)new NextFocusIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab, shift: true)] = ((Intent)(object?)new PreviousFocusIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.right)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp, meta: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.up)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown, meta: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.down)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft, meta: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.left)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight, meta: true)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.right)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageUp)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageDown)] = ((Intent)(object?)new ScrollIntent(direction: global::Doroti.Framework.Painting.AxisDirection.down, type: ScrollIncrementType.page)) };
+    internal static DartMap<ShortcutActivator, Intent> _defaultShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.enter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.space)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.gameButtonA)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.select)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.escape)] = ((Intent)new DismissIntent()), [new SingleActivator(LogicalKeyboardKey.tab)] = ((Intent)new NextFocusIntent()), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = ((Intent)new PreviousFocusIntent()), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.right)), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowUp, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowDown, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowLeft, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight, control: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.right)), [new SingleActivator(LogicalKeyboardKey.pageUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(LogicalKeyboardKey.pageDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page)) };
+    internal static DartMap<ShortcutActivator, Intent> _defaultWebShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.space)] = ((Intent)new PrioritizedIntents(orderedIntents: new List<Intent> { new ActivateIntent(), new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page) })), [new SingleActivator(LogicalKeyboardKey.enter)] = ((Intent)new ButtonActivateIntent()), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = ((Intent)new ButtonActivateIntent()), [new SingleActivator(LogicalKeyboardKey.escape)] = ((Intent)new DismissIntent()), [new SingleActivator(LogicalKeyboardKey.tab)] = ((Intent)new NextFocusIntent()), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = ((Intent)new PreviousFocusIntent()), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new ScrollIntent(direction: AxisDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new ScrollIntent(direction: AxisDirection.right)), [new SingleActivator(LogicalKeyboardKey.pageUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(LogicalKeyboardKey.pageDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page)) };
+    internal static DartMap<ShortcutActivator, Intent> _defaultAppleOsShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(LogicalKeyboardKey.enter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.numpadEnter)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.space)] = ((Intent)new ActivateIntent()), [new SingleActivator(LogicalKeyboardKey.escape)] = ((Intent)new DismissIntent()), [new SingleActivator(LogicalKeyboardKey.tab)] = ((Intent)new NextFocusIntent()), [new SingleActivator(LogicalKeyboardKey.tab, shift: true)] = ((Intent)new PreviousFocusIntent()), [new SingleActivator(LogicalKeyboardKey.arrowLeft)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.right)), [new SingleActivator(LogicalKeyboardKey.arrowDown)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowUp)] = ((Intent)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowUp, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.up)), [new SingleActivator(LogicalKeyboardKey.arrowDown, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.down)), [new SingleActivator(LogicalKeyboardKey.arrowLeft, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.left)), [new SingleActivator(LogicalKeyboardKey.arrowRight, meta: true)] = ((Intent)new ScrollIntent(direction: AxisDirection.right)), [new SingleActivator(LogicalKeyboardKey.pageUp)] = ((Intent)new ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page)), [new SingleActivator(LogicalKeyboardKey.pageDown)] = ((Intent)new ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page)) };
     public static DartMap<Type, dynamic> defaultActions = new DartMap<Type, dynamic> { [typeof(DoNothingIntent)] = new DoNothingAction(), [typeof(DoNothingAndStopPropagationIntent)] = new DoNothingAction(consumesKey: false), [typeof(RequestFocusIntent)] = new RequestFocusAction(), [typeof(NextFocusIntent)] = new NextFocusAction(), [typeof(PreviousFocusIntent)] = new PreviousFocusAction(), [typeof(DirectionalFocusIntent)] = new DirectionalFocusAction(), [typeof(ScrollIntent)] = new ScrollAction(), [typeof(PrioritizedIntents)] = new PrioritizedAction(), [typeof(VoidCallbackIntent)] = new VoidCallbackAction() };
 
     internal static DartMap<Type, dynamic> defaultActionsForContext(BuildContext context)
@@ -149,7 +148,7 @@ public class WidgetsApp : StatefulWidget
     }
 
 
-    public WidgetsApp(global::Doroti.Framework.Foundation.Key? key = null, GlobalKey<NavigatorState>? navigatorKey = null, global::System.Func<RouteSettings, dynamic>? onGenerateRoute = null, global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes = null, global::System.Func<RouteSettings, dynamic>? onUnknownRoute = null, global::System.Func<NavigationNotification, bool>? onNavigationNotification = null, List<NavigatorObserver> navigatorObservers = default!, string? initialRoute = null, PageRouteFactory? pageRouteBuilder = null, Widget? home = null, DartMap<string, global::System.Func<BuildContext, Widget>> routes = default!, global::System.Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, global::System.Func<BuildContext, string>? onGenerateTitle = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false) : base(key: key)
+    public WidgetsApp(global::Doroti.Framework.Foundation.Key? key = null, GlobalKey<NavigatorState>? navigatorKey = null, global::System.Func<RouteSettings, dynamic?>? onGenerateRoute = null, global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes = null, global::System.Func<RouteSettings, dynamic?>? onUnknownRoute = null, global::System.Func<NavigationNotification, bool>? onNavigationNotification = null, List<NavigatorObserver> navigatorObservers = default!, string? initialRoute = null, PageRouteFactory? pageRouteBuilder = null, Widget? home = null, DartMap<string, global::System.Func<BuildContext, Widget>> routes = default!, global::System.Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, global::System.Func<BuildContext, string>? onGenerateTitle = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false) : base(key: key)
     {
         List<NavigatorObserver> __navigatorObservers = navigatorObservers ?? new List<NavigatorObserver>();
         DartMap<string, global::System.Func<BuildContext, Widget>> __routes = routes ?? new DartMap<string, global::System.Func<BuildContext, Widget>>();
@@ -193,9 +192,9 @@ public class WidgetsApp : StatefulWidget
         System.Diagnostics.Debug.Assert(((home is null) || (onGenerateInitialRoutes is null)));
         System.Diagnostics.Debug.Assert(((home is null) || !__routes.ContainsKey(Navigator.defaultRouteName)));
         System.Diagnostics.Debug.Assert((((((builder is not null) || (home is not null)) || __routes.ContainsKey(Navigator.defaultRouteName)) || (onGenerateRoute is not null)) || (onUnknownRoute is not null)));
-        System.Diagnostics.Debug.Assert(((((((home is not null) || System.Linq.Enumerable.Any(__routes)) || (onGenerateRoute is not null)) || (onUnknownRoute is not null))) || (((((builder is not null) && (navigatorKey is null)) && (initialRoute is null)) && !System.Linq.Enumerable.Any(__navigatorObservers)))));
+        System.Diagnostics.Debug.Assert(((((((home is not null) || Enumerable.Any(__routes)) || (onGenerateRoute is not null)) || (onUnknownRoute is not null))) || (((((builder is not null) && (navigatorKey is null)) && (initialRoute is null)) && !Enumerable.Any(__navigatorObservers)))));
         System.Diagnostics.Debug.Assert((((builder is not null) || (onGenerateRoute is not null)) || (pageRouteBuilder is not null)));
-        System.Diagnostics.Debug.Assert(System.Linq.Enumerable.Any(__supportedLocales));
+        System.Diagnostics.Debug.Assert(Enumerable.Any(__supportedLocales));
     }
 
     public static WidgetsApp CreateRouter(global::Doroti.Framework.Foundation.Key? key = null, RouteInformationProvider? routeInformationProvider = null, object? routeInformationParser = null, global::Doroti.Framework.Widgets.IRouterDelegate? routerDelegate = null, IRouterConfig? routerConfig = null, BackButtonDispatcher? backButtonDispatcher = null, global::System.Func<BuildContext, Widget?, Widget>? builder = null, string? title = null, global::System.Func<BuildContext, string>? onGenerateTitle = null, global::System.Func<NavigationNotification, bool>? onNavigationNotification = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, Color color = default!, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool showSemanticsDebugger = false, bool debugShowWidgetInspector = false, bool debugShowCheckedModeBanner = true, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = null, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = null, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = null, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, bool useInheritedMediaQuery = false)
@@ -257,21 +256,21 @@ public class WidgetsApp : StatefulWidget
     {
         get
         {
-            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            if (Foundation.ConstantsLibrary.kIsWeb)
             {
                 return _defaultWebShortcuts;
             }
-            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (PlatformLibrary.defaultTargetPlatform)
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case TargetPlatform.android:
+                case TargetPlatform.fuchsia:
+                case TargetPlatform.linux:
+                case TargetPlatform.windows:
                     {
                         return _defaultShortcuts;
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                case TargetPlatform.iOS:
+                case TargetPlatform.macOS:
                     {
                         return _defaultAppleOsShortcuts;
                     }
@@ -297,7 +296,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
         {
             if (!__late__localizationsResolver_initialized)
             {
-                __late__localizationsResolver = new LocalizationsResolver(locale: ((WidgetsApp)this.widget).locale, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, localizationsDelegates: ((WidgetsApp)this.widget).localizationsDelegates.Cast<dynamic>(), supportedLocales: ((WidgetsApp)this.widget).supportedLocales.Cast<Locale>());
+                __late__localizationsResolver = new LocalizationsResolver(locale: ((WidgetsApp)this.widget).locale, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, localizationsDelegates: ((WidgetsApp)this.widget).localizationsDelegates, supportedLocales: ((WidgetsApp)this.widget).supportedLocales.Cast<Locale>());
                 __late__localizationsResolver_initialized = true;
             }
             return __late__localizationsResolver;
@@ -310,14 +309,14 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
         switch (this._appLifecycleState)
         {
             case null:
-            case var __constant63443 when (object.Equals(__constant63443, AppLifecycleState.detached)):
+            case var __constant63443 when (Equals(__constant63443, AppLifecycleState.detached)):
                 {
                     return true;
                 }
-            case var __constant63566 when (object.Equals(__constant63566, AppLifecycleState.inactive)):
-            case var __constant63605 when (object.Equals(__constant63605, AppLifecycleState.resumed)):
-            case var __constant63643 when (object.Equals(__constant63643, AppLifecycleState.hidden)):
-            case var __constant63680 when (object.Equals(__constant63680, AppLifecycleState.paused)):
+            case var __constant63566 when (Equals(__constant63566, AppLifecycleState.inactive)):
+            case var __constant63605 when (Equals(__constant63605, AppLifecycleState.resumed)):
+            case var __constant63643 when (Equals(__constant63643, AppLifecycleState.hidden)):
+            case var __constant63680 when (Equals(__constant63680, AppLifecycleState.paused)):
                 {
                     DartRuntimePrimitives.Ignore(SystemNavigator.setFrameworkHandlesBack(((NavigationNotification)notification).canHandlePop));
                     return true;
@@ -395,7 +394,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             {
                 DartRuntimePrimitives.Assert(() => (!this._usesRouterWithDelegates && !this._usesRouterWithConfig));
                 _clearRouterResource();
-                if (((this._navigator is null) || (!object.Equals(((WidgetsApp)this.widget).navigatorKey, oldWidget!.navigatorKey))))
+                if (((this._navigator is null) || (!Equals(((WidgetsApp)this.widget).navigatorKey, oldWidget!.navigatorKey))))
                 {
                     _navigator = (((WidgetsApp)this.widget).navigatorKey ?? new GlobalObjectKey<NavigatorState>(this));
                 }
@@ -417,10 +416,10 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
     internal virtual bool _usesNavigator => DartRuntimePrimitives.ConvertValue<bool>(((((((WidgetsApp)this.widget).home is not null) || (((((WidgetsApp)this.widget).routes is { } __items66337 ? System.Linq.Enumerable.Any(__items66337) : (bool?)null) ?? false))) || (((WidgetsApp)this.widget).onGenerateRoute is not null)) || (((WidgetsApp)this.widget).onUnknownRoute is not null)));
     internal virtual RouteInformationProvider? _effectiveRouteInformationProvider => DartRuntimePrimitives.ConvertValue<RouteInformationProvider>((((WidgetsApp)this.widget).routeInformationProvider ?? this._defaultRouteInformationProvider));
     internal virtual BackButtonDispatcher _effectiveBackButtonDispatcher => DartRuntimePrimitives.ConvertValue<BackButtonDispatcher>((((WidgetsApp)this.widget).backButtonDispatcher ?? this._defaultBackButtonDispatcher!));
-    internal virtual dynamic _onGenerateRoute(RouteSettings settings)
+    internal virtual dynamic? _onGenerateRoute(RouteSettings settings)
     {
         string? nameLocal = ((RouteSettings)settings).name;
-        global::System.Func<BuildContext, Widget>? pageContentBuilder = ((global::System.Func<BuildContext, Widget>)(((nameLocal == Navigator.defaultRouteName) && (((WidgetsApp)this.widget).home is not null)) ? ((context) => ((WidgetsApp)this.widget).home!) : ((WidgetsApp)this.widget).routes!.GetValueOrDefault(DartRuntimePrimitives.RequireReference(nameLocal))));
+        global::System.Func<BuildContext, Widget>? pageContentBuilder = ((global::System.Func<BuildContext, Widget>?)(((nameLocal == Navigator.defaultRouteName) && (((WidgetsApp)this.widget).home is not null)) ? ((context) => ((WidgetsApp)this.widget).home!) : ((WidgetsApp)this.widget).routes!.GetValueOrDefault(DartRuntimePrimitives.RequireReference(nameLocal))));
         if ((pageContentBuilder is not null))
         {
             DartRuntimePrimitives.Assert(() => (((WidgetsApp)this.widget).pageRouteBuilder is not null), () => (object?)"The default onGenerateRoute handler for WidgetsApp must have a " + "pageRouteBuilder set if the home or routes properties are set.");
@@ -441,17 +440,17 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             {
                 if ((((WidgetsApp)this.widget).onUnknownRoute is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Could not find a generator for route {settings} in the {this.GetType()}.\n" + "Make sure your root app widget has provided a way to generate \n" + "this route.\n" + "Generators for routes are searched for in the following order:\n" + " 1. For the \"/\" route, the \"home\" property, if non-null, is used.\n" + " 2. Otherwise, the \"routes\" table is used, if it has an entry for " + "the route.\n" + " 3. Otherwise, onGenerateRoute is called. It should return a " + "non-null value for any valid route not handled by \"home\" and \"routes\".\n" + " 4. Finally if all else fails onUnknownRoute is called.\n" + "Unfortunately, onUnknownRoute was not set."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create($"Could not find a generator for route {settings} in the {this.GetType()}.\n" + "Make sure your root app widget has provided a way to generate \n" + "this route.\n" + "Generators for routes are searched for in the following order:\n" + " 1. For the \"/\" route, the \"home\" property, if non-null, is used.\n" + " 2. Otherwise, the \"routes\" table is used, if it has an entry for " + "the route.\n" + " 3. Otherwise, onGenerateRoute is called. It should return a " + "non-null value for any valid route not handled by \"home\" and \"routes\".\n" + " 4. Finally if all else fails onUnknownRoute is called.\n" + "Unfortunately, onUnknownRoute was not set."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        dynamic result = ((WidgetsApp)this.widget).onUnknownRoute!(settings);
+        dynamic result = ((WidgetsApp)this.widget).onUnknownRoute!(settings) ?? throw new InvalidOperationException("The onUnknownRoute callback must return a route.");
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((result is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("The onUnknownRoute callback returned null.\n" + $"When the {this.GetType()} requested the route {settings} from its " + "onUnknownRoute callback, the callback returned null. Such callbacks " + "must never return null."));
+                    throw DartRuntimePrimitives.AsException(FlutterError.Create("The onUnknownRoute callback returned null.\n" + $"When the {this.GetType()} requested the route {settings} from its " + "onUnknownRoute callback, the callback returned null. Such callbacks " + "must never return null."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -489,14 +488,14 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             return false;
         }
         DartUri uriLocal = ((RouteInformation)routeInformation).uri;
-        DartRuntimePrimitives.Ignore(navigator.pushNamed<object>(Dart_coreLibrary.decodeComponent(new DartUri(path: ((uriLocal.path.Length == 0) ? "/" : uriLocal.path), queryParameters: (!System.Linq.Enumerable.Any(uriLocal.queryParametersAll) ? null : uriLocal.queryParametersAll), fragment: ((uriLocal.fragment.Length == 0) ? null : uriLocal.fragment)).ToString())));
+        DartRuntimePrimitives.Ignore(navigator.pushNamed<object>(Dart_coreLibrary.decodeComponent(new DartUri(path: ((uriLocal.path.Length == 0) ? "/" : uriLocal.path), queryParameters: (!Enumerable.Any(uriLocal.queryParametersAll) ? null : uriLocal.queryParametersAll), fragment: ((uriLocal.fragment.Length == 0) ? null : uriLocal.fragment)).ToString())));
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _shouldUpdateLocalizations(WidgetsApp oldWidget)
     {
-        return (((((!object.Equals(((WidgetsApp)this.widget).locale, ((WidgetsApp)oldWidget).locale)) || (!object.Equals((global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)oldWidget).localeListResolutionCallback))) || (!object.Equals((global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)oldWidget).localeResolutionCallback))) || (!object.Equals(((WidgetsApp)this.widget).supportedLocales, ((WidgetsApp)oldWidget).supportedLocales))) || (!object.Equals(((WidgetsApp)this.widget).localizationsDelegates, ((WidgetsApp)oldWidget).localizationsDelegates)));
+        return (((((!Equals(((WidgetsApp)this.widget).locale, ((WidgetsApp)oldWidget).locale)) || (!Equals((global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)oldWidget).localeListResolutionCallback))) || (!Equals((global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)oldWidget).localeResolutionCallback))) || (!Equals(((WidgetsApp)this.widget).supportedLocales, ((WidgetsApp)oldWidget).supportedLocales))) || (!Equals(((WidgetsApp)this.widget).localizationsDelegates, ((WidgetsApp)oldWidget).localizationsDelegates)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -504,7 +503,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
     {
         if (_shouldUpdateLocalizations(oldWidget))
         {
-            this._localizationsResolver.update(locale: ((WidgetsApp)this.widget).locale, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, localizationsDelegates: ((WidgetsApp)this.widget).localizationsDelegates.Cast<dynamic>(), supportedLocales: ((WidgetsApp)this.widget).supportedLocales.Cast<Locale>());
+            this._localizationsResolver.update(locale: ((WidgetsApp)this.widget).locale, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeListResolutionCallback, localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((WidgetsApp)this.widget).localeResolutionCallback, localizationsDelegates: ((WidgetsApp)this.widget).localizationsDelegates, supportedLocales: ((WidgetsApp)this.widget).supportedLocales.Cast<Locale>());
         }
     }
 
@@ -520,11 +519,11 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             if (this._usesNavigator)
             {
                 DartRuntimePrimitives.Assert(() => (this._navigator is not null));
-                routing = DartRuntimePrimitives.ConvertValue<Widget>(new FocusScope(debugLabel: "Navigator Scope", autofocus: true, child: new Navigator(clipBehavior: Clip.none, restorationScopeId: "nav", key: this._navigator, initialRoute: this._initialRouteName, onGenerateRoute: (global::System.Func<RouteSettings, dynamic>)this._onGenerateRoute, onGenerateInitialRoutes: ((global::System.Func<NavigatorState, string, List<dynamic>>)((((WidgetsApp)this.widget).onGenerateInitialRoutes is null) ? Navigator.defaultGenerateInitialRoutes : ((navigator, initialRouteName) =>
+                routing = DartRuntimePrimitives.ConvertValue<Widget>(new FocusScope(debugLabel: "Navigator Scope", autofocus: true, child: new Navigator(clipBehavior: Clip.none, restorationScopeId: "nav", key: this._navigator, initialRoute: this._initialRouteName, onGenerateRoute: (global::System.Func<RouteSettings, dynamic?>)this._onGenerateRoute, onGenerateInitialRoutes: ((global::System.Func<NavigatorState, string, List<dynamic>>)((((WidgetsApp)this.widget).onGenerateInitialRoutes is null) ? Navigator.defaultGenerateInitialRoutes : ((navigator, initialRouteName) =>
                 {
-                    return ((List<object>)(object?)((WidgetsApp)this.widget).onGenerateInitialRoutes!(initialRouteName));
+                    return ((List<object>)((WidgetsApp)this.widget).onGenerateInitialRoutes!(initialRouteName));
                     throw new InvalidOperationException("Dart closure completed without a value.");
-                }))), onUnknownRoute: (global::System.Func<RouteSettings, dynamic>)this._onUnknownRoute, observers: ((WidgetsApp)this.widget).navigatorObservers!, routeTraversalEdgeBehavior: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? TraversalEdgeBehavior.leaveDorotiView : TraversalEdgeBehavior.parentScope), reportsRouteUpdateToEngine: true)));
+                }))), onUnknownRoute: (global::System.Func<RouteSettings, dynamic?>)this._onUnknownRoute, observers: ((WidgetsApp)this.widget).navigatorObservers!, routeTraversalEdgeBehavior: (Foundation.ConstantsLibrary.kIsWeb ? TraversalEdgeBehavior.leaveDorotiView : TraversalEdgeBehavior.parentScope), reportsRouteUpdateToEngine: true)));
             }
             else
             {
@@ -568,7 +567,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                     {
                         if ((((WidgetsApp)this.widget).debugShowWidgetInspector || debugShowWidgetInspectorOverride))
                         {
-                            return ((Widget)(object?)new WidgetInspector(exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder?)((WidgetsApp)this.widget).tapBehaviorButtonBuilder, child: child!));
+                            return ((Widget)new WidgetInspector(exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder?)((WidgetsApp)this.widget).tapBehaviorButtonBuilder, child: child!));
                         }
                         return child!;
                         throw new InvalidOperationException("Dart closure completed without a value.");
@@ -583,7 +582,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             });
         result = DartRuntimePrimitives.ConvertValue<Widget>(new Focus(canRequestFocus: false, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
         {
-            if (((((@event is not global::Doroti.Framework.Services.KeyDownEvent) && (@event is not global::Doroti.Framework.Services.KeyRepeatEvent))) || (!object.Equals(((global::Doroti.Framework.Services.KeyEvent)@event).logicalKey, global::Doroti.Framework.Services.LogicalKeyboardKey.escape))))
+            if (((((@event is not KeyDownEvent) && (@event is not KeyRepeatEvent))) || (!Equals(((global::Doroti.Framework.Services.KeyEvent)@event).logicalKey, LogicalKeyboardKey.escape))))
             {
                 return KeyEventResult.ignored;
             }
@@ -596,13 +595,13 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             titleLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
             {
                 string titleAlternate = ((WidgetsApp)this.widget).onGenerateTitle!(context);
-                return ((Widget)(object?)new Title(title: titleAlternate, color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result));
+                return ((Widget)new Title(title: titleAlternate, color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }))));
         }
         else
         {
-            if (((((WidgetsApp)this.widget).title is null) && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))
+            if (((((WidgetsApp)this.widget).title is null) && Foundation.ConstantsLibrary.kIsWeb))
             {
                 titleLocal = null;
             }
@@ -611,9 +610,9 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                 titleLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Title(title: (((WidgetsApp)this.widget).title ?? ""), color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result));
             }
         }
-        return ((Widget)(object?)new RootRestorationScope(restorationId: ((WidgetsApp)this.widget).restorationScopeId, child: new SharedAppData(child: new NotificationListener<NavigationNotification>(onNotification: ((((WidgetsApp)this.widget).onNavigationNotification ?? (global::System.Func<NavigationNotification, bool>)this._defaultOnNavigationNotification)), child: new Shortcuts(debugLabel: "<Default WidgetsApp Shortcuts>", shortcuts: ((((WidgetsApp)this.widget).shortcuts ?? (DartMap<ShortcutActivator, Intent>)WidgetsApp.defaultShortcuts)), child: new DefaultTextEditingShortcuts(child: new Actions(actions: (((WidgetsApp)this.widget).actions ?? WidgetsApp.defaultActionsForContext(context)), child: new FocusTraversalGroup(policy: new ReadingOrderTraversalPolicy(), child: new TapRegionSurface(child: new ShortcutRegistrar(child: new ListenableBuilder(listenable: this._localizationsResolver, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, _) =>
+        return ((Widget)new RootRestorationScope(restorationId: ((WidgetsApp)this.widget).restorationScopeId, child: new SharedAppData(child: new NotificationListener<NavigationNotification>(onNotification: ((((WidgetsApp)this.widget).onNavigationNotification ?? (global::System.Func<NavigationNotification, bool>)this._defaultOnNavigationNotification)), child: new Shortcuts(debugLabel: "<Default WidgetsApp Shortcuts>", shortcuts: ((((WidgetsApp)this.widget).shortcuts ?? (DartMap<ShortcutActivator, Intent>)WidgetsApp.defaultShortcuts)), child: new DefaultTextEditingShortcuts(child: new Actions(actions: (((WidgetsApp)this.widget).actions ?? WidgetsApp.defaultActionsForContext(context)), child: new FocusTraversalGroup(policy: new ReadingOrderTraversalPolicy(), child: new TapRegionSurface(child: new ShortcutRegistrar(child: new ListenableBuilder(listenable: this._localizationsResolver, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, _) =>
         {
-            return ((Widget)(object?)new Localizations(isApplicationLevel: true, locale: ((LocalizationsResolver)this._localizationsResolver).locale, delegates: ((LocalizationsResolver)this._localizationsResolver).localizationsDelegates.ToList(), child: (titleLocal ?? result)));
+            return ((Widget)new Localizations(isApplicationLevel: true, locale: ((LocalizationsResolver)this._localizationsResolver).locale, delegates: ((LocalizationsResolver)this._localizationsResolver).localizationsDelegates.ToList(), child: (titleLocal ?? result)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");

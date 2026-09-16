@@ -28,7 +28,7 @@ public abstract class TextScaler
         {
             return this;
         }
-        return ((minScaleFactor == maxScaleFactor) ? TextScaler.CreateLinear(minScaleFactor) : new _ClampedTextScaler__text_scaler(this, minScaleFactor, maxScaleFactor));
+        return ((minScaleFactor == maxScaleFactor) ? CreateLinear(minScaleFactor) : new _ClampedTextScaler__text_scaler(this, minScaleFactor, maxScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -112,7 +112,7 @@ internal class _ClampedTextScaler__text_scaler : TextScaler
         double newMaxScale = Math.Min(this.maxScale, maxScaleFactor);
         if ((newMaxScale <= newMinScale))
         {
-            return TextScaler.CreateLinear(Dart_uiLibrary.clampDouble(this.minScale, minScaleFactor, maxScaleFactor));
+            return CreateLinear(Dart_uiLibrary.clampDouble(this.minScale, minScaleFactor, maxScaleFactor));
         }
         return new _ClampedTextScaler__text_scaler(this.scaler, newMinScale, newMaxScale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -126,7 +126,7 @@ internal class _ClampedTextScaler__text_scaler : TextScaler
         {
             return true;
         }
-        return ((((__other is _ClampedTextScaler__text_scaler) && (this.minScale == ((_ClampedTextScaler__text_scaler)((_ClampedTextScaler__text_scaler)__other)).minScale)) && (this.maxScale == ((_ClampedTextScaler__text_scaler)((_ClampedTextScaler__text_scaler)__other)).maxScale)) && (object.Equals(this.scaler, ((_ClampedTextScaler__text_scaler)((_ClampedTextScaler__text_scaler)__other)).scaler)));
+        return ((((__other is _ClampedTextScaler__text_scaler) && (this.minScale == ((_ClampedTextScaler__text_scaler)((_ClampedTextScaler__text_scaler)__other)).minScale)) && (this.maxScale == ((_ClampedTextScaler__text_scaler)((_ClampedTextScaler__text_scaler)__other)).maxScale)) && (Equals(this.scaler, ((_ClampedTextScaler__text_scaler)((_ClampedTextScaler__text_scaler)__other)).scaler)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.scaler, this.minScale, this.maxScale);

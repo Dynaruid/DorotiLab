@@ -167,7 +167,7 @@ public class RevealedOffset
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RevealedOffset"))}(offset: {this.offset}, rect: {this.rect})";
+        return $"{(objectRuntimeTypeFunctions.objectRuntimeType(this, "RevealedOffset"))}(offset: {this.offset}, rect: {this.rect})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -195,8 +195,8 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         this._scrollCacheExtent = (scrollCacheExtent ?? (cacheExtentStyle switch { CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels((cacheExtent ?? RenderAbstractViewport.defaultCacheExtent)), CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(DartRuntimePrimitives.RequireValue(cacheExtent)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         this._paintOrder = paintOrder;
         this._clipBehavior = clipBehavior;
-        System.Diagnostics.Debug.Assert((!object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(axisDirection), global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(crossAxisDirection))));
-        System.Diagnostics.Debug.Assert(((cacheExtent is not null) || (object.Equals(cacheExtentStyle, CacheExtentStyle.pixel))));
+        System.Diagnostics.Debug.Assert((!Equals(Basic_typesLibrary.axisDirectionToAxis(axisDirection), Basic_typesLibrary.axisDirectionToAxis(crossAxisDirection))));
+        System.Diagnostics.Debug.Assert(((cacheExtent is not null) || (Equals(cacheExtentStyle, CacheExtentStyle.pixel))));
     }
 
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
@@ -220,7 +220,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         set
         {
             var __value = value;
-            if ((object.Equals(DartRuntimePrimitives.RequireValue(__value), this._axisDirection)))
+            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._axisDirection)))
             {
                 return;
             }
@@ -234,7 +234,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         set
         {
             var __value = value;
-            if ((object.Equals(DartRuntimePrimitives.RequireValue(__value), this._crossAxisDirection)))
+            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this._crossAxisDirection)))
             {
                 return;
             }
@@ -242,14 +242,14 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Framework.Painting.Axis axis => global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
+    public virtual global::Doroti.Framework.Painting.Axis axis => Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
     public virtual ViewportOffset offset
     {
         get => this._offset;
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._offset)))
+            if ((Equals(__value, this._offset)))
             {
                 return;
             }
@@ -286,6 +286,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             markNeedsLayout();
         }
     }
+    [global::System.Diagnostics.CodeAnalysis.AllowNull]
     public virtual ScrollCacheExtent scrollCacheExtent
     {
         get => this._scrollCacheExtent;
@@ -293,7 +294,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         {
             var __value = value;
             ScrollCacheExtent effectiveValue = (__value ?? ScrollCacheExtent.CreatePixels(RenderAbstractViewport.defaultCacheExtent));
-            if ((object.Equals(effectiveValue, this._scrollCacheExtent)))
+            if ((Equals(effectiveValue, this._scrollCacheExtent)))
             {
                 return;
             }
@@ -307,7 +308,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         set
         {
             var __value = value;
-            if ((object.Equals(DartRuntimePrimitives.RequireValue(__value), this.cacheExtentStyle)))
+            if ((Equals(DartRuntimePrimitives.RequireValue(__value), this.cacheExtentStyle)))
             {
                 return;
             }
@@ -321,7 +322,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         set
         {
             var __value = value;
-            if ((!object.Equals(DartRuntimePrimitives.RequireValue(__value), this._paintOrder)))
+            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._paintOrder)))
             {
                 _paintOrder = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -335,7 +336,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         set
         {
             var __value = value;
-            if ((!object.Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
+            if ((!Equals(DartRuntimePrimitives.RequireValue(__value), this._clipBehavior)))
             {
                 _clipBehavior = DartRuntimePrimitives.RequireValue(__value);
                 markNeedsPaint();
@@ -373,7 +374,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!RenderObject.debugCheckingIntrinsics)
+                if (!debugCheckingIntrinsics)
                 {
                     DartRuntimePrimitives.Assert(() => (this is not RenderShrinkWrappingViewport));
                     throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this.GetType()} does not support returning intrinsic dimensions."), new ErrorDescription("Calculating the intrinsic dimensions would require instantiating every child of " + "the viewport, which defeats the point of viewports being lazy."), new ErrorHint("If you are merely trying to shrink-wrap the viewport in the main axis direction, " + "consider a RenderShrinkWrappingViewport render object (ShrinkWrappingViewport widget), " + "which achieves that effect without implementing the intrinsic dimension API.") });
@@ -418,7 +419,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         DartRuntimePrimitives.Assert(() => double.IsFinite(scrollOffset));
         DartRuntimePrimitives.Assert(() => (scrollOffset >= 0.0));
         var initialLayoutOffset = layoutOffset;
-        ScrollDirection adjustedUserScrollDirection = global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToScrollDirection(((ViewportOffset)this.offset).userScrollDirection, growthDirection);
+        ScrollDirection adjustedUserScrollDirection = SliverLibrary.applyGrowthDirectionToScrollDirection(((ViewportOffset)this.offset).userScrollDirection, growthDirection);
         double maxPaintOffset = (layoutOffset + overlap);
         var precedingScrollExtentLocal = 0.0;
         while ((child is not null))
@@ -493,30 +494,30 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         double bottomLocal = viewportClip.bottom;
         double startOfOverlap = (((RenderSliver)__child).constraints.viewportMainAxisExtent - ((RenderSliver)__child).constraints.remainingPaintExtent);
         double overlapCorrection = (startOfOverlap + ((RenderSliver)__child).constraints.overlap);
-        switch (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(this.axisDirection, ((RenderSliver)__child).constraints.growthDirection))
+        switch (SliverLibrary.applyGrowthDirectionToAxisDirection(this.axisDirection, ((RenderSliver)__child).constraints.growthDirection))
         {
-            case global::Doroti.Framework.Painting.AxisDirection.down:
+            case AxisDirection.down:
                 {
                     topLocal += overlapCorrection;
                     break;
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.up:
+            case AxisDirection.up:
                 {
                     bottomLocal -= overlapCorrection;
                     break;
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.right:
+            case AxisDirection.right:
                 {
                     leftLocal += overlapCorrection;
                     break;
                 }
-            case global::Doroti.Framework.Painting.AxisDirection.left:
+            case AxisDirection.left:
                 {
                     rightLocal -= overlapCorrection;
                     break;
                 }
         }
-        return global::Doroti.Ui.Rect.fromLTRB(leftLocal, topLocal, rightLocal, bottomLocal);
+        return Rect.fromLTRB(leftLocal, topLocal, rightLocal, bottomLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -533,13 +534,13 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         }
         switch (this.axis)
         {
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 {
-                    return global::Doroti.Ui.Rect.fromLTRB(semanticBounds.left, (semanticBounds.top - DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)), semanticBounds.right, (semanticBounds.bottom + DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)));
+                    return Rect.fromLTRB(semanticBounds.left, (semanticBounds.top - DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)), semanticBounds.right, (semanticBounds.bottom + DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)));
                 }
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
-                    return global::Doroti.Ui.Rect.fromLTRB((semanticBounds.left - DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)), semanticBounds.top, (semanticBounds.right + DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)), semanticBounds.bottom);
+                    return Rect.fromLTRB((semanticBounds.left - DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)), semanticBounds.top, (semanticBounds.right + DartRuntimePrimitives.RequireValue(this._calculatedCacheExtent)), semanticBounds.bottom);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -551,7 +552,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         {
             return;
         }
-        if ((this.hasVisualOverflow && (!object.Equals(this.clipBehavior, Clip.none))))
+        if ((this.hasVisualOverflow && (!Equals(this.clipBehavior, Clip.none))))
         {
             this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, (Offset.zero & size), (Action<PaintingContext, Offset>)this._paintContents, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
         }
@@ -596,7 +597,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                 RenderSliver? child = firstChild;
                 while ((child is not null))
                 {
-                    global::Doroti.Ui.Size size = (this.axis switch { global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Size(((RenderSliver)child).constraints.crossAxisExtent, ((RenderSliver)child).geometry!.layoutExtent), global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Size(((RenderSliver)child).geometry!.layoutExtent, ((RenderSliver)child).constraints.crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    global::Doroti.Ui.Size size = (this.axis switch { Axis.vertical => new global::Doroti.Ui.Size(((RenderSliver)child).constraints.crossAxisExtent, ((RenderSliver)child).geometry!.layoutExtent), Axis.horizontal => new global::Doroti.Ui.Size(((RenderSliver)child).geometry!.layoutExtent, ((RenderSliver)child).constraints.crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                     canvasLocal.drawRect(((((offset + paintOffsetOf(child))) & size)).deflate(0.5), paint);
                     child = childAfter(child);
                 }
@@ -606,7 +607,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        var (mainAxisPositionLocal, crossAxisPositionLocal) = (this.axis switch { global::Doroti.Framework.Painting.Axis.vertical => (((double, double))((position.dy, position.dx))), global::Doroti.Framework.Painting.Axis.horizontal => (((double, double))((position.dx, position.dy))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (mainAxisPositionLocal, crossAxisPositionLocal) = (this.axis switch { Axis.vertical => (((double, double))((position.dy, position.dx))), Axis.horizontal => (((double, double))((position.dx, position.dy))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var sliverResult = SliverHitTestResult.CreateWrap(result);
         foreach (RenderSliver child in this.childrenInHitTestOrder)
         {
@@ -636,7 +637,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         var child = target;
         RenderBox? pivot = default!;
         var onlySlivers = (target is RenderSliver);
-        while ((!object.Equals(((RenderObject)child).parent, this)))
+        while ((!Equals(((RenderObject)child).parent, this)))
         {
             RenderObject parentLocal = ((RenderObject)child).parent!;
             if ((child is RenderBox))
@@ -662,12 +663,12 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         if ((pivot is not null))
         {
             DartRuntimePrimitives.Assert(() => (pivot.parent is not null));
-            DartRuntimePrimitives.Assert(() => (!object.Equals(pivot.parent, this)));
-            DartRuntimePrimitives.Assert(() => (!object.Equals(pivot, this)));
+            DartRuntimePrimitives.Assert(() => (!Equals(pivot.parent, this)));
+            DartRuntimePrimitives.Assert(() => (!Equals(pivot, this)));
             DartRuntimePrimitives.Assert(() => (pivot.parent is RenderSliver));
             var pivotParent = ((RenderSliver?)(object?)pivot.parent!)!;
             growthDirectionLocal = ((RenderSliver)pivotParent).constraints.growthDirection;
-            pivotExtent = (DartRuntimePrimitives.RequireValue(axis) switch { global::Doroti.Framework.Painting.Axis.horizontal => ((RenderBox)pivot).size.width, global::Doroti.Framework.Painting.Axis.vertical => ((RenderBox)pivot).size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            pivotExtent = (DartRuntimePrimitives.RequireValue(axis) switch { Axis.horizontal => ((RenderBox)pivot).size.width, Axis.vertical => ((RenderBox)pivot).size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             rect ??= ((RenderObject)target).paintBounds;
             rectLocal = MatrixUtils.transformRect(target.getTransformTo(pivot), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
         }
@@ -682,14 +683,14 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                 {
                     switch (DartRuntimePrimitives.RequireValue(axis))
                     {
-                        case global::Doroti.Framework.Painting.Axis.horizontal:
+                        case Axis.horizontal:
                             {
-                                rect = global::Doroti.Ui.Rect.fromLTWH(0, 0, ((RenderSliver)targetSliver).geometry!.scrollExtent, ((RenderSliver)targetSliver).constraints.crossAxisExtent);
+                                rect = Rect.fromLTWH(0, 0, ((RenderSliver)targetSliver).geometry!.scrollExtent, ((RenderSliver)targetSliver).constraints.crossAxisExtent);
                                 break;
                             }
-                        case global::Doroti.Framework.Painting.Axis.vertical:
+                        case Axis.vertical:
                             {
-                                rect = global::Doroti.Ui.Rect.fromLTWH(0, 0, ((RenderSliver)targetSliver).constraints.crossAxisExtent, ((RenderSliver)targetSliver).geometry!.scrollExtent);
+                                rect = Rect.fromLTWH(0, 0, ((RenderSliver)targetSliver).constraints.crossAxisExtent, ((RenderSliver)targetSliver).geometry!.scrollExtent);
                                 break;
                             }
                     }
@@ -702,10 +703,10 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                 return new RevealedOffset(offset: ((ViewportOffset)this.offset).pixels, rect: DartRuntimePrimitives.RequireValue(rect));
             }
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderObject)child).parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderObject)child).parent, this)));
         DartRuntimePrimitives.Assert(() => (child is RenderSliver));
         var sliver = ((RenderSliver?)(object?)child)!;
-        leadingScrollOffset += (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(this.axisDirection, growthDirectionLocal) switch { global::Doroti.Framework.Painting.AxisDirection.up => (pivotExtent - rectLocal.bottom), global::Doroti.Framework.Painting.AxisDirection.left => (pivotExtent - rectLocal.right), global::Doroti.Framework.Painting.AxisDirection.right => rectLocal.left, global::Doroti.Framework.Painting.AxisDirection.down => rectLocal.top, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        leadingScrollOffset += (SliverLibrary.applyGrowthDirectionToAxisDirection(this.axisDirection, growthDirectionLocal) switch { AxisDirection.up => (pivotExtent - rectLocal.bottom), AxisDirection.left => (pivotExtent - rectLocal.right), AxisDirection.right => rectLocal.left, AxisDirection.down => rectLocal.top, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         bool isPinned = ((((RenderSliver)sliver).geometry!.maxScrollObstructionExtent > 0L) && (leadingScrollOffset >= 0L));
         leadingScrollOffset = scrollOffsetOf(sliver, leadingScrollOffset);
         Matrix4 transform = target.getTransformTo(this);
@@ -728,14 +729,14 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                     {
                         return new RevealedOffset(offset: double.NegativeInfinity, rect: targetRect);
                     }
-                    leadingScrollOffset -= (DartRuntimePrimitives.RequireValue(axis) switch { global::Doroti.Framework.Painting.Axis.vertical => targetRect.height, global::Doroti.Framework.Painting.Axis.horizontal => targetRect.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    leadingScrollOffset -= (DartRuntimePrimitives.RequireValue(axis) switch { Axis.vertical => targetRect.height, Axis.horizontal => targetRect.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                     break;
                 }
         }
-        double mainAxisExtentDifference = (DartRuntimePrimitives.RequireValue(axis) switch { global::Doroti.Framework.Painting.Axis.horizontal => ((size.width - extentOfPinnedSlivers) - rectLocal.width), global::Doroti.Framework.Painting.Axis.vertical => ((size.height - extentOfPinnedSlivers) - rectLocal.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double mainAxisExtentDifference = (DartRuntimePrimitives.RequireValue(axis) switch { Axis.horizontal => ((size.width - extentOfPinnedSlivers) - rectLocal.width), Axis.vertical => ((size.height - extentOfPinnedSlivers) - rectLocal.height), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double targetOffset = (leadingScrollOffset - (mainAxisExtentDifference * alignment));
         double offsetDifference = (((ViewportOffset)this.offset).pixels - targetOffset);
-        targetRect = (this.axisDirection switch { global::Doroti.Framework.Painting.AxisDirection.up => targetRect.translate(0.0, -offsetDifference), global::Doroti.Framework.Painting.AxisDirection.down => targetRect.translate(0.0, offsetDifference), global::Doroti.Framework.Painting.AxisDirection.left => targetRect.translate(-offsetDifference, 0.0), global::Doroti.Framework.Painting.AxisDirection.right => targetRect.translate(offsetDifference, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        targetRect = (this.axisDirection switch { AxisDirection.up => targetRect.translate(0.0, -offsetDifference), AxisDirection.down => targetRect.translate(0.0, offsetDifference), AxisDirection.left => targetRect.translate(-offsetDifference, 0.0), AxisDirection.right => targetRect.translate(offsetDifference, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         return new RevealedOffset(offset: targetOffset, rect: targetRect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -744,7 +745,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
     {
         DartRuntimePrimitives.Assert(() => hasSize);
         DartRuntimePrimitives.Assert(() => (((RenderSliver)child).geometry is not null));
-        return (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(this.axisDirection, growthDirection) switch { global::Doroti.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((size.height - layoutOffset) - ((RenderSliver)child).geometry!.paintExtent)), global::Doroti.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(((size.width - layoutOffset) - ((RenderSliver)child).geometry!.paintExtent), 0.0), global::Doroti.Framework.Painting.AxisDirection.right => new global::Doroti.Ui.Offset(layoutOffset, 0.0), global::Doroti.Framework.Painting.AxisDirection.down => new global::Doroti.Ui.Offset(0.0, layoutOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (SliverLibrary.applyGrowthDirectionToAxisDirection(this.axisDirection, growthDirection) switch { AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((size.height - layoutOffset) - ((RenderSliver)child).geometry!.paintExtent)), AxisDirection.left => new global::Doroti.Ui.Offset(((size.width - layoutOffset) - ((RenderSliver)child).geometry!.paintExtent), 0.0), AxisDirection.right => new global::Doroti.Ui.Offset(layoutOffset, 0.0), AxisDirection.down => new global::Doroti.Ui.Offset(0.0, layoutOffset), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -768,7 +769,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         while (true)
         {
             children.Add(((Diagnosticable)child!).toDiagnosticsNode(name: labelForChild(count)));
-            if ((object.Equals(child, lastChild)))
+            if ((Equals(child, lastChild)))
             {
                 break;
             }
@@ -837,7 +838,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             base.showOnScreen(descendant: descendant, rect: rect, duration: duration, curve: curve);
             return;
         }
-        global::Doroti.Ui.Rect? newRect = global::Doroti.Framework.Rendering.RenderViewportBase<ParentDataClass>.showInViewport(descendant: descendant, viewport: this, offset: this.offset, rect: rect, duration: duration, curve: curve);
+        global::Doroti.Ui.Rect? newRect = RenderViewportBase<ParentDataClass>.showInViewport(descendant: descendant, viewport: this, offset: this.offset, rect: rect, duration: duration, curve: curve);
         base.showOnScreen(rect: newRect, duration: duration, curve: curve);
     }
 
@@ -867,11 +868,11 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         var childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.previousSibling, child)));
             child = childParentData.previousSibling!;
             childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -880,11 +881,11 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         var childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            DartRuntimePrimitives.Assert(() => (!Equals(childParentData.nextSibling, child)));
             child = childParentData.nextSibling!;
             childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         }
-        return (object.Equals(child, equals));
+        return (Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -930,7 +931,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
             var afterParentData = ((ParentDataClass?)(object?)after.parentData!)!;
             if ((afterParentData.nextSibling is null))
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
+                DartRuntimePrimitives.Assert(() => (Equals(after, this._lastChild)));
                 childParentData.previousSibling = after;
                 afterParentData.nextSibling = child;
                 this._lastChild = child;
@@ -943,18 +944,18 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
                 var childNextSiblingParentData = ((ParentDataClass?)(object?)childParentData.nextSibling!.parentData!)!;
                 childPreviousSiblingParentData.nextSibling = child;
                 childNextSiblingParentData.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
+                DartRuntimePrimitives.Assert(() => (Equals(afterParentData.nextSibling, child)));
             }
         }
     }
 
     public virtual void insert(RenderSliver child, RenderSliver? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._firstChild)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this._lastChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._firstChild)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this._lastChild)));
         adoptChild(child);
         DartRuntimePrimitives.Assert(() => (child.parentData is ParentDataClass));
         _insertIntoChildList(child, after: after);
@@ -978,7 +979,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
         if ((childParentData.previousSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._firstChild, child)));
             this._firstChild = childParentData.nextSibling;
         }
         else
@@ -988,7 +989,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
         }
         if ((childParentData.nextSibling is null))
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
+            DartRuntimePrimitives.Assert(() => (Equals(this._lastChild, child)));
             this._lastChild = childParentData.previousSibling;
         }
         else
@@ -1026,12 +1027,12 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
 
     public virtual void move(RenderSliver child, RenderSliver? after = null)
     {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(after, this)));
+        DartRuntimePrimitives.Assert(() => (!Equals(child, after)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData.previousSibling, after)))
+        if ((Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -1066,7 +1067,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
     public virtual RenderSliver? lastChild => this._lastChild;
     public virtual RenderSliver? childBefore(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1074,7 +1075,7 @@ public abstract class RenderViewportBase<ParentDataClass> : RenderBox, Container
 
     public virtual RenderSliver? childAfter(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         var childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1098,7 +1099,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
         this._anchor = anchor;
         this._center = center;
         System.Diagnostics.Debug.Assert(((anchor >= 0.0) && (anchor <= 1.0)));
-        System.Diagnostics.Debug.Assert(((!object.Equals(cacheExtentStyle, CacheExtentStyle.viewport)) || (cacheExtent is not null)));
+        System.Diagnostics.Debug.Assert(((!Equals(cacheExtentStyle, CacheExtentStyle.viewport)) || (cacheExtent is not null)));
     }
 
     public override void setupParentData(RenderObject child)
@@ -1130,7 +1131,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
         set
         {
             var __value = value;
-            if ((object.Equals(__value, this._center)))
+            if ((Equals(__value, this._center)))
             {
                 return;
             }
@@ -1141,7 +1142,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
     public override bool sizedByParent => true;
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Rendering.DebugLibrary.debugCheckHasBoundedAxis(axis, constraints));
+        DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasBoundedAxis(axis, constraints));
         return ((BoxConstraints)constraints).biggest;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1150,12 +1151,12 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
     {
         switch (axis)
         {
-            case global::Doroti.Framework.Painting.Axis.vertical:
+            case Axis.vertical:
                 {
                     offset.applyViewportDimension(size.height);
                     break;
                 }
-            case global::Doroti.Framework.Painting.Axis.horizontal:
+            case Axis.horizontal:
                 {
                     offset.applyViewportDimension(size.width);
                     break;
@@ -1170,8 +1171,8 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
             offset.applyContentDimensions(0.0, 0.0);
             return;
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(this.center!.parent, this)));
-        var (mainAxisExtent, crossAxisExtent) = (axis switch { global::Doroti.Framework.Painting.Axis.vertical => (((double, double))((size.height, size.width))), global::Doroti.Framework.Painting.Axis.horizontal => (((double, double))((size.width, size.height))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartRuntimePrimitives.Assert(() => (Equals(this.center!.parent, this)));
+        var (mainAxisExtent, crossAxisExtent) = (axis switch { Axis.vertical => (((double, double))((size.height, size.width))), Axis.horizontal => (((double, double))((size.width, size.height))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double centerOffsetAdjustmentLocal = this.center!.centerOffsetAdjustment;
         long maxLayoutCycles = (_maxLayoutCyclesPerChild * childCount);
         double correction = default!;
@@ -1273,7 +1274,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
 
     public override double scrollOffsetOf(RenderSliver child, double scrollOffsetWithinChild)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         GrowthDirection growthDirectionLocal = ((RenderSliver)child).constraints.growthDirection;
         switch (growthDirectionLocal)
         {
@@ -1281,7 +1282,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 {
                     var scrollOffsetToChild = 0.0;
                     RenderSliver? current = this.center;
-                    while ((!object.Equals(current, child)))
+                    while ((!Equals(current, child)))
                     {
                         scrollOffsetToChild += current!.geometry!.scrollExtent;
                         current = childAfter(current);
@@ -1292,7 +1293,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 {
                     var scrollOffsetToChildLocal = 0.0;
                     RenderSliver? currentLocal = childBefore(this.center!);
-                    while ((!object.Equals(currentLocal, child)))
+                    while ((!Equals(currentLocal, child)))
                     {
                         scrollOffsetToChildLocal -= currentLocal!.geometry!.scrollExtent;
                         currentLocal = childBefore(currentLocal);
@@ -1305,7 +1306,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
 
     public override double maxScrollObstructionExtentBefore(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
         GrowthDirection growthDirectionLocal = ((RenderSliver)child).constraints.growthDirection;
         switch (growthDirectionLocal)
         {
@@ -1313,7 +1314,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 {
                     var pinnedExtent = 0.0;
                     RenderSliver? current = this.center;
-                    while ((!object.Equals(current, child)))
+                    while ((!Equals(current, child)))
                     {
                         pinnedExtent += current!.geometry!.maxScrollObstructionExtent;
                         current = childAfter(current);
@@ -1324,7 +1325,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 {
                     var pinnedExtentLocal = 0.0;
                     RenderSliver? currentLocal = childBefore(this.center!);
-                    while ((!object.Equals(currentLocal, child)))
+                    while ((!Equals(currentLocal, child)))
                     {
                         pinnedExtentLocal += currentLocal!.geometry!.maxScrollObstructionExtent;
                         currentLocal = childBefore(currentLocal);
@@ -1344,7 +1345,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
     public override double computeChildMainAxisPosition(RenderSliver child, double parentMainAxisPosition)
     {
         global::Doroti.Ui.Offset paintOffsetLocal = (((SliverPhysicalParentData?)(object?)child.parentData!)!).paintOffset;
-        return (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((RenderSliver)child).constraints.axisDirection, ((RenderSliver)child).constraints.growthDirection) switch { global::Doroti.Framework.Painting.AxisDirection.down => (parentMainAxisPosition - paintOffsetLocal.dy), global::Doroti.Framework.Painting.AxisDirection.right => (parentMainAxisPosition - paintOffsetLocal.dx), global::Doroti.Framework.Painting.AxisDirection.up => (((RenderSliver)child).geometry!.paintExtent - ((parentMainAxisPosition - paintOffsetLocal.dy))), global::Doroti.Framework.Painting.AxisDirection.left => (((RenderSliver)child).geometry!.paintExtent - ((parentMainAxisPosition - paintOffsetLocal.dx))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (SliverLibrary.applyGrowthDirectionToAxisDirection(((RenderSliver)child).constraints.axisDirection, ((RenderSliver)child).constraints.growthDirection) switch { AxisDirection.down => (parentMainAxisPosition - paintOffsetLocal.dy), AxisDirection.right => (parentMainAxisPosition - paintOffsetLocal.dx), AxisDirection.up => (((RenderSliver)child).geometry!.paintExtent - ((parentMainAxisPosition - paintOffsetLocal.dy))), AxisDirection.left => (((RenderSliver)child).geometry!.paintExtent - ((parentMainAxisPosition - paintOffsetLocal.dx))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1353,11 +1354,11 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
         get
         {
             DartRuntimePrimitives.Assert(() => (this.center is not null));
-            DartRuntimePrimitives.Assert(() => (object.Equals(this.center!.parent, this)));
+            DartRuntimePrimitives.Assert(() => (Equals(this.center!.parent, this)));
             DartRuntimePrimitives.Assert(() => (firstChild is not null));
             var count = 0L;
             RenderSliver? child = this.center;
-            while ((!object.Equals(child, firstChild)))
+            while ((!Equals(child, firstChild)))
             {
                 count -= 1L;
                 child = childBefore(child!);
@@ -1405,7 +1406,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!RenderObject.debugCheckingIntrinsics)
+                if (!debugCheckingIntrinsics)
                 {
                     throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"{this.GetType()} does not support returning intrinsic dimensions."), new ErrorDescription("Calculating the intrinsic dimensions would require instantiating every child of " + "the viewport, which defeats the point of viewports being lazy."), new ErrorHint("If you are merely trying to shrink-wrap the viewport in the main axis direction, " + "you should be able to achieve that effect by just giving the viewport loose " + "constraints, without needing to measure its intrinsic dimensions.") });
                 }
@@ -1421,7 +1422,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             {
                 switch (axis)
                 {
-                    case global::Doroti.Framework.Painting.Axis.vertical:
+                    case Axis.vertical:
                         {
                             if (!((BoxConstraints)constraints).hasBoundedWidth)
                             {
@@ -1429,7 +1430,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
                             }
                             break;
                         }
-                    case global::Doroti.Framework.Painting.Axis.horizontal:
+                    case Axis.horizontal:
                         {
                             if (!((BoxConstraints)constraints).hasBoundedHeight)
                             {
@@ -1450,7 +1451,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
         if ((firstChild is null))
         {
             DartRuntimePrimitives.Assert(() => _debugCheckHasBoundedCrossAxis());
-            size = (axis switch { global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Size(((BoxConstraints)constraintsLocal).maxWidth, ((BoxConstraints)constraintsLocal).minHeight), global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Size(((BoxConstraints)constraintsLocal).minWidth, ((BoxConstraints)constraintsLocal).maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            size = (axis switch { Axis.vertical => new global::Doroti.Ui.Size(((BoxConstraints)constraintsLocal).maxWidth, ((BoxConstraints)constraintsLocal).minHeight), Axis.horizontal => new global::Doroti.Ui.Size(((BoxConstraints)constraintsLocal).minWidth, ((BoxConstraints)constraintsLocal).maxHeight), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             offset.applyViewportDimension(0.0);
             _maxScrollExtent = 0.0;
             _shrinkWrapExtent = 0.0;
@@ -1459,7 +1460,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             return;
         }
         DartRuntimePrimitives.Assert(() => _debugCheckHasBoundedCrossAxis());
-        var (mainAxisExtent, crossAxisExtent) = (axis switch { global::Doroti.Framework.Painting.Axis.vertical => (((double, double))((((BoxConstraints)constraintsLocal).maxHeight, ((BoxConstraints)constraintsLocal).maxWidth))), global::Doroti.Framework.Painting.Axis.horizontal => (((double, double))((((BoxConstraints)constraintsLocal).maxWidth, ((BoxConstraints)constraintsLocal).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (mainAxisExtent, crossAxisExtent) = (axis switch { Axis.vertical => (((double, double))((((BoxConstraints)constraintsLocal).maxHeight, ((BoxConstraints)constraintsLocal).maxWidth))), Axis.horizontal => (((double, double))((((BoxConstraints)constraintsLocal).maxWidth, ((BoxConstraints)constraintsLocal).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double correction = default!;
         double effectiveExtent = default!;
         while (true)
@@ -1471,7 +1472,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             }
             else
             {
-                effectiveExtent = (axis switch { global::Doroti.Framework.Painting.Axis.vertical => constraintsLocal.constrainHeight(this._shrinkWrapExtent), global::Doroti.Framework.Painting.Axis.horizontal => constraintsLocal.constrainWidth(this._shrinkWrapExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                effectiveExtent = (axis switch { Axis.vertical => constraintsLocal.constrainHeight(this._shrinkWrapExtent), Axis.horizontal => constraintsLocal.constrainWidth(this._shrinkWrapExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 bool didAcceptViewportDimension = offset.applyViewportDimension(effectiveExtent);
                 bool didAcceptContentDimension = offset.applyContentDimensions(0.0, Math.Max(0.0, (this._maxScrollExtent - effectiveExtent)));
                 if ((didAcceptViewportDimension && didAcceptContentDimension))
@@ -1480,7 +1481,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
                 }
             }
         }
-        size = (axis switch { global::Doroti.Framework.Painting.Axis.vertical => constraintsLocal.constrainDimensions(crossAxisExtent, effectiveExtent), global::Doroti.Framework.Painting.Axis.horizontal => constraintsLocal.constrainDimensions(effectiveExtent, crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        size = (axis switch { Axis.vertical => constraintsLocal.constrainDimensions(crossAxisExtent, effectiveExtent), Axis.horizontal => constraintsLocal.constrainDimensions(effectiveExtent, crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
 
     internal virtual double _attemptLayout(double mainAxisExtent, double crossAxisExtent, double correctedOffset)
@@ -1508,7 +1509,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
     public override bool hasVisualOverflow => this._hasVisualOverflow;
     public override void updateOutOfBandData(GrowthDirection growthDirection, SliverGeometry childLayoutGeometry)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(growthDirection, GrowthDirection.forward)));
+        DartRuntimePrimitives.Assert(() => (Equals(growthDirection, GrowthDirection.forward)));
         _maxScrollExtent += ((SliverGeometry)childLayoutGeometry).scrollExtent;
         if (((SliverGeometry)childLayoutGeometry).hasVisualOverflow)
         {
@@ -1519,7 +1520,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
 
     public override void updateChildLayoutOffset(RenderSliver child, double layoutOffset, GrowthDirection growthDirection)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(growthDirection, GrowthDirection.forward)));
+        DartRuntimePrimitives.Assert(() => (Equals(growthDirection, GrowthDirection.forward)));
         var childParentData = ((SliverLogicalParentData?)(object?)child.parentData!)!;
         childParentData.layoutOffset = layoutOffset;
     }
@@ -1533,11 +1534,11 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
 
     public override double scrollOffsetOf(RenderSliver child, double scrollOffsetWithinChild)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderSliver)child).constraints.growthDirection, GrowthDirection.forward)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderSliver)child).constraints.growthDirection, GrowthDirection.forward)));
         var scrollOffsetToChild = 0.0;
         RenderSliver? current = firstChild;
-        while ((!object.Equals(current, child)))
+        while ((!Equals(current, child)))
         {
             scrollOffsetToChild += current!.geometry!.scrollExtent;
             current = childAfter(current);
@@ -1548,11 +1549,11 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
 
     public override double maxScrollObstructionExtentBefore(RenderSliver child)
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(((RenderSliver)child).constraints.growthDirection, GrowthDirection.forward)));
+        DartRuntimePrimitives.Assert(() => (Equals(child.parent, this)));
+        DartRuntimePrimitives.Assert(() => (Equals(((RenderSliver)child).constraints.growthDirection, GrowthDirection.forward)));
         var pinnedExtent = 0.0;
         RenderSliver? current = firstChild;
-        while ((!object.Equals(current, child)))
+        while ((!Equals(current, child)))
         {
             pinnedExtent += current!.geometry!.maxScrollObstructionExtent;
             current = childAfter(current);
@@ -1571,7 +1572,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
     {
         DartRuntimePrimitives.Assert(() => hasSize);
         double layoutOffsetLocal = DartRuntimePrimitives.RequireValue((((SliverLogicalParentData?)(object?)child.parentData!)!).layoutOffset);
-        return (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((RenderSliver)child).constraints.axisDirection, ((RenderSliver)child).constraints.growthDirection) switch { global::Doroti.Framework.Painting.AxisDirection.down => (parentMainAxisPosition - layoutOffsetLocal), global::Doroti.Framework.Painting.AxisDirection.right => (parentMainAxisPosition - layoutOffsetLocal), global::Doroti.Framework.Painting.AxisDirection.up => ((size.height - parentMainAxisPosition) - layoutOffsetLocal), global::Doroti.Framework.Painting.AxisDirection.left => ((size.width - parentMainAxisPosition) - layoutOffsetLocal), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (SliverLibrary.applyGrowthDirectionToAxisDirection(((RenderSliver)child).constraints.axisDirection, ((RenderSliver)child).constraints.growthDirection) switch { AxisDirection.down => (parentMainAxisPosition - layoutOffsetLocal), AxisDirection.right => (parentMainAxisPosition - layoutOffsetLocal), AxisDirection.up => ((size.height - parentMainAxisPosition) - layoutOffsetLocal), AxisDirection.left => ((size.width - parentMainAxisPosition) - layoutOffsetLocal), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
