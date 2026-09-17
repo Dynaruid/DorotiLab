@@ -10,6 +10,7 @@ public sealed record PlatformShieldSegment(PlatformInputShield Shield) : Platfor
 public abstract record PlatformEffectSegment(int PaintOrder, Rect Bounds) : PlatformCompositionPart(PaintOrder);
 public sealed record PlatformBackdropSegment(int PaintOrder, Rect Bounds, double SigmaX, double SigmaY) : PlatformEffectSegment(PaintOrder, Bounds)
 {
+    public PlatformEffectStyle? Style { get; init; }
     public Rect SampleBounds => Rect.fromLTRB(Bounds.left - 3 * SigmaX, Bounds.top - 3 * SigmaY,
         Bounds.right + 3 * SigmaX, Bounds.bottom + 3 * SigmaY);
 }
@@ -125,7 +126,7 @@ public static class PlatformCompositionPlanner
                 catch (NotSupportedException error) { throw Failure(error.Message); }
                 FlushRaster();
                 parts.Add(new PlatformBackdropSegment(parts.Count, clip,
-                    filter.SigmaX * state.Transform.M11, filter.SigmaY * state.Transform.M22));
+                    filter.SigmaX * state.Transform.M11, filter.SigmaY * state.Transform.M22) { Style = filter.PlatformEffectIntent });
                 // The host draws the filtered backdrop. Keep a balanced no-op scope
                 // for its sharp foreground child, and reject native children inside it.
                 var scope = new SceneCommand("offset", null) { HostPayload = new SceneOffsetPayload(0, 0) };

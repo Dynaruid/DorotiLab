@@ -3,6 +3,12 @@ using Doroti.Framework.Widgets;
 using Doroti.Ui;
 using M = Doroti.Framework.Material;
 
+public static class PlatformEffectFixtureProbe
+{
+    public static Action<int>? SetStage { get; internal set; }
+    public static Action<double>? SetStrength { get; internal set; }
+}
+
 internal sealed class PlatformEffectFixture : StatefulWidget
 {
     public override IState createState() => new FixtureState();
@@ -10,6 +16,7 @@ internal sealed class PlatformEffectFixture : StatefulWidget
     {
         private bool _blur = true, _block;
         private int _taps;
+        private double _strength = .75;
         private bool _mounted = true, _second, _moved;
         private int _generation;
         private static readonly byte[] Html = Encoding.UTF8.GetBytes("""
@@ -22,10 +29,28 @@ internal sealed class PlatformEffectFixture : StatefulWidget
             """);
         private static readonly byte[] SecondHtml = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(Html)
             .Replace("#eee", "#ffeeaa").Replace("#999", "#dd9944").Replace("Native WebView2 text", "Second native WebView"));
+        public override void dispose()
+        {
+            PlatformEffectFixtureProbe.SetStage = null;
+            PlatformEffectFixtureProbe.SetStrength = null;
+            base.dispose();
+        }
+
         public override Widget build(BuildContext context)
         {
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_EVIDENCE")))
                 Environment.SetEnvironmentVariable("DOROTI_PLATFORM_EFFECT_PROBE_STATE", $"{_blur},{_block},{_taps}");
+            PlatformEffectFixtureProbe.SetStrength = strength => setState(() => _strength = strength);
+            PlatformEffectFixtureProbe.SetStage = stage => setState(() =>
+            {
+                _blur = stage != 1;
+                _block = stage == 2;
+                _second = stage is 3 or 4;
+                _moved = stage == 4;
+                var mounted = stage != 5;
+                if (mounted && !_mounted) _generation++;
+                _mounted = mounted;
+            });
             var owner = View.of(context);
             var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
                 DartUiInvocation.Managed("PlatformEffectFixture"));
@@ -49,7 +74,7 @@ internal sealed class PlatformEffectFixture : StatefulWidget
                                 key: new Doroti.Framework.Foundation.ValueKey<int>(-_generation - 1))) } : [],
                     new Positioned(left: _moved ? 180 : 130, top: _moved ? 100 : 65, width: 320, height: 210,
                         child: new PointerInterceptor(new PlatformEffect(
-                            style: new(Strength: _blur ? .75 : 0, Tint: 0x33ffffff),
+                            style: new(Strength: _blur ? _strength : 0, Tint: 0x33ffffff),
                             child: new Center(child: new Text("Sharp Doroti foreground"))), intercepting: _block)),
                     new Positioned(left: 190, top: 285, width: 240, height: 60,
                         child: new PointerInterceptor(new M.ElevatedButton(onPressed: () => setState(() => _taps++),

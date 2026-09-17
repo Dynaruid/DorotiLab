@@ -473,7 +473,8 @@ internal sealed record ImageFilterSnapshot(
     ColorFilterSnapshot? ColorFilter,
     IReadOnlyList<double>? Matrix4,
     FilterQuality FilterQuality,
-    ShaderSnapshot? Shader)
+    ShaderSnapshot? Shader,
+    PlatformEffectStyle? PlatformEffectIntent = null)
 {
     internal static ImageFilterSnapshot Capture(ImageFilter filter)
     {
@@ -491,7 +492,7 @@ internal sealed record ImageFilterSnapshot(
             filter.colorFilter is null ? null : ColorFilterSnapshot.Capture(filter.colorFilter),
             filter.matrix4 is null ? null : Array.AsReadOnly(filter.matrix4.ToArray()),
             filter.filterQuality,
-            null);
+            null, filter.PlatformEffectIntent);
     }
 }
 internal interface IDorotiImageHandle

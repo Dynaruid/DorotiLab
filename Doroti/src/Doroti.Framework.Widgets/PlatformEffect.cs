@@ -18,7 +18,17 @@ public sealed class PlatformEffect : StatelessWidget
             throw new NotSupportedException("Saturation adjustment is not yet supported by the common native effect adapters.");
         Widget foreground = new Container(color: new Color(Style.Tint), child: Child);
         return new ClipRect(child: Style.Sigma == 0 ? foreground : new BackdropFilter(
-            filterConfig: ImageFilterConfig.CreateBlur(sigmaX: Style.Sigma, sigmaY: Style.Sigma,
-                tileMode: TileMode.clamp, bounded: true), child: foreground));
+            filterConfig: new NativeEffectFilterConfig(Style), child: foreground));
     });
+
+    private sealed class NativeEffectFilterConfig(PlatformEffectStyle style) : ImageFilterConfig
+    {
+        public override ImageFilter resolve(Doroti.Framework.Rendering.ImageFilterContext context) =>
+            new(sigmaX: style.Sigma, sigmaY: style.Sigma, tileMode: TileMode.clamp, bounds: context.bounds)
+            { PlatformEffectIntent = style };
+        public override string debugShortDescription => "platformEffect";
+        public override bool Equals(object? other) => other is NativeEffectFilterConfig config && style == config.Style;
+        private PlatformEffectStyle Style => style;
+        public override int GetHashCode() => style.GetHashCode();
+    }
 }

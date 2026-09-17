@@ -298,6 +298,14 @@ public sealed partial class MauiTextInputBridge : IDisposable
     internal void HideTextInput()
         => DispatchInputMutation(HideTextInputCore);
 
+#if IOS && !MACCATALYST
+    internal void YieldUIKitNativeFocus()
+    {
+        DeactivateActiveInput(clearFocus: true);
+        DetachInputs();
+    }
+#endif
+
 #if ANDROID
     internal void YieldAndroidNativeFocus()
     {

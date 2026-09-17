@@ -1,0 +1,13 @@
+{
+  "schema": "doroti-target/v2",
+  "packageId": "Doroti.Target.iOS.Maui.iossimulator-x64",
+  "targetFramework": "net10.0-ios27.0",
+  "rid": "iossimulator-x64",
+  "nativeViewType": "Doroti.Host.Maui.DorotiUIKitGraphiteView",
+  "graphicsBackend": "UIKit/MTKView/Graphite-Metal",
+  "softwareFallback": false,
+  "defaultSkiaEngine": "Graphite",
+  "nativeSkiaPackage": "SkiaSharp.NativeAssets.iOS",
+  "nativeSkiaVersion": "4.154.0-preview.1.26454.9",
+  "nativeSkiaApi": "public-Graphite"
+}

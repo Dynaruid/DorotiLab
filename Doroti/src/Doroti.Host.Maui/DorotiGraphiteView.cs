@@ -13,6 +13,9 @@ public sealed class DorotiGraphiteView : SKGLView
 #if ANDROID
     internal AndroidPlatformViewHost? PlatformViews { get; set; }
 #endif
+#if IOS && !MACCATALYST
+    internal UIKitPlatformViewHost? PlatformViews { get; set; }
+#endif
     internal static bool Enabled => Environment.GetEnvironmentVariable(
 #if ANDROID
         "DOROTI_ANDROID_GRAPHITE"

@@ -240,6 +240,8 @@ public sealed record ImageFilter
         this.filterQuality = filterQuality;
     }
 
+    /// <summary>Optional native effect intent; ordinary image filters retain exact Gaussian semantics.</summary>
+    public PlatformEffectStyle? PlatformEffectIntent { get; init; }
     public double sigmaX { get; }
     public double sigmaY { get; }
     public TileMode tileMode { get; }

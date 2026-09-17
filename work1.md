@@ -1,5 +1,61 @@
 # PlatformView 재구성 작업계획
 
+## 최신 실행 업데이트 — iOS 27 Scene 지원 (2026-09-17)
+
+사용자의 iOS 27 지원 요청으로 `MauiUISceneDelegate` 기반 `DorotiMauiSceneDelegate`와 명시적 Scene configuration을 연결했다. 테스트 앱과 새 앱 템플릿의 Info.plist가 같은 단일-window Scene manifest를 사용한다. AppDelegate가 delegate 타입을 직접 참조하여 trimming/AOT에서 문자열 등록만 의존하지 않는다. Metal의 활성 상태·제출 중단/재개와 blur 재적용은 각 WindowScene의 활성화 알림을 따른다. legacy window 경로의 앱 알림 fallback은 유지한다.
+
+- Xcode 27.0(27A266a), .NET SDK 10.0.400, iOS SDK pack `27.0.10539-xcode27.0`으로 `net10.0-ios27.0` 프로필을 구성했다. 이 프로필은 현재 제공되는 .NET 10/Mono 바인딩을 선택하고 기존 .NET 11 NativeAOT 프로필과 구분한다. **버전 검사 우회 없이** simulator/device Debug 빌드가 경고·오류 0개로 성공했다. 공식 SDK 팩은 아직 Xcode 27 preview 표시이므로 해당 안내만 프로필에서 억제한다.
+- iPhone 18 Pro / iOS 27 Simulator: 실제 foreground-active MAUI Scene 생성, live WKWebView, blur 강도 4단계/양쪽 테마 및 7개 합성·입력·수명 장면 PASS. 테마별 효과 ROI RGB 차이는 모두 0이다. 설정 앱으로 background 전환 후 **동일 PID**로 복귀했고 효과 ROI 차이도 0이었다. 이어지는 강도 변경과 7개 장면이 실행되어 복귀 후 Metal 제출 재개도 확인했다.
+- 연결된 iPhone 12 / iOS 26.6.1: 같은 iOS 27 SDK/Scene 구성의 Debug/Mono interpreter 앱 설치·실행, 4단계/양쪽 테마·7개 장면 PASS. 테마별 ROI 차이 0. iOS 27 실기기 실행으로 계산하지 않는다.
+- 최초 자동 검사는 WebKit 첫 animation frame 전에 고정 400ms 비교를 하여 실패했다. foreground-active Scene을 기다리고 최대 8초 동안 실제 DOM 이동을 확인하도록 수정했다. 실패 기록은 보존했다.
+- 새 앱 템플릿, simulator target의 TFM 선택, 세 RID의 iOS 27 manifest, shared/template iOS profile을 함께 갱신했다. 최소 OS 버전은 15.0이며 다중 Scene은 활성화하지 않았다. iOS 27 NativeAOT·실기기·배포/성능·multi-owner 전체 승인은 별도다.
+
+재현 명령은 [iOS 검증 안내](Doroti/validation/platform-views/ios/README.md), 실행 로그·캡처·프로필은 `Doroti/artifacts/platform-views/2026-09-17/ios/ios27/`에 둔다. 아래의 iOS 27 시작 실패/도구 불일치 기록은 이전 실행 이력이며 이 절이 최신 상태다.
+
+## 최신 설계 변경 — iOS Flutter 방식 채택 (2026-09-17)
+
+사용자의 **“작업계획을 고쳐서 플러터 같은 방식으로”** 요청에 따라 iOS backdrop의 공개 API 한정 조건을 변경한다. 선택 전략은 `UIVisualEffectView`가 구성한 내부 backdrop의 `gaussianBlur` 필터를 복사하고 KVC로 `inputRadius`를 설정하는 Flutter iOS PlatformView 방식이다. 아래 공개 material/animator 보정은 이전 실험 이력이며 새 전략의 완료 증거가 아니다. **새 전략은 C#/.NET iOS로 구현했고 제한된 실기기·시뮬레이터 검증을 통과했다. iOS 전체 상태는 PARTIAL**이다.
+
+근거는 Flutter 엔진의 [PlatformViewFilter 구현](https://api.flutter.dev/ios-embedder/_flutter_platform_views_8mm_source.html)이다. 내부 backdrop/effect subview를 식별하고, `gaussianBlur`와 숫자형 `inputRadius`를 확인한 뒤 필터를 복사한다. backdrop에는 해당 blur 필터만 남기고 내부 effect subview 배경을 투명하게 하여 기본 material의 tint·채도 보정을 제거한다. `UIVibrancyEffect`는 이 블러 경로에 필요하지 않으며 공통 전경에 자동 적용하지 않는다.
+
+| 단계 | 변경 범위 | 완료 조건 |
+|---|---|---|
+| iOS-FX1 내부 adapter | `UIKitPlatformBlurView.cs`의 Light preset/animator 보정을 내부 Gaussian adapter로 교체. 비공개 접근을 `UIKitGaussianFilter`에 모으고 .NET iOS Foundation/NSCopying 바인딩과 기본 Objective-C 예외 변환을 사용한다. 후속 사용자 요청에 따라 별도 `.m` shim·정적 라이브러리 빌드는 제거한다. 예외 변환을 끄는 앱 설정은 transitive target에서 거부한다. | private class 직접 생성 없이 UIKit이 만든 객체의 구조·필터·숫자 반경·복사 가능 여부를 검사. 구조 불일치·KVC 예외를 명시적 unsupported 결과로 반환하며 앱 종료나 성공처럼 보이는 무효 blur가 없어야 한다. |
+| iOS-FX2 의미·협상 | `UIKitPlatformViewFactory.cs`, `UIKitPlatformViewHost.cs`에서 실제 probe 결과를 capability와 lowering에 반영. `MatchCommon`의 기존 logical sigma를 radius에 매핑하고 native content/theme/identity를 유지한다. | 우선 1개 isotropic effect·sigma ≤16·기본 saturation 범위 유지. 직접 radius를 설정했다는 이유로 `ExactSigma`나 임의 Gaussian BackdropFilter를 자동 승인하지 않는다. 지원 불가 시 사유를 반환하고 SolidTint는 명시적으로 선택한 경우만 사용한다. |
+| iOS-FX3 합성·수명 | owner-local R/N/R/N/effect/foreground 순서와 clip·shield·GPU retirement를 유지. 효과 객체는 유지하고 필터·반경 갱신을 처리한다. resize·appearance·foreground 복귀 때 UIKit이 내부 필터를 재구성하는 경우를 감지·재적용한다. | live WKWebView와 앞선 raster/native를 sample하고 effect 자신·선명한 child는 제외. Flutter의 view별 clipping을 그대로 복사하여 공통 E3 의미를 약화시키지 않는다. 이동·제거·재생성·실패 rollback·자원 해제 검증. |
+| iOS-FX4 픽셀 검증 | `UIKitBlurCalibration.cs`, `PlatformViewEvidence.cs`, iOS 분석/캡처 스크립트를 새 adapter에 맞춘다. 같은 크기·DPR·색공간의 Skia Gaussian reference와 비교한다. | strength .25/.375/.75/1에서 edge-spread·색상·대비·explicit tint 비교. 고정 source의 Light/Dark, 연속 증가·감소, 최초 설정·재설정 모두 확인. 강도 간 동일 캡처는 PASS 금지. 테마에 반응하는 source 변화와 effect 자체 색 변화를 구분한다. |
+| iOS-FX5 제품 승인 | 실제 E1/E2/E3, native DOM animation/scroll, sharp child, input pass-through/shield, effect 이동·resize·제거/복구, 앱 background/foreground와 device/simulator를 별도로 검증한다. | 실행한 iOS/Xcode/.NET·기기/renderer·소스/패키지 hash, 구조 probe 및 실제 pixel 결과를 기록. 과거 public-material 또는 hierarchy-only PASS를 새 전략의 visual PASS로 전용하지 않는다. 초기 구조 probe와 빌드 성공만으로 전체 지원을 선언하지 않는다. |
+
+**변경된 허용 범위:** 이 iOS adapter에 한해 Flutter 방식의 내부 UIKit/CAFilter 접근을 허용한다. 이를 Apple의 공개 radius API로 문서화하지 않으며 OS 업데이트 시 구조가 달라질 수 있다는 의존성을 지원표에 명시한다. AppKit·Android 등 다른 플랫폼의 비공개 API 사용 범위는 이번 결정으로 확장하지 않는다. 앱 심사·미래 OS 호환성을 Flutter 사용 사실만으로 보장하지 않는다.
+
+현재 개발 환경은 작업 중 Xcode 26.6에서 27.0으로 변경되었고 설치된 .NET iOS pack은 26.6을 요구한다. 사용자 라이선스 동의는 완료되었다. 새 전략 승인 전 지원되는 Xcode/.NET 조합을 맞추며, `ValidateXcodeVersion=false` 진단 실행을 정식 도구 조합 검증으로 계산하지 않는다. 이전 animator 강도 갱신 실패는 보존하고 새 구현으로 검증한다. C#에서 의도적인 잘못된 KVC 키의 `ObjCException`을 NativeAOT 실기기에서 잡는 것까지 확인했다.
+
+### 새 전략 실행 결과 — C#/.NET iOS
+
+- `UIKitPlatformBlurView.cs` / `UIKitGaussianFilter`에서 UIKit/Foundation KVC 및 `NSCopying` 프로토콜 바인딩으로 필터 복사·반경 설정·기본 material 색 보정 제거를 구현했다. 사용자 요청에 따라 `native/UIKitBackdropBlur.m`과 clang/libtool/static-library 경로는 제거했다. C#이라고 해서 UIKit 내부 구조 의존성이 사라지는 것은 아니다.
+- 초기 C# 이관에서는 일반 `NSObject.Copy()`가 내부 필터를 NSCopying으로 인식하지 못했다. 프로토콜 wrapper를 통한 복사로 수정했다. NativeAOT iPhone 12에서 잘못된 KVC 키의 Objective-C 예외를 `ObjCException`으로 잡는 것과 잘못된 구조 거부를 확인했다. 예외 변환을 끄는 앱 설정은 transitive target에서 거부한다.
+- iPhone 12 / iOS 26.6.1: strength .25/.375/.75/1 → 반경 4/6/12/16 전달, 실제 강도별 픽셀 변화와 Light/Dark RGB MAE <1/255, 7개 effect hierarchy/input/lifecycle 장면 PASS. 독립 sRGB 패턴의 측정 sigma는 4.25/6.25/11.5/15pt, 같은 sigma의 Skia 기준 RGB MAE는 1.29/1.10/0.78/0.64이며 테마 차이는 0이다. 이전 파일을 재사용하지 않았는지 기기 파일 수정 시각을 launch 시작 시각과 비교했다.
+- iPhone 17 Pro / iOS 26.5 Simulator: C# Debug/Mono interpreter 빌드, 동일 4-strength/양쪽 테마와 7개 기능 장면을 확인했다. 강한 blur에서 화면 대부분이 평탄해지는 fixture의 전체 ROI 차이가 0.974/255라 최초 >1 freshness 기준은 실패했다. freshness 기준을 >0.1로 검토·수정했고, 이력은 보존했다. 반경 정확성 검증은 별도의 Gaussian reference gate다. 이전 animator의 0 차이는 여전히 실패다.
+- Xcode 27에서 생성한 iOS 27 Simulator 앱은 기존 Scene lifecycle 미적용으로 UIKit 시작 중 중단됐다. 블러 구현 실행 증거로 계산하지 않는다. 현재 .NET iOS pack/Xcode 불일치 때문에 검증 빌드에만 `ValidateXcodeVersion=false`를 사용했으며 제품 기본값은 변경하지 않았다. 정식 도구 조합, iOS 27 Scene 전환, full E3/두 owner/성능·물리 입력 승인은 남아 있다.
+- 새 실행 기록은 `Doroti/artifacts/platform-views/2026-09-17/ios/flutter-blur/`의 `managed-*`에 보존했다. 초기 native bridge의 결과와 최종 C# 결과를 구분한다.
+
+## 최신 실행 업데이트 — iOS UIKit (2026-09-17)
+
+사용자의 iOS 작업 및 연결된 아이폰 검증 요청으로 HEAD `53ee2a7b1c20479bfb6eb0f4e119275fd1f8a82a`의 clean worktree에서 시작했다. **iOS 전체 상태는 PARTIAL**이며 아래 UIKit/Catalyst 미구현 기록 중 iOS Graphite에 해당하는 부분을 갱신한다. Catalyst와 iOS Ganesh는 별도다.
+
+- R3/R5: UIButton·UITextField·WKWebView를 owner-local UIView에 유지하고 Doroti 중간/전경을 투명 CAMetalLayer로 합성한다. 공통 plan/session, commit된 shield, 논리 좌표의 rect clip, 같은 Metal queue의 GPU retirement를 연결했다. GPU 제출 이후 실패에도 native lease를 보존한다. 전경 triple-buffer 추정 저장공간은 256 MiB로 제한한다.
+- 실기기에서 새 idle 장면 뒤 이전 완료 장면이 replay되어 blur 해제가 되돌아가는 문제를 재현했다. native 합성 및 제거 프레임이 진행 중일 때 다음 제출을 GPU 완료 이후로 미루도록 수정했다. UI thread를 GPU 완료까지 동기 대기시키지 않는다. 일반 raster 경로의 3-frame 상한은 유지한다.
+- R6/R-E: 실제 WKWebView hierarchy + Metal 전경 + 공개 UIVisualEffectView/UIBlurEffect를 선택했다. PlatformEffect의 MatchCommon/ExactSigma 의도를 immutable snapshot까지 보존한다. 1개 isotropic MatchCommon blur를 지원하며 일반 Gaussian BackdropFilter·ExactSigma·saturation 변경은 거부한다. Reduce Transparency에서는 명시적 SolidTint 선택이 필요하다. 공통 시각 허용편차 승인은 아직 없다.
+- 검증: iPhone 12 / iOS 26.6.1 / Apple A14 GPU에서 NativeAOT 앱 설치·실행, 합성 장면 10개, native identity/편집 상태, UIKit hit-test 및 programmatic focus/input, **native handle 해제 완료를 기다리는 create/dispose 100회**를 통과했다. WKWebView DOM animation/scroll, blur toggle, shield/pass-through, 두 WebView, effect 이동·제거·재생성도 수정 후 통과했다. 실기기 캡처에서 live WebView가 material 내부 픽셀을 바꾸며 Doroti child가 선명한 것을 확인했다. 이는 물리 touch/한국어 IME/VoiceOver 승인과 구분한다. 공통 계약 11개도 통과했다.
+- 환경: 만료된 기존 테스트 앱 provisioning을 기존 Xcode 팀으로 갱신했고, 사용자가 아이폰의 개발자 신뢰를 완료했다. `dotnet build`의 net11 결과는 CoreCLR이므로 NativeAOT로 계산하지 않았다. 별도 `dotnet publish`의 ILC 실행 및 `UseNativeAot=true` 링크 기록과 기기 실행을 확인했다. 시뮬레이터는 iPhone 17 Pro / iOS 26.5에서 별도 검증했다.
+- 잔여: native-origin GestureArena, full Tab/한국어 composing/VoiceOver, 두 제품 owner·device loss·전체 성능 예산 및 공통 시각 유사성은 미승인이다. work2의 WebView navigation/JS/profile 공개 API는 이번 범위에 넣지 않았다. 이전 실기기 효과 실패는 성공 기록으로 덮어쓰지 않고 보존했다.
+
+현재 계약은 [ios.md](Doroti/docs/platform-views/ios.md), 재현은 [iOS 검증 안내](Doroti/validation/platform-views/ios/README.md), 실행 로그·캡처·실패·소스 hash는 `Doroti/artifacts/platform-views/2026-09-17/ios/rearchitecture/`에 둔다.
+
+**후속 블러 외형 수정:** 사용자가 지적한 다크/라이트 차이는 기존 strength별 SystemMaterial 4단계 매핑에서 재현했다. effect view만 Light로 고정하고 `UIBlurEffectStyle.Light`를 `UIViewPropertyAnimator`로 연속 보간하는 전용 `UIKitPlatformBlurView`로 교체했다. iPhone 12 실측 `sigma ≈ fraction × 30pt`로 보정했으며 공개 API만 사용한다. native source와 앱 전체의 테마는 강제하지 않는다. 검정/흰색·색상·체커 패턴에서 기존 SystemMaterial의 테마별 RGB MAE는 160.83/255, 고정 Light는 0이었다. sigma 12의 Skia Gaussian 대비 오차는 16.26/255로 UIKit 자체 색 보정이 남으므로 exact Gaussian으로 광고하지 않는다. `UIVibrancyEffect`는 전경 색 표현용 별도 기능이므로 공통 blur 기본값에 추가하지 않았다. 후속 빌드·보정·제품 캡처 기록은 `Doroti/artifacts/platform-views/2026-09-17/ios/blur-match/`에 보존한다.
+
+후속 제품 검증에서는 기존 animator의 fraction만 갱신할 때 강도별 이미지가 같아지는 실패를 검출했다. 효과 hierarchy/lifecycle 7개 PASS와 별개로 이 픽셀 검증은 FAIL이며, 테마 일치 PASS로 전용하지 않는다. 강도 변경 시 animator를 재생성하는 수정의 NativeAOT publish는 성공했다. 일시적인 Xcode 라이선스 차단은 사용자 동의로 해소했으며, 이후 재검증에서도 강도별 픽셀 gate는 FAIL했다(`product-strength-rebuild/`). 공개 API 실험은 승인하지 않고, 위 최신 설계 변경에 따라 Flutter 내부 Gaussian 방식으로 교체할 계획이다.
+
 ## 최신 실행 업데이트 — Linux Qt (2026-09-14)
 
 사용자의 Linux Qt 구현 요청으로 HEAD `20298446d098b6fa1325fd90621c3063b080b1a0`의 clean worktree에서 시작했다.
@@ -204,14 +260,14 @@ R6 자체 완료: 실제 WebView로 C1~C6·identity·input·retirement를 통과
 |---|---|---|
 | FX0 계약·probe | 공통 backdrop intent·strength/tint/saturation·MatchCommon 정책, source/clip/input 정의. reference scene·강도별 허용 시각 편차·플랫폼 매핑 규칙 확정 | 의미 보존·시각 유사성 평가표. material/radius 값 동일함을 유사성 근거로 사용하지 않음. source sample 검증 |
 | FX1 위젯·프레임 | bounded layout, effect 뒤 선명한 child, owner/effect generation·stable resource, ordered scene payload와 common prepare/commit/retire | rebuild/scroll에서 효과 host 재생성 최소화, 마지막 effect 제거·late frame·2 owner·dispose race 검증 |
-| FX2 AppKit/UIKit | NSVisualEffectView withinWindow / UIVisualEffectView public material 등을 공통 intent에 매핑하고 tint/강도를 보정. window backdrop 상태와 분리 | 공통 reference 비주얼과 WKWebView source 검증. native effect끼리 겹침/alpha/mask 제약은 대안 lowering 또는 명시적 제한 |
+| FX2 AppKit/UIKit | AppKit은 NSVisualEffectView withinWindow 기반. iOS는 Flutter 방식으로 UIVisualEffectView 내부 gaussianBlur 필터를 복사·radius 설정하고 기본 material 색 보정 제거. 내부 구조 probe/예외 처리·capability 협상은 위 iOS-FX1~FX5로 수행 | 공통 reference와 live WKWebView source, 강도 연속 변경·Light/Dark·E3 sample 검증. 구조 변경은 명시적 unsupported, ExactSigma는 별도 gate. native effect끼리 겹침/alpha/mask 제약은 대안 lowering 또는 명시적 제한 |
 | FX3 Web | main DOM effect element, CSS backdrop-filter/tint/clip, pointer-events none 또는 별도 shield, protocol version 협상 | iframe + canvas + effect + foreground, same/cross-origin, backdrop-root·parent opacity·DPR·z-order·stale batch. WebGPU/WebGL 제품 검증 |
 | FX4 Windows | 호환 Composition backdrop/effect brush와 SpriteVisual을 WebView2/GPU raster tree에 결합 | 실제 WebView pixels blur와 선명한 child, legacy HWND/Mica와 구분, device/resize·runtime availability 검증 |
 | FX5 Android | 선택한 WebView 전략의 RenderNode/RenderEffect·live sampling adapter와 공통 strength/tint 보정 | 실제 source/animation·비주얼 유사성·전송 비용 검증. 별도 surface sample 불가이면 다른 후보 검토. window blur를 inline 효과로 가장하지 않음 |
 | FX6 Qt Quick | 앞선 source group의 live GPU ShaderEffectSource + MultiEffect/ShaderEffect, effect/child 제외 | 실제 WebEngine Quick·raster sample, source identity/input 보존, feedback 없음, XWayland/Wayland·GPU lease 검증 |
 | FX7 결합 승인 | E1~E3와 공통 체크무늬/글자/사진 reference, 강도·테마별 비교, 동적 source·resize·focus·접근성 | 동일 logical 크기/DPR/색공간에서 blur edge·대비·tint/밝기와 시각 검토. 사전 편차·비용/수명 기준 및 지원표 일치 |
 
-공통 기본값은 MatchCommon과 input pass-through, effect 자체의 focus/semantics 없음이다. child semantics/입력은 유지하고 필요한 전경만 shield로 보호한다. material/blur parameter를 공통 intent로 자동 매핑하는 것은 정상 구현이며 exact-sigma는 advanced opt-in이다. private Apple CAFilter/hidden Android API를 포팅하지 않는다.
+공통 기본값은 MatchCommon과 input pass-through, effect 자체의 focus/semantics 없음이다. child semantics/입력은 유지하고 필요한 전경만 shield로 보호한다. material/blur parameter를 공통 intent로 자동 매핑하는 것은 정상 구현이며 exact-sigma는 advanced opt-in이다. **iOS는 사용자 결정에 따라 Flutter 방식의 내부 UIKit/CAFilter 접근을 허용**하고 구조 probe·예외 처리·OS별 실기기 검증을 필수로 한다. 이 예외 외의 Apple private API나 hidden Android API를 포팅하는 것은 이번 범위가 아니다.
 
 Web의 `CSS.supports`와 native API 존재는 gate 통과가 아니다. native scroll/video/animation이 바뀔 때 실제 blur도 변해야 한다. secure/protected content나 compositor sampling 경계는 명시적으로 unsupported다. system transparency/고대비 정책에 의한 material 변경 또는 앱 지정 SolidTint는 resolved 상태로 보고하며 blur 성공으로 표시하지 않는다.
 

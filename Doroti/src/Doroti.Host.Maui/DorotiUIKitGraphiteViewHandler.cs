@@ -51,6 +51,8 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS && !MACCATALYST
     private NSObject? _inactiveObserver;
     private NSObject? _activeObserver;
+    private NSObject? _sceneInactiveObserver;
+    private NSObject? _sceneActiveObserver;
     private bool _suspended;
 #endif
 
@@ -81,13 +83,19 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS && !MACCATALYST
         _suspended = UIApplication.SharedApplication.ApplicationState != UIApplicationState.Active;
         _inactiveObserver = NSNotificationCenter.DefaultCenter.AddObserver(
-            UIApplication.WillResignActiveNotification, _ => { _suspended = true; _generation++; });
+            UIApplication.WillResignActiveNotification, _ =>
+            { if (Window?.WindowScene is null) SuspendRendering(); });
         _activeObserver = NSNotificationCenter.DefaultCenter.AddObserver(
             UIApplication.DidBecomeActiveNotification, _ =>
             {
-                _suspended = false;
-                if (!_releaseRequested && !_faulted) SetNeedsDisplay();
+                if (Window?.WindowScene is null) ResumeRendering();
             });
+        _sceneInactiveObserver = NSNotificationCenter.DefaultCenter.AddObserver(
+            UIScene.WillDeactivateNotification, notification =>
+            { if (Window?.WindowScene == notification.Object) SuspendRendering(); });
+        _sceneActiveObserver = NSNotificationCenter.DefaultCenter.AddObserver(
+            UIScene.DidActivateNotification, notification =>
+            { if (Window?.WindowScene == notification.Object) ResumeRendering(); });
 #endif
     }
 
@@ -100,6 +108,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         _resourceOwner = _owner = owner;
         SetNeedsDisplay();
     }
+#if IOS && !MACCATALYST
+    internal UIKitPlatformRasterSurface CreatePlatformRasterSurface() => new(Device!, _queue);
+#endif
     internal void Disconnect()
     {
         if (_releaseRequested) return;
@@ -107,8 +118,13 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         _generation++;
         _owner = null;
 #if IOS && !MACCATALYST
+        _resourceOwner?.PlatformViews?.DetachSurface();
+#endif
+#if IOS && !MACCATALYST
         RemoveLifecycleObserver(ref _inactiveObserver);
         RemoveLifecycleObserver(ref _activeObserver);
+        RemoveLifecycleObserver(ref _sceneInactiveObserver);
+        RemoveLifecycleObserver(ref _sceneActiveObserver);
 #endif
         _session?.StopAcceptingFrames();
         RetiringViews.Add(this);
@@ -128,6 +144,22 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     }
 
 #if IOS && !MACCATALYST
+    private bool OwnerIsActive => Window?.WindowScene is { } scene
+        ? scene.ActivationState == UISceneActivationState.ForegroundActive
+        : UIApplication.SharedApplication.ApplicationState == UIApplicationState.Active;
+
+    private void SuspendRendering()
+    {
+        if (!_suspended) _generation++;
+        _suspended = true;
+    }
+
+    private void ResumeRendering()
+    {
+        _suspended = !OwnerIsActive;
+        if (!_suspended && !_releaseRequested && !_faulted) SetNeedsDisplay();
+    }
+
     private static void RemoveLifecycleObserver(ref NSObject? observer)
     {
         if (observer is null) return;
@@ -140,6 +172,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
     public override void MovedToWindow()
     {
         base.MovedToWindow();
+#if IOS && !MACCATALYST
+        _suspended = !OwnerIsActive;
+#endif
         if (!_releaseRequested && Window is not null) SetNeedsDisplay();
     }
     public override void LayoutSubviews()
@@ -189,9 +224,18 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
 #if IOS && !MACCATALYST
         // Invalidation/layout can still arrive while UIKit is moving to the
         // background. Metal must not receive new work until activation.
-        if (_suspended || UIApplication.SharedApplication.ApplicationState != UIApplicationState.Active) return;
+        if (_suspended || !OwnerIsActive) return;
 #endif
-        if (_pending.Count >= 3)
+        // The renderer promotes a scene to its replay source at GPU completion. A
+        // second native composition before then could replay the older scene and
+        // overwrite a newly submitted idle update (e.g. removing a material).
+        // Defer invalidations, without blocking UIKit, until that promotion occurs.
+#if IOS && !MACCATALYST
+        var maximumPending = owner.PlatformViews?.HasComposition == true || _pending.Any(pending => pending.PlatformFrame is not null) ? 1 : 3;
+#else
+        const int maximumPending = 3;
+#endif
+        if (_pending.Count >= maximumPending)
         {
             _frameBackpressure = true;
             return;
@@ -201,6 +245,17 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         ICAMetalDrawable? drawable = null;
         MauiSkiaPaintContext? paint = null;
         var submitted = false;
+#if IOS && !MACCATALYST
+        UIKitPlatformViewHost.PreparedFrame? platformFrame = null;
+        var compositionTransaction = owner.PlatformViews?.IsConfigured == true;
+        var previousPresentation = PresentsWithTransaction;
+        if (compositionTransaction)
+        {
+            CATransaction.Begin();
+            CATransaction.DisableActions = true;
+            PresentsWithTransaction = true;
+        }
+#endif
         try
         {
             drawable = CurrentDrawable;
@@ -214,17 +269,30 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
             paint = new(frame.Surface, _session, width, height, Math.Max(1, (double)ContentScaleFactor),
                 generation, GetType().FullName!, "UIKit/MTKView/Graphite-Metal");
             owner.PaintGraphite(paint);
+#if IOS && !MACCATALYST
+            platformFrame = owner.PlatformViews?.TakePending();
+#endif
             if (paint.SkipPresent || _releaseRequested || generation != _generation)
             {
                 frame.CancelRecording(); frame = null;
                 if (paint.Completion is { } stale) owner.CompleteGraphite(stale, true);
                 return;
             }
+#if IOS && !MACCATALYST
+            platformFrame?.Submit();
+#endif
             submitted = true;
             frame.Submit();
             // Transfer ownership before attempting the terminal marker. Even a
             // failed commit must retain textures; it is not GPU completion.
-            var pending = new PendingFrame(frame, drawable, owner, paint.Completion, generation);
+            var pending = new PendingFrame(frame, drawable, owner, paint.Completion, generation
+#if IOS && !MACCATALYST
+                , platformFrame
+#endif
+                );
+#if IOS && !MACCATALYST
+            platformFrame = null;
+#endif
             _pending.Add(pending);
             frame = null;
             drawable = null;
@@ -234,9 +302,24 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         {
             _faulted = true;
             _session?.StopAcceptingFrames();
+#if IOS && !MACCATALYST
+            owner.PlatformViews?.CancelPending();
+            try { platformFrame?.Abort(); }
+            catch (Exception rollbackError) { System.Diagnostics.Trace.TraceError(rollbackError.ToString()); }
+            if (submitted || platformFrame?.HasSubmitted == true)
+#else
             if (frame is not null && submitted)
+#endif
             {
-                var pending = new PendingFrame(frame, drawable!, owner, null, _generation);
+                if (!submitted) { frame?.CancelRecording(); frame = null; }
+                var pending = new PendingFrame(frame, drawable!, owner, null, _generation
+#if IOS && !MACCATALYST
+                    , platformFrame
+#endif
+                    );
+#if IOS && !MACCATALYST
+                platformFrame = null;
+#endif
                 _pending.Add(pending);
                 frame = null;
                 drawable = null;
@@ -249,13 +332,25 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
         {
             frame?.CancelRecording();
             drawable?.Dispose();
+#if IOS && !MACCATALYST
+            platformFrame?.Dispose();
+            if (compositionTransaction)
+            {
+                CATransaction.Commit();
+                PresentsWithTransaction = previousPresentation;
+            }
+#endif
             _drawing = false;
             if (_releaseRequested && _pending.Count == 0) ReleaseGpuResources();
         }
     }
 
-    private sealed record PendingFrame(SkiaGraphiteSession.Frame Frame, ICAMetalDrawable Drawable,
-        DorotiGraphiteView Owner, MauiPaintCompletion? Completion, long Generation);
+    private sealed record PendingFrame(SkiaGraphiteSession.Frame? Frame, ICAMetalDrawable Drawable,
+        DorotiGraphiteView Owner, MauiPaintCompletion? Completion, long Generation
+#if IOS && !MACCATALYST
+        , UIKitPlatformViewHost.PreparedFrame? PlatformFrame
+#endif
+        );
 
     private void CommitTerminal(PendingFrame pending, bool present)
     {
@@ -276,6 +371,9 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 // been disposed while its borrowed drawable remains in flight.
                 UIApplication.SharedApplication.BeginInvokeOnMainThread(() => Retire(pending, status, error));
             });
+#if IOS && !MACCATALYST
+            if (present) pending.PlatformFrame?.Commit();
+#endif
             command.Commit();
             if (transactionPresentation)
             {
@@ -285,25 +383,41 @@ public sealed class DorotiUIKitGraphiteView : MTKView, IMTKViewDelegate
                 // resource retirement still belongs to the completion callback.
                 command.WaitUntilScheduled();
                 pending.Drawable.Present();
+#if IOS && !MACCATALYST
+                pending.PlatformFrame?.Present();
+#endif
             }
         }
         catch
         {
             _faulted = true;
             RetiringViews.Add(this);
+#if IOS && !MACCATALYST
+            try { pending.PlatformFrame?.Abort(); }
+            catch (Exception rollbackError) { System.Diagnostics.Trace.TraceError(rollbackError.ToString()); }
+#endif
+            if (present)
+            {
+                try { CommitTerminal(pending, present: false); }
+                catch (Exception markerError) { System.Diagnostics.Trace.TraceError(markerError.ToString()); }
+            }
             throw;
         }
     }
 
     private void Retire(PendingFrame pending, MTLCommandBufferStatus status, string? error)
     {
+        if (!_pending.Contains(pending)) return; // A recovery marker may follow an accepted terminal.
         try
         {
             // An empty later marker reporting Error does not prove earlier
             // queue work completed. Hold unless the context confirms loss.
             if (status != MTLCommandBufferStatus.Completed && _session?.IsDeviceLost != true)
                 throw new InvalidOperationException($"Metal terminal failed; retaining GPU resources: {status}: {error}");
-            pending.Frame.CompleteGpuWork();
+            pending.Frame?.CompleteGpuWork();
+#if IOS && !MACCATALYST
+            pending.PlatformFrame?.Dispose();
+#endif
             pending.Drawable.Dispose();
             _pending.Remove(pending);
             if (status != MTLCommandBufferStatus.Completed)

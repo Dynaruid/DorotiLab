@@ -115,6 +115,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             var androidPlatformViews = _renderSurface.Element is DorotiGraphiteView androidGraphite
                 ? androidGraphite.PlatformViews = new AndroidPlatformViewHost(androidGraphite, _textInput) : null;
 #endif
+#if IOS && !MACCATALYST
+            var uiKitPlatformViews = _renderSurface.Element is DorotiGraphiteView uiKitGraphite
+                ? uiKitGraphite.PlatformViews = new UIKitPlatformViewHost(uiKitGraphite, _textInput) : null;
+#endif
             _boundary = DorotiApplicationBoundary.Load(
                 _application.ManifestAssembly,
                 _application.ApplicationAssembly,
@@ -125,6 +129,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
 #if ANDROID
                 , androidPlatformViews?.CreateFactories()
+#endif
+#if IOS && !MACCATALYST
+                , uiKitPlatformViews?.CreateFactories()
 #endif
                 );
             IMauiSemanticsBridge semantics =

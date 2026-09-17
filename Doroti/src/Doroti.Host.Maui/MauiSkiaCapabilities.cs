@@ -34,6 +34,17 @@ internal sealed class MauiSkiaCapabilities :
             platformViews.Draw(_renderer, canvas, commands, descriptor, width, height);
     }
 #endif
+#if IOS && !MACCATALYST
+    private IDisposable? _platformViewChannel;
+    private UIKitPlatformViewHost? _platformViews;
+    internal void AttachPlatformViews(UIKitPlatformViewHost platformViews, IDisposable channel)
+    {
+        _platformViews = platformViews;
+        _platformViewChannel = channel;
+        _renderer.PlatformScenePainter = (canvas, commands, descriptor, width, height) =>
+            platformViews.Draw(_renderer, canvas, commands, descriptor, width, height, _host.Configuration.platformBrightness);
+    }
+#endif
 #if MACOS
     private DorotiMacOSMetalSurface? _metalSurface;
     private IDisposable? _platformViewChannel;
@@ -203,7 +214,7 @@ internal sealed class MauiSkiaCapabilities :
         if (_graphiteSurface is { } graphiteSurface)
             graphiteSurface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;
         _graphiteSurface = null;
-#if ANDROID
+#if ANDROID || (IOS && !MACCATALYST)
         _renderer.PlatformScenePainter = null;
         _platformViewChannel?.Dispose(); _platformViewChannel = null;
         _platformViews?.Dispose(); _platformViews = null;

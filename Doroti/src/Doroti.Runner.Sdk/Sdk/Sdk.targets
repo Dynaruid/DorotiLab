@@ -427,6 +427,9 @@
           Condition="'$(DorotiWebTypeScript)' == 'true' and !Exists('$(MSBuildThisFileDirectory)Doroti.TypeScript.targets')" />
   <Import Project="$(MSBuildThisFileDirectory)Doroti.Web.targets" />
   <Import Project="$(MSBuildThisFileDirectory)Doroti.Qt.targets" />
+  <!-- Project-reference builds do not import a dependency's NuGet buildTransitive assets. -->
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Doroti.Host.Maui\buildTransitive\Doroti.Host.Maui.targets"
+          Condition="'$(DorotiTarget)' == 'iOS' and '$(DorotiMauiNativeTargetsImported)' != 'true' and Exists('$(MSBuildThisFileDirectory)..\..\Doroti.Host.Maui\buildTransitive\Doroti.Host.Maui.targets')" />
   <!-- Carry a locally selected default through RID-less framework negotiation.
        Do not propagate executable PublishAot to neutral libraries. -->
   <Target Name="DorotiApplyIosCompilationProfileToRestore"

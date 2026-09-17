@@ -9,6 +9,7 @@ using M = Doroti.Framework.Material;
 public static class PlatformViewFixtureProbe
 {
     public static Action<int>? SetStage { get; internal set; }
+    public static Action? ToggleMounted { get; internal set; }
     public static int Stage { get; internal set; } = 5;
     public static int ForegroundClicks { get; internal set; }
 }
@@ -161,6 +162,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
 
         public override void dispose()
         {
+            PlatformViewFixtureProbe.ToggleMounted = null;
             PlatformViewFixtureProbe.SetStage = null;
             base.dispose();
         }
@@ -192,6 +194,7 @@ internal sealed class PlatformViewFixture : StatefulWidget
                 );
             if (composition == PlatformViewComposition.NativeOverlay)
                 return BuildOverlay(owner);
+            PlatformViewFixtureProbe.ToggleMounted = ToggleControls;
             PlatformViewFixtureProbe.SetStage = stage =>
                 setState(() =>
                 {

@@ -122,6 +122,25 @@ await Check("client disposal includes late factory recovery", async () =>
     var instance = new Instance(); factory.Pending.SetResult(instance);
     await disposal.WaitAsync(TimeSpan.FromSeconds(2)); Assert(instance.Disposed);
 });
+await Check("native effect intent survives retained scene planning", async () =>
+{
+    await using var owner = Owner(12);
+    var handle = await owner.CreateAsync(new PlatformViewRequest(1, "test", PlatformViewComposition.InterleavedComposition));
+    foreach (var match in new[] { PlatformEffectMatchPolicy.MatchCommon, PlatformEffectMatchPolicy.ExactSigma })
+    {
+        var style = new PlatformEffectStyle(Strength: .75, Match: match, ExactSigma: 12);
+        var builder = new SceneBuilder(12);
+        builder.addPlatformView(handle, width: 100, height: 100);
+        builder.pushClipRect(Rect.fromLTWH(10, 10, 50, 50));
+        builder.pushBackdropFilter(new ImageFilter(12, 12) { PlatformEffectIntent = style });
+        builder.pop(); builder.pop();
+        using var scene = builder.build();
+        using var plan = PlatformCompositionPlanner.Build(scene, new(12, 0, 1, 0), owner, effects: new(true, 1, 16));
+        var effect = plan.Parts.OfType<PlatformBackdropSegment>().Single();
+        Assert(effect.Style == style && effect.Style.Match == match);
+        Assert(effect.SampleBounds.left < effect.Bounds.left);
+    }
+});
 Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { status = "PASS", scope = "common-contract-fixture", tests = passed }));
 
 async Task Check(string name, Func<Task> test) { await test(); passed.Add(name); }

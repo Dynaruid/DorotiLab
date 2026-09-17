@@ -52,6 +52,16 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
 #elif IOS || MACCATALYST
 public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegate
 {
+#if IOS && !MACCATALYST
+    public override UIKit.UISceneConfiguration GetConfiguration(UIKit.UIApplication application,
+        UIKit.UISceneSession connectingSceneSession, UIKit.UISceneConnectionOptions options)
+    {
+        var configuration = base.GetConfiguration(application, connectingSceneSession, options);
+        // A direct type reference keeps the registered delegate in trimmed/AOT apps.
+        configuration.DelegateClass = new ObjCRuntime.Class(typeof(DorotiMauiSceneDelegate));
+        return configuration;
+    }
+#endif
     protected DorotiMauiUIApplicationDelegate()
     {
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
