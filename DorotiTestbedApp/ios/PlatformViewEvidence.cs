@@ -161,7 +161,8 @@ internal static class PlatformViewEvidence
                 {
                     var effect = overlay!.Subviews.OfType<UIVisualEffectView>().Single(view => !view.Hidden);
                     lines.Add($"DIAGNOSTIC {name} {effect}");
-                    Check(effect.ToString()?.Contains(FormattableString.Invariant($"GaussianSigma={strength * 16} ")) == true, "requested sigma reached UIKit adapter");
+                    Check(effect is UIKitPlatformBlurView blur && Math.Abs(blur.AppliedIntensity - strength) < .0001,
+                        "requested strength reached UIKit animator");
                     Check(effect.OverrideUserInterfaceStyle == UIUserInterfaceStyle.Light &&
                         effect.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Light, "effect must be theme independent");
                     Check(effect.Alpha == 1, "effect alpha remains one");

@@ -12,18 +12,15 @@
 | Qt Widgets | separate native-child B-only adapter build; managed ABI and rounded/inward geometry checks passed | XWayland llvmpipe mounted QPushButton/QLineEdit, 20 resize cycles and clean exit; Quick evidence does not apply | interleaving, WebEngine Quick and effects unsupported; physical/performance qualification remains open |
 | Web DOM | protocol v2 effect adapter and Web host build passed | headless DOM harness passed eight checks | main-DOM/Worker product activation, multi-canvas ACK/resource protocol, live iframe effect pixels |
 | Windows MAUI | host build passed with common contracts | not run | separate native hierarchy and WebView composition wiring; WindowsAppSdk evidence does not apply |
-| iOS UIKit Graphite Metal | UIView/UIButton/UITextField/WKWebView, transparent Metal segments, common session, C# UIKit internal Gaussian extraction/radius control and committed shields; device NativeAOT publish and simulator builds | iPhone 12: ten overlap scenes, native state/focus, 100 completed native disposal/recreate cycles; WKWebView DOM animation/scroll, blur toggle, two WebViews, effect move/remove/recreate; C# NativeAOT four-strength/theme pixel checks, Gaussian-reference RGB MAE 0.64–1.29/255, Objective-C exception conversion; iOS 26.5 Simulator checks | residual UIKit colour bias, other OS/device calibration, native-origin GestureArena, full IME/VoiceOver/Tab, two product owners, device loss, visual equivalence and performance budgets; see [iOS contract](ios.md) |
+| iOS UIKit Graphite Metal | UIView/UIButton/UITextField/WKWebView, transparent Metal segments, common session, public UIKit property-animator material intensity and committed shields; current iOS 27 Debug/Mono simulator build passed; host AOT avoids the full-interpreter calibration GC crash | Current public adapter: four-strength/two-theme pixel checks, zero resume ROI difference and seven effect/input/lifetime scenes plus three full calibrations (zero/decreasing intensity) on iPhone 18 Pro Simulator; earlier private-filter NativeAOT/device evidence is historical | residual UIKit colour bias, other OS/device calibration, native-origin GestureArena, full IME/VoiceOver/Tab, two product owners, device loss, visual equivalence and performance budgets; see [iOS contract](ios.md) |
 | Catalyst / iOS Ganesh | existing runner; new UIKit adapter is iOS Graphite only | no new PlatformView execution | separate adapter and qualification; iOS Graphite evidence does not apply |
 
-iOS follow-up (2026-09-17): the failed public preset interpolation was replaced
-with Flutter-style internal Gaussian control through C# Foundation/NSCopying
-bindings. No custom Objective-C module remains. iPhone 12 NativeAOT and iOS 26.5
-Simulator evidence is in `ios/flutter-blur/managed-*`. UIKit internals remain an
-OS-specific dependency. The later iOS 27 profile uses .NET 10/Mono and matching
-iOS 27 bindings without a version-check override. Scene startup, four-strength
-blur/theme pixels, seven functional scenes and same-process background/resume
-pass on iOS 27 Simulator; the connected iOS 26.6.1 phone passes regression checks.
-iOS 27 physical-device/NativeAOT/distribution qualification remains open.
+iOS follow-up (2026-09-18): the current blur uses public `UIBlurEffect` and
+`UIViewPropertyAnimator.FractionComplete`, following `ref.md`. Strength is UIKit
+material intensity, not an exact Gaussian radius; preset tint remains. Previous
+private-filter captures in `ios/flutter-blur/managed-*` and iOS 27 Scene regression
+results are historical evidence. Current animator iOS 27 Simulator strength/theme/resume and seven functional
+scenes passed; physical-device/NativeAOT/distribution qualification remains open.
 See [work1.md](../../../work1.md) for measured gates and remaining scope.
 
 No build-only entry is a physical, accessibility, NativeAOT, or performance approval. Windows WebView and HWND scenes cannot be mixed within one owner composition frame. Current Windows effect limits are four isotropic regions, logical sigma <=32 and native physical sigma <=128. Backend/driver/OS sampling limitations are not resolved by setting the capability flag.

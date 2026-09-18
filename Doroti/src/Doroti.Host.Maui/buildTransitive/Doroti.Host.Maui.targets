@@ -2,11 +2,4 @@
   <PropertyGroup>
     <DorotiMauiNativeTargetsImported>true</DorotiMauiNativeTargetsImported>
   </PropertyGroup>
-  <!-- Bound Foundation calls must convert Objective-C exceptions before they
-       reach managed frames. This is the .NET iOS default, including NativeAOT. -->
-  <Target Name="DorotiValidateUIKitExceptionMarshaling" BeforeTargets="CoreCompile"
-          Condition="'$(OutputType)' == 'Exe' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-    <Error Condition="'$(MarshalObjectiveCExceptionMode)' != '' and '$(MarshalObjectiveCExceptionMode)' != 'default' and '$(MarshalObjectiveCExceptionMode)' != 'throwmanagedexception'"
-           Text="Doroti UIKit effects require MarshalObjectiveCExceptionMode=throwmanagedexception (the .NET iOS default)." />
-  </Target>
 </Project>

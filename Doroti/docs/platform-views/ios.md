@@ -19,60 +19,63 @@ WKWebView retains its real native hierarchy and initial HTML. Navigation, JS,
 profiles, downloads and permission APIs remain work2. Snapshot readback does not
 replace the native source.
 
-## Flutter-style Gaussian in C#
+## Public UIKit blur intensity
 
-The user selected internal Gaussian control on 2026-09-17 and subsequently asked
-for a .NET iOS implementation. `UIKitPlatformBlurView.cs` contains both the effect
-view and `UIKitGaussianFilter`; there is no custom Objective-C source, P/Invoke
-bridge or static-library build step. It uses bound UIKit/Foundation APIs:
+`UIKitPlatformBlurView.cs` uses `UIVisualEffectView`, a fixed Light `UIBlurEffect`,
+and a retained, paused `UIViewPropertyAnimator`. The common logical sigma [0,16]
+is divided by 16 to recover `PlatformEffectStyle.Strength` [0,1], which drives
+`FractionComplete`. Zero clears the effect. This interpolates UIKit's whole
+material recipe, including its tint; it does not set a Gaussian radius. Explicit
+PlatformEffect tint and the authored sharp child remain in the following raster
+segment. Effect/superview alpha stays at 1.
 
-- Find UIKit-created backdrop/effect subviews by their native class names.
-- Read the layer's filter array through KVC and locate a Gaussian filter with a
-  numeric radius and copy support.
-- Copy it, set `inputRadius`, verify the value, and retain only that filter.
-- Clear the internal material background. Explicit PlatformEffect tint and the
-  authored, sharp child remain in the following raster segment.
+Strength updates scrub the existing animator. Bounds changes, window attachment,
+appearance changes and application/scene activation recreate the interpolation
+from no effect. Ordinary layout passes with unchanged bounds leave it intact.
+Disposal stops/releases the animator and removes both activation observers.
+There is no private subview inspection, KVC filter mutation, or blur-specific
+Objective-C exception-marshaling requirement.
 
-This follows Flutter's approach and depends on undocumented UIKit structure even
-though the calling code is C#. It does not instantiate a private class. The view
-pins only its effect appearance to Light; the native content and app retain their
-own appearance. Reapplication after layout, attachment, appearance and activation
-handles UIKit rebuilding its recipe. Effect/superview alpha stays at 1.
-
-The isolated structural probe supplies the advertised effect capability. Missing
-structure/filter or a converted Objective-C exception returns an unsupported
-reason. A failed live reapplication hides the effect and disables the capability;
-the commit path rejects failures instead of presenting the default material as a
-successful Gaussian. Mutation exceptions attempt to restore the old filter array
-and colour. The view removes its activation observer when disposed.
-
-Foundation bindings rely on .NET iOS's default Objective-C exception conversion
-(`MarshalObjectiveCExceptionMode=throwmanagedexception`). The transitive target
-rejects explicit incompatible settings. A normal C# catch around raw objc_msgSend
-would not be an equivalent replacement. The opt-in calibration deliberately uses
-an unknown KVC key and requires an `ObjCException` catch before visual validation.
-
-One isotropic MatchCommon effect with logical sigma <=16 is admitted. Radius is
-set directly from logical sigma, but ExactSigma, generic Gaussian BackdropFilter
-and non-default saturation remain unqualified. Reduce Transparency requires an
-explicit SolidTint alternative. UIVibrancyEffect is not applied to common content:
-it changes foreground colour treatment rather than exposing blur radius.
+One isotropic MatchCommon effect with logical sigma <=16 is admitted as a common
+visual intent. ExactSigma, generic Gaussian BackdropFilter and non-default
+saturation are unsupported. Reduce Transparency requires an explicit SolidTint
+alternative. The fixed Light appearance preserves theme-independent treatment;
+it cannot remove the preset's intrinsic colour bias through public APIs.
 
 ## Evidence boundaries
 
-The former public material/animator attempt failed the adjacent-strength pixel
-gate. Its logs remain in `artifacts/platform-views/2026-09-17/ios/blur-match/`.
-The internal Gaussian implementation is tracked separately in `ios/flutter-blur/`;
-the initial Objective-C bridge and final C# builds/captures are separate evidence.
-See [validation commands](../../validation/platform-views/ios/README.md).
+The previous private Gaussian implementation and earlier public-preset experiments
+have historical evidence in `ios/flutter-blur/` and `ios/blur-match/`. Their radius
+measurements and pixel passes do not qualify the current public animator adapter.
+The calibration probe now captures the production adapter at multiple strengths,
+including decreasing from full strength and clearing to zero. See
+[validation commands](../../validation/platform-views/ios/README.md).
 
-Final C# evidence on iPhone 12 / iOS 26.6.1: four strength/theme captures and seven
-functional scenes pass; measured sigma 4.25/6.25/11.5/15 at requested 4/6/12/16,
-with Gaussian-reference RGB MAE 1.29/1.10/0.78/0.64 out of 255. The isolated pattern
-has zero theme difference. NativeAOT also catches the deliberate KVC exception.
-iOS 26.5 Simulator captures and functional scenes are recorded separately. The
-earlier iOS 27 startup failure and SDK mismatch were subsequently addressed by
-the Scene lifecycle and iOS 27 profile below.
+Current public-adapter validation (2026-09-18): the Debug/Mono iOS 27 simulator
+build passed with zero warnings/errors. On iPhone 18 Pro Simulator, four strengths
+(.25/.375/.75/1) produced distinct pixels in the WKWebView/Metal fixture. Parent
+Light/Dark and same-process Settings-to-app resume each had zero RGB difference
+in the effect ROI. All seven effect/input/lifetime scenes passed. Captures and
+reports are under `artifacts/platform-views/2026-09-18/ios/public-blur/appearance/`.
+These results do not qualify physical devices, NativeAOT, or exact Gaussian matching.
+
+The initial full-interpreter calibration crashed in Mono GC (`copy_object_no_checks`).
+`MONO_GC_DEBUG=check-remset-consistency,verify-before-collections` subsequently
+reported invalid Frame/Drawable references in the Metal host's `PendingFrame`.
+The iOS 27 Debug profile now defaults to `MtouchInterpreter=all,-Doroti.Host.Maui`:
+the host uses Mono AOT while the remaining assemblies retain the interpreter.
+This is a scoped workaround for the observed execution path, not an upstream
+runtime fix. Explicit interpreter settings, Release, and NativeAOT are unchanged.
+
+With the host compiled, three consecutive calibration runs completed (two with GC
+verification enabled). Both themes had zero RGB difference for resetting intensity
+to zero versus the source and for decreasing from 1 to .375 versus an initial .375.
+Evidence is under `public-blur/gc-fix/aot-run-{1,2,3}/`; initial crash evidence stays
+under `public-blur/calibration/`. The default-profile rebuild also passed with
+zero warnings/errors, followed by the four-strength/two-theme, Settings resume,
+and seven functional scenes in `public-blur/gc-fix/appearance/`. Gaussian matching
+remains approximate: the fixed Light preset includes tint and measured sigma is
+about 30 times strength here.
 
 Native-origin GestureArena interception, full Tab/Korean IME/VoiceOver, protected
 media, two product owners, device loss, full E3 pixel qualification and complete
@@ -81,8 +84,9 @@ separate from programmatic hierarchy/input tests. An OS-specific pass does not
 promise future UIKit compatibility or App Store acceptance.
 
 Sources:
-- [Flutter internal filter implementation](https://api.flutter.dev/ios-embedder/_flutter_platform_views_8mm_source.html)
-- [.NET iOS exception marshaling](https://learn.microsoft.com/en-us/dotnet/ios/advanced-concepts/exception-marshaling)
+- [Expo public blur interpolation](https://github.com/expo/expo/blob/main/packages/expo-blur/ios/BlurEffectView.swift)
+- [Per-assembly Mono interpreter/AOT configuration](https://learn.microsoft.com/en-us/dotnet/maui/macios/interpreter)
+- [.NET UIViewPropertyAnimator](https://learn.microsoft.com/en-us/dotnet/api/uikit.uiviewpropertyanimator)
 - [Visual effect view and alpha constraints](https://developer.apple.com/documentation/uikit/uivisualeffectview)
 - [Transaction presentation](https://developer.apple.com/documentation/quartzcore/cametallayer/presentswithtransaction)
 
@@ -97,12 +101,13 @@ host/view disposal. Legacy windows retain application-notification handling.
 
 From the workspace root (.NET 10 SDK), select
 `-p:DorotiIosTargetFramework=net10.0-ios27.0`. The shared/template profile chooses
-Mono and the matching Host.Maui TFM. Existing net11 NativeAOT selection remains
+Mono and the matching Host.Maui TFM; Debug AOT-compiles Host.Maui to avoid the
+calibration GC crash described above. Existing net11 NativeAOT selection remains
 separate. Device and both simulator target manifests identify the iOS 27 TFM.
 The SDK pack used was 27.0.10539-xcode27.0 with Xcode 27.0; only its preview notice
 is suppressed. ValidateXcodeVersion is not disabled for this profile.
 
-On iPhone 18 Pro / iOS 27 Simulator, startup, four-strength/two-theme blur pixels,
+Before the public animator replacement, on iPhone 18 Pro / iOS 27 Simulator, startup, four-strength/two-theme blur pixels,
 seven native lifecycle/input scenes, and Settings-to-app resume passed. The same
 process resumed, blur ROI difference was zero, and later strength changes rendered.
 iPhone 12 / iOS 26.6.1 passed the same Scene startup and blur checks using the

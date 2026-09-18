@@ -13,15 +13,22 @@ version validation or other project warnings.
 python3 Doroti/validation/run-with-timeout.py dotnet build \
   DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Debug -r iossimulator-arm64 -m:1 \
   --artifacts-path Doroti/artifacts/platform-views/2026-09-17/ios/ios27/build \
-  -p:DorotiIosTargetFramework=net10.0-ios27.0 -p:MtouchInterpreter=all
+  -p:DorotiIosTargetFramework=net10.0-ios27.0
 
 python3 Doroti/validation/run-with-timeout.py <pillow-python> \
   Doroti/validation/platform-views/ios/capture-blur-appearance.py \
   --simulator <iOS-27-UDID> --app <built-app> --output <capture-folder> --check-resume
 ```
 
-The profile selects Mono and the matching Host.Maui TFM; device Release also stays
-Mono unless explicitly overridden. Existing .NET 11 NativeAOT is a separate
+The profile selects Mono and the matching Host.Maui TFM. Debug defaults to
+`MtouchInterpreter=all,-Doroti.Host.Maui`: Mono AOT for the host, interpreter for
+the other assemblies. Full host interpretation reproduced invalid `PendingFrame`
+references during calibration on Mono 10.0.12 / iOS 27 Simulator. Do not add
+`-p:MtouchInterpreter=all` to the command above: an explicit value overrides the
+workaround. To reproduce the old failure deliberately, use that value and launch
+with `MONO_GC_DEBUG=check-remset-consistency,verify-before-collections` plus the
+calibration environment variables below. With `simctl`, prefix those variable
+names with `SIMCTL_CHILD_`. Device Release stays Mono unless explicitly overridden. Existing .NET 11 NativeAOT is a separate
 profile, not claimed as iOS 27 SDK qualification. Device builds use `-r ios-arm64`,
 a separate artifacts root and the installed signing profile. The Scene manifest
 is shared by the Testbed and new app template and keeps multiple scenes disabled.
@@ -49,8 +56,9 @@ python3 ../../Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedAp
 
 Device Release defaults to net11 NativeAOT. Do not combine net11 with Mono.
 Simulator uses `iossimulator-arm64`, without the device signing requirement.
-The final simulator run explicitly sets `-p:MtouchInterpreter=all` (net10 Mono
-interpreter); the preceding Mono AOT simulator build also passed. It is not a
+The historical simulator run explicitly set `-p:MtouchInterpreter=all` (net10
+Mono interpreter); the preceding Mono AOT simulator build also passed. For the
+current iOS 27 profile, use the scoped host-AOT workaround above. It is not a
 NativeAOT simulator qualification.
 Build, simulator, device, NativeAOT, physical input and visual acceptance are
 separate results.
@@ -115,22 +123,29 @@ Inspect `native-link-inputs.txt`: it must say `UseNativeAot=true`. `PublishAot=t
 in a `dotnet build` log alone is insufficient; that command produced CoreCLR in
 this toolchain. Install the published application and execute the probes again.
 
-## Gaussian calibration and appearance
+## Public blur calibration and appearance
 
-The selected implementation uses Flutter-style internal Gaussian control in C#
-(`UIKitPlatformBlurView.cs` / `UIKitGaussianFilter`). Foundation KVC and NSCopying
-protocol bindings replace the former Objective-C shim. UIKit internals remain an
-OS-specific dependency. The effect is re-applied after layout/appearance/activation.
-The old public preset interpolation failed the adjacent-strength pixel gate.
+The current implementation uses public UIKit material interpolation in
+`UIKitPlatformBlurView.cs`. A retained, paused property animator maps common
+strength directly to `FractionComplete`. The Light preset includes material tint;
+measurements against Gaussian references are descriptive, not an exact-radius gate.
+Historical private-filter results do not qualify this implementation.
+
+On 2026-09-18, iPhone 18 Pro / iOS 27 Simulator passed the public adapter's
+four-strength/two-theme appearance, Settings resume, and seven functional scenes.
+The initial full-interpreter sRGB calibration crashed in Mono GC. Compiling the
+host with Mono AOT subsequently passed three consecutive complete calibrations,
+including two with GC verification enabled. Zero/decreasing intensity pixel
+comparisons were exactly equal in both themes. Evidence is under
+`artifacts/platform-views/2026-09-18/ios/public-blur/gc-fix/aot-run-{1,2,3}/`.
 
 Launch with `DOROTI_TESTBED_MODE=platform-effects` and
 `DOROTI_UIKIT_BLUR_CALIBRATION=1` to collect `Documents/blur-calibration`.
 The probe overlays a native sRGB test image, renders Gaussian references through
-Skia, and captures the entire UIWindow. Also set
-`DOROTI_UIKIT_GAUSSIAN_CALIBRATION=1` to test the actual Gaussian helper at radius
-4/6/12/16 in both appearances, reject missing structure, and deliberately catch
-an Objective-C KVC exception in C#. Without this second flag it measures the old
-public presets for comparison. Use a fresh app data folder or separate captures
+Skia, and captures the entire UIWindow using the actual production blur adapter.
+It measures .15/.25/.375/.75/1 strengths in both appearances, then decreases to
+.375 and clears to zero. The old `DOROTI_UIKIT_GAUSSIAN_CALIBRATION` flag and KVC
+exception probe have been removed. Use a fresh app data folder or separate captures
 from earlier launches; the device folder can retain old files.
 Copy that folder from the application container and analyze with Pillow:
 

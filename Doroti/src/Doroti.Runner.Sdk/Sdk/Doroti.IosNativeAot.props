@@ -8,6 +8,11 @@
     <DorotiCompilationMode Condition="'$(DorotiCompilationMode)' == ''">Mono</DorotiCompilationMode>
     <DorotiHostTargetFrameworks Condition="'$(DorotiHostTargetFrameworks)' == ''">$(DorotiIosTargetFramework)</DorotiHostTargetFrameworks>
     <NoWarn>$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
+    <!-- Full interpretation of the UIKit host reproduced stale PendingFrame
+         references under Mono GC during window capture. Compile the host with
+         Mono AOT while retaining the Debug interpreter for the rest of the app.
+         Explicit interpreter settings and NativeAOT remain separate profiles. -->
+    <MtouchInterpreter Condition="'$(Configuration)' == 'Debug' and '$(DorotiCompilationMode)' != 'NativeAot' and '$(UseInterpreter)' != 'false' and '$(MtouchInterpreter)' == ''">all,-Doroti.Host.Maui</MtouchInterpreter>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DorotiCompilationMode)' == '' and '$(PublishAot)' != 'false' and '$(Configuration)' == 'Release' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(MSBuildProjectName)' == 'Doroti.Target.iOS.Maui.ios-arm64')">
     <DorotiCompilationMode>NativeAot</DorotiCompilationMode>

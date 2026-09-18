@@ -51,6 +51,18 @@ for file in sorted(p.glob('*-Light.png')):
     rows.append(info)
 result = dict(referenceKernels=reference_kernels, measurements=rows,
               scope='Measured public UIKit interpolation on this device/OS; not an exact Gaussian guarantee')
+# Current production-adapter captures also verify reversible intensity changes.
+# Keep older capture folders analyzable when these images are absent.
+checks = {}
+if (p/'UIKitReset-0.000-Light.png').exists():
+    for theme in ('Light', 'Dark'):
+        reset = crop(f'UIKitReset-0.000-{theme}.png')
+        decreased = crop(f'UIKitDecreasing-0.375-{theme}.png')
+        initial = crop(f'UIKit-0.375-{theme}.png')
+        checks[f'zero-{theme}'] = ImageStat.Stat(ImageChops.difference(reset, crop('source.png'))).mean
+        checks[f'decreasing-{theme}'] = ImageStat.Stat(ImageChops.difference(decreased, initial)).mean
+    result['reversibleIntensityMeanAbsoluteRGB'] = checks
 (p/'analysis.json').write_text(json.dumps(result,indent=2))
+assert all(max(error) < 1 for error in checks.values()), checks
 for r in rows:
     print(f"{r['style']:30} f={r['fraction']:.2f} sigma={r['sigma']} black/white={r['black']:.1f}/{r['white']:.1f} themeMAE={r['themeMAE']:.2f} closest={r['closestReference']} MAE={min(r['referenceMAE'].values()):.2f}")

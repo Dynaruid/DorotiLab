@@ -116,7 +116,7 @@ internal sealed class UIKitPlatformViewHost : IDisposable
             {
                 effect.Style?.Validate();
                 if (effect.Style?.Match != PlatformEffectMatchPolicy.MatchCommon || effect.Style.Saturation != 1 || effect.SigmaX != effect.SigmaY)
-                    throw new NotSupportedException("UIKit internal Gaussian requires isotropic PlatformEffect MatchCommon; ExactSigma/saturation are not qualified.");
+                    throw new NotSupportedException("UIKit material interpolation requires isotropic PlatformEffect MatchCommon; ExactSigma/saturation are not supported.");
                 if (UIAccessibility.IsReduceTransparencyEnabled)
                     throw new NotSupportedException("Reduce Transparency is enabled; request SolidTint explicitly instead of reporting a material as blur.");
             }

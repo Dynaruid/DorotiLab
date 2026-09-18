@@ -3,7 +3,6 @@ using Doroti.Host.Maui;
 using Foundation;
 using SkiaSharp;
 using UIKit;
-using ObjCRuntime;
 
 namespace DorotiTestbedApp.iOS;
 
@@ -19,13 +18,13 @@ internal static class UIKitBlurCalibration
         var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "blur-calibration");
         Directory.CreateDirectory(directory);
         UIView? panel = null;
+        UIImageView? source = null;
+        UIKitPlatformBlurView? effect = null;
+        UIImage? original = null;
         var idle = false;
         try
         {
             UIWindow? window = null;
-            UIImageView? source = null;
-            UIVisualEffectView? effect = null;
-            UIImage? original = null;
             var scale = 3.0;
             await OnUi(() =>
             {
@@ -38,7 +37,7 @@ internal static class UIKitBlurCalibration
                 original = MakeImage(scale, 0);
                 source = new UIImageView(original) { Frame = new CGRect(20, 150, 320, 300), ContentMode = UIViewContentMode.ScaleToFill };
                 panel.AddSubview(source);
-                effect = new UIVisualEffectView { Frame = source.Frame, UserInteractionEnabled = false };
+                effect = new UIKitPlatformBlurView { Frame = source.Frame, UserInteractionEnabled = false };
                 panel.AddSubview(effect);
                 File.WriteAllText(Path.Combine(directory, "geometry.txt"), $"scale={scale}\nleft=20\ntop=150\nwidth=320\nheight=300\n");
             });
@@ -52,60 +51,29 @@ internal static class UIKitBlurCalibration
                 await Capture($"reference-{sigma:0}");
                 await OnUi(() => { source!.Image = original; reference!.Dispose(); });
             }
-            if (Environment.GetEnvironmentVariable("DOROTI_UIKIT_GAUSSIAN_CALIBRATION") == "1")
+            // Exercise the production adapter, including scrubbing back from full
+            // intensity and resetting to zero (no material or residual tint).
+            foreach (var (name, strength) in new[]
+            {
+                ("UIKit", .15), ("UIKit", .25), ("UIKit", .375),
+                ("UIKit", .75), ("UIKit", 1.0), ("UIKitDecreasing", .375),
+                ("UIKitReset", 0.0)
+            })
+            foreach (var theme in new[] { UIUserInterfaceStyle.Light, UIUserInterfaceStyle.Dark })
             {
                 await OnUi(() =>
                 {
-                    using var invalid = new UIVisualEffectView();
-                    if (UIKitGaussianFilter.Apply(invalid, 6) is null)
-                        throw new InvalidOperationException("Invalid structure was accepted");
-                    using var plain = new NSObject();
-                    using var missingKey = new NSString("doroti_intentionally_missing_blur_probe_key");
-                    var caught = false;
-                    try { plain.ValueForKey(missingKey); }
-                    catch (ObjCException) { caught = true; }
-                    if (!caught) throw new InvalidOperationException("Objective-C exception was not marshaled");
-                    File.WriteAllText(Path.Combine(directory, "exception-probe.txt"), "PASS missing structure rejected; Objective-C KVC exception caught in C#");
-                    using var blur = UIBlurEffect.FromStyle(UIBlurEffectStyle.Light);
-                    effect!.Effect = blur;
+                    panel!.OverrideUserInterfaceStyle = theme;
+                    effect!.SetSigma(strength * 16);
+                    panel.LayoutIfNeeded();
+                    if (Math.Abs(effect.AppliedIntensity - strength) > .0001)
+                        throw new InvalidOperationException("Animator intensity was not retained");
+                    if (strength == 0 && effect.Effect is not null)
+                        throw new InvalidOperationException("Zero strength retained the material");
                 });
-                foreach (var sigma in new[] { 4.0, 6.0, 12.0, 16.0 })
-                foreach (var theme in new[] { UIUserInterfaceStyle.Light, UIUserInterfaceStyle.Dark })
-                {
-                    await OnUi(() =>
-                    {
-                        panel!.OverrideUserInterfaceStyle = theme;
-                        panel.LayoutIfNeeded();
-                        if (UIKitGaussianFilter.Apply(effect!, sigma) is { } reason)
-                            throw new NotSupportedException(reason);
-                    });
-                    await Task.Delay(150);
-                    await Capture($"Gaussian-{sigma:0.00}-{theme}");
-                }
+                await Task.Delay(150);
+                await Capture(FormattableString.Invariant($"{name}-{strength:0.000}-{theme}"));
             }
-            else
-            foreach (var style in new[] { UIBlurEffectStyle.Light, UIBlurEffectStyle.ExtraLight, UIBlurEffectStyle.SystemUltraThinMaterialLight, UIBlurEffectStyle.SystemMaterial })
-            foreach (var fraction in style == UIBlurEffectStyle.SystemMaterial ? new[] { 1.0 } : new[] { .15, .25, .4, .6, 1.0 })
-            {
-                UIViewPropertyAnimator? animator = null;
-                UIBlurEffect? blur = null;
-                await OnUi(() =>
-                {
-                    effect!.Effect = null;
-                    blur = UIBlurEffect.FromStyle(style);
-                    animator = new UIViewPropertyAnimator(1, UIViewAnimationCurve.Linear, () => effect.Effect = blur)
-                    { ScrubsLinearly = true, PausesOnCompletion = true };
-                    animator.StartAnimation(); animator.PauseAnimation(); animator.FractionComplete = (nfloat)fraction;
-                });
-                foreach (var theme in new[] { UIUserInterfaceStyle.Light, UIUserInterfaceStyle.Dark })
-                {
-                    await OnUi(() => panel!.OverrideUserInterfaceStyle = theme);
-                    await Task.Delay(150);
-                    await Capture($"{style}-{fraction:0.00}-{theme}");
-                }
-                await OnUi(() => { animator!.StopAnimation(true); animator.Dispose(); effect!.Effect = null; blur!.Dispose(); });
-            }
-            await OnUi(() => { effect!.RemoveFromSuperview(); effect.Dispose(); source!.RemoveFromSuperview(); source.Dispose(); original!.Dispose(); });
             File.WriteAllText(Path.Combine(directory, "result.txt"), "PASS capture complete; image analysis is separate");
 
             Task OnUi(Action action) => dispatcher.InvokeAsync(() => { action(); return ValueTask.CompletedTask; }).AsTask();
@@ -122,6 +90,8 @@ internal static class UIKitBlurCalibration
         {
             await dispatcher.InvokeAsync(() =>
             {
+                effect?.RemoveFromSuperview(); effect?.Dispose();
+                source?.RemoveFromSuperview(); source?.Dispose(); original?.Dispose();
                 panel?.RemoveFromSuperview(); panel?.Dispose();
                 UIApplication.SharedApplication.IdleTimerDisabled = idle;
                 return ValueTask.CompletedTask;
