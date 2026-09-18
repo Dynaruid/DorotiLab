@@ -14,10 +14,8 @@ public sealed class PlatformEffect : StatelessWidget
     {
         if (!constraints.hasBoundedWidth || !constraints.hasBoundedHeight)
             throw new InvalidOperationException("PlatformEffect requires bounded width and height.");
-        if (Style.Saturation != 1)
-            throw new NotSupportedException("Saturation adjustment is not yet supported by the common native effect adapters.");
         Widget foreground = new Container(color: new Color(Style.Tint), child: Child);
-        return new ClipRect(child: Style.Sigma == 0 ? foreground : new BackdropFilter(
+        return new ClipRect(child: (Style.Match == PlatformEffectMatchPolicy.SolidTint || Style.Sigma == 0 && Style.Saturation == 1) ? foreground : new BackdropFilter(
             filterConfig: new NativeEffectFilterConfig(Style), child: foreground));
     });
 

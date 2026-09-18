@@ -52,6 +52,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private double _pixelHeight;
     private double _density = 1;
     private int _inFlight;
+    private int _platformInFlight;
     private bool _releaseRequested;
     private bool _resourcesReleased;
     private bool _cursorHidden;
@@ -308,7 +309,11 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var owner = _owner;
         var size = DrawableSize;
         if (owner is null || _releaseRequested || _faulted || _drawingFrame || size.Width <= 0 || size.Height <= 0) return;
-        if (_inFlight >= 3)
+        // Native composition/removal cannot replay an older completed scene over
+        // the next material/color update. Keep one such frame pending, as on UIKit.
+        // The GPU completion requests the deferred frame without blocking AppKit.
+        var maximumPending = owner.PlatformViews?.HasComposition == true || _platformInFlight != 0 ? 1 : 3;
+        if (_inFlight >= maximumPending)
         {
             _frameBackpressure = true;
             return;
@@ -416,7 +421,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             owner.PlatformViews?.CancelPending();
             try { platformFrame?.Abort(); }
             catch (Exception rollbackError) { System.Diagnostics.Trace.TraceError(rollbackError.ToString()); }
-            if (commandBufferTracked) CancelCommandBufferTracking();
+            if (commandBufferTracked) CancelCommandBufferTracking(platformFrame is not null);
             if (graphiteFrame is not null && !graphiteSubmissionAttempted)
             {
                 graphiteFrame.CancelRecording();
@@ -492,6 +497,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 lock (_resourceGate)
                 {
                     _inFlight--;
+                    if (platformFrame is not null) _platformInFlight--;
                     if (_releaseRequested && _inFlight == 0 && _heldGpuWork.Count == 0) ReleaseGpuResources();
                 }
                 var stale = generation != Interlocked.Read(ref _surfaceGeneration) ||
@@ -514,14 +520,15 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                 }
             });
         });
-        lock (_resourceGate) _inFlight++;
+        lock (_resourceGate) { _inFlight++; if (platformFrame is not null) _platformInFlight++; }
     }
 
-    private void CancelCommandBufferTracking()
+    private void CancelCommandBufferTracking(bool platformFrame)
     {
         lock (_resourceGate)
         {
             _inFlight--;
+            if (platformFrame) _platformInFlight--;
         }
     }
 

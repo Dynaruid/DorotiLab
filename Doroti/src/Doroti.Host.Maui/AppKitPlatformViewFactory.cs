@@ -4,6 +4,7 @@ using CoreGraphics;
 using Doroti.Hosting;
 using Doroti.Ui;
 using Foundation;
+using WebKit;
 using Rect = Doroti.Ui.Rect;
 
 namespace Doroti.Host.Maui;
@@ -34,6 +35,8 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
 {
     private readonly Func<NSView> _parent;
     private readonly bool _editor;
+    private readonly bool _web;
+    private readonly Func<IApplicationResourceHostCapability>? _resources;
     private readonly Action? _beforeFocus;
     private readonly Action? _restoreFocus;
     private readonly bool _interleaved;
@@ -48,16 +51,26 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
         _interleaved = interleaved;
     }
 
-    public string ViewType => _editor ? "doroti/native-editor" : "doroti/native-button";
+    public AppKitPlatformViewFactory(Func<NSView> parent, string viewType, Action? beforeFocus = null,
+        Action? restoreFocus = null, bool interleaved = false, Func<IApplicationResourceHostCapability>? resources = null)
+        : this(parent, viewType == "doroti/native-editor", beforeFocus, restoreFocus, interleaved)
+    {
+        if (viewType is not ("doroti/native-button" or "doroti/native-editor" or "doroti/webview"))
+            throw new ArgumentOutOfRangeException(nameof(viewType));
+        _web = viewType == "doroti/webview";
+        _resources = resources;
+    }
+
+    public string ViewType => _web ? "doroti/webview" : _editor ? "doroti/native-editor" : "doroti/native-button";
     public PlatformViewSupport QuerySupport(PlatformViewRequest request)
     {
         var supported = request.ViewType == ViewType && (request.Composition == PlatformViewComposition.NativeOverlay ||
             _interleaved && request.Composition == PlatformViewComposition.InterleavedComposition) &&
             (request.Effects & ~PlatformViewEffects.RectClip) == 0;
         return new("AppKit-NSView", Environment.OSVersion.VersionString, ViewType, supported,
-            request.Composition, PlatformViewEffects.RectClip,
+            request.Composition, PlatformViewEffects.RectClip, WebViewCommands: _web,
             Capabilities: new(PlatformViewRepresentation.NativeHierarchy, PlatformViewTransport.GpuShared,
-                PlatformViewInputPolicy.DirectNative, PlatformEffectSupport.Unsupported),
+                PlatformViewInputPolicy.DirectNative, _interleaved ? AppKitPlatformBlurView.Support : PlatformEffectSupport.Unsupported),
             Reason: supported ? null : "This AppKit attachment requires a matching compositor and supports only translation and rectangular clipping.");
     }
 
@@ -66,6 +79,8 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
     {
         AppKitPlatformViewDispatcher.VerifyThread();
         cancellationToken.ThrowIfCancellationRequested();
+        if (_web && parameters.Length > 3 * 1024 * 1024)
+            throw new WebViewException(WebViewError.InvalidRequest, "WebView creation settings exceed 3 MiB.");
         var text = parameters.IsEmpty ? (_editor ? "Native editor" : "Native button") : System.Text.Encoding.UTF8.GetString(parameters.Span);
         return ValueTask.FromResult<IPlatformViewInstance>(new Instance(this, handle, text, onFocused));
     }
@@ -112,13 +127,18 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
         }
     }
 
-    private sealed class Instance : IPlatformViewInstance
+    private sealed class Instance : IPlatformViewInstance, IPlatformWebViewInstance
     {
         private readonly AppKitPlatformViewFactory _factory;
         private readonly PlatformViewHandle _handle;
         private readonly Action<PlatformViewHandle> _focused;
         private readonly ClipView _clip = new();
-        private readonly NSControl _control;
+        private readonly NSView _control;
+        private readonly AppKitWebViewSession? _web;
+        public event Action<WebViewEvent>? WebViewChanged;
+        public Task<WebViewResult> ExecuteAsync(WebViewCommand command, CancellationToken cancellationToken) =>
+            _web?.ExecuteAsync(command, cancellationToken) ?? Task.FromException<WebViewResult>(
+                new WebViewException(WebViewError.Unsupported, "This attachment is not a WebView."));
         private readonly NSObject? _editingObserver;
         private bool _inputEnabled = true;
         private bool _disposed;
@@ -127,7 +147,17 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
         public Instance(AppKitPlatformViewFactory factory, PlatformViewHandle handle, string text, Action<PlatformViewHandle> focused)
         {
             _factory = factory; _handle = handle; _focused = focused;
-            if (factory._editor)
+            if (factory._web)
+            {
+                try
+                {
+                    _web = new AppKitWebViewSession(handle, text, BeforeFocus, Focused,
+                        value => WebViewChanged?.Invoke(value), factory._resources?.Invoke());
+                }
+                catch { _clip.Dispose(); throw; }
+                _control = _web.View;
+            }
+            else if (factory._editor)
             {
                 var editor = new NativeEditor(BeforeFocus, Focused) { StringValue = text, Editable = true, Selectable = true, Bezeled = true };
                 _control = editor;
@@ -197,7 +227,8 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
         }
 
         private bool OwnsFocus() => _clip.Window?.FirstResponder is { } responder &&
-            (responder == _control || _control is NSTextField field && responder == field.CurrentEditor);
+            (responder == _control || responder is NSView view && view.IsDescendantOf(_control) ||
+                _control is NSTextField field && responder == field.CurrentEditor);
         private void ReleaseFocus()
         {
             if (!OwnsFocus()) return;
@@ -228,7 +259,9 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
         {
             AppKitPlatformViewDispatcher.VerifyThread();
             if (_disposed) return ValueTask.CompletedTask;
-            _inputEnabled = false; _clip.InputEnabled = false; _control.Enabled = false;
+            _inputEnabled = false; _clip.InputEnabled = false;
+            if (_control is NSControl control) control.Enabled = false;
+            _web?.Close();
             ReleaseFocus(); _clip.Hidden = true;
             return ValueTask.CompletedTask;
         }
@@ -239,6 +272,8 @@ public sealed class AppKitPlatformViewFactory : IPlatformViewFactory
             DisableInputAsync(); DetachAsync(); _disposed = true;
             _editingObserver?.Dispose();
             if (_control is NSButton button) button.Activated -= Activated;
+            WebViewChanged = null;
+            _web?.Dispose();
             _control.RemoveFromSuperview(); _control.Dispose(); _clip.Dispose();
             return ValueTask.CompletedTask;
         }

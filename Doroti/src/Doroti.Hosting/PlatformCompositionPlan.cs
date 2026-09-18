@@ -119,8 +119,12 @@ public static class PlatformCompositionPlanner
                     backdrop.BlendMode != BlendMode.srcOver || backdrop.BackdropId is not null ||
                     backdrop.Filter is not { Outer: null, Inner: null, ColorFilter: null, Matrix4: null, Shader: null, TileMode: TileMode.clamp } filter ||
                     !double.IsFinite(filter.SigmaX) || !double.IsFinite(filter.SigmaY) ||
-                    filter.SigmaX <= 0 || filter.SigmaY <= 0)
-                    throw Failure("native backdrop requires a clipped, ungrouped srcOver Gaussian blur with positive finite sigma");
+                    filter.SigmaX < 0 || filter.SigmaY < 0 ||
+                    (filter.SigmaX == 0 || filter.SigmaY == 0) &&
+                    !(filter.SigmaX == 0 && filter.SigmaY == 0 && filter.PlatformEffectIntent is { Saturation: not 1 }))
+                    throw Failure("native backdrop requires a clipped, ungrouped srcOver Gaussian blur with nonnegative finite sigma (zero requires a saturation effect)");
+                if (filter.PlatformEffectIntent is { Saturation: not 1 } && effects?.Saturation != true)
+                    throw Failure("This native backdrop backend does not support saturation adjustment.");
                 try { effects!.Validate(filter.SigmaX * state.Transform.M11, filter.SigmaY * state.Transform.M22,
                     parts.Count(p => p is PlatformBackdropSegment) + 1); }
                 catch (NotSupportedException error) { throw Failure(error.Message); }

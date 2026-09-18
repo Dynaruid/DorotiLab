@@ -2,13 +2,27 @@
 
 2026-09-18 개정 · 2026-09-14 초기 계획과 이후 work1 구현·검증 결과 반영.
 
-**WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 개정은 문서 수정이다. 최소 WebView attachment·효과 fixture의 구현/검증은 아래 상태표대로 인정하며, 전용 controller·navigation/JS/profile 등의 공개 제품 API 완료와 구분한다. 전체 상태는 `PARTIAL`, 미구현 기능 단계는 `TODO`, 미실행 기능 검증은 `notVerified`다.
+**WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 macOS 개정은 실제 AppKit 구현·제품 검증을 포함하며 아래 실행 업데이트가 우선한다. 최소 WebView attachment·효과 fixture의 구현/검증은 아래 상태표대로 인정하며, 전용 controller·navigation/JS/profile 등의 공개 제품 API 완료와 구분한다. 전체 상태는 `PARTIAL`, 미구현 기능 단계는 `TODO`, 미실행 기능 검증은 `notVerified`다.
 
 이전 WV-0~WV-9/WV-X 상세 요구는 [원본](history/26-09-14/platformview-rearchitecture/work2.original.md)에 보존했다. 새 계획은 그 기능 범위를 유지하고, Linux **Qt Quick 제품 합성 + 시스템 Qt WebEngine**에 맞춰 표시 접점·선행 조건을 수정한다. 예전 Widgets 우선·Qt callback ABI 3·부재 `ref.md` 전제를 현재 기준으로 사용하지 않는다.
 
 **현재 요구:** WebView는 플랫폼별로 더 적합한 구성을 선택하며 HCPP를 강제하지 않는다. [work1 R6](work1.md)에서 실제 합성·입력/접근성·효과 호환성·성능/메모리·안정성을 비교한다. R-E의 `PlatformEffect`는 공통 효과 의미와 최대한 유사한 비주얼을 제공한다. WebView 위 실제 backdrop와 선명한 Doroti 전경이라는 제품 요구는 유지한다.
 
 **Windows controller 확정:** WindowsAppSdk와 Windows MAUI는 `Microsoft.Web.WebView2.Core.CoreWebView2CompositionController`를 사용한다. 이는 우선 후보가 아닌 필수 선택이다. windowed controller·기본 MAUI WebView handler를 대체 backend로 자동 선택하지 않는다. 기능 adapter를 공유하되 두 runner의 host 결합·실행 증거는 별도로 남긴다.
+
+## macOS 구성 실행 업데이트 (2026-09-18)
+
+**macOS/AppKit 전체 상태는 PARTIAL**이다. work1의 동일 WKWebView를 사용하며 별도 compositor를 만들지 않았다.
+
+후속 사용자 요구에 따라 AppKit 효과를 재질 opacity에서 공개 `NSView.BackgroundFilters + CIGaussianBlur + CIColorControls`로 교체했다. work2는 동일 WKWebView 인스턴스를 계속 사용한다. 논리 반경 0–64·채도 0–2·독립 tint를 공통 PlatformEffect에서 조절하며, 기존 material 캡처를 새 Gaussian의 검증 결과로 전용하지 않는다. 새 근거는 `macos/custom-blur/`와 [macOS 계약](Doroti/docs/platform-views/macos.md)이다.
+
+- WV-1 초기 공통 계약을 기존 Ui/Hosting/Services/Widgets의 net10.0 assembly에 배치했다. `WebViewController`/`WebViewWidget`, ready/closed/unsupported typed 오류, owner/instance/document/request 식별, 최대 32개 pending/30초 timeout, 취소·late 결과 거부를 구현했다. 공통 계약 검증은 owner 격리·pending JS 중 placement/close 진행·stale generation·listener 해제를 통과했다.
+- WV-6 AppKit adapter는 configuration/data store/delegate를 생성 전에 설정한다. HTTP(S)/HTML/app-content 탐색, history/reload/stop, 실제 URL/title/loading, navigation event, JSON/undefined/평가 오류를 구현했다. Promise 결과는 명시적 미지원이다. widget detach는 instance를 보존하고 controller dispose가 admission/handler/input을 닫은 후 기존 GPU retirement로 해제한다.
+- profile은 기본 view별 ephemeral과 명시적 shared persistent다. 전체 website data 삭제는 별도 명령이며 dispose와 구분한다. named persistent profile과 profile 공유 객체는 아직 없다.
+- manifest key→정확한 URL path/MIME의 `doroti-app://content/` scheme과 relative resource/cancel을 연결했다. filesystem 접근이나 loopback 서버를 추가하지 않는다. `MessageOrigins` opt-in bridge는 WebKit native security origin/main-frame과 version/document/request를 검사하며 payload의 자칭 origin은 신뢰하지 않는다. Range/media·서비스워커/보안 컨텍스트는 지원 주장하지 않는다.
+- 실제 Graphite/Ganesh 제품에서 controller/widget를 통한 WKWebView 두 개, HTML·JS/오류·stale document·origin 거부·profile clear·resize·수명과 공통 효과 결합을 검사했다. Release CoreCLR `.pkg`를 임시 폴더에 푼 앱에서도 두 renderer의 제품·픽셀·HTML/상대 CSS·메시지 origin 검사를 통과했다. popup/외부 protocol은 거부하며 file chooser/download/permission/fullscreen의 앱 정책 API는 남아 있다. native-origin GestureArena·물리 한국어 IME/VoiceOver·두 owner·process recovery 실행·NativeAOT/clean 배포/성능 승인은 별도다.
+
+API/기능 제한은 [macOS 계약](Doroti/docs/platform-views/macos.md), 명령은 [검증 안내](Doroti/validation/platform-views/macos/README.md), 현재 증거는 `Doroti/artifacts/platform-views/2026-09-18/macos/`에 둔다. NativeAOT publish는 기존 iOS 전용 runner guard `DOROTIAOT002`에서 거부됐으며 현재 macOS AOT 지원을 선언하지 않는다. 아래 다른 플랫폼의 WV-1 연동 TODO는 AppKit 구현을 전용해 완료 처리하지 않는다.
 
 ## 1. 기능과 소유권
 
@@ -62,7 +76,7 @@ Windows의 `WindowsWebViewComposition`, iOS/Android factory의 `doroti/webview`,
 | Android | native WebView factory·제한 backdrop 코드 및 host 빌드 | 실제 provider에서 live WebView sample·입력/효과 검증이 선행. WV-4 기능 API 별도 |
 | iOS UIKit Graphite | WKWebView+Metal+공개 animator 효과 구현, 현재 iOS 27 Simulator 픽셀/복귀/수명·보정 통과 | WV-5에서 기존 인스턴스 재사용, controller/delegate/JS/profile 기능 추가. 현행 효과 실기기/NativeAOT 미승인 |
 | Mac Catalyst / iOS Ganesh | iOS Graphite와 별도 runner | attachment/effect 지원·실행을 별도로 구현/확인. iOS 증거 전용 금지 |
-| AppKit | NSView/Metal 및 창 배경 BehindWindow 구현, inline PlatformEffect Unsupported | work1 R5/R6/FX2-A의 최소 WKWebView+WithinWindow adapter와 WV-6 기능 계약 연결 |
+| AppKit | WKWebView/Core Image backdrop/Metal Graphite·Ganesh 제품 연결 | WV-1 초기 controller/widget·탐색/JS/profile/content/message 연결. numeric blur·채도·tint 지원, 공통 비주얼/배포/물리 입력 등 PARTIAL; 위 실행 업데이트 참조 |
 | Web | protocol v2/CSS backdrop-filter adapter·독립 DOM harness 존재 | work1 R5/FX3의 main DOM·worker multi-canvas ACK/자원 수명 제품 연결, WV-3의 iframe/협력 bridge 기능 |
 | Linux Qt Quick | 실제 WebEngine Quick attachment·GPU Gaussian 효과·XWayland/Wayland 제한 검증 | 기존 startup/ABI/attachment 활용. WV-7의 navigation/JS/profile/content API와 배포·성능 마감 |
 
@@ -71,7 +85,7 @@ Qt Widgets/QWebEngineView는 기존 B probe·제한 경로로 남긴다. Quick C
 ### 2.1 다음 실행과 재사용 범위
 
 1. **WV-0/1:** 이미 있는 factory·SDK instance·공통 handle을 조사해 공개 controller/기능표를 연결한다. 별도 인스턴스나 compositor를 새로 만들지 않는다. 최소 attachment probe는 WV-1 전체 구현 완료를 기다리지 않고 work1과 함께 진행한다.
-2. **AppKit / WV-6:** work1이 최소 WKWebView attachment·inline effect를 구현하고, work2는 configuration/data store/delegate·탐색/JS/profile 계약을 같은 인스턴스에 붙인다. 기존 창 배경 blur를 완료 근거로 사용하지 않는다.
+2. **AppKit / WV-6:** WKWebView/Core Image backdrop과 configuration/data store/delegate·탐색/JS/profile/content/message를 같은 인스턴스에 연결했다. 현재 지원 범위의 실행을 재사용하고 남은 정책/배포·물리 입력 gate를 진행한다. 기존 창 배경 blur를 완료 근거로 사용하지 않는다.
 3. **Web / WV-3:** 기존 CSS adapter를 재구현하지 않고 제품 main DOM/worker 경로에 연결한다. 실제 iframe blur·sharp child·identity·ACK/close를 먼저 확인하고 same-origin/협력 bridge 기능을 추가한다.
 4. **Android / WV-4:** 기존 source와 실제 실행을 대조해 native WebView animation/scroll·effect pixels·입력/IME·provider 제약을 검증한다. 실행 실패가 확인된 부분에 한해 전략/adapter를 수정한다.
 5. **WindowsAppSDK·iOS·Qt Quick:** 기존 합성 fixture를 활용해 WV-2/5/7의 기능 API와 WV-8/9 잔여 항목을 마감한다. macOS/Catalyst/Windows MAUI 등 다른 runner의 PASS로 전용하지 않는다.
@@ -121,7 +135,7 @@ Web cross-origin iframe에는 임의 JS/history/cookie·navigation interception�
 
 ### WV-H — 플랫폼별 전략 + 공통 PlatformEffect 조기 결합 gate
 
-선행: work1 R1/R3 계약. 최소 native SDK probe는 WV-0와 함께 시작하며 최종 제품 승인은 해당 R6/R-E와 WV-2~WV-7 구현 뒤에 수행한다. 현재 `PARTIAL`: WindowsAppSDK·Qt Quick·iOS Graphite의 제한 결합 결과를 재사용한다. AppKit 구현, Web 제품 연결, Android live source 검증 및 각 backend 공개 기능 결합은 남아 있다.
+선행: work1 R1/R3 계약. 최소 native SDK probe는 WV-0와 함께 시작하며 최종 제품 승인은 해당 R6/R-E와 WV-2~WV-7 구현 뒤에 수행한다. 현재 `PARTIAL`: WindowsAppSDK·Qt Quick·iOS Graphite의 제한 결합 결과를 재사용한다. AppKit은 제한된 제품·기능 결합을 통과했고 공통 시각/배포/물리 입력이 남아 있다. Web 제품 연결, Android live source 검증 및 다른 backend 공개 기능 결합은 남아 있다.
 
 WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻하지 않는다. 후보별 기능/입력·시각 fidelity를 먼저 확인한 뒤 성능·메모리·안정성을 비교한다.
 
@@ -130,7 +144,7 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 | Android | hierarchy·live texture·bounded readback·HCPP 후보로 동일 WebView+effect 장면 비교 | source sample/입력/예산 불충족 후보 제외. 충족한 다른 전략으로 선택 가능 |
 | Windows | CoreWebView2CompositionController RootVisualTarget + raster/effect visual의 호환 tree·전송 방식 | controller 선택 유지. API 객체 혼용 또는 host backdrop만 성공하면 결합 미완료 |
 | iOS UIKit Graphite | 기존 WKWebView+Metal+Light preset/animator 효과를 WV-5 기능 API와 결합 | 현재 simulator 강도/테마/복귀 결과 재사용. preset tint 잔존·ExactSigma 미지원 유지, 현행 실기기/NativeAOT·E3 별도 |
-| AppKit | 최소 WKWebView+NSVisualEffectView WithinWindow+Metal 전경 신규 연결 | BehindWindow·Skia-only 블러로 승인하지 않음. sample/강도·테마/입력·수명 불충족은 명시적 제한 |
+| AppKit | WKWebView+공개 Core Image Gaussian/색상 backdrop+Metal 전경 | native source와 Metal source의 실제 경계 확산을 각각 확인. BehindWindow·재질 opacity·Skia-only 블러로 승인하지 않음 |
 | Linux Quick | 같은 QQuickWindow의 WebEngine item·GPU raster를 live source로 sample, effect/child 제외 | GPU backend 불일치·sample 누락·recursive feedback이면 미완료. QWidget B로 대체하지 않음 |
 | Web | canvas/iframe/effect DOM/foreground 순서, CSS backdrop root, pointer pass-through | CSS.supports만 성공하거나 iframe pixels가 실제로 흐려지지 않으면 미승인. cross-origin JS를 요구하지 않음 |
 
@@ -138,7 +152,7 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 ### WV-0 — 기능 대응·attachment·배포 범위 고정
 
-선행: work1 R0/R1 계약 초안. 구현 상태 `TODO`.
+선행: work1 R0/R1 계약 초안. AppKit 초기 공통 계약/기능 대응은 구현했고, 전체 플랫폼 구현 상태는 `PARTIAL`.
 
 - backend별 기능표에 SDK API/버전·thread·callback·지원/조건/미지원·검증 fixture를 연결한다. wrapper 이름만으로 기능 동등성을 정하지 않는다.
 - 공개 API/프로젝트·TFM·NativeAOT 직렬화 전략, OS/RID/runtime/provider 최소 범위를 고정한다. 새 계획 작성 중에는 SDK 지원 버전을 임의 승격하지 않는다.
@@ -210,11 +224,11 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 ### WV-6 — AppKit macOS
 
-선행: WV-1 + work1 AppKit R4/R5/R6/FX2-A. 최소 attachment/effect probe는 WV-0부터 진행한다. 현재 generic NSView 합성은 있으나 WKWebView/inline effect adapter와 현행 실행 증거는 없다.
+선행: WV-1 + work1 AppKit R4/R5/R6/FX2-A. 최소 attachment/effect probe는 WV-0부터 진행한다. 현재 WKWebView/Core Image adapter와 Graphite/Ganesh 제품 증거가 있으며 위 macOS 실행 업데이트가 기준이다. 아래 완료 조건 중 미승인 범위를 계속 추적한다.
 
 - NSView/WKWebView responder·좌표·backing scale·focus/IME·VoiceOver와 Metal/native 합성을 연결한다. UIKit 코드를 이름만 바꿔 이식하지 않는다.
 - navigation/JS/profile/assets와 두 WebView·modal·resize·close를 실제 AppKit 제품에서 검증한다.
-- work1의 NSVisualEffectView WithinWindow adapter를 WKWebView 위·Doroti child 아래에 결합한다. 기존 BehindWindow backdrop와 수명/설정을 분리하고 효과 겹침·mask·alpha는 검증된 범위만 capability로 제공한다. material theme·focus·screen reader·선명한 Doroti 전경을 확인한다.
+- work1의 공개 Core Image backdrop adapter를 WKWebView 위·Doroti child 아래에 결합한다. 기존 BehindWindow backdrop와 수명/설정을 분리하고 효과 겹침·mask·alpha는 검증된 범위만 capability로 제공한다. numeric radius·채도·tint·테마·focus·screen reader·선명한 Doroti 전경을 확인한다.
 
 완료: 실제 창 픽셀·입력·data store·late callback·배포 증거가 있다. 현재 부재한 과거 AppKit artifact를 근거로 미실행 기능을 승인하지 않는다.
 

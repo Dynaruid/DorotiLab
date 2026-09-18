@@ -49,7 +49,7 @@ public sealed class PlatformViewFactoryRegistry
 }
 
 /// <summary>Thread-safe identity and retirement owner; native operations run through the UI dispatcher.</summary>
-public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyncDisposable, IDisposable
+public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IWebViewHostCapability, IAsyncDisposable, IDisposable
 {
     private sealed class Entry(PlatformViewHandle handle, IPlatformViewFactory factory, PlatformViewRequest request)
     {
@@ -86,6 +86,33 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
     public ulong OwnerViewId { get; }
     public int LiveInstanceCount { get { lock (_gate) return _entries.Count; } }
     public event Action<PlatformViewHandle>? ViewFocused;
+    public event Action<WebViewEvent>? WebViewChanged;
+
+    public async Task<WebViewResult> ExecuteWebViewAsync(PlatformViewHandle handle, WebViewCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        Task<WebViewResult>? pending = null;
+        await OperateAsync(handle, entry =>
+        {
+            if (entry.Instance is not IPlatformWebViewInstance web)
+                throw new WebViewException(WebViewError.Unsupported, "This attachment has no WebView commands.");
+            pending = web.ExecuteAsync(command, cancellationToken);
+            return ValueTask.CompletedTask;
+        }, cancellationToken).ConfigureAwait(false);
+        return await pending!.ConfigureAwait(false);
+    }
+
+    private void OnWebViewChanged(WebViewEvent value)
+    {
+        Action<WebViewEvent>? callback;
+        lock (_gate)
+        {
+            if (_closed || !_entries.TryGetValue(value.Handle.InstanceId, out var entry) ||
+                entry.Handle != value.Handle || !IsLive(entry.State)) return;
+            callback = WebViewChanged;
+        }
+        callback?.Invoke(value);
+    }
     public Task DisposalCompletion { get { lock (_gate) return _closeTask ?? Task.CompletedTask; } }
 
     public long AllocateInstanceId()
@@ -196,6 +223,7 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
                 lock (_gate)
                 {
                     entry.Instance = instance;
+                    if (instance is IPlatformWebViewInstance web) web.WebViewChanged += OnWebViewChanged;
                     if (entry.State == PlatformViewState.Creating)
                     {
                         entry.State = PlatformViewState.Ready;
@@ -418,6 +446,7 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
         {
             if (entry.Instance is { } instance)
             {
+                if (instance is IPlatformWebViewInstance web) web.WebViewChanged -= OnWebViewChanged;
                 try { await _dispatcher.InvokeAsync(instance.DisableInputAsync).ConfigureAwait(false); }
                 catch (Exception error) { failures.Add(error); }
                 await entry.Retired.Task.ConfigureAwait(false);
@@ -456,6 +485,7 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IAsyn
             if (_closeTask is not null) return new(_closeTask);
             _closed = true;
             ViewFocused = null;
+            WebViewChanged = null;
             _closeTask = Task.WhenAll(_entries.Values.ToArray().Select(BeginDispose));
             return new(_closeTask);
         }

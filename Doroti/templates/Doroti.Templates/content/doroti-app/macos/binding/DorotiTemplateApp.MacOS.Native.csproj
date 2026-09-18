@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-macos</TargetFramework>
+    <DorotiMacOSTargetFramework Condition="'$(DorotiMacOSTargetFramework)' == ''">net10.0-macos</DorotiMacOSTargetFramework>
+    <TargetFramework>$(DorotiMacOSTargetFramework)</TargetFramework>
     <AssemblyName>DorotiTemplateApp.MacOS.Native</AssemblyName>
     <RootNamespace>DorotiTemplateApp.MacOS.Native</RootNamespace>
     <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn Condition="'$(DorotiMacOSTargetFramework)' == 'net10.0-macos27.0'">$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
     <IsBindingProject>true</IsBindingProject><IsPackable>false</IsPackable><IsTrimmable>true</IsTrimmable>
     <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
     <DorotiNativeBindingTarget>macOS</DorotiNativeBindingTarget>

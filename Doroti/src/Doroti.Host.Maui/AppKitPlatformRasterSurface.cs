@@ -13,6 +13,7 @@ namespace Doroti.Host.Maui;
 internal sealed class AppKitPlatformRasterSurface : NSView
 {
     private readonly CAMetalLayer _metal;
+    private readonly CGColorSpace _colorSpace = CGColorSpace.CreateSrgb() ?? throw new InvalidOperationException("sRGB color space is unavailable.");
     private readonly SkiaGraphiteSession? _graphite;
     private readonly GRContext? _ganesh;
     private int _leases;
@@ -24,7 +25,7 @@ internal sealed class AppKitPlatformRasterSurface : NSView
         _metal = new CAMetalLayer
         {
             Device = device, PixelFormat = MTLPixelFormat.BGRA8Unorm, FramebufferOnly = false,
-            Opaque = false, PresentsWithTransaction = true,
+            Opaque = false, PresentsWithTransaction = true, ColorSpace = _colorSpace,
         };
         Layer = _metal;
         WantsLayer = true;
@@ -71,7 +72,7 @@ internal sealed class AppKitPlatformRasterSurface : NSView
         if (_leases == 0) Release();
     }
 
-    private void Release() { _graphite?.Dispose(); _metal.Dispose(); Dispose(); }
+    private void Release() { _graphite?.Dispose(); _metal.ColorSpace = null; _metal.Dispose(); _colorSpace.Dispose(); Dispose(); }
 
     internal sealed class RasterFrame(AppKitPlatformRasterSurface slot, ICAMetalDrawable drawable, int order) : IDisposable
     {

@@ -1,11 +1,15 @@
 using System.Text;
 using Doroti.Framework.Widgets;
+using Doroti.Framework.Services;
 using Doroti.Ui;
 using M = Doroti.Framework.Material;
 
 public static class PlatformEffectFixtureProbe
 {
+    public static DorotiView? Owner { get; internal set; }
     public static Action<int>? SetStage { get; internal set; }
+    public static Action<bool>? SetRasterSource { get; internal set; }
+    public static Action<PlatformEffectStyle>? SetStyle { get; internal set; }
     public static Action<double>? SetStrength { get; internal set; }
 }
 
@@ -17,8 +21,11 @@ internal sealed class PlatformEffectFixture : StatefulWidget
         private bool _blur = true, _block;
         private int _taps;
         private double _strength = .75;
+        private PlatformEffectStyle? _customStyle;
+        private bool _rasterSource;
         private bool _mounted = true, _second, _moved;
         private int _generation;
+        private WebViewController? _primaryController, _secondaryController;
         private static readonly byte[] Html = Encoding.UTF8.GetBytes("""
             <!doctype html><meta charset="utf-8"><style>
             body{margin:0;font:22px sans-serif;background:repeating-conic-gradient(#eee 0% 25%,#999 0% 50%) 0/40px 40px}
@@ -31,8 +38,13 @@ internal sealed class PlatformEffectFixture : StatefulWidget
             .Replace("#eee", "#ffeeaa").Replace("#999", "#dd9944").Replace("Native WebView2 text", "Second native WebView"));
         public override void dispose()
         {
+            PlatformEffectFixtureProbe.Owner = null;
             PlatformEffectFixtureProbe.SetStage = null;
             PlatformEffectFixtureProbe.SetStrength = null;
+            PlatformEffectFixtureProbe.SetStyle = null;
+            PlatformEffectFixtureProbe.SetRasterSource = null;
+            if (_primaryController is { } primary) _ = primary.DisposeAsync();
+            if (_secondaryController is { } secondary) _ = secondary.DisposeAsync();
             base.dispose();
         }
 
@@ -40,7 +52,9 @@ internal sealed class PlatformEffectFixture : StatefulWidget
         {
             if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_EVIDENCE")))
                 Environment.SetEnvironmentVariable("DOROTI_PLATFORM_EFFECT_PROBE_STATE", $"{_blur},{_block},{_taps}");
-            PlatformEffectFixtureProbe.SetStrength = strength => setState(() => _strength = strength);
+            PlatformEffectFixtureProbe.SetStrength = strength => setState(() => { _customStyle = null; _strength = strength; });
+            PlatformEffectFixtureProbe.SetRasterSource = value => setState(() => _rasterSource = value);
+            PlatformEffectFixtureProbe.SetStyle = style => setState(() => _customStyle = style);
             PlatformEffectFixtureProbe.SetStage = stage => setState(() =>
             {
                 _blur = stage != 1;
@@ -52,8 +66,16 @@ internal sealed class PlatformEffectFixture : StatefulWidget
                 _mounted = mounted;
             });
             var owner = View.of(context);
+            PlatformEffectFixtureProbe.Owner = owner;
             var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
                 DartUiInvocation.Managed("PlatformEffectFixture"));
+            if (OperatingSystem.IsMacOS())
+            {
+                if (_mounted) _primaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(Html)));
+                else if (_primaryController is { } primary) { _primaryController = null; _ = primary.DisposeAsync(); }
+                if (_mounted && _second) _secondaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(SecondHtml)));
+                else if (_secondaryController is { } secondary) { _secondaryController = null; _ = secondary.DisposeAsync(); }
+            }
             var request = new PlatformViewRequest(0, "doroti/webview", PlatformViewComposition.InterleavedComposition,
                 CreationParameters: Html);
             var descriptor = new PlatformViewDescriptor("doroti/webview", Html, PlatformViewStrategyPolicy.RequireRequested);
@@ -66,15 +88,22 @@ internal sealed class PlatformEffectFixture : StatefulWidget
                     new Text($"Foreground taps: {_taps}")]),
                 new SizedBox(width: 620, height: 400, child: new Stack(children: [
                     .. _mounted ? new Widget[] { new Positioned(left: 0, top: 0, width: 620, height: 400,
-                        child: new PlatformView(owner, descriptor, key: new Doroti.Framework.Foundation.ValueKey<int>(_generation))) } : [],
+                        child: _primaryController is { } primaryWeb
+                            ? new WebViewWidget(primaryWeb, key: new Doroti.Framework.Foundation.ValueKey<int>(_generation))
+                            : new PlatformView(owner, descriptor, key: new Doroti.Framework.Foundation.ValueKey<int>(_generation))) } : [],
                     .. _mounted && _second ? new Widget[] {
                         new Positioned(left: 70, top: 45, width: 180, height: 160, child: new Container(color: new Color(0xff00aa55))),
                         new Positioned(left: 210, top: 100, width: 310, height: 210,
-                            child: new PlatformView(owner, descriptor with { CreationParameters = SecondHtml },
+                            child: _secondaryController is { } secondWeb
+                            ? new WebViewWidget(secondWeb, key: new Doroti.Framework.Foundation.ValueKey<int>(-_generation - 1))
+                            : new PlatformView(owner, descriptor with { CreationParameters = SecondHtml },
                                 key: new Doroti.Framework.Foundation.ValueKey<int>(-_generation - 1))) } : [],
+                    .. _rasterSource ? new Widget[] { new Positioned(left: 0, top: 0, width: 620, height: 400,
+                        child: new Row(children: [new Expanded(child: new Container(color: new Color(0xff000000))),
+                            new Expanded(child: new Container(color: new Color(0xffffffff)))])) } : [],
                     new Positioned(left: _moved ? 180 : 130, top: _moved ? 100 : 65, width: 320, height: 210,
                         child: new PointerInterceptor(new PlatformEffect(
-                            style: new(Strength: _blur ? _strength : 0, Tint: 0x33ffffff),
+                            style: _blur ? _customStyle ?? new(Strength: _strength, Tint: 0x33ffffff) : new(Strength: 0, Tint: 0x33ffffff),
                             child: new Center(child: new Text("Sharp Doroti foreground"))), intercepting: _block)),
                     new Positioned(left: 190, top: 285, width: 240, height: 60,
                         child: new PointerInterceptor(new M.ElevatedButton(onPressed: () => setState(() => _taps++),
@@ -85,7 +114,26 @@ internal sealed class PlatformEffectFixture : StatefulWidget
                     new M.TextButton(onPressed: () => setState(() => _second = !_second), child: new Text("Second WebView")),
                     new M.TextButton(onPressed: () => setState(() => _moved = !_moved), child: new Text("Move effect")),
                     new M.TextButton(onPressed: () => setState(() => { _mounted = !_mounted; if (_mounted) _generation++; }),
-                        child: new Text(_mounted ? "Dispose WebViews" : "Create WebViews"))])
+                        child: new Text(_mounted ? "Dispose WebViews" : "Create WebViews"))]),
+                .. OperatingSystem.IsMacOS() ? new Widget[] {
+                    new Wrap(children: [
+                        new Text($"Blur radius: {(_customStyle?.Sigma ?? _strength * 16):0.0}"),
+                        new SizedBox(width: 200, child: new M.Slider(value: _customStyle?.Sigma ?? _strength * 16, max: 64,
+                            onChanged: radius => setState(() => _customStyle = (_customStyle ?? new(Strength: _strength, Tint: 0x33ffffff))
+                                with { Match = PlatformEffectMatchPolicy.ExactSigma, ExactSigma = radius }))),
+                        new Text($"Saturation: {(_customStyle?.Saturation ?? 1):0.0}"),
+                        new SizedBox(width: 160, child: new M.Slider(value: _customStyle?.Saturation ?? 1, max: 2,
+                            onChanged: saturation => setState(() => _customStyle = (_customStyle ?? new(Strength: _strength, Tint: 0x33ffffff))
+                                with { Saturation = saturation }))),
+                        new Text($"Tint opacity: {((_customStyle?.Tint ?? 0x33ffffff) >> 24) / 255.0:0.00}"),
+                        new SizedBox(width: 150, child: new M.Slider(value: ((_customStyle?.Tint ?? 0x33ffffff) >> 24) / 255.0,
+                            onChanged: opacity => setState(() => {
+                                var style = _customStyle ?? new PlatformEffectStyle(Strength: _strength, Tint: 0x33ffffff);
+                                _customStyle = style with { Tint = (style.Tint & 0x00ffffff) | ((uint)Math.Round(opacity * 255) << 24) };
+                            }))),
+                        new M.TextButton(onPressed: () => setState(() => _customStyle = (_customStyle ?? new(Strength: _strength)) with { Tint = 0 }), child: new Text("Clear tint")),
+                        new M.TextButton(onPressed: () => setState(() => _customStyle = (_customStyle ?? new(Strength: _strength)) with { Tint = 0x443c82f6 }), child: new Text("Blue tint"))])
+                } : []
             ]));
         }
     }

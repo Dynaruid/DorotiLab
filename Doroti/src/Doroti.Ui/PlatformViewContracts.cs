@@ -25,7 +25,7 @@ public sealed record PlatformViewSupport(
     PlatformViewComposition Composition, PlatformViewEffects Effects,
     bool CaptureIncludesNative = false, bool GestureMediation = false,
     bool Accessibility = false, bool SynchronizedPlacement = false, string? Reason = null,
-    bool NativeBackdropBlur = false, PlatformViewCapabilities? Capabilities = null);
+    bool NativeBackdropBlur = false, PlatformViewCapabilities? Capabilities = null, bool WebViewCommands = false);
 
 /// <summary>Column-vector 2D affine transform in logical pixels.</summary>
 public readonly record struct PlatformViewTransform(double M11, double M12, double M21, double M22, double Dx, double Dy)

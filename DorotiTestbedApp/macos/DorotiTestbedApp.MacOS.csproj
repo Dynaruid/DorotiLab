@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
   <PropertyGroup>
-    <TargetFramework>net10.0-macos</TargetFramework>
+    <DorotiMacOSTargetFramework Condition="'$(DorotiMacOSTargetFramework)' == ''">net10.0-macos</DorotiMacOSTargetFramework>
+    <TargetFramework>$(DorotiMacOSTargetFramework)</TargetFramework>
     <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
     <AssemblyName>DorotiTestbedApp.MacOS</AssemblyName>
     <RootNamespace>DorotiTestbedApp.MacOS</RootNamespace>
@@ -23,7 +24,7 @@
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiTestbedApp.MacOS.Native.csproj" />
     <DorotiTargetDescriptor Include="macOS" HostKind="Maui" NativeEntryKind="AppKit-Main"
-        RuntimeIdentifier="osx-arm64" TargetFramework="net10.0-macos"
+        RuntimeIdentifier="osx-arm64" TargetFramework="$(DorotiMacOSTargetFramework)"
         TargetPackage="Doroti.Target.MacOS.Maui.osx-arm64" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Target.MacOS.Maui.osx-arm64\Doroti.Target.MacOS.Maui.osx-arm64.csproj" />
   </ItemGroup>

@@ -1813,7 +1813,7 @@ public sealed partial class SkiaSceneRenderer :
         }
         if (filter.Matrix4 is not null)
             return SKImageFilter.CreateMatrix(ToMatrix(filter.Matrix4), ToSamplingOptions(filter.FilterQuality), null);
-        return SKImageFilter.CreateBlur(
+        var blur = SKImageFilter.CreateBlur(
             (float)filter.SigmaX,
             (float)filter.SigmaY,
             filter.TileMode switch
@@ -1823,6 +1823,20 @@ public sealed partial class SkiaSceneRenderer :
                 TileMode.decal => SKShaderTileMode.Decal,
                 _ => SKShaderTileMode.Clamp,
             });
+        if (filter.PlatformEffectIntent is not { Saturation: not 1 } intent) return blur;
+        // Raster-only PlatformEffect uses the same intent. Native adapters negotiate
+        // saturation separately in the planner; no backend silently drops it.
+        var saturation = (float)intent.Saturation;
+        var red = .2126f * (1 - saturation);
+        var green = .7152f * (1 - saturation);
+        var blue = .0722f * (1 - saturation);
+        using (blur)
+        using (var color = SKColorFilter.CreateColorMatrix([
+            red + saturation, green, blue, 0, 0,
+            red, green + saturation, blue, 0, 0,
+            red, green, blue + saturation, 0, 0,
+            0, 0, 0, 1, 0]))
+            return SKImageFilter.CreateColorFilter(color, blur);
     }
 
     private SKShader ToShader(ShaderSnapshot value) => value switch

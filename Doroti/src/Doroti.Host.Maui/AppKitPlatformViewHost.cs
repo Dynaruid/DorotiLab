@@ -46,6 +46,8 @@ internal sealed class AppKitPlatformViewHost : IDisposable
     private PlatformViewPlacement[] _placements = [];
     private readonly List<AppKitPlatformRasterSurface> _rasters = [];
     private readonly List<ShieldView> _shields = [];
+    private readonly List<AppKitPlatformBlurView> _effects = [];
+    private PlatformBackdropSegment[] _visibleEffects = [];
     private PlatformInputShield[] _visibleShields = [];
     private (AppKitPlatformRasterSurface Slot, int Order)[] _visibleRasters = [];
     private PreparedFrame? _pending;
@@ -54,9 +56,13 @@ internal sealed class AppKitPlatformViewHost : IDisposable
     internal AppKitPlatformViewHost(DorotiMacOSMetalSurface surface, MauiTextInputBridge textInput)
     { _surface = surface; _textInput = textInput; }
 
-    internal IEnumerable<IPlatformViewFactory> CreateFactories() =>
+    internal IEnumerable<IPlatformViewFactory> CreateFactories(Func<IApplicationResourceHostCapability> resources) =>
     [new AppKitPlatformViewFactory(GetContainer, false, _textInput.YieldMacOSNativeFocus, RestoreFocus, interleaved: true),
-     new AppKitPlatformViewFactory(GetContainer, true, _textInput.YieldMacOSNativeFocus, RestoreFocus, interleaved: true)];
+     new AppKitPlatformViewFactory(GetContainer, true, _textInput.YieldMacOSNativeFocus, RestoreFocus, interleaved: true),
+     new AppKitPlatformViewFactory(GetContainer, "doroti/webview", _textInput.YieldMacOSNativeFocus, RestoreFocus, interleaved: true, resources: resources)];
+
+    internal bool HasComposition => _placements.Length != 0 || _visibleRasters.Length != 0 ||
+        _visibleShields.Length != 0 || _visibleEffects.Length != 0 || _pending is not null;
 
     internal void Configure(PlatformViewCoordinator coordinator) => _coordinator = coordinator;
 
@@ -100,20 +106,25 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         CancelPending();
         _brightness = brightness;
         var coordinator = _coordinator ?? throw new InvalidOperationException("AppKit PlatformView coordinator is missing.");
-        if (_placements.Length == 0 && _visibleRasters.Length == 0 && _visibleShields.Length == 0 && !HasPlatformCommands(commands))
+        if (_placements.Length == 0 && _visibleRasters.Length == 0 && _visibleShields.Length == 0 && _visibleEffects.Length == 0 && !HasPlatformCommands(commands))
         {
             renderer.DrawPlatformRasterSegment(canvas, commands, width, height);
             return;
         }
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
             ++_compositionFrame, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
-        var plan = PlatformCompositionPlanner.Build(commands, token, coordinator, PlatformViewComposition.InterleavedComposition);
+        var plan = PlatformCompositionPlanner.Build(commands, token, coordinator, PlatformViewComposition.InterleavedComposition, AppKitPlatformBlurView.Support);
         var frames = new List<AppKitPlatformRasterSurface.RasterFrame>();
+        var gpuLeases = new List<IDisposable>();
         try
         {
             if (plan.Parts.OfType<PlatformShieldSegment>().Any(part => !part.Shield.Transform.IsAxisAligned))
                 throw new InvalidOperationException("AppKit input shields require axis-aligned rectangular bounds.");
+            foreach (var part in plan.Parts.OfType<PlatformNativeSegment>()) gpuLeases.Add(coordinator.Retain(part.Placement.Handle));
+            foreach (var effect in plan.Parts.OfType<PlatformBackdropSegment>()) AppKitPlatformBlurView.Validate(effect);
             var segments = plan.Parts.OfType<PlatformRasterSegment>().ToArray();
+            if (checked((long)width * height * 4 * 3 * Math.Max(_rasters.Count, segments.Length - 1)) > 256L * 1024 * 1024)
+                throw new NotSupportedException("AppKit platform raster storage exceeds 256 MiB.");
             renderer.DrawPlatformRasterSegment(canvas, segments[0].Commands, width, height);
             var native = _surface.NativeView!;
             for (var index = 1; index < segments.Length; index++)
@@ -121,9 +132,9 @@ internal sealed class AppKitPlatformViewHost : IDisposable
                 if (_rasters.Count < index) _rasters.Add(native.CreatePlatformRasterSurface());
                 frames.Add(_rasters[index - 1].Prepare(renderer, segments[index], width, height, descriptor.DeviceScaleX));
             }
-            _pending = new PreparedFrame(this, plan, frames.ToArray());
+            _pending = new PreparedFrame(this, plan, frames.ToArray(), gpuLeases.ToArray());
         }
-        catch { foreach (var frame in frames) frame.Dispose(); plan.Dispose(); throw; }
+        catch { foreach (var frame in frames) frame.Dispose(); foreach (var lease in gpuLeases) lease.Dispose(); plan.Dispose(); throw; }
     }
 
     private static bool HasPlatformCommands(IReadOnlyList<SceneCommand> commands, int depth = 0)
@@ -173,7 +184,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         _overlay?.Window?.RecalculateKeyViewLoop();
     }
 
-    private void ApplyLayers((AppKitPlatformRasterSurface Slot, int Order)[] rasters, PlatformInputShield[] shields)
+    private void ApplyLayers((AppKitPlatformRasterSurface Slot, int Order)[] rasters, PlatformInputShield[] shields, PlatformBackdropSegment[] effects)
     {
         var parent = GetContainer();
         foreach (var slot in _rasters) slot.Hidden = true;
@@ -206,18 +217,44 @@ internal sealed class AppKitPlatformViewHost : IDisposable
             view.Layer!.ZPosition = shield.PaintOrder;
             view.Hidden = false;
         }
+        while (_effects.Count < effects.Length)
+        {
+            var view = new AppKitPlatformBlurView();
+            _effects.Add(view); parent.AddSubview(view);
+        }
+        for (var index = 0; index < _effects.Count; index++)
+        {
+            var view = _effects[index];
+            if (index >= effects.Length) { view.Deactivate(); continue; }
+            view.Hidden = false;
+            var effect = effects[index];
+            var bounds = effect.Bounds.intersect(Rect.fromLTWH(0, 0, parent.Bounds.Width, parent.Bounds.Height));
+            view.Frame = new CGRect(bounds.left, bounds.top, Math.Max(0, bounds.width), Math.Max(0, bounds.height));
+            view.Layer!.ZPosition = effect.PaintOrder;
+            view.SetEffect(effect);
+        }
+        // Core Image samples AppKit sibling order as well as CALayer order.
+        NSView? previous = null;
+        foreach (var child in parent.Subviews.OrderBy(child => child.Layer?.ZPosition ?? 0))
+        {
+            parent.AddSubview(child, NSWindowOrderingMode.Above, previous);
+            previous = child;
+        }
+        _visibleEffects = effects;
         _visibleRasters = rasters;
         _visibleShields = shields;
     }
 
     internal sealed class PreparedFrame(AppKitPlatformViewHost host, PlatformCompositionPlan plan,
-        AppKitPlatformRasterSurface.RasterFrame[] frames) : IDisposable, IPreparedPlatformComposition
+        AppKitPlatformRasterSurface.RasterFrame[] frames, IDisposable[] gpuLeases) : IDisposable, IPreparedPlatformComposition
     {
         private readonly PlatformViewPlacement[] _previous = host._placements;
         private readonly (AppKitPlatformRasterSurface Slot, int Order)[] _previousRasters = host._visibleRasters;
         private readonly PlatformInputShield[] _previousShields = host._visibleShields;
+        private readonly PlatformBackdropSegment[] _previousEffects = host._visibleEffects;
         private readonly PlatformViewPlacement[] _next = plan.Parts.OfType<PlatformNativeSegment>().Select(part => part.Placement).ToArray();
         private bool _committed;
+        private bool _disposed;
         private bool _sessionOwned;
         private readonly TaskCompletionSource _retired = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public Task Retirement => _retired.Task;
@@ -250,7 +287,8 @@ internal sealed class AppKitPlatformViewHost : IDisposable
             {
                 host.Apply(_next);
                 host.ApplyLayers(frames.Select(frame => (frame.Slot, frame.PaintOrder)).ToArray(),
-                    plan.Parts.OfType<PlatformShieldSegment>().Select(part => part.Shield).ToArray());
+                    plan.Parts.OfType<PlatformShieldSegment>().Select(part => part.Shield).ToArray(),
+                    plan.Parts.OfType<PlatformBackdropSegment>().ToArray());
                 _committed = true;
             }
             catch { Rollback(); throw; }
@@ -259,7 +297,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         {
             // Include partially applied new attachments when restoring the old frame.
             host._placements = _next;
-            try { host.Apply(_previous); host.ApplyLayers(_previousRasters, _previousShields); }
+            try { host.Apply(_previous); host.ApplyLayers(_previousRasters, _previousShields, _previousEffects); }
             catch
             {
                 // A concurrent disposal can make rollback impossible. Hide the batch instead of
@@ -272,8 +310,10 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         }
         public void Dispose()
         {
+            if (_disposed) return;
+            _disposed = true;
             try { foreach (var frame in frames) frame.Dispose(); }
-            finally { _retired.TrySetResult(); if (!_sessionOwned) plan.Dispose(); }
+            finally { foreach (var lease in gpuLeases) lease.Dispose(); _retired.TrySetResult(); if (!_sessionOwned) plan.Dispose(); }
         }
         // Native/GPU resources are retired by the product frame owner above.
         public ValueTask DisposeAsync() => ValueTask.CompletedTask;
@@ -297,6 +337,9 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         _rasters.Clear();
         foreach (var shield in _shields) { shield.RemoveFromSuperview(); shield.Dispose(); }
         _shields.Clear();
+        foreach (var effect in _effects) { effect.RemoveFromSuperview(); effect.Dispose(); }
+        _effects.Clear();
+        _visibleEffects = [];
         _visibleRasters = [];
         _visibleShields = [];
         _overlay?.RemoveFromSuperview();

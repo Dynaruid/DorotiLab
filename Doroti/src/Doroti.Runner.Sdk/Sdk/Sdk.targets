@@ -74,7 +74,7 @@
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'MacCatalyst'">net10.0-maccatalyst</_DorotiExpectedNativeBindingTfm>
-    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'macOS'">net10.0-macos</_DorotiExpectedNativeBindingTfm>
+    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'macOS'">$(TargetFramework)</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'Android'">AndroidGradleProject</_DorotiExpectedNativeBuildItem>
     <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'macOS'">XcodeProject</_DorotiExpectedNativeBuildItem>
   </PropertyGroup>

@@ -86,6 +86,7 @@ public sealed class DorotiApplicationBoundary : IDisposable
     }
 
     public DorotiApplicationManifest Manifest { get; }
+    public IApplicationResourceHostCapability ApplicationResources => _resources;
 
     public static DorotiApplicationBoundary Load(
         Assembly applicationAssembly,

@@ -125,7 +125,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 _application.LaunchContext.RuntimeIdentifier,
                 _application.NativePluginHandlers
 #if MACOS
-                , appKitSurface.PlatformViews.CreateFactories()
+                , appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
 #if ANDROID
                 , androidPlatformViews?.CreateFactories()

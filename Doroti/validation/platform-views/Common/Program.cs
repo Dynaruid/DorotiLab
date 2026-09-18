@@ -141,6 +141,28 @@ await Check("native effect intent survives retained scene planning", async () =>
         Assert(effect.SampleBounds.left < effect.Bounds.left);
     }
 });
+await Check("native saturation is negotiated and supports zero-radius color adjustment", async () =>
+{
+    await using var owner = Owner(13);
+    var handle = await owner.CreateAsync(new PlatformViewRequest(1, "test", PlatformViewComposition.InterleavedComposition));
+    foreach (var sigma in new[] { 0.0, 8.0 })
+    {
+        var builder = new SceneBuilder(13);
+        builder.addPlatformView(handle, width: 100, height: 100);
+        builder.pushClipRect(Rect.fromLTWH(10, 10, 50, 50));
+        builder.pushBackdropFilter(new ImageFilter(sigma, sigma) {
+            PlatformEffectIntent = new(Match: PlatformEffectMatchPolicy.ExactSigma, ExactSigma: sigma, Saturation: 0) });
+        builder.pop(); builder.pop();
+        using var scene = builder.build();
+        await Reject(() => {
+            using var rejected = PlatformCompositionPlanner.Build(scene, new(13, 0, 1, 0), owner, effects: new(true, 1, 64));
+            return Task.CompletedTask;
+        });
+        using var plan = PlatformCompositionPlanner.Build(scene, new(13, 0, 2, 0), owner, effects: new(true, 1, 64, true));
+        var effect = plan.Parts.OfType<PlatformBackdropSegment>().Single();
+        Assert(effect.SigmaX == sigma && effect.Style?.Saturation == 0);
+    }
+});
 Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { status = "PASS", scope = "common-contract-fixture", tests = passed }));
 
 async Task Check(string name, Func<Task> test) { await test(); passed.Add(name); }

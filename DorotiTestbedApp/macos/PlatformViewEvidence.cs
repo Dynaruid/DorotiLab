@@ -16,6 +16,11 @@ internal static class PlatformViewEvidence
         if (string.IsNullOrWhiteSpace(path)) return;
         try
         {
+            if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "platform-effects")
+            {
+                await MacOSWebViewEvidence.CaptureAsync(path);
+                return;
+            }
             if (Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_COMPOSITION") == "interleaved")
             {
                 await CaptureInterleavedAsync(path);

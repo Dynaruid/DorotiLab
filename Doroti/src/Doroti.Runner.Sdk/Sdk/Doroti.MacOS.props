@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <DorotiMacOSProfileImported>true</DorotiMacOSProfileImported>
+    <DorotiMacOSTargetFramework Condition="'$(DorotiMacOSTargetFramework)' == ''">net10.0-macos</DorotiMacOSTargetFramework>
+  </PropertyGroup>
+  <!-- Explicit Xcode 27 profile; the SDK's version validation remains enabled. -->
+  <PropertyGroup Condition="'$(DorotiMacOSTargetFramework)' == 'net10.0-macos27.0'">
+    <NoWarn>$(NoWarn);XCODE_27_0_PREVIEW</NoWarn>
+  </PropertyGroup>
+</Project>
