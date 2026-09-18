@@ -1,8 +1,8 @@
 # WebView 작업계획 — 재구성 PlatformView 소비자
 
-2026-09-14 · 기준 HEAD `227a0b4c7c9534aff2cf2c9edb5b038c9d2656cc`.
+2026-09-18 개정 · 2026-09-14 초기 계획과 이후 work1 구현·검증 결과 반영.
 
-**WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 변경은 문서 재구성이며 제품 WebView adapter를 구현하지 않았다. 단계는 `TODO`, 제품 기능 검증은 `notVerified`다.
+**WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 개정은 문서 수정이다. 최소 WebView attachment·효과 fixture의 구현/검증은 아래 상태표대로 인정하며, 전용 controller·navigation/JS/profile 등의 공개 제품 API 완료와 구분한다. 전체 상태는 `PARTIAL`, 미구현 기능 단계는 `TODO`, 미실행 기능 검증은 `notVerified`다.
 
 이전 WV-0~WV-9/WV-X 상세 요구는 [원본](history/26-09-14/platformview-rearchitecture/work2.original.md)에 보존했다. 새 계획은 그 기능 범위를 유지하고, Linux **Qt Quick 제품 합성 + 시스템 Qt WebEngine**에 맞춰 표시 접점·선행 조건을 수정한다. 예전 Widgets 우선·Qt callback ABI 3·부재 `ref.md` 전제를 현재 기준으로 사용하지 않는다.
 
@@ -53,19 +53,30 @@ WebView가 별도 native ID registry·compositor·gesture shield를 만들지 �
 
 주 기능 레퍼런스는 [flutter_inappwebview widget](reference/flutter_inappwebview-master/flutter_inappwebview/lib/src/in_app_webview/in_app_webview.dart), [controller interface](reference/flutter_inappwebview-master/flutter_inappwebview_platform_interface/lib/src/in_app_webview/platform_inappwebview_controller.dart), [Windows adapter](reference/flutter_inappwebview-master/flutter_inappwebview_windows/windows/in_app_webview/in_app_webview.cpp), [Web element](reference/flutter_inappwebview-master/flutter_inappwebview_web/lib/web/in_app_web_view_web_element.dart)다. 로컬 pubspec의 `6.2.0-beta.3`는 참조 스냅샷 버전이며 최신 release나 Doroti 검증 버전이 아니다.
 
-현재 generic native controls의 B/C와 Qt WebEngine 독립 probe에 관한 기록이 있지만 `Doroti/src`의 WebView 제품 구현을 확인하지 못했다. generic control 생성·iframe load·Qt probe를 WebView API/합성/JS/profile 제품 완료로 계산하지 않는다. 과거 증거 부재는 work1 상태표를 따른다.
+Windows의 `WindowsWebViewComposition`, iOS/Android factory의 `doroti/webview`, Linux WebEngine Quick attachment와 Web DOM effect adapter가 존재한다. WindowsAppSDK·Qt Quick·iOS Graphite에는 실제 WebView/효과 결합의 제한 실행 증거가 있다. 이를 재사용하되 전용 WebView controller·navigation/document·JS bridge·profile API의 완료로 확대하지 않는다. 현재 상태의 근거는 [work1 현재 상태](work1.md#2-현재-구현과-검증-상태)와 [지원표](Doroti/docs/platform-views/support-matrix.md)다.
 
-| backend | native 기능 adapter / 표시 접점 | 공통 PlatformView 의존성 |
+| backend | 현재 attachment / 효과 상태 | work2 구현 및 work1 의존성 |
 |---|---|---|
-| WindowsAppSdk | CoreWebView2CompositionController + 호환 raster/effect visual | controller는 고정. GPU/기타 raster 전송은 제품 결과로 선택. 현재 layered BUTTON/EDIT C와 호환을 가정하지 않음 |
-| Windows MAUI | 동일 CoreWebView2CompositionController 기능 adapter, runner 결합 별도 | MAUI presenter와 RootVisualTarget/input 연결 검증 |
-| Android | `android.webkit.WebView` + 플랫폼별 선택 전략 | hierarchy/live texture/bounded readback/HCPP 대응 후보 비교. 실제 subtree/OS/provider의 입력·효과·성능 검증 |
-| iOS / Mac Catalyst | WKWebView / UIView | UIKit R5 및 runner별 R4/R7 |
-| AppKit | WKWebView / NSView | AppKit R5 및 responder/IME/semantics |
-| Web | iframe / main DOM / CSS backdrop effect | R5 multi-canvas와 R-E CSS effect 제품 연결, 협력 가능 origin 범위의 입력/JS |
-| Linux | 시스템 Qt WebEngine Quick / 같은 QQuickWindow의 item | Quick attachment·graphics backend 공존 spike, X11/Wayland별 R5 |
+| WindowsAppSDK | CompositionController·호환 raster/effect tree 구현, 제한 live source·입력·수명 검증 | 기존 controller/attachment 재사용. WV-1/2의 공개 기능·문서/profile·배포 연결, HWND 경로와 혼합 제한 유지 |
+| Windows MAUI | 동일 controller 필수이나 runner 결합 별도 | MAUI presenter·RootVisualTarget/input/effect 연결부터 별도 검증 |
+| Android | native WebView factory·제한 backdrop 코드 및 host 빌드 | 실제 provider에서 live WebView sample·입력/효과 검증이 선행. WV-4 기능 API 별도 |
+| iOS UIKit Graphite | WKWebView+Metal+공개 animator 효과 구현, 현재 iOS 27 Simulator 픽셀/복귀/수명·보정 통과 | WV-5에서 기존 인스턴스 재사용, controller/delegate/JS/profile 기능 추가. 현행 효과 실기기/NativeAOT 미승인 |
+| Mac Catalyst / iOS Ganesh | iOS Graphite와 별도 runner | attachment/effect 지원·실행을 별도로 구현/확인. iOS 증거 전용 금지 |
+| AppKit | NSView/Metal 및 창 배경 BehindWindow 구현, inline PlatformEffect Unsupported | work1 R5/R6/FX2-A의 최소 WKWebView+WithinWindow adapter와 WV-6 기능 계약 연결 |
+| Web | protocol v2/CSS backdrop-filter adapter·독립 DOM harness 존재 | work1 R5/FX3의 main DOM·worker multi-canvas ACK/자원 수명 제품 연결, WV-3의 iframe/협력 bridge 기능 |
+| Linux Qt Quick | 실제 WebEngine Quick attachment·GPU Gaussian 효과·XWayland/Wayland 제한 검증 | 기존 startup/ABI/attachment 활용. WV-7의 navigation/JS/profile/content API와 배포·성능 마감 |
 
 Qt Widgets/QWebEngineView는 기존 B probe·제한 경로로 남긴다. Quick Controls C가 WebEngine Quick C를 보장하지 않는다. Qt WebView wrapper 대신 WebEngine 직접 adapter와 C ABI를 사용한다. Qt WebEngine은 Widgets/Quick 접점을 구분하므로 현재 Quick host에 맞는 접점을 검증한다. [Qt WebEngine overview](https://doc.qt.io/qt-6/qtwebengine-overview.html), [Qt WebView 문서](https://doc.qt.io/qt-6/qtwebview-index.html)
+
+### 2.1 다음 실행과 재사용 범위
+
+1. **WV-0/1:** 이미 있는 factory·SDK instance·공통 handle을 조사해 공개 controller/기능표를 연결한다. 별도 인스턴스나 compositor를 새로 만들지 않는다. 최소 attachment probe는 WV-1 전체 구현 완료를 기다리지 않고 work1과 함께 진행한다.
+2. **AppKit / WV-6:** work1이 최소 WKWebView attachment·inline effect를 구현하고, work2는 configuration/data store/delegate·탐색/JS/profile 계약을 같은 인스턴스에 붙인다. 기존 창 배경 blur를 완료 근거로 사용하지 않는다.
+3. **Web / WV-3:** 기존 CSS adapter를 재구현하지 않고 제품 main DOM/worker 경로에 연결한다. 실제 iframe blur·sharp child·identity·ACK/close를 먼저 확인하고 same-origin/협력 bridge 기능을 추가한다.
+4. **Android / WV-4:** 기존 source와 실제 실행을 대조해 native WebView animation/scroll·effect pixels·입력/IME·provider 제약을 검증한다. 실행 실패가 확인된 부분에 한해 전략/adapter를 수정한다.
+5. **WindowsAppSDK·iOS·Qt Quick:** 기존 합성 fixture를 활용해 WV-2/5/7의 기능 API와 WV-8/9 잔여 항목을 마감한다. macOS/Catalyst/Windows MAUI 등 다른 runner의 PASS로 전용하지 않는다.
+
+현재 iOS 효과는 fixed Light + `UIViewPropertyAnimator.FractionComplete`이며 `Strength`는 재질 강도다. intrinsic tint가 남고 정확한 Gaussian 반경/ExactSigma는 제공하지 않는다. 전체 interpreter GC 실패에 대한 iOS 27 Debug 기본값은 `all,-Doroti.Host.Maui`이며 이는 **Mono AOT 호스트 + 나머지 interpreter** 조합이다. NativeAOT·현행 실기기 검증과 구분하고 [iOS 재현 명령](Doroti/validation/platform-views/ios/README.md)을 사용한다.
 
 ## 3. 공통 API와 수명 계약
 
@@ -110,7 +121,7 @@ Web cross-origin iframe에는 임의 JS/history/cookie·navigation interception�
 
 ### WV-H — 플랫폼별 전략 + 공통 PlatformEffect 조기 결합 gate
 
-선행: work1 R1/R3 계약. 최소 native SDK probe는 WV-0와 함께 시작하며 최종 제품 승인은 해당 R6/R-E와 WV-2~WV-7 구현 뒤에 수행한다. 새 상태 `TODO`/`notVerified`.
+선행: work1 R1/R3 계약. 최소 native SDK probe는 WV-0와 함께 시작하며 최종 제품 승인은 해당 R6/R-E와 WV-2~WV-7 구현 뒤에 수행한다. 현재 `PARTIAL`: WindowsAppSDK·Qt Quick·iOS Graphite의 제한 결합 결과를 재사용한다. AppKit 구현, Web 제품 연결, Android live source 검증 및 각 backend 공개 기능 결합은 남아 있다.
 
 WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻하지 않는다. 후보별 기능/입력·시각 fidelity를 먼저 확인한 뒤 성능·메모리·안정성을 비교한다.
 
@@ -118,7 +129,8 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 |---|---|---|
 | Android | hierarchy·live texture·bounded readback·HCPP 후보로 동일 WebView+effect 장면 비교 | source sample/입력/예산 불충족 후보 제외. 충족한 다른 전략으로 선택 가능 |
 | Windows | CoreWebView2CompositionController RootVisualTarget + raster/effect visual의 호환 tree·전송 방식 | controller 선택 유지. API 객체 혼용 또는 host backdrop만 성공하면 결합 미완료 |
-| UIKit/AppKit | WKWebView + 공통 effect intent의 public material/blur/tint 매핑 + 선명한 전경 | 강도/색감 유사성과 source 검증. native alpha/mask/겹침 제약은 다른 lowering 또는 명시적 제한, private CAFilter 사용 안 함 |
+| iOS UIKit Graphite | 기존 WKWebView+Metal+Light preset/animator 효과를 WV-5 기능 API와 결합 | 현재 simulator 강도/테마/복귀 결과 재사용. preset tint 잔존·ExactSigma 미지원 유지, 현행 실기기/NativeAOT·E3 별도 |
+| AppKit | 최소 WKWebView+NSVisualEffectView WithinWindow+Metal 전경 신규 연결 | BehindWindow·Skia-only 블러로 승인하지 않음. sample/강도·테마/입력·수명 불충족은 명시적 제한 |
 | Linux Quick | 같은 QQuickWindow의 WebEngine item·GPU raster를 live source로 sample, effect/child 제외 | GPU backend 불일치·sample 누락·recursive feedback이면 미완료. QWidget B로 대체하지 않음 |
 | Web | canvas/iframe/effect DOM/foreground 순서, CSS backdrop root, pointer pass-through | CSS.supports만 성공하거나 iframe pixels가 실제로 흐려지지 않으면 미승인. cross-origin JS를 요구하지 않음 |
 
@@ -130,7 +142,7 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 - backend별 기능표에 SDK API/버전·thread·callback·지원/조건/미지원·검증 fixture를 연결한다. wrapper 이름만으로 기능 동등성을 정하지 않는다.
 - 공개 API/프로젝트·TFM·NativeAOT 직렬화 전략, OS/RID/runtime/provider 최소 범위를 고정한다. 새 계획 작성 중에는 SDK 지원 버전을 임의 승격하지 않는다.
-- Windows composition visual과 Linux Quick item의 최소 실제 WebView attach probe를 조기에 수행한다. 결과로 work1 attachment 계약을 보정한다.
+- 기존 Windows composition visual·iOS UIView·Linux Quick item의 실제 WebView attachment/fixture를 재사용한다. AppKit 최소 WKWebView와 Web 제품 연결의 새 probe 결과로 work1 attachment 계약을 보정한다.
 - WV-H에서 각 backend의 후보 전략과 effect source·공통 비주얼을 함께 검증한다. Android는 같은 scene으로 입력/효과/비용을 비교하고 HCPP 채택 필요성을 판단한다.
 - local HTML fixture에 navigation/redirect/history, JS 왕복, editable/IME, media, popup/permission, profile data를 준비한다. 0/1/4 view·두 owner·route lifecycle 기준을 연결한다.
 
@@ -148,7 +160,7 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 ### WV-2 — Windows CoreWebView2CompositionController
 
-선행: WV-1 + WV-H 조기 probe 및 work1 Windows R6/R-E attachment/commit 계약. Windows MAUI는 별도 gate다.
+선행: WV-1 + WV-H 및 work1 Windows R6/R-E attachment/commit 계약. WindowsAppSDK의 기존 CompositionController 구현·제한 실행 증거를 출발점으로 공개 API를 연결한다. Windows MAUI는 별도 gate다.
 
 - STA/UI dispatcher에서 CoreWebView2Environment와 profile options를 준비하고 `CreateCoreWebView2CompositionControllerAsync(parentHwnd[, options])`로 생성한다. owner별 controller를 보존하고 runtime 부재·생성 실패·생성 중 close/late completion을 구분한다.
 - `RootVisualTarget`를 host 소유 visual에 연결한다. 위치/transform/clip/z-order와 `Bounds`·DPI/rasterization scale의 의미를 맞춘다. parent HWND는 owner 수명과 입력 접점이며 windowed WebView의 표시 경로로 사용하지 않는다. resize/순서 변경만으로 controller를 재생성하지 않는다.
@@ -166,12 +178,12 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 ### WV-3 — Web iframe
 
-선행: WV-1 + work1 R5 Web 제품 연결, R6 browser compositor 계약 및 R-E CSS effect.
+선행: WV-1 + work1 R5 Web 제품 연결, R6 browser compositor 계약 및 R-E FX3. protocol v2/CSS adapter와 DOM harness는 존재하며 제품 연결·실제 iframe 효과 검증이 남아 있다.
 
 - main DOM factory와 stable iframe을 typed handle에 연결하고 navigation 시 src/document revision을 관리한다. 위치/순서 변경 때 iframe reparent/recreate로 state를 잃지 않는다.
 - cross-origin·same-origin·협력 bridge를 기능표로 나눈다. unknown progress/history·JS unsupported를 정직하게 반환한다.
 - worker-direct WebGPU/WebGL, multi-canvas·shield·DOM focus·2 owner·DPR·context loss·stale packet을 실제 제품에서 확인한다.
-- main DOM effect element를 iframe 뒤·Doroti child 앞에 배치한다. source iframe은 이동/가림 때 재생성하지 않는다. backdrop root·ancestor opacity·rounded clip·cross-origin iframe/영상과 browser별 실제 sample을 확인한다. 효과는 기본 pointer-events none이며 필요한 전경 입력은 기존 shield로 보호한다.
+- main DOM effect element를 **source iframe 위·선명한 Doroti child 아래**에 배치한다. source iframe은 이동/가림 때 재생성하지 않는다. backdrop root·ancestor opacity·rounded clip·cross-origin iframe/영상과 browser별 실제 sample을 확인한다. 효과는 기본 pointer-events none이며 필요한 전경 입력은 기존 shield로 보호한다.
 
 완료: load·identity·선택 bridge·origin 거부·modal·dispose 기능이 제품에서 동작한다. 독립 web-dom harness와 iframe load만으로 gate를 닫지 않는다.
 
@@ -179,7 +191,7 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 선행: WV-1 + work1 R4/R5/R6 Android 및 R-E, WV-H의 전략/효과 조기 비교.
 
-- 실제 WebView factory·UI lifecycle·provider feature query·설정·앱 콘텐츠·navigation/JS를 구현한다. cookie/profile 격리 제약을 공개한다.
+- 기존 WebView factory·UI lifecycle을 재사용하고 provider feature query·설정·앱 콘텐츠·navigation/JS를 연결한다. host 빌드와 실제 WebView sampling 결과는 별도로 기록한다. cookie/profile 격리 제약을 공개한다.
 - native-origin 부모 scroll와 WebView 내부 scroll/selection·pinch, IME·autofill·accessibility, media/SurfaceView 자식의 representation 제약을 검증한다.
 - rotate/insets/background/resume·renderer process 종료·owner close를 재현한다. API/ABI/provider별 feature와 실제 device 결과를 남긴다.
 - WebView 생성 시 PlatformPreferred 정책으로 후보를 협상한다. 선택한 hierarchy/texture/transfer 경로를 제품에 연결해 blur source·공통 비주얼·입력·성능을 검증한다. SurfaceControl/HCPP는 유리할 때만 채택한다. 일반 View.Draw 또는 API31 cross-window blur 성공을 inline backdrop 지원으로 계산하지 않는다.
@@ -188,25 +200,27 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 ### WV-5 — UIKit iOS / Mac Catalyst
 
-선행: WV-1 + work1 UIKit R4/R5/R6/R-E.
+선행: WV-1 + work1 UIKit R4/R5/R6/FX2-I. iOS Graphite의 기존 WKWebView·공개 animator/Scene 경로를 재사용한다. Catalyst와 iOS Ganesh는 별도 adapter/실행 범위다.
 
 - WKWebView configuration/data store/script message handler·navigation delegate·scheme handler를 생성 전에 설정한다. UIView attachment·async callback·handler retain cycle·dispose를 연결한다.
 - native gesture/scroll/selection·키보드 inset·한글 IME·focus·VoiceOver·mixed foreground를 검증한다. group effects는 지원표대로 처리한다.
-- UIVisualEffectView 등의 public material/blur·tint를 공통 strength/비주얼에 매핑하고 선명한 child를 유지한다. alpha/mask·Reduce Transparency·입력 통과·source animation을 검증하며 private filter로 numeric sigma를 맞추지 않는다.
+- work1 소유의 UIVisualEffectView + Light preset + UIViewPropertyAnimator.FractionComplete 매핑을 사용하고 선명한 child를 유지한다. work2 내부에 별도 blur adapter를 만들지 않는다. UIKit intrinsic tint와 ExactSigma 미지원은 기능표에 반영한다. alpha/mask·Reduce Transparency·입력 통과·source animation을 검증하며 private filter로 numeric sigma를 맞추지 않는다.
 
 완료: simulator/device와 iOS/Catalyst runner를 별도 승인한다. 앱 배포·AOT는 신규 binding/bridge가 포함된 final runner에서 검증한다. 과거 renderer-only Apple 생략 기록을 이번 WV 작업의 사용자 생략으로 확대하지 않는다.
 
 ### WV-6 — AppKit macOS
 
-선행: WV-1 + work1 AppKit R4/R5/R6/R-E.
+선행: WV-1 + work1 AppKit R4/R5/R6/FX2-A. 최소 attachment/effect probe는 WV-0부터 진행한다. 현재 generic NSView 합성은 있으나 WKWebView/inline effect adapter와 현행 실행 증거는 없다.
 
 - NSView/WKWebView responder·좌표·backing scale·focus/IME·VoiceOver와 Metal/native 합성을 연결한다. UIKit 코드를 이름만 바꿔 이식하지 않는다.
 - navigation/JS/profile/assets와 두 WebView·modal·resize·close를 실제 AppKit 제품에서 검증한다.
-- NSVisualEffectView withinWindow를 WKWebView 위에 배치한다. 기존 BehindWindow backdrop와 수명/설정을 분리하고 Apple이 금지하는 effect view끼리 겹침은 명시적으로 거부한다. material theme·focus·screen reader·선명한 Doroti 전경을 확인한다.
+- work1의 NSVisualEffectView WithinWindow adapter를 WKWebView 위·Doroti child 아래에 결합한다. 기존 BehindWindow backdrop와 수명/설정을 분리하고 효과 겹침·mask·alpha는 검증된 범위만 capability로 제공한다. material theme·focus·screen reader·선명한 Doroti 전경을 확인한다.
 
 완료: 실제 창 픽셀·입력·data store·late callback·배포 증거가 있다. 현재 부재한 과거 AppKit artifact를 근거로 미실행 기능을 승인하지 않는다.
 
 ### WV-7 — Linux 시스템 Qt WebEngine Quick
+
+기존 WebEngine Quick 초기 HTML attachment·GPU 효과와 XWayland/Wayland 실행 증거를 재사용한다. 아래 WV-7B/C의 최소 표시·startup 접점은 존재하지만, 기능 API·profile/content ABI·전체 배포 승인까지 완료된 것으로 계산하지 않는다. Linux 반복 검증은 work1의 후속 사용자 요청에 따라 10회 기준이다.
 
 현재 기준은 [Testbed Linux 설정](DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj)의 Quick 선택, [QtPlatformViewHost](Doroti/src/Doroti.Host.Qt/QtPlatformViewHost.cs), [Quick native host](DorotiTestbedApp/linux/native/src/doroti_qt_quick.cpp)다. [QtNativeV2](Doroti/src/Doroti.Host.Qt/QtNativeV2.cs)는 이름과 달리 callback ABI **4 / 192 bytes**, preparation offset 184이며 [Quick 기능](Doroti/src/Doroti.Host.Qt/QtQuickNative.cs)은 선택 bit 17이다. 새 WebView ABI는 이들을 덮어쓰지 않고 version/size/features를 협상한다.
 

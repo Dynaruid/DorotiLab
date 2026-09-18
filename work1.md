@@ -1,6 +1,41 @@
 # PlatformView 재구성 작업계획
 
-## 최신 실행 업데이트 — iOS 27 Scene 지원 (2026-09-17)
+## 현재 기준과 다음 작업 (2026-09-18)
+
+**전체 상태는 PARTIAL이다.** 이 절과 아래 현재 상태표·실행 gate가 과거 기록보다 우선한다. 이번 개정은 기존 구현·검증 결과를 반영한 문서 수정이며 새 제품 실행 결과를 추가하지 않는다. 근거는 [지원표](Doroti/docs/platform-views/support-matrix.md), [공통 계약](Doroti/docs/platform-views/contract.md), [iOS 계약](Doroti/docs/platform-views/ios.md)이다.
+
+이번 개정의 효과 범위는 **앱 안의 native view와 앞선 Doroti raster를 함께 흐리는 `PlatformEffect`**다. AppKit의 기존 `NSVisualEffectView`의 `BehindWindow` 창 배경과 Skia 내부 `BackdropFilter` 구현은 이 기능의 완료 증거로 계산하지 않는다. work1은 attachment·합성·입력·효과·retirement를, [work2](work2.md)는 WebView controller·탐색·JS·profile·콘텐츠 정책을 소유한다. `doroti/webview`의 초기 HTML 표시와 합성 fixture가 존재해도 work2 공개 API가 완료된 것은 아니다.
+
+### 현재 iOS 전략과 검증 범위
+
+- 이번 대화에서 정한 공개 API 방향에 따라 `UIKitPlatformBlurView`는 **공개 `UIVisualEffectView + UIBlurEffect + UIViewPropertyAnimator.FractionComplete`**를 사용한다. `UIKitGaussianFilter`, 내부 subview/KVC 필터 조작 및 블러 전용 Objective-C 예외 변환 강제는 제거됐다. 아래의 Flutter 내부 Gaussian 전략은 과거 이력이다.
+- common logical sigma `[0,16]`을 16으로 나눠 UIKit intensity `[0,1]`로 적용한다. 고정 Light 재질의 tint도 함께 보간되며 실제 Gaussian 반경을 지정하지 않는다. 1개 isotropic `MatchCommon`, saturation=1을 지원하고 `ExactSigma`·일반 Gaussian native-backdrop 요청은 거부한다. Reduce Transparency에는 명시적 `SolidTint`를 사용한다.
+- 강도 변경은 보관한 animator를 갱신한다. bounds·window·appearance·앱/Scene 복귀 때 재설정하며, 해제 시 animator와 observer를 정리한다. 강도 0은 효과를 제거한다.
+- iPhone 18 Pro / iOS 27 Simulator에서 네 강도(.25/.375/.75/1)·두 테마, 동일 프로세스 앱 복귀, 7개 효과/입력/수명 장면을 통과했다. 테마/복귀 ROI 차이는 0이다. 별도 전체 보정 캡처 3회가 통과했고, 1→.375와 최초 .375, 0과 원본의 픽셀 차이도 두 테마에서 0이다.
+- 전체 Mono interpreter 실행에서는 GC가 `PendingFrame`의 잘못된 Frame/Drawable 참조를 검출했다. iOS 27 Debug 프로필은 기본 `MtouchInterpreter=all,-Doroti.Host.Maui`로 **호스트만 Mono AOT**를 적용한다. 보정 3회 중 2회는 GC 진단을 켰으며 기본 프로필 빌드도 경고/오류 0개다. 이는 확인된 실행 경로의 우회이며 런타임 내부 수정이나 NativeAOT 검증이 아니다. 명시적 `MtouchInterpreter=all`은 우회를 덮어쓰므로 정상 재현 명령에서 제거한다.
+- 현재 공개 animator의 실기기·NativeAOT, full E3·두 owner·device loss·성능·한국어 IME/VoiceOver/native-origin GestureArena 승인은 남아 있다. 이전 private-filter 실기기 결과를 현재 효과의 완료 증거로 옮기지 않는다.
+
+재현은 [iOS 검증 안내](Doroti/validation/platform-views/ios/README.md), 현재 증거는 `Doroti/artifacts/platform-views/2026-09-18/ios/public-blur/`의 `appearance/`, `gc-fix/aot-run-{1,2,3}/`, `gc-fix/appearance/`를 따른다. 최초 GC 실패도 보존한다.
+
+### 잔여 PlatformEffect 작업 순서
+
+| 순서 | 작업 | 이번 단계의 종료 조건 |
+|---|---|---|
+| 1 · AppKit 구현 | 최소 live WKWebView factory/attachment와 `NSVisualEffectView + NSVisualEffectBlendingMode.WithinWindow` 기반 효과를 공통 plan/session에 연결. `PlatformEffectSupport.Unsupported`는 실제 구현·probe가 준비된 뒤 갱신 | 같은 owner의 WKWebView+raster가 흐려지고 child가 선명한 캡처, DOM animation/scroll freshness, clip/이동/제거/재생성·입력 통과/차단. Graphite/Ganesh별 결과 분리 |
+| 2 · Web 제품 연결 | 이미 있는 protocol v2/CSS effect adapter를 main DOM registry·worker multi-canvas·resource/placement ACK/close에 연결 | 실제 WebGPU/WebGL 제품에서 iframe→effect→foreground 순서, iframe identity, live pixels, 2 owner·DPR·context loss·late ACK. 독립 DOM harness 성공과 구분 |
+| 3 · Android 실행 검증 | 기존 WebView factory·RenderNode/RenderEffect 경로를 실제 지원 OS/provider에서 검증. sample 누락이나 비용 문제가 재현된 부분을 수정 | 실제 WebView animation/scroll이 효과에 반영되는 픽셀과 입력/IME·회전/복귀·자원 비용. API31+ 코드 존재나 일반 View.Draw 성공만으로 완료하지 않음 |
+| 4 · 기존 경로 마감 | WindowsAppSDK·Qt Quick·iOS의 기존 통과 증거를 재사용하고 남은 R4/R7·공통 시각 허용편차·배포를 검증 | 현재 source/환경의 잔여 gate와 한계가 명확. 변경·실패 근거 없이 장기 반복 검증하지 않음 |
+
+Windows MAUI, Mac Catalyst, iOS Ganesh, Qt Widgets는 각각 별도 미연결/미지원 경로다. WindowsAppSDK·iOS Graphite·Qt Quick의 성공을 전용하지 않는다. 따라서 AppKit/Web만 끝내면 전체 완료되는 계획은 아니다. 아래 R0~R7은 의존성과 종료 기준이며, 구현이 있는 단계는 남은 범위부터 진행한다.
+
+## 이전 실행·설계 기록 (2026-09-14~17)
+
+다음 기록의 “현재”, “최신”, TODO/PASS 및 private API 허용 문구는 **기록 당시 상태**다. 현행 iOS 전략은 위 공개 animator 방식이며, 과거 반경 수치·실기기/NativeAOT·실패 기록은 해당 당시 구현에만 적용한다.
+
+<details>
+<summary>이전 iOS·Linux·Windows 실행과 초기 계획 펼치기</summary>
+
+## 당시 실행 업데이트 — iOS 27 Scene 지원 (2026-09-17)
 
 사용자의 iOS 27 지원 요청으로 `MauiUISceneDelegate` 기반 `DorotiMauiSceneDelegate`와 명시적 Scene configuration을 연결했다. 테스트 앱과 새 앱 템플릿의 Info.plist가 같은 단일-window Scene manifest를 사용한다. AppDelegate가 delegate 타입을 직접 참조하여 trimming/AOT에서 문자열 등록만 의존하지 않는다. Metal의 활성 상태·제출 중단/재개와 blur 재적용은 각 WindowScene의 활성화 알림을 따른다. legacy window 경로의 앱 알림 fallback은 유지한다.
 
@@ -12,7 +47,7 @@
 
 재현 명령은 [iOS 검증 안내](Doroti/validation/platform-views/ios/README.md), 실행 로그·캡처·프로필은 `Doroti/artifacts/platform-views/2026-09-17/ios/ios27/`에 둔다. 아래의 iOS 27 시작 실패/도구 불일치 기록은 이전 실행 이력이며 이 절이 최신 상태다.
 
-## 최신 설계 변경 — iOS Flutter 방식 채택 (2026-09-17)
+## 당시 설계 변경 — iOS Flutter 방식 채택 (2026-09-17)
 
 사용자의 **“작업계획을 고쳐서 플러터 같은 방식으로”** 요청에 따라 iOS backdrop의 공개 API 한정 조건을 변경한다. 선택 전략은 `UIVisualEffectView`가 구성한 내부 backdrop의 `gaussianBlur` 필터를 복사하고 KVC로 `inputRadius`를 설정하는 Flutter iOS PlatformView 방식이다. 아래 공개 material/animator 보정은 이전 실험 이력이며 새 전략의 완료 증거가 아니다. **새 전략은 C#/.NET iOS로 구현했고 제한된 실기기·시뮬레이터 검증을 통과했다. iOS 전체 상태는 PARTIAL**이다.
 
@@ -30,7 +65,7 @@
 
 현재 개발 환경은 작업 중 Xcode 26.6에서 27.0으로 변경되었고 설치된 .NET iOS pack은 26.6을 요구한다. 사용자 라이선스 동의는 완료되었다. 새 전략 승인 전 지원되는 Xcode/.NET 조합을 맞추며, `ValidateXcodeVersion=false` 진단 실행을 정식 도구 조합 검증으로 계산하지 않는다. 이전 animator 강도 갱신 실패는 보존하고 새 구현으로 검증한다. C#에서 의도적인 잘못된 KVC 키의 `ObjCException`을 NativeAOT 실기기에서 잡는 것까지 확인했다.
 
-### 새 전략 실행 결과 — C#/.NET iOS
+### 당시 전략 실행 결과 — C#/.NET iOS
 
 - `UIKitPlatformBlurView.cs` / `UIKitGaussianFilter`에서 UIKit/Foundation KVC 및 `NSCopying` 프로토콜 바인딩으로 필터 복사·반경 설정·기본 material 색 보정 제거를 구현했다. 사용자 요청에 따라 `native/UIKitBackdropBlur.m`과 clang/libtool/static-library 경로는 제거했다. C#이라고 해서 UIKit 내부 구조 의존성이 사라지는 것은 아니다.
 - 초기 C# 이관에서는 일반 `NSObject.Copy()`가 내부 필터를 NSCopying으로 인식하지 못했다. 프로토콜 wrapper를 통한 복사로 수정했다. NativeAOT iPhone 12에서 잘못된 KVC 키의 Objective-C 예외를 `ObjCException`으로 잡는 것과 잘못된 구조 거부를 확인했다. 예외 변환을 끄는 앱 설정은 transitive target에서 거부한다.
@@ -39,7 +74,7 @@
 - Xcode 27에서 생성한 iOS 27 Simulator 앱은 기존 Scene lifecycle 미적용으로 UIKit 시작 중 중단됐다. 블러 구현 실행 증거로 계산하지 않는다. 현재 .NET iOS pack/Xcode 불일치 때문에 검증 빌드에만 `ValidateXcodeVersion=false`를 사용했으며 제품 기본값은 변경하지 않았다. 정식 도구 조합, iOS 27 Scene 전환, full E3/두 owner/성능·물리 입력 승인은 남아 있다.
 - 새 실행 기록은 `Doroti/artifacts/platform-views/2026-09-17/ios/flutter-blur/`의 `managed-*`에 보존했다. 초기 native bridge의 결과와 최종 C# 결과를 구분한다.
 
-## 최신 실행 업데이트 — iOS UIKit (2026-09-17)
+## 당시 실행 업데이트 — iOS UIKit (2026-09-17)
 
 사용자의 iOS 작업 및 연결된 아이폰 검증 요청으로 HEAD `53ee2a7b1c20479bfb6eb0f4e119275fd1f8a82a`의 clean worktree에서 시작했다. **iOS 전체 상태는 PARTIAL**이며 아래 UIKit/Catalyst 미구현 기록 중 iOS Graphite에 해당하는 부분을 갱신한다. Catalyst와 iOS Ganesh는 별도다.
 
@@ -56,7 +91,7 @@
 
 후속 제품 검증에서는 기존 animator의 fraction만 갱신할 때 강도별 이미지가 같아지는 실패를 검출했다. 효과 hierarchy/lifecycle 7개 PASS와 별개로 이 픽셀 검증은 FAIL이며, 테마 일치 PASS로 전용하지 않는다. 강도 변경 시 animator를 재생성하는 수정의 NativeAOT publish는 성공했다. 일시적인 Xcode 라이선스 차단은 사용자 동의로 해소했으며, 이후 재검증에서도 강도별 픽셀 gate는 FAIL했다(`product-strength-rebuild/`). 공개 API 실험은 승인하지 않고, 위 최신 설계 변경에 따라 Flutter 내부 Gaussian 방식으로 교체할 계획이다.
 
-## 최신 실행 업데이트 — Linux Qt (2026-09-14)
+## 당시 실행 업데이트 — Linux Qt (2026-09-14)
 
 사용자의 Linux Qt 구현 요청으로 HEAD `20298446d098b6fa1325fd90621c3063b080b1a0`의 clean worktree에서 시작했다.
 이 절은 아래 Windows 실행 및 설계 시점의 Linux `notVerified` 상태를 갱신한다. **Linux Qt 전체 상태는 PARTIAL**이다.
@@ -102,6 +137,8 @@
 
 현재 요구에 따라 **R6는 플랫폼별 WebView 전략 비교·통합, R-E는 공통 효과 의미와 비주얼 유사성을 목표로 하는 위젯**이다. HCPP 구현은 필수가 아니며 native hierarchy·live texture·bounded readback·GPU compositor 중 적합한 구성을 선택한다. Windows CoreWebView2CompositionController 선택은 유지한다. 상태는 `TODO`/`notVerified`이며 이번에도 제품 코드는 변경하지 않았다.
 
+</details>
+
 ## 1. 목표와 범위
 
 목표는 native instance를 보존하면서 `Doroti 배경 → native A → Doroti 중간 → native B → Doroti 전경`을 정확히 합성하고, 화면 순서에 맞는 입력·focus·semantics와 제한된 프레임 비용을 제공하는 것이다. 공통 계약을 추출한 뒤 현재 host를 순차 이관한다. WebView navigation/JS/profile은 [work2.md](work2.md)가 소유한다.
@@ -121,26 +158,25 @@
 
 추가 필수 장면 E1은 **live WebView → 부분 backdrop/material effect → 선명한 Doroti child**다. E2는 같은 장면의 native scroll/animation·효과 이동/resize와 pass-through/block 입력, E3는 R/N/R/N/effect/foreground에서 앞선 배경 전체 sample이다. backend가 명시적으로 금지한 효과끼리의 겹침은 성공 장면에 섞지 않고 거부 사례로 검증한다.
 
-## 2. 재검토한 현재 상태
+## 2. 현재 구현과 검증 상태
 
-이 표의 실행 결과는 **기존 기록 재검토**다. 이번 턴에 앱·기기·테스트를 실행한 결과가 아니다. 파일이 없는 과거 증거를 새 PASS로 재작성하지 않는다.
+구현·빌드·제한 실행·전체 제품 승인은 별개다. 아래는 2026-09-18 기준 소스와 기존 실행 기록을 대조한 상태이며, 현재 문서 수정에서 재실행하지 않았다.
 
-| 영역 | 현재 확인한 범위 | 남은 범위 / 증거 |
+| 영역 | 구현 / 확인된 증거 | 남은 범위 |
 |---|---|---|
-| 공통 | owner registry·generation·typed scene·retained planner·lease·placement batch·codec 구현 | 순수 analyzer/planner와 제품 frame session 분리 필요. [소스](Doroti/src/Doroti.Hosting/PlatformCompositionPlan.cs), [검증 안내](Doroti/validation/platform-views/README.md) |
-| WindowsAppSdk Vulkan | generic BUTTON/EDIT, HWND/raster readback 제품 B/C 및 10장면·20회 수명 기록 | 전체 IME/UIA/DPI/두 제품 창/device loss/성능/AOT `notVerified`. [현존 실행 기록](Doroti/artifacts/platform-views/2026-09-13/windows-implementation.md) |
-| Windows MAUI | WindowsAppSdk와 별도 결합 대상 | 현재 Windows 제품 증거로 지원 승격 불가 |
-| Android | native Button/EditText, SurfaceView base·작은 전경 readback·cache·제한 backdrop 구현 | native-origin drag, 최종 bounded revision 실행, 큰 scroll/modal 비용, IME/TalkBack·전체 수명·성능 미승인. [구현](Doroti/artifacts/platform-views/2026-09-14/android/implementation.md), [중단/실패/최종 빌드 기록](Doroti/artifacts/platform-views/2026-09-14/android/scroll/README.md) |
-| AppKit | `AppKitPlatformViewHost`의 Metal/native sibling C 소스와 validator 존재 | 과거 문서의 AppKit 실행 README·scope 문서는 현재 없음. 당시 제한 PASS 기록은 원본에 보존, 현 revision 실행 승인 `notVerified` |
-| UIKit / Catalyst | 별도 host·검증이 필요한 계획 | AppKit/기존 renderer 검증을 신규 PlatformView 증거로 전용하지 않음 |
-| Web | main-DOM registry·iframe identity·shield 독립 harness | 제품 worker protocol 미연결. [소스](Doroti/src/Doroti.Host.Web/Web/doroti.web.platform-views.ts), [harness 범위](Doroti/validation/platform-views/README.md) |
-| Linux Quick | Testbed `DorotiQtQuick=true`, Qt 소유 GPU와 R→P copy·Quick Controls C 소스 | [재현 안내](Doroti/validation/linux-qt-quick/README.md). 과거 VM/llvmpipe 실행 기록의 result.json은 현재 없음. 급격한 resize validation 2건 잔여 기록 유지, 물리 GPU/성능·WebEngine Quick 미승인 |
-| Linux Widgets | generic native-child Widgets 제한 B와 선택 attachment 소스 | Quick C와 다른 경로. [검증 안내](Doroti/validation/linux-qt-contract/README.md), 과거 implementation artifact 현재 없음 |
-| WebView | inappwebview 참조와 계획, Qt 독립 probe 기록 | `Doroti/src`에 WebView 이름의 제품 파일을 찾지 못함. 모든 제품 adapter는 work2 구현 대상 |
+| 공통 | capability/identity snapshot, Analyze/Admit, ordered effect plan, 공통 session·lease·retirement 및 계약 fixture | 전체 mutator/coverage/damage, host별 실패·두 owner·입력·성능 승인 |
+| WindowsAppSDK | HWND DirectComposition과 별도 WebView2 CompositionController 경로의 live backdrop·sharp child·입력·수명 검증 | 두 attachment 종류의 한 frame 혼합은 미지원. 전체 IME/UIA·device loss·성능/AOT 잔여 |
+| iOS UIKit Graphite | 공개 animator 효과·WKWebView/Metal 합성, 위 simulator 강도/테마/복귀/수명·보정 검증 | 현재 공개 효과의 실기기/NativeAOT와 full E3·물리 입력·성능 잔여 |
+| Linux Qt Quick | 실제 WebEngine Quick·두 Gaussian GPU pass, XWayland/Wayland 각 19 gate 및 Release 수정 검증 | llvmpipe 증거이며 물리 GPU/성능 승인 아님. XWayland 급격 resize WSI 오류·IME/Orca·배포 잔여 |
+| Android | native WebView factory·공통 session·제한 backdrop 코드, arm64 host 빌드 | 현재 WebView live sampling·시각·입력/수명/성능 제품 실행 미검증. 기존 spinner 수치를 전용하지 않음 |
+| AppKit | NSView/Metal 합성과 별도 창 배경 blur 구현 | inline native `PlatformEffect`는 Unsupported. WKWebView factory·WithinWindow 효과 adapter 및 현재 실행 증거 필요 |
+| Web | protocol v2 effect adapter·CSS backdrop-filter·host 빌드, 독립 DOM harness 8개 검사 | main-DOM/worker 제품 연결·multi-canvas ACK/자원 수명·실제 iframe effect pixels 미검증 |
+| Windows MAUI | 공통 계약·host 빌드 | native hierarchy/WebView2 composition 결합과 runner별 효과 승인 별도 |
+| Mac Catalyst / iOS Ganesh | 별도 renderer/runner 존재 | 신규 UIKit Graphite 효과 adapter의 지원 범위에 포함되지 않음 |
+| Qt Widgets | native-child B 전용 경로의 빌드/제한 실행 | interleaving/WebEngine/effect 미지원. Qt Quick 증거 적용 불가 |
+| WebView 공개 API | Windows/iOS/Android/Qt의 최소 native WebView 부착·초기 HTML fixture와 Web DOM adapter 존재 | controller·navigation/document·JS bridge·profile·앱 콘텐츠 등 work2 제품 API는 별도 구현/검증 대상 |
 
-Android의 기존 spinner workload 수치를 scroll/backdrop/전체 장면 FPS로 재사용하지 않는다. 최종 arm64 APK는 빌드되었지만 disconnect로 설치·실행되지 않았고, 최종 x64 build/run도 남았다는 handoff를 유지한다. 과거 phone에 설치된 revision과 현재 HEAD도 동일하다고 가정하지 않는다.
-
-현재 없는 문서에는 `Doroti/docs/platform-views/{contract.md,support-matrix.md,appkit.md}`, `Doroti/docs/validation/platform-views/2026-09-11/README.appkit.md`가 있다. Linux Quick의 `005943-534160/result.json`, `rapid-resize-followup/result.json`, Linux Widgets `implementation.md`도 기존 링크 위치에 없다. 존재하지 않는 파일을 링크로 다시 등록하지 않고 R0에서 회수 가능 여부를 기록한다.
+현재 계약·지원 문서는 [contract.md](Doroti/docs/platform-views/contract.md), [support-matrix.md](Doroti/docs/platform-views/support-matrix.md), [ios.md](Doroti/docs/platform-views/ios.md), [linux-qt.md](Doroti/docs/platform-views/linux-qt.md)를 따른다. 과거 부재 AppKit artifact와 새 증거를 구분하고, 실행 결과가 없는 조합을 추정 PASS로 복원하지 않는다.
 
 ## 3. 실행 순서와 단계별 gate
 
@@ -158,7 +194,7 @@ Android의 기존 spinner workload 수치를 scroll/backdrop/전체 장면 FPS�
 
 Android R4의 ingress/arena 타당성 probe는 R1부터 시작한다. Qt WebEngine Quick 최소 probe도 work2와 조기에 수행해 attachment 계약의 불일치를 확인한다. 이 선행 조사가 R2/R3 구현 순서를 생략하는 근거는 아니다.
 
-R6/R-E의 Android 전략별 backdrop sampling과 Windows 호환 Composition tree 검증도 R1부터 앞당긴다. 실제 WebView+효과 장면으로 후보를 비교하고 효과/입력 요구를 충족하지 못하는 전략은 제외한다. AppKit·Web은 native/CSS adapter의 조기 구현 대상으로 삼되 공통 reference 비주얼로 보정한다.
+R6/R-E의 Android 전략별 backdrop sampling과 Windows 호환 Composition tree 검증도 R1부터 앞당긴다. 실제 WebView+효과 장면으로 후보를 비교하고 효과/입력 요구를 충족하지 못하는 전략은 제외한다. AppKit은 새 native effect adapter 구현, Web은 기존 CSS adapter의 제품 연결, Android는 기존 경로의 실제 WebView 검증부터 진행한다. 공통 reference 비주얼 보정은 각각의 live source 확인 뒤 수행한다.
 
 ### R0 — 소스와 증거 기준 고정
 
@@ -229,11 +265,11 @@ Stop: native click이 이미 발생한 후 parent에 복제하는 방식이면 G
 | 순서 / 대상 | 구체 작업 | backend 종료 조건 |
 |---|---|---|
 | Android | bounded raster/cache/backdrop·surface 재생성을 공통 plan/session에 연결 | 기존 제한 유지, C1~C6·scroll 개선 재현, 최종 revision 증거 |
-| WindowsAppSdk | layered HWND bank와 UI batch를 adapter로 분리 | 원래 B/C pixel·focus 보존, 실제 HWND resource 수명·성능 비교 |
+| WindowsAppSdk | 구현된 HWND DirectComposition/WebView2 CompositionVisual 경로의 잔여 합성·수명 gate 마감 | 각각의 B/C pixel·focus 보존, 혼합 제한 유지, 실제 자원 수명·성능 검증 |
 | Linux Quick | Qt 소유 device·P image generation·QSG node·swap terminal 연결 | 현재 basic loop 유지, resize validation 잔여 원인 분리, XWayland/native Wayland 검증 |
-| AppKit | NSView/layer order·Metal surface·hit test 연결 | 실제 제품 Graphite/Ganesh 각각 검증. 과거 artifact 부재는 새 실행 전 `notVerified` |
+| AppKit | 기존 NSView/Metal 합성에 최소 WKWebView와 WithinWindow 효과 adapter 추가 | Graphite/Ganesh별 live source·sharp child·입력/수명 검증. 창 배경 블러 증거 전용 금지 |
 | Web | main DOM registry 활성화, worker multi-canvas resource/placement packet·ACK·close 연결 | worker-direct WebGPU/WebGL별 C1~C6, 2 owner·DPR·context loss·iframe identity. DOM harness와 별도 |
-| UIKit / Catalyst | UIView container·Metal 전경·gesture·focus·semantics | simulator/device 및 iOS/Catalyst runner 분리 |
+| UIKit Graphite / Catalyst | iOS의 구현된 public animator·Scene 경로 유지 및 R4/R7 마감. Catalyst는 별도 adapter 연결 | iOS 현재 simulator 결과 유지, 실기기/NativeAOT 재검증. Catalyst 자동 승인 금지 |
 | Windows MAUI / Qt Widgets | runner별 native hierarchy·frame adapter 연결 또는 기존 제한 유지 | WindowsAppSdk/Quick 증거 전용 금지, B-only 조합은 C 미충족 |
 
 선행 플랫폼 결과를 기다리는 동안 다른 backend의 소스 검토·계약 대응은 가능하다. 하지만 이미 통과한 host의 장기 성능 반복은 새 변경/실패가 정당화할 때만 한다.
@@ -254,26 +290,29 @@ R6 자체 완료: 실제 WebView로 C1~C6·identity·input·retirement를 통과
 
 ### R-E — PlatformEffect 위젯과 플랫폼 효과 adapter, 필수 단계
 
-수정 예정: `Doroti.Ui` effect DTO/capability, `Doroti.Framework.Widgets`의 `PlatformEffect`, `Doroti.Framework.Rendering`의 typed effect layer, Hosting plan/session, 각 `Doroti.Host.*` effect adapter 및 Web DOM protocol. WebView 패키지와 독립이며 임의 지원 native view 위에서도 재사용한다.
+수정 대상: 이미 구현된 `Doroti.Ui` effect DTO/capability, `Doroti.Framework.Widgets`의 `PlatformEffect`, `Doroti.Framework.Rendering`의 typed effect layer, Hosting plan/session, 각 `Doroti.Host.*` effect adapter 및 Web DOM protocol. WebView 패키지와 독립이며 임의 지원 native view 위에서도 재사용한다.
 
 | 세부 gate | 작업 | 종료 조건 |
 |---|---|---|
 | FX0 계약·probe | 공통 backdrop intent·strength/tint/saturation·MatchCommon 정책, source/clip/input 정의. reference scene·강도별 허용 시각 편차·플랫폼 매핑 규칙 확정 | 의미 보존·시각 유사성 평가표. material/radius 값 동일함을 유사성 근거로 사용하지 않음. source sample 검증 |
 | FX1 위젯·프레임 | bounded layout, effect 뒤 선명한 child, owner/effect generation·stable resource, ordered scene payload와 common prepare/commit/retire | rebuild/scroll에서 효과 host 재생성 최소화, 마지막 effect 제거·late frame·2 owner·dispose race 검증 |
-| FX2 AppKit/UIKit | AppKit은 NSVisualEffectView withinWindow 기반. iOS는 Flutter 방식으로 UIVisualEffectView 내부 gaussianBlur 필터를 복사·radius 설정하고 기본 material 색 보정 제거. 내부 구조 probe/예외 처리·capability 협상은 위 iOS-FX1~FX5로 수행 | 공통 reference와 live WKWebView source, 강도 연속 변경·Light/Dark·E3 sample 검증. 구조 변경은 명시적 unsupported, ExactSigma는 별도 gate. native effect끼리 겹침/alpha/mask 제약은 대안 lowering 또는 명시적 제한 |
-| FX3 Web | main DOM effect element, CSS backdrop-filter/tint/clip, pointer-events none 또는 별도 shield, protocol version 협상 | iframe + canvas + effect + foreground, same/cross-origin, backdrop-root·parent opacity·DPR·z-order·stale batch. WebGPU/WebGL 제품 검증 |
+| FX2-A AppKit · TODO | 최소 WKWebView attachment와 NSVisualEffectView WithinWindow를 같은 owner hierarchy·plan/session에 연결. 기존 BehindWindow 설정과 수명 분리 | E1~E3 live native/raster sample·sharp child·테마·강도 지원 범위·입력·resize/제거/재생성. API 존재만으로 capability를 켜지 않음 |
+| FX2-I UIKit · PARTIAL | 구현된 Light preset + 보관/일시정지한 UIViewPropertyAnimator.FractionComplete 경로 유지. sigma/16을 intensity로 사용하고 비공개 필터 접근 금지 | 현재 simulator 강도/0·감소/테마/복귀 결과 유지, 현재 adapter 실기기·NativeAOT·full E3·두 owner 마감. preset tint와 ExactSigma 미지원 공개 |
+| FX3 Web · PARTIAL | 기존 protocol v2/CSS effect adapter를 main DOM·worker multi-canvas·resource/placement ACK/close에 연결. effect는 source iframe 위·sharp child 아래 | iframe + canvas + effect + foreground, same/cross-origin, backdrop-root·parent opacity·DPR·z-order·stale batch. WebGPU/WebGL 제품 검증 |
 | FX4 Windows | 호환 Composition backdrop/effect brush와 SpriteVisual을 WebView2/GPU raster tree에 결합 | 실제 WebView pixels blur와 선명한 child, legacy HWND/Mica와 구분, device/resize·runtime availability 검증 |
-| FX5 Android | 선택한 WebView 전략의 RenderNode/RenderEffect·live sampling adapter와 공통 strength/tint 보정 | 실제 source/animation·비주얼 유사성·전송 비용 검증. 별도 surface sample 불가이면 다른 후보 검토. window blur를 inline 효과로 가장하지 않음 |
+| FX5 Android · 구현/실행 분리 | 기존 WebView factory·RenderNode/RenderEffect의 실제 OS/provider source sample 검증을 우선하고 재현 실패를 수정 | 실제 source/animation·비주얼 유사성·전송 비용 검증. 별도 surface sample 불가이면 다른 후보 검토. window blur를 inline 효과로 가장하지 않음 |
 | FX6 Qt Quick | 앞선 source group의 live GPU ShaderEffectSource + MultiEffect/ShaderEffect, effect/child 제외 | 실제 WebEngine Quick·raster sample, source identity/input 보존, feedback 없음, XWayland/Wayland·GPU lease 검증 |
 | FX7 결합 승인 | E1~E3와 공통 체크무늬/글자/사진 reference, 강도·테마별 비교, 동적 source·resize·focus·접근성 | 동일 logical 크기/DPR/색공간에서 blur edge·대비·tint/밝기와 시각 검토. 사전 편차·비용/수명 기준 및 지원표 일치 |
 
-공통 기본값은 MatchCommon과 input pass-through, effect 자체의 focus/semantics 없음이다. child semantics/입력은 유지하고 필요한 전경만 shield로 보호한다. material/blur parameter를 공통 intent로 자동 매핑하는 것은 정상 구현이며 exact-sigma는 advanced opt-in이다. **iOS는 사용자 결정에 따라 Flutter 방식의 내부 UIKit/CAFilter 접근을 허용**하고 구조 probe·예외 처리·OS별 실기기 검증을 필수로 한다. 이 예외 외의 Apple private API나 hidden Android API를 포팅하는 것은 이번 범위가 아니다.
+공통 기본값은 MatchCommon과 input pass-through, effect 자체의 focus/semantics 없음이다. child semantics/입력은 유지하고 필요한 전경만 shield로 보호한다. material/blur parameter를 공통 intent로 자동 매핑하는 것은 정상 구현이며 exact-sigma는 advanced opt-in이다. **현행 iOS 계획은 위 공개 animator 방식**이다. 과거 UIKit/CAFilter 예외를 현재 구현 요구로 유지하지 않는다. UIKit preset tint를 제거하거나 numeric sigma를 맞추려고 비공개 필터를 다시 도입하지 않으며 AppKit·Android도 공개 API 범위에서 구현한다.
 
 Web의 `CSS.supports`와 native API 존재는 gate 통과가 아니다. native scroll/video/animation이 바뀔 때 실제 blur도 변해야 한다. secure/protected content나 compositor sampling 경계는 명시적으로 unsupported다. system transparency/고대비 정책에 의한 material 변경 또는 앱 지정 SolidTint는 resolved 상태로 보고하며 blur 성공으로 표시하지 않는다.
 
 Stop: 선택한 조합이 실제 source sample·live 갱신·공통 시각 편차·입력/예산을 충족하지 못하면 다른 전략/adapter를 검토한다. 모두 실패하면 해당 R6+R-E는 `PARTIAL`이다. 정지 snapshot·blur 없는 tint를 정상 근사로 취급하지 않는다. 앱이 허용한 degraded fallback/접근성 대체는 별도로 보고한다.
 
 ### R7 — 제품·성능·배포 마감
+
+Linux Qt의 수명·GPU·resize 반복은 후속 사용자 요청에 따라 **10회**를 적용한다. 과거 100회 결과는 재사용 가능한 당시 증거로 보존하며 반복 횟수를 다시 늘리지 않는다. 아래 공통 100회 기준도 Linux에는 이 예외를 적용한다.
 
 - 0/1/4-view × idle/small animation/scroll/modal × 해당 OS/RID/renderer에서 frame percentile·실제 latency 관측 범위·메모리·resource count를 기록한다.
 - 두 제품 owner, 100회 제품 attach/detach/create/dispose, 빠른 resize/DPI/cross-monitor, background/resume, device/context loss·close를 수행한다. 이미 동일 source로 통과한 항목은 재사용한다.
