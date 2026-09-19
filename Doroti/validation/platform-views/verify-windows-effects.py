@@ -1,5 +1,6 @@
 """Mounted Windows WebView2 + common PlatformEffect gate. Use the 1200s parent wrapper."""
 import importlib.util
+import datetime
 import json
 import os
 from pathlib import Path
@@ -10,12 +11,13 @@ from PIL import ImageStat
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / 'Doroti/artifacts/platform-views/2026-09-14/rearchitecture' / ('effects-' + time.strftime('%H%M%S'))
+OUT = Path(os.environ.get('DOROTI_PLATFORM_VIEW_GATE_OUTPUT') or ROOT / 'Doroti/artifacts/platform-views' / datetime.date.today().isoformat() / 'windows' / ('effects-' + time.strftime('%H%M%S')))
 OUT.mkdir(parents=True)
 os.environ['DOROTI_PLATFORM_VIEW_GATE_OUTPUT'] = str(OUT)
 spec = importlib.util.spec_from_file_location('gate', ROOT / 'Doroti/validation/windows-acrylic-composition/verify.py')
 g = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(g)
+g.EXE = Path(os.environ.get('DOROTI_WEBVIEW_GATE_EXE') or g.EXE)
 
 
 def main():
@@ -32,9 +34,9 @@ def main():
             ready = g.wait_for(lambda: g.read(OUT / 'ready.json'), process)
             hwnd = ready['hwnd']
             g.u.SetForegroundWindow(hwnd)
-            time.sleep(3)
+            frame = g.wait_for(lambda: (value if (value := g.read(OUT / 'frame.json')) and
+                len(value['native']) == 1 and value['webView']['loadedViews'] == 1 else None), process, timeout=30)
             g.capture(hwnd, 'initial')
-            frame = g.wait_for(lambda: g.read(OUT / 'frame.json'), process)
             scale = g.u.GetDpiForWindow(hwnd) / 96
             g.capture(hwnd, 'blur-on')
             time.sleep(.6)
@@ -42,6 +44,12 @@ def main():
             identity = frame['native'][0]['handle']
             def state(predicate):
                 return g.wait_for(lambda: (value if (value := g.read(OUT / 'frame.json')) and predicate(value) else None), process)
+            touch_spec = importlib.util.spec_from_file_location('touch', ROOT / 'Doroti/validation/webview/windows-touch.py')
+            touch = importlib.util.module_from_spec(touch_spec)
+            touch_spec.loader.exec_module(touch)
+            before_touch = frame['webView']['nativeMessages']
+            touch.tap(hwnd, 448, 198, scale)
+            frame = state(lambda f: f['webView']['nativeMessages'] == before_touch + 1 and f['webView']['pointerEvents'] >= 2)
             g.click(hwnd, 250, 72, scale, native_hit_test=False)
             frame = state(lambda f: f['effectProbe'].startswith('False') and f['webView']['effects'] == 0)
             assert frame['webView']['effects'] == 0
@@ -50,11 +58,11 @@ def main():
             frame = state(lambda f: f['effectProbe'].startswith('True') and f['webView']['effects'] == 1)
             assert frame['webView']['effects'] == 1
             before = frame['webView']['nativeMessages']
-            g.click(hwnd, 448, 198, scale, native_hit_test=False)
+            touch.mouse_click(hwnd, 448, 198, scale)
             frame = state(lambda f: f['webView']['nativeMessages'] == before + 1)
             g.click(hwnd, 380, 72, scale, native_hit_test=False)
             frame = state(lambda f: f['effectProbe'].startswith('True,True') and len(f['shields']) == 2)
-            g.click(hwnd, 448, 198, scale, native_hit_test=False)
+            touch.mouse_click(hwnd, 448, 198, scale)
             time.sleep(.3)
             assert g.read(OUT / 'frame.json')['webView']['mouseEvents'] == frame['webView']['mouseEvents']
             g.click(hwnd, 360, 403, scale, native_hit_test=False)
@@ -100,7 +108,7 @@ def main():
                 return min(stats.mean) > 70 and min(stats.stddev) > 20 and min(effect.mean) < 230
             g.wait_for(native_pixels_visible, process, timeout=10)
             (OUT / 'observed.json').write_text(json.dumps({'scope': 'mounted-product', 'frame': frame,
-                'automated': ['effect removal/restoration', 'native pass-through click', 'shield blocks native click',
+                'automated': ['OS injected touch through SendPointerInput', 'effect removal/restoration', 'native pass-through click', 'shield blocks native click',
                     'sharp foreground button', 'native identity preserved', 'two native views with middle raster and effect',
                     'effect movement', 'resize with native identity preserved', 'last native removal', 'recreation with fresh generation and visible native pixels'],
                 'visualReview': 'pending', 'physicalInput': 'notVerified'}, indent=2), encoding='utf-8')

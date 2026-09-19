@@ -60,6 +60,38 @@ struct RasterContext {
   CompositionGraphicsDevice graphics{nullptr};
 };
 
+struct Saturation : implements<Saturation, IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop> {
+  float amount;
+  IGraphicsEffectSource source;
+  hstring name{L"DorotiSaturation"};
+  Saturation(float value, IGraphicsEffectSource const& input) : amount(value), source(input) {}
+  hstring Name() const { return name; }
+  void Name(hstring const& value) { name = value; }
+  HRESULT __stdcall GetEffectId(GUID* id) noexcept override {
+    if (!id) return E_POINTER; *id = CLSID_D2D1Saturation; return S_OK;
+  }
+  HRESULT __stdcall GetNamedPropertyMapping(LPCWSTR, UINT*, GRAPHICS_EFFECT_PROPERTY_MAPPING*) noexcept override { return E_NOTIMPL; }
+  HRESULT __stdcall GetPropertyCount(UINT* count) noexcept override {
+    if (!count) return E_POINTER; *count = 1; return S_OK;
+  }
+  HRESULT __stdcall GetProperty(UINT index, ABI::Windows::Foundation::IPropertyValue** value) noexcept override {
+    if (!value) return E_POINTER; *value = nullptr;
+    if (index != 0) return E_INVALIDARG;
+    try {
+      auto property = Windows::Foundation::PropertyValue::CreateSingle(amount);
+      return winrt::get_unknown(property)->QueryInterface(__uuidof(**value), reinterpret_cast<void**>(value));
+    } catch (...) { return to_hresult(); }
+  }
+  HRESULT __stdcall GetSourceCount(UINT* count) noexcept override {
+    if (!count) return E_POINTER; *count = 1; return S_OK;
+  }
+  HRESULT __stdcall GetSource(UINT index, ABI::Windows::Graphics::Effects::IGraphicsEffectSource** value) noexcept override {
+    if (!value) return E_POINTER; *value = nullptr;
+    if (index != 0) return E_INVALIDARG;
+    return winrt::get_unknown(source)->QueryInterface(__uuidof(**value), reinterpret_cast<void**>(value));
+  }
+};
+
 }
 
 extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_platform_effect_v1(
@@ -69,6 +101,23 @@ extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_platform_effect_
   try {
     Compositor owner{nullptr}; copy_from_abi(owner, compositor);
     auto effect = make<Gaussian>(sigma);
+    auto factory = owner.CreateEffectFactory(effect);
+    auto result = factory.CreateBrush();
+    result.SetSourceParameter(L"backdrop", owner.CreateBackdropBrush());
+    *brush = reinterpret_cast<IUnknown*>(detach_abi(result));
+    return S_OK;
+  } catch (...) { return to_hresult(); }
+}
+
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_platform_effect_v2(
+    IUnknown* compositor, float sigma, float saturation, IUnknown** brush) noexcept {
+  if (!compositor || !brush || !std::isfinite(sigma) || sigma < 0 || sigma > 128 ||
+      !std::isfinite(saturation) || saturation < 0 || saturation > 2) return E_INVALIDARG;
+  *brush = nullptr;
+  try {
+    Compositor owner{nullptr}; copy_from_abi(owner, compositor);
+    auto blur = make<Gaussian>(sigma);
+    auto effect = make<Saturation>(saturation, blur);
     auto factory = owner.CreateEffectFactory(effect);
     auto result = factory.CreateBrush();
     result.SetSourceParameter(L"backdrop", owner.CreateBackdropBrush());

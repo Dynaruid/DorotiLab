@@ -368,7 +368,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (_platformViews is { } platformViews)
             {
                 var dispatcher = platformViews.Bind(host,
-                    WindowsManagedVulkanPresenter.GraphiteEnabled ? Presenter as WindowsManagedVulkanPresenter : null);
+                    WindowsManagedVulkanPresenter.GraphiteEnabled ? Presenter as WindowsManagedVulkanPresenter : null, _application.ApplicationResources);
                 var coordinator = _application.ConfigurePlatformViews(capabilities, 1, dispatcher);
                 platformViews.Configure(coordinator);
                 var channel = new Framework.Services.PlatformViewChannelAdapter(coordinator, messages);
@@ -382,6 +382,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 using var scope = _session.dispatcher.EnterScope();
                 view = _session.dispatcher.RegisterView(1, capabilities);
+                if (_platformViews is { } nativeViews)
+                {
+                    var platformViewOwner = view;
+                    nativeViews.RequestFrameworkFrame = () => host.DispatchPlatformViewEvent(() =>
+                        platformViewOwner.ScheduleFrame(DartUiInvocation.Managed("Windows.PlatformView.nativeRevision")));
+                }
                 renderer.AttachFrameworkTrace(_session.dispatcher.frameTrace);
                 Host = host;
                 Renderer = renderer;

@@ -15,9 +15,9 @@ namespace MaterialSample;
 internal static class SampleConstants
 {
     internal const double NavigationBarDestinationWidth = 96;
-    internal static readonly string[] Destinations = ["Components", "Color", "Typography", "Elevation", "Platform views"];
-    internal static readonly IconData[] DestinationIcons = [M.Icons.widgets_outlined, M.Icons.format_paint_outlined, M.Icons.text_snippet_outlined, M.Icons.invert_colors_on_outlined, M.Icons.web_asset_outlined];
-    internal static readonly IconData[] SelectedDestinationIcons = [M.Icons.widgets, M.Icons.format_paint, M.Icons.text_snippet, M.Icons.opacity, M.Icons.web_asset];
+    internal static readonly string[] Destinations = ["Components", "Color", "Typography", "Elevation", "Platform views", "WebView"];
+    internal static readonly IconData[] DestinationIcons = [M.Icons.widgets_outlined, M.Icons.format_paint_outlined, M.Icons.text_snippet_outlined, M.Icons.invert_colors_on_outlined, M.Icons.web_asset_outlined, M.Icons.language];
+    internal static readonly IconData[] SelectedDestinationIcons = [M.Icons.widgets, M.Icons.format_paint, M.Icons.text_snippet, M.Icons.opacity, M.Icons.web_asset, M.Icons.language];
     internal static readonly (string Label, Color Color)[] Seeds =
     [
         ("M3 Baseline", new(0xff6750a4)), ("Indigo", new(0xff3f51b5)), ("Blue", new(0xff2196f3)),
@@ -268,7 +268,12 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         // Basic native hosts cannot composite foreground tooltip/menu entries.
         return new M.TooltipVisibility(visible: !BasicNativePage, child: _home);
     }
-    private bool BasicNativePage => _destination == 4 && PlatformViewFixture.UsesNativeOverlay(context);
+    private bool BasicNativePage => _destination switch
+    {
+        4 => PlatformViewFixture.UsesNativeOverlay(context),
+        5 => WebViewSampleState.UsesNativeOverlay(context),
+        _ => false,
+    };
     private Widget BuildAnimatedHome()
     {
         Widget body = _destination switch
@@ -276,6 +281,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
             0 => new ComponentsScreen(twoColumns: _wide, scaffold: _scaffold, key: _components),
             1 => new ColorScreen(), 2 => new TypographyScreen(), 3 => new ElevationScreen(),
             4 => new PlatformViewFixture(embedded: true),
+            5 => new WebViewSample(),
             _ => throw new ArgumentOutOfRangeException(nameof(_destination)),
         };
         var appBar = new M.AppBar(title: new Text("Doroti Material 3"), notificationPredicate: AcceptAppBarScroll,

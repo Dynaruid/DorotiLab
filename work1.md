@@ -1,5 +1,17 @@
 # PlatformView 재구성 작업계획
 
+## Windows 실행 업데이트 (2026-09-19)
+
+**Windows 전체 상태는 PARTIAL이다.** 아래 9월 14일 기록보다 이 절이 우선한다. WindowsAppSDK의 기존 CompositionController/Graphite 경로를 공통 WebViewController와 연결했고, Windows MAUI는 별도 미연결 상태로 유지한다. 이번 Windows 작업은 macOS/iOS 결과를 변경하지 않는다.
+
+- R4/R5: 같은 coordinator instance에 공개 controller/widget를 연결했다. OS touch 주입→mouse click→shield→resize→제거/재생성 제품 gate가 통과했다. touch/pen `SendPointerInput` 정보·좌표 변환과 X button 전달을 구현했다. pen/물리 touch·한글 IME/UIA·full Tab/native-origin GestureArena는 미승인이다.
+- R3/R5: native callback의 변경 세대를 frame에 기록한다. 시각 변경 없는 입력 뒤 retained scene의 입력 번호가 오래되어 재합성이 계속 거부되던 문제를 수정했다. native 변경 시 framework frame도 요청하며 기존 stale-input guard는 유지한다. 두 WebView 제거/재생성과 native load 반영을 다시 통과했다.
+- R-E: Windows.UI.Composition 효과에 Gaussian→Saturation을 연결했다. 반경 0의 채도 0–2와 독립 tint를 지원하며 WinUI island 효과에는 채도 지원을 전용하지 않는다. 실제 native/raster 각각 요청 sigma 4/16에서 3.989/15.947을 측정했고 초기화 차이는 0이다. 채도 0/1/2와 half-blue tint도 픽셀 검증을 통과했다.
+- R7: Release build/publish, 공통 계약 12개, WebView 공통 계약, 기존 WinUI 픽셀/30-frame 연속성 및 수정된 6-tab 경로의 OS SendInput 전체 sequence를 검증했다. 0/1/4-view × idle/animation/scroll/modal 측정 fixture를 추가했다. native content 첫 표시·입력/scanout latency·Chromium/GPU memory·변경 전후 성능 승인은 이 측정으로 대체하지 않는다.
+- 남음: Windows MAUI의 composition/presenter 연결, 동일 프로세스의 두 제품 owner, 전체 loss/fault/정책·물리 입력/접근성, template/clean-machine 배포 및 NativeAOT. Windows NativeAOT publish는 실제 시도했으나 현행 runner의 iOS 전용 `DOROTIAOT002`에서 거부됐다. 일반 Release publish를 AOT 완료로 계산하지 않는다.
+
+계약/제한: [Windows WebView](Doroti/docs/platform-views/windows-webview.md). 재현: [Windows 검증](Doroti/validation/webview/README.md). 현재 산출물은 `Doroti/artifacts/webview/2026-09-19/windows/` 및 `Doroti/artifacts/platform-views/2026-09-19/windows/`에 있으며 실패 실행도 보존한다.
+
 ## 현재 기준과 다음 작업 (2026-09-18)
 
 **전체 상태는 PARTIAL이다.** 이 절과 아래 현재 상태표·실행 gate가 과거 기록보다 우선한다. 기존 iOS 기록에 이어 이번 macOS 작업은 아래 AppKit 구현·실행 결과를 추가한다. 근거는 [지원표](Doroti/docs/platform-views/support-matrix.md), [공통 계약](Doroti/docs/platform-views/contract.md), [iOS 계약](Doroti/docs/platform-views/ios.md)이다.

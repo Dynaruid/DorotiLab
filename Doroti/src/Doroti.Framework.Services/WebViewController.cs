@@ -7,6 +7,7 @@ public sealed class WebViewController : IAsyncDisposable
 {
     private readonly PlatformViewClient _client;
     private readonly IWebViewHostCapability _web;
+    private readonly IReadOnlyDictionary<string, WebViewResource> _resources;
     private int _closed;
     private int _attached;
     public DorotiView Owner { get; }
@@ -17,13 +18,18 @@ public sealed class WebViewController : IAsyncDisposable
     public WebViewController(DorotiView owner, WebViewOptions? options = null)
     {
         Owner = owner;
+        options ??= new();
+        options.Validate();
+        _resources = options.Resources is { } resources
+            ? new Dictionary<string, WebViewResource>(resources, StringComparer.Ordinal)
+            : new Dictionary<string, WebViewResource>();
         var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
             DartUiInvocation.Managed("WebViewController.create"));
         var support = host.QuerySupport(new PlatformViewRequest(0, "doroti/webview", PlatformViewComposition.InterleavedComposition));
         if (!support.Supported || !support.WebViewCommands)
             throw new WebViewException(WebViewError.Unsupported, support.Reason ?? "This backend has no WebView controller adapter.");
         _web = host as IWebViewHostCapability ?? throw new WebViewException(WebViewError.Unsupported, "Host has no WebView command adapter.");
-        _client = new PlatformViewClient(host, new PlatformViewDescriptor("doroti/webview", (options ?? new()).Encode(),
+        _client = new PlatformViewClient(host, new PlatformViewDescriptor("doroti/webview", options.Encode(),
             PlatformViewStrategyPolicy.RequireRequested));
         _web.WebViewChanged += OnChanged;
         _client.Focused += OnFocused;
@@ -41,6 +47,12 @@ public sealed class WebViewController : IAsyncDisposable
         return _web.ExecuteWebViewAsync(Ready.Result, command, cancellationToken);
     }
     public ValueTask SetFocusAsync(bool focused) => _client.SetFocusAsync(focused);
+    public Task<WebViewResult> LoadAppContentAsync(string resourceKey, CancellationToken cancellationToken = default)
+    {
+        var paths = _resources.Where(pair => pair.Value.ResourceKey == resourceKey).Select(pair => pair.Key).ToArray();
+        if (paths.Length != 1) throw new WebViewException(WebViewError.InvalidRequest, "App content requires one registered URL path for this resource key.");
+        return ExecuteAsync(new(WebViewOperation.Navigate, "doroti-app://content" + paths[0]), cancellationToken);
+    }
     public void AttachWidget()
     {
         if (_closed != 0) throw new WebViewException(WebViewError.Closed, "WebView is closed.");

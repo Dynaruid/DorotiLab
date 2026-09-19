@@ -5,7 +5,7 @@
 A sample and diagnostics app for Doroti's Material widgets and platform hosts.
 One shared C# application runs through Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, and Web runners.
 
-The Material sample includes Components, Color, Typography, Elevation, Platform views, nine seed colors,
+The Material sample includes Components, Color, Typography, Elevation, Platform views, WebView, nine seed colors,
 six image themes, and local/URL image demos. **Diagnostics is the default screen**; the commands below explicitly open sample mode.
 You can also use **Open Material sample** at the top of the diagnostics gallery,
 including after closing the app and reopening it from its icon on iPhone.
@@ -14,6 +14,11 @@ Select **Platform views** in the bottom navigation bar or wide-screen navigation
 native buttons and text input, overlapping layers, translucent foregrounds, input shielding,
 modals, and control creation/disposal. Hosts without the required controls and interleaved
 composition show an availability message. On Windows, use the Windows App SDK/Vulkan runner.
+
+Select **WebView** for a dedicated live HTML sample with native text input, JavaScript animation,
+and a counter. Hosts exposing the WebView command adapter also show URL navigation, history,
+reload, local-content reset, and JavaScript evaluation controls; attachment-only hosts keep the
+interactive local page and a reset action.
 
 - [Prerequisites](#prerequisites)
 - [Platform sample commands](#material-sample-mode)

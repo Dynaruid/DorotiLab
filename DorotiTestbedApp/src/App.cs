@@ -139,6 +139,8 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Widget CreateRootApp()
     {
+        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "webview-workload")
+            return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new WebViewWorkloadFixture());
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "platform-effects")
             return new Material.MaterialApp(debugShowCheckedModeBanner: false, home: new PlatformEffectFixture());
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "platform-views")

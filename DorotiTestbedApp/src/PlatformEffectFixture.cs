@@ -69,12 +69,17 @@ internal sealed class PlatformEffectFixture : StatefulWidget
             PlatformEffectFixtureProbe.Owner = owner;
             var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
                 DartUiInvocation.Managed("PlatformEffectFixture"));
-            if (OperatingSystem.IsMacOS())
+            if (OperatingSystem.IsMacOS() || OperatingSystem.IsWindows())
             {
                 if (_mounted) _primaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(Html)));
                 else if (_primaryController is { } primary) { _primaryController = null; _ = primary.DisposeAsync(); }
                 if (_mounted && _second) _secondaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(SecondHtml)));
                 else if (_secondaryController is { } secondary) { _secondaryController = null; _ = secondary.DisposeAsync(); }
+                if (OperatingSystem.IsWindows() && _primaryController is { } windowsWeb)
+                {
+                    WindowsWebViewEvidence.Start(owner, windowsWeb);
+                    WindowsEffectCalibration.Start(owner, windowsWeb);
+                }
             }
             var request = new PlatformViewRequest(0, "doroti/webview", PlatformViewComposition.InterleavedComposition,
                 CreationParameters: Html);

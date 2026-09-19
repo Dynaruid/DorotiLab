@@ -135,7 +135,9 @@ def main():
             print('offscreen scroll and return passed', flush=True)
             click(hwnd, 72, 590, scale)
             g.wait_for(lambda: (v if (v := g.read(OUT / 'frame.json')) and not v['native'] else None), process, 8)
-            click(hwnd, 648, 590, scale)
+            # Six current destinations: Platform views is index four; the last
+            # destination now opens the independently added WebView sample.
+            click(hwnd, 540, 590, scale)
             frame = g.wait_for(lambda: (v if (v := g.read(OUT / 'frame.json')) and len(v['native']) == 2 else None), process, 8)
             time.sleep(.5)
             click(hwnd, 110, frame['native'][0]['transform']['Dy'] + 40, scale)

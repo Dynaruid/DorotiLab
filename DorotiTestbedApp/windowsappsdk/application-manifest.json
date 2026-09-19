@@ -25,6 +25,24 @@
       "embeddedResourceName": "Doroti.Shaders.aurora.sksl",
       "sha256": "658695aca71aa8cdc9e776e037ea404c29c5759a481d9955c9f21e4a1e664e41",
       "length": 210
+    },
+    {
+      "key": "webview/index.html",
+      "kind": "webview",
+      "fontFamily": null,
+      "locale": null,
+      "embeddedResourceName": "Doroti.WebView.index.html",
+      "sha256": "b93b3b29f4c385e55b271ce1db76a2eab6b8b8b5d5a7852bdbee8eac90cbf2f0",
+      "length": 175
+    },
+    {
+      "key": "webview/style.css",
+      "kind": "webview",
+      "fontFamily": null,
+      "locale": null,
+      "embeddedResourceName": "Doroti.WebView.style.css",
+      "sha256": "7af7d50e820dafe80af69d252abf9ea4aa93e0371acfcb71abf6ae35594664a9",
+      "length": 37
     }
   ],
   "plugins": []

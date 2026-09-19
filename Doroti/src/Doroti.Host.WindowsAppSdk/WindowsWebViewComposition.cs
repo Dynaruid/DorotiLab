@@ -13,16 +13,17 @@ internal sealed record WindowsCompositionSlice(PlatformRasterSegment Segment, SK
 
 /// <summary>Owner-local WebView2 visual attachment. All native pixels and inline effects share
 /// one Windows.UI.Composition tree; legacy HWND controls cannot enter this tree.</summary>
-internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposable
+internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, IDisposable
 {
-    internal static readonly PlatformEffectSupport Effects = new(true, 4, 32,
+    internal static readonly PlatformEffectSupport Effects = new(true, 4, 32, Saturation: true,
         Reason: "Windows Composition supports at most four bounded isotropic backdrops, sigma <= 32.");
     private readonly nint _parent;
     private readonly Action _invalidate;
     private readonly Action _yieldText;
     private readonly bool _transportAvailable;
+    private readonly IApplicationResourceHostCapability _resources;
     private readonly System.Collections.Concurrent.ConcurrentDictionary<PlatformViewHandle, Instance> _instances = [];
-    private readonly Dictionary<int, (double Sigma, C.SpriteVisual Visual, C.CompositionEffectBrush Brush)> _effects = [];
+    private readonly Dictionary<int, (double Sigma, double Saturation, C.SpriteVisual Visual, C.CompositionEffectBrush Brush)> _effects = [];
     private C.Compositor? _compositor;
     private C.ContainerVisual? _root;
     private C.Desktop.DesktopWindowTarget? _target;
@@ -37,14 +38,20 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
     private PlatformCompositionToken _token;
     private readonly Native.SubclassProc _callback;
     private bool _disposed;
-    private long _nativeMessages, _mouseEvents;
+    private long _nativeMessages, _mouseEvents, _pointerEvents;
+    private long _rasterUploadBytes, _rasterUploads;
+    internal long RasterUploadBytes => _rasterUploadBytes;
     internal object Evidence => new { strategy = "WebView2-CompositionController", apiFamily = "Windows.UI.Composition",
-        liveInstances = _instances.Count, effects = _effects.Count, nativeMessages = _nativeMessages, mouseEvents = _mouseEvents,
+        runtimeVersion = _environment is { IsCompletedSuccessfully: true } environment ? environment.Result.BrowserVersionString : null,
+        liveInstances = _instances.Count, effects = _effects.Count, nativeMessages = _nativeMessages, mouseEvents = _mouseEvents, pointerEvents = _pointerEvents,
         loadedViews = _instances.Values.Count(instance => instance.Loaded),
         navigation = _instances.Values.Select(instance => instance.NavigationStatus).ToArray(),
+        navigationEvents = _instances.Values.Select(instance => instance.NavigationEvents.ToArray()).ToArray(),
+        rasterUploadBytes = _rasterUploadBytes, rasterUploads = _rasterUploads,
+        effectParameters = _effects.Values.Select(effect => new { physicalSigma = effect.Sigma, saturation = effect.Saturation }).ToArray(),
         nativeContentCaptured = false, observation = "BackendAccepted" };
-    internal WindowsWebViewComposition(nint parent, Action invalidate, Action yieldText, bool transportAvailable)
-    { _parent = parent; _invalidate = invalidate; _yieldText = yieldText; _transportAvailable = transportAvailable; _callback = WindowProc; }
+    internal WindowsWebViewComposition(nint parent, Action invalidate, Action yieldText, bool transportAvailable, IApplicationResourceHostCapability resources)
+    { _parent = parent; _invalidate = invalidate; _yieldText = yieldText; _transportAvailable = transportAvailable; _resources = resources; _callback = WindowProc; }
     public string ViewType => "doroti/webview";
     internal bool Contains(PlatformViewHandle handle) => _instances.ContainsKey(handle);
     internal bool HasVisibleContent => _orderedVisuals.Length != 0;
@@ -55,6 +62,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
         PlatformViewComposition.InterleavedComposition, PlatformViewEffects.RectClip,
         NativeBackdropBlur: _transportAvailable && !_disposed, Capabilities: new(PlatformViewRepresentation.CompositionVisual,
             PlatformViewTransport.CpuUpload, PlatformViewInputPolicy.DirectNative, Effects),
+        WebViewCommands: true,
         Reason: "Requires installed WebView2 runtime and a Windows.UI.Composition tree; legacy HWND mixing is unsupported.");
 
     private void Initialize()
@@ -82,18 +90,26 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
         Action<PlatformViewHandle> onFocused, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        var options = ParseOptions(parameters);
+        var content = await LoadContent(options, cancellationToken);
+        if (_disposed) throw new WebViewException(WebViewError.Closed, "WebView owner is closed.");
         Initialize();
         var folder = Environment.GetEnvironmentVariable("DOROTI_WEBVIEW_USER_DATA") ??
             System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Doroti", "WebView2");
-        _environment ??= CoreWebView2Environment.CreateWithOptionsAsync(null, folder, null).AsTask();
+        _environment ??= CreateEnvironment(folder);
         var environment = await _environment;
         cancellationToken.ThrowIfCancellationRequested();
-        var controller = await environment.CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference.CreateFromWindowHandle((ulong)_parent));
+        if (_disposed) throw new WebViewException(WebViewError.Closed, "WebView owner closed during environment creation.");
+        var profile = environment.CreateCoreWebView2ControllerOptions();
+        profile.ProfileName = options.Profile == WebViewProfile.Ephemeral ? "private-" + Guid.NewGuid().ToString("N") : "DorotiShared";
+        profile.IsInPrivateModeEnabled = options.Profile == WebViewProfile.Ephemeral;
+        var controller = await environment.CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference.CreateFromWindowHandle((ulong)_parent), profile);
         Instance? instance = null;
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            instance = new(this, handle, environment, controller, _compositor!.CreateContainerVisual(), onFocused);
+            if (_disposed) throw new WebViewException(WebViewError.Closed, "WebView owner closed during controller creation.");
+            instance = new(this, handle, environment, controller, _compositor!.CreateContainerVisual(), onFocused, options, content);
             if (!_instances.TryAdd(handle, instance)) throw new InvalidOperationException("Duplicate WebView identity.");
             controller.RootVisualTarget = instance.Visual;
             controller.IsVisible = false;
@@ -103,7 +119,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
             // Install input routing last so the application owns explicit hit testing.
             Native.RemoveWindowSubclass(_parent, _callback, 0x505657);
             if (!Native.SetWindowSubclass(_parent, _callback, 0x505657, 0)) throw new System.ComponentModel.Win32Exception();
-            instance.InitialHtml = parameters.IsEmpty ? "<!doctype html><input value='Native WebView2'>" : Encoding.UTF8.GetString(parameters.Span);
+            instance.InitialHtml = options.Html ?? "<!doctype html><input value='Native WebView2'>";
             return instance;
         }
         catch
@@ -122,7 +138,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
             throw new NotSupportedException("HWND controls and WebView2 composition visuals require separate owner scenes.");
         var prepared = new List<(C.SpriteVisual Visual, C.CompositionSurfaceBrush Brush, C.CompositionDrawingSurface Surface)>();
         var visuals = new Dictionary<int, C.SpriteVisual>();
-        var nextEffects = new Dictionary<int, (double Sigma, C.SpriteVisual Visual, C.CompositionEffectBrush Brush)>();
+        var nextEffects = new Dictionary<int, (double Sigma, double Saturation, C.SpriteVisual Visual, C.CompositionEffectBrush Brush)>();
         var allocatedEffects = new List<(C.SpriteVisual Visual, C.CompositionEffectBrush Brush)>();
         var mutationStarted = false;
         try
@@ -149,15 +165,16 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
                 if (effect.SigmaX != effect.SigmaY || plan.Token.DeviceScaleX != plan.Token.DeviceScaleY)
                     throw new NotSupportedException("Windows Composition requires isotropic backdrop sigma and device scale.");
                 var sigma = effect.SigmaX * plan.Token.DeviceScaleX;
-                if (_effects.TryGetValue(effect.PaintOrder, out var cached) && cached.Sigma == sigma)
+                var saturation = effect.Style?.Saturation ?? 1;
+                if (_effects.TryGetValue(effect.PaintOrder, out var cached) && cached.Sigma == sigma && cached.Saturation == saturation)
                 { nextEffects.Add(effect.PaintOrder, cached); continue; }
-                Marshal.ThrowExceptionForHR(Native.CreateEffect(Abi(_compositor!), (float)sigma, out var value));
+                Marshal.ThrowExceptionForHR(Native.CreateEffect(Abi(_compositor!), (float)sigma, (float)saturation, out var value));
                 C.CompositionEffectBrush brush;
                 try { brush = WinRT.MarshalInterface<C.CompositionEffectBrush>.FromAbi(value); }
                 finally { Marshal.Release(value); }
                 var visual = _compositor!.CreateSpriteVisual(); visual.Brush = brush;
                 allocatedEffects.Add((visual, brush));
-                nextEffects.Add(effect.PaintOrder, (sigma, visual, brush));
+                nextEffects.Add(effect.PaintOrder, (sigma, saturation, visual, brush));
             }
             mutationStarted = true;
             foreach (var native in next.OfType<PlatformNativeSegment>()) Complete(batch.AttachAsync(native.Placement));
@@ -193,6 +210,8 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
             _effects.Clear(); foreach (var item in nextEffects) _effects.Add(item.Key, item.Value);
             allocatedEffects.Clear();
             _visible = next; _token = plan.Token; _orderedVisuals = ordered.ToArray();
+            _rasterUploadBytes += slices.Sum(slice => (long)slice.Bounds.Width * slice.Bounds.Height * 4);
+            _rasterUploads += slices.Length;
         }
         catch
         {
@@ -239,6 +258,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
     }
     private nint WindowProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint id, nuint data)
     {
+        if (PointerMessage(message, wparam)) return 0;
         if (message == 0x2a3 || message == 0x215)
         {
             if (_hover is { } previous && _instances.TryGetValue(previous, out var hovered))
@@ -278,7 +298,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
             }
             if (handle is { } target && _instances.TryGetValue(target, out var instance) && instance.Placement is { } placement)
             {
-                if (message is 0x201 or 0x204 or 0x207)
+                if (message is 0x201 or 0x204 or 0x207 or 0x20b)
                 {
                     _capture = target; Native.SetCapture(hwnd);
                     _yieldText();
@@ -289,9 +309,9 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
                     point.Y - (int)Math.Round(origin.dy * _token.DeviceScaleY));
                 instance.Controller.SendMouseInput((CoreWebView2MouseEventKind)message,
                     (CoreWebView2MouseEventVirtualKeys)(wparam & 0xffff),
-                    message is 0x20a or 0x20e ? (uint)(short)(wparam >> 16) : 0, local);
+                    message is 0x20a or 0x20e ? (uint)(short)(wparam >> 16) : message is 0x20b or 0x20c or 0x20d ? (uint)(wparam >> 16) : 0, local);
                 _mouseEvents++;
-                if (message is 0x202 or 0x205 or 0x208)
+                if (message is 0x202 or 0x205 or 0x208 or 0x20c)
                 {
                     _capture = null; Native.ReleaseCapture();
                 }
@@ -308,7 +328,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
         return placement.Clip is { } clip ? bounds.intersect(clip) : bounds;
     }
     private static Rect ShieldBounds(PlatformInputShield shield) => Bounds(new(default, shield.Bounds, shield.Transform, shield.Clip, shield.PaintOrder));
-    private sealed class Instance : IPlatformViewInstance
+    private sealed partial class Instance : IPlatformViewInstance, IPlatformWebViewInstance
     {
         private readonly WindowsWebViewComposition _owner;
         private readonly PlatformViewHandle _handle;
@@ -326,11 +346,14 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
         internal string? InitialHtml;
         private double _scale;
         internal Instance(WindowsWebViewComposition owner, PlatformViewHandle handle,
-            CoreWebView2Environment environment, CoreWebView2CompositionController controller, C.ContainerVisual visual, Action<PlatformViewHandle> focused)
+            CoreWebView2Environment environment, CoreWebView2CompositionController controller, C.ContainerVisual visual, Action<PlatformViewHandle> focused, WebViewOptions options, Dictionary<string, byte[]> content)
         {
             _owner = owner; _handle = handle; _environment = environment; Controller = controller; Core = controller.CoreWebView2; Visual = visual; _focused = focused;
             controller.GotFocus += Focused; controller.LostFocus += LostFocus; Core.NavigationCompleted += Navigated;
             Core.WebMessageReceived += MessageReceived;
+            _options = options;
+            _content = content;
+            ConnectCommands();
         }
         private void Focused(object? sender, object args)
         { _hasFocus = true; _focused(_handle); }
@@ -338,14 +361,22 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
         internal void FocusNative()
         { if (!_hasFocus) { _owner._yieldText(); Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic); } }
         private void Navigated(object? sender, CoreWebView2NavigationCompletedEventArgs args)
-        { Loaded = args.IsSuccess; NavigationStatus = args.IsSuccess ? "Loaded" : args.WebErrorStatus.ToString(); _owner._invalidate(); }
+        {
+            TraceNavigation($"completed:{args.NavigationId}:active={_nativeNavigation}:success={args.IsSuccess}");
+            if (_commandsDisabled || args.NavigationId != _nativeNavigation) return;
+            CompleteNavigation(args); Loaded = args.IsSuccess;
+            NavigationStatus = args.IsSuccess ? "Loaded" : args.WebErrorStatus.ToString(); _owner._invalidate();
+        }
         private void MessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs args)
-        { _owner._nativeMessages++; _owner._invalidate(); }
+        { if (_commandsDisabled) return; _owner._nativeMessages++; ReceiveMessage(args); _owner._invalidate(); }
         public ValueTask ApplyAsync(PlatformViewPlacement placement)
         {
             var scale = Native.GetDpiForWindow(_owner._parent) / 96d;
             if (Placement == placement && scale == _scale) return ValueTask.CompletedTask;
             _scale = scale;
+            Controller.ShouldDetectMonitorScaleChanges = false;
+            Controller.RasterizationScale = scale;
+            Controller.NotifyParentWindowPositionChanged();
             var origin = placement.Transform.Map(placement.Bounds.topLeft);
             Controller.Bounds = new(0, 0, (int)Math.Round(placement.Bounds.width * scale), (int)Math.Round(placement.Bounds.height * scale));
             Visual.Offset = new((float)(origin.dx * scale), (float)(origin.dy * scale), 0);
@@ -360,7 +391,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
             if (Controller.IsVisible && InitialHtml is { } html)
             {
                 InitialHtml = null;
-                Core.NavigateToString(html);
+                NavigateHtml(html);
             }
             return ValueTask.CompletedTask;
         }
@@ -371,7 +402,7 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
             catch (COMException error) when (error.HResult == unchecked((int)0x8007139f)) { }
             Placement = null; return ValueTask.CompletedTask;
         }
-        public ValueTask DisableInputAsync() => DetachAsync();
+        public ValueTask DisableInputAsync() { CloseCommands(); return DetachAsync(); }
         public ValueTask SetFocusAsync(bool focused)
         {
             if (focused && Placement is { Visible: true }) FocusNative();
@@ -382,6 +413,8 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
         {
             if (_disposed) return ValueTask.CompletedTask;
             _disposed = true; _owner._instances.TryRemove(_handle, out _);
+            foreach (var id in _owner._pointerTargets.Where(p => p.Value == _handle).Select(p => p.Key).ToArray()) _owner._pointerTargets.Remove(id);
+            CloseCommands();
             Controller.GotFocus -= Focused; Controller.LostFocus -= LostFocus; Core.NavigationCompleted -= Navigated;
             Core.WebMessageReceived -= MessageReceived;
             try { Controller.RootVisualTarget = null; Controller.Close(); }
@@ -421,8 +454,8 @@ internal sealed class WindowsWebViewComposition : IPlatformViewFactory, IDisposa
         [DllImport("user32.dll")] internal static extern nint LoadCursorW(nint module, nint id);
         [DllImport("user32.dll")] internal static extern nint SetCursor(nint cursor);
         [DllImport("user32.dll")] internal static extern bool TrackMouseEvent(ref TrackMouse tracking);
-        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_effect_v1")]
-        internal static extern int CreateEffect(nint compositor, float sigma, out nint brush);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_effect_v2")]
+        internal static extern int CreateEffect(nint compositor, float sigma, float saturation, out nint brush);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_graphics_create_v1")]
         internal static extern int CreateGraphics(nint compositor, out nint context);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_surface_v1")]

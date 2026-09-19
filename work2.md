@@ -10,6 +10,18 @@
 
 **Windows controller 확정:** WindowsAppSdk와 Windows MAUI는 `Microsoft.Web.WebView2.Core.CoreWebView2CompositionController`를 사용한다. 이는 우선 후보가 아닌 필수 선택이다. windowed controller·기본 MAUI WebView handler를 대체 backend로 자동 선택하지 않는다. 기능 adapter를 공유하되 두 runner의 host 결합·실행 증거는 별도로 남긴다.
 
+## Windows 구성 실행 업데이트 (2026-09-19)
+
+**Windows 전체 PARTIAL.** WindowsAppSDK의 기존 `WindowsWebViewComposition.Instance`가 공통 `IPlatformWebViewInstance`를 구현한다. 별도 SDK instance/registry/compositor를 만들지 않았다. Windows MAUI에는 이 결과를 전용하지 않는다.
+
+- WV-1/2: controller/widget, feature query, HTTP(S)/HTML/앱 콘텐츠 탐색, history/reload/stop, URL/title/loading, navigation events, JSON/undefined/JS 오류, 취소·timeout·document generation을 연결했다. 미완료 native JS는 caller 취소 후에도 실제 callback까지 pending 상한을 차지한다.
+- WV-2/8: 기본 view별 InPrivate 격리, 명시적 shared persistent profile을 생성 전에 선택한다. `ClearData`는 전체 profile 완료와 custom app origin 삭제를 함께 기다린다. 실제 runtime에서 AllProfile만 호출하면 남던 custom-scheme localStorage를 재현·수정했다.
+- WV-2/8: manifest key/path/MIME의 `doroti-app://content`, 상대 CSS/fetch·GET/HEAD/single Range를 연결했다. `LoadAppContentAsync(resourceKey)`를 추가했다. native top-level source origin과 version/document/request/64 KiB 한도를 검사하는 opt-in bridge를 제공한다. popup/download/외부 protocol 차단, permission 거부가 기본이며 앱 정책 API는 잔여다.
+- WV-H/9: 실제 제품에서 JSON·한글·null/undefined·오류·Promise/cycle 거부, stale/late 결과·cancel, HTML/CSS/Range, message origin 거부, private 격리/shared persistence·storage clear, 10회 create/dispose race 및 JS 중 dispose를 통과했다. 같은 instance의 live blur/선명한 전경·입력/resize/재생성 및 native/raster Gaussian·채도/tint도 검증했다.
+- WV-9 잔여: Windows MAUI, full Tab/IME/UIA·물리/pen, 두 owner·실제 process/loss recovery, file chooser/download/permission/fullscreen 공개 정책, media/protected source, template/clean-machine/성능 승인. NativeAOT publish는 `DOROTIAOT002`에서 거부되어 ILC/native link/run을 수행하지 못했다.
+
+[Windows 계약](Doroti/docs/platform-views/windows-webview.md)과 [재현/산출물 안내](Doroti/validation/webview/README.md)를 따른다. 성공·실패 산출물은 `Doroti/artifacts/webview/2026-09-19/windows/`와 `Doroti/artifacts/platform-views/2026-09-19/windows/`에 보존한다. 아래 Windows TODO 중 이 절에 적힌 기능만 갱신하며 전체 완료로 전환하지 않는다.
+
 ## macOS 구성 실행 업데이트 (2026-09-18)
 
 **macOS/AppKit 전체 상태는 PARTIAL**이다. work1의 동일 WKWebView를 사용하며 별도 compositor를 만들지 않았다.
@@ -71,7 +83,7 @@ Windows의 `WindowsWebViewComposition`, iOS/Android factory의 `doroti/webview`,
 
 | backend | 현재 attachment / 효과 상태 | work2 구현 및 work1 의존성 |
 |---|---|---|
-| WindowsAppSDK | CompositionController·호환 raster/effect tree 구현, 제한 live source·입력·수명 검증 | 기존 controller/attachment 재사용. WV-1/2의 공개 기능·문서/profile·배포 연결, HWND 경로와 혼합 제한 유지 |
+| WindowsAppSDK | CompositionController·호환 raster/effect tree·채도·공개 controller 연결, 제품 기능/합성/입력/보정 검증 | 탐색/JS/profile/content/message 연결됨. HWND 혼합 제한 유지. 전체 정책/물리/MAUI/성능/NativeAOT 잔여; 위 Windows 실행 절 참조 |
 | Windows MAUI | 동일 controller 필수이나 runner 결합 별도 | MAUI presenter·RootVisualTarget/input/effect 연결부터 별도 검증 |
 | Android | native WebView factory·제한 backdrop 코드 및 host 빌드 | 실제 provider에서 live WebView sample·입력/효과 검증이 선행. WV-4 기능 API 별도 |
 | iOS UIKit Graphite | WKWebView+Metal+공개 animator 효과 구현, 현재 iOS 27 Simulator 픽셀/복귀/수명·보정 통과 | WV-5에서 기존 인스턴스 재사용, controller/delegate/JS/profile 기능 추가. 현행 효과 실기기/NativeAOT 미승인 |

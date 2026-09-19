@@ -41,7 +41,10 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private int _winUiWidth, _winUiHeight;
     private long _winUiPlacementBatches;
     private bool _needsReplay;
-    internal bool NeedsReplay => Volatile.Read(ref _needsReplay);
+    private long _nativeRevision, _committedNativeRevision;
+    internal bool NeedsReplay => Volatile.Read(ref _needsReplay) ||
+        Interlocked.Read(ref _nativeRevision) != Interlocked.Read(ref _committedNativeRevision);
+    internal Action? RequestFrameworkFrame { get; set; }
     private long _commits;
     private long _readbackBytes;
     private long _uploadedBytes, _reusedRasters;
@@ -69,7 +72,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 value => owner._host!.DispatchPlatformViewEvent(() => focused(value)), cancellationToken);
     }
 
-    internal WindowsPlatformViewDispatcher Bind(WindowsManagedProductHost host, WindowsManagedVulkanPresenter? presenter)
+    internal WindowsPlatformViewDispatcher Bind(WindowsManagedProductHost host, WindowsManagedVulkanPresenter? presenter, IApplicationResourceHostCapability resources)
     {
         if (_parent != 0) throw new InvalidOperationException("PlatformView owner already bound.");
         _parent = host.TopLevelHwnd;
@@ -82,8 +85,13 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             if (_closed) return;
             // Native navigation/messages can finish after the framework becomes idle.
             // Force replay so the next receipt observes the completed native revision.
-            Volatile.Write(ref _needsReplay, true); host.RequestInvalidate();
-        }, host.ClearClient, presenter is not null);
+            Interlocked.Increment(ref _nativeRevision);
+            // A native event can follow input which did not dirty a widget.
+            // Refresh the framework descriptor/input sequence before replay;
+            // otherwise the stale-input presentation guard rejects it forever.
+            if (RequestFrameworkFrame is { } request) request();
+            else host.RequestInvalidate();
+        }, host.ClearClient, presenter is not null, resources);
         _factories.Add(_webViews.ViewType, _webViews);
         if (presenter is not null)
         {
@@ -147,6 +155,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     {
         if (_recording is not null) throw new InvalidOperationException("Unretired PlatformView raster frame.");
         var started = System.Diagnostics.Stopwatch.GetTimestamp();
+        var nativeRevision = Interlocked.Read(ref _nativeRevision);
         if (!HasPlatformCommands(commands) && !Volatile.Read(ref _hasVisibleParts))
         { renderer.DrawPlatformRasterSegment(canvas, commands, width, height); return; }
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
@@ -159,6 +168,9 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         if (nativeParts.Any(p => _webViews!.Contains(p.Placement.Handle)) &&
             nativeParts.Any(p => !_webViews!.Contains(p.Placement.Handle)))
         { plan.Dispose(); throw new NotSupportedException("Windows cannot mix WebView composition visuals and sibling HWNDs in one frame."); }
+        if (nativeParts.Any(p => !_webViews!.Contains(p.Placement.Handle)) &&
+            plan.Parts.OfType<PlatformBackdropSegment>().Any(p => p.Style is { Saturation: not 1 }))
+        { plan.Dispose(); throw new NotSupportedException("Saturation adjustment requires the WebView2 Windows Composition tree; the WinUI island effect does not support it."); }
         if (plan.Parts.OfType<PlatformBackdropSegment>().Any(p =>
                 Math.Abs(p.SigmaX - p.SigmaY) > .001 || Math.Abs(token.DeviceScaleX - token.DeviceScaleY) > .001))
         { plan.Dispose(); throw new NotSupportedException("Windows Composition requires isotropic backdrop sigma and device scale."); }
@@ -173,7 +185,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             if (!plan.HasNativeContent && !(Volatile.Read(ref _hasVisibleParts) && Volatile.Read(ref _liveHwndSources) != 0))
             {
                 foreach (var raster in rasters) renderer.DrawPlatformRasterSegment(canvas, raster.Commands, width, height);
-                _recording = new(plan, null, null, width, height, []) { Started = started };
+                _recording = new(plan, null, null, width, height, []) { Started = started, NativeRevision = nativeRevision };
                 return;
             }
             var visualComposition = nativeParts.Length != 0 && nativeParts.All(p => _webViews!.Contains(p.Placement.Handle));
@@ -213,7 +225,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 atlas.Canvas.Restore();
             }
             var readback = _presenter!.RequestPlatformReadback(atlas, info);
-            _recording = new(plan, atlas, readback, width, height, rasters) { Started = started, Slices = slices.ToArray() };
+            _recording = new(plan, atlas, readback, width, height, rasters) { Started = started, NativeRevision = nativeRevision, Slices = slices.ToArray() };
             atlas = null;
         }
         catch { atlas?.Dispose(); plan.Dispose(); throw; }
@@ -262,6 +274,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 !_host!.IsLatestResizeGeneration(checked((ulong)generation))) return false;
             _session ??= new(frame.Plan.Token.OwnerViewId);
             if (!_session.CommitRetiredFrame(frame.Plan, () => CommitFrame(frame, started))) return false;
+            Interlocked.Exchange(ref _committedNativeRevision, frame.NativeRevision);
+            if (NeedsReplay) _host.RequestInvalidate();
             try { WriteEvidence(frame); }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException)
             { System.Diagnostics.Trace.TraceWarning($"PlatformView evidence could not be written: {error.Message}"); }
@@ -312,6 +326,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 Volatile.Write(ref _hasVisibleParts, next.Length != 0);
                 Volatile.Write(ref _needsReplay, false);
                 _commits++;
+                AddTiming(_uiMilliseconds, System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds);
                 return true;
             }
             if (_winUiSceneVisible || next.OfType<PlatformNativeSegment>().Any(p => _controls.ContainsKey(p.Placement.Handle)))
@@ -691,7 +706,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 _webViews?.HasVisibleContent == true ? "Graphite/Vulkan atlas -> Windows.UI.Composition/WebView2/backdrop" :
                 "Graphite/Vulkan GPU atlas -> single DirectComposition scene with live HWND surfaces", commits = _commits,
             readbackBytes = Interlocked.Read(ref _readbackBytes), dpi = Native.GetDpiForWindow(_parent),
-            uploadedBytes = _uploadedBytes, reusedRasters = _reusedRasters,
+            uploadedBytes = _uploadedBytes + (_webViews?.RasterUploadBytes ?? 0), reusedRasters = _reusedRasters,
             liveHwndSources = Volatile.Read(ref _liveHwndSources),
             winUi = _winUiControls.Snapshot(),
             winUiBackdrop = _winUiBackdrop?.Evidence,
@@ -711,8 +726,11 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             compositionOutputCount = _sceneOutput is null || frame.Rasters.Length == 0 ? 0 : 1,
             probe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_PROBE_STATE"),
             effectProbe = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_EFFECT_PROBE_STATE"), webView = _webViews?.Evidence,
-            timings = new { sampleLimit = 128, rasterAndReadbackP50Ms = Percentile(rasterTimings, .5),
-                rasterAndReadbackP95Ms = Percentile(rasterTimings, .95), uiCommitP95Ms = Percentile(_uiMilliseconds.ToArray(), .95) },
+            timings = new { sampleLimit = 128, rasterSamples = rasterTimings.Length, uiSamples = _uiMilliseconds.Count,
+                rasterAndReadbackP50Ms = Percentile(rasterTimings, .5), rasterAndReadbackP95Ms = Percentile(rasterTimings, .95),
+                rasterAndReadbackP99Ms = Percentile(rasterTimings, .99),
+                uiCommitP50Ms = Percentile(_uiMilliseconds.ToArray(), .5), uiCommitP95Ms = Percentile(_uiMilliseconds.ToArray(), .95),
+                uiCommitP99Ms = Percentile(_uiMilliseconds.ToArray(), .99) },
         };
         var json = System.Text.Json.JsonSerializer.Serialize(payload);
         File.WriteAllText(path + ".tmp", json);
@@ -729,6 +747,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         internal PlatformCompositionPlan Plan = plan;
         internal SKSurface? Atlas = atlas;
         internal long Started;
+        internal long NativeRevision;
         internal Task<SkiaGraphiteReadback>? Readback = readback;
         internal SkiaGraphiteReadback? Pixels;
         internal int Width = width, Height = height;

@@ -5,7 +5,7 @@
 Doroti의 Material 위젯과 플랫폼별 호스트를 확인하는 샘플·진단 앱입니다.
 하나의 공용 C# 앱을 Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, Web runner로 실행합니다.
 
-Material 샘플은 Components, Color, Typography, Elevation, Platform views, 9개 seed 색상과 6개 이미지 테마,
+Material 샘플은 Components, Color, Typography, Elevation, Platform views, WebView, 9개 seed 색상과 6개 이미지 테마,
 로컬·URL 이미지 데모를 제공합니다. **기본 화면은 진단 갤러리**이며, 아래 명령은 샘플 모드를 명시적으로 엽니다.
 진단 갤러리 맨 위의 **Open Material sample** 버튼으로도 샘플을 열 수 있습니다.
 아이폰에서 앱을 종료한 뒤 아이콘으로 다시 열었을 때도 이 버튼을 사용하면 됩니다.
@@ -14,6 +14,10 @@ Material 샘플은 Components, Color, Typography, Elevation, Platform views, 9�
 네이티브 버튼·입력창의 겹침, 반투명 전경, 입력 차단, 모달, 생성·해제를 체험할 수 있습니다.
 현재 호스트가 예제의 컨트롤과 교차 합성을 지원하지 않으면 지원 안내를 표시합니다.
 Windows에서는 Windows App SDK/Vulkan runner를 사용하세요.
+
+**WebView**를 선택하면 네이티브 텍스트 입력, JavaScript 애니메이션, 카운터가 포함된 전용 HTML 샘플을 볼 수 있습니다.
+WebView 명령 adapter를 제공하는 호스트에서는 URL 이동, 뒤로·앞으로, 새로고침, 로컬 콘텐츠 복원,
+JavaScript 실행 컨트롤도 표시합니다. attachment만 제공하는 호스트에서는 로컬 페이지와 초기화 기능을 제공합니다.
 
 - [실행 준비](#실행-준비)
 - [플랫폼별 샘플 실행](#material-샘플-모드)
