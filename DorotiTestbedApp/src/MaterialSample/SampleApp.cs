@@ -14,6 +14,7 @@ namespace MaterialSample;
 
 internal static class SampleConstants
 {
+    internal const double NavigationBarDestinationWidth = 96;
     internal static readonly string[] Destinations = ["Components", "Color", "Typography", "Elevation", "Platform views"];
     internal static readonly IconData[] DestinationIcons = [M.Icons.widgets_outlined, M.Icons.format_paint_outlined, M.Icons.text_snippet_outlined, M.Icons.invert_colors_on_outlined, M.Icons.web_asset_outlined];
     internal static readonly IconData[] SelectedDestinationIcons = [M.Icons.widgets, M.Icons.format_paint, M.Icons.text_snippet, M.Icons.opacity, M.Icons.web_asset];
@@ -129,6 +130,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
     public override void activate() { base.activate(); UpdateTickerMode(); }
     private readonly GlobalKey<M.ScaffoldState> _scaffold = new();
     private readonly GlobalKey<ComponentsState> _components = new();
+    private readonly ScrollController _navigationBarScrollController = new(debugLabel: "sample-navigation-bar");
     private AnimationController _controller = null!;
     private CurvedAnimation _rail = null!, _barCurve = null!, _railSize = null!, _railOffset = null!, _barSize = null!, _barOffset = null!;
     private ReverseAnimation _bar = null!;
@@ -145,6 +147,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         _bar = new ReverseAnimation(_barCurve);
         _railSize = SizeAnimation(_rail); _railOffset = OffsetAnimation(_rail);
         _barSize = SizeAnimation(_bar); _barOffset = OffsetAnimation(_bar);
+        RevealNavigationDestination(_destination, animate: false);
     }
     public override void didChangeDependencies()
     {
@@ -162,9 +165,34 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
     public override void dispose()
     {
         _railSize.dispose(); _railOffset.dispose(); _barSize.dispose(); _barOffset.dispose(); _barCurve.dispose(); _rail.dispose();
-        _controller.dispose(); _tickerMode?.removeListener(UpdateTicker); base.dispose();
+        _controller.dispose(); _navigationBarScrollController.dispose(); _tickerMode?.removeListener(UpdateTicker); base.dispose();
     }
-    private void Navigate(long value) => setState(() => _destination = checked((int)value));
+    private void Navigate(long value)
+    {
+        var destination = checked((int)value);
+        setState(() => _destination = destination);
+        RevealNavigationDestination(destination, animate: true);
+    }
+    private void RevealNavigationDestination(int destination, bool animate)
+    {
+        Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(_ =>
+        {
+            if (!mounted || !_navigationBarScrollController.hasClients) return;
+            var position = _navigationBarScrollController.position;
+            if (!position.hasContentDimensions || !position.hasViewportDimension) return;
+            var destinationWidth = position.extentTotal / SampleConstants.Destinations.Length;
+            var target = Math.Clamp(
+                (destination + 0.5) * destinationWidth - position.viewportDimension / 2,
+                position.minScrollExtent,
+                position.maxScrollExtent);
+            if (Math.Abs(target - position.pixels) < 0.5) return;
+            if (animate)
+                Doroti.Runtime.DartRuntimePrimitives.Ignore(_navigationBarScrollController.animateTo(
+                    target, duration: Duration.Create(milliseconds: 250), curve: Curves.easeOutCubic));
+            else
+                _navigationBarScrollController.jumpTo(target);
+        }, debugLabel: "SampleHome.revealNavigationDestination");
+    }
     private bool AcceptAppBarScroll(ScrollNotification notification) =>
         Scroll_notificationLibrary.defaultScrollNotificationPredicate(notification) &&
         (_destination != 0 || _components.currentState?.OwnsScrollNotification(notification) == true);
@@ -268,13 +296,33 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
                 ])),
             ]),
             bottomNavigationBar: new AnimatedBuilder(animation: _controller,
-                child: new M.NavigationBar(selectedIndex: _destination, destinations: SampleConstants.BarDestinations(), onDestinationSelected: Navigate,
-                    backgroundColor: widget.Acrylic ? M.Colors.transparent : null,
-                    surfaceTintColor: widget.Acrylic ? M.Colors.transparent : null),
+                child: BottomNavigationBar(),
                 builder: (_, child) => new ExcludeSemantics(excluding: _barSize.value <= 0,
                     child: new ClipRect(child: new Align(alignment: Alignment.topLeft, heightFactor: _barSize.value,
                         child: new FractionalTranslation(translation: new Offset(0, 1 - _barOffset.value), child: child))))));
     }
+    private Widget BottomNavigationBar() => new LayoutBuilder(builder: (_, constraints) =>
+    {
+        var minimumWidth = SampleConstants.Destinations.Length * SampleConstants.NavigationBarDestinationWidth;
+        var width = constraints.hasBoundedWidth ? Math.Max(constraints.maxWidth, minimumWidth) : minimumWidth;
+        var scrollView = new SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: _navigationBarScrollController,
+            physics: new ClampingScrollPhysics(),
+            child: new SizedBox(width: width, child: new M.NavigationBar(
+                selectedIndex: _destination,
+                destinations: SampleConstants.BarDestinations(),
+                onDestinationSelected: Navigate,
+                backgroundColor: widget.Acrylic ? M.Colors.transparent : null,
+                surfaceTintColor: widget.Acrylic ? M.Colors.transparent : null)));
+        return new M.Scrollbar(
+            controller: _navigationBarScrollController,
+            thumbVisibility: constraints.hasBoundedWidth && minimumWidth > constraints.maxWidth,
+            interactive: true,
+            thickness: 4,
+            scrollbarOrientation: ScrollbarOrientation.bottom,
+            child: scrollView);
+    });
     private Widget Rail()
     {
         var direction = Directionality.of(context) == TextDirection.ltr ? 1 : -1;
