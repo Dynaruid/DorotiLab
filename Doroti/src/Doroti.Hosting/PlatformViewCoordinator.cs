@@ -239,7 +239,7 @@ public sealed class PlatformViewCoordinator : IPlatformViewHostCapability, IWebV
                 if (entry.State == PlatformViewState.Creating)
                 {
                     entry.State = PlatformViewState.Failed;
-                    entry.Ready.TrySetException(Error(entry.Handle, $"factory failed: {exception.Message}"));
+                    entry.Ready.TrySetException(exception is WebViewException ? exception : Error(entry.Handle, $"factory failed: {exception.Message}"));
                 }
             }
             _ = BeginDispose(entry);

@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup><ProjectReference Include="../../../src/Doroti.Hosting/Doroti.Hosting.csproj" /></ItemGroup>
+  <ItemGroup><Compile Include="../../../src/Doroti.Host.Maui/AndroidPointerMapping.cs" Link="AndroidPointerMapping.cs" /></ItemGroup>
 </Project>

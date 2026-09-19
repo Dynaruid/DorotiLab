@@ -1,6 +1,6 @@
 # WebView 작업계획 — 재구성 PlatformView 소비자
 
-2026-09-18 개정 · 2026-09-14 초기 계획과 이후 work1 구현·검증 결과 반영.
+2026-09-20 Android 실행 업데이트 · 2026-09-14 초기 계획과 이후 work1 구현·검증 결과 반영.
 
 **WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 macOS 개정은 실제 AppKit 구현·제품 검증을 포함하며 아래 실행 업데이트가 우선한다. 최소 WebView attachment·효과 fixture의 구현/검증은 아래 상태표대로 인정하며, 전용 controller·navigation/JS/profile 등의 공개 제품 API 완료와 구분한다. 전체 상태는 `PARTIAL`, 미구현 기능 단계는 `TODO`, 미실행 기능 검증은 `notVerified`다.
 
@@ -9,6 +9,22 @@
 **현재 요구:** WebView는 플랫폼별로 더 적합한 구성을 선택하며 HCPP를 강제하지 않는다. [work1 R6](work1.md)에서 실제 합성·입력/접근성·효과 호환성·성능/메모리·안정성을 비교한다. R-E의 `PlatformEffect`는 공통 효과 의미와 최대한 유사한 비주얼을 제공한다. WebView 위 실제 backdrop와 선명한 Doroti 전경이라는 제품 요구는 유지한다.
 
 **Windows controller 확정:** WindowsAppSdk와 Windows MAUI는 `Microsoft.Web.WebView2.Core.CoreWebView2CompositionController`를 사용한다. 이는 우선 후보가 아닌 필수 선택이다. windowed controller·기본 MAUI WebView handler를 대체 backend로 자동 선택하지 않는다. 기능 adapter를 공유하되 두 runner의 host 결합·실행 증거는 별도로 남긴다.
+
+## Android 구성 실행 업데이트 (2026-09-20)
+
+**Android 전체 상태는 PARTIAL이다.** work1의 기존 `AndroidPlatformViewHost.Instance`가 공통 WebView controller 명령을 제공한다. 현재 지원/제약은 [Android 계약](Doroti/docs/platform-views/android-webview.md), 명령은 [Android 검증](Doroti/validation/platform-views/android/README.md)을 따른다.
+
+- WV-1/4: HTML/HTTP(S)/앱 콘텐츠, back/forward/reload/stop, URL/title/loading/events, JSON/null/undefined/JS 오류, caller 취소·timeout·document generation·late result 거부를 연결했다. 실제 native callback이 끝날 때까지 16개 pending 상한을 유지한다. 초기 HTML이 없으면 불필요한 blank 탐색을 하지 않는다.
+- WV-4/8: provider의 `MULTI_PROFILE` + `DELETE_BROWSING_DATA`를 확인해 기본 view별 transient profile을 사용한다. 미지원 provider에서는 typed 오류이며 공유 profile로 자동 전환하지 않는다. Android transient는 **disk-backed일 수 있다**. dispose는 data clear의 native 완료를 기다리며 로드된 profile shell은 다음 프로세스 시작 시 제거한다. 명시적 shared persistent와 별도 ClearData를 제공한다.
+- WV-4/8: manifest key/path/MIME을 `doroti-app://content` 논리 URL에 연결하고 Android 내부에서는 예약 HTTPS appassets origin으로 제공한다. 상대 CSS/fetch·GET/HEAD/single Range·404/416, resource 상한과 worker callback 수명을 연결했다. `MessageOrigins` opt-in은 AndroidX의 native origin/main-frame 정보와 version/document/request·64 KiB 한도를 검사한다. 임의 Java 객체를 JS에 공개하지 않는다.
+- WV-H/9: Galaxy 실제 제품에서 기능/오류/취소·HTML/CSS/Range·trusted/untrusted/oversized/stale/child-frame 메시지·profile 격리/shared/clear·10회 create/dispose·JS 중 종료가 통과했다. 같은 WebView의 blur·선명한 전경·sigma·채도/tint와 자동 native 입력/한글 IME를 work1과 함께 검증했다.
+- WV-9: arm64/x64 Release Mono AOT APK를 빌드·설치했다. Galaxy provider151과 x64 provider133 결과를 분리하며 구형 provider의 initial blank callback 문제를 별도로 추적한다. Mono AOT를 NativeAOT로 보고하지 않는다. NativeAOT 요청은 iOS-only runner guard에서 거부됐다.
+
+최종 arm64 automatic split와 x64/provider133 API 검증은 모두 통과했다. 불필요한 초기 blank 탐색 제거로 구형 provider의 지연 finish callback 문제를 해결했다. Galaxy 입력/수명 12항목과 최종 성능 수치는 [결과 보고서](Doroti/validation/webview/android-results-2026-09-20.md)에 기록했다.
+
+이후 마지막 색상 처리 순서 보정은 양쪽 ABI 빌드와 x64 13-stage 픽셀 검증을 통과했다. USB 단절 후 사용자의 `skip`에 따라 이 보정의 Galaxy 재연결·색 경계 실기기 재검증만 `skippedByUser`로 기록한다. 앞선 Galaxy 기능·입력 결과는 이전 설치본 근거이며 다른 잔여 gate를 생략 승인한 것으로 해석하지 않는다.
+
+잔여: native-origin parent GestureArena, full IME/selection/autofill/TalkBack·물리 입력, 두 제품 owner·process recovery, media/protected content, popup/download/file chooser/permission/fullscreen의 공개 앱 정책, GPU/HCPP 대안 비교·성능 예산·clean template 배포. 현재 기본 정책은 popup/외부 protocol·권한 거부와 file chooser 취소이며 공개 정책 API 완료와 구분한다.
 
 ## Windows 구성 실행 업데이트 (2026-09-19)
 
@@ -85,7 +101,7 @@ Windows의 `WindowsWebViewComposition`, iOS/Android factory의 `doroti/webview`,
 |---|---|---|
 | WindowsAppSDK | CompositionController·호환 raster/effect tree·채도·공개 controller 연결, 제품 기능/합성/입력/보정 검증 | 탐색/JS/profile/content/message 연결됨. HWND 혼합 제한 유지. 전체 정책/물리/MAUI/성능/NativeAOT 잔여; 위 Windows 실행 절 참조 |
 | Windows MAUI | 동일 controller 필수이나 runner 결합 별도 | MAUI presenter·RootVisualTarget/input/effect 연결부터 별도 검증 |
-| Android | native WebView factory·제한 backdrop 코드 및 host 빌드 | 실제 provider에서 live WebView sample·입력/효과 검증이 선행. WV-4 기능 API 별도 |
+| Android | 기존 native instance에 공개 controller/API, RenderNode/RenderEffect sigma·채도/tint 연결; arm64/x64 제품 build | Galaxy 기능/취소/profile/content/message·live source/픽셀/자동 입력 검증. 전체 PARTIAL; 위 9월 20일 실행 기록 참조 |
 | iOS UIKit Graphite | WKWebView+Metal+공개 animator 효과 구현, 현재 iOS 27 Simulator 픽셀/복귀/수명·보정 통과 | WV-5에서 기존 인스턴스 재사용, controller/delegate/JS/profile 기능 추가. 현행 효과 실기기/NativeAOT 미승인 |
 | Mac Catalyst / iOS Ganesh | iOS Graphite와 별도 runner | attachment/effect 지원·실행을 별도로 구현/확인. iOS 증거 전용 금지 |
 | AppKit | WKWebView/Core Image backdrop/Metal Graphite·Ganesh 제품 연결 | WV-1 초기 controller/widget·탐색/JS/profile/content/message 연결. numeric blur·채도·tint 지원, 공통 비주얼/배포/물리 입력 등 PARTIAL; 위 실행 업데이트 참조 |

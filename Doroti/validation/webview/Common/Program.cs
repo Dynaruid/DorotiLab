@@ -2,6 +2,18 @@ using Doroti.Hosting;
 using Doroti.Ui;
 
 var factory = new Factory();
+var androidIds = new HashSet<long>();
+foreach (var device in new[] { int.MinValue, -1, 0, 1, int.MaxValue })
+    foreach (var pointerId in new[] { 0, 1, 31 })
+        Assert(androidIds.Add(checked((long)Doroti.Host.Maui.AndroidPointerMapping.DeviceIdentifier(device, pointerId))), "Android device/pointer identity must fit signed Flutter IDs and remain unique");
+Console.WriteLine("PASS Android virtual/physical device identifiers and multi-pointer isolation");
+await using (var rejectedOwner = new PlatformViewCoordinator(3, "test", new([new Factory { Failure = new WebViewException(WebViewError.Unsupported, "provider feature missing") }]), new Dispatcher()))
+{
+    try { await rejectedOwner.CreateAsync(new PlatformViewRequest(1, "test")); throw new Exception("Expected typed factory rejection."); }
+    catch (WebViewException error) when (error.Code == WebViewError.Unsupported) { }
+    await rejectedOwner.GetDisposalCompletion(1);
+}
+Console.WriteLine("PASS typed WebView factory error survives coordinator admission");
 await using var a = new PlatformViewCoordinator(1, "test", new([factory]), new Dispatcher());
 await using var b = new PlatformViewCoordinator(2, "test", new([new Factory()]), new Dispatcher());
 var handle = await a.CreateAsync(new PlatformViewRequest(1, "test"));
@@ -39,11 +51,13 @@ sealed class Dispatcher : IPlatformViewDispatcher
 }
 sealed class Factory : IPlatformViewFactory
 {
+    public Exception? Failure { get; init; }
     public Instance? Instance;
     public string ViewType => "test";
     public PlatformViewSupport QuerySupport(PlatformViewRequest request) => new("test", "test", "test", true, request.Composition, PlatformViewEffects.RectClip);
     public ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle, ReadOnlyMemory<byte> parameters,
-        Action<PlatformViewHandle> focused, CancellationToken cancellationToken) => ValueTask.FromResult<IPlatformViewInstance>(Instance = new(handle));
+        Action<PlatformViewHandle> focused, CancellationToken cancellationToken) => Failure is { } error
+            ? ValueTask.FromException<IPlatformViewInstance>(error) : ValueTask.FromResult<IPlatformViewInstance>(Instance = new(handle));
 }
 sealed class Instance(PlatformViewHandle handle) : IPlatformViewInstance, IPlatformWebViewInstance
 {

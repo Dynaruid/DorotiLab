@@ -23,6 +23,16 @@ public sealed class MainActivity : MauiAppCompatActivity
             Environment.SetEnvironmentVariable("DOROTI_ANDROID_PLATFORM_RASTER_MODE", rasterMode);
         if (Intent?.GetStringExtra("doroti_platform_view_backdrop") is { } backdrop)
             Environment.SetEnvironmentVariable("DOROTI_PLATFORM_VIEW_BACKDROP", backdrop);
+        if (Intent?.GetStringExtra("doroti_webview_evidence") == "1")
+            Environment.SetEnvironmentVariable("DOROTI_ANDROID_WEBVIEW_EVIDENCE", System.IO.Path.Combine(EvidenceDirectory(), "webview-evidence.txt"));
+        if (Intent?.GetStringExtra("doroti_effect_calibration") == "1")
+            Environment.SetEnvironmentVariable("DOROTI_ANDROID_EFFECT_CALIBRATION", System.IO.Path.Combine(EvidenceDirectory(), "effect-calibration"));
+        if (Intent?.GetStringExtra("doroti_webview_count") is { } count)
+            Environment.SetEnvironmentVariable("DOROTI_WEBVIEW_COUNT", count);
+        if (Intent?.GetStringExtra("doroti_webview_workload") is { } workload)
+            Environment.SetEnvironmentVariable("DOROTI_WEBVIEW_WORKLOAD", workload);
         base.OnCreate(savedInstanceState);
     }
+    private string EvidenceDirectory() => GetExternalFilesDir(null)?.AbsolutePath ?? FilesDir?.AbsolutePath
+        ?? throw new InvalidOperationException("Android application storage unavailable.");
 }

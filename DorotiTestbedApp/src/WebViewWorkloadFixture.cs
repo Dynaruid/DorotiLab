@@ -26,18 +26,22 @@ internal sealed class WebViewWorkloadFixture : StatefulWidget
         }
         public override Widget build(BuildContext context) => new M.Scaffold(
             appBar: new M.AppBar(title: new Text($"WebView workload: {_controllers.Count} / {_mode}")),
-            body: new Stack(children:
+            body: new LayoutBuilder(builder: (context, constraints) => {
+                var columns = _controllers.Count == 4 ? 2 : 1;
+                var cellWidth = Math.Max(1, Math.Min(300, (constraints.maxWidth - 20 * (columns + 1)) / columns));
+                var cellHeight = Math.Max(1, Math.Min(220, (constraints.maxHeight - 60) / (_controllers.Count == 4 ? 2 : 1)));
+                return new Stack(children:
             [
                 new Positioned(left: 0, top: 0, right: 0, height: 6,
                     child: _mode == "idle" ? new SizedBox() : new M.LinearProgressIndicator()),
                 .. _controllers.Select((controller, index) => (Widget)new Positioned(
-                    left: 20 + index % 2 * 320, top: 20 + index / 2 * 240, width: 300, height: 220,
+                    left: 20 + index % columns * (cellWidth + 20), top: 20 + index / columns * (cellHeight + 20), width: cellWidth, height: cellHeight,
                     child: new WebViewWidget(controller, key: new Doroti.Framework.Foundation.ValueKey<int>(index)))),
                 .. _controllers.Count > 0 ? new Widget[] {
                     new Positioned(left: 80, top: 90, width: 220, height: 120,
                         child: new PointerInterceptor(new PlatformEffect(new(Strength: .375),
                             new Center(child: new Text("Sharp foreground"))), intercepting: _mode == "modal")) } : []
-            ]));
+            ]); }));
         public override void dispose()
         {
             foreach (var controller in _controllers) _ = controller.DisposeAsync();

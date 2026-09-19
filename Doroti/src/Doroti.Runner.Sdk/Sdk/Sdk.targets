@@ -458,10 +458,10 @@
   </Target>
   <Import Project="Doroti.NativeAot.Evidence.targets" Condition="'$(DorotiCompilationMode)' == 'NativeAot' and '$(DorotiTarget)' == 'iOS'" />
   <!-- NuGet also injects a direct transitive reference to Host.Maui. Keep it on
-       the same RID-specific intermediate path as the Apple target reference. -->
+       the same RID-specific intermediate path as the selected native target reference. -->
   <Target Name="DorotiApplyAppleRuntimeToTransitiveReferences"
           AfterTargets="IncludeTransitiveProjectReferences"
-          Condition="('$(DorotiTarget)' == 'macOS' and '$(RuntimeIdentifier)' == 'osx-arm64') or ('$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64')">
+          Condition="('$(DorotiTarget)' == 'macOS' and '$(RuntimeIdentifier)' == 'osx-arm64') or ('$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64') or ('$(DorotiTarget)' == 'Android' and ('$(RuntimeIdentifier)' == 'android-arm64' or '$(RuntimeIdentifier)' == 'android-x64'))">
     <ItemGroup>
       <ProjectReference Update="@(_TransitiveProjectReferences)" Condition="'%(Filename)' == 'Doroti.Host.Maui'">
         <AdditionalProperties>%(ProjectReference.AdditionalProperties);RuntimeIdentifier=$(RuntimeIdentifier)</AdditionalProperties>

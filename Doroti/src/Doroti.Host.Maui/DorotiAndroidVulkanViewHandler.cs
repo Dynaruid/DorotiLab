@@ -338,7 +338,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     private void DispatchPointer(MotionEvent e, int index, PointerChange change)
     {
         var kind = AndroidPointerMapping.Kind((int)e.GetToolType(index));
-        var device = ((ulong)(uint)e.DeviceId << 32) | (uint)e.GetPointerId(index);
+        var device = AndroidPointerMapping.DeviceIdentifier(e.DeviceId, e.GetPointerId(index));
         if (_trackpadInput.Handle(device, change, kind, e.Source == InputSourceType.Mouse,
             (int)e.ButtonState, e.GetX(index), e.GetY(index), DorotiFrameClock.Now)) return;
         var scroll = e.ActionMasked == MotionEventActions.Scroll;

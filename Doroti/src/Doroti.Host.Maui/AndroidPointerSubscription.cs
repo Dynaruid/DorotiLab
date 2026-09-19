@@ -48,7 +48,7 @@ internal sealed class AndroidPointerSubscription : IDisposable
         for (var i = 0; i < e.PointerCount; i++)
         {
             if (change is not PointerChange.move and not PointerChange.cancel && i != e.ActionIndex) continue;
-            var device = ((ulong)(uint)e.DeviceId << 32) | (uint)e.GetPointerId(i);
+            var device = AndroidPointerMapping.DeviceIdentifier(e.DeviceId, e.GetPointerId(i));
             var kind = AndroidPointerMapping.Kind((int)e.GetToolType(i));
             if (_gesture.Handle(device, change.Value, kind,
                 e.Source == InputSourceType.Mouse, (int)e.ButtonState, e.GetX(i), e.GetY(i), DorotiFrameClock.Now)) continue;
@@ -75,7 +75,7 @@ internal sealed class AndroidPointerSubscription : IDisposable
         var xFactor = OperatingSystem.IsAndroidVersionAtLeast(26) ? config!.ScaledHorizontalScrollFactor : 48;
         var yFactor = OperatingSystem.IsAndroidVersionAtLeast(26) ? config!.ScaledVerticalScrollFactor : 48;
         var kind = AndroidPointerMapping.Kind((int)e.GetToolType(0));
-        var device = ((ulong)(uint)e.DeviceId << 32) | (uint)e.GetPointerId(0);
+        var device = AndroidPointerMapping.DeviceIdentifier(e.DeviceId, e.GetPointerId(0));
         _dispatch(new(DorotiFrameClock.Now, change.Value, kind, device, e.GetX(), e.GetY(),
             AndroidPointerMapping.Buttons(kind, (int)e.ButtonState),
             scroll ? -e.GetAxisValue(Axis.Hscroll) * xFactor : 0, scroll ? -e.GetAxisValue(Axis.Vscroll) * yFactor : 0,

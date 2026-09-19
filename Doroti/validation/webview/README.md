@@ -1,5 +1,7 @@
 # WebView validation
 
+Android commands, calibration and workloads: [Android validation](../platform-views/android/README.md).
+
 Run from the repository root. Every build/test/run child must use the 1,200-second
 wrapper. Keep shared-output builds and live UI gates sequential. Source lives here;
 generated output lives under `Doroti/artifacts/webview/<date>/windows/`.

@@ -1,5 +1,22 @@
 # PlatformView 재구성 작업계획
 
+## Android 실행 업데이트 (2026-09-20)
+
+**Android 전체 상태는 PARTIAL이다.** 이 절이 아래 Android host-build-only 기록보다 우선한다. 구현·실행 근거와 잔여 gate는 [Android 계약](Doroti/docs/platform-views/android-webview.md), [재현 절차](Doroti/validation/platform-views/android/README.md), `Doroti/artifacts/webview/2026-09-20/android/`에 둔다.
+
+- R1/R3/R5: 기존 Android native WebView가 공통 `IPlatformWebViewInstance`를 구현하며 같은 controller/attachment/session/retirement를 재사용한다. 공개 API 연결을 위해 두 번째 native instance나 compositor를 만들지 않았다. 비동기 profile 종료는 UI thread를 막지 않고 기존 dispose completion에 포함한다. factory의 typed WebView 오류도 보존한다.
+- R4: Android 음수 native device ID(ADB는 -1)가 Flutter signed ID 변환을 넘는 문제를 고쳤다. Graphite와 기존 Android pointer subscription이 공통 48-bit identifier를 사용하며 pointer별 식별을 유지한다. DirectNative와 전경 shield를 유지한다. native-origin delayed GestureArena/parent nested scroll은 아직 미구현이며 capability를 켜지 않는다.
+- R5/R7: arm64·x64 target 및 runner의 transitive Host.Maui 참조에서 RID/TFM을 고정했다. 이전 RID-less `obj/project.assets.json`을 읽어 새 AndroidX dependency가 누락되던 실제 제품 build 실패를 재현·수정했다. Release Mono AOT APK를 생성하고 Galaxy/에뮬레이터에 설치했다. NativeAOT publish는 iOS 전용 runner guard에서 거부되어 별도 미승인이다.
+- R6/R-E: Galaxy S25/API36/WebView151에서 실제 WebView의 동적 source를 RenderNode/RenderEffect로 sample한다. 채도 0–2·반경 0·독립 tint를 연결하고 Android radius→sigma 변환을 역보정했다. sigma 4/16의 실제 측정은 4.064/16.256이며 native/raster source, zero/reset, 채도/tint의 11-stage 픽셀 검증을 통과했다. SurfaceView/media/protected subtree의 sample 가능성으로 확대하지 않는다.
+- R4/R7 실행: native 클릭·WebView scroll·Samsung IME의 ‘한글’ 조합과 Home/resume 입력값 보존을 자동 입력으로 확인했다. 사람의 물리 입력·TalkBack·full selection/autofill 승인은 별도다. foreground/shield·회전·재생성의 최종 실행 결과는 Android 결과 문서에 기록한다.
+- R6/R7 성능은 **미승인**이다. 초기 0/1/4-view 관측에서 유휴 상태와 달리 Doroti animation을 함께 사용하는 장면에 큰 jank/readback 비용이 드러났다. 모바일 4-view가 모두 보이도록 workload layout을 보정했다. hierarchy/bounded-readback은 현재 제품 구현이며 GPU/HCPP 대안 비교·예산 승인은 남아 있다.
+
+최종 결과: canonical build/run의 자동 split 설치·실행, 최종 arm64/x64 API 검증과 Galaxy 입력 회귀 12항목이 통과했다. 최종 1/4-view animation의 window p95는 81/121ms로 성능 승인은 실패다. [결과 보고서](Doroti/validation/webview/android-results-2026-09-20.md)에 증거와 비용을 기록했다.
+
+마지막 보정은 공통 휘도 계수와 `color(blur(source))` 순서를 적용했다. arm64/x64 빌드 경고·오류 0개, x64 에뮬레이터의 색 경계 포함 13-stage 검증이 통과했다(sigma 4.050/16.052). 이 보정의 Galaxy 재배포 전에 USB가 끊겼으며 사용자의 `skip`에 따라 재연결·마지막 색 경계 실기기 검증만 `skippedByUser`다. 앞선 Galaxy 11-stage/API/입력·성능 근거는 보정 전 설치본의 결과로 유지한다.
+
+잔여: native-origin GestureArena, full C1–C6/E1–E3, 두 제품 owner, process/device loss·protected media, 물리 입력/접근성, 광범위 OS/provider/GPU, performance budget과 clean template/package-only 배포. 이번 실행을 Android 전체 완료로 계산하지 않는다.
+
 ## Windows 실행 업데이트 (2026-09-19)
 
 **Windows 전체 상태는 PARTIAL이다.** 아래 9월 14일 기록보다 이 절이 우선한다. WindowsAppSDK의 기존 CompositionController/Graphite 경로를 공통 WebViewController와 연결했고, Windows MAUI는 별도 미연결 상태로 유지한다. 이번 Windows 작업은 macOS/iOS 결과를 변경하지 않는다.
@@ -192,7 +209,7 @@ Windows MAUI, Mac Catalyst, iOS Ganesh, Qt Widgets는 각각 별도 미연결/�
 | WindowsAppSDK | HWND DirectComposition과 별도 WebView2 CompositionController 경로의 live backdrop·sharp child·입력·수명 검증 | 두 attachment 종류의 한 frame 혼합은 미지원. 전체 IME/UIA·device loss·성능/AOT 잔여 |
 | iOS UIKit Graphite | 공개 animator 효과·WKWebView/Metal 합성, 위 simulator 강도/테마/복귀/수명·보정 검증 | 현재 공개 효과의 실기기/NativeAOT와 full E3·물리 입력·성능 잔여 |
 | Linux Qt Quick | 실제 WebEngine Quick·두 Gaussian GPU pass, XWayland/Wayland 각 19 gate 및 Release 수정 검증 | llvmpipe 증거이며 물리 GPU/성능 승인 아님. XWayland 급격 resize WSI 오류·IME/Orca·배포 잔여 |
-| Android | native WebView factory·공통 session·제한 backdrop 코드, arm64 host 빌드 | 현재 WebView live sampling·시각·입력/수명/성능 제품 실행 미검증. 기존 spinner 수치를 전용하지 않음 |
+| Android | 공통 WebView controller/instance·session, RenderEffect sigma/채도/tint, arm64/x64 Release 제품 build·APK | Galaxy 실제 source/기능/픽셀·자동 IME/수명 실행. GestureArena·전체 입력/성능/배포 승인은 PARTIAL; 위 9월 20일 기록 참조 |
 | AppKit | WKWebView/Core Image backdrop/Metal 공통 합성 및 명시적 macOS 27 SDK 프로필 구현 | ExactSigma 0–64, 채도 0–2, 독립 tint. 경계 확산 검증과 공통 비주얼 전체 승인은 구분; 전체 PARTIAL, [현재 macOS 계약](Doroti/docs/platform-views/macos.md) |
 | Web | protocol v2 effect adapter·CSS backdrop-filter·host 빌드, 독립 DOM harness 8개 검사 | main-DOM/worker 제품 연결·multi-canvas ACK/자원 수명·실제 iframe effect pixels 미검증 |
 | Windows MAUI | 공통 계약·host 빌드 | native hierarchy/WebView2 composition 결합과 runner별 효과 승인 별도 |

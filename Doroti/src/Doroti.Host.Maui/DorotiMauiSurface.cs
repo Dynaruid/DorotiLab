@@ -128,7 +128,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 , appKitSurface.PlatformViews.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
 #if ANDROID
-                , androidPlatformViews?.CreateFactories()
+                , androidPlatformViews?.CreateFactories(() => _boundary!.ApplicationResources)
 #endif
 #if IOS && !MACCATALYST
                 , uiKitPlatformViews?.CreateFactories()

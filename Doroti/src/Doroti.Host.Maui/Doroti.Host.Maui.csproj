@@ -53,6 +53,7 @@
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
   </ItemGroup>
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <PackageReference Include="Xamarin.AndroidX.WebKit" />
     <PackageReference Include="SkiaSharp.NativeAssets.Android" />
   </ItemGroup>
   <ItemGroup>
