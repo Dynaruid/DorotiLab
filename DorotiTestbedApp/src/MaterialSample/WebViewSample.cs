@@ -18,7 +18,7 @@ internal sealed class WebViewSample : StatefulWidget
 
 internal sealed class WebViewSampleState : State<WebViewSample>
 {
-    private const string InitialAddress = "https://example.com";
+    private const string InitialAddress = "https://www.youtube.com/watch?v=hI9HQfCAw64";
     private const string InitialHtml = """
         <!doctype html>
         <html lang="en">
@@ -79,6 +79,12 @@ internal sealed class WebViewSampleState : State<WebViewSample>
     private bool _initialized;
     private bool _busy;
     private int _generation;
+    private bool _panelSupported;
+    private bool _panelVisible = true;
+    private bool _draggingPanel;
+    private Offset _panelOffset = new(24, 24);
+    private Offset _panelDragOrigin;
+    private Offset _pointerDragOrigin;
 
     internal static bool UsesNativeOverlay(BuildContext context)
     {
@@ -114,6 +120,8 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                 DartUiInvocation.Managed("WebViewSample.create"));
             var interleaved = Query(host, PlatformViewComposition.InterleavedComposition);
             var support = interleaved.Supported ? interleaved : Query(host, PlatformViewComposition.NativeOverlay);
+            _panelSupported = interleaved.Supported && interleaved.NativeBackdropBlur &&
+                interleaved.Capabilities?.Effect is { LiveSourceSampling: true, MaximumEffects: > 0, MaximumSigma: >= 10 };
             if (!support.Supported)
             {
                 _unavailable = support.Reason ?? "This runner does not support the WebView sample.";
@@ -148,12 +156,14 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         {
             await controller.Ready.ConfigureAwait(false);
             var features = await controller.ExecuteAsync(new(WebViewOperation.Features)).ConfigureAwait(false);
-            var state = await controller.ExecuteAsync(new(WebViewOperation.State)).ConfigureAwait(false);
+            var state = await controller.ExecuteAsync(features.Features?.Navigation == true
+                ? new(WebViewOperation.Navigate, InitialAddress)
+                : new(WebViewOperation.State)).ConfigureAwait(false);
             Update(() =>
             {
                 _features = features.Features;
                 ApplyState(state);
-                _status = "WebView ready · controller API";
+                _status = state.IsLoading ? "Loading" : "WebView ready · controller API";
             });
         }
         catch (ObjectDisposedException) { }
@@ -272,6 +282,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                     onPressed: _features?.JavaScript == true && _state?.IsLoading != true && !_busy
                         ? () => Run(WebViewOperation.EvaluateJavaScript, "document.title") : null,
                     child: new Text("Read title with JS")),
+                .. _panelSupported ? new Widget[] { PanelToggle() } : [],
             ]),
         ]));
     }
@@ -283,7 +294,86 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             new SizedBox(width: 12),
             new Expanded(child: new Text(_status)),
             new M.TextButton(onPressed: ReloadFallback, child: new Text("Reset page")),
+            .. _panelSupported ? new Widget[] { PanelToggle() } : [],
         ]));
+
+    private void TogglePanel() => setState(() => { _panelVisible = !_panelVisible; _draggingPanel = false; });
+
+    private Widget PanelToggle() => new M.TextButton(onPressed: TogglePanel,
+        child: new Row(mainAxisSize: MainAxisSize.min, children:
+        [
+            new Icon(M.Icons.blur_on, size: 18),
+            new SizedBox(width: 6),
+            new Text(_panelVisible ? "Hide panel" : "Show panel"),
+        ]));
+
+    private Widget WebViewSurface(Widget webView) => new LayoutBuilder(builder: (context, constraints) =>
+    {
+        var width = Math.Min(320, constraints.maxWidth);
+        var height = Math.Min(180, constraints.maxHeight);
+        var maxX = Math.Max(0, constraints.maxWidth - width);
+        var maxY = Math.Max(0, constraints.maxHeight - height);
+        var position = new Offset(Math.Clamp(_panelOffset.dx, 0, maxX), Math.Clamp(_panelOffset.dy, 0, maxY));
+        var theme = M.Theme.of(context);
+        return new Stack(children:
+        [
+            // Keep this slot stable so toggling/moving the panel preserves the browser.
+            new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: webView),
+            .. _panelSupported && _panelVisible && width >= 180 && height >= 112 ? new Widget[]
+            {
+                new Positioned(left: position.dx, top: position.dy, width: width, height: height,
+                    child: new PointerInterceptor(new PlatformEffect(
+                        style: new(Strength: .625, Tint: theme.brightness == Brightness.dark ? 0x99211f26u : 0x99ffffffu),
+                        child: new M.Material(type: M.MaterialType.transparency,
+                            child: new Container(
+                                decoration: new BoxDecoration(border: Border.CreateAll(color: theme.colorScheme.outlineVariant)),
+                                child: new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children:
+                                [
+                                    new Row(children:
+                                    [
+                                        new Expanded(child: new MouseRegion(
+                                            cursor: _draggingPanel ? SystemMouseCursors.grabbing : SystemMouseCursors.grab,
+                                            child: new GestureDetector(
+                                                behavior: HitTestBehavior.opaque,
+                                                onPanStart: details => setState(() =>
+                                                {
+                                                    _draggingPanel = true;
+                                                    _panelDragOrigin = position;
+                                                    _pointerDragOrigin = details.globalPosition;
+                                                }),
+                                                onPanUpdate: details => setState(() =>
+                                                {
+                                                    var delta = details.globalPosition - _pointerDragOrigin;
+                                                    _panelOffset = new Offset(
+                                                        Math.Clamp(_panelDragOrigin.dx + delta.dx, 0, maxX),
+                                                        Math.Clamp(_panelDragOrigin.dy + delta.dy, 0, maxY));
+                                                }),
+                                                onPanEnd: _ => setState(() => _draggingPanel = false),
+                                                onPanCancel: () => setState(() => _draggingPanel = false),
+                                                child: new SizedBox(height: 48, child: new Padding(
+                                                    padding: EdgeInsets.CreateSymmetric(horizontal: 12),
+                                                    child: new Row(children:
+                                                    [
+                                                        new Icon(M.Icons.drag_indicator, size: 20),
+                                                        new SizedBox(width: 8),
+                                                        new Expanded(child: new Text("Floating panel", maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall)),
+                                                    ])))))),
+                                        new M.IconButton(tooltip: "Hide panel", onPressed: TogglePanel, icon: new Icon(M.Icons.close)),
+                                    ]),
+                                    new M.Divider(height: 1),
+                                    new Expanded(child: new SingleChildScrollView(child: new Padding(
+                                        padding: EdgeInsets.CreateAll(16),
+                                        child: new Column(crossAxisAlignment: CrossAxisAlignment.start, children:
+                                        [
+                                            new Text("Backdrop blur", style: theme.textTheme.titleMedium),
+                                            new SizedBox(height: 8),
+                                            new Text("Drag the header to move this panel. The page remains interactive outside it."),
+                                        ])))),
+                                ]))))))
+            } : [],
+        ]);
+    });
 
     public override Widget build(BuildContext context)
     {
@@ -303,7 +393,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             .. _busy ? new Widget[] { new M.LinearProgressIndicator() } : [],
             .. _error is { } error ? new Widget[] { new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6), child: new Text(error)) } : [],
             .. _scriptResult is { } result ? new Widget[] { new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6), child: new Text($"JavaScript result: {result}")) } : [],
-            new Expanded(child: new Padding(padding: EdgeInsets.CreateFromLTRB(12, 0, 12, 12), child: new ClipRect(child: webView))),
+            new Expanded(child: new Padding(padding: EdgeInsets.CreateFromLTRB(12, 0, 12, 12), child: new ClipRect(child: WebViewSurface(webView)))),
         ]);
     }
 

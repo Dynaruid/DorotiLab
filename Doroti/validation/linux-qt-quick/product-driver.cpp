@@ -110,8 +110,36 @@ static void Start() {
                 }
                 --index;timer->setInterval(100);return;
             }
-            const QPoint point(step["x"].toInt(),step["y"].toInt());
+            QPoint point(step["x"].toInt(),step["y"].toInt());
+            if(step["nativePoint"].toBool()) {
+                auto* item=window->findChild<QQuickItem*>("doroti-quick-webview");
+                if(!item)qFatal("Validation WebView target not found");
+                point=item->mapToScene(point).toPoint();
+            }
+            if(step.contains("label")) {
+                QRect found;int visited=0;
+                std::function<void(QAccessibleInterface*,int)> find=[&](QAccessibleInterface* item,int depth) {
+                    if(!item||depth>32||++visited>4096||!found.isEmpty())return;
+                    if(item->text(QAccessible::Name)==step["label"].toString()&&!item->state().invisible&&!item->rect().isEmpty()) {found=item->rect();return;}
+                    for(int i=0;i<item->childCount();i++)find(item->child(i),depth+1);
+                };
+                find(QAccessible::queryAccessibleInterface(window),0);
+                if(found.isEmpty())qFatal("Validation accessible target not found: %s",qPrintable(step["label"].toString()));
+                point=window->mapFromGlobal(found.center());
+            }
             if(action=="click")QTest::mouseClick(window,Qt::LeftButton,Qt::NoModifier,point);
+            else if(action=="drag") {
+                timer->stop();
+                QTest::mousePress(window,Qt::LeftButton,Qt::NoModifier,point);
+                const QPoint delta(step["dx"].toInt(),step["dy"].toInt());
+                for(int i=1;i<=12;i++) {
+                    const auto next=point+delta*i/12;
+                    QMouseEvent move(QEvent::MouseMove,next,window->mapToGlobal(next),Qt::NoButton,Qt::LeftButton,Qt::NoModifier);
+                    QCoreApplication::sendEvent(window,&move);QTest::qWait(40);
+                }
+                QTest::mouseRelease(window,Qt::LeftButton,Qt::NoModifier,point+delta);
+                timer->start(500);
+            }
             else if(action=="text") {
                 QTest::keyClick(window,Qt::Key_A,Qt::ControlModifier);
                 for(auto ch:step["text"].toString()) {
@@ -147,6 +175,12 @@ static void Start() {
                 if(file.open(QIODevice::ReadOnly)) {
                     auto record=QJsonDocument::fromJson(file.readAll()).object();file.close();
                     record.insert("accessibleNames",names);
+                    QJsonArray effects;
+                    for(auto* item:window->findChildren<QQuickItem*>())if(item->metaObject()->indexOfProperty("outputRect")>=0) {
+                        const auto rect=item->property("outputRect").toRectF();
+                        effects.append(QJsonArray{rect.x(),rect.y(),rect.width(),rect.height()});
+                    }
+                    record.insert("effectRects",effects);
                     QFile maps("/proc/self/maps");
                     const auto mapped=maps.open(QIODevice::ReadOnly)?maps.readAll():QByteArray();
                     record.insert("validationLayerLoaded",mapped.contains("libVkLayer_khronos_validation.so"));

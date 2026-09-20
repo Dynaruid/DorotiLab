@@ -135,3 +135,12 @@ release to the Doroti text field. This caught the outer WebEngine focus-scope
 handoff bug. It does not replace physical IBus/keyboard or full traversal/Orca.
 The native WebView contract's ten lifecycles also replace initial HTML immediately,
 so terminal callbacks must release the loading latch even without another start.
+
+The Material WebView tab's floating panel can be checked with
+`webview/verify-qt-floating-panel.py` using the same `--app`, `--driver`,
+`--output`, and `--qpa` arguments under `run-with-timeout.py`. Rebuild the driver
+first. It opens the real YouTube-configured tab, then selects the local sample
+for deterministic drag/shield/toggle/resize checks. Captures record the live
+native effect rectangle, and the gate verifies that browser identity and form
+state survive panel movement and visibility changes. Run with default scale and
+window size; the icon-only local-sample toolbar action uses its desktop position.
