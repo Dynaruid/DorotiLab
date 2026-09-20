@@ -200,6 +200,9 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
     private void ReleaseRendererResources() => _owner?.ReleaseGraphiteResources();
     internal Task<Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
         (_window ?? throw new InvalidOperationException("Android Vulkan window is unavailable.")).RequestPlatformReadback(surface, info);
+    internal bool SupportsHardwareBuffer => _window?.SupportsHardwareBuffer == true;
+    internal VulkanSharedRaster CreateHardwareBufferRaster(nint buffer, int width, int height) =>
+        (_window ?? throw new InvalidOperationException("Android Vulkan window is unavailable.")).CreateHardwareBufferRaster(buffer, width, height);
     private void ScheduleGpuCompletion()
     {
         if (_gpuCompletionPending || !_live || _window?.WindowFramesInFlight is not > 0) return;

@@ -80,6 +80,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter
         else _graphiteFrame.CancelRecording();
         _graphiteFrame = null;
         _graphiteSubmissionAttempted = false;
+        foreach (var raster in _sharedRasters) raster.Dispose();
+        _sharedRasters.Clear();
     }
 
     // Called only after native Run returns (StopRenderWorker has joined it).

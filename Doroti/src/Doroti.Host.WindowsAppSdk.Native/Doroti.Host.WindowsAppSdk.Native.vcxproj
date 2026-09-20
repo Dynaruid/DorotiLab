@@ -51,6 +51,7 @@
     <ClInclude Include="include\doroti_windows_gpu_selection_v1.h" />
     <ClInclude Include="include\doroti_windows_acrylic_composition_v1.h" />
     <ClInclude Include="include\doroti_windows_composition_raster_v1.h" />
+    <ClInclude Include="src\shared_raster.h" />
     <ClInclude Include="src\accessibility_bridge.h" />
     <ClInclude Include="src\resize_order_trace.h" />
     <ClCompile Include="src\exports.cpp" />

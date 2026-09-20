@@ -31,6 +31,8 @@ public sealed class MainActivity : MauiAppCompatActivity
             Environment.SetEnvironmentVariable("DOROTI_WEBVIEW_COUNT", count);
         if (Intent?.GetStringExtra("doroti_webview_workload") is { } workload)
             Environment.SetEnvironmentVariable("DOROTI_WEBVIEW_WORKLOAD", workload);
+        if (Intent?.GetStringExtra("doroti_sample_webview_profile") is { } sampleProfile)
+            Environment.SetEnvironmentVariable("DOROTI_SAMPLE_WEBVIEW_PROFILE", sampleProfile);
         base.OnCreate(savedInstanceState);
     }
     private string EvidenceDirectory() => GetExternalFilesDir(null)?.AbsolutePath ?? FilesDir?.AbsolutePath

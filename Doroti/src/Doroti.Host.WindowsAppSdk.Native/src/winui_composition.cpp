@@ -11,6 +11,7 @@
 #include <winrt/Microsoft.UI.Composition.h>
 #include <memory>
 #include <cmath>
+#include "shared_raster.h"
 
 namespace {
 using namespace winrt;
@@ -129,4 +130,45 @@ extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_winui_surface_v1
 
 extern "C" __declspec(dllexport) void __cdecl doroti_windows_winui_graphics_destroy_v1(void* context) noexcept {
   delete static_cast<RasterContext*>(context);
+}
+
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_winui_graphics_create_v2(
+    IUnknown* compositor, uint32_t low, int32_t high, void** context) noexcept {
+  if (!compositor || !context) return E_INVALIDARG;
+  *context = nullptr;
+  try {
+    auto value = std::make_unique<RasterContext>();
+    value->device = DorotiRasterDevice(low, high);
+    com_ptr<ID2D1Factory1> factory;
+    const D2D1_FACTORY_OPTIONS options{};
+    check_hresult(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory1), &options, factory.put_void()));
+    check_hresult(factory->CreateDevice(value->device.as<IDXGIDevice>().get(), value->drawing.put()));
+    Compositor owner{nullptr}; copy_from_abi(owner, compositor);
+    check_hresult(owner.as<ICompositorInterop>()->CreateGraphicsDevice(value->drawing.get(), &value->graphics));
+    *context = value.release(); return S_OK;
+  } catch (...) { return to_hresult(); }
+}
+
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_winui_shared_surface_v1(
+    void* context, HANDLE shared, uint32_t source_y, uint32_t width, uint32_t height, IUnknown** surface) noexcept {
+  if (!context || !shared || !surface || width == 0 || height == 0 || width > 16384 || height > 16384)
+    return E_INVALIDARG;
+  *surface = nullptr;
+  try {
+    auto& value = *static_cast<RasterContext*>(context);
+    auto result = value.graphics.CreateDrawingSurface({static_cast<float>(width), static_cast<float>(height)},
+        Microsoft::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
+        Microsoft::Graphics::DirectX::DirectXAlphaMode::Premultiplied);
+    auto interop = result.as<ICompositionDrawingSurfaceInterop>();
+    com_ptr<ID2D1DeviceContext> drawing;
+    POINT offset{};
+    check_hresult(interop->BeginDraw(nullptr, __uuidof(ID2D1DeviceContext), drawing.put_void(), &offset));
+    HRESULT status = S_OK;
+    try {
+      DorotiDrawSharedRaster(value.device.get(), drawing.get(), shared, source_y, width, height, offset);
+    } catch (...) { status = to_hresult(); }
+    const auto end = interop->EndDraw();
+    check_hresult(status); check_hresult(end);
+    *surface = reinterpret_cast<IUnknown*>(detach_abi(result)); return S_OK;
+  } catch (...) { return to_hresult(); }
 }

@@ -11,6 +11,7 @@
 #include <winrt/Windows.UI.Composition.h>
 #include <memory>
 #include <cmath>
+#include "shared_raster.h"
 
 namespace {
 using namespace winrt;
@@ -179,4 +180,74 @@ extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_platform_surface
 
 extern "C" __declspec(dllexport) void __cdecl doroti_windows_platform_graphics_destroy_v1(void* context) noexcept {
   delete static_cast<RasterContext*>(context);
+}
+
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_shared_raster_device_v1(
+    uint32_t low, int32_t high, IUnknown** device) noexcept {
+  if (!device) return E_POINTER; *device = nullptr;
+  try { *device = DorotiRasterDevice(low, high).detach(); return S_OK; }
+  catch (...) { return to_hresult(); }
+}
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_shared_raster_create_v1(
+    IUnknown* device, uint32_t width, uint32_t height, IUnknown** resource, HANDLE* handle) noexcept {
+  if (!device || !resource || !handle || !width || !height || width > 16384 || height > 16384 ||
+      uint64_t(width) * height * 4 > 256ULL * 1024 * 1024) return E_INVALIDARG;
+  *resource = nullptr; *handle = nullptr;
+  try {
+    com_ptr<ID3D11Device> owner; check_hresult(device->QueryInterface(__uuidof(ID3D11Device), owner.put_void()));
+    D3D11_TEXTURE2D_DESC desc{};
+    desc.Width = width; desc.Height = height; desc.MipLevels = desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM; desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+    desc.MiscFlags = D3D11_RESOURCE_MISC_SHARED;
+    com_ptr<ID3D11Texture2D> texture;
+    check_hresult(owner->CreateTexture2D(&desc, nullptr, texture.put()));
+    check_hresult(texture.as<IDXGIResource>()->GetSharedHandle(handle));
+    // KMT handles are not CloseHandle handles. Keep this COM resource alive
+    // through producer retirement and the consumer's OpenSharedResource.
+    *resource = texture.detach(); return S_OK;
+  } catch (...) { return to_hresult(); }
+}
+
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_platform_graphics_create_v2(
+    IUnknown* compositor, uint32_t low, int32_t high, void** context) noexcept {
+  if (!compositor || !context) return E_INVALIDARG;
+  *context = nullptr;
+  try {
+    auto value = std::make_unique<RasterContext>();
+    value->device = DorotiRasterDevice(low, high);
+    com_ptr<ID2D1Factory1> factory;
+    const D2D1_FACTORY_OPTIONS options{};
+    check_hresult(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory1), &options, factory.put_void()));
+    check_hresult(factory->CreateDevice(value->device.as<IDXGIDevice>().get(), value->drawing.put()));
+    Compositor owner{nullptr}; copy_from_abi(owner, compositor);
+    check_hresult(owner.as<ABI::Windows::UI::Composition::ICompositorInterop>()->CreateGraphicsDevice(
+        value->drawing.get(), reinterpret_cast<ABI::Windows::UI::Composition::ICompositionGraphicsDevice**>(put_abi(value->graphics))));
+    *context = value.release(); return S_OK;
+  } catch (...) { return to_hresult(); }
+}
+
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_platform_shared_surface_v1(
+    void* context, HANDLE shared, uint32_t source_y, uint32_t width, uint32_t height, IUnknown** surface) noexcept {
+  if (!context || !shared || !surface || width == 0 || height == 0 || width > 16384 || height > 16384)
+    return E_INVALIDARG;
+  *surface = nullptr;
+  try {
+    auto& value = *static_cast<RasterContext*>(context);
+    auto result = value.graphics.CreateDrawingSurface({static_cast<float>(width), static_cast<float>(height)},
+        Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
+        Windows::Graphics::DirectX::DirectXAlphaMode::Premultiplied);
+    auto interop = result.as<ABI::Windows::UI::Composition::ICompositionDrawingSurfaceInterop>();
+    com_ptr<ID2D1DeviceContext> drawing;
+    POINT offset{};
+    check_hresult(interop->BeginDraw(nullptr, __uuidof(ID2D1DeviceContext), drawing.put_void(), &offset));
+    HRESULT status = S_OK;
+    try {
+      DorotiDrawSharedRaster(value.device.get(), drawing.get(), shared, source_y, width, height, offset);
+    } catch (...) { status = to_hresult(); }
+    const auto end = interop->EndDraw();
+    check_hresult(status); check_hresult(end);
+    *surface = reinterpret_cast<IUnknown*>(detach_abi(result)); return S_OK;
+  } catch (...) { return to_hresult(); }
 }

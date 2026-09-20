@@ -157,9 +157,12 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             {
                 var copy = entry;
                 var name = Marshal.PtrToStringUTF8((nint)copy.ExtensionName);
-                if (name == "VK_KHR_driver_properties" || name == "VK_KHR_create_renderpass2")
+                if (name == "VK_KHR_driver_properties" || name == "VK_KHR_create_renderpass2" ||
+                    OperatingSystem.IsAndroid() && name is "VK_ANDROID_external_memory_android_hardware_buffer" or "VK_EXT_queue_family_foreign")
                     extensionNames.Add(name);
             }
+            SupportsHardwareBuffer = extensionNames.Contains("VK_ANDROID_external_memory_android_hardware_buffer") &&
+                extensionNames.Contains("VK_EXT_queue_family_foreign");
             var enabledExtensions = extensionNames.Select(Marshal.StringToCoTaskMemUTF8).ToArray();
             try
             {
@@ -216,6 +219,18 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
 
     private SkiaGraphiteSession.Frame? _platformRecording;
     private bool _platformReadback;
+    private readonly List<VulkanSharedRaster> _platformShared = [];
+    public bool SupportsHardwareBuffer { get; }
+    public VulkanSharedRaster CreateHardwareBufferRaster(nint buffer, int width, int height)
+    {
+        CheckOwner();
+        if (_platformRecording is null || !SupportsHardwareBuffer)
+            throw new PlatformNotSupportedException("An active frame with Vulkan hardware-buffer sharing is required.");
+        var raster = new VulkanSharedRaster(_vk, _instance, _physical, _device, _family,
+            _stockObserver!, _session!, buffer, width, height, android: true);
+        _platformShared.Add(raster);
+        return raster;
+    }
     public Task<SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info)
     {
         CheckOwner();
@@ -246,6 +261,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         var acquiredTime = FrameTimestamp();
         SkiaGraphiteSession.Frame? frame = null;
         var submitted = false;
+        var sharedCompleted = false;
         try
         {
             frame = _session!.BeginVulkanFrame(slot.Target!);
@@ -272,6 +288,7 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                 Flags = CommandBufferUsageFlags.OneTimeSubmitBit };
             CheckDevice(_vk.BeginCommandBuffer(command, &begin), "begin commands");
             _stockObserver?.Journal.Begin(command.Handle);
+            foreach (var raster in _platformShared) raster.RecordCopy(command);
             Barrier(command, slot.Backing, (ImageLayout)state.Layout, ImageLayout.TransferSrcOptimal,
                 AccessFlags.MemoryWriteBit, AccessFlags.TransferReadBit);
             Barrier(command, _images[index], _initialized[index] ? ImageLayout.PresentSrcKhr : ImageLayout.Undefined,
@@ -311,12 +328,13 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
             frame = null;
             SubmittedWindowFrames++;
             MaximumWindowFramesInFlight = Math.Max(MaximumWindowFramesInFlight, WindowFramesInFlight);
-            if (!_pipelinedWindowFrames || _platformReadback)
+            if (!_pipelinedWindowFrames || _platformReadback || _platformShared.Count != 0)
             {
                 // Qt has no idle completion callback yet; preserve its
                 // synchronous retirement contract until its host adopts one.
                 CheckDevice(_vk.WaitForFences(_device, 1, in slot.Fence, true, Timeout), "copy fence");
                 CompleteWindowFrame(slot);
+                sharedCompleted = true;
             }
             _initialized[index] = true;
             var completedTime = FrameTimestamp();
@@ -361,6 +379,19 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
                     frame.CompleteGpuWork();
                 }
             }
+            // Shared outputs are immutable. Only the Vulkan producer views die
+            // here; Java hardware bitmaps retain their allocations for HWUI.
+            if (submitted && !sharedCompleted && _platformShared.Count != 0)
+            {
+                // An exception after queue submission must not free imported
+                // memory which the GPU may still write. Failed retirement keeps
+                // the bank owned by this window for terminal cleanup.
+                var idle = _vk.DeviceWaitIdle(_device);
+                if (idle == Result.ErrorDeviceLost) _session!.NotifyVulkanDeviceLost();
+                else Check(idle, "failed shared raster drain");
+            }
+            foreach (var raster in _platformShared) raster.Dispose();
+            _platformShared.Clear();
         }
     }
 
@@ -533,6 +564,8 @@ public sealed unsafe partial class GraphiteVulkanWindow : IDisposable
         if (_device.Handle == 0) return;
         ReleaseD3D12Frame();
         DrainWindowFrames();
+        foreach (var raster in _platformShared) raster.Dispose();
+        _platformShared.Clear();
         ReleaseImages();
         _session?.Dispose(); _session = null;
         foreach (var slot in _windowFrames)

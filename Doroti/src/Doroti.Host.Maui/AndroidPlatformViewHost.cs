@@ -27,7 +27,7 @@ public sealed class AndroidPlatformViewDispatcher : IPlatformViewDispatcher
     }
 }
 
-/// <summary>Live Android Views and Graphite raster readback in one window View hierarchy.
+/// <summary>Live Android Views and immutable GPU raster buffers in one window View hierarchy.
 /// The SurfaceView remains below that window. No native snapshot or texture fallback.</summary>
 internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiTextInputBridge textInput) : IDisposable
 {
@@ -46,7 +46,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
     private Pending? _pending;
     private bool _disposed;
     private double _scaleX = 1, _scaleY = 1;
-    private long _rasterEpoch, _commits, _readbackFrames, _readbackBytes, _reusedSlices;
+    private long _rasterEpoch, _commits, _readbackFrames, _readbackBytes, _reusedSlices, _sharedSlices;
     private readonly bool _optimize = Environment.GetEnvironmentVariable("DOROTI_ANDROID_PLATFORM_RASTER_MODE") != "baseline";
     private readonly bool _routeRaster = Environment.GetEnvironmentVariable("DOROTI_ANDROID_PLATFORM_RASTER_MODE") is not ("baseline" or "full-regions");
     private readonly bool _profile = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE") == "1";
@@ -181,6 +181,26 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             var rasters = changed.ToArray();
             if (rasters.Length == 0)
             { _pending = new(plan, batch!, null, null, [], width, height, cached, translated, cacheScope); return; }
+            if (_optimize && OperatingSystem.IsAndroidVersionAtLeast(29) && _surface!.SupportsHardwareBuffer)
+            {
+                var bytes = _rasters.Sum(r => r.Bytes) + rasters.Sum(r => (long)r.Bounds.Width * r.Bounds.Height * 8);
+                if (bytes > 256L * 1024 * 1024) throw new InvalidOperationException("Android shared raster banks exceed 256 MiB.");
+                var shared = new Dictionary<int, AndroidSharedRaster>();
+                try
+                {
+                    foreach (var raster in rasters)
+                    {
+                        var output = new AndroidSharedRaster(_surface, raster.Bounds.Width, raster.Bounds.Height);
+                        shared.Add(raster.Segment.PaintOrder, output);
+                        output.Canvas.Translate(-raster.Bounds.Left, -raster.Bounds.Top);
+                        if (raster.Segment.PaintOrder / SliceStride == 0) output.Canvas.DrawColor(renderer.PlatformBackgroundColor);
+                        renderer.DrawPlatformRasterSegment(output.Canvas, raster.Segment.Commands, width, height);
+                    }
+                    _pending = new(plan, batch!, null, null, rasters, width, height, cached, translated, cacheScope, shared);
+                    return;
+                }
+                catch { foreach (var output in shared.Values) output.Dispose(); throw; }
+            }
             // Pack narrow kernel-edge strips beside the panel instead of reading
             // a full-width row of transparent padding for each strip.
             var atlasWidth = Math.Max(rasters.Max(r => r.Bounds.Width), Math.Min(width, rasters.Sum(r => r.Bounds.Width)));
@@ -321,6 +341,21 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             var parent = Container;
             if (frame.Width != parent.Width || frame.Height != parent.Height) return false;
             var desired = frame.Cached is { } cached ? new Dictionary<int, RasterView>(cached) : [];
+            if (frame.Shared is { } shared)
+            {
+                foreach (var slice in frame.Rasters)
+                {
+                    var bitmap = shared[slice.Segment.PaintOrder].CreateBitmap();
+                    var slot = _rasters.FirstOrDefault(r => r.PaintOrder == slice.Segment.PaintOrder && !desired.ContainsValue(r));
+                    if (slot is not null) { updates.Add((slot, bitmap, slice)); desired.Add(slice.Segment.PaintOrder, slot); }
+                    else
+                    {
+                        var raster = new RasterView(parent.Context!, bitmap, slice.Segment.Commands, frame.Width, frame.Height, _rasterEpoch, slice.Bounds, frame.Scope);
+                        prepared.Add(raster); desired.Add(slice.Segment.PaintOrder, raster);
+                    }
+                }
+                _sharedSlices += frame.Rasters.Length;
+            }
             if (frame.Readback is { } task)
             {
                 if (!task.IsCompleted) throw new InvalidOperationException("Platform readback outlived its completion fence.");
@@ -444,7 +479,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             parent.Invalidate();
             _reusedSlices += frame.Cached?.Count ?? 0;
             if (_profile)
-                Android.Util.Log.Info("DorotiPlatformFrame", $"mode={(_optimize ? "optimized" : "baseline")} frame={++_commits} readbackFrames={_readbackFrames} readbackBytes={_readbackBytes} reusedSlices={_reusedSlices} changed={frame.Rasters.Length} cached={frame.Cached?.Count ?? 0} uiMs={System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
+                Android.Util.Log.Info("DorotiPlatformFrame", $"mode={(_optimize ? "optimized" : "baseline")} frame={++_commits} readbackFrames={_readbackFrames} readbackBytes={_readbackBytes} sharedSlices={_sharedSlices} reusedSlices={_reusedSlices} changed={frame.Rasters.Length} cached={frame.Cached?.Count ?? 0} uiMs={System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
             return true;
         }
         finally
@@ -463,9 +498,10 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         Task<SkiaGraphiteReadback>? Readback, RasterSlice[] Rasters, int Width, int Height,
         Dictionary<int, RasterView>? Cached = null,
         Dictionary<int, SkiaPlatformRasterContent.Slice>? Translated = null,
-        SkiaPlatformRasterContent.CacheScope Scope = default) : IDisposable
+        SkiaPlatformRasterContent.CacheScope Scope = default,
+        Dictionary<int, AndroidSharedRaster>? Shared = null) : IDisposable
     {
-        public void Dispose() { Atlas?.Dispose(); Batch.Dispose(); Plan.Dispose(); }
+        public void Dispose() { if (Shared is not null) foreach (var output in Shared.Values) output.Dispose(); Atlas?.Dispose(); Batch.Dispose(); Plan.Dispose(); }
     }
     private sealed record RasterSlice(PlatformRasterSegment Segment, SKRectI Bounds)
     {
@@ -558,7 +594,9 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             return new("Android/View/Graphite-readback", Environment.OSVersion.VersionString, ViewType, supported,
                 request.Composition, PlatformViewEffects.RectClip, Reason: supported ? null : "Only native button/editor, translation and rect clip are supported.",
                 NativeBackdropBlur: supported && request.Composition == PlatformViewComposition.InterleavedComposition && OperatingSystem.IsAndroidVersionAtLeast(31),
-                Capabilities: new(PlatformViewRepresentation.NativeHierarchy, PlatformViewTransport.BoundedReadback,
+                Capabilities: new(PlatformViewRepresentation.NativeHierarchy,
+                    host._optimize && OperatingSystem.IsAndroidVersionAtLeast(29) && host._surface?.SupportsHardwareBuffer == true
+                        ? PlatformViewTransport.GpuShared : PlatformViewTransport.BoundedReadback,
                     PlatformViewInputPolicy.DirectNative, OperatingSystem.IsAndroidVersionAtLeast(31) ? NativeEffects : PlatformEffectSupport.Unsupported),
                 WebViewCommands: supported && webView);
         }

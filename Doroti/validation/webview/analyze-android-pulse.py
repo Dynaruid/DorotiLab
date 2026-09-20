@@ -17,6 +17,8 @@ p.add_argument('--video', type=Path, required=True)
 p.add_argument('--out', type=Path, required=True)
 p.add_argument('--roi', type=int, nargs=4, metavar=('X', 'Y', 'WIDTH', 'HEIGHT'), required=True)
 p.add_argument('--min-colored', type=int, default=1000)
+p.add_argument('--metric', choices=('color', 'dark'), default='color',
+               help='dark detects the isolated block against its light card, including low-saturation animation colors.')
 a = p.parse_args()
 a.out.mkdir(parents=True, exist_ok=False)
 capture = cv2.VideoCapture(str(a.video))
@@ -32,7 +34,9 @@ try:
         roi = frame[y:y + height, x:x + width].astype(np.int16)
         if roi.shape[:2] != (height, width):
             raise ValueError('ROI extends outside the video')
-        count = int(((roi.max(2) > 65) & (roi.max(2) - roi.min(2) > 25)).sum())
+        mask = ((roi.max(2) > 65) & (roi.max(2) - roi.min(2) > 25)) if a.metric == 'color' else (
+            (roi.max(2) < 175) & (roi.min(2) > 20))
+        count = int(mask.sum())
         if not counts:
             cv2.imwrite(str(a.out / 'first.png'), frame)
         if not counts or count < min(counts):
@@ -43,8 +47,8 @@ finally:
 if not counts:
     raise RuntimeError('No decoded frames')
 cv2.imwrite(str(a.out / 'lowest.png'), lowest)
-report = dict(video=str(a.video), roi=a.roi, frames=len(counts), fps=fps,
-              minColored=min(counts), maxColored=max(counts),
+report = dict(video=str(a.video), roi=a.roi, frames=len(counts), fps=fps, metric=a.metric,
+              minDetectedPixels=min(counts), maxDetectedPixels=max(counts),
               lowFrames=sum(c < a.min_colored for c in counts),
               threshold=a.min_colored,
               physicalObservation='notVerified', framePacing='notMeasured')

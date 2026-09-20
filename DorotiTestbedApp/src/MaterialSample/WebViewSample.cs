@@ -130,7 +130,11 @@ internal sealed class WebViewSampleState : State<WebViewSample>
 
             if (interleaved.Supported && interleaved.WebViewCommands)
             {
-                _controller = new WebViewController(_owner, new WebViewOptions(Html: InitialHtml));
+                // Explicit qualification option for old emulator providers which
+                // cannot isolate transient profiles. Never silently weaken the default.
+                var profile = Environment.GetEnvironmentVariable("DOROTI_SAMPLE_WEBVIEW_PROFILE") == "shared"
+                    ? WebViewProfile.SharedPersistent : WebViewProfile.Ephemeral;
+                _controller = new WebViewController(_owner, new WebViewOptions(Html: InitialHtml, Profile: profile));
                 _controller.Changed += WebViewChanged;
                 _ = InitializeControllerAsync(_controller);
             }

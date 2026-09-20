@@ -117,9 +117,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         return raster;
     }
 
-    internal Task<Skia.Rendering.SkiaGraphiteReadback> RequestPlatformReadback(SKSurface surface, SKImageInfo info) =>
-        (_graphiteFrame ?? throw new NotSupportedException("Windows HWND interleaving currently requires Graphite/Vulkan."))
-            .RequestReadback(surface, info);
     private bool _backdropTargetAdded;
     private bool _contentIslandConnected;
     private bool _desktopWindowTargetConnected;
@@ -242,7 +239,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         : "top-level-dcomp-vulkan-presentation-synchronous-acrylic";
     internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
     internal override string DiagnosticCoverage => PlatformRasterWindow != 0
-        ? "Graphite/Vulkan shared-recorder raster atlas, readback after GPU completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; " +
+        ? "Graphite/Vulkan shared-recorder raster atlas, immutable same-adapter GPU shared textures after producer completion, bounded premultiplied DirectComposition HWND slices and live native HWNDs; " +
           "reserved placement operations, batched sibling order/geometry, rectangular alpha regions, and explicit shield input; physical display atomicity and performance acceptance are not qualified"
         :
         "Vulkan 1.2 retained offscreen backing, exact-LUID D3D12 output resources, dedicated D3D12_RESOURCE imports and DXGI swapchain, " +
@@ -1007,6 +1004,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 $"{_backingCapacityWidth}x{_backingCapacityHeight}.");
 
         BeginCommands();
+        foreach (var raster in _sharedRasters) raster.RecordCopy(_commandBuffer);
         var acquireBarriers = stackalloc ImageMemoryBarrier[3];
         var graphiteState = _graphiteTarget?.GetState();
         _graphiteCopyRestoreLayout = _stockObserver != null && graphiteState is { } observed ? (ImageLayout)observed.Layout : ImageLayout.ColorAttachmentOptimal;
@@ -2497,6 +2495,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _context = null;
         _graphite?.Dispose();
         _graphite = null;
+        if (_sharedRasterDevice != 0) { Marshal.Release(_sharedRasterDevice); _sharedRasterDevice = 0; }
         _contextAbandoned = false;
         _skiaBackend?.Dispose();
         _skiaBackend = null;

@@ -107,6 +107,8 @@ def main():
                 effect = ImageStat.Stat(capture.convert('RGB').crop((ex, ey, ex + round(100 * scale), ey + round(50 * scale))))
                 return min(stats.mean) > 70 and min(stats.stddev) > 20 and min(effect.mean) < 230
             g.wait_for(native_pixels_visible, process, timeout=10)
+            assert frame['readbackBytes'] == 0 and frame['uploadedBytes'] == 0
+            assert frame['webView']['rasterUploadBytes'] == 0 and frame['webView']['rasterGpuCopies'] > 0
             (OUT / 'observed.json').write_text(json.dumps({'scope': 'mounted-product', 'frame': frame,
                 'automated': ['OS injected touch through SendPointerInput', 'effect removal/restoration', 'native pass-through click', 'shield blocks native click',
                     'sharp foreground button', 'native identity preserved', 'two native views with middle raster and effect',

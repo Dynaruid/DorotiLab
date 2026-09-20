@@ -9,6 +9,7 @@
 #include <vector>
 #include <cmath>
 #include <unordered_map>
+#include "shared_raster.h"
 using Microsoft::WRL::ComPtr;
 namespace {
 // Retained source descriptions let a later backdrop sample an earlier backdrop
@@ -231,9 +232,9 @@ extern "C" void __cdecl doroti_windows_d3d12_output_trace_prepared_v1(void) {
 }
 
 static int32_t UpdateRaster(
-    void* raster, const void* pixels, uint32_t width, uint32_t height, uint32_t row_bytes, int32_t x, int32_t y) {
-  if (raster == nullptr || pixels == nullptr || width == 0 || height == 0 ||
-      width > 16384 || height > 16384 || row_bytes < width * 4u)
+    void* raster, const void* pixels, uint32_t width, uint32_t height, uint32_t row_bytes, int32_t x, int32_t y, HANDLE shared = nullptr, uint32_t source_y = 0) {
+  if (raster == nullptr || (pixels == nullptr && shared == nullptr) || width == 0 || height == 0 ||
+      width > 16384 || height > 16384 || (!shared && row_bytes < width * 4u))
     return Result(E_INVALIDARG);
   auto& value = *static_cast<CompositionRaster*>(raster);
   if (value.source && value.source->sigma > 0) {
@@ -284,8 +285,16 @@ static int32_t UpdateRaster(
     // BeginDraw may return an atlas offset, even for a full-surface update.
     const D3D11_BOX box{static_cast<UINT>(offset.x), static_cast<UINT>(offset.y), 0,
         static_cast<UINT>(offset.x) + width, static_cast<UINT>(offset.y) + height, 1};
-    value.immediate->UpdateSubresource(texture.Get(), subresource, &box, pixels, row_bytes, 0);
-    hr = value.device->GetDeviceRemovedReason();
+    if (shared) {
+      try {
+        auto source = DorotiOpenRaster(value.device.Get(), shared);
+        D3D11_TEXTURE2D_DESC desc{}; source->GetDesc(&desc);
+        if (width > desc.Width || uint64_t(source_y) + height > desc.Height) winrt::throw_hresult(E_INVALIDARG);
+        const D3D11_BOX region{0, source_y, 0, width, source_y + height, 1};
+        value.immediate->CopySubresourceRegion(texture.Get(), subresource, box.left, box.top, 0, source.get(), 0, &region);
+      } catch (...) { hr = winrt::to_hresult(); }
+    } else value.immediate->UpdateSubresource(texture.Get(), subresource, &box, pixels, row_bytes, 0);
+    if (SUCCEEDED(hr)) hr = value.device->GetDeviceRemovedReason();
   }
   texture.Reset();
   drawing2.Reset();
@@ -324,3 +333,9 @@ doroti_windows_composition_raster_destroy_v1(void* raster) {
   delete static_cast<CompositionRaster*>(raster);
 }
 
+
+extern "C" __declspec(dllexport) int32_t __cdecl doroti_windows_composition_raster_shared_v1(
+    void* raster, HANDLE shared, uint32_t source_y, uint32_t width, uint32_t height, int32_t x, int32_t y) {
+  if (!shared) return E_INVALIDARG;
+  return UpdateRaster(raster, nullptr, width, height, 0, x, y, shared, source_y);
+}

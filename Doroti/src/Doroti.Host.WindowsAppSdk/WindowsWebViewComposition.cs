@@ -30,6 +30,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
     private Windows.System.DispatcherQueueController? _queue;
     private Task<CoreWebView2Environment>? _environment;
     private nint _graphics;
+    private readonly Func<(uint Low, int High)> _adapter;
     private readonly Dictionary<int, RasterSlot> _rasters = [];
     private sealed record RasterSlot(WindowsCompositionSlice Slice, C.SpriteVisual Visual,
         C.CompositionSurfaceBrush Brush, C.CompositionDrawingSurface Surface) : IDisposable
@@ -45,7 +46,8 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
     private readonly Native.SubclassProc _callback;
     private bool _disposed;
     private long _nativeMessages, _mouseEvents, _pointerEvents;
-    private long _rasterUploadBytes, _rasterUploads, _rasterReuses;
+    private const long _rasterUploadBytes = 0, _rasterUploads = 0;
+    private long _rasterReuses, _rasterGpuCopies;
     internal long RasterUploadBytes => _rasterUploadBytes;
     internal object Evidence => new { strategy = "WebView2-CompositionController", apiFamily = "Windows.UI.Composition",
         runtimeVersion = _environment is { IsCompletedSuccessfully: true } environment ? environment.Result.BrowserVersionString : null,
@@ -53,11 +55,11 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         loadedViews = _instances.Values.Count(instance => instance.Loaded),
         navigation = _instances.Values.Select(instance => instance.NavigationStatus).ToArray(),
         navigationEvents = _instances.Values.Select(instance => instance.NavigationEvents.ToArray()).ToArray(),
-        rasterUploadBytes = _rasterUploadBytes, rasterUploads = _rasterUploads, rasterReuses = _rasterReuses,
+        rasterUploadBytes = _rasterUploadBytes, rasterUploads = _rasterUploads, rasterReuses = _rasterReuses, rasterGpuCopies = _rasterGpuCopies,
         effectParameters = _effects.Values.Select(effect => new { physicalSigma = effect.Sigma, saturation = effect.Saturation }).ToArray(),
         nativeContentCaptured = false, observation = "BackendAccepted" };
-    internal WindowsWebViewComposition(nint parent, Action invalidate, Action yieldText, bool transportAvailable, IApplicationResourceHostCapability resources)
-    { _parent = parent; _invalidate = invalidate; _yieldText = yieldText; _transportAvailable = transportAvailable; _resources = resources; _callback = WindowProc; }
+    internal WindowsWebViewComposition(nint parent, Action invalidate, Action yieldText, bool transportAvailable, IApplicationResourceHostCapability resources, Func<(uint Low, int High)> adapter)
+    { _adapter = adapter; _parent = parent; _invalidate = invalidate; _yieldText = yieldText; _transportAvailable = transportAvailable; _resources = resources; _callback = WindowProc; }
     public string ViewType => "doroti/webview";
     internal bool Contains(PlatformViewHandle handle) => _instances.ContainsKey(handle);
     internal bool HasVisibleContent => _orderedVisuals.Length != 0;
@@ -67,7 +69,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         (request.Effects & ~PlatformViewEffects.RectClip) == 0,
         PlatformViewComposition.InterleavedComposition, PlatformViewEffects.RectClip,
         NativeBackdropBlur: _transportAvailable && !_disposed, Capabilities: new(PlatformViewRepresentation.CompositionVisual,
-            PlatformViewTransport.CpuUpload, PlatformViewInputPolicy.DirectNative, Effects),
+            PlatformViewTransport.GpuShared, PlatformViewInputPolicy.DirectNative, Effects),
         WebViewCommands: true,
         Reason: "Requires installed WebView2 runtime and a Windows.UI.Composition tree; legacy HWND mixing is unsupported.");
 
@@ -86,7 +88,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         _root = _compositor.CreateContainerVisual();
         _target = SystemDesktopCompositionInterop.CreateDesktopWindowTarget(_compositor, _parent, true);
         _target.Root = _root;
-        Marshal.ThrowExceptionForHR(Native.CreateGraphics(Abi(_compositor), out _graphics));
+        Marshal.ThrowExceptionForHR(Native.CreateGraphics(Abi(_compositor), _adapter().Low, _adapter().High, out _graphics));
         if (!Native.SetWindowSubclass(_parent, _callback, 0x505657, 0))
             throw new System.ComponentModel.Win32Exception();
     }
@@ -135,7 +137,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         }
     }
 
-    internal unsafe void Commit(PlatformCompositionPlan plan, SkiaGraphiteReadback? pixels, WindowsCompositionSlice[] slices,
+    internal unsafe void Commit(PlatformCompositionPlan plan, WindowsSharedRaster? shared, WindowsCompositionSlice[] slices,
         IPlatformViewPlacementBatch batch)
     {
         Initialize();
@@ -161,11 +163,9 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
                     visuals.Add(slice.Segment.PaintOrder, retained.Visual);
                     continue;
                 }
-                if (pixels is null) throw new InvalidOperationException("Missing changed WebView raster pixels.");
-                nint surface;
-                fixed (byte* data = pixels.Pixels)
-                    Marshal.ThrowExceptionForHR(Native.CreateSurface(_graphics, (nint)(data + slice.AtlasY * pixels.RowBytes),
-                        (uint)slice.Bounds.Width, (uint)slice.Bounds.Height, (uint)pixels.RowBytes, out surface));
+                if (shared is null) throw new InvalidOperationException("Missing changed WebView shared raster.");
+                Marshal.ThrowExceptionForHR(Native.CreateSharedSurface(_graphics, shared.Handle, (uint)slice.AtlasY,
+                    (uint)slice.Bounds.Width, (uint)slice.Bounds.Height, out var surface));
                 C.CompositionDrawingSurface drawing;
                 try { drawing = WinRT.MarshalInterface<C.CompositionDrawingSurface>.FromAbi(surface); }
                 finally { Marshal.Release(surface); }
@@ -243,8 +243,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
             _effects.Clear(); foreach (var item in nextEffects) _effects.Add(item.Key, item.Value);
             allocatedEffects.Clear();
             _visible = next; _token = plan.Token; _orderedVisuals = ordered.ToArray();
-            _rasterUploadBytes += slices.Where(s => !s.Reused).Sum(slice => (long)slice.Bounds.Width * slice.Bounds.Height * 4);
-            _rasterUploads += slices.Count(s => !s.Reused);
+            _rasterGpuCopies += slices.Count(s => !s.Reused);
             _rasterReuses += slices.Count(s => s.Reused);
         }
         catch
@@ -487,6 +486,8 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         [StructLayout(LayoutKind.Sequential)] internal struct Point { internal int X, Y; }
         [StructLayout(LayoutKind.Sequential)] internal struct TrackMouse { internal uint Size, Flags; internal nint Window; internal uint Hover; }
         internal delegate nint SubclassProc(nint hwnd, uint message, nuint wparam, nint lparam, nuint id, nuint data);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_shared_surface_v1", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int CreateSharedSurface(nint context, nint handle, uint sourceY, uint width, uint height, out nint surface);
         [DllImport("CoreMessaging.dll")] internal static extern int CreateDispatcherQueueController(QueueOptions options, out nint controller);
         [DllImport("comctl32.dll")] internal static extern bool SetWindowSubclass(nint hwnd, SubclassProc callback, nuint id, nuint data);
         [DllImport("comctl32.dll")] internal static extern bool RemoveWindowSubclass(nint hwnd, SubclassProc callback, nuint id);
@@ -501,8 +502,8 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         [DllImport("user32.dll")] internal static extern bool TrackMouseEvent(ref TrackMouse tracking);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_effect_v2")]
         internal static extern int CreateEffect(nint compositor, float sigma, float saturation, out nint brush);
-        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_graphics_create_v1")]
-        internal static extern int CreateGraphics(nint compositor, out nint context);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_graphics_create_v2")]
+        internal static extern int CreateGraphics(nint compositor, uint low, int high, out nint context);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_surface_v1")]
         internal static extern int CreateSurface(nint context, nint pixels, uint width, uint height, uint stride, out nint surface);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_platform_graphics_destroy_v1")]

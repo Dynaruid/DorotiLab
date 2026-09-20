@@ -20,22 +20,23 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
     private readonly nint _parent;
     private Compositor? _compositor;
     private nint _graphics;
+    private readonly Func<(uint Low, int High)> _adapter;
     private readonly Dictionary<int, RasterSource> _rasters = [];
     private readonly Dictionary<nint, NativeSource> _native = [];
     private readonly Dictionary<int, EffectLayer> _effects = [];
     private readonly List<IDisposable> _retired = [];
-    private long _uploads;
+    private long _gpuCopies;
     private long _reuses;
     private long _commits;
     // Negative control for the opt-in pixel test; never enabled in ordinary runs.
     private readonly bool _omitNativeProbe = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PLATFORM_CAPTURE") == "1" &&
         Environment.GetEnvironmentVariable("DOROTI_WINUI_BACKDROP_OMIT_NATIVE_PROBE") == "1";
-    internal WindowsWinUiBackdrop(WindowsWinUiControls controls, nint parent) { _controls = controls; _parent = parent; }
+    internal WindowsWinUiBackdrop(WindowsWinUiControls controls, nint parent, Func<(uint Low, int High)> adapter) { _controls = controls; _parent = parent; _adapter = adapter; }
     internal nint WindowFor(int order) => _effects[order].Hwnd;
     internal object Evidence => new
     {
         strategy = "WinUI CompositionVisualSurface live prefix sampling", effects = _effects.Count,
-        nativeSources = _native.Count, nativeReadbackBytes = 0, rasterUploads = _uploads, rasterReuses = _reuses,
+        nativeSources = _native.Count, nativeReadbackBytes = 0, rasterUploads = 0, rasterGpuCopies = _gpuCopies, rasterReuses = _reuses,
         omittedNativeProbe = _omitNativeProbe,
         commits = _commits, input = "direct native HWND; effect bridges input-transparent",
         bounds = _effects.Select(pair => new { order = pair.Key, sigma = pair.Value.Sigma,
@@ -43,7 +44,7 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
     };
     private static double[] Coordinates(Rect bounds) => [bounds.left, bounds.top, bounds.right, bounds.bottom];
 
-    internal unsafe void Prepare(PlatformCompositionPlan plan, SkiaGraphiteReadback? pixels,
+    internal unsafe void Prepare(PlatformCompositionPlan plan, WindowsSharedRaster? shared,
         WindowsCompositionSlice[] slices, int width, int height, Func<PlatformViewHandle, nint> getWindow)
     {
         var effects = plan.Parts.OfType<PlatformBackdropSegment>().ToArray();
@@ -60,13 +61,13 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
         {
             var first = nativeParts.FirstOrDefault() ?? throw new InvalidOperationException("WinUI backdrop requires a live native source.");
             _compositor = _controls.GetVisual(getWindow(first.Placement.Handle)).Compositor;
-            Marshal.ThrowExceptionForHR(Native.CreateGraphics(Abi(_compositor), out _graphics));
+            Marshal.ThrowExceptionForHR(Native.CreateGraphics(Abi(_compositor), _adapter().Low, _adapter().High, out _graphics));
         }
         var scale = plan.Token.DeviceScaleX;
         var viewport = Rect.fromLTWH(0, 0, width, height);
         var areas = effects.ToDictionary(effect => effect.PaintOrder, effect =>
             Scale(effect.Bounds, scale).inflate(Math.Ceiling(3 * effect.SigmaX * scale)).intersect(viewport));
-        // Source and output surfaces plus current/staging raster uploads are bounded.
+        // Source and output surfaces plus current/staging GPU rasters are bounded.
         var bytes = areas.Values.Sum(area => area.width * area.height * 16) +
             slices.Sum(slice => (double)slice.Bounds.Width * slice.Bounds.Height * 16);
         if (bytes > 256L * 1024 * 1024) throw new InvalidOperationException("WinUI backdrop staging exceeds 256 MiB.");
@@ -76,18 +77,16 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
             if (slice.Reused && _rasters.TryGetValue(slice.Segment.PaintOrder, out var previous) && previous.Slice.Bounds == slice.Bounds &&
                 SkiaPlatformRasterContent.Equivalent(previous.Slice.Segment.Commands, slice.Segment.Commands))
             { _reuses++; continue; }
-            if (slice.Reused || pixels is null) throw new InvalidOperationException("Missing retained WinUI backdrop source.");
-            nint surface;
-            fixed (byte* data = pixels.Pixels)
-                Marshal.ThrowExceptionForHR(Native.CreateSurface(_graphics, (nint)(data + slice.AtlasY * pixels.RowBytes),
-                    (uint)slice.Bounds.Width, (uint)slice.Bounds.Height, (uint)pixels.RowBytes, out surface));
+            if (slice.Reused || shared is null) throw new InvalidOperationException("Missing retained WinUI backdrop source.");
+            Marshal.ThrowExceptionForHR(Native.CreateSharedSurface(_graphics, shared.Handle, (uint)slice.AtlasY,
+                (uint)slice.Bounds.Width, (uint)slice.Bounds.Height, out var surface));
             CompositionDrawingSurface drawing;
             try { drawing = WinRT.MarshalInterface<CompositionDrawingSurface>.FromAbi(surface); }
             finally { Marshal.Release(surface); }
             var source = new RasterSource(slice, drawing, _compositor.CreateSurfaceBrush(drawing));
             if (_rasters.Remove(slice.Segment.PaintOrder, out var old)) _retired.Add(old);
             _rasters.Add(slice.Segment.PaintOrder, source);
-            _uploads++;
+            _gpuCopies++;
         }
         var liveWindows = nativeParts.Select(part => getWindow(part.Placement.Handle)).ToHashSet();
         foreach (var hwnd in _native.Keys.Except(liveWindows).ToArray()) { _retired.Add(_native[hwnd]); _native.Remove(hwnd); }
@@ -302,12 +301,14 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
 
     private static class Native
     {
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_winui_shared_surface_v1", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int CreateSharedSurface(nint context, nint handle, uint sourceY, uint width, uint height, out nint surface);
         [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
         internal static extern nint GetWindowLongPtrW(nint hwnd, int index);
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
         internal static extern nint SetWindowLongPtrW(nint hwnd, int index, nint value);
-        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_winui_graphics_create_v1")]
-        internal static extern int CreateGraphics(nint compositor, out nint context);
+        [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_winui_graphics_create_v2")]
+        internal static extern int CreateGraphics(nint compositor, uint low, int high, out nint context);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_winui_surface_v1")]
         internal static extern int CreateSurface(nint context, nint pixels, uint width, uint height, uint stride, out nint surface);
         [DllImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_winui_effect_v1")]
