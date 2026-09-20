@@ -16,3 +16,12 @@ foreach(target product-driver native-contract)
   target_include_directories(${target} PRIVATE "${native}/include")
   target_link_libraries(${target} PRIVATE "${DOROTI_SHIM}" Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Quick Qt6::Qml Qt6::Test Qt6::WebEngineQuick Vulkan::Headers)
 endforeach()
+# The optional WebView ABI uses only public Quick/Profile APIs in the sibling shim.
+get_filename_component(shim_directory "${DOROTI_SHIM}" DIRECTORY)
+if(EXISTS "${shim_directory}/libdoroti_webview_qt.so")
+  add_executable(webview-contract webview-contract.cpp)
+  target_compile_definitions(webview-contract PRIVATE DOROTI_QT_HOST_BUILD DOROTI_QT_QUICK DOROTI_QT_WEBENGINE)
+  target_include_directories(webview-contract PRIVATE "${native}/include")
+  target_link_libraries(webview-contract PRIVATE "${DOROTI_SHIM}" "${shim_directory}/libdoroti_webview_qt.so"
+    Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Quick Qt6::Qml Qt6::Test Vulkan::Headers)
+endif()

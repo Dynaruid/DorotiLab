@@ -63,15 +63,23 @@ loop is required. Physical scanout atomicity and arbitrary native view types are
 not implied by enabling this option. See the repository's `linux-qt-quick` product
 validation for input, overlap, lifetime and Vulkan-layer checks.
 
-`-DDOROTI_QT_WEBENGINE=ON` additionally links WebEngineQuick and initializes it
-before QApplication. MSBuild exposes this as `DorotiQtWebEngine=true`; the
+`-DDOROTI_QT_WEBENGINE=ON` builds the sibling `libdoroti_webview_qt.so` against
+system Qt 6.8+ WebEngineQuick/WebChannel and initializes schemes/WebEngine before
+QApplication. The independent WebView command ABI is version 1 / 32 bytes;
+host callbacks remain ABI 4 / 192 bytes. The generated runtime manifest records
+the build versions and system helper/data/QML closure. No Qt engine is bundled. MSBuild exposes this as `DorotiQtWebEngine=true`; the
 Testbed enables it with Quick, while templates keep it optional. PV feature bit
-2 negotiates `create` kind 2 (initial UTF-8 HTML, <=1 MiB); bit 3 negotiates a
+2 negotiates `create` kind 2 (HTML or versioned WebView options); bit 3 negotiates a
 bounded live backdrop part in the existing 96-byte Quick packet. See the header
 for the Gaussian sigma and sample-bound encoding. Quick owns a source group of
 all earlier raster/native items, with the effect and sharp child outside it.
 One isotropic effect (sigma <=32; <=4M physical sample pixels) is supported.
-Saturation and cross-platform visual matching remain unqualified.
+PV bit 4 adds color-backdrop kind 4, sigma zero and saturation 0–2, applied after
+both blur passes. Tint remains independent foreground raster. Native/raster pixel
+calibration is covered; full cross-platform color-space matching is not claimed.
+The same native item supports public controller/navigation/JSON JS/profile and
+bounded manifest app content. Full profile deletion and arbitrary remote messages
+are unsupported; see `Doroti/docs/platform-views/linux-webview.md`.
 
 Quick retains separate published/staging P banks and uses the actual frameSwapped
 terminal for common session completion. A superseded render-only pass is closed

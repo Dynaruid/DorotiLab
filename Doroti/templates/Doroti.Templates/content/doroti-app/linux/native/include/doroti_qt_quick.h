@@ -5,13 +5,14 @@ struct doroti_qt_quick_gpu {
   void *instance, *physical_device, *device, *queue;
   std::uint32_t queue_family, api_version;
 };
-// kind: raster=0, native=1, shield=2, backdrop=3. Array order is paint order.
+// kind: raster=0, native=1, shield=2, backdrop=3, color-backdrop=4. Array order is paint order.
 // PV feature bit 3 negotiates backdrop: id contains IEEE754 logical sigma bits,
 // bounds is the output clip, clip is bounds expanded by 3*sigma for sampling.
 // One effect, isotropic sigma <=32, <=4096 per physical sample dimension and
 // <=4M sample pixels. Earlier items alone form its live source group.
+// PV feature bit 4 negotiates kind 4: image carries IEEE754 saturation [0,2]; sigma zero is valid.
 // PV feature bit 2 negotiates create kind 2: UTF-8 initial WebEngine Quick HTML
-// (<=1 MiB). Widgets adoption remains unsupported; work2 owns navigation/JS APIs.
+// or versioned WebView options. Independent WebView ABI 1 provides commands.
 struct doroti_qt_quick_part {
   std::uint32_t size, kind;
   std::uint64_t id, image;

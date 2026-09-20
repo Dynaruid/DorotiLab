@@ -4,8 +4,8 @@ The Testbed uses `DorotiQtQuick=true`. Its Linux runner also enables
 `DorotiQtWebEngine=true`; other applications/templates keep both options opt-in.
 Build with Qt 6.6+ Core, Gui, Widgets, OpenGL, Quick, Qml, QuickControls2,
 Vulkan headers, Wayland client development files,
-`wayland-scanner`, and the active `xcb` or `wayland` plugin. WebEngineQuick and
-the `QtWebEngine` runtime QML module are needed when WebEngine is enabled.
+`wayland-scanner`, and the active `xcb` or `wayland` plugin. Qt 6.8+ WebEngineQuick/WebChannel and
+the `QtWebEngine`/`QtWebChannel` runtime QML modules are needed when WebEngine is enabled.
 Quick Controls require the `QtQuick` and `QtQuick.Controls` runtime modules.
 The validation driver additionally uses Qt Test and Python Pillow.
 
@@ -73,8 +73,8 @@ physical presentation or a full device-loss test.
 driver lives only here and sends Qt mouse/key/wheel events through DorotiSurface.
 It checks native click versus committed shield, editing and native identity,
 animation, scroll, sharp foreground button semantics, two WebViews, effect
-movement/removal, and disposal/recreation. JavaScript probes are validation-only;
-they do not add a public WebView JS API. QQuickWindow captures include native
+movement/removal, and disposal/recreation. The preload JavaScript probes remain validation-only; the product now also has
+a separate public controller API, tested by `webview/verify-qt.py`. QQuickWindow captures include native
 pixels on both QPA backends. Capture readback is separate from product GPU transport.
 
 See [the current Qt contract and remaining gates](../../docs/platform-views/linux-qt.md).
@@ -90,3 +90,48 @@ cycle 0; that failed attempt remains in the artifacts.
 Per the user's updated instruction, repeat counts are now limited to 10;
 `verify-controls.py --cycles` accepts 1–10 and defaults to 10. Earlier completed
 100-cycle reports remain historical evidence and are not rerun.
+
+## Linux WebView controller and color effect gates (2026-09-20)
+
+`webview-contract` is built alongside the driver when the optional sibling shim is
+present. It creates two actual native Quick owners, negotiates WebView ABI 1,
+rejects cross-owner/stale/thread calls, checks JS generations/unbind, runs ten
+lifecycles, kills its own renderer, and verifies terminal failure plus explicit
+fresh recreation. These are native owner checks, not two full Doroti product owners.
+
+```sh
+qt_current="$PWD/Doroti/artifacts/webview/2026-09-20/linux-qt"
+qt_app="$PWD/DorotiTestbedApp/linux/bin/linux-x64/Debug/net10.0/linux-x64"
+# Build/configure the driver as above, with DOROTI_SHIM from this exact app directory.
+python3 Doroti/validation/run-with-timeout.py "$qt_current/driver/webview-contract"
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/webview/verify-qt.py \
+  --app "$qt_app/DorotiTestbedApp.Linux.dll" --driver "$qt_current/driver/libproduct-driver.so" \
+  --output "$qt_current/api-new" --qpa wayland
+# Use a NEW output directory for each attempt. Repeat for --qpa xcb.
+# Add --mode calibration for native/raster sigma, zero/reset, saturation and tint.
+python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/webview/measure-qt-workloads.py \
+  --app "$qt_app/DorotiTestbedApp.Linux.dll" --driver "$qt_current/driver/libproduct-driver.so" \
+  --output "$qt_current/workloads-new" --qpa wayland
+```
+
+The API/calibration runner verifies the actual mapped host and WebView shim paths.
+A driver linked to the Debug native host must not be used to approve Release
+native code: rebuild the driver with `DOROTI_SHIM` pointing at the published app.
+API fixtures exercise history, typed JS/errors/cancellation, app resources,
+Range rejection, trusted app messages, profile isolation and create/dispose races.
+The shared persistent option is tested for creation; arbitrary remote messaging,
+full profile deletion and physical IME/accessibility remain unsupported/unqualified.
+
+Workloads use 0/1/4 visible WebViews × idle/animation/scroll/modal, a ten-second
+sample, Qt `frameSwapped` intervals and process-tree PSS. These intervals include
+native Chromium updates and are not physical scanout, input latency or first
+content display measurements. No before-change baseline exists for this execution.
+
+Results and limits: [Linux execution report](../webview/linux-results-2026-09-20.md).
+
+`webview/verify-qt-input.py` takes the same app/driver/output/QPA arguments and
+checks synthetic Korean composition events, native Tab/Shift+Tab, and native focus
+release to the Doroti text field. This caught the outer WebEngine focus-scope
+handoff bug. It does not replace physical IBus/keyboard or full traversal/Orca.
+The native WebView contract's ten lifecycles also replace initial HTML immediately,
+so terminal callbacks must release the loading latch even without another start.

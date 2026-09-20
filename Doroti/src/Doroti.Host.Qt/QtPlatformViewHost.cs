@@ -52,11 +52,13 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     private Action? _yieldText;
     private Action<Exception>? _fatal;
     internal QtSkiaSurface? QuickSurface { get; set; }
+    internal IApplicationResourceHostCapability? Resources { get; set; }
+    internal string ApplicationId { get; set; } = "doroti";
     private bool IsQuick => (_api.Features & 2) != 0;
     private bool HasWebEngine => IsQuick && (_api.Features & 4) != 0;
-    private bool HasEffects => IsQuick && (_api.Features & 8) != 0;
-    private static readonly PlatformEffectSupport QuickEffects = new(true, 1, 32,
-        Reason: "Qt Quick supports one bounded live Gaussian source group, sigma <=32; saturation is unsupported.");
+    private bool HasEffects => IsQuick && (_api.Features & 24) == 24;
+    private static readonly PlatformEffectSupport QuickEffects = new(true, 1, 32, Saturation: true,
+        Reason: "Qt Quick supports one bounded live Gaussian source group, sigma <=32 and saturation 0–2.");
     internal IEnumerable<IPlatformViewFactory> Factories =>
         [new Factory(this, 0), new Factory(this, 1), new Factory(this, 2)];
 
@@ -64,7 +66,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     {
         if (_owner != 0) throw new InvalidOperationException("Qt PlatformView owner is already bound.");
         Check(GetApi(window, 1, (uint)sizeof(Api), out _owner, out _api));
-        if (_api.Version != 1 || _api.Size != sizeof(Api) || (_api.Features & 1) == 0 || (_api.Features & ~15UL) != 0 ||
+        if (_api.Version != 1 || _api.Size != sizeof(Api) || (_api.Features & 1) == 0 || (_api.Features & ~31UL) != 0 ||
             _api.Post == null || _api.Create == null || _api.Commit == null || _api.Focus == null || _api.Remove == null)
             throw new InvalidDataException("Invalid Qt PlatformView ABI table.");
         _thread = Environment.CurrentManagedThreadId;
@@ -95,40 +97,59 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
                 host.IsQuick && request.Composition == PlatformViewComposition.InterleavedComposition) &&
             (request.Effects & ~PlatformViewEffects.RectClip) == 0,
             host.IsQuick ? request.Composition : PlatformViewComposition.NativeOverlay, PlatformViewEffects.RectClip,
-            NativeBackdropBlur: host.HasEffects,
+            NativeBackdropBlur: host.HasEffects, WebViewCommands: kind == 2 && host.HasWebEngine,
             Capabilities: new(PlatformViewRepresentation.NativeHierarchy,
                 host.IsQuick ? PlatformViewTransport.GpuShared : PlatformViewTransport.Native,
                 PlatformViewInputPolicy.DirectNative, host.HasEffects ? QuickEffects : PlatformEffectSupport.Unsupported),
             Reason: kind == 2 && !host.HasWebEngine ? "WebEngine Quick requires DorotiQtQuick=true and DorotiQtWebEngine=true; rebuild the native shim." :
                 host.IsQuick ? "Live Qt Quick items and Graphite Vulkan GPU images; translation and rect clip. Physical presentation atomicity is not qualified." :
                 "Limited B: disjoint Widgets, rounded logical translation/inward rect clip. Interleaving, shields, affine transforms and synchronized placement are unsupported.");
-        public unsafe ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle,
+        public async ValueTask<IPlatformViewInstance> CreateAsync(PlatformViewHandle handle,
             ReadOnlyMemory<byte> parameters, Action<PlatformViewHandle> focused, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            host.Verify();
             if (kind != 2 && parameters.Length != 0) throw new NotSupportedException("Qt built-in controls do not accept creation parameters.");
-            if (kind == 2 && (!host.HasWebEngine || parameters.Length > 1024 * 1024))
-                throw new NotSupportedException("Qt WebEngine Quick must be enabled; initial UTF-8 HTML is limited to 1 MiB.");
+            if (kind == 2 && !host.HasWebEngine) throw new WebViewException(WebViewError.Unsupported, "Qt WebEngine Quick is disabled.");
+            var bytes = kind == 2 ? await QtWebViewSession.PrepareAsync(parameters, host.Resources, host.ApplicationId, cancellationToken).ConfigureAwait(false)
+                : Encoding.UTF8.GetBytes(kind == 1 ? "Edit native Qt text" : "Native Qt button");
+            IPlatformViewInstance? result = null;
+            await host.InvokeAsync(() => { cancellationToken.ThrowIfCancellationRequested(); result = Create(handle, focused, bytes); return ValueTask.CompletedTask; });
+            return result!;
+        }
+        private unsafe IPlatformViewInstance Create(PlatformViewHandle handle, Action<PlatformViewHandle> focused, byte[] bytes)
+        {
+            host.Verify();
             var instance = new Instance(host, handle, focused);
             var context = host._focusContext;
-            var bytes = kind == 2 ? parameters.ToArray() : Encoding.UTF8.GetBytes(kind == 1 ? "Edit native Qt text" : "Native Qt button");
             fixed (byte* text = bytes)
             {
                 ulong id;
-                Check(host._api.Create(host._owner, kind,
-                    new(text, (ulong)bytes.Length), &Focused, GCHandle.ToIntPtr(context), &id));
+                var status = host._api.Create(host._owner, kind,
+                    new(text, (ulong)bytes.Length), &Focused, GCHandle.ToIntPtr(context), &id);
+                if (kind == 2 && status != 0) throw new WebViewException(WebViewError.Unsupported,
+                    $"Qt WebEngine creation failed (status {status}); verify system WebEngine/QML/helper dependencies and native diagnostics.");
+                Check(status);
                 instance.Id = id;
             }
+            try
+            {
+                if (kind == 2) instance.Web = new QtWebViewSession(host, handle, host._owner, instance.Id, instance.NotifyWeb);
+            }
+            catch { host._api.Remove(host._owner, instance.Id); throw; }
             host._instances.Add(handle, instance);
             host._nativeInstances.Add(instance.Id, instance);
-            return ValueTask.FromResult<IPlatformViewInstance>(instance);
+            return instance;
         }
     }
     private sealed class Instance(QtPlatformViewHost host, PlatformViewHandle handle,
-        Action<PlatformViewHandle> focused) : IPlatformViewInstance
+        Action<PlatformViewHandle> focused) : IPlatformViewInstance, IPlatformWebViewInstance
     {
         internal ulong Id;
+        internal QtWebViewSession? Web;
+        public event Action<WebViewEvent>? WebViewChanged;
+        internal void NotifyWeb(WebViewEvent value) => WebViewChanged?.Invoke(value);
+        public Task<WebViewResult> ExecuteAsync(WebViewCommand command, CancellationToken cancellationToken) =>
+            Web?.ExecuteAsync(command, cancellationToken) ?? throw new WebViewException(WebViewError.Unsupported, "This item is not a WebView.");
         internal void NotifyFocus() { host._yieldText?.Invoke(); focused(handle); }
         public ValueTask ApplyAsync(PlatformViewPlacement placement)
         {
@@ -159,6 +180,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         }
         public unsafe ValueTask DisposeAsync()
         {
+            Web?.Close(host._closed); Web = null; WebViewChanged = null;
             if (!host._closed) { host.Verify(); Check(host._api.Remove(host._owner, Id)); }
             host._instances.Remove(handle); host._nativeInstances.Remove(Id);
             return ValueTask.CompletedTask;
@@ -210,11 +232,16 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
             else Check(result);
             ValueTask task;
             lock (work.Host._instances) task = work.Action();
-            if (!task.IsCompleted) throw new InvalidOperationException("Qt built-in native operations must complete synchronously on the GUI thread.");
-            task.GetAwaiter().GetResult();
-            work.Completion.TrySetResult();
+            if (task.IsCompleted) { task.GetAwaiter().GetResult(); work.Completion.TrySetResult(); }
+            else _ = CompleteWorkAsync(task, work.Completion);
         }
         catch (Exception error) { work.Completion.TrySetException(error); }
+    }
+
+    private static async Task CompleteWorkAsync(ValueTask task, TaskCompletionSource completion)
+    {
+        try { await task.ConfigureAwait(false); completion.TrySetResult(); }
+        catch (Exception error) { completion.TrySetException(error); }
     }
 
     internal static Placement Translate(PlatformViewPlacement p, ulong id, bool quick = false)
@@ -308,7 +335,8 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
                     var output = effect.Bounds;
                     if (output.isEmpty) break;
                     var sample = effect.SampleBounds;
-                    parts.Add(new() { Size=96, Kind=3, Id=BitConverter.DoubleToUInt64Bits(effect.SigmaX),
+                    parts.Add(new() { Size=96, Kind=4, Id=BitConverter.DoubleToUInt64Bits(effect.SigmaX),
+                        Image=BitConverter.DoubleToUInt64Bits(effect.Style?.Saturation ?? 1),
                         Bounds=new(output.left,output.top,output.width,output.height),
                         Clip=new(sample.left,sample.top,sample.width,sample.height) });
                     break;
@@ -363,7 +391,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         _next = []; _nextPlacements = [];
     }
     // Called from native closed only after pending post callbacks and QWidgets die.
-    internal void NativeClosed() { _closed = true; CancelPending(); _session?.DisposeAsync().GetAwaiter().GetResult(); }
+    internal void NativeClosed() { _closed = true; foreach (var instance in _instances.Values) instance.Web?.Close(true); CancelPending(); _session?.DisposeAsync().GetAwaiter().GetResult(); }
     public void Dispose()
     {
         NativeClosed();

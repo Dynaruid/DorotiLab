@@ -1,4 +1,5 @@
 #include "doroti_qt_quick.h"
+#include "doroti_qt_webview.h"
 #include <QApplication>
 #include <QFile>
 #include <QJsonArray>
@@ -100,7 +101,7 @@ int Post(std::uint64_t id,void(*callback)(void*,int),void* context) {
 }
 int Create(std::uint64_t id,std::uint32_t kind,doroti_qt_utf8_v2 text,void(*focused)(void*,std::uint64_t),void* context,std::uint64_t* result) {
   Owner* owner;auto status=Lookup(id,owner);if(status)return status;
-  if(kind>2||!result||text.length>1024*1024||(text.length&&!text.data))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  if(kind>2||!result||text.length>32*1024*1024||(text.length&&!text.data))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
 #ifndef DOROTI_QT_WEBENGINE
   if(kind==2)return DOROTI_QT_PV_UNSUPPORTED;
 #endif
@@ -110,7 +111,12 @@ int Create(std::uint64_t id,std::uint32_t kind,doroti_qt_utf8_v2 text,void(*focu
       QByteArray("import QtQuick\nimport QtQuick.Controls\nButton { objectName: 'doroti-quick-button'; text: 'Native Qt Quick button'; property int clickCount: 0; onClicked: clickCount++ }"),QUrl());
   QVariantMap properties;
   if(kind==2)properties.insert("initialHtml",QString::fromUtf8(reinterpret_cast<const char*>(text.data),qsizetype(text.length)));
-  std::unique_ptr<QObject> created(component.createWithInitialProperties(properties));
+  std::unique_ptr<QObject> created;
+#ifdef DOROTI_QT_WEBENGINE
+  if(kind==2)created.reset(DorotiWebCreate(owner->engine.get(),QByteArray(reinterpret_cast<const char*>(text.data),qsizetype(text.length))));
+  else
+#endif
+  created.reset(component.createWithInitialProperties(properties));
   auto* item=qobject_cast<QQuickItem*>(created.get());
   if(!item) { qWarning()<<component.errors();return DOROTI_QT_PV_UNSUPPORTED; }
   auto* clip=new QQuickItem(owner->window->contentItem());clip->setClip(true);clip->setVisible(false);
@@ -141,21 +147,51 @@ int Focus(std::uint64_t id,std::uint64_t token,std::uint32_t focused) {
   Owner* owner;auto status=Lookup(id,owner);if(status)return status;
   auto it=owner->controls.find(token);if(it==owner->controls.end())return DOROTI_QT_PV_STALE;
   if(focused) { if(!it->second.clip->isVisible())return DOROTI_QT_PV_UNSUPPORTED;it->second.item->forceActiveFocus(Qt::OtherFocusReason); }
-  else if(it->second.item->hasActiveFocus())owner->window->contentItem()->forceActiveFocus();return 0;
+  else if(it->second.item->hasActiveFocus()) {
+    it->second.item->setFocus(false,Qt::OtherFocusReason);
+    owner->window->contentItem()->forceActiveFocus();
+  }return 0;
 }
 int Remove(std::uint64_t id,std::uint64_t token) {
   Owner* owner;auto status=Lookup(id,owner);if(status)return status;
   auto it=owner->controls.find(token);if(it==owner->controls.end())return DOROTI_QT_PV_STALE;
-  auto c=it->second;owner->controls.erase(it);delete c.clip;return 0;
+  auto c=it->second;owner->controls.erase(it);
+#ifdef DOROTI_QT_WEBENGINE
+  DorotiWebBind(c.item,nullptr,nullptr);
+#endif
+  delete c.clip;return 0;
 }
+#ifdef DOROTI_QT_WEBENGINE
+int WebBind(std::uint64_t id,std::uint64_t token,doroti_web_callback callback,void* context) {
+  Owner* owner;auto status=Lookup(id,owner);if(status)return status;
+  auto it=owner->controls.find(token);if(it==owner->controls.end())return DOROTI_QT_PV_STALE;
+  return DorotiWebBind(it->second.item,callback,context);
+}
+int WebExecute(std::uint64_t id,std::uint64_t token,doroti_qt_utf8_v2 data) {
+  Owner* owner;auto status=Lookup(id,owner);if(status)return status;
+  if(data.length>16*1024*1024||(data.length&&!data.data))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  auto it=owner->controls.find(token);if(it==owner->controls.end())return DOROTI_QT_PV_STALE;
+  return DorotiWebExecute(it->second.item,QByteArray(reinterpret_cast<const char*>(data.data),qsizetype(data.length)));
+}
+#endif
 template<auto>struct Boundary;
 template<typename...Args,int(*Function)(Args...)>struct Boundary<Function>{static int Call(Args...args)noexcept{try{return Function(args...);}catch(...){return DOROTI_QT_ERROR_NATIVE_EXCEPTION;}}};
-const doroti_qt_pv_api api{1,sizeof(doroti_qt_pv_api),11
+const doroti_qt_pv_api api{1,sizeof(doroti_qt_pv_api),27
 #ifdef DOROTI_QT_WEBENGINE
   |4
 #endif
   ,Boundary<Post>::Call,Boundary<Create>::Call,Boundary<Adopt>::Call,
   Boundary<Commit>::Call,Boundary<Focus>::Call,Boundary<Remove>::Call};
+}
+extern "C" DOROTI_QT_EXPORT int doroti_qt_get_webview_api(std::uint32_t version,std::uint32_t size,doroti_qt_webview_api* output) {
+  if(version!=1)return DOROTI_QT_ERROR_ABI_VERSION;
+  if(size!=sizeof(doroti_qt_webview_api))return DOROTI_QT_ERROR_ABI_SIZE;
+  if(!output)return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+#ifdef DOROTI_QT_WEBENGINE
+  *output={1,sizeof(doroti_qt_webview_api),31,Boundary<WebBind>::Call,Boundary<WebExecute>::Call};return 0;
+#else
+  return DOROTI_QT_PV_UNSUPPORTED;
+#endif
 }
 void DorotiQtRegisterPlatformOwner(QWindow* window) {
   auto owner=std::make_unique<Owner>();owner->window=qobject_cast<QQuickWindow*>(window);
@@ -167,6 +203,11 @@ void DorotiQtClosePlatformOwner(QWindow* window) {
   std::unique_ptr<Owner> owner;
   { std::lock_guard lock(gate);for(auto it=owners.begin();it!=owners.end();++it)if(it->second->window==window){owner=std::move(it->second);owners.erase(it);break;} }
   if(!owner)return;
+#ifdef DOROTI_QT_WEBENGINE
+  // A canceled managed post may release its session/context. Disconnect before
+  // those callbacks run, and before QML destruction can finish pending scripts.
+  for(auto&[id,c]:owner->controls)DorotiWebBind(c.item,nullptr,nullptr);
+#endif
   for(auto&[id,work]:owner->pending)work.callback(work.context,DOROTI_QT_PV_CLOSED);
   for(auto&[id,c]:owner->controls)delete c.clip;
   for(auto* item:owner->rasters)delete item;
@@ -202,17 +243,19 @@ extern "C" DOROTI_QT_EXPORT int doroti_qt_quick_commit(void* window,const doroti
     if(count>64||(count&&!parts))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
     std::set<std::uint64_t> seen;std::size_t rasters=0;const doroti_qt_quick_part* effect=nullptr;
     for(std::uint64_t i=0;i<count;i++) { const auto&p=parts[i];
-      if(p.size!=sizeof(p)||p.kind>3||!Valid(p.bounds)||!Valid(p.clip))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+      if(p.size!=sizeof(p)||p.kind>4||!Valid(p.bounds)||!Valid(p.clip))return DOROTI_QT_ERROR_INVALID_ARGUMENT;
       if(p.kind==1&&(!owner->controls.contains(p.id)||!seen.insert(p.id).second))return DOROTI_QT_PV_STALE;
       if(p.kind==0&&(!p.image||!p.pixel_width||!p.pixel_height||p.pixel_width>16384||p.pixel_height>16384||++rasters>17))return DOROTI_QT_PV_UNSUPPORTED;
-      if(p.kind==3) {
+      if(p.kind==3 || p.kind==4) {
+        const auto saturation=p.kind==4?std::bit_cast<double>(p.image):1.0;
+        if(!std::isfinite(saturation)||saturation<0||saturation>2)return DOROTI_QT_PV_UNSUPPORTED;
         const auto sigma=std::bit_cast<double>(p.id);
         const auto dpr=owner->window->devicePixelRatio();
         const auto required=Rect(p.bounds).adjusted(-3*sigma,-3*sigma,3*sigma,3*sigma);
         const auto sample=Rect(p.clip);
         const bool sameSample=std::abs(sample.x()-required.x())<1e-7&&std::abs(sample.y()-required.y())<1e-7&&
             std::abs(sample.width()-required.width())<1e-7&&std::abs(sample.height()-required.height())<1e-7;
-        if(effect||!std::isfinite(sigma)||sigma<=0||sigma>32||Rect(p.bounds).isEmpty()||
+        if(effect||!std::isfinite(sigma)||sigma<0||sigma>32||Rect(p.bounds).isEmpty()||
             !sameSample||p.clip.width*dpr>4096||p.clip.height*dpr>4096||
             std::ceil(p.clip.width*dpr)*std::ceil(p.clip.height*dpr)>4*1024*1024)
           return DOROTI_QT_PV_UNSUPPORTED;
@@ -245,6 +288,7 @@ extern "C" DOROTI_QT_EXPORT int doroti_qt_quick_commit(void* window,const doroti
       owner->effect->setProperty("sampleRect",Rect(effect->clip));
       owner->effect->setProperty("outputRect",Rect(effect->bounds));
       owner->effect->setProperty("sigma",std::bit_cast<double>(effect->id));
+      owner->effect->setProperty("saturation",effect->kind==4?std::bit_cast<double>(effect->image):1.0);
       owner->effect->setZ(effect-parts+1);
     }
     // Reparent visual items only; QObject ownership and native identity stay stable.
@@ -278,6 +322,9 @@ bool DorotiQtQuickHasNativeFocus(QWindow* window) {
 void DorotiQtQuickClearFocus(QWindow* window) {
   auto* o=Find(window);if(!o)return;
   if(auto* focus=o->window->activeFocusItem())focus->setFocus(false,Qt::MouseFocusReason);
+  // Clear the outer WebEngine focus scope as well as its internal editor.
+  // Focusing the root alone lets Qt restore that scope's remembered child.
+  for(auto&[id,c]:o->controls)c.item->setFocus(false,Qt::MouseFocusReason);
   o->window->contentItem()->forceActiveFocus(Qt::MouseFocusReason);
 }
 bool DorotiQtQuickNativeInput(QWindow* window,QEvent* event) {

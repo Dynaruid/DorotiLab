@@ -6,6 +6,7 @@ static void Check(bool condition, string message)
 { if (!condition) throw new InvalidOperationException(message); }
 
 QtNativeV2.ValidateLayout();
+Check(Marshal.SizeOf<QtWebViewSession.Api>() == 32 && Marshal.OffsetOf<QtWebViewSession.Api>("Bind").ToInt32() == 16, "Independent WebView ABI must preserve its 32-byte layout.");
 Check(Marshal.SizeOf<QtQuickNative.Gpu>() == 48 && Marshal.SizeOf<QtQuickNative.Part>() == 96,
     "Quick C ABI layouts must match the native static assertions.");
 var handle = new PlatformViewHandle(1, 2, 3);

@@ -32,8 +32,9 @@ touch/tablet capture, physical Korean IME and Orca qualification remain open.
 `doroti/webview` is an optional WebEngine Quick item, never a QWidget or a static
 snapshot. Enable `DorotiQtQuick=true` and `DorotiQtWebEngine=true`, register the
 view type in the application manifest, and rebuild the native shim. The Testbed
-enables it by default when Quick is enabled. Initial UTF-8 HTML is limited to
-1 MiB; navigation/profile/JS/plugin APIs remain work2 responsibilities. Disabling
+enables it by default when Quick is enabled. The same native item now implements
+the public controller, navigation/JSON JS, profiles and trusted manifest app content;
+see [the Linux WebView contract](linux-webview.md) for limits and typed errors. Disabling
 WebEngine removes its link dependency and startup initialization. Disabling
 Quick selects the separate Widgets B-only backend.
 
@@ -51,9 +52,13 @@ Current limits: one bounded isotropic effect, logical sigma ≤32, sample dimens
 sample/intermediate textures to roughly 32 MiB (allow 48 MiB for Qt overhead),
 in addition to the R/P guard; Qt/Chromium/WSI allocations are not a total-process
 memory guarantee. Multiple effects, invalid sample bounds and unsupported
-transforms fail before changing the batch. Saturation other than 1 remains
-unsupported by the common widget. The finite discrete Gaussian implementation
-has not received cross-platform MatchCommon/ExactSigma visual qualification.
+transforms fail before changing the batch. PV feature bit 4 negotiates color-backdrop
+part kind 4 without changing its 96-byte layout: sigma is in id, saturation is in
+image, both IEEE754 doubles. Legacy kind 3 retains saturation=1. The vertical pass
+applies common luminance coefficients after both blur passes, supports saturation
+0–2 and sigma zero, and clamps premultiplied color. Independent tint stays in the
+sharp foreground. Native/raster edge widths, reset, saturation and tint have live
+pixel evidence; full cross-platform color-space equivalence is not claimed.
 
 The new [validation sources](../../validation/linux-qt-quick/README.md) separate
 managed/native/GPU contracts, live product input/captures, and physical tests.
@@ -62,8 +67,10 @@ Rapid XWayland resize reproduced `VUID-VkSwapchainCreateInfoKHR-pNext-07781`
 inside Qt WSI: requested extent 757×677 while X surface capabilities still
 reported 720×640. This is a remaining Qt swapchain/geometry race; it was not
 relabeled as an R/P synchronization success, suppressed, or fixed by changing
-the render loop. Device loss, 0/1/4-view workload percentiles, full physical
-input/accessibility, distribution and NativeAOT approval remain incomplete.
+the render loop. Device loss, full physical input/accessibility, performance acceptance,
+package-only clean-machine distribution and NativeAOT approval remain incomplete.
+The 2026-09-20 report includes bounded 0/1/4-view interval/PSS observations,
+relocated Release runs and synthetic Korean composition/native Tab/focus return.
 Linux NativeAOT is currently rejected by the existing runner policy.
 
 Implementation references: [Qt ShaderEffectSource](https://doc.qt.io/qt-6/qml-qtquick-shadereffectsource.html)

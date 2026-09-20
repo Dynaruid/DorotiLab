@@ -3,7 +3,7 @@
   "qsbCompatibility": "6.4",
   "graphicsApi": "Vulkan",
   "hashes": {
-    "gaussian.frag": "3aaaf3ccfa8593758d21c5853b3e548c22fe38874621fa9072642d263bf23461",
-    "gaussian.frag.qsb": "3d0b7a1bbf27f64299f5cec3465c44e6070452c15b4fd965a4bbac8256460a19"
+    "gaussian.frag": "1b260344fc935482a6d609187bde0f86dd45201c778202c3725003dff2e93073",
+    "gaussian.frag.qsb": "ce35948d5fa56868e855fd0732ccd98c88b2c60e83978bf7fd754ff08c46f053"
   }
 }

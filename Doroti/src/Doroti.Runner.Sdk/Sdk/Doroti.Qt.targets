@@ -30,6 +30,12 @@
     <!-- Equal length/mtime does not imply equal native code (restored artifacts
          can preserve both). Always copy the library selected by this build. -->
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so" DestinationFolder="$(TargetDir)" Condition="'$(DorotiQtWebEngine)' == 'true'" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_webview_qt.so" DestinationFolder="$(PublishDir)" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(PublishDir)' != ''" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-webview-runtime.json" DestinationFolder="$(TargetDir)" Condition="'$(DorotiQtWebEngine)' == 'true'" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/doroti-webview-runtime.json" DestinationFolder="$(PublishDir)" Condition="'$(DorotiQtWebEngine)' == 'true' and '$(PublishDir)' != ''" />
+    <Delete Files="$(TargetDir)libdoroti_webview_qt.so;$(TargetDir)doroti-webview-runtime.json" Condition="'$(DorotiQtWebEngine)' != 'true'" />
+    <Delete Files="$(PublishDir)libdoroti_webview_qt.so;$(PublishDir)doroti-webview-runtime.json" Condition="'$(DorotiQtWebEngine)' != 'true' and '$(PublishDir)' != ''" />
     <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" Condition="'$(PublishDir)' != ''" />
   </Target>
 </Project>

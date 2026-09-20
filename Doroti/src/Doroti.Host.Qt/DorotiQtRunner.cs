@@ -65,7 +65,13 @@ public static unsafe partial class DorotiQtRunner
                     (uint)backdropMode,
                     (uint)backdrop.fallback, (uint)appearance.titlebarStyle);
                 var callbacks = new QtNativeV2.Callbacks(GCHandle.ToIntPtr(stateHandle));
-                var exitCode = NativeMethods.Run(in configuration, in callbacks);
+                int exitCode;
+                try { exitCode = NativeMethods.Run(in configuration, in callbacks); }
+                catch (DllNotFoundException error) { throw new WebViewException(WebViewError.Unsupported,
+                    "Qt native runtime/shim is missing. Install system Qt dependencies and deploy the sibling Doroti shims. " + error.Message); }
+                if (exitCode is >= 80 and <= 83) throw new WebViewException(WebViewError.Unsupported,
+                    "Qt WebEngine startup dependency is unavailable: " + (exitCode switch {
+                        80 => "Qt >= 6.8 runtime", 81 => "QtWebEngineProcess helper", 82 => "WebEngine .pak resources", _ => "WebEngine locales (en-US.pak)" }));
                 if (exitCode is >= 64 and <= 70)
                     return exitCode;
                 state.ThrowIfFatal();
@@ -190,6 +196,8 @@ public static unsafe partial class DorotiQtRunner
             {
                 PlatformViews.Bind(viewHandle, host.ClearClient, CaptureFatal, action => View?.DispatchPlatformEvent(action));
                 PlatformViews.QuickSurface = Surface.QuickEnabled ? Surface : null;
+                PlatformViews.Resources = _application.ApplicationResources;
+                PlatformViews.ApplicationId = _application.Manifest.ApplicationId;
                 _platformCoordinator = _application.ConfigurePlatformViews(capabilities, 1, PlatformViews);
                 PlatformViews.Configure(_platformCoordinator);
                 var channel = new Framework.Services.PlatformViewChannelAdapter(_platformCoordinator, messages);

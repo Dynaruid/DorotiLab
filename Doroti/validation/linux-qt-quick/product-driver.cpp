@@ -10,6 +10,10 @@
 #include <QTest>
 #include <QTimer>
 #include <QAccessible>
+#include <QInputMethodEvent>
+#include <QElapsedTimer>
+#include <algorithm>
+#include <memory>
 
 class ProbeWriter : public QObject {
     Q_OBJECT
@@ -54,6 +58,58 @@ static void Start() {
                 }
                 retries=0;
             }
+            if(action=="measure") {
+                auto intervals=std::make_shared<QList<double>>();
+                auto elapsed=std::make_shared<QElapsedTimer>();elapsed->start();
+                auto prior=std::make_shared<qint64>(0);
+                auto connection=std::make_shared<QMetaObject::Connection>();
+                *connection=QObject::connect(window,&QQuickWindow::frameSwapped,window,[intervals,elapsed,prior]{
+                    const auto now=elapsed->nsecsElapsed();if(*prior)intervals->append(double(now-*prior)/1e6);*prior=now;
+                });
+                timer->stop();
+                QTimer::singleShot(step["duration"].toInt(10000),window,[timer,intervals,connection,step] {
+                    QObject::disconnect(*connection);std::sort(intervals->begin(),intervals->end());
+                    auto percentile=[&](double p)->QJsonValue {return intervals->isEmpty()?QJsonValue(QJsonValue::Null):QJsonValue(intervals->at(qsizetype((intervals->size()-1)*p)));};
+                    QJsonObject result{{"scope","Qt frameSwapped intervals, not scanout/input latency"},{"samples",intervals->size()},
+                        {"p50Ms",percentile(.5)},{"p95Ms",percentile(.95)},{"p99Ms",percentile(.99)}};
+                    QFile output(step["path"].toString());if(output.open(QIODevice::WriteOnly))output.write(QJsonDocument(result).toJson());
+                    timer->start(100);
+                });return;
+            }
+            if(action=="waitFile") {
+                if(!QFile::exists(step["path"].toString())) {
+                    if(++retries>1200)qFatal("Product evidence timed out");
+                    --index;timer->setInterval(100);return;
+                }
+                retries=0;timer->setInterval(100);return;
+            }
+            if(action=="calibration") {
+                const auto path=step["path"].toString();
+                if(QFile::exists(path+".done")) {timer->setInterval(100);return;}
+                if(++retries>1200)qFatal("Calibration timed out");
+                QFile stage(path+".stage"),ack(path+".ack");
+                if(stage.open(QIODevice::ReadOnly)) {
+                    const auto name=stage.readAll();QByteArray prior;
+                    if(ack.open(QIODevice::ReadOnly)) {prior=ack.readAll();ack.close();}
+                    if(name!=prior) {
+                        const auto capture=step["output"].toString()+"/"+QString::fromUtf8(name);
+                        DorotiQtRecordPlatformOwner(window,capture.toUtf8().constData());
+                        QFile recordFile(capture+".json"),maps("/proc/self/maps");
+                        if(recordFile.open(QIODevice::ReadOnly)&&maps.open(QIODevice::ReadOnly)) {
+                            auto record=QJsonDocument::fromJson(recordFile.readAll()).object();recordFile.close();
+                            QJsonArray libraries;
+                            for(const auto& line:maps.readAll().split('\n'))if(line.contains("/libdoroti_")&&line.endsWith(".so")) {
+                                const auto path=QString::fromUtf8(line.mid(line.indexOf('/')));
+                                if(!libraries.contains(path))libraries.append(path);
+                            }
+                            record.insert("nativeLibraries",libraries);
+                            if(recordFile.open(QIODevice::WriteOnly))recordFile.write(QJsonDocument(record).toJson());
+                        }
+                        if(ack.open(QIODevice::WriteOnly))ack.write(name);
+                    }
+                }
+                --index;timer->setInterval(100);return;
+            }
             const QPoint point(step["x"].toInt(),step["y"].toInt());
             if(action=="click")QTest::mouseClick(window,Qt::LeftButton,Qt::NoModifier,point);
             else if(action=="text") {
@@ -63,6 +119,15 @@ static void Start() {
                     QKeyEvent release(QEvent::KeyRelease,0,Qt::NoModifier,QString(ch));
                     QCoreApplication::sendEvent(window,&press);QCoreApplication::sendEvent(window,&release);
                 }
+            } else if(action=="ime") {
+                QInputMethodEvent event(step["preedit"].toString(),{});
+                if(step.contains("commit"))event.setCommitString(step["commit"].toString());
+                QCoreApplication::sendEvent(window,&event);
+            } else if(action=="key") {
+                const auto key=step["key"].toString();
+                if(key=="Tab")QTest::keyClick(window,Qt::Key_Tab);
+                else if(key=="Backtab")QTest::keyClick(window,Qt::Key_Tab,Qt::ShiftModifier);
+                else qFatal("Unknown validation key");
             } else if(action=="wheel") {
                 QWheelEvent event(point,window->mapToGlobal(point),QPoint(),QPoint(0,step["delta"].toInt()),
                     Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
@@ -83,7 +148,14 @@ static void Start() {
                     auto record=QJsonDocument::fromJson(file.readAll()).object();file.close();
                     record.insert("accessibleNames",names);
                     QFile maps("/proc/self/maps");
-                    record.insert("validationLayerLoaded",maps.open(QIODevice::ReadOnly)&&maps.readAll().contains("libVkLayer_khronos_validation.so"));
+                    const auto mapped=maps.open(QIODevice::ReadOnly)?maps.readAll():QByteArray();
+                    record.insert("validationLayerLoaded",mapped.contains("libVkLayer_khronos_validation.so"));
+                    QJsonArray libraries;
+                    for(const auto& line:mapped.split('\n'))if(line.contains("/libdoroti_")&&line.endsWith(".so")) {
+                        const auto path=QString::fromUtf8(line.mid(line.indexOf('/')));
+                        if(!libraries.contains(path))libraries.append(path);
+                    }
+                    record.insert("nativeLibraries",libraries);
                     if(file.open(QIODevice::WriteOnly))file.write(QJsonDocument(record).toJson());
                 }
             }

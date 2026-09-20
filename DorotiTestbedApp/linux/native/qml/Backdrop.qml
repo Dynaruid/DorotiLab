@@ -8,6 +8,7 @@ Item {
     property rect sampleRect
     property rect outputRect
     property real sigma: 1
+    property real saturation: 1
     clip: true
     x: outputRect.x
     y: outputRect.y
@@ -32,6 +33,7 @@ Item {
         property variant source: capture
         property vector2d stepSize: Qt.vector2d(1 / width, 0)
         property real sigma: root.sigma
+        property real saturation: 1
         fragmentShader: "qrc:/doroti/shaders/gaussian.frag.qsb"
         layer.enabled: true
         layer.smooth: true
@@ -45,6 +47,7 @@ Item {
         property variant source: horizontal
         property vector2d stepSize: Qt.vector2d(0, 1 / height)
         property real sigma: root.sigma
+        property real saturation: root.saturation
         fragmentShader: "qrc:/doroti/shaders/gaussian.frag.qsb"
     }
 }

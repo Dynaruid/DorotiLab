@@ -1,6 +1,6 @@
 # WebView 작업계획 — 재구성 PlatformView 소비자
 
-2026-09-20 Android 실행 업데이트 · 2026-09-14 초기 계획과 이후 work1 구현·검증 결과 반영.
+2026-09-20 Linux Qt/Android 실행 업데이트 · 2026-09-14 초기 계획과 이후 work1 구현·검증 결과 반영.
 
 **WebView는 [PlatformView 아키텍처](idea.md)의 선택형 소비자로 구현한다.** 공통 hosting·합성·입력은 [work1.md](work1.md)가 소유하고, 이 문서는 탐색·JS·document·profile·리소스·플랫폼 SDK adapter를 소유한다. 이번 macOS 개정은 실제 AppKit 구현·제품 검증을 포함하며 아래 실행 업데이트가 우선한다. 최소 WebView attachment·효과 fixture의 구현/검증은 아래 상태표대로 인정하며, 전용 controller·navigation/JS/profile 등의 공개 제품 API 완료와 구분한다. 전체 상태는 `PARTIAL`, 미구현 기능 단계는 `TODO`, 미실행 기능 검증은 `notVerified`다.
 
@@ -9,6 +9,17 @@
 **현재 요구:** WebView는 플랫폼별로 더 적합한 구성을 선택하며 HCPP를 강제하지 않는다. [work1 R6](work1.md)에서 실제 합성·입력/접근성·효과 호환성·성능/메모리·안정성을 비교한다. R-E의 `PlatformEffect`는 공통 효과 의미와 최대한 유사한 비주얼을 제공한다. WebView 위 실제 backdrop와 선명한 Doroti 전경이라는 제품 요구는 유지한다.
 
 **Windows controller 확정:** WindowsAppSdk와 Windows MAUI는 `Microsoft.Web.WebView2.Core.CoreWebView2CompositionController`를 사용한다. 이는 우선 후보가 아닌 필수 선택이다. windowed controller·기본 MAUI WebView handler를 대체 backend로 자동 선택하지 않는다. 기능 adapter를 공유하되 두 runner의 host 결합·실행 증거는 별도로 남긴다.
+
+## Linux Qt 구성 실행 업데이트 (2026-09-20)
+
+**Linux Qt 전체 상태는 PARTIAL이다.** 기존 native Quick WebEngine item에 `IPlatformWebViewInstance`와 공개 `WebViewController`/widget를 연결했다. [계약](Doroti/docs/platform-views/linux-webview.md), [재현](Doroti/validation/linux-qt-quick/README.md), [결과](Doroti/validation/webview/linux-results-2026-09-20.md)를 기준으로 한다.
+
+- WV-7A/C: 시스템 Qt 6.10.2 / WebEngine 6.10.2+dfsg-1의 공개 API를 사용한다. 소스 API 하한은 permission/profile API에 맞춰 6.8로 정했으며 6.8 runtime 실행/보안 승인을 주장하지 않는다. 별도 opt-in `libdoroti_webview_qt.so`, ABI 1/32 bytes, scheme→WebEngine→QApplication startup, GUI owner/item 검사를 구현했다. 기존 host callback ABI 4와 Quick bit 17은 유지한다.
+- WV-7D/8: 탐색·HTML·reload/stop·history·JSON JS, undefined/null·오류/취소·stale document·32 pending 상한, ephemeral 격리와 앱 ID로 구분한 shared persistent profile을 구현했다. resource manifest를 통해 bounded app scheme을 제공하고 QWebChannel ApplicationWorld의 작은 수신 객체로 trusted app 메시지를 연결했다. 임의 HTTP(S) 메시지는 지원하지 않는다. native URL·세대 검증을 적용하고 Range는 request interceptor와 scheme job에서 명시적으로 거부한다.
+- full storage 삭제는 `ClearAllData=false`/typed Unsupported다. cache/cookie 삭제로 성공을 위장하지 않는다. shared profile의 view별 resource map, policy 허용 UI, media Range는 별도 미지원이다. popup/permission/file/download/fullscreen은 기본 거부한다. renderer process 종료는 terminal이며 명시적 재생성에서 이전 history/form 복구를 주장하지 않는다.
+- WV-7B/F/H: work1의 같은 WebView+GPU effect+sharp child를 사용했다. 두 QPA의 제품 입력/합성·Gaussian/색상 검증과 실제 native 2-owner/process failure/10회 수명을 수행했다. Release를 `/tmp`에 재배치해 Wayland/XWayland에서 각각 API 31개가 통과했으며 최종 한글 대용량 명령 회귀를 포함한 32개 검사도 통과했다. 초기 HTML 교체의 loading latch와 owner close의 callback 해제 순서를 보정했고 실제 native module 경로를 확인했다. synthetic 입력과 물리 입력을 구분한다.
+- WV-7E/9: CMake/runner의 build/copy/publish와 runtime dependency manifest, helper/resources/locales 누락 typed 오류를 연결했다. Testbed/template native 소스는 동일하며 WebEngine OFF에서는 shim/link/startup 의존성이 없다. 시스템 엔진/helper/data/QML을 앱에 복사하지 않았다. source/API 하한과 현재 distro 보안 업데이트 승인은 구분한다.
+- Release publish와 0/1/4-view 관측은 NativeAOT/성능 완료가 아니다. 실제 NativeAOT 명령은 iOS 전용 `DOROTIAOT002`에서 거부됐고, package-only clean machine·물리 GPU/입력/Orca·전체 정책/clear·두 제품 owner/full C/E·device loss는 남는다.
 
 ## Android 구성 실행 업데이트 (2026-09-20)
 
@@ -106,7 +117,7 @@ Windows의 `WindowsWebViewComposition`, iOS/Android factory의 `doroti/webview`,
 | Mac Catalyst / iOS Ganesh | iOS Graphite와 별도 runner | attachment/effect 지원·실행을 별도로 구현/확인. iOS 증거 전용 금지 |
 | AppKit | WKWebView/Core Image backdrop/Metal Graphite·Ganesh 제품 연결 | WV-1 초기 controller/widget·탐색/JS/profile/content/message 연결. numeric blur·채도·tint 지원, 공통 비주얼/배포/물리 입력 등 PARTIAL; 위 실행 업데이트 참조 |
 | Web | protocol v2/CSS backdrop-filter adapter·독립 DOM harness 존재 | work1 R5/FX3의 main DOM·worker multi-canvas ACK/자원 수명 제품 연결, WV-3의 iframe/협력 bridge 기능 |
-| Linux Qt Quick | 실제 WebEngine Quick attachment·GPU Gaussian 효과·XWayland/Wayland 제한 검증 | 기존 startup/ABI/attachment 활용. WV-7의 navigation/JS/profile/content API와 배포·성능 마감 |
+| Linux Qt Quick | 같은 Quick item의 공개 controller·navigation/JSON JS/profile/app content/trusted message, Gaussian/채도 및 relocated Release 제품 검증 | full clear/정책·물리 입력/Orca·two product owners/device loss·성능/clean package/NativeAOT 잔여; 9월 20일 업데이트 기준 |
 
 Qt Widgets/QWebEngineView는 기존 B probe·제한 경로로 남긴다. Quick Controls C가 WebEngine Quick C를 보장하지 않는다. Qt WebView wrapper 대신 WebEngine 직접 adapter와 C ABI를 사용한다. Qt WebEngine은 Widgets/Quick 접점을 구분하므로 현재 Quick host에 맞는 접점을 검증한다. [Qt WebEngine overview](https://doc.qt.io/qt-6/qtwebengine-overview.html), [Qt WebView 문서](https://doc.qt.io/qt-6/qtwebview-index.html)
 
@@ -262,7 +273,7 @@ WV-H ID는 기존 인계를 위해 유지하며 이제 HCPP 전용 gate를 뜻�
 
 ### WV-7 — Linux 시스템 Qt WebEngine Quick
 
-기존 WebEngine Quick 초기 HTML attachment·GPU 효과와 XWayland/Wayland 실행 증거를 재사용한다. 아래 WV-7B/C의 최소 표시·startup 접점은 존재하지만, 기능 API·profile/content ABI·전체 배포 승인까지 완료된 것으로 계산하지 않는다. Linux 반복 검증은 work1의 후속 사용자 요청에 따라 10회 기준이다.
+2026-09-20에 기존 WebEngine Quick attachment·GPU 효과를 재사용해 공개 controller, navigation/JSON JS, profile, app content/message와 별도 WebView ABI를 구현·검증했다. 아래 단계의 현재 결과는 위 Linux 업데이트와 결과 보고서를 따른다. full clear/정책·물리/성능·clean package/NativeAOT까지 전체 완료로 계산하지 않는다. Linux 반복 검증은 work1의 후속 사용자 요청에 따라 10회 기준이다.
 
 현재 기준은 [Testbed Linux 설정](DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj)의 Quick 선택, [QtPlatformViewHost](Doroti/src/Doroti.Host.Qt/QtPlatformViewHost.cs), [Quick native host](DorotiTestbedApp/linux/native/src/doroti_qt_quick.cpp)다. [QtNativeV2](Doroti/src/Doroti.Host.Qt/QtNativeV2.cs)는 이름과 달리 callback ABI **4 / 192 bytes**, preparation offset 184이며 [Quick 기능](Doroti/src/Doroti.Host.Qt/QtQuickNative.cs)은 선택 bit 17이다. 새 WebView ABI는 이들을 덮어쓰지 않고 version/size/features를 협상한다.
 

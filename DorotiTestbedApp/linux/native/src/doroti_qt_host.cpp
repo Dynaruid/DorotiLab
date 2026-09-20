@@ -6,7 +6,7 @@
 #include <QQuickGraphicsConfiguration>
 #include <QQuickItem>
 #ifdef DOROTI_QT_WEBENGINE
-#include <QtWebEngineQuick/qtwebenginequickglobal.h>
+#include "doroti_qt_webview.h"
 #endif
 #include <QSGRendererInterface>
 #endif
@@ -445,6 +445,9 @@ class DorotiSurface final : public DorotiWindowBase {
     const auto composing_extent = state->composing_extent;
     QMetaObject::invokeMethod(surface, [surface, config, text, selection_base,
                                         selection_extent, composing_base, composing_extent] {
+#ifdef DOROTI_QT_QUICK
+      DorotiQtQuickClearFocus(surface);
+#endif
       surface->text_client_active_ = true;
       surface->text_configuration_ = config;
       surface->ApplyTextState(text, selection_base, selection_extent,
@@ -1899,7 +1902,7 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     qputenv("QSG_RENDER_LOOP", "basic");
     QQuickWindow::setGraphicsApi(QSGRendererInterface::Vulkan);
 #ifdef DOROTI_QT_WEBENGINE
-    QtWebEngineQuick::initialize();
+    if(const auto status=DorotiWebInitialize();status!=0)return status;
 #endif
 #endif
     QApplication app(argc, argv);

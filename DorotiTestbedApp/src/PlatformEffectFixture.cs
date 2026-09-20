@@ -69,7 +69,7 @@ internal sealed class PlatformEffectFixture : StatefulWidget
             PlatformEffectFixtureProbe.Owner = owner;
             var host = owner.RequireCapability<IPlatformViewHostCapability>(DorotiCapabilityIds.PlatformViews,
                 DartUiInvocation.Managed("PlatformEffectFixture"));
-            if (OperatingSystem.IsMacOS() || OperatingSystem.IsWindows() || OperatingSystem.IsAndroid())
+            if (OperatingSystem.IsMacOS() || OperatingSystem.IsWindows() || OperatingSystem.IsAndroid() || OperatingSystem.IsLinux() && host.QuerySupport(new(0, "doroti/webview", PlatformViewComposition.InterleavedComposition)).WebViewCommands)
             {
                 if (_mounted) _primaryController ??= new(owner, new(Html: Encoding.UTF8.GetString(Html)));
                 else if (_primaryController is { } primary) { _primaryController = null; _ = primary.DisposeAsync(); }
@@ -79,6 +79,11 @@ internal sealed class PlatformEffectFixture : StatefulWidget
                 {
                     WindowsWebViewEvidence.Start(owner, windowsWeb);
                     WindowsEffectCalibration.Start(owner, windowsWeb);
+                }
+                if (OperatingSystem.IsLinux() && _primaryController is { } qtWeb)
+                {
+                    QtWebViewEvidence.Start(owner, qtWeb);
+                    WindowsEffectCalibration.Start(owner, qtWeb, "DOROTI_QT_EFFECT_CALIBRATION");
                 }
                 if (OperatingSystem.IsAndroid() && _primaryController is { } androidWeb)
                 {

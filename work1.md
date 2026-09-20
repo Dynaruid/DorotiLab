@@ -1,5 +1,18 @@
 # PlatformView 재구성 작업계획
 
+## Linux Qt 실행 업데이트 (2026-09-20)
+
+**Linux Qt 전체 상태는 PARTIAL이다.** 이번 현재 소스 실행이 아래 9월 14일 Linux 기록보다 우선한다. [Qt 계약](Doroti/docs/platform-views/linux-qt.md), [WebView 계약](Doroti/docs/platform-views/linux-webview.md), [결과 보고서](Doroti/validation/webview/linux-results-2026-09-20.md)에 구현·근거·잔여를 나눈다.
+
+- R1/R3/R5: 기존 Quick item/owner/coordinator/session을 유지하며 work2 공개 controller를 연결했다. 리소스 준비는 비동기로 수행하고 native 생성은 GUI dispatcher로 돌아온다. host callback ABI 4/192 bytes는 유지하고 WebView ABI 1/32 bytes를 별도로 협상한다. callback 해제 후 managed context를 회수하며 owner close·늦은 JS를 정리한다.
+- R-E: Gaussian 두 pass 뒤 공통 휘도 계수의 채도 0–2를 적용한다. 반경 0 색상 효과와 독립 tint를 지원한다. PV feature bit 4 / part kind 4를 추가하고 96-byte packet·기존 kind 3 의미를 유지한다. 실제 native/raster sigma 4/16은 3.999/15.866, reset 차이는 0이다. Wayland/XWayland 및 재배치한 Release에서 픽셀 검증했다. 광범위 OS/GPU의 색 공간 동등성으로 확대하지 않는다.
+- R4/R5: native 편집기뿐 아니라 외부 WebEngine focus scope도 해제해 Doroti 텍스트 필드로 입력을 양보하도록 수정했다. Qt synthetic 한글 조합·native Tab/Shift+Tab·focus 복귀가 두 QPA에서 통과했다. Wayland/XWayland의 WebView animation·클릭·shield·wheel·편집 보존·전경·두 WebView·이동/제거/재생성 제품 검증과 Vulkan layer 실제 로딩 검사를 통과했다. DirectNative를 유지하며 native-origin GestureArena/full framework Tab/물리 IME·Orca를 자동 승인하지 않는다.
+- R7: 공통 계약 12개, WebView 공통 계약, Qt managed ABI·10 GPU 취소/resize 주기, native 2-owner·10회 수명, renderer process 종료·terminal/recreate를 실행했다. 두 native Qt owner 검사를 두 전체 Doroti 제품 owner 승인으로 전용하지 않는다. 10회 제품 수명과 resize도 기록했다. 이번 XWayland resize에서 과거 WSI 오류는 재현되지 않았으나 원인 수정으로 선언하지 않는다.
+- 배포: Debug/Release 및 final publish를 실행했다. 배포본을 `/tmp`로 복사하고 개발용 Qt 경로를 제거한 API·효과 검증에서 실제 로드된 두 shim 경로를 확인했다. template native 소스를 동기화했고 WebEngine OFF build에는 엔진 의존성이 없다. NuGet/package-only clean machine 전체 승인은 별도다.
+- NativeAOT publish는 현재 iOS 전용 `DOROTIAOT002`에서 실제 거부됐다. Qt loader/shader/provenance 검사를 우회하지 않았다. 0/1/4-view × 4 workload는 VM 관측이며 물리 GPU·변경 전후 성능 예산 승인이 아니다.
+
+잔여: native-origin GestureArena, full Tab·물리 한국어 IME/Orca, 두 제품 owner/full C1–C6/E1–E3·device loss/보호 media, 전체 profile 삭제/정책 API, 물리 GPU·성능·clean-machine/package-only·Linux NativeAOT. [work2](work2.md)의 구현 가능한 API와 검증 결과를 추가했으며 이 잔여를 완료나 사용자 생략으로 바꾸지 않는다.
+
 ## Android 실행 업데이트 (2026-09-20)
 
 **Android 전체 상태는 PARTIAL이다.** 이 절이 아래 Android host-build-only 기록보다 우선한다. 구현·실행 근거와 잔여 gate는 [Android 계약](Doroti/docs/platform-views/android-webview.md), [재현 절차](Doroti/validation/platform-views/android/README.md), `Doroti/artifacts/webview/2026-09-20/android/`에 둔다.
@@ -208,7 +221,7 @@ Windows MAUI, Mac Catalyst, iOS Ganesh, Qt Widgets는 각각 별도 미연결/�
 | 공통 | capability/identity snapshot, Analyze/Admit, ordered effect plan, 공통 session·lease·retirement 및 계약 fixture | 전체 mutator/coverage/damage, host별 실패·두 owner·입력·성능 승인 |
 | WindowsAppSDK | HWND DirectComposition과 별도 WebView2 CompositionController 경로의 live backdrop·sharp child·입력·수명 검증 | 두 attachment 종류의 한 frame 혼합은 미지원. 전체 IME/UIA·device loss·성능/AOT 잔여 |
 | iOS UIKit Graphite | 공개 animator 효과·WKWebView/Metal 합성, 위 simulator 강도/테마/복귀/수명·보정 검증 | 현재 공개 효과의 실기기/NativeAOT와 full E3·물리 입력·성능 잔여 |
-| Linux Qt Quick | 실제 WebEngine Quick·두 Gaussian GPU pass, XWayland/Wayland 각 19 gate 및 Release 수정 검증 | llvmpipe 증거이며 물리 GPU/성능 승인 아님. XWayland 급격 resize WSI 오류·IME/Orca·배포 잔여 |
+| Linux Qt Quick | 공통 WebView controller·navigation/JS/profile/content/message, Gaussian·채도·tint, Wayland/XWayland 제품 및 relocated Release 검증 | VM 증거. full gesture/IME/Orca·two product owners/device loss·성능/clean package/NativeAOT 잔여; 위 9월 20일 절 기준 |
 | Android | 공통 WebView controller/instance·session, RenderEffect sigma/채도/tint, arm64/x64 Release 제품 build·APK | Galaxy 실제 source/기능/픽셀·자동 IME/수명 실행. GestureArena·전체 입력/성능/배포 승인은 PARTIAL; 위 9월 20일 기록 참조 |
 | AppKit | WKWebView/Core Image backdrop/Metal 공통 합성 및 명시적 macOS 27 SDK 프로필 구현 | ExactSigma 0–64, 채도 0–2, 독립 tint. 경계 확산 검증과 공통 비주얼 전체 승인은 구분; 전체 PARTIAL, [현재 macOS 계약](Doroti/docs/platform-views/macos.md) |
 | Web | protocol v2 effect adapter·CSS backdrop-filter·host 빌드, 독립 DOM harness 8개 검사 | main-DOM/worker 제품 연결·multi-canvas ACK/자원 수명·실제 iframe effect pixels 미검증 |

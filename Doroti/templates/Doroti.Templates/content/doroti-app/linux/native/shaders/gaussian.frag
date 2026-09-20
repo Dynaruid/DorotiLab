@@ -6,6 +6,7 @@ layout(std140, binding = 0) uniform buf {
     float qt_Opacity;
     vec2 stepSize;
     float sigma;
+    float saturation;
 } ubuf;
 layout(binding = 1) uniform sampler2D source;
 
@@ -20,5 +21,8 @@ void main() {
         sum += w * (texture(source, qt_TexCoord0 + offset) + texture(source, qt_TexCoord0 - offset));
         weight += 2.0 * w;
     }
-    fragColor = sum * (ubuf.qt_Opacity / weight);
+    vec4 color = sum / weight;
+    float luminance = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    color.rgb = clamp(mix(vec3(luminance), color.rgb, ubuf.saturation), vec3(0.0), vec3(color.a));
+    fragColor = color * ubuf.qt_Opacity;
 }
