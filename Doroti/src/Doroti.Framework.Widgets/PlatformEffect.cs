@@ -14,7 +14,9 @@ public sealed class PlatformEffect : StatelessWidget
     {
         if (!constraints.hasBoundedWidth || !constraints.hasBoundedHeight)
             throw new InvalidOperationException("PlatformEffect requires bounded width and height.");
-        Widget foreground = new Container(color: new Color(Style.Tint), child: Child);
+        // Backdrop movement changes the sampled scene, not the foreground pixels.
+        // Keep the sharp content's recording independent of the filter layer.
+        Widget foreground = new RepaintBoundary(child: new Container(color: new Color(Style.Tint), child: Child));
         return new ClipRect(child: (Style.Match == PlatformEffectMatchPolicy.SolidTint || Style.Sigma == 0 && Style.Saturation == 1) ? foreground : new BackdropFilter(
             filterConfig: new NativeEffectFilterConfig(Style), child: foreground));
     });

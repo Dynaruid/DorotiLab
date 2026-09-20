@@ -28,6 +28,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
     private readonly List<Layer> _layers = [];
     private readonly List<Layer> _retired = [];
     private HashSet<Layer> _published = [];
+    private readonly Dictionary<int, Layer> _borrowed = [];
     private ulong _nextIdentity;
     private ulong _bytes;
     private int _used;
@@ -86,37 +87,66 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         // Qt submitted the preceding scene-graph frame before this GUI-thread sync.
         // Do not overwrite or free any P while Qt can still sample it.
         Check(_vk.QueueWaitIdle(_queue), "Qt sampling retirement");
+        _borrowed.Clear();
         // Never render/copy into the published bank, even at the same extent.
         // A rejected native commit must leave its pixels as well as geometry intact.
         _retired.AddRange(_layers); _layers.Clear();
+        var resized = _width != width || _height != height;
         _width = width; _height = height;
         foreach (var old in _retired.Where(layer => !_published.Contains(layer)).ToArray())
         {
             _retired.Remove(old);
-            if (old.Width == width && old.Height == height) _layers.Add(old);
-            else Destroy(old);
+            if (resized) Destroy(old);
+            else _layers.Add(old);
         }
         _used = 0;
         Canvas(0);
         _frame = _session.BeginVulkanFrame(_layers[0].Target!);
         return _frame.Surface;
     }
-    public SKCanvas Canvas(int index)
+    public SKCanvas Canvas(int index) => Canvas(index, _width, _height);
+    public SKCanvas Canvas(int index, int width, int height)
     {
         Verify();
         if (index < 0 || index >= 17) throw new NotSupportedException("Quick raster segment limit exceeded.");
-        while (_layers.Count <= index) _layers.Add(CreateLayer());
+        if (width <= 0 || height <= 0 || width > _width || height > _height)
+            throw new ArgumentOutOfRangeException(nameof(width));
+        if (index == 0 && _frame is not null && (width != _width || height != _height))
+            throw new InvalidOperationException("Cannot resize the active Quick recorder target.");
+        _borrowed.Remove(index);
+        while (_layers.Count <= index) _layers.Add(CreateLayer(width, height));
+        if (_layers[index].Width != width || _layers[index].Height != height)
+        {
+            // Only unpublished staging images can be resized or overwritten.
+            Destroy(_layers[index]);
+            _layers.RemoveAt(index);
+            _layers.Insert(index, CreateLayer(width, height));
+        }
         _used = Math.Max(_used, index + 1);
         var canvas = _layers[index].Target!.Canvas;
         canvas.Clear(SKColors.Transparent);
         return canvas;
     }
-    public ulong Image(int index) => _layers[index].P.Handle;
-    public ulong Identity(int index) => _layers[index].Identity;
+    public bool TryReuse(int index, ulong identity, int width, int height)
+    {
+        Verify();
+        if (_frame is null || index < 0 || index >= 17) throw new InvalidOperationException("No valid Quick recording slot.");
+        var layer = _published.FirstOrDefault(layer => layer.Identity == identity && layer.Width == width && layer.Height == height);
+        if (layer is null) return false;
+        // Keep staging indices dense for the ordinary canvas/caption path. These
+        // spare images are never copied or published for a borrowed slot.
+        while (_layers.Count <= index) _layers.Add(CreateLayer(width, height));
+        _borrowed.Add(index, layer);
+        _used = Math.Max(_used, index + 1);
+        return true;
+    }
+    private Layer Output(int index) => _borrowed.GetValueOrDefault(index) ?? _layers[index];
+    public ulong Image(int index) => Output(index).P.Handle;
+    public ulong Identity(int index) => Output(index).Identity;
     public void MarkPublished()
     {
         Verify();
-        _published = _layers.Take(_used).ToHashSet();
+        _published = Enumerable.Range(0, _used).Select(Output).ToHashSet();
         // Unused staging targets have never been handed to QSG this frame.
         foreach (var unused in _layers.Skip(_used).ToArray()) { Destroy(unused); _layers.Remove(unused); }
     }
@@ -146,6 +176,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         var transitions = stackalloc ImageMemoryBarrier[2];
         for (int i=0;i<_used;i++)
         {
+            if (_borrowed.ContainsKey(i)) continue;
             var layer=_layers[i]; var state=layer.Target!.GetState();
             transitions[0]=Transition(layer.R,(ImageLayout)state.Layout,ImageLayout.TransferSrcOptimal,
                 AccessFlags.MemoryWriteBit|AccessFlags.MemoryReadBit,AccessFlags.TransferReadBit);
@@ -153,7 +184,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
                 ImageLayout.TransferDstOptimal,layer.Initialized?AccessFlags.ShaderReadBit:0,AccessFlags.TransferWriteBit);
             barrier(_command,PipelineStageFlags.AllCommandsBit,PipelineStageFlags.AllCommandsBit,0,0,null,0,null,2,transitions);
             var copy = new ImageCopy { SrcSubresource=new(ImageAspectFlags.ColorBit,0,0,1), DstSubresource=new(ImageAspectFlags.ColorBit,0,0,1),
-                Extent=new((uint)_width,(uint)_height,1) };
+                Extent=new((uint)layer.Width,(uint)layer.Height,1) };
             _vk.CmdCopyImage(_command,layer.R,ImageLayout.TransferSrcOptimal,layer.P,ImageLayout.TransferDstOptimal,1,&copy);
             transitions[0]=Transition(layer.R,ImageLayout.TransferSrcOptimal,(ImageLayout)state.Layout,
                 AccessFlags.TransferReadBit,AccessFlags.MemoryReadBit|AccessFlags.MemoryWriteBit);
@@ -171,6 +202,7 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         _frame.CompleteGpuWork(); _frame=null; _submitted=false;
         for(int i=0;i<_used;i++)
         {
+            if (_borrowed.ContainsKey(i)) continue;
             var layer=_layers[i]; var state=layer.Target!.GetState();
             layer.Target.SetStateAfterGpuCompletion(state.Layout,state.QueueFamily); layer.Initialized=true;
         }
@@ -180,18 +212,18 @@ public sealed unsafe class GraphiteVulkanQuick : IDisposable
         new() { SType=StructureType.ImageMemoryBarrier,Image=image,OldLayout=from,NewLayout=to,
             SrcAccessMask=source,DstAccessMask=destination,SrcQueueFamilyIndex=uint.MaxValue,DstQueueFamilyIndex=uint.MaxValue,
             SubresourceRange=new(ImageAspectFlags.ColorBit,0,1,0,1) };
-    private Layer CreateLayer()
+    private Layer CreateLayer(int width, int height)
     {
-        var layer=new Layer { Identity=++_nextIdentity, Width=_width, Height=_height };
+        var layer=new Layer { Identity=++_nextIdentity, Width=width, Height=height };
         try
         {
             var info = new ImageCreateInfo { SType=StructureType.ImageCreateInfo,ImageType=ImageType.Type2D,
-                Format=Format.R8G8B8A8Unorm,Extent=new((uint)_width,(uint)_height,1),MipLevels=1,ArrayLayers=1,
+                Format=Format.R8G8B8A8Unorm,Extent=new((uint)width,(uint)height,1),MipLevels=1,ArrayLayers=1,
                 Samples=SampleCountFlags.Count1Bit,Tiling=ImageTiling.Optimal,SharingMode=SharingMode.Exclusive,
                 Usage=ImageUsageFlags.ColorAttachmentBit|ImageUsageFlags.InputAttachmentBit|ImageUsageFlags.TransferSrcBit|ImageUsageFlags.TransferDstBit|ImageUsageFlags.SampledBit };
             Allocate(info,out layer.R,out layer.RMemory,layer);
             _observer.RegisterHostTarget(layer.R.Handle,info);
-            layer.Target=_session.CreateVulkanTarget(_width,_height,new SKGraphiteVkTextureInfo {
+            layer.Target=_session.CreateVulkanTarget(width,height,new SKGraphiteVkTextureInfo {
                 SampleCount=1,Format=(int)info.Format,ImageTiling=(int)info.Tiling,ImageUsageFlags=(uint)info.Usage,AspectMask=(uint)ImageAspectFlags.ColorBit },
                 (int)ImageLayout.Undefined,_family,(nint)layer.R.Handle,SKColorType.Rgba8888);
             info.Usage=ImageUsageFlags.TransferDstBit|ImageUsageFlags.SampledBit;

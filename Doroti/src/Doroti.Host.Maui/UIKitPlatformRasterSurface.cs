@@ -3,6 +3,7 @@ using UIKit;
 using CoreAnimation;
 using CoreGraphics;
 using Doroti.Hosting;
+using Doroti.Ui;
 using Doroti.Skia.Rendering;
 using Metal;
 using SkiaSharp;
@@ -16,6 +17,8 @@ internal sealed class UIKitPlatformRasterSurface : UIView
     private readonly SkiaGraphiteSession? _graphite;
     private int _leases;
     private bool _retired;
+    private SkiaPlatformRasterContent.Slice? _displayed;
+    private SkiaPlatformRasterContent.CacheScope _displayedScope;
 
     internal UIKitPlatformRasterSurface(IMTLDevice device, IMTLCommandQueue queue)
     {
@@ -34,20 +37,34 @@ internal sealed class UIKitPlatformRasterSurface : UIView
     public override void LayoutSubviews() { base.LayoutSubviews(); _metal.Frame = Bounds; }
     public override UIView? HitTest(CGPoint point, UIEvent? evt) => null;
 
-    internal RasterFrame Prepare(SkiaSceneRenderer renderer, PlatformRasterSegment segment, int width, int height, double scale)
+    internal RasterFrame Prepare(SkiaSceneRenderer renderer, PlatformRasterSegment segment, int width, int height, PlatformCompositionToken token)
     {
         ObjectDisposedException.ThrowIf(_retired, this);
-        _metal.DrawableSize = new CGSize(width, height);
-        _metal.ContentsScale = (nfloat)scale;
+        var bounds = SkiaPlatformRasterContent.Coverage(segment.Commands, width, height);
+        if (bounds.Width <= 0 || bounds.Height <= 0) bounds = new SKRectI(0, 0, 1, 1);
+        var slice = new SkiaPlatformRasterContent.Slice(segment.Commands, bounds);
+        var scope = SkiaPlatformRasterContent.CacheScope.From(token, width, height, renderer.PlatformBackgroundColor);
+        if (!Hidden && Superview is not null && _displayed is { } previous &&
+            SkiaPlatformRasterContent.CanReuse(_displayedScope, previous, scope, slice))
+        {
+            _leases++;
+            return new RasterFrame(this, null, segment.PaintOrder, slice, scope);
+        }
+        _displayed = null; // A failed resize/present must not authorize reuse of stale backing.
+        _metal.DrawableSize = new CGSize(bounds.Width, bounds.Height);
+        _metal.ContentsScale = (nfloat)token.DeviceScaleX;
         var drawable = _metal.NextDrawable() ?? throw new InvalidOperationException("No UIKit segment drawable available.");
-        var frame = new RasterFrame(this, drawable, segment.PaintOrder);
+        var frame = new RasterFrame(this, drawable, segment.PaintOrder, slice, scope);
         _leases++;
         try
         {
-            frame.Graphite = _graphite!.BeginMetalFrame(width, height, drawable.Texture.Handle);
+            frame.Graphite = _graphite!.BeginMetalFrame(bounds.Width, bounds.Height, drawable.Texture.Handle);
             var canvas = frame.Surface.Canvas;
             canvas.Clear(SKColors.Transparent);
+            canvas.Save();
+            canvas.Translate(-bounds.Left, -bounds.Top);
             renderer.DrawPlatformRasterSegment(canvas, segment.Commands, width, height);
+            canvas.Restore();
             return frame;
         }
         catch { frame.Dispose(); throw; }
@@ -64,23 +81,34 @@ internal sealed class UIKitPlatformRasterSurface : UIView
 
     private void Release() { _graphite?.Dispose(); _metal.Dispose(); Dispose(); }
 
-    internal sealed class RasterFrame(UIKitPlatformRasterSurface slot, ICAMetalDrawable drawable, int order) : IDisposable
+    internal sealed class RasterFrame(UIKitPlatformRasterSurface slot, ICAMetalDrawable? drawable, int order,
+        SkiaPlatformRasterContent.Slice slice, SkiaPlatformRasterContent.CacheScope scope) : IDisposable
     {
         internal SkiaGraphiteSession.Frame? Graphite;
         internal SKSurface Surface => Graphite!.Surface;
         internal UIKitPlatformRasterSurface Slot => slot;
         internal int PaintOrder => order;
+        internal CGRect Bounds => new(slice.Bounds.Left / scope.ScaleX, slice.Bounds.Top / scope.ScaleY,
+            slice.Bounds.Width / scope.ScaleX, slice.Bounds.Height / scope.ScaleY);
         internal bool Submitted { get; private set; }
         private bool _disposed;
 
         internal void Submit()
         {
+            if (drawable is null) return; // The layer keeps the previously presented image.
             // Even a failed submission attempt requires a queue retirement marker.
             Submitted = true;
             Graphite!.Submit();
         }
 
-        internal void Present() => drawable.Present();
+        internal void Present()
+        {
+            drawable?.Present();
+            // Publishing cache metadata during Prepare/Submit would allow a
+            // rejected frame to masquerade as the currently displayed image.
+            slot._displayed = slice;
+            slot._displayedScope = scope;
+        }
 
         public void Dispose()
         {
@@ -91,7 +119,7 @@ internal sealed class UIKitPlatformRasterSurface : UIView
                 if (Submitted) Graphite.CompleteGpuWork();
                 else Graphite.CancelRecording();
             }
-            drawable.Dispose();
+            drawable?.Dispose();
             slot._leases--;
             if (slot._retired && slot._leases == 0) slot.Release();
         }

@@ -75,7 +75,9 @@ internal class _ImageFilterRenderObject__image_filter : RenderProxyBox
             if (!Equals(__value, _imageFilter))
             {
                 _imageFilter = __value;
-                markNeedsCompositedLayerUpdate();
+                // A disabled filter cannot affect its child's pixels. Enabling
+                // it already invalidates compositing and paint in the setter above.
+                if (_enabled) markNeedsCompositedLayerUpdate();
             }
         }
     }

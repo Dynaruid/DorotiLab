@@ -109,7 +109,7 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
     {
         bool isShaderNeeded = widget.stretchStrength.abs() > Foundation.ConstantsLibrary.precisionErrorTolerance;
         ImageFilter imageFilterLocal = default!;
-        if (_StretchEffectShader__stretch_effect._initialized)
+        if (isShaderNeeded && _StretchEffectShader__stretch_effect._initialized)
         {
             _fragmentShader?.dispose();
             _fragmentShader = _StretchEffectShader__stretch_effect._program!.fragmentShader();

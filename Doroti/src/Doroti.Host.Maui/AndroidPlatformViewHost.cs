@@ -91,6 +91,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         var parent = Container;
         var token = new PlatformCompositionToken(descriptor.ViewId, descriptor.MetricsGeneration,
             ++_compositionFrame, descriptor.ResizeTargetGeneration, descriptor.DeviceScaleX, descriptor.DeviceScaleY);
+        var cacheScope = SkiaPlatformRasterContent.CacheScope.From(token, width, height, renderer.PlatformBackgroundColor, _rasterEpoch);
         var mode = Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_COMPOSITION") == "overlay"
             ? PlatformViewComposition.NativeOverlay : PlatformViewComposition.InterleavedComposition;
         PlatformCompositionPlan plan;
@@ -119,9 +120,10 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             if (!plan.HasNativeContent || _optimize && mode == PlatformViewComposition.NativeOverlay)
             {
                 foreach (var raster in allRasters) renderer.DrawPlatformRasterSegment(canvas, raster.Commands, width, height);
-                _pending = new(plan, batch!, null, null, [], width, height); return;
+                _pending = new(plan, batch!, null, null, [], width, height, Scope: cacheScope); return;
             }
             var cached = new Dictionary<int, RasterView>();
+            var translated = new Dictionary<int, SkiaPlatformRasterContent.Slice>();
             var changed = new List<RasterSlice>();
             for (var i = 0; i < allRasters.Length; i++)
             {
@@ -145,9 +147,11 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
                     canvas.Restore();
                     if (overlayBounds.IsEmpty) continue;
                 }
-                if (_optimize && !SkiaPlatformRasterContent.HasDrawing(raster.Commands)) continue;
+                if (_optimize && !SkiaPlatformRasterContent.HasDrawing(raster.Commands) &&
+                    !(i == 0 && backdropPart is not null && renderer.PlatformBackgroundColor.Alpha != 0)) continue;
                 var slices = _optimize && i == 0 && backdropPart is not null ?
-                    new[] { new SkiaPlatformRasterContent.Slice(raster.Commands, backdropSample) } :
+                    BackdropRasterSlices(plan, backdropPart, raster.Commands,
+                        StableBackdropSourceBounds(raster.Commands, backdropSample, width, height), token) :
                     _optimize ? SkiaPlatformRasterContent.Split(raster.Commands, width, height) :
                     [new SkiaPlatformRasterContent.Slice(raster.Commands, new(0, 0, width, height))];
                 if (slices.Count >= SliceStride || cached.Count + changed.Count + slices.Count > SliceStride)
@@ -163,18 +167,33 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
                     }
                     var key = checked(raster.PaintOrder * SliceStride + index);
                     var existing = _optimize ? _rasters.FirstOrDefault(r => r.PixelWidth == width && r.PixelHeight == height &&
-                        r.Epoch == _rasterEpoch && r.Bounds == slice.Bounds && !cached.ContainsValue(r) &&
-                        SkiaPlatformRasterContent.Equivalent(r.Commands, slice.Commands)) : null;
-                    if (existing is not null) cached.Add(key, existing);
+                        r.Epoch == _rasterEpoch && !cached.ContainsValue(r) &&
+                        SkiaPlatformRasterContent.CanReuse(r.Scope, new(r.Commands, r.Bounds), cacheScope, slice)) : null;
+                    if (existing is not null)
+                    {
+                        cached.Add(key, existing);
+                        // Stage metadata until GPU retirement; a rejected frame must not move live views.
+                        translated.Add(key, slice);
+                    }
                     else changed.Add(new(new(key, slice.Commands), slice.Bounds));
                 }
             }
             var rasters = changed.ToArray();
             if (rasters.Length == 0)
-            { _pending = new(plan, batch!, null, null, [], width, height, cached); return; }
-            var atlasWidth = rasters.Max(r => r.Bounds.Width);
-            var atlasHeight = 0;
-            foreach (var raster in rasters) { raster.AtlasY = atlasHeight; atlasHeight = checked(atlasHeight + raster.Bounds.Height); }
+            { _pending = new(plan, batch!, null, null, [], width, height, cached, translated, cacheScope); return; }
+            // Pack narrow kernel-edge strips beside the panel instead of reading
+            // a full-width row of transparent padding for each strip.
+            var atlasWidth = Math.Max(rasters.Max(r => r.Bounds.Width), Math.Min(width, rasters.Sum(r => r.Bounds.Width)));
+            var atlasY = 0; var atlasX = 0; var shelfHeight = 0;
+            foreach (var raster in rasters.OrderByDescending(r => r.Bounds.Height))
+            {
+                if (atlasX + raster.Bounds.Width > atlasWidth)
+                { atlasY = checked(atlasY + shelfHeight); atlasX = 0; shelfHeight = 0; }
+                raster.AtlasX = atlasX; raster.AtlasY = atlasY;
+                atlasX = checked(atlasX + raster.Bounds.Width);
+                shelfHeight = Math.Max(shelfHeight, raster.Bounds.Height);
+            }
+            var atlasHeight = checked(atlasY + shelfHeight);
             // GPU atlas, managed readback, packing scratch and old/new bitmap banks.
             var reservedBytes = _rasters.Sum(r => r.Bytes) + cached.Values.Sum(r => r.Bytes) +
                 rasters.Sum(r => (long)r.Bounds.Width * r.Bounds.Height * 12) + (long)atlasWidth * atlasHeight * 8;
@@ -187,13 +206,13 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             {
                 var raster = rasters[i];
                 atlas.Canvas.Save();
-                atlas.Canvas.ClipRect(SKRect.Create(0, raster.AtlasY, raster.Bounds.Width, raster.Bounds.Height), SKClipOperation.Intersect, false);
-                atlas.Canvas.Translate(-raster.Bounds.Left, raster.AtlasY - raster.Bounds.Top);
-                if (raster.Segment.PaintOrder == 0) atlas.Canvas.DrawColor(renderer.PlatformBackgroundColor);
+                atlas.Canvas.ClipRect(SKRect.Create(raster.AtlasX, raster.AtlasY, raster.Bounds.Width, raster.Bounds.Height), SKClipOperation.Intersect, false);
+                atlas.Canvas.Translate(raster.AtlasX - raster.Bounds.Left, raster.AtlasY - raster.Bounds.Top);
+                if (raster.Segment.PaintOrder / SliceStride == 0) atlas.Canvas.DrawColor(renderer.PlatformBackgroundColor);
                 renderer.DrawPlatformRasterSegment(atlas.Canvas, raster.Segment.Commands, width, height);
                 atlas.Canvas.Restore();
             }
-            _pending = new(plan, batch!, atlas, _surface!.RequestPlatformReadback(atlas, info), rasters, width, height, cached);
+            _pending = new(plan, batch!, atlas, _surface!.RequestPlatformReadback(atlas, info), rasters, width, height, cached, translated, cacheScope);
         }
         catch (DorotiCapabilityException) when (HasStaleNative(commands)) { atlas?.Dispose(); batch?.Dispose(); plan.Dispose(); RejectFrame = true; }
         catch { atlas?.Dispose(); batch?.Dispose(); plan.Dispose(); throw; }
@@ -202,6 +221,36 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
     {
         try { return _coordinator!.Resolve(handle.InstanceId) == handle; }
         catch (DorotiCapabilityException) { return false; }
+    }
+    private IReadOnlyList<SkiaPlatformRasterContent.Slice> BackdropRasterSlices(PlatformCompositionPlan plan,
+        PlatformBackdropSegment effect, IReadOnlyList<SceneCommand> commands, SKRectI sample, PlatformCompositionToken token)
+    {
+        IReadOnlyList<SKRectI> regions = [sample];
+        foreach (var native in plan.Parts.OfType<PlatformNativeSegment>().Where(n => n.PaintOrder < effect.PaintOrder && n.Placement.Visible))
+        {
+            if (!_instances[native.Placement.Handle].IsOpaque) continue;
+            var p = native.Placement;
+            var rect = Map(p.Bounds, p.Transform, p.Clip);
+            var opaque = new SKRectI((int)Math.Ceiling(rect.left * token.DeviceScaleX), (int)Math.Ceiling(rect.top * token.DeviceScaleY),
+                (int)Math.Floor(rect.right * token.DeviceScaleX), (int)Math.Floor(rect.bottom * token.DeviceScaleY));
+            regions = regions.SelectMany(region => SkiaPlatformRasterContent.SubtractOpaque(region, opaque)).ToArray();
+            if (regions.Count == 0) break;
+        }
+        return regions.Select(region => new SkiaPlatformRasterContent.Slice(commands, region)).ToArray();
+    }
+    private SKRectI StableBackdropSourceBounds(IReadOnlyList<SceneCommand> commands, SKRectI sample, int width, int height)
+    {
+        // A moving sampling window must not recopy an otherwise stationary base
+        // on every frame. Expand only after proving the source content is stable;
+        // animated sources stay cropped, and changed content always gets recaptured.
+        if (width > 4096 || height > 4096 || (long)width * height * 4 > 64L * 1024 * 1024) return sample;
+        var viewport = new SKRectI(0, 0, width, height);
+        foreach (var previous in _rasters.Where(r => r.PaintOrder / SliceStride == 0 &&
+                     r.PixelWidth == width && r.PixelHeight == height && r.Epoch == _rasterEpoch))
+            if (SkiaPlatformRasterContent.Equivalent(previous.Commands, commands) ||
+                SkiaPlatformRasterContent.EquivalentTranslation(new(previous.Commands, viewport), new(commands, viewport)))
+                return viewport;
+        return sample;
     }
     private static SKRectI Intersect(SKRectI a, SKRectI b)
     {
@@ -213,7 +262,15 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
     private static SKRectI RasterOverlayBounds(PlatformCompositionPlan plan, int order, PlatformCompositionToken token,
         int width, int height, SKRectI backdropSample)
     {
-        var result = backdropSample;
+        // Only earlier raster contributes to the blur source. Extending foreground
+        // routing by the moving kernel halo cuts a moving hole in SurfaceView (for
+        // example above a navigation bar) before Android's overlay bank is presented.
+        // Later raster needs interleaving only where preceding native views exist.
+        var result = plan.Parts.OfType<PlatformBackdropSegment>().Any(effect => order < effect.PaintOrder ||
+            plan.Parts.OfType<PlatformRasterSegment>().Any(raster => raster.PaintOrder > 0 &&
+                raster.PaintOrder < effect.PaintOrder && raster.PaintOrder < order &&
+                SkiaPlatformRasterContent.HasDrawing(raster.Commands)))
+            ? backdropSample : default;
         foreach (var native in plan.Parts.OfType<PlatformNativeSegment>().Where(n => n.PaintOrder < order && n.Placement.Visible))
         {
             var p = native.Placement;
@@ -256,6 +313,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         var frame = _pending; _pending = null;
         if (frame is null) return accepted;
         var prepared = new List<RasterView>();
+        var updates = new List<(RasterView View, Bitmap Bitmap, RasterSlice Slice)>();
         var started = System.Diagnostics.Stopwatch.GetTimestamp();
         try
         {
@@ -274,15 +332,36 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
                     var bitmap = Bitmap.CreateBitmap(slice.Bounds.Width, slice.Bounds.Height, Bitmap.Config.Argb8888!)!;
                     try
                     {
-                        var packed = new byte[checked(slice.Bounds.Width * slice.Bounds.Height * 4)];
-                        for (var y = 0; y < slice.Bounds.Height; y++)
-                            Buffer.BlockCopy(pixels.Pixels, (slice.AtlasY + y) * pixels.RowBytes, packed,
-                                y * slice.Bounds.Width * 4, slice.Bounds.Width * 4);
-                        using var buffer = Java.Nio.ByteBuffer.Wrap(packed)!;
-                        bitmap.CopyPixelsFromBuffer(buffer);
-                        var raster = new RasterView(parent.Context!, bitmap, slice.Segment.Commands, frame.Width, frame.Height, _rasterEpoch, slice.Bounds);
-                        prepared.Add(raster);
-                        desired.Add(slice.Segment.PaintOrder, raster);
+                        // Copy directly into the new bitmap. ByteBuffer.Wrap(byte[]) marshals a
+                        // second full Java array on the UI thread, in addition to packing rows.
+                        // Never lock a displayed bitmap: the previous frame keeps its own bank.
+                        var destination = bitmap.LockPixels();
+                        if (destination == IntPtr.Zero) throw new InvalidOperationException("Android bitmap pixels are unavailable.");
+                        try
+                        {
+                            var rowBytes = checked(slice.Bounds.Width * 4);
+                            // This is a JNI property; read it once, not once per image row.
+                            var destinationRowBytes = bitmap.RowBytes;
+                            if (slice.AtlasX == 0 && pixels.RowBytes == rowBytes && destinationRowBytes == rowBytes)
+                                System.Runtime.InteropServices.Marshal.Copy(pixels.Pixels, checked(slice.AtlasY * pixels.RowBytes),
+                                    destination, checked(rowBytes * slice.Bounds.Height));
+                            else for (var y = 0; y < slice.Bounds.Height; y++)
+                                System.Runtime.InteropServices.Marshal.Copy(pixels.Pixels, checked((slice.AtlasY + y) * pixels.RowBytes + slice.AtlasX * 4),
+                                    IntPtr.Add(destination, checked(y * destinationRowBytes)), rowBytes);
+                        }
+                        finally { bitmap.UnlockPixels(); }
+                        var slot = _optimize ? _rasters.FirstOrDefault(r => r.PaintOrder == slice.Segment.PaintOrder && !desired.ContainsValue(r)) : null;
+                        if (slot is not null)
+                        {
+                            updates.Add((slot, bitmap, slice));
+                            desired.Add(slice.Segment.PaintOrder, slot);
+                        }
+                        else
+                        {
+                            var raster = new RasterView(parent.Context!, bitmap, slice.Segment.Commands, frame.Width, frame.Height, _rasterEpoch, slice.Bounds, frame.Scope);
+                            prepared.Add(raster);
+                            desired.Add(slice.Segment.PaintOrder, raster);
+                        }
                     }
                     catch { bitmap.Dispose(); throw; }
                 }
@@ -295,16 +374,9 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
                 CompleteNow(frame.Batch.DetachAsync(old.Handle));
             // Keep Android View/RenderNode identity during animation. Replacing only
             // the immutable bitmap avoids subtree events and touch-target churn.
-            if (_optimize)
-            {
-                foreach (var item in desired.ToArray())
-                {
-                    if (!prepared.Contains(item.Value)) continue;
-                    var slot = _rasters.FirstOrDefault(r => r.PaintOrder == item.Key && !desired.ContainsValue(r));
-                    if (slot is null) continue;
-                    slot.Adopt(item.Value); prepared.Remove(item.Value); item.Value.Dispose(); desired[item.Key] = slot;
-                }
-            }
+            foreach (var update in updates)
+                update.View.Adopt(update.Bitmap, update.Slice, frame.Width, frame.Height, _rasterEpoch, frame.Scope);
+            updates.Clear();
             foreach (var raster in _rasters.Where(r => !desired.ContainsValue(r))) { parent.RemoveView(raster); raster.Dispose(); }
             _rasters.Clear();
             var shieldParts = frame.Plan.Parts.OfType<PlatformShieldSegment>().ToArray();
@@ -323,11 +395,16 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
             }
             foreach (var (order, raster) in desired)
             {
+                if (frame.Translated?.TryGetValue(order, out var slice) == true) raster.Move(slice);
                 raster.PaintOrder = order; _rasters.Add(raster);
+                // The first raster is already on SurfaceView. Its bitmap is a blur
+                // source only; displaying the kernel halo covers unrelated later UI.
+                raster.BackdropSourceOnly = _optimize && order / SliceStride == 0;
                 Place(raster, Rect.fromLTWH(raster.Bounds.Left, raster.Bounds.Top, raster.Bounds.Width, raster.Bounds.Height), 1, 1);
             }
             prepared.Clear();
             var paintOrder = new List<NativeView>();
+            var backdropOrder = frame.Plan.Parts.OfType<PlatformBackdropSegment>().SingleOrDefault()?.PaintOrder;
             var shieldIndex = 0;
             if (OperatingSystem.IsAndroidVersionAtLeast(31) && _backdrop is not null && !frame.Plan.Parts.OfType<PlatformBackdropSegment>().Any())
             { parent.RemoveView(_backdrop); _backdrop.Dispose(); _backdrop = null; }
@@ -340,7 +417,10 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
                             paintOrder.Add(slice);
                         break;
                     case PlatformNativeSegment native:
-                        paintOrder.Add(_instances[native.Placement.Handle].Clip); break;
+                        var nativeClip = _instances[native.Placement.Handle].Clip;
+                        if (OperatingSystem.IsAndroidVersionAtLeast(31) && nativeClip is AndroidPlatformBackdropSourceView source)
+                            source.SetBackdropSampling(backdropOrder is { } effectOrder && native.PaintOrder < effectOrder);
+                        paintOrder.Add(nativeClip); break;
                     case PlatformShieldSegment shield:
                         var bounds = Map(shield.Shield.Bounds, shield.Shield.Transform, shield.Shield.Clip);
                         var view = _shields[shieldIndex++];
@@ -369,6 +449,7 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         }
         finally
         {
+            foreach (var update in updates) update.Bitmap.Dispose();
             foreach (var raster in prepared) raster.Dispose();
             frame.Dispose();
         }
@@ -380,33 +461,47 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
     }
     private sealed record Pending(PlatformCompositionPlan Plan, IPlatformViewPlacementBatch Batch, SKSurface? Atlas,
         Task<SkiaGraphiteReadback>? Readback, RasterSlice[] Rasters, int Width, int Height,
-        Dictionary<int, RasterView>? Cached = null) : IDisposable
+        Dictionary<int, RasterView>? Cached = null,
+        Dictionary<int, SkiaPlatformRasterContent.Slice>? Translated = null,
+        SkiaPlatformRasterContent.CacheScope Scope = default) : IDisposable
     {
         public void Dispose() { Atlas?.Dispose(); Batch.Dispose(); Plan.Dispose(); }
     }
     private sealed record RasterSlice(PlatformRasterSegment Segment, SKRectI Bounds)
     {
+        internal int AtlasX { get; set; }
         internal int AtlasY { get; set; }
     }
     private sealed class RasterView(Context context, Bitmap bitmap, IReadOnlyList<SceneCommand> commands,
-        int width, int height, long epoch, SKRectI bounds) : NativeView(context)
+        int width, int height, long epoch, SKRectI bounds, SkiaPlatformRasterContent.CacheScope scope) : NativeView(context), IAndroidPlatformBackdropSource
     {
         private Bitmap? _bitmap = bitmap;
         internal IReadOnlyList<SceneCommand> Commands => commands;
         internal int PixelWidth => width;
         internal int PixelHeight => height;
         internal long Epoch => epoch;
+        internal SkiaPlatformRasterContent.CacheScope Scope => scope;
         internal SKRectI Bounds => bounds;
         internal long Bytes => (long)bounds.Width * bounds.Height * 4;
         internal int PaintOrder { get; set; }
-        internal void Adopt(RasterView next)
+        private bool _backdropSourceOnly;
+        internal bool BackdropSourceOnly
         {
-            var old = _bitmap; _bitmap = next._bitmap; next._bitmap = null;
-            commands = next.Commands; width = next.PixelWidth; height = next.PixelHeight; epoch = next.Epoch;
-            bounds = next.Bounds;
+            set { if (_backdropSourceOnly == value) return; _backdropSourceOnly = value; Invalidate(); }
+        }
+        internal void Move(SkiaPlatformRasterContent.Slice slice)
+        { commands = slice.Commands; bounds = slice.Bounds; }
+        internal void Adopt(Bitmap next, RasterSlice slice, int pixelWidth, int pixelHeight, long rasterEpoch, SkiaPlatformRasterContent.CacheScope nextScope)
+        {
+            var old = _bitmap; _bitmap = next;
+            commands = slice.Segment.Commands; width = pixelWidth; height = pixelHeight; epoch = rasterEpoch;
+            bounds = slice.Bounds;
+            scope = nextScope;
             old?.Dispose(); Invalidate();
         }
         protected override void OnDraw(Android.Graphics.Canvas canvas)
+        { if (!_backdropSourceOnly) DrawBackdropSource(canvas); }
+        public void DrawBackdropSource(Android.Graphics.Canvas canvas)
         { if (_bitmap is { } value) canvas.DrawBitmap(value, 0, 0, null); }
         public override bool OnTouchEvent(MotionEvent? e) => false;
         protected override void Dispose(bool disposing) { if (disposing) { _bitmap?.Dispose(); _bitmap = null; } base.Dispose(disposing); }
@@ -492,6 +587,9 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
         public Task<WebViewResult> ExecuteAsync(WebViewCommand command, CancellationToken cancellationToken) =>
             _web?.ExecuteAsync(command, cancellationToken) ?? throw new WebViewException(WebViewError.Unsupported, "Not a WebView.");
         internal FrameLayout Clip { get; }
+        // Never infer opacity from the page URL, HTML or view type. Android owns
+        // this contract; transparent/unknown controls keep the complete source.
+        internal bool IsOpaque => _control.IsOpaque && _control.Alpha == 1 && Clip.Alpha == 1;
         private bool _disabled, _disposed;
         private int _clicks;
         internal Instance(AndroidPlatformViewHost host, PlatformViewHandle handle, bool editor, string text, Action<PlatformViewHandle> focused,
@@ -510,7 +608,10 @@ internal sealed class AndroidPlatformViewHost(DorotiGraphiteView owner, MauiText
                 TextView control = editor ? new EditText(parent.Context!) : new Android.Widget.Button(parent.Context!);
                 control.Text = text; _control = control;
             }
-            Clip = new(parent.Context!) { Visibility = ViewStates.Invisible };
+            Clip = OperatingSystem.IsAndroidVersionAtLeast(31)
+                ? new AndroidPlatformBackdropSourceView(parent.Context!)
+                : new FrameLayout(parent.Context!);
+            Clip.Visibility = ViewStates.Invisible;
             Clip.SetClipChildren(true);
             _control.ContentDescription = $"doroti-platform-view-{handle.InstanceId}-{handle.InstanceGeneration}";
             _control.FocusableInTouchMode = editor;

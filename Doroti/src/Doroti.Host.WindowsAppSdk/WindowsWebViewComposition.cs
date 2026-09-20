@@ -9,7 +9,7 @@ using C = Windows.UI.Composition;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-internal sealed record WindowsCompositionSlice(PlatformRasterSegment Segment, SKRectI Bounds, int AtlasY);
+internal sealed record WindowsCompositionSlice(PlatformRasterSegment Segment, SKRectI Bounds, int AtlasY, bool Reused = false);
 
 /// <summary>Owner-local WebView2 visual attachment. All native pixels and inline effects share
 /// one Windows.UI.Composition tree; legacy HWND controls cannot enter this tree.</summary>
@@ -30,7 +30,13 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
     private Windows.System.DispatcherQueueController? _queue;
     private Task<CoreWebView2Environment>? _environment;
     private nint _graphics;
-    private readonly List<IDisposable> _rasterResources = [];
+    private readonly Dictionary<int, RasterSlot> _rasters = [];
+    private sealed record RasterSlot(WindowsCompositionSlice Slice, C.SpriteVisual Visual,
+        C.CompositionSurfaceBrush Brush, C.CompositionDrawingSurface Surface) : IDisposable
+    {
+        internal void DisposeImage() { Brush.Dispose(); Surface.Dispose(); }
+        public void Dispose() { Visual.Dispose(); DisposeImage(); }
+    }
     private PlatformCompositionPart[] _visible = [];
     private C.Visual[] _orderedVisuals = [];
     private PlatformViewHandle? _capture;
@@ -39,7 +45,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
     private readonly Native.SubclassProc _callback;
     private bool _disposed;
     private long _nativeMessages, _mouseEvents, _pointerEvents;
-    private long _rasterUploadBytes, _rasterUploads;
+    private long _rasterUploadBytes, _rasterUploads, _rasterReuses;
     internal long RasterUploadBytes => _rasterUploadBytes;
     internal object Evidence => new { strategy = "WebView2-CompositionController", apiFamily = "Windows.UI.Composition",
         runtimeVersion = _environment is { IsCompletedSuccessfully: true } environment ? environment.Result.BrowserVersionString : null,
@@ -47,7 +53,7 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         loadedViews = _instances.Values.Count(instance => instance.Loaded),
         navigation = _instances.Values.Select(instance => instance.NavigationStatus).ToArray(),
         navigationEvents = _instances.Values.Select(instance => instance.NavigationEvents.ToArray()).ToArray(),
-        rasterUploadBytes = _rasterUploadBytes, rasterUploads = _rasterUploads,
+        rasterUploadBytes = _rasterUploadBytes, rasterUploads = _rasterUploads, rasterReuses = _rasterReuses,
         effectParameters = _effects.Values.Select(effect => new { physicalSigma = effect.Sigma, saturation = effect.Saturation }).ToArray(),
         nativeContentCaptured = false, observation = "BackendAccepted" };
     internal WindowsWebViewComposition(nint parent, Action invalidate, Action yieldText, bool transportAvailable, IApplicationResourceHostCapability resources)
@@ -136,7 +142,8 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         var next = plan.Parts.ToArray();
         if (next.OfType<PlatformNativeSegment>().Any(p => !Contains(p.Placement.Handle)))
             throw new NotSupportedException("HWND controls and WebView2 composition visuals require separate owner scenes.");
-        var prepared = new List<(C.SpriteVisual Visual, C.CompositionSurfaceBrush Brush, C.CompositionDrawingSurface Surface)>();
+        var prepared = new List<RasterSlot>();
+        var nextRasters = new Dictionary<int, RasterSlot>();
         var visuals = new Dictionary<int, C.SpriteVisual>();
         var nextEffects = new Dictionary<int, (double Sigma, double Saturation, C.SpriteVisual Visual, C.CompositionEffectBrush Brush)>();
         var allocatedEffects = new List<(C.SpriteVisual Visual, C.CompositionEffectBrush Brush)>();
@@ -145,7 +152,16 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         {
             foreach (var slice in slices)
             {
-                if (pixels is null) break;
+                if (slice.Reused)
+                {
+                    if (!_rasters.TryGetValue(slice.Segment.PaintOrder, out var retained))
+                        throw new InvalidOperationException("Missing retained WebView composition raster.");
+                    var nextSlot = retained with { Slice = slice };
+                    nextRasters.Add(slice.Segment.PaintOrder, nextSlot);
+                    visuals.Add(slice.Segment.PaintOrder, retained.Visual);
+                    continue;
+                }
+                if (pixels is null) throw new InvalidOperationException("Missing changed WebView raster pixels.");
                 nint surface;
                 fixed (byte* data = pixels.Pixels)
                     Marshal.ThrowExceptionForHR(Native.CreateSurface(_graphics, (nint)(data + slice.AtlasY * pixels.RowBytes),
@@ -154,10 +170,13 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
                 try { drawing = WinRT.MarshalInterface<C.CompositionDrawingSurface>.FromAbi(surface); }
                 finally { Marshal.Release(surface); }
                 var brush = _compositor!.CreateSurfaceBrush(drawing);
-                var visual = _compositor.CreateSpriteVisual();
-                visual.Brush = brush; visual.Size = new(slice.Bounds.Width, slice.Bounds.Height);
-                visual.Offset = new(slice.Bounds.Left, slice.Bounds.Top, 0);
-                prepared.Add((visual, brush, drawing)); visuals.Add(slice.Segment.PaintOrder, visual);
+                // Keep the visual mounted even when its pixels change. Switching
+                // an immutable image must not detach the surrounding WebView tree.
+                var visual = _rasters.TryGetValue(slice.Segment.PaintOrder, out var oldSlot)
+                    ? oldSlot.Visual : _compositor.CreateSpriteVisual();
+                var slot = new RasterSlot(slice, visual, brush, drawing);
+                prepared.Add(slot); nextRasters.Add(slice.Segment.PaintOrder, slot);
+                visuals.Add(slice.Segment.PaintOrder, visual);
             }
             // Allocate every effect before touching the currently displayed tree.
             foreach (var effect in next.OfType<PlatformBackdropSegment>())
@@ -183,26 +202,40 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
                 if (!nextHandles.Contains(old.Placement.Handle) && batch.Contains(old.Placement.Handle))
                     Complete(batch.DetachAsync(old.Placement.Handle));
             var ordered = new List<C.Visual>();
-            _root!.Children.RemoveAll();
+            foreach (var raster in nextRasters.Values)
+            {
+                raster.Visual.Brush = raster.Brush;
+                raster.Visual.Size = new(raster.Slice.Bounds.Width, raster.Slice.Bounds.Height);
+                raster.Visual.Offset = new(raster.Slice.Bounds.Left, raster.Slice.Bounds.Top, 0);
+            }
             foreach (var part in next)
             {
                 switch (part)
                 {
                     case PlatformRasterSegment raster when visuals.TryGetValue(raster.PaintOrder, out var rasterVisual):
-                        _root.Children.InsertAtTop(rasterVisual); ordered.Add(rasterVisual); break;
+                        ordered.Add(rasterVisual); break;
                     case PlatformNativeSegment native:
                         var nativeVisual = _instances[native.Placement.Handle].Visual;
-                        _root.Children.InsertAtTop(nativeVisual); ordered.Add(nativeVisual); break;
+                        ordered.Add(nativeVisual); break;
                     case PlatformBackdropSegment effect:
                         var visual = nextEffects[effect.PaintOrder].Visual;
                         visual.Offset = new((float)(effect.Bounds.left * plan.Token.DeviceScaleX), (float)(effect.Bounds.top * plan.Token.DeviceScaleY), 0);
                         visual.Size = new((float)(effect.Bounds.width * plan.Token.DeviceScaleX), (float)(effect.Bounds.height * plan.Token.DeviceScaleY));
-                        _root.Children.InsertAtTop(visual); ordered.Add(visual); break;
+                        ordered.Add(visual); break;
                 }
             }
-            foreach (var resource in _rasterResources) resource.Dispose();
-            _rasterResources.Clear();
-            foreach (var item in prepared) { _rasterResources.Add(item.Visual); _rasterResources.Add(item.Brush); _rasterResources.Add(item.Surface); }
+            if (!ordered.SequenceEqual(_orderedVisuals))
+            {
+                _root!.Children.RemoveAll();
+                foreach (var visual in ordered) _root.Children.InsertAtTop(visual);
+            }
+            foreach (var old in _rasters.Values)
+            {
+                var replacement = nextRasters.Values.FirstOrDefault(r => ReferenceEquals(r.Visual, old.Visual));
+                if (replacement is null) old.Dispose();
+                else if (!ReferenceEquals(replacement.Surface, old.Surface)) old.DisposeImage();
+            }
+            _rasters.Clear(); foreach (var item in nextRasters) _rasters.Add(item.Key, item.Value);
             prepared.Clear();
             foreach (var old in _effects.Values)
                 if (!nextEffects.Values.Any(value => ReferenceEquals(value.Visual, old.Visual)))
@@ -210,13 +243,20 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
             _effects.Clear(); foreach (var item in nextEffects) _effects.Add(item.Key, item.Value);
             allocatedEffects.Clear();
             _visible = next; _token = plan.Token; _orderedVisuals = ordered.ToArray();
-            _rasterUploadBytes += slices.Sum(slice => (long)slice.Bounds.Width * slice.Bounds.Height * 4);
-            _rasterUploads += slices.Length;
+            _rasterUploadBytes += slices.Where(s => !s.Reused).Sum(slice => (long)slice.Bounds.Width * slice.Bounds.Height * 4);
+            _rasterUploads += slices.Count(s => !s.Reused);
+            _rasterReuses += slices.Count(s => s.Reused);
         }
         catch
         {
             if (mutationStarted)
             {
+                foreach (var raster in _rasters.Values)
+                {
+                    raster.Visual.Brush = raster.Brush;
+                    raster.Visual.Size = new(raster.Slice.Bounds.Width, raster.Slice.Bounds.Height);
+                    raster.Visual.Offset = new(raster.Slice.Bounds.Left, raster.Slice.Bounds.Top, 0);
+                }
                 var previousHandles = _visible.OfType<PlatformNativeSegment>().Select(p => p.Placement.Handle).ToHashSet();
                 foreach (var native in next.OfType<PlatformNativeSegment>())
                     if (!previousHandles.Contains(native.Placement.Handle)) Complete(batch.DetachAsync(native.Placement.Handle));
@@ -234,7 +274,11 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         }
         finally
         {
-            foreach (var item in prepared) { item.Visual.Dispose(); item.Brush.Dispose(); item.Surface.Dispose(); }
+            foreach (var item in prepared)
+            {
+                if (!_rasters.Values.Any(r => ReferenceEquals(r.Visual, item.Visual))) item.Visual.Dispose();
+                item.DisposeImage();
+            }
             foreach (var item in allocatedEffects) { item.Visual.Dispose(); item.Brush.Dispose(); }
         }
     }
@@ -251,8 +295,8 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         if (_capture is not null) Native.ReleaseCapture();
         _capture = null; _hover = null;
         _root?.Children.RemoveAll();
-        foreach (var resource in _rasterResources) resource.Dispose();
-        _rasterResources.Clear();
+        foreach (var resource in _rasters.Values) resource.Dispose();
+        _rasters.Clear();
         foreach (var effect in _effects.Values) { effect.Visual.Dispose(); effect.Brush.Dispose(); }
         _effects.Clear(); _visible = []; _orderedVisuals = [];
     }
@@ -429,7 +473,8 @@ internal sealed partial class WindowsWebViewComposition : IPlatformViewFactory, 
         Native.RemoveWindowSubclass(_parent, _callback, 0x505657);
         foreach (var instance in _instances.Values.ToArray()) Complete(instance.DisposeAsync());
         if (_target is not null) _target.Root = null;
-        foreach (var resource in _rasterResources) resource.Dispose();
+        foreach (var resource in _rasters.Values) resource.Dispose();
+        _rasters.Clear();
         foreach (var effect in _effects.Values) { effect.Visual.Dispose(); effect.Brush.Dispose(); }
         _root?.Dispose(); _target?.Dispose();
         if (_graphics != 0) Native.DestroyGraphics(_graphics);

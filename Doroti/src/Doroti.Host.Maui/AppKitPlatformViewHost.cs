@@ -49,7 +49,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
     private readonly List<AppKitPlatformBlurView> _effects = [];
     private PlatformBackdropSegment[] _visibleEffects = [];
     private PlatformInputShield[] _visibleShields = [];
-    private (AppKitPlatformRasterSurface Slot, int Order)[] _visibleRasters = [];
+    private (AppKitPlatformRasterSurface Slot, int Order, CGRect Bounds)[] _visibleRasters = [];
     private PreparedFrame? _pending;
     private bool _disposed;
 
@@ -130,7 +130,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
             for (var index = 1; index < segments.Length; index++)
             {
                 if (_rasters.Count < index) _rasters.Add(native.CreatePlatformRasterSurface());
-                frames.Add(_rasters[index - 1].Prepare(renderer, segments[index], width, height, descriptor.DeviceScaleX));
+                frames.Add(_rasters[index - 1].Prepare(renderer, segments[index], width, height, plan.Token));
             }
             _pending = new PreparedFrame(this, plan, frames.ToArray(), gpuLeases.ToArray());
         }
@@ -184,14 +184,15 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         _overlay?.Window?.RecalculateKeyViewLoop();
     }
 
-    private void ApplyLayers((AppKitPlatformRasterSurface Slot, int Order)[] rasters, PlatformInputShield[] shields, PlatformBackdropSegment[] effects)
+    private void ApplyLayers((AppKitPlatformRasterSurface Slot, int Order, CGRect Bounds)[] rasters, PlatformInputShield[] shields, PlatformBackdropSegment[] effects)
     {
         var parent = GetContainer();
-        foreach (var slot in _rasters) slot.Hidden = true;
-        foreach (var (slot, order) in rasters)
+        foreach (var slot in _rasters)
+            if (!rasters.Any(raster => ReferenceEquals(raster.Slot, slot))) slot.Hidden = true;
+        foreach (var (slot, order, bounds) in rasters)
         {
             if (slot.Superview != parent) parent.AddSubview(slot);
-            slot.Frame = parent.Bounds;
+            if (slot.Frame != bounds) slot.Frame = bounds;
             slot.Layer!.ZPosition = order;
             slot.Hidden = false;
         }
@@ -204,15 +205,14 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         for (var index = 0; index < _shields.Count; index++)
         {
             var view = _shields[index];
-            view.Hidden = true;
-            if (index >= shields.Length) continue;
+            if (index >= shields.Length) { view.Hidden = true; continue; }
             var shield = shields[index];
             var a = shield.Transform.Map(shield.Bounds.topLeft);
             var b = shield.Transform.Map(shield.Bounds.bottomRight);
             var bounds = new Rect(a.dx, a.dy, b.dx, b.dy);
             if (shield.Clip is { } clip) bounds = bounds.intersect(clip);
             bounds = bounds.intersect(Rect.fromLTWH(0, 0, parent.Bounds.Width, parent.Bounds.Height));
-            if (bounds.isEmpty) continue;
+            if (bounds.isEmpty) { view.Hidden = true; continue; }
             view.Frame = new CGRect(bounds.left, bounds.top, bounds.width, bounds.height);
             view.Layer!.ZPosition = shield.PaintOrder;
             view.Hidden = false;
@@ -234,11 +234,16 @@ internal sealed class AppKitPlatformViewHost : IDisposable
             view.SetEffect(effect);
         }
         // Core Image samples AppKit sibling order as well as CALayer order.
-        NSView? previous = null;
-        foreach (var child in parent.Subviews.OrderBy(child => child.Layer?.ZPosition ?? 0))
+        var children = parent.Subviews;
+        var ordered = children.OrderBy(child => child.Layer?.ZPosition ?? 0).ToArray();
+        if (!children.SequenceEqual(ordered))
         {
-            parent.AddSubview(child, NSWindowOrderingMode.Above, previous);
-            previous = child;
+            NSView? previous = null;
+            foreach (var child in ordered)
+            {
+                parent.AddSubview(child, NSWindowOrderingMode.Above, previous);
+                previous = child;
+            }
         }
         _visibleEffects = effects;
         _visibleRasters = rasters;
@@ -249,7 +254,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
         AppKitPlatformRasterSurface.RasterFrame[] frames, IDisposable[] gpuLeases) : IDisposable, IPreparedPlatformComposition
     {
         private readonly PlatformViewPlacement[] _previous = host._placements;
-        private readonly (AppKitPlatformRasterSurface Slot, int Order)[] _previousRasters = host._visibleRasters;
+        private readonly (AppKitPlatformRasterSurface Slot, int Order, CGRect Bounds)[] _previousRasters = host._visibleRasters;
         private readonly PlatformInputShield[] _previousShields = host._visibleShields;
         private readonly PlatformBackdropSegment[] _previousEffects = host._visibleEffects;
         private readonly PlatformViewPlacement[] _next = plan.Parts.OfType<PlatformNativeSegment>().Select(part => part.Placement).ToArray();
@@ -286,7 +291,7 @@ internal sealed class AppKitPlatformViewHost : IDisposable
             try
             {
                 host.Apply(_next);
-                host.ApplyLayers(frames.Select(frame => (frame.Slot, frame.PaintOrder)).ToArray(),
+                host.ApplyLayers(frames.Select(frame => (frame.Slot, frame.PaintOrder, frame.Bounds)).ToArray(),
                     plan.Parts.OfType<PlatformShieldSegment>().Select(part => part.Shield).ToArray(),
                     plan.Parts.OfType<PlatformBackdropSegment>().ToArray());
                 _committed = true;

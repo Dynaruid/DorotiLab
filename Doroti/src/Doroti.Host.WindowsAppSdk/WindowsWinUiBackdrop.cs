@@ -43,7 +43,7 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
     };
     private static double[] Coordinates(Rect bounds) => [bounds.left, bounds.top, bounds.right, bounds.bottom];
 
-    internal unsafe void Prepare(PlatformCompositionPlan plan, SkiaGraphiteReadback pixels,
+    internal unsafe void Prepare(PlatformCompositionPlan plan, SkiaGraphiteReadback? pixels,
         WindowsCompositionSlice[] slices, int width, int height, Func<PlatformViewHandle, nint> getWindow)
     {
         var effects = plan.Parts.OfType<PlatformBackdropSegment>().ToArray();
@@ -73,9 +73,10 @@ internal sealed class WindowsWinUiBackdrop : IDisposable
 
         foreach (var slice in slices)
         {
-            if (_rasters.TryGetValue(slice.Segment.PaintOrder, out var previous) && previous.Slice.Bounds == slice.Bounds &&
+            if (slice.Reused && _rasters.TryGetValue(slice.Segment.PaintOrder, out var previous) && previous.Slice.Bounds == slice.Bounds &&
                 SkiaPlatformRasterContent.Equivalent(previous.Slice.Segment.Commands, slice.Segment.Commands))
             { _reuses++; continue; }
+            if (slice.Reused || pixels is null) throw new InvalidOperationException("Missing retained WinUI backdrop source.");
             nint surface;
             fixed (byte* data = pixels.Pixels)
                 Marshal.ThrowExceptionForHR(Native.CreateSurface(_graphics, (nint)(data + slice.AtlasY * pixels.RowBytes),

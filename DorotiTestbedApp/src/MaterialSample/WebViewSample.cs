@@ -81,8 +81,8 @@ internal sealed class WebViewSampleState : State<WebViewSample>
     private int _generation;
     private bool _panelSupported;
     private bool _panelVisible = true;
-    private bool _draggingPanel;
-    private Offset _panelOffset = new(24, 24);
+    private readonly ValueNotifier<bool> _draggingPanel = new(false);
+    private readonly ValueNotifier<Offset> _panelOffset = new(new(24, 24));
     private Offset _panelDragOrigin;
     private Offset _pointerDragOrigin;
 
@@ -297,7 +297,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             .. _panelSupported ? new Widget[] { PanelToggle() } : [],
         ]));
 
-    private void TogglePanel() => setState(() => { _panelVisible = !_panelVisible; _draggingPanel = false; });
+    private void TogglePanel() => setState(() => { _panelVisible = !_panelVisible; _draggingPanel.value = false; });
 
     private Widget PanelToggle() => new M.TextButton(onPressed: TogglePanel,
         child: new Row(mainAxisSize: MainAxisSize.min, children:
@@ -313,16 +313,28 @@ internal sealed class WebViewSampleState : State<WebViewSample>
         var height = Math.Min(180, constraints.maxHeight);
         var maxX = Math.Max(0, constraints.maxWidth - width);
         var maxY = Math.Max(0, constraints.maxHeight - height);
-        var position = new Offset(Math.Clamp(_panelOffset.dx, 0, maxX), Math.Clamp(_panelOffset.dy, 0, maxY));
+        var pixelRatio = MediaQuery.devicePixelRatioOf(context);
         var theme = M.Theme.of(context);
         return new Stack(children:
         [
             // Keep this slot stable so toggling/moving the panel preserves the browser.
-            new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: webView),
+            new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new RepaintBoundary(child: webView)),
             .. _panelSupported && _panelVisible && width >= 180 && height >= 112 ? new Widget[]
             {
-                new Positioned(left: position.dx, top: position.dy, width: width, height: height,
-                    child: new PointerInterceptor(new PlatformEffect(
+                // Only the transform listens to motion; keep layout, pictures and the browser stable.
+                // The outer boundary must cover the travel area: a panel-sized parent
+                // rejects new pointer downs after the translated child leaves its bounds.
+                new Positioned(left: 0, top: 0, right: 0, bottom: 0,
+                    child: new RepaintBoundary(child: new Align(alignment: Alignment.topLeft,
+                    child: new ValueListenableBuilder<Offset>(valueListenable: _panelOffset,
+                        builder: (_, offset, child) => Transform.CreateTranslate(
+                            // Keep the panel's raster phase stable while moving; the
+                            // native host can then move its cached pixels directly.
+                            offset: new Offset(Math.Clamp(Math.Round(offset.dx * pixelRatio) / pixelRatio, 0, maxX),
+                                Math.Clamp(Math.Round(offset.dy * pixelRatio) / pixelRatio, 0, maxY)),
+                            child: child),
+                    child: new SizedBox(width: width, height: height,
+                    child: new RepaintBoundary(child: new PointerInterceptor(new PlatformEffect(
                         style: new(Strength: .625, Tint: theme.brightness == Brightness.dark ? 0x99211f26u : 0x99ffffffu),
                         child: new M.Material(type: M.MaterialType.transparency,
                             child: new Container(
@@ -331,25 +343,27 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                                 [
                                     new Row(children:
                                     [
-                                        new Expanded(child: new MouseRegion(
-                                            cursor: _draggingPanel ? SystemMouseCursors.grabbing : SystemMouseCursors.grab,
+                                        new Expanded(child: new ValueListenableBuilder<bool>(
+                                            valueListenable: _draggingPanel,
+                                            builder: (_, dragging, child) => new MouseRegion(
+                                                cursor: dragging ? SystemMouseCursors.grabbing : SystemMouseCursors.grab, child: child),
                                             child: new GestureDetector(
                                                 behavior: HitTestBehavior.opaque,
-                                                onPanStart: details => setState(() =>
+                                                onPanStart: details =>
                                                 {
-                                                    _draggingPanel = true;
-                                                    _panelDragOrigin = position;
+                                                    _draggingPanel.value = true;
+                                                    _panelDragOrigin = new Offset(Math.Clamp(_panelOffset.value.dx, 0, maxX), Math.Clamp(_panelOffset.value.dy, 0, maxY));
                                                     _pointerDragOrigin = details.globalPosition;
-                                                }),
-                                                onPanUpdate: details => setState(() =>
+                                                },
+                                                onPanUpdate: details =>
                                                 {
                                                     var delta = details.globalPosition - _pointerDragOrigin;
-                                                    _panelOffset = new Offset(
+                                                    _panelOffset.value = new Offset(
                                                         Math.Clamp(_panelDragOrigin.dx + delta.dx, 0, maxX),
                                                         Math.Clamp(_panelDragOrigin.dy + delta.dy, 0, maxY));
-                                                }),
-                                                onPanEnd: _ => setState(() => _draggingPanel = false),
-                                                onPanCancel: () => setState(() => _draggingPanel = false),
+                                                },
+                                                onPanEnd: _ => _draggingPanel.value = false,
+                                                onPanCancel: () => _draggingPanel.value = false,
                                                 child: new SizedBox(height: 48, child: new Padding(
                                                     padding: EdgeInsets.CreateSymmetric(horizontal: 12),
                                                     child: new Row(children:
@@ -370,7 +384,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                                             new SizedBox(height: 8),
                                             new Text("Drag the header to move this panel. The page remains interactive outside it."),
                                         ])))),
-                                ]))))))
+                                ])))))))))))
             } : [],
         ]);
     });
@@ -387,14 +401,16 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             : _fallback is { } fallback && _owner is { } owner
                 ? new PlatformView(owner, fallback, key: new ValueKey<int>(_generation))
                 : new Center(child: new M.CircularProgressIndicator());
-        return new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children:
+        // Toolbar/ink animations must not invalidate the surrounding app bar and
+        // navigation raster while a native browser is interleaved with this page.
+        return new RepaintBoundary(child: new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children:
         [
-            _controller is null ? FallbackToolbar() : ControllerToolbar(),
+            new ClipRect(child: new RepaintBoundary(child: _controller is null ? FallbackToolbar() : ControllerToolbar())),
             .. _busy ? new Widget[] { new M.LinearProgressIndicator() } : [],
             .. _error is { } error ? new Widget[] { new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6), child: new Text(error)) } : [],
             .. _scriptResult is { } result ? new Widget[] { new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 6), child: new Text($"JavaScript result: {result}")) } : [],
             new Expanded(child: new Padding(padding: EdgeInsets.CreateFromLTRB(12, 0, 12, 12), child: new ClipRect(child: WebViewSurface(webView)))),
-        ]);
+        ]));
     }
 
     public override void dispose()
@@ -404,6 +420,8 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             controller.Changed -= WebViewChanged;
             _ = controller.DisposeAsync();
         }
+        _panelOffset.dispose();
+        _draggingPanel.dispose();
         _address.dispose();
         base.dispose();
     }

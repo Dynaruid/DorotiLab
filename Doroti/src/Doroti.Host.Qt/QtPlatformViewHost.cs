@@ -44,6 +44,10 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     private PlatformViewCoordinator? _coordinator;
     private PlatformCompositionSession? _session;
     private long _compositionFrame;
+    private sealed record QuickRaster(SkiaPlatformRasterContent.CacheScope Scope, SkiaPlatformRasterContent.Slice Slice, ulong Identity);
+    private Dictionary<int, QuickRaster> _quickRasters = [];
+    private Dictionary<int, QuickRaster> _nextQuickRasters = [];
+    private object? _quickCacheOwner;
     internal long CommittedFrames { get; private set; }
     private PlatformCompositionPlan? _pending;
     private IPlatformViewPlacementBatch? _reservation;
@@ -313,6 +317,9 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
     {
         var surface=QuickSurface ?? throw new InvalidOperationException("Qt Quick surface is not configured.");
         var gpu=surface.QuickGpu ?? throw new InvalidOperationException("Qt Quick GPU is not initialized.");
+        if (!ReferenceEquals(_quickCacheOwner, gpu)) { _quickRasters.Clear(); _quickCacheOwner = gpu; }
+        _nextQuickRasters = [];
+        var scope = SkiaPlatformRasterContent.CacheScope.From(plan.Token, width, height, renderer.PlatformBackgroundColor);
         var parts=new List<QtQuickNative.Part>();
         var rasterIndex=0;
         var viewport=new NativeRect(0,0,width/descriptor.DeviceScaleX,height/descriptor.DeviceScaleY);
@@ -321,11 +328,26 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
             switch(part)
             {
                 case PlatformRasterSegment raster:
-                    var target=gpu.Canvas(rasterIndex);
-                    if(rasterIndex==0)target.DrawColor(renderer.PlatformBackgroundColor);
-                    renderer.DrawPlatformRasterSegment(target,raster.Commands,width,height);
-                    parts.Add(new() { Size=96,Kind=0,Id=gpu.Identity(rasterIndex),Image=gpu.Image(rasterIndex++),PixelWidth=(uint)width,PixelHeight=(uint)height,Bounds=viewport,Clip=viewport });
+                {
+                    var bounds = rasterIndex == 0 ? new SKRectI(0, 0, width, height) : SkiaPlatformRasterContent.Coverage(raster.Commands, width, height);
+                    if (bounds.Width <= 0 || bounds.Height <= 0) continue;
+                    var slice = new SkiaPlatformRasterContent.Slice(raster.Commands, bounds);
+                    if (!_quickRasters.TryGetValue(raster.PaintOrder, out var old) ||
+                        !SkiaPlatformRasterContent.CanReuse(old.Scope, old.Slice, scope, slice) ||
+                        !gpu.TryReuse(rasterIndex, old.Identity, bounds.Width, bounds.Height))
+                    {
+                        var target=gpu.Canvas(rasterIndex, bounds.Width, bounds.Height);
+                        if(rasterIndex==0)target.DrawColor(renderer.PlatformBackgroundColor);
+                        target.Save(); target.Translate(-bounds.Left, -bounds.Top);
+                        renderer.DrawPlatformRasterSegment(target,raster.Commands,width,height);
+                        target.Restore();
+                    }
+                    var logicalBounds = new NativeRect(bounds.Left / descriptor.DeviceScaleX, bounds.Top / descriptor.DeviceScaleY,
+                        bounds.Width / descriptor.DeviceScaleX, bounds.Height / descriptor.DeviceScaleY);
+                    _nextQuickRasters.Add(raster.PaintOrder, new(scope, slice, gpu.Identity(rasterIndex)));
+                    parts.Add(new() { Size=96,Kind=0,Id=gpu.Identity(rasterIndex),Image=gpu.Image(rasterIndex++),PixelWidth=(uint)bounds.Width,PixelHeight=(uint)bounds.Height,Bounds=logicalBounds,Clip=viewport });
                     break;
+                }
                 case PlatformNativeSegment native:
                     var placement=Translate(native.Placement,_instances[native.Placement.Handle].Id, quick: true);
                     parts.Add(new() { Size=96,Kind=1,Id=placement.Id,Bounds=placement.Bounds,Clip=placement.Visible!=0?placement.Clip:default });
@@ -344,9 +366,9 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
                     var t=shield.Shield.Transform;
                     if(!t.IsAxisAligned)throw new NotSupportedException("Qt Quick input shields require axis-aligned bounds.");
                     var a=t.Map(shield.Shield.Bounds.topLeft);var b=t.Map(shield.Shield.Bounds.bottomRight);
-                    var bounds=new Rect(a.dx,a.dy,b.dx,b.dy);
-                    var clip=shield.Shield.Clip is {} c?bounds.intersect(c):bounds;
-                    parts.Add(new() { Size=96,Kind=2,Bounds=new(bounds.left,bounds.top,bounds.width,bounds.height),
+                    var shieldBounds=new Rect(a.dx,a.dy,b.dx,b.dy);
+                    var clip=shield.Shield.Clip is {} c?shieldBounds.intersect(c):shieldBounds;
+                    parts.Add(new() { Size=96,Kind=2,Bounds=new(shieldBounds.left,shieldBounds.top,shieldBounds.width,shieldBounds.height),
                         Clip=new(clip.left,clip.top,Math.Max(0,clip.width),Math.Max(0,clip.height)) });
                     break;
                 default:
@@ -381,6 +403,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
             foreach (var old in _visibleHandles.Where(h => !nextHandles.Contains(h) && _reservation!.Contains(h)))
                 _reservation!.DetachAsync(old).GetAwaiter().GetResult();
             _visibleHandles = nextHandles.ToArray();
+            if (IsQuick) _quickRasters = _nextQuickRasters;
         }
         finally { _committing = false; CancelPending(); }
     }
@@ -389,6 +412,7 @@ internal sealed partial class QtPlatformViewHost : IPlatformViewDispatcher, IDis
         _reservation?.Dispose(); _reservation = null;
         _pending?.Dispose(); _pending = null;
         _next = []; _nextPlacements = [];
+        _nextQuickRasters = [];
     }
     // Called from native closed only after pending post callbacks and QWidgets die.
     internal void NativeClosed() { _closed = true; foreach (var instance in _instances.Values) instance.Web?.Close(true); CancelPending(); _session?.DisposeAsync().GetAwaiter().GetResult(); }

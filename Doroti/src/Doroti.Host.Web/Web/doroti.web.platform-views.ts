@@ -154,7 +154,7 @@ export class DorotiPlatformViewDomRegistry {
     for (const placement of batch.views) {
       const entry = this.#entries.get(placement.identity.id)!;
       apply(entry.container, placement.bounds, placement.clip, placement.order, placement.visible);
-      entry.container.inert = !placement.visible;
+      if (entry.container.inert === placement.visible) entry.container.inert = !placement.visible;
       if (!placement.visible) this.#hide(entry);
     }
     for (const [id, shield] of this.#shields) if (!shieldIds.has(id)) { shield.dispose(); this.#shields.delete(id); }
@@ -183,7 +183,7 @@ export class DorotiPlatformViewDomRegistry {
         this.#shields.set(placement.id, shield);
       }
       apply(shield.element, placement.bounds, placement.clip, placement.order, true);
-      shield.element.style.background = placement.debug ? "rgba(255,0,0,.18)" : "transparent";
+      setStyles(shield.element, { background: placement.debug ? "rgba(255,0,0,.18)" : "transparent" });
     }
     for (const [id, element] of this.#effects) if (!effectIds.has(id)) { element.remove(); this.#effects.delete(id); }
     for (const effect of effects) {
@@ -196,8 +196,7 @@ export class DorotiPlatformViewDomRegistry {
         this.root.append(element); this.#effects.set(effect.id, element);
       }
       apply(element, effect.bounds, effect.clip, effect.order, true);
-      element.style.backdropFilter = `blur(${effect.strength * 16}px) saturate(${effect.saturation})`;
-      element.style.backgroundColor = effect.tint;
+      setStyles(element, { "backdrop-filter": `blur(${effect.strength * 16}px) saturate(${effect.saturation})`, "background-color": effect.tint });
     }
     this.#frame = batch.frame;
   }
@@ -226,7 +225,8 @@ export class DorotiPlatformViewDomRegistry {
   }
   #hide(entry: Entry): void {
     if (entry.container.contains(this.root.ownerDocument.activeElement)) (this.root.ownerDocument.activeElement as HTMLElement)?.blur();
-    entry.container.style.display = "none"; entry.container.inert = true;
+    setStyles(entry.container, { display: "none" });
+    if (!entry.container.inert) entry.container.inert = true;
   }
   #requireOpen(): void { if (this.#closed) throw new Error("Native DOM owner is closed."); }
   #validateOwner(handle: NativeIdentity): void { identity(handle); if (handle.owner !== this.owner) throw new Error("Foreign native DOM owner."); }
@@ -247,7 +247,21 @@ function apply(element: HTMLElement, bounds: NativeBounds, clip: NativeBounds | 
   const top = clip ? Math.max(bounds.top, clip.top) : bounds.top;
   const right = clip ? Math.min(bounds.left + bounds.width, clip.left + clip.width) : bounds.left + bounds.width;
   const bottom = clip ? Math.min(bounds.top + bounds.height, clip.top + clip.height) : bounds.top + bounds.height;
-  Object.assign(element.style, { left: `${bounds.left}px`, top: `${bounds.top}px`, width: `${bounds.width}px`, height: `${bounds.height}px`,
-    zIndex: String(order), display: visible && right > left && bottom > top ? "block" : "none",
-    clipPath: `inset(${Math.max(0, top - bounds.top)}px ${Math.max(0, bounds.left + bounds.width - right)}px ${Math.max(0, bounds.top + bounds.height - bottom)}px ${Math.max(0, left - bounds.left)}px)` });
+  setStyles(element, { left: "0px", top: "0px", transform: `translate(${bounds.left}px, ${bounds.top}px)`,
+    width: `${bounds.width}px`, height: `${bounds.height}px`,
+    "z-index": String(order), display: visible && right > left && bottom > top ? "block" : "none",
+    "clip-path": `inset(${Math.max(0, top - bounds.top)}px ${Math.max(0, bounds.left + bounds.width - right)}px ${Math.max(0, bounds.top + bounds.height - bottom)}px ${Math.max(0, left - bounds.left)}px)` });
+}
+
+// These wrappers belong to the registry. Preserve native elements and avoid
+// repeating layout/filter mutations when only the composition frame advances.
+const appliedStyles = new WeakMap<HTMLElement, Map<string, string>>();
+function setStyles(element: HTMLElement, values: Readonly<Record<string, string>>): void {
+  let previous = appliedStyles.get(element);
+  if (!previous) { previous = new Map(); appliedStyles.set(element, previous); }
+  for (const [name, value] of Object.entries(values)) {
+    if (previous.get(name) === value) continue;
+    element.style.setProperty(name, value);
+    previous.set(name, value);
+  }
 }

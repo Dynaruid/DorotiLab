@@ -16,6 +16,10 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private readonly Dictionary<PlatformViewHandle, nint> _controls = [];
     private readonly Dictionary<long, Frame> _ready = [];
     private readonly object _gate = new();
+    private WindowsCompositionSlice[] _rasterCache = [];
+    private SkiaPlatformRasterContent.CacheScope _rasterCacheScope;
+    private string _rasterCacheTopology = "";
+    private long _rasterCacheRevision;
     private WindowsWebViewComposition? _webViews;
     private readonly WindowsWinUiControls _winUiControls = new();
     private WindowsWinUiBackdrop? _winUiBackdrop;
@@ -189,6 +193,15 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 return;
             }
             var visualComposition = nativeParts.Length != 0 && nativeParts.All(p => _webViews!.Contains(p.Placement.Handle));
+            var cacheScope = SkiaPlatformRasterContent.CacheScope.From(token, width, height, renderer.PlatformBackgroundColor);
+            var topology = (visualComposition ? "visual:" : "hwnd:") + string.Join(",", plan.Parts.Select(p => $"{p.GetType().Name}:{p.PaintOrder}"));
+            WindowsCompositionSlice[] previous;
+            long cacheRevision;
+            lock (_gate)
+            {
+                previous = _rasterCacheScope == cacheScope && _rasterCacheTopology == topology ? _rasterCache : [];
+                cacheRevision = _rasterCacheRevision;
+            }
             // Keep the previous primary image until the UI owner admits the first
             // complete HWND scene. Never publish the cleared transport backing.
             _presenter!.PreservePrimaryRaster = !visualComposition;
@@ -205,17 +218,29 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                     bounds = coverage.Count == 0 ? new(0, 0, 1, 1) : new(coverage.Min(s => s.Bounds.Left), coverage.Min(s => s.Bounds.Top),
                         coverage.Max(s => s.Bounds.Right), coverage.Max(s => s.Bounds.Bottom));
                 }
-                slices.Add(new(raster, bounds, atlasHeight)); atlasHeight = checked(atlasHeight + bounds.Height);
+                var prior = previous.FirstOrDefault(p => p.Segment.PaintOrder == raster.PaintOrder);
+                var reused = prior is not null && SkiaPlatformRasterContent.CanReuse(cacheScope,
+                    new(prior.Segment.Commands, prior.Bounds), cacheScope, new(raster.Commands, bounds), allowTranslation: visualComposition);
+                slices.Add(new(raster, bounds, reused ? -1 : atlasHeight, reused));
+                if (!reused) atlasHeight = checked(atlasHeight + bounds.Height);
             }
-            var atlasWidth = slices.Max(s => s.Bounds.Width);
+            var changes = slices.Where(s => !s.Reused).ToArray();
+            var expectedRevision = slices.Any(s => s.Reused) ? cacheRevision : -1;
+            if (changes.Length == 0)
+            {
+                _recording = new(plan, null, null, width, height, rasters) { Started = started, NativeRevision = nativeRevision,
+                    Slices = slices.ToArray(), CacheScope = cacheScope, RasterTopology = topology, ExpectedCacheRevision = expectedRevision };
+                return;
+            }
+            var atlasWidth = changes.Max(s => s.Bounds.Width);
             // Account for GPU atlas, CPU readback, and current/prepared compositor surfaces.
-            var reservedBytes = (long)atlasWidth * atlasHeight * 16;
+            var reservedBytes = (long)atlasWidth * atlasHeight * 8 + slices.Sum(s => (long)s.Bounds.Width * s.Bounds.Height * 8);
             if (atlasWidth > 16384 || atlasHeight > 16384 || reservedBytes > 256L * 1024 * 1024)
                 throw new InvalidOperationException("Windows PlatformView active/staging resources exceed 256 MiB / 16384 pixels.");
             var info = new SKImageInfo(atlasWidth, atlasHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
             atlas = SkiaGpuSurfaces.CreateCompatible(canvas, info, null);
             atlas.Canvas.Clear(SKColors.Transparent);
-            foreach (var slice in slices)
+            foreach (var slice in changes)
             {
                 atlas.Canvas.Save();
                 atlas.Canvas.ClipRect(SKRect.Create(0, slice.AtlasY, slice.Bounds.Width, slice.Bounds.Height), SKClipOperation.Intersect, false);
@@ -225,7 +250,8 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 atlas.Canvas.Restore();
             }
             var readback = _presenter!.RequestPlatformReadback(atlas, info);
-            _recording = new(plan, atlas, readback, width, height, rasters) { Started = started, NativeRevision = nativeRevision, Slices = slices.ToArray() };
+            _recording = new(plan, atlas, readback, width, height, rasters) { Started = started, NativeRevision = nativeRevision,
+                Slices = slices.ToArray(), CacheScope = cacheScope, RasterTopology = topology, ExpectedCacheRevision = expectedRevision };
             atlas = null;
         }
         catch { atlas?.Dispose(); plan.Dispose(); throw; }
@@ -273,7 +299,24 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             if (!presented || _closed || frame.Plan.Token.SurfaceGeneration != generation ||
                 !_host!.IsLatestResizeGeneration(checked((ulong)generation))) return false;
             _session ??= new(frame.Plan.Token.OwnerViewId);
-            if (!_session.CommitRetiredFrame(frame.Plan, () => CommitFrame(frame, started))) return false;
+            lock (_gate)
+                if (frame.ExpectedCacheRevision >= 0 && frame.ExpectedCacheRevision != _rasterCacheRevision)
+                { Volatile.Write(ref _needsReplay, true); _host.RequestInvalidate(); return false; }
+            try
+            {
+                if (!_session.CommitRetiredFrame(frame.Plan, () => CommitFrame(frame, started))) return false;
+            }
+            catch
+            {
+                // A partially failed native commit cannot authorize a later reuse.
+                lock (_gate) { _rasterCache = []; _rasterCacheRevision++; }
+                throw;
+            }
+            lock (_gate)
+            {
+                _rasterCache = frame.Slices; _rasterCacheScope = frame.CacheScope;
+                _rasterCacheTopology = frame.RasterTopology; _rasterCacheRevision++;
+            }
             Interlocked.Exchange(ref _committedNativeRevision, frame.NativeRevision);
             if (NeedsReplay) _host.RequestInvalidate();
             try { WriteEvidence(frame); }
@@ -352,7 +395,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
                 int layerIndex = 0, rasterIndex = 0;
                 foreach (var part in next)
                 {
-                    if (part is PlatformRasterSegment && frame.Pixels is not null)
+                    if (part is PlatformRasterSegment && frame.Slices.Length != 0)
                     {
                         var layer = pool[layerIndex++];
                         layer.Prepare(frame.Pixels!, frame.Slices[rasterIndex++], frame.Width, frame.Height);
@@ -444,7 +487,7 @@ internal sealed class WindowsPlatformViewHost : IDisposable
     private void CommitWinUiFrame(Frame frame, PlatformCompositionPart[] next, IPlatformViewPlacementBatch batch, long started)
     {
         if (_webViews!.HasVisibleContent) _webViews.Clear(batch);
-        if (frame.Pixels is null)
+        if (frame.Slices.Length == 0)
         {
             _winUiBackdrop?.Clear();
             foreach (var old in _visible.OfType<PlatformNativeSegment>())
@@ -753,6 +796,9 @@ internal sealed class WindowsPlatformViewHost : IDisposable
         internal int Width = width, Height = height;
         internal PlatformRasterSegment[] Rasters = rasters;
         internal WindowsCompositionSlice[] Slices = [];
+        internal SkiaPlatformRasterContent.CacheScope CacheScope;
+        internal string RasterTopology = "";
+        internal long ExpectedCacheRevision = -1;
         public void Dispose() { Atlas?.Dispose(); Plan.Dispose(); }
     }
     private static void Check(bool success) { if (!success) throw new Win32Exception(Marshal.GetLastWin32Error()); }
@@ -819,14 +865,15 @@ internal sealed class WindowsPlatformViewHost : IDisposable
             if (message == 0x20) return Native.SendMessageW(_owner._parent, message, (nuint)_owner._parent, lparam);
             return Native.DefSubclassProc(hwnd, message, wparam, lparam);
         }
-        internal unsafe void Prepare(SkiaGraphiteReadback image, WindowsCompositionSlice slice, int frameWidth, int frameHeight)
+        internal unsafe void Prepare(SkiaGraphiteReadback? image, WindowsCompositionSlice slice, int frameWidth, int frameHeight)
         {
-            if (_width == frameWidth && _height == frameHeight && _rasterContent is { } previous &&
+            if (slice.Reused && _width == frameWidth && _height == frameHeight && _rasterContent is { } previous &&
                 previous.Bounds == slice.Bounds && SkiaPlatformRasterContent.Equivalent(previous.Segment.Commands, slice.Segment.Commands))
             {
                 _owner._reusedRasters++;
                 return;
             }
+            if (slice.Reused || image is null) throw new InvalidOperationException("Missing retained Windows raster surface.");
             var sourceY = slice.AtlasY;
             var width = slice.Bounds.Width; var height = slice.Bounds.Height;
             if (sourceY < 0 || width <= 0 || height <= 0 || image.RowBytes < checked(width * 4) ||

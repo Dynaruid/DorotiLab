@@ -39,6 +39,17 @@ try {
  registry.commit({...base,frame:2,effects:[]});check('effect removal',registry.effectCount===0);
  rejected=false;try{registry.commit(base)}catch{rejected=true}check('old frame rejected',rejected);
  registry.commit({...base,frame:3});check('effect restored without iframe reload',root.querySelector('iframe')===element);
+ const observer=new MutationObserver(()=>{});observer.observe(root,{attributes:true,subtree:true});
+ registry.commit({...base,frame:4});check('unchanged frame makes no DOM style mutations',observer.takeRecords().length===0);
+ const shifted={left:40,top:60,width:300,height:200};
+ registry.commit({...base,frame:5,views:[{...base.views[0],bounds:shifted}]});
+ const container=element.parentElement, rootBounds=root.getBoundingClientRect(), moved=container.getBoundingClientRect();
+ check('translation preserves native viewport and DOM identity',root.querySelector('iframe')===element&&moved.width===300&&moved.height===200&&Math.abs(moved.left-rootBounds.left-40)<.01&&Math.abs(moved.top-rootBounds.top-60)<.01);
+ check('motion avoids left/top layout',container.style.left==='0px'&&container.style.top==='0px'&&container.style.transform.includes('40px'));
+ observer.disconnect();
+ registry.commit({...base,frame:6,views:[]});
+ registry.commit({...base,frame:7,views:[{...base.views[0],bounds:shifted}]});
+ check('hidden cached view is shown again without reload',container.style.display==='block'&&!container.inert&&root.querySelector('iframe')===element);
  await registry.dispose();check('owner disposal',disposed===1&&registry.effectCount===0&&registry.liveCount===0);
  document.querySelector('#result').textContent=JSON.stringify({status:'PASS',scope:'DOM adapter harness',productWorker:'notVerified',tests:passed});
 }catch(error){document.querySelector('#result').textContent=JSON.stringify({status:'FAIL',error:String(error),stack:error.stack})}

@@ -298,6 +298,7 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
         using var allocationProfile = FrameworkWorkProfile.AllocationEnabled ? FrameworkWorkProfile.Begin(GetType(), 9) : default;
         if (e is null || _owner?.EnableTouchEvents != true) return false;
         var started = _inputTiming ? Stopwatch.GetTimestamp() : 0;
+        var queuedMs = _inputTiming ? Math.Max(0, Android.OS.SystemClock.UptimeMillis() - e.EventTime) : 0;
         if (e.ActionMasked == MotionEventActions.Down) RequestFocus();
         var change = e.ActionMasked switch {
             MotionEventActions.Down or MotionEventActions.PointerDown => PointerChange.down,
@@ -312,8 +313,8 @@ public sealed class DorotiAndroidVulkanView : SurfaceView, ISurfaceHolderCallbac
             if (!all && i != e.ActionIndex) continue;
             DispatchPointer(e, i, change.Value);
         }
-        if (_inputTiming && (e.ActionMasked != MotionEventActions.Move || Stopwatch.GetElapsedTime(started).TotalMilliseconds > 8))
-            Android.Util.Log.Info("DorotiInputTiming", $"action={e.ActionMasked} eventMs={e.EventTime} dispatchMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
+        if (_inputTiming)
+            Android.Util.Log.Info("DorotiInputTiming", $"action={e.ActionMasked} eventMs={e.EventTime} queuedMs={queuedMs} history={e.HistorySize} x={e.GetX():F1} y={e.GetY():F1} dispatchMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3}");
         if (FrameworkWorkProfile.AllocationEnabled && e.ActionMasked == MotionEventActions.Up)
         {
             RemoveCallbacks(_allocationProfileCallback);

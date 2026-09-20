@@ -8,6 +8,12 @@ using NativeView = Android.Views.View;
 
 namespace Doroti.Host.Maui;
 
+// Some raster exists only to supply the blur; its normal View display list is empty.
+internal interface IAndroidPlatformBackdropSource
+{
+    void DrawBackdropSource(Canvas canvas);
+}
+
 /// <summary>Samples preceding live View render nodes, applies a GPU blur, and clips
 /// the result to this overlay. Native controls remain attached and interactive.</summary>
 [SupportedOSPlatform("android31.0")]
@@ -78,7 +84,8 @@ internal sealed class AndroidPlatformBackdropView : NativeView
                 if (source.Handle == 0 || source.Parent != Parent || source.Visibility != ViewStates.Visible) continue;
                 recording.Save();
                 recording.Translate(source.Left - _sampleBounds.Left, source.Top - _sampleBounds.Top);
-                source.Draw(recording);
+                if (source is IAndroidPlatformBackdropSource raster) raster.DrawBackdropSource(recording);
+                else source.Draw(recording);
                 recording.Restore();
             }
         }
