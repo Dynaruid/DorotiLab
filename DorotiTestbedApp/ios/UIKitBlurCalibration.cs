@@ -18,7 +18,10 @@ internal static class UIKitBlurCalibration
         var dispatcher = new UIKitPlatformViewDispatcher();
         var directory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            "blur-calibration"
+            Path.GetFileName(
+                Environment.GetEnvironmentVariable("DOROTI_UIKIT_BLUR_CALIBRATION_NAME")
+                    ?? "blur-calibration"
+            )
         );
         Directory.CreateDirectory(directory);
         UIView? panel = null;
@@ -102,7 +105,7 @@ internal static class UIKitBlurCalibration
                     panel!.OverrideUserInterfaceStyle = theme;
                     effect!.SetSigma(strength * 16);
                     panel.LayoutIfNeeded();
-                    if (Math.Abs(effect.AppliedIntensity - strength) > .0001)
+                    if (Math.Abs(effect.AppliedIntensity - strength * 16 / 30) > .0001)
                         throw new InvalidOperationException("Animator intensity was not retained");
                     if (strength == 0 && effect.Effect is not null)
                         throw new InvalidOperationException("Zero strength retained the material");

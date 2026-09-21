@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--device', required=True)
 parser.add_argument('--app', type=Path, required=True)
 parser.add_argument('--output', type=Path, required=True)
-parser.add_argument('--mode', choices=['platform-views', 'platform-effects'], default='platform-views')
+parser.add_argument('--mode', choices=['platform-views', 'platform-effects', 'webview-sample'], default='platform-views')
 args = parser.parse_args()
 args.output.mkdir(parents=True, exist_ok=True)
 commands = []
@@ -30,6 +30,8 @@ try:
     run(['xcrun', 'devicectl', 'device', 'install', 'app', '--device', args.device, str(args.app.resolve())], 'install')
     name = f'platform-views-{uuid.uuid4().hex}.txt'
     env = dict(DOROTI_TESTBED_MODE=args.mode, DOROTI_UIKIT_EVIDENCE='1', DOROTI_UIKIT_EVIDENCE_NAME=name)
+    if args.mode == 'webview-sample':
+        env.update(DOROTI_TESTBED_MODE='sample', DOROTI_TESTBED_WEBVIEW_PAGE_PROBE='1')
     run(['xcrun', 'devicectl', 'device', 'process', 'launch', '--device', args.device,
          '--terminate-existing', '--environment-variables', json.dumps(env), 'dev.doroti.testbed'], 'launch')
     destination = args.output / 'probe.txt'

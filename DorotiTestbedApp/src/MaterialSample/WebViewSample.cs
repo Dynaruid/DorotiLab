@@ -54,7 +54,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
               <h2>YouTube embed</h2>
               <!-- Keep WASM thread isolation; only this third-party embed is credentialless. -->
               <iframe class="video" width="560" height="315"
-                src="https://www.youtube.com/embed/M7lc1UVf-VE?si=42cLngBwAWaMLim3"
+                src="https://www.youtube.com/embed/M7lc1UVf-VE?playsinline=1"
                 title="YouTube video player" credentialless
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -90,6 +90,11 @@ internal sealed class WebViewSampleState : State<WebViewSample>
     private int _generation;
     private bool _panelSupported;
     private bool _panelVisible = true;
+    private bool _panelSettingsVisible;
+    private bool _panelFollowTheme;
+    private double _panelStrength = .625;
+    private double _panelTintOpacity = .2;
+    private uint _panelTintRgb = 0x00ffffff;
     private readonly ValueNotifier<bool> _draggingPanel = new(false);
     private readonly ValueNotifier<Offset> _panelOffset = new(new(24, 24));
     private Offset _panelDragOrigin;
@@ -148,7 +153,6 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                 : Query(host, PlatformViewComposition.NativeOverlay);
             _panelSupported =
                 interleaved.Supported
-                && interleaved.NativeBackdropBlur
                 && interleaved.Capabilities?.Effect
                     is { LiveSourceSampling: true, MaximumEffects: > 0, MaximumSigma: >= 10 };
             if (!support.Supported)
@@ -485,6 +489,82 @@ internal sealed class WebViewSampleState : State<WebViewSample>
             )
         );
 
+    private Widget PanelSettings()
+    {
+        Widget Slider(string label, double value, Action<double> changed) =>
+            new SizedBox(
+                width: 220,
+                child: new Row(
+                    children:
+                    [
+                        new Text(label),
+                        new Expanded(child: new M.Slider(value: value, onChanged: changed)),
+                    ]
+                )
+            );
+        return new Padding(
+            padding: EdgeInsets.CreateSymmetric(horizontal: 12),
+            child: new Wrap(
+                children:
+                [
+                    new M.TextButton(
+                        onPressed: () =>
+                            setState(() => _panelSettingsVisible = !_panelSettingsVisible),
+                        child: new Text(
+                            _panelSettingsVisible ? "Close blur settings" : "Blur settings"
+                        )
+                    ),
+                    .. _panelSettingsVisible
+                        ? new Widget[]
+                        {
+                            Slider(
+                                $"Blur: {_panelStrength * 16:0.0}",
+                                _panelStrength,
+                                value => setState(() => _panelStrength = value)
+                            ),
+                            Slider(
+                                $"Tint: {_panelTintOpacity:P0}",
+                                _panelTintOpacity,
+                                value => setState(() => _panelTintOpacity = value)
+                            ),
+                            new M.TextButton(
+                                onPressed: () =>
+                                    setState(() =>
+                                    {
+                                        _panelFollowTheme = false;
+                                        _panelTintRgb = _panelTintRgb switch
+                                        {
+                                            0x00ffffff => 0x00211f26,
+                                            0x00211f26 => 0x003c82f6,
+                                            _ => 0x00ffffff,
+                                        };
+                                    }),
+                                child: new Text(
+                                    "Tint color: "
+                                        + (
+                                            _panelTintRgb switch
+                                            {
+                                                0x00ffffff => "White",
+                                                0x00211f26 => "Dark",
+                                                _ => "Blue",
+                                            }
+                                        )
+                                )
+                            ),
+                            new M.TextButton(
+                                onPressed: () =>
+                                    setState(() => _panelFollowTheme = !_panelFollowTheme),
+                                child: new Text(
+                                    _panelFollowTheme ? "Follow theme: ON" : "Follow theme: OFF"
+                                )
+                            ),
+                        }
+                        : [],
+                ]
+            )
+        );
+    }
+
     private Widget WebViewSurface(Widget webView) =>
         new LayoutBuilder(
             builder: (context, constraints) =>
@@ -495,6 +575,12 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                 var maxY = Math.Max(0, constraints.maxHeight - height);
                 var pixelRatio = MediaQuery.devicePixelRatioOf(context);
                 var theme = M.Theme.of(context);
+                var tintRgb = _panelFollowTheme
+                    ? theme.brightness == Brightness.dark
+                        ? 0x00211f26u
+                        : 0x00ffffffu
+                    : _panelTintRgb;
+                var panelForeground = new Color(tintRgb == 0x00ffffff ? 0xff172033u : 0xffffffffu);
                 return new Stack(
                     children:
                     [
@@ -549,14 +635,21 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                                                         child: new PointerInterceptor(
                                                             new PlatformEffect(
                                                                 style: new(
-                                                                    Strength: .625,
-                                                                    Tint: theme.brightness
-                                                                    == Brightness.dark
-                                                                        ? 0x99211f26u
-                                                                        : 0x99ffffffu
+                                                                    Strength: _panelStrength,
+                                                                    Tint: tintRgb
+                                                                        | (
+                                                                            (uint)
+                                                                                Math.Round(
+                                                                                    _panelTintOpacity
+                                                                                        * 255
+                                                                                ) << 24
+                                                                        )
                                                                 ),
                                                                 child: new M.Material(
                                                                     type: M.MaterialType.transparency,
+                                                                    textStyle: theme.textTheme.bodyMedium!.copyWith(
+                                                                        color: panelForeground
+                                                                    ),
                                                                     child: new Container(
                                                                         decoration: new BoxDecoration(
                                                                             border: Border.CreateAll(
@@ -650,6 +743,7 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                                                                                                                 [
                                                                                                                     new Icon(
                                                                                                                         M.Icons.drag_indicator,
+                                                                                                                        color: panelForeground,
                                                                                                                         size: 20
                                                                                                                     ),
                                                                                                                     new SizedBox(
@@ -660,9 +754,9 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                                                                                                                             "Floating panel",
                                                                                                                             maxLines: 1,
                                                                                                                             overflow: TextOverflow.ellipsis,
-                                                                                                                            style: theme
-                                                                                                                                .textTheme
-                                                                                                                                .titleSmall
+                                                                                                                            style: theme.textTheme.titleSmall!.copyWith(
+                                                                                                                                color: panelForeground
+                                                                                                                            )
                                                                                                                         )
                                                                                                                     ),
                                                                                                                 ]
@@ -676,7 +770,8 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                                                                                             tooltip: "Hide panel",
                                                                                             onPressed: TogglePanel,
                                                                                             icon: new Icon(
-                                                                                                M.Icons.close
+                                                                                                M.Icons.close,
+                                                                                                color: panelForeground
                                                                                             )
                                                                                         ),
                                                                                     ]
@@ -696,9 +791,9 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                                                                                                 [
                                                                                                     new Text(
                                                                                                         "Backdrop blur",
-                                                                                                        style: theme
-                                                                                                            .textTheme
-                                                                                                            .titleMedium
+                                                                                                        style: theme.textTheme.titleMedium!.copyWith(
+                                                                                                            color: panelForeground
+                                                                                                        )
                                                                                                     ),
                                                                                                     new SizedBox(
                                                                                                         height: 8
@@ -769,6 +864,9 @@ internal sealed class WebViewSampleState : State<WebViewSample>
                             child: _controller is null ? FallbackToolbar() : ControllerToolbar()
                         )
                     ),
+                    .. _panelSupported
+                        ? new Widget[] { new RepaintBoundary(child: PanelSettings()) }
+                        : [],
                     .. _busy ? new Widget[] { new M.LinearProgressIndicator() } : [],
                     .. _error is { } error
                         ? new Widget[]

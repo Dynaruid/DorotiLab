@@ -10,13 +10,18 @@ namespace Doroti.Host.Maui;
 /// MatchCommon sigma is a strength convention, not a native Gaussian radius.</summary>
 internal sealed class UIKitPlatformBlurView : UIVisualEffectView
 {
+    // Fixed Light material measured against a logical-point Gaussian edge on
+    // iOS 26/27: sigma is approximately 30 * animator fraction. This remains
+    // a visual approximation; UIKit also interpolates its intrinsic tint.
+    internal const double MaterialSigmaAtFullIntensity = 30;
+
     internal static PlatformEffectSupport Support { get; } =
         new(
             true,
             1,
             16,
             false,
-            "UIKit public material interpolation: one isotropic MatchCommon blur; ExactSigma/saturation are not supported."
+            "UIKit calibrated public material interpolation: one isotropic MatchCommon blur; intrinsic tint remains, ExactSigma/saturation are not supported."
         );
 
     private readonly NSObject _resumeObserver;
@@ -67,7 +72,7 @@ internal sealed class UIKitPlatformBlurView : UIVisualEffectView
             throw new ArgumentOutOfRangeException(nameof(sigma));
         }
 
-        var intensity = sigma / 16;
+        var intensity = sigma / MaterialSigmaAtFullIntensity;
         if (_intensity == intensity && (_animator is not null || intensity == 0))
         {
             return;

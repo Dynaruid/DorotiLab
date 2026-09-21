@@ -190,9 +190,18 @@ internal sealed class UIKitPlatformViewFactory(
             }
             else if (type == "doroti/webview")
             {
-                using var configuration = new WKWebViewConfiguration();
+                using var configuration = new WKWebViewConfiguration
+                {
+                    AllowsInlineMediaPlayback = true,
+                };
                 var web = new NativeWebView(BeforeFocus, Focused, configuration);
-                web.LoadHtmlString(text, null!);
+                // Local HTML has no HTTP Referer without a base URL. Embedded media
+                // providers use the installed app's identity (not a third-party origin).
+                var bundleId = NSBundle.MainBundle.BundleIdentifier;
+                using var baseUrl = string.IsNullOrWhiteSpace(bundleId)
+                    ? null
+                    : new NSUrl($"https://{bundleId.ToLowerInvariant()}/");
+                web.LoadHtmlString(text, baseUrl!);
                 _control = web;
             }
             else

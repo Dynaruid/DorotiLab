@@ -299,14 +299,12 @@ internal sealed class PlatformViewFixture : StatefulWidget
                         child: new SizedBox(
                             width: 440,
                             height: 240,
-                            child: new Stack(
-                                children: BuildScene(Native, support.NativeBackdropBlur)
-                            )
+                            child: new Stack(children: BuildScene(Native, support))
                         )
                     )
                     : new SizedBox(
                         height: 360,
-                        child: new Stack(children: BuildScene(Native, support.NativeBackdropBlur))
+                        child: new Stack(children: BuildScene(Native, support))
                     ),
                 new ClipRect(
                     child: new RepaintBoundary(
@@ -373,8 +371,41 @@ internal sealed class PlatformViewFixture : StatefulWidget
                 );
         }
 
-        private List<Widget> BuildScene(Func<long, string, Widget> native, bool nativeBackdropBlur)
+        private List<Widget> BuildScene(
+            Func<long, string, Widget> native,
+            PlatformViewSupport support
+        )
         {
+            Widget Backdrop(Widget child)
+            {
+                if (Environment.GetEnvironmentVariable("DOROTI_PLATFORM_VIEW_BACKDROP") == "0")
+                {
+                    return child;
+                }
+
+                // UIKit supports public material interpolation through PlatformEffect,
+                // but deliberately does not advertise arbitrary BackdropFilter support.
+                if (
+                    support.Composition == PlatformViewComposition.InterleavedComposition
+                    && support.Capabilities?.Effect
+                        is { LiveSourceSampling: true, MaximumEffects: > 0, MaximumSigma: >= 6 }
+                )
+                {
+                    return new PlatformEffect(style: new(Strength: .375), child: child);
+                }
+
+                return new BackdropFilter(
+                    filterConfig: ImageFilterConfig.CreateBlur(
+                        sigmaX: 6,
+                        sigmaY: 6,
+                        tileMode: TileMode.clamp,
+                        bounded: true
+                    ),
+                    enabled: support.NativeBackdropBlur,
+                    child: child
+                );
+            }
+
             var children = new List<Widget>
             {
                 new Positioned(
@@ -415,18 +446,8 @@ internal sealed class PlatformViewFixture : StatefulWidget
                             onTap: () =>
                                 setState(() => PlatformViewFixtureProbe.ForegroundClicks++),
                             child: new ClipRect(
-                                child: new BackdropFilter(
-                                    filterConfig: ImageFilterConfig.CreateBlur(
-                                        sigmaX: 6,
-                                        sigmaY: 6,
-                                        tileMode: TileMode.clamp,
-                                        bounded: true
-                                    ),
-                                    enabled: nativeBackdropBlur
-                                        && Environment.GetEnvironmentVariable(
-                                            "DOROTI_PLATFORM_VIEW_BACKDROP"
-                                        ) != "0",
-                                    child: new Container(
+                                child: Backdrop(
+                                    new Container(
                                         color: new Color(_stage >= 5 ? 0x99ff3300u : 0xffff3300u)
                                     )
                                 )

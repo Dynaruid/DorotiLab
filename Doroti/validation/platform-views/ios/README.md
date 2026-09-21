@@ -1,5 +1,24 @@
 # UIKit PlatformView validation
 
+## Public blur calibration
+
+`run-blur-calibration.py` launches the actual UIKit effect on reference patterns,
+collects fresh whole-window captures, and measures edge spread, fixed-source theme
+differences, and zero/decreasing-strength resets. Install Pillow in the selected
+Python environment. The numeric check allows 1.25 logical points of error; this
+qualifies MatchCommon on the tested OS, not ExactSigma.
+
+```sh
+python3 Doroti/validation/run-with-timeout.py <pillow-python> \
+  Doroti/validation/platform-views/ios/run-blur-calibration.py \
+  --simulator <UDID> --app <built-app> --output <new-output-folder>
+# For a physical phone, use --device <UDID> instead of --simulator.
+```
+
+The calibration directory has a unique name per launch. The optional
+`--require-common-match` analyzer flag checks the corrected sigma/30 mapping;
+omit it when inspecting historical captures from the old sigma/16 adapter.
+
 ## iOS 27 profile
 
 Run these commands from the **workspace root** so its .NET 10 SDK is selected.
@@ -73,7 +92,8 @@ After signing/build, install the resulting `DorotiTestbedApp.iOS.app` with
 
 The opt-in probe executes ten actual widget scenes, native identity/editor state,
 committed hit-test ordering, programmatic UIButton activation, native focus/text
-insertion, and 100 create/dispose cycles. `platform-effects` instead checks
+insertion, and 10 create/dispose cycles. It also requires a live MatchCommon
+backdrop in platform-view overlap case 5. `platform-effects` instead checks
 WKWebView identity, material insertion/removal, shield/pass-through targets,
 two WebViews, effect movement, disposal and recreation. These are UIKit actions
 and hierarchy checks, not physical touches, pixel comparison or IME approval.
@@ -104,6 +124,9 @@ For automated device collection, use a unique result filename per launch:
 python3 Doroti/validation/run-with-timeout.py python3 Doroti/validation/platform-views/ios/run-probe.py \
   --device <device> --app <built-app> --output <run-artifacts> --mode platform-views
 # Repeat with --mode platform-effects and a separate output directory.
+# Use --mode webview-sample to check the actual Material WebView page's blur panel,
+# app-identity base URL, and the YouTube iframe's received Referer/player errors.
+# This network-dependent probe does not assert video playback or physical input.
 ```
 
 `DOROTI_UIKIT_EVIDENCE_NAME` selects that filename. The runner uses a UUID so an

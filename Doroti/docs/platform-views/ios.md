@@ -19,15 +19,31 @@ WKWebView retains its real native hierarchy and initial HTML. Navigation, JS,
 profiles, downloads and permission APIs remain work2. Snapshot readback does not
 replace the native source.
 
+Local HTML uses `https://<lowercase bundle identifier>/` as its WKWebView base
+URL, and inline media playback is enabled. This supplies the installed app's
+identity to embedded HTTPS media, as required by the
+[YouTube embed documentation](https://developers.google.com/youtube/terms/required-minimum-functionality#api-client-identity-and-credentials).
+It does not require disabling App Transport Security. The sample iframe also
+requests `playsinline=1`.
+
 ## Public UIKit blur intensity
 
 `UIKitPlatformBlurView.cs` uses `UIVisualEffectView`, a fixed Light `UIBlurEffect`,
 and a retained, paused `UIViewPropertyAnimator`. The common logical sigma [0,16]
-is divided by 16 to recover `PlatformEffectStyle.Strength` [0,1], which drives
-`FractionComplete`. Zero clears the effect. This interpolates UIKit's whole
+is divided by the measured full-material sigma of approximately 30 logical points
+to drive `FractionComplete` (0–0.533 for the common range). Zero clears the effect.
+This calibration replaces the old sigma/16 mapping, which overblurred relative to
+the common Gaussian reference. This still interpolates UIKit's whole
 material recipe, including its tint; it does not set a Gaussian radius. Explicit
 PlatformEffect tint and the authored sharp child remain in the following raster
 segment. Effect/superview alpha stays at 1.
+
+The calibration is an approximation for the measured OS/device combinations, not
+a new public native radius API. The WebView sample exposes separate strength,
+Doroti tint color/opacity, and opt-in theme-following controls. Its default is a
+fixed white tint at 20%, with theme following disabled. The underlying HTML can
+still respond to the system theme. See the
+[React Native implementation comparison](ios-blur-research-2026-09-21.md).
 
 Strength updates scrub the existing animator. Bounds changes, window attachment,
 appearance changes and application/scene activation recreate the interpolation
@@ -42,6 +58,11 @@ saturation are unsupported. Reduce Transparency requires an explicit SolidTint
 alternative. The fixed Light appearance preserves theme-independent treatment;
 it cannot remove the preset's intrinsic colour bias through public APIs.
 
+Samples must query `Capabilities.Effect` for `PlatformEffect` support. The legacy
+`NativeBackdropBlur` flag remains false on UIKit because a generic Gaussian
+`BackdropFilter` is unsupported. The Platform views page uses MatchCommon and the
+WebView page admits its panel independently of that legacy flag.
+
 ## Evidence boundaries
 
 The previous private Gaussian implementation and earlier public-preset experiments
@@ -51,7 +72,7 @@ The calibration probe now captures the production adapter at multiple strengths,
 including decreasing from full strength and clearing to zero. See
 [validation commands](../../validation/platform-views/ios/README.md).
 
-Current public-adapter validation (2026-09-18): the Debug/Mono iOS 27 simulator
+Pre-calibration public-adapter validation (2026-09-18): the Debug/Mono iOS 27 simulator
 build passed with zero warnings/errors. On iPhone 18 Pro Simulator, four strengths
 (.25/.375/.75/1) produced distinct pixels in the WKWebView/Metal fixture. Parent
 Light/Dark and same-process Settings-to-app resume each had zero RGB difference

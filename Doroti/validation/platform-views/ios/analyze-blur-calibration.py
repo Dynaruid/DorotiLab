@@ -9,6 +9,8 @@ from PIL import Image, ImageChops, ImageStat
 
 parser = argparse.ArgumentParser()
 parser.add_argument('directory', type=Path)
+parser.add_argument('--require-common-match', action='store_true',
+                    help='Require the calibrated adapter to match Strength * 16 within 1.25 logical points')
 args = parser.parse_args()
 p = args.directory
 geometry = dict(line.split('=') for line in (p/'geometry.txt').read_text().splitlines())
@@ -63,6 +65,11 @@ if (p/'UIKitReset-0.000-Light.png').exists():
         checks[f'decreasing-{theme}'] = ImageStat.Stat(ImageChops.difference(decreased, initial)).mean
     result['reversibleIntensityMeanAbsoluteRGB'] = checks
 (p/'analysis.json').write_text(json.dumps(result,indent=2))
+if args.require_common_match:
+    active = [r for r in rows if r['fraction'] > 0]
+    assert active, 'No nonzero strength captures'
+    assert all(r['sigma'] is not None and abs(r['sigma'] - r['fraction']*16) <= 1.25 for r in active), active
+    assert all(r['themeMAE'] < 1 for r in rows), rows
 assert all(max(error) < 1 for error in checks.values()), checks
 for r in rows:
     print(f"{r['style']:30} f={r['fraction']:.2f} sigma={r['sigma']} black/white={r['black']:.1f}/{r['white']:.1f} themeMAE={r['themeMAE']:.2f} closest={r['closestReference']} MAE={min(r['referenceMAE'].values()):.2f}")

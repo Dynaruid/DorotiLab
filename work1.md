@@ -1,5 +1,14 @@
 # PlatformView 재구성 작업계획
 
+## iOS 공개 블러 보정 (2026-09-21)
+
+사용자는 **공개 API 유지**를 선택했다. [React Native 조사](Doroti/docs/platform-views/ios-blur-research-2026-09-21.md)에 따라 기존 UIKit animator를 유지하며 강도 매핑을 보정한다. Expo도 UIKit 재질 보간을 사용하고 tint 없는 순수 블러를 제공하지 않는다. community blur의 내부 `effectSettings` 방식은 이번 선택 범위에 넣지 않는다.
+
+- 기존 실측 `sigma ≈ fraction × 30pt`를 사용하여 `requestedSigma / 30`으로 보정한다. 아래 과거 `sigma / 16` 설명보다 이 절이 우선한다. 공통 sigma 0–16·MatchCommon 범위는 유지하며 ExactSigma·채도·네이티브 재질 tint 제거를 새로 지원한다고 선언하지 않는다.
+- WebView 샘플의 Doroti tint 색·불투명도·테마 연동을 분리하고 기본값은 고정 흰색 20%, 테마 연동 OFF로 둔다. 네이티브 원본 콘텐츠의 테마 변화와 효과 자체의 테마 변화는 별도로 측정한다.
+- `run-blur-calibration.py`는 새 실행별 캡처에서 blur edge-spread·고정 원본의 Light/Dark·zero/reset·강도 감소를 검증한다. 제품 합성/수명 검증은 기존 UIKit probe로 확인한다. 측정 결과와 남은 한계는 별도 결과 문서에 기록한다.
+- [검증 결과](Doroti/validation/platform-views/ios/public-blur-tuning-2026-09-21.md): 목표 sigma 4/6/12/16에 대해 iOS 27 Simulator는 4/6/12/16, iPhone 12·iOS 26.6.1은 4/6/12/15.75를 측정했다. 고정 원본 Light/Dark·zero/reset·강도 감소 차이는 0이다. Simulator의 실제 WKWebView/Metal 네 가지 강도·테마·복귀 및 7개 효과/수명 장면, 실기기 샘플 패널·유튜브 로딩이 통과했다. 두 Debug/Mono 빌드 경고/오류 0개이며 NativeAOT·전체 OS/기기·정확한 색상 동등성 승인은 별도다.
+
 ## Web 실행 업데이트 (2026-09-21)
 
 **Web 전체 상태는 PARTIAL이다.** 기존 DOM harness에서 실제 main DOM / managed Worker 제품 연결로 진행했다. 현재 계약은 [Web WebView](Doroti/docs/platform-views/web-webview.md), 실행/실패/잔여는 [결과 보고서](Doroti/validation/webview/web-results-2026-09-21.md)를 따른다. 아래 Web 제품 미연결 기록보다 이 절이 우선한다.

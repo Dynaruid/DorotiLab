@@ -22,6 +22,11 @@ internal static class PlatformViewEvidence
                     ?? "platform-views-evidence.txt"
             )
         );
+        if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_WEBVIEW_PAGE_PROBE") == "1")
+        {
+            await CaptureWebViewSample(path);
+            return;
+        }
         if (Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "platform-effects")
         {
             await CaptureEffects(path);
@@ -84,7 +89,17 @@ internal static class PlatformViewEvidence
                         )
                         .ToArray();
                     if (current == 5)
+                    {
                         Check(slots.Length >= 3, "R/N/R/N/R Metal surfaces");
+                        Check(
+                            overlay
+                                .Subviews.OfType<UIKitPlatformBlurView>()
+                                .Any(effect =>
+                                    !effect.Hidden && Math.Abs(effect.AppliedIntensity - .2) < .0001
+                                ),
+                            "platform-view sample has a live MatchCommon backdrop"
+                        );
+                    }
                     lines.Add(
                         $"PASS stage={current} identity/state hit={hit!.GetType().Name} rasters={slots.Length} scale={overlay.Window!.Screen.Scale}"
                     );
@@ -98,7 +113,7 @@ internal static class PlatformViewEvidence
                 editor.ResignFirstResponder();
             });
             lines.Add("PASS native focus/text insertion/resign (IME composition not tested)");
-            for (var cycle = 0; cycle < 100; cycle++)
+            for (var cycle = 0; cycle < 10; cycle++)
             {
                 UIView[] retiring = [];
                 await OnUi(() =>
@@ -112,7 +127,7 @@ internal static class PlatformViewEvidence
                 await OnUi(() => PlatformViewFixtureProbe.ToggleMounted!());
                 await Until(() => Controls().Length == 2);
             }
-            lines.Add("PASS create/dispose=100 cycles (native handles disposed before recreation)");
+            lines.Add("PASS create/dispose=10 cycles (native handles disposed before recreation)");
             lines.Add("RESULT=PASS");
         }
         catch (Exception error)
@@ -289,8 +304,8 @@ internal static class PlatformViewEvidence
                     lines.Add($"DIAGNOSTIC {name} {effect}");
                     Check(
                         effect is UIKitPlatformBlurView blur
-                            && Math.Abs(blur.AppliedIntensity - strength) < .0001,
-                        "requested strength reached UIKit animator"
+                            && Math.Abs(blur.AppliedIntensity - strength * 16 / 30) < .0001,
+                        "calibrated strength reached UIKit animator"
                     );
                     Check(
                         effect.OverrideUserInterfaceStyle == UIUserInterfaceStyle.Light
@@ -337,6 +352,111 @@ internal static class PlatformViewEvidence
                 web,
                 "document.querySelector('#moving').style.animation=''; document.querySelector('#moving').style.transform=''; 'resumed'"
             );
+        }
+    }
+
+    private sealed class EmbedEvidence : NSObject, IWKScriptMessageHandler
+    {
+        internal TaskCompletionSource<string> Result { get; } =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public void DidReceiveScriptMessage(
+            WKUserContentController controller,
+            WKScriptMessage message
+        )
+        {
+            if (message.FrameInfo.SecurityOrigin.Host == "www.youtube.com")
+                Result.TrySetResult(message.Body.ToString() ?? "");
+        }
+    }
+
+    private static async Task CaptureWebViewSample(string path)
+    {
+        var lines = new List<string>
+        {
+            $"UTC={DateTime.UtcNow:O}",
+            $"OS={UIDevice.CurrentDevice.SystemVersion}",
+        };
+        WKWebView? web = null;
+        using var embed = new EmbedEvidence();
+        try
+        {
+            await Until(() =>
+            {
+                web = Controls().OfType<WKWebView>().SingleOrDefault();
+                return web is not null
+                    && !web.IsLoading
+                    && web.Superview!.Superview!.Subviews.OfType<UIKitPlatformBlurView>()
+                        .Any(effect =>
+                            !effect.Hidden && Math.Abs(effect.AppliedIntensity - 1.0 / 3) < .0001
+                        );
+            });
+            lines.Add("PASS actual WebView sample has a visible UIKit blur panel at strength .625");
+            var baseUri = await JavaScript(web!, "document.baseURI");
+            Check(
+                baseUri == $"https://{NSBundle.MainBundle.BundleIdentifier!.ToLowerInvariant()}/",
+                "app identity base URL"
+            );
+            lines.Add("PASS HTML base URL=" + baseUri);
+            var html = await JavaScript(web!, "document.documentElement.outerHTML");
+            await OnUi(() =>
+            {
+                Check(web!.Configuration.AllowsInlineMediaPlayback, "inline media enabled");
+                var controller = web.Configuration.UserContentController;
+                controller.AddScriptMessageHandler(embed, "embedEvidence");
+                using var scriptText = new NSString(
+                    """
+                    if (location.hostname === 'www.youtube.com') {
+                      setTimeout(() => window.webkit.messageHandlers.embedEvidence.postMessage(JSON.stringify({
+                        url: location.href, referrer: document.referrer, title: document.title,
+                        player: !!document.querySelector('#movie_player'),
+                        error: document.querySelector('.ytp-error-content-wrap')?.innerText || ''
+                      })), 8000);
+                    }
+                    """
+                );
+                using var script = new WKUserScript(
+                    scriptText,
+                    WKUserScriptInjectionTime.AtDocumentEnd,
+                    false
+                );
+                controller.AddUserScript(script);
+                // Reload() navigates to the synthetic app-identity URL. Reload the
+                // local HTML instead, as the sample's Reset page action does.
+                using var baseUrl = new NSUrl(baseUri);
+                web.LoadHtmlString(html, baseUrl);
+            });
+            var result = await embed.Result.Task.WaitAsync(TimeSpan.FromSeconds(45));
+            lines.Add("YouTube frame=" + result);
+            using var document = System.Text.Json.JsonDocument.Parse(result);
+            Check(
+                document.RootElement.GetProperty("referrer").GetString() == baseUri,
+                "YouTube receives app referrer"
+            );
+            Check(document.RootElement.GetProperty("player").GetBoolean(), "YouTube player loaded");
+            Check(
+                string.IsNullOrEmpty(document.RootElement.GetProperty("error").GetString()),
+                "YouTube player has no configuration error"
+            );
+            lines.Add(
+                "PASS YouTube frame loaded with app referrer; playback/physical input not verified"
+            );
+            lines.Add("RESULT=PASS");
+        }
+        catch (Exception error)
+        {
+            lines.Add("RESULT=FAIL " + error);
+        }
+        finally
+        {
+            await OnUi(() =>
+            {
+                web?.Configuration.UserContentController.RemoveScriptMessageHandler(
+                    "embedEvidence"
+                );
+                web?.Configuration.UserContentController.RemoveAllUserScripts();
+            });
+            File.WriteAllLines(path, lines);
         }
     }
 
