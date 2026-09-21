@@ -62,7 +62,20 @@ foreach (var changedScope in new[] {
 Check("coverage retains enforced clip and pixel halo",
     SkiaPlatformRasterContent.Coverage(layeredScene.Commands, 1000, 1000) == new SKRectI(18, 28, 102, 92));
 Check("empty content has no coverage", SkiaPlatformRasterContent.Coverage(emptyScene.Commands, 1000, 1000).IsEmpty);
-Console.WriteLine("PASS 31 platform raster motion and cross-platform cache checks");
+// A moving panel and stationary navigation can share a planner raster segment.
+// Its union is not reusable, but each enforced-clip slice still is.
+var navigation = Slice(changed, 0, 400);
+var combinedStart = start.Commands.Concat(navigation.Commands).ToArray();
+var combinedEnd = Slice(picture, 70, 90).Commands.Concat(navigation.Commands).ToArray();
+var splitStart = SkiaPlatformRasterContent.Split(combinedStart, 1000, 800);
+var splitEnd = SkiaPlatformRasterContent.Split(combinedEnd, 1000, 800);
+Check("panel and stationary navigation remain separate slices", splitStart.Count == 2 && splitEnd.Count == 2);
+Check("moving panel and stationary navigation independently reuse pixels",
+    splitStart.Zip(splitEnd).All(pair => SkiaPlatformRasterContent.CanReuse(scope, pair.First, scope, pair.Second)));
+Check("combined moving and stationary content cannot reuse one bitmap",
+    !SkiaPlatformRasterContent.CanReuse(scope, new(combinedStart, new(0, 0, 1000, 800)),
+        scope, new(combinedEnd, new(0, 0, 1000, 800))));
+Console.WriteLine("PASS 34 platform raster motion and cross-platform cache checks");
 
 static bool Same(SkiaPlatformRasterContent.Slice a, SkiaPlatformRasterContent.Slice b) =>
     SkiaPlatformRasterContent.EquivalentTranslation(a, b);

@@ -26,6 +26,10 @@ internal sealed partial class BrowserPlatformViewHost : IPlatformViewDispatcher,
     private long _frame;
     private bool _composed;
     private bool _nextComposed;
+    // Reserve stable DOM paint-order slots for independently retained pictures.
+    // Larger/unsupported groups keep the existing single-raster fallback.
+    private const int RasterSlots = 8;
+    private const long RasterByteBudget = 64 * 1024 * 1024;
     private sealed record CachedRaster(SkiaPlatformRasterContent.CacheScope Scope, SkiaPlatformRasterContent.Slice Slice);
     private Dictionary<int, CachedRaster> _rasters = [], _nextRasters = [];
     internal static IEnumerable<IPlatformViewFactory> Factories => [new Factory(null)];
@@ -163,6 +167,7 @@ internal sealed partial class BrowserPlatformViewHost : IPlatformViewDispatcher,
         {
             var views = new List<object>(); var shields = new List<object>(); var effects = new List<object>();
             var mixed = plan.Parts.Any(p => p is not PlatformRasterSegment);
+            var rasterSlices = mixed ? PlanRasterSlices(plan, width, height) : [];
             var needsCommit = mixed || _composed;
             _nextComposed = mixed;
             long bytes = 0;
@@ -174,45 +179,50 @@ internal sealed partial class BrowserPlatformViewHost : IPlatformViewDispatcher,
                         renderer.DrawPlatformRasterSegment(canvas, raster.Commands, width, height); break;
                     case PlatformRasterSegment raster:
                     {
-                        var bounds = raster.PaintOrder == 0 ? new SKRectI(0, 0, width, height) : SkiaPlatformRasterContent.Coverage(raster.Commands, width, height);
-                        if (bounds.Width <= 0 || bounds.Height <= 0) break;
-                        bytes += (long)bounds.Width * bounds.Height * 4;
-                        if (bytes > 64 * 1024 * 1024) throw new NotSupportedException("Browser composition exceeds the 64 MiB raster frame budget.");
-                        var slice = new SkiaPlatformRasterContent.Slice(raster.Commands, bounds);
-                        _nextRasters.Add(raster.PaintOrder, new(scope, slice));
-                        if (_rasters.TryGetValue(raster.PaintOrder, out var prior) && SkiaPlatformRasterContent.CanReuse(prior.Scope, prior.Slice, scope, slice))
+                        var slices = rasterSlices[raster.PaintOrder];
+                        for (var index = 0; index < slices.Count; index++)
                         {
-                            StageRaster(raster.PaintOrder, bounds.Left / descriptor.DeviceScaleX, bounds.Top / descriptor.DeviceScaleY,
-                                bounds.Width / descriptor.DeviceScaleX, bounds.Height / descriptor.DeviceScaleY, bounds.Width, bounds.Height, []);
-                            break;
+                            var slice = slices[index];
+                            var bounds = slice.Bounds;
+                            var order = raster.PaintOrder * RasterSlots + index;
+                            if (bounds.Width <= 0 || bounds.Height <= 0) continue;
+                            bytes += (long)bounds.Width * bounds.Height * 4;
+                            if (bytes > RasterByteBudget) throw new NotSupportedException("Browser composition exceeds the 64 MiB raster frame budget.");
+                            _nextRasters.Add(order, new(scope, slice));
+                            if (_rasters.TryGetValue(order, out var prior) && SkiaPlatformRasterContent.CanReuse(prior.Scope, prior.Slice, scope, slice))
+                            {
+                                StageRaster(order, bounds.Left / descriptor.DeviceScaleX, bounds.Top / descriptor.DeviceScaleY,
+                                    bounds.Width / descriptor.DeviceScaleX, bounds.Height / descriptor.DeviceScaleY, bounds.Width, bounds.Height, []);
+                                continue;
+                            }
+                            using var bitmap = new SKBitmap(new SKImageInfo(bounds.Width, bounds.Height, SKColorType.Rgba8888, SKAlphaType.Premul));
+                            using var target = new SKCanvas(bitmap);
+                            target.Clear(raster.PaintOrder == 0 ? renderer.PlatformBackgroundColor : SKColors.Transparent);
+                            target.Translate(-bounds.Left, -bounds.Top);
+                            renderer.DrawPlatformRasterSegment(target, slice.Commands, width, height);
+                            target.Flush();
+                            var pixels = new byte[checked(bounds.Width * bounds.Height * 4)];
+                            using var image = SKImage.FromBitmap(bitmap);
+                            fixed (byte* destination = pixels)
+                                if (!image.ReadPixels(new SKImageInfo(bounds.Width, bounds.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul),
+                                    (nint)destination, bounds.Width * 4, 0, 0))
+                                    throw new InvalidOperationException("Browser raster RGBA conversion failed.");
+                            StageRaster(order, bounds.Left / descriptor.DeviceScaleX, bounds.Top / descriptor.DeviceScaleY,
+                                bounds.Width / descriptor.DeviceScaleX, bounds.Height / descriptor.DeviceScaleY, bounds.Width, bounds.Height, pixels);
                         }
-                        using var bitmap = new SKBitmap(new SKImageInfo(bounds.Width, bounds.Height, SKColorType.Rgba8888, SKAlphaType.Premul));
-                        using var target = new SKCanvas(bitmap);
-                        target.Clear(raster.PaintOrder == 0 ? renderer.PlatformBackgroundColor : SKColors.Transparent);
-                        target.Translate(-bounds.Left, -bounds.Top);
-                        renderer.DrawPlatformRasterSegment(target, raster.Commands, width, height);
-                        target.Flush();
-                        var pixels = new byte[checked(bounds.Width * bounds.Height * 4)];
-                        using var image = SKImage.FromBitmap(bitmap);
-                        fixed (byte* destination = pixels)
-                            if (!image.ReadPixels(new SKImageInfo(bounds.Width, bounds.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul),
-                                (nint)destination, bounds.Width * 4, 0, 0))
-                                throw new InvalidOperationException("Browser raster RGBA conversion failed.");
-                        StageRaster(raster.PaintOrder, bounds.Left / descriptor.DeviceScaleX, bounds.Top / descriptor.DeviceScaleY,
-                            bounds.Width / descriptor.DeviceScaleX, bounds.Height / descriptor.DeviceScaleY, bounds.Width, bounds.Height, pixels);
                         break;
                     }
                     case PlatformNativeSegment native:
                         var p = native.Placement;
                         views.Add(new { identity = Identity(p.Handle), bounds = Bounds(Map(p.Bounds, p.Transform)), clip = p.Clip is { } c ? Bounds(c) : null,
-                            visible = p.Visible, order = p.PaintOrder }); break;
+                            visible = p.Visible, order = p.PaintOrder * RasterSlots }); break;
                     case PlatformShieldSegment shield:
                         var s = shield.Shield;
                         shields.Add(new { id = s.PaintOrder.ToString(), bounds = Bounds(Map(s.Bounds, s.Transform)), clip = s.Clip is { } sc ? Bounds(sc) : null,
-                            order = s.PaintOrder, debug = s.Debug }); break;
+                            order = s.PaintOrder * RasterSlots, debug = s.Debug }); break;
                     case PlatformBackdropSegment effect:
                         if (effect.SigmaX != effect.SigmaY) throw new NotSupportedException("CSS backdrop requires isotropic blur.");
-                        effects.Add(new { id = effect.PaintOrder.ToString(), bounds = Bounds(effect.Bounds), order = effect.PaintOrder,
+                        effects.Add(new { id = effect.PaintOrder.ToString(), bounds = Bounds(effect.Bounds), order = effect.PaintOrder * RasterSlots,
                             strength = effect.SigmaX / 16, tint = "#00000000", saturation = effect.Style?.Saturation ?? 1 }); break;
                 }
             }
@@ -222,6 +232,25 @@ internal sealed partial class BrowserPlatformViewHost : IPlatformViewDispatcher,
             _pending = plan;
         }
         catch { plan.Dispose(); throw; }
+    }
+    private static Dictionary<int, IReadOnlyList<SkiaPlatformRasterContent.Slice>> PlanRasterSlices(
+        PlatformCompositionPlan plan, int width, int height)
+    {
+        var result = new Dictionary<int, IReadOnlyList<SkiaPlatformRasterContent.Slice>>();
+        foreach (var raster in plan.Parts.OfType<PlatformRasterSegment>())
+        {
+            var slices = raster.PaintOrder == 0 ? Whole(raster) : SkiaPlatformRasterContent.Split(raster.Commands, width, height);
+            result.Add(raster.PaintOrder, slices.Count <= RasterSlots ? slices : Whole(raster));
+        }
+        // Overlapping independent slices can occupy more memory than one union.
+        // Keep scenes that fitted the original budget working at high DPR.
+        if (result.Values.SelectMany(s => s).Sum(s => (long)s.Bounds.Width * s.Bounds.Height * 4) > RasterByteBudget)
+            foreach (var raster in plan.Parts.OfType<PlatformRasterSegment>()) result[raster.PaintOrder] = Whole(raster);
+        return result;
+
+        IReadOnlyList<SkiaPlatformRasterContent.Slice> Whole(PlatformRasterSegment raster) =>
+            [new(raster.Commands, raster.PaintOrder == 0 ? new(0, 0, width, height) :
+                SkiaPlatformRasterContent.Coverage(raster.Commands, width, height))];
     }
     private static object Bounds(Rect r) => new { left = r.left, top = r.top, width = Math.Max(0, r.width), height = Math.Max(0, r.height) };
     private static Rect Map(Rect rect, PlatformViewTransform transform)

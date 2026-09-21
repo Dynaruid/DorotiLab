@@ -57,7 +57,8 @@ export class BrowserPlatformComposition {
     const next: HTMLCanvasElement[] = [];
     const created: HTMLCanvasElement[] = [];
     try {
-      if (packet.rasters.length > 17) throw new Error("Too many raster slices.");
+      // Matches BrowserPlatformViewHost: at most eight slices per planner raster.
+      if (packet.rasters.length > 17 * 8) throw new Error("Too many raster slices.");
       for (const raster of packet.rasters) {
         if (!Number.isSafeInteger(raster.width) || !Number.isSafeInteger(raster.height) || raster.width <= 0 || raster.height <= 0 ||
           (raster.pixels.byteLength !== 0 && raster.pixels.byteLength !== raster.width * raster.height * 4) ||
@@ -76,8 +77,8 @@ export class BrowserPlatformComposition {
         created.push(element);
         element.dataset.dorotiRaster = String(raster.order);
         element.width = raster.width; element.height = raster.height;
-        Object.assign(element.style, { position: "absolute", pointerEvents: "none", left: `${raster.bounds.left}px`,
-          top: `${raster.bounds.top}px`, width: `${raster.bounds.width}px`, height: `${raster.bounds.height}px`, zIndex: String(raster.order) });
+        Object.assign(element.style, { position: "absolute", pointerEvents: "none", left: "0px",
+          top: "0px", width: `${raster.bounds.width}px`, height: `${raster.bounds.height}px`, zIndex: String(raster.order) });
         element.getContext("2d")!.putImageData(new ImageData(new Uint8ClampedArray(raster.pixels), raster.width, raster.height), 0, 0);
         next.push(element);
       }
@@ -85,7 +86,7 @@ export class BrowserPlatformComposition {
       // No await between the validated placements and raster swap.
       for (let index = 0; index < next.length; index++) {
         const element = next[index], raster = packet.rasters[index];
-        element.style.left = `${raster.bounds.left}px`; element.style.top = `${raster.bounds.top}px`;
+        element.style.transform = `translate(${raster.bounds.left}px, ${raster.bounds.top}px)`;
         element.style.width = `${raster.bounds.width}px`; element.style.height = `${raster.bounds.height}px`;
         if (!element.isConnected) this.root.append(element);
       }

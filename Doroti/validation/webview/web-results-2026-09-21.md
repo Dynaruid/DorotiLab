@@ -26,6 +26,8 @@
 
 ## Performance observations
 
+Follow-up: [WebViewSample panel drag optimization](panel-drag-2026-09-21.md) now retains independent foreground slices. Its before/after measurements supersede the drag behavior, but do not requalify the full active-content workload matrix below.
+
 `workloads-gpu/` and `workloads-gl/`: 0/1/4 views × idle/animation/scroll/modal; each settled sample lasts 2.5 seconds. These are managed raster duration samples, not end-to-end frame/scanout/input latency. Browser JS heap is only an observation; Chromium process/GPU memory and WebView-internal metrics were not measured. No before-change product implementation existed for an equivalent mixed scene, so these are not before/after budget approvals.
 
 | Renderer | 1-view animation p95 | 4-view animation p95 | 1/4-view active upload | Zero-view resources/upload |
